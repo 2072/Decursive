@@ -1,0 +1,609 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+    <!--
+    Decursive (v 2.0) add-on for World of Warcraft UI
+    Copyright (C) 2006-2007 John Wellesz (Archarodim) ( http://www.2072productions.com/?to=decursive.php )
+    This is the continued work of the original Decursive (v1.9.4) by Quu
+    Decursive 1.9.4 is in public domain ( www.quutar.com )
+
+    License:
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+    -->
+
+    <Button name="DecursiveDebuffTemplate" virtual="true">
+
+	<Size>
+	    <AbsDimension x="30" y="30"/>
+	</Size>
+
+	<Layers>
+	    <Layer level="OVERLAY">
+		<Texture name="$parentIcon"/>
+	    </Layer>
+	    <Layer level="OVERLAY">
+		<FontString name="$parentCount" inherits="NumberFontNormalSmall" maxLines="1" text="1">
+		    <!--<FontHeight>
+			<AbsValue val="8"/>
+		    </FontHeight>-->
+		    <Anchors>
+			<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent">
+			    <Offset>
+				<AbsDimension x="1" y="1"/>
+			    </Offset>
+			</Anchor>
+		    </Anchors>
+		    <Color r="1.0" g="0.1" b="0.2"/>
+		    <Shadow>
+			<offset>
+			    <AbsDimension x="1" y="1" />
+			</offset>
+			<color r="0" g="0" b="0" />
+		    </Shadow>
+
+		</FontString>
+	    </Layer>
+	</Layers>
+
+	<Scripts>
+	    <OnLoad>
+		this.unit = "player";
+		this.debuff = 1;
+	    </OnLoad>
+	    <OnEnter>
+		Dcr:DebuffTemplate_OnEnter();
+	    </OnEnter>
+	    <OnLeave>
+		DcrDisplay_Tooltip:Hide();
+	    </OnLeave>
+	</Scripts>
+    </Button>
+
+    <Frame name="DecursiveAfflictedTemplate" frameStrata="LOW" virtual="true" hidden="true">
+	<Size>
+	    <AbsDimension x="180" y="32"/>
+	</Size>
+
+	<Backdrop name="$parentBackdrop" bgFile="Interface\AddOns\Decursive\Textures\BackDrop.tga" tile="true">
+	    <TileSize>
+		<AbsValue val="16"/>
+	    </TileSize>
+	</Backdrop>
+
+	<!-- The "name" field... is on a layer-->
+	<Layers>
+	    <Layer level="OVERLAY">
+		<FontString name="$parentName" justifyH="LEFT" inherits="GameFontNormalSmall" maxLines="1" text="Name">
+		    <Size>
+			<AbsDimension x="148" y="10"/>
+		    </Size>
+		    <Anchors>
+			<Anchor point="TOPLEFT" relativeTo="$parent">
+			    <Offset>
+				<AbsDimension x="32" y="-2"/>
+			    </Offset>
+			</Anchor>
+		    </Anchors>
+		</FontString>
+		<FontString name="$parentType" justifyH="LEFT" inherits="GameFontNormalSmall" maxLines="1" text="Type">
+		    <Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent">
+			    <Offset>
+				<AbsDimension x="0" y="-2"/>
+			    </Offset>
+			</Anchor>
+		    </Anchors>
+		</FontString>
+		<FontString name="$parentAffliction" justifyH="LEFT" inherits="GameFontNormalSmall" maxLines="1" text="Affliction">
+		    <Size>
+			<AbsDimension x="148" y="10"/>
+		    </Size>
+		    <Anchors>
+			<Anchor point="TOPLEFT" relativeTo="$parent">
+			    <Offset>
+				<AbsDimension x="32" y="-15"/>
+			    </Offset>
+			</Anchor>
+		    </Anchors>
+
+		</FontString>
+	    </Layer>
+	</Layers>
+	<Frames>
+	    <Button name="$parentDebuff" inherits="DecursiveDebuffTemplate" hidden="false">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent">
+			<Offset>
+			    <AbsDimension x="0" y="0" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Button>
+	    <Button name="$parentClickMe" >
+
+		<Size>
+		    <AbsDimension x="150" y="32"/>
+		</Size>
+
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentDebuff"/>
+		</Anchors>
+
+		<Scripts>
+		    <OnLoad>
+			this.unit = "player";
+			this.debuff = 1;
+			this:RegisterForClicks('LeftButtonDown', 'RightButtonDown');
+		    </OnLoad>
+		    <OnEnter>
+			Dcr:DebuffTemplate_OnEnter();
+		    </OnEnter>
+		    <OnLeave>
+			DcrDisplay_Tooltip:Hide();
+		    </OnLeave>
+		</Scripts>
+	    </Button>
+	</Frames>
+	<Scripts>
+	    <OnLoad>
+		this.unit = "player";
+		this.debuff = 1;
+		this.UpdateMe = false;
+	    </OnLoad>
+	</Scripts>
+    </Frame>
+
+    <Button name="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
+	<ButtonText name="$parentText" justifyH="LEFT" />
+	<NormalFont inherits="GameFontNormal" justifyH="LEFT" />
+	<HighlightFont inherits="GameFontHighlight" justifyH="LEFT" />
+	<DisabledFont inherits="GameFontDisable" justifyH="LEFT" />
+    </Button>
+
+
+
+    
+
+    <Frame name="DecursiveMainBar" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent">
+	<Size>
+	    <AbsDimension x="80" y="25" />
+	</Size>
+
+	<Anchors>
+	    <Anchor point="TOP">
+		<Offset>
+		    <AbsDimension x="0" y="-50"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+
+	<!--
+	<TitleRegion setAllPoints="true"/>
+	-->
+
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+	    <EdgeSize>
+		<AbsValue val="16"/>
+	    </EdgeSize>
+	    <TileSize>
+		<AbsValue val="16"/>
+	    </TileSize>
+	    <BackgroundInsets>
+		<AbsInset left="5" right="5" top="5" bottom="5"/>
+	    </BackgroundInsets>
+	</Backdrop>
+
+	<Layers>
+	    <Layer level="OVERLAY">
+		<FontString name="$parentText" inherits="GameFontNormal" text="BINDING_HEADER_DECURSIVE">
+		    <Anchors>
+			<Anchor point="TOP" relativePoint="TOP">
+			    <Offset>
+				<AbsDimension x="0" y="-5"/>
+			    </Offset>
+			</Anchor>
+		    </Anchors>
+		</FontString>
+	    </Layer>
+	</Layers>
+
+	<Scripts>
+	    <OnEnter>
+		Dcr:DisplayTooltip(
+		string.format(
+		"|cFF0055AA%s %s by %s|r\n" ..
+		"|cFF11FF11%s|r: %s\n" ..
+		"|cFF11FF11%s|r / |cFF11FF11%s|r-|cFF11FF11%s|r"
+		, Dcr.name, Dcr.version, Dcr.author,
+		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK], Dcr.L[Dcr.LOC.STR_OPTIONS],
+		Dcr.L[Dcr.LOC.HLP_MIDDLECLICK], Dcr.L[Dcr.LOC.SHIFT], Dcr.L[Dcr.LOC.HLP_LEFTCLICK]
+		)
+		, this);
+	    </OnEnter>
+	    <OnLeave>
+		DcrDisplay_Tooltip:Hide();
+	    </OnLeave>
+
+	    <OnMouseUp>
+		if ( this.isMoving ) then
+		this:StopMovingOrSizing();
+		this.isMoving = false;
+		end
+	    </OnMouseUp>
+	    <OnMouseDown>
+		if ( ( ( not this.isLocked ) or ( this.isLocked == 0 ) ) and ( arg1 == "LeftButton" ) ) then
+		this:StartMoving();
+		this.isMoving = true;
+		end
+		if (arg1 == "MiddleButton" or arg1 == "LeftButton" and IsShiftKeyDown()) then
+		Dcr:ShowHideButtons();
+		end
+	    </OnMouseDown>
+	    <OnHide>
+		if ( this.isMoving ) then
+		this:StopMovingOrSizing();
+		this.isMoving = false;
+		end
+	    </OnHide>
+
+
+	</Scripts>
+
+	<Frames>
+
+	    <Button name="$parentPriority" inherits="GameMenuButtonTemplate" text="P">
+		<Size>
+		    <AbsDimension x="20" y="20" />
+		</Size>
+		<Anchors>
+		    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parent">
+			<Offset>
+			    <AbsDimension x="0" y="0" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+		<Scripts>
+		    <OnLoad>
+			this:SetText(Dcr.L[Dcr.LOC.PRIORITY_SHOW]);
+		    </OnLoad>
+		    <OnClick>
+			Dcr:ShowHidePriorityListUI();
+		    </OnClick>
+		    <OnEnter>
+			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.PRIORITY_LIST], this);
+		    </OnEnter>
+		    <OnLeave>
+			DcrDisplay_Tooltip:Hide();
+		    </OnLeave>
+		</Scripts>
+	    </Button>
+
+	    <Button name="$parentSkip" inherits="GameMenuButtonTemplate" text="S">
+		<Size>
+		    <AbsDimension x="20" y="20" />
+		</Size>
+		<Anchors>
+		    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentPriority">
+			<Offset>
+			    <AbsDimension x="0" y="0" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+		<Scripts>
+		    <OnLoad>
+			this:SetText(Dcr.L[Dcr.LOC.SKIP_SHOW]);
+		    </OnLoad>
+		    <OnClick>
+			Dcr:ShowHideSkipListUI();
+		    </OnClick>
+		    <OnEnter>
+			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.SKIP_LIST_STR], this);
+		    </OnEnter>
+		    <OnLeave>
+			DcrDisplay_Tooltip:Hide();
+		    </OnLeave>
+		</Scripts>
+	    </Button>
+
+	    <Button name="$parentHide" inherits="GameMenuButtonTemplate" text="X">
+		<Size>
+		    <AbsDimension x="20" y="20" />
+		</Size>
+		<Anchors>
+		    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentSkip">
+			<Offset>
+			    <AbsDimension x="2" y="0" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+		<Scripts>
+		    <OnClick>
+			Dcr:Hide(false);
+		    </OnClick>
+		    <OnEnter>
+			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.HIDE_MAIN], this);
+		    </OnEnter>
+		    <OnLeave>
+			DcrDisplay_Tooltip:Hide();
+		    </OnLeave>
+		</Scripts>
+	    </Button>
+	</Frames>
+    </Frame>
+
+    <Frame name="DecursiveAfflictedListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent">
+	<!--
+	<Size>
+	    <AbsDimension x="160" y="25" />
+	</Size>
+	-->
+
+	<Anchors>
+	    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="DecursiveMainBar">
+		<Offset>
+		    <AbsDimension x="0" y="-2"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+
+
+	<Frames>
+	    <Frame name="$parentListItem1" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="DecursiveMainBar">
+			<Offset>
+			    <AbsDimension x="5" y="0" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem2" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem1">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem3" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem2">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem4" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem3">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem5" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem4">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem6" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem5">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem7" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem6">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem8" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem7">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem9" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem8">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem10" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem9">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem11" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem10">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem12" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem11">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem13" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem12">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem14" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem13">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+
+	    <Frame name="$parentListItem15" inherits="DecursiveAfflictedTemplate">
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentListItem14">
+			<Offset>
+			    <AbsDimension x="0" y="1" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+	    </Frame>
+	</Frames>
+    </Frame>
+
+
+
+
+    <!-- ================================================================== -->
+   
+    <Frame name="DecursiveAnchor" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
+	<Size>
+	    <AbsDimension x="180" y="25"/>
+	</Size>
+
+	<Anchors>
+	    <Anchor point="TOP" relativeTo="UIErrorsFrame" relativePoint="BOTTOM">
+		<Offset>
+		    <AbsDimension x="0" y="0"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+
+	<TitleRegion setAllPoints="true"/>
+
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+	    <EdgeSize>
+		<AbsValue val="16"/>
+	    </EdgeSize>
+	    <TileSize>
+		<AbsValue val="16"/>
+	    </TileSize>
+	    <BackgroundInsets>
+		<AbsInset left="5" right="5" top="5" bottom="5"/>
+	    </BackgroundInsets>
+	</Backdrop>
+
+	<Layers>
+	    <Layer level="BACKGROUND">
+		<FontString name="$parentText" inherits="GameFontNormal" text="Dcr.LOC.ANCHOR">
+		    <Anchors>
+			<Anchor point="TOP">
+			    <Offset>
+				<AbsDimension x="0" y="-5"/>
+			    </Offset>
+			</Anchor>
+		    </Anchors>
+		</FontString>
+	    </Layer>
+	</Layers>
+	<Frames>
+	    <Button name="$parentDirection" inherits="GameMenuButtonTemplate" text=".">
+		<Size>
+		    <AbsDimension x="20" y="17" />
+		</Size>
+		<Anchors>
+		    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent">
+			<Offset>
+			    <AbsDimension x="-10" y="-4" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+		<Scripts>
+
+		    <OnClick>
+			Dcr.db.profile.CustomeFrameInsertBottom = (not Dcr.db.profile.CustomeFrameInsertBottom);
+			Dcr:ChangeTextFrameDirection(Dcr.db.profile.CustomeFrameInsertBottom);
+
+			Dcr:Println("|cFFAAAAAATEST");
+
+		    </OnClick>
+		    <OnShow>
+			Dcr:ThisSetParentText(Dcr.L[Dcr.LOC.ANCHOR]);
+		    </OnShow>
+		</Scripts>
+	    </Button>
+	</Frames>
+    </Frame>
+
+    <MessageFrame name="DecursiveTextFrame" insertMode="TOP" parent="UIParent" frameStrata="HIGH" toplevel="true" >
+	<Size>
+	    <AbsDimension x="600" y="140"/>
+	</Size>
+	<Anchors>
+	    <Anchor point="TOP" relativeTo="DecursiveAnchor" relativePoint="BOTTOM">
+		<Offset>
+		    <AbsDimension x="0" y="0"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+
+	<FontString inherits="GameFontNormal" justifyH="CENTER"/>
+    </MessageFrame>
+
+    <GameTooltip name="DcrDisplay_Tooltip" hidden="true" inherits="GameTooltipTemplate" parent="DecursiveAfflictedListFrame" />
+
+    <!-- Frame to handle all core events -->
+    <Frame name="Decursive">
+
+    </Frame>
+    <GameTooltip name="Dcr_Tooltip" hidden="true" inherits="GameTooltipTemplate"/>
+</Ui>

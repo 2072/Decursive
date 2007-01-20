@@ -1,0 +1,125 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+    <!--
+    Decursive (v 2.0) add-on for World of Warcraft UI
+    Copyright (C) 2006-2007 John Wellesz (Archarodim) ( http://www.2072productions.com/?to=decursive.php )
+    This is the continued work of the original Decursive (v1.9.4) by Quu
+    Decursive 1.9.4 is in public domain ( www.quutar.com )
+
+    License:
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+    -->
+
+    <Frame name="DcrMUFsContainer" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
+	<Size>
+	    <AbsDimension x="20" y="20" />
+	</Size>
+	<Anchors>
+	    <Anchor point="CENTER" relativePoint="CENTER">
+		<Offset>
+		    <AbsDimension x="200" y="250"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+	<Scripts>
+	    <OnLoad>
+		this.UpdateYourself = true;
+		this.MaxUnit = 5;
+		this.UnitShown = 0;
+	    </OnLoad>
+	</Scripts>
+	<Frames>
+	    <Button name="DragButton">
+		<Size>
+		    <AbsDimension x="20" y="20" />
+		</Size>
+		<Anchors>
+		    <Anchor point="TOPLEFT">
+			<Offset>
+			    <AbsDimension x="3" y="0"/>
+			</Offset>
+		    </Anchor>
+		</Anchors>
+		<HighlightTexture inherits="UIPanelButtonHighlightTexture"/>
+
+		<Scripts>
+		    <OnMouseUp>
+			Dcr.MicroUnitF:SavePos();
+			if ( this.isMoving ) then
+			this:GetParent():StopMovingOrSizing();
+			this.isMoving = false;
+			end
+		    </OnMouseUp>
+		    <OnMouseDown>
+			if (   arg1 == "LeftButton" and not IsModifierKeyDown() ) then
+			this:GetParent():StartMoving();
+			this.isMoving = true;
+			end
+
+			Dcr:OnCornerClick(arg1, this);
+		    </OnMouseDown>
+		    <OnHide>
+			if ( this.isMoving ) then
+			this:GetParent():StopMovingOrSizing();
+			this.isMoving = false;
+			end
+		    </OnHide>
+		    <OnEnter>
+			if (Dcr.db.profile.DebuffsFrameShowHelp) then
+			Dcr:DisplayGameTooltip(
+			string.format(
+			"|cFF11FF11%s|r: %s\n"..
+			"|cFF11FF11%s|r: %s\n"..
+			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"..
+			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"..
+			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s",
+			Dcr.L[Dcr.LOC.HLP_LEFTCLICK],	Dcr.L[Dcr.LOC.HANDLEHELP],
+			Dcr.L[Dcr.LOC.HLP_RIGHTCLICK],	Dcr.L[Dcr.LOC.STR_OPTIONS],
+			Dcr.L[Dcr.LOC.CTRL],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK], Dcr.L[BINDING_NAME_DCRPRSHOW], 
+			Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK], Dcr.L[BINDING_NAME_DCRSKSHOW],
+			Dcr.L[Dcr.LOC.ALT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK], Dcr.L[BINDING_NAME_DCRSHOW]
+			));
+			end;
+		    </OnEnter>
+		    <OnLeave>
+			if (Dcr.db.profile.DebuffsFrameShowHelp) then
+			GameTooltip:Hide();
+			end;
+		    </OnLeave>
+		</Scripts>
+	    </Button>
+	</Frames>
+    </Frame>
+
+    <!-- Templates -->
+    <Button name="DcrMicroUnitTemplateSecure" inherits="SecureUnitButtonTemplate" virtual="true">
+	<Size>
+	    <AbsDimension x="20" y="20"/>
+	</Size>
+
+	<Scripts>
+	    <OnLoad>
+		Dcr:DebuffsFrameUnit_OnLoad();
+	    </OnLoad>
+	    <OnEnter>
+		Dcr:DebuffsFrameUnit_OnEnter();
+	    </OnEnter>
+	    <OnLeave>
+		Dcr:DebuffsFrameUnit_OnLeave();
+	    </OnLeave>
+	</Scripts>
+    </Button>
+
+
+</Ui>

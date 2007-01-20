@@ -1,0 +1,53 @@
+## Interface: 20003
+## Title: Decursive |cff7fff7f -Ace2-|r
+## Name: Decursive
+## DefaultState: enabled
+## LoadOnDemand: 0
+## Notes: This is a raid cleaning helper mod.
+## SavedVariablesPerCharacter: DcrCharDB
+## SavedVariables: DcrDB
+## Version: 2.0.0 BETA 3
+## Author:Archarodim
+## X-Category: Combat
+## X-Website: http://www.2072productions.com/?to=decursive.php
+## X-eMail: Archarodim@teaser.fr
+## OptionalDeps: AceAddon-2.0, AceConsole-2.0, AceDB-2.0, AceDebug-2.0, AceEvent-2.0, AceLibrary, AceLocale-2.2, AceOO-2.0, Babble-Class-2.2, Dewdrop-2.0
+## X-Embeds: AceAddon-2.0, AceConsole-2.0, AceDB-2.0, AceDebug-2.0, AceEvent-2.0, AceLibrary, AceLocale-2.2, AceOO-2.0, Babble-Class-2.2, Dewdrop-2.0
+
+
+Libs\AceLibrary\AceLibrary.lua
+Libs\AceOO-2.0\AceOO-2.0.lua
+Libs\AceAddon-2.0\AceAddon-2.0.lua
+Libs\AceConsole-2.0\AceConsole-2.0.lua
+Libs\AceDB-2.0\AceDB-2.0.lua
+Libs\AceDebug-2.0\AceDebug-2.0.lua
+Libs\AceEvent-2.0\AceEvent-2.0.lua
+Libs\AceLocale-2.2\AceLocale-2.2.lua
+Libs\Babble-Class-2.2\Babble-Class-2.2.lua
+Libs\Dewdrop-2.0\Dewdrop-2.0.lua
+Libs\Babble-Spell-2.2\Babble-Spell-2.2.lua
+
+DCR_init.lua
+Dcr_utils.lua
+
+localization.lua
+localization.fr.lua
+localization.de.lua
+localization.tw.lua
+localization.es.lua
+localization.kr.lua
+localization.cn.lua
+
+Dcr_opt.lua
+Dcr_Events.lua
+
+Dcr_Raid.lua
+
+Decursive.lua
+Decursive.xml
+
+Dcr_lists.lua
+Dcr_lists.xml
+
+Dcr_DebuffsFrame.lua
+Dcr_DebuffsFrame.xml
