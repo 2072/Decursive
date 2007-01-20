@@ -1,7 +1,7 @@
 Decursive 2.0 ( Main download: http://www.2072productions.com/?to=decursive.php )
 
 
-This is a cleaning mod. Its job it to help a class that can remove afflictions to do it with ease.
+This is a cleaning mod. Its job is to help a class that can remove afflictions to do it with ease.
 
 Load the mod, bind a key and run, no further configuration or editing needed, it auto configures.
 
@@ -37,7 +37,7 @@ Besides casting, MUFs allow you to target the units by middle-clicking, ctrl-mid
 
 The informations above are also indicated by tool-tips in the game.
 
-IMPORTANT: TO MOVE THE MUFS, CLICK AND HOLD THE HANDLE JUST ABOVE THE FIRST MUF (IT HAS THE SAME SIZE AS A MUF AND HIGHLIGHTS WHEN YOUR MOUSE POINTER IS OVER IT)
+IMPORTANT: TO MOVE THE MUFS, CLICK AND HOLD THE HANDLE JUST ABOVE THE FIRST MUF (IT HAS THE SAME SIZE AS A MUF AND HIGHLIGHTS WHEN YOUR MOUSE POINTER IS OVER IT).
 This handle has several uses, a tooltip explains them all.
 
 Decursive also creates and manages a macro that allows you to cure units (or other unit frames) you mouse-over, you choose the key in Decursive's options.
@@ -72,7 +72,7 @@ COMMANDS YOU CAN USE:
 /dcrprclear
 ---> clear the priority list
 /dcrprshow
----> Display the priority list UI (where you can add,delete,clear) (Ctrl-left-clicking the MUFs handle does the same)
+---> Display the priority list UI (where you can add,delete,move players) (Ctrl-left-clicking the MUFs handle does the same)
 /dcrskadd
 ---> Add the current target to the skip list
 /dcrskclear
