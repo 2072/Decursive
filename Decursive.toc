@@ -6,8 +6,9 @@
 ## Notes: This is a raid cleaning helper mod.
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
-## Version: 2.0.0 BETA 3
-## Author:Archarodim
+## Version: 2.0.0 BETA 4
+## Author: Archarodim (John Wellesz)
+## X-ReleaseDate: "$Date$"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/?to=decursive.php
 ## X-eMail: Archarodim@teaser.fr
