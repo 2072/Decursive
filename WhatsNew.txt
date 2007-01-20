@@ -1,4 +1,11 @@
-Decursive 2.0 BETA 3 by Archarodim
+Decursive 2.0 BETA 4 by Archarodim
+
+Changes from Decursive 2.0 BETA 3 to 2.0 BETA 4
+
+- Changed the minimum number of MUF per row to 1
+- The 'Show Help' option also disable the handle tool-tip
+- The focused unit won't be scanned if it's unfriendly (you won't see it in the MUFs nor in the live-list).
+
 
 Changes from Decursive 2.0 BETA 2 to 2.0 BETA 3
 
