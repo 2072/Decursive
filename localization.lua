@@ -264,10 +264,10 @@ Dcr.LOC.SUCCESSCAST = "%s |cFF00AA00succeeded on|r %s";
 
 Dcr.LOC.HANDLEHELP = "Drag all the Micro-UnitFrames (MUFs)";
 
-Dcr.LOC.MACROKEYALREADYMAPPED = "Warning: The key mapped to Decursive macro [%s] was mapped to action '%s'.\nDecursive will restore the previous mapping if you set another key for its macro.";
+Dcr.LOC.MACROKEYALREADYMAPPED = "WARNING: The key mapped to Decursive macro [%s] was mapped to action '%s'.\nDecursive will restore the previous mapping if you set another key for its macro.";
 Dcr.LOC.MACROKEYMAPPINGSUCCESS = "The key [%s] has been successfully mapped to Decursive macro.";
 Dcr.LOC.MACROKEYMAPPINGFAILED = "The key [%s] could not be mapped to Decursive macro!";
-Dcr.LOC.MACROKEYNOTMAPPED = "Decursive macro is not mapped to a key, you can map a key through the option menu.";
+Dcr.LOC.MACROKEYNOTMAPPED = "Decursive macro is not mapped to a key, you can map a key through the option menu. (do not miss this wonderful feauture)";
 
 
 -- Acelocal register for enUS // {{{

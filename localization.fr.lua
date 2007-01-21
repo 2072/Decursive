@@ -150,7 +150,7 @@ L:RegisterTranslations("frFR", function() return {
 
 
     [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION;
-    [Dcr.LOC.DEFAULT_MACROKEY] = Dcr.LOC.DEFAULT_MACROKEY; -- Ideally the key just beneath the "escape" key
+    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE"; -- Ideally the key just beneath the "escape" key
     [Dcr.LOC.OPT_LIVELIST] = "Liste des affligés",
     [Dcr.LOC.OPT_LIVELIST_DESC] = "Options pour la liste des affligés",
     [Dcr.LOC.OPT_HIDELIVELIST_DESC] = "Si non cochée, affiche une liste des personnes affligés",
@@ -224,8 +224,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_READDDEFAULTSD_DESC1] = Dcr.LOC.OPT_READDDEFAULTSD_DESC1,
     [Dcr.LOC.OPT_READDDEFAULTSD_DESC2] = Dcr.LOC.OPT_READDDEFAULTSD_DESC2,
 
-    [Dcr.LOC.OPT_LVONLYINRANGE] = Dcr.LOC.OPT_LVONLYINRANGE,
-    [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = Dcr.LOC.OPT_LVONLYINRANGE_DESC,
+    [Dcr.LOC.OPT_LVONLYINRANGE] = "Unités à porté seulement",
+    [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = "Si cette option est activée, uniquement les unités à porté de sort seront affichées dans la liste",
 
     [Dcr.LOC.HLP_LEFTCLICK] = "Clique Gauche",
     [Dcr.LOC.HLP_RIGHTCLICK] = "Clique Droit",
@@ -250,10 +250,10 @@ L:RegisterTranslations("frFR", function() return {
 
     [Dcr.LOC.HANDLEHELP] = "Déplacer tous les micro-portraits",
 
-    [Dcr.LOC.MACROKEYALREADYMAPPED] = Dcr.LOC.MACROKEYALREADYMAPPED,
-    [Dcr.LOC.MACROKEYMAPPINGSUCCESS] = Dcr.LOC.MACROKEYMAPPINGSUCCESS,
-    [Dcr.LOC.MACROKEYMAPPINGFAILED] = Dcr.LOC.MACROKEYMAPPINGFAILED,
-    [Dcr.LOC.MACROKEYNOTMAPPED] = Dcr.LOC.MACROKEYNOTMAPPED,
+    [Dcr.LOC.MACROKEYALREADYMAPPED] = "ATTENTION: La touche affectée à la macro de Decursive [%s] était affectée à l'action '%s'.\nDecursive restaurera l'action originale si vous affectez une autre touche à la macro.",
+    [Dcr.LOC.MACROKEYMAPPINGSUCCESS] = "La touche [%s] a été correctement affecté à la macro de Decursive.",
+    [Dcr.LOC.MACROKEYMAPPINGFAILED] = "La touche [%s] n'a pas pu être affecté à la macro de Decursive",
+    [Dcr.LOC.MACROKEYNOTMAPPED] = "Aucune touche n'est actuellement affecté à la macro de Decursive, vous pouvez affecter une touche par le menu des options (ne passez pas à coté de cette merveilleuse capacité)",
 
 
 } end);

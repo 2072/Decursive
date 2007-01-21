@@ -89,7 +89,7 @@ Dcr.defaults = { -- {{{
     -- how many to show in the livelist
     Amount_Of_Afflicted = 3,
 
-    LV_OnlyInRange = false,
+    LV_OnlyInRange = true,
 
     -- how many seconds to "black list" someone with a failed spell
     CureBlacklist	= 5.0,
@@ -751,7 +751,6 @@ Dcr.options = { -- {{{
 		    get = function ()
 			local key = (GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME)));
 			return key;
-			-- return Dcr.db.profile.MacroBind;
 		    end,
 		    set = function (key)
 			 Dcr:SetMacroKey ( key );

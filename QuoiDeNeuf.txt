@@ -1,4 +1,19 @@
-Decursive 2.0 BETA 3 par Archarodim
+Decursive 2.0 BETA 4 par Archarodim
+
+
+Changement entre Decursive 2.0 BETA 3 et 2.0 BETA 4
+
+- Le nombre minimum de micro-portraits par ligne a été changé à 1.
+- L'option 'Show Help' active/désactive également l'aide de la poignée.
+- L'unité en focus ne sera plus scannée si elle n'est pas amicale (vous ne la verrez pas parmi les micro-portrait ni dans la liste en temps réel).
+- La fonction qui lie une touche à la macro a été améliorée : elle désaffecte correctement les touches précédemment affecté et restaure
+  l'action original de la touche si vous la changée. Des messages sont également affichés quand une affectation
+  réussie/rate ou si elle en remplace une autre.
+- Ajout d'une nouvelle option pour ne pas montrer les unités hors de porté dans la liste en temps-réel (activée par défaut).
+- Sur les clients non-anglais, la touche affectée à la macro est réglée sur "NONE" dans les fichiers de localisations de façon
+  à ce qu'un avertissement soit affiché à l'utilisateur.
+- Decursive est maintenant disponible sur le serveur SVN de wowace.com
+
 
 Changement entre Decursive 2.0 BETA 2 et 2.0 BETA 3
 

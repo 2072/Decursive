@@ -7,6 +7,10 @@ Changes from Decursive 2.0 BETA 3 to 2.0 BETA 4
 - The focused unit won't be scanned if it's unfriendly (you won't see it in the MUFs nor in the live-list).
 - The macro binding function has been enhanced, it correctly unbinds previously mapped key and restores previously mapped action and
   displays messages when a mapping succeed/fails or replace a currently mapped action.
+- Added an option to not show out of range units in the live-list (enabled by default).
+- On non-English client, the key is set to "NONE" in the localization files so Decursive will display a warning to the user.
+- Babble-Spell library has been updated, Spanish spells should be supported.
+- Decursive is now available on wowace.com SVN
 
 
 Changes from Decursive 2.0 BETA 2 to 2.0 BETA 3

@@ -420,6 +420,11 @@ function Dcr:Init() --{{{
 	DecursiveMainBar:Show();
     end
 
+
+    if (Dcr.db.profile.MacroBind == "NONE") then
+	Dcr.db.profile.MacroBind = false;
+    end
+
     Dcr:ShowHideButtons(true);
 
     Dcr:ChangeTextFrameDirection(Dcr.db.profile.CustomeFrameInsertBottom);
