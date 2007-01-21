@@ -1,7 +1,7 @@
 Decursive 2.0 BETA 4 par Archarodim
 
 
-Changement entre Decursive 2.0 BETA 3 et 2.0 BETA 4
+Changements entre Decursive 2.0 BETA 3 et 2.0 BETA 4
 
 - Le nombre minimum de micro-portraits par ligne a été changé à 1.
 - L'option 'Show Help' active/désactive également l'aide de la poignée.
@@ -12,10 +12,11 @@ Changement entre Decursive 2.0 BETA 3 et 2.0 BETA 4
 - Ajout d'une nouvelle option pour ne pas montrer les unités hors de porté dans la liste en temps-réel (activée par défaut).
 - Sur les clients non-anglais, la touche affectée à la macro est réglée sur "NONE" dans les fichiers de localisations de façon
   à ce qu'un avertissement soit affiché à l'utilisateur.
+- Un fichier lisez-moi.txt a été ajouté (traduction du readme.txt par Sylvin)
 - Decursive est maintenant disponible sur le serveur SVN de wowace.com
 
 
-Changement entre Decursive 2.0 BETA 2 et 2.0 BETA 3
+Changements entre Decursive 2.0 BETA 2 et 2.0 BETA 3
 
 - Correction de la beaucoup trop grande consommation de mémoire des fonction d'analyses.
 - Correction d'un problème concernant la macro qui n'était pas mis à jour si la fenêtre des macro était ouverte.
@@ -23,7 +24,7 @@ Changement entre Decursive 2.0 BETA 2 et 2.0 BETA 3
 - Optimisation du code.
 - Ajout d'une note dans le readme.txt sur comment changer la touche assignée à la macro.
 
-Changement entre Decursive 2.0 BETA 1 et 2.0 BETA 2
+Changements entre Decursive 2.0 BETA 1 et 2.0 BETA 2
 
 - Correction de l'affichage des micro-portrait (MPs) : la première fois que vous vous connectez, les MPs sont affichés à un endroit atteignable de votre écran
   au lieu de se trouver tout en haut à gauche...
@@ -34,7 +35,7 @@ Changement entre Decursive 2.0 BETA 1 et 2.0 BETA 2
 - Le fichier readme.txt a été mis à jour.
 
 
-Changement entre Decursive 1.9.8.4 et 2.0 BETA 1
+Changements entre Decursive 1.9.8.4 et 2.0 BETA 1
 
 Changements importants pour l'utilisateur :
 
@@ -62,7 +63,7 @@ Changements importants pour l'utilisateur :
 - Les mages peuvent moutonner les unités contrôler mentalement. (Si d'autres classes ont intéressées, d'autres sorts peuvent être ajouté sur demande)
 - Le fichier Readme.txt a été réécrit, vous êtes fortement invité à le lire (en anglais).
 
-Changement internes:
+Changements internes:
 
 - Decursive a été presque entièrement réorganisé et ré-écrit (la liste des affligés n'a pas encore été refaite).
 - Nouvelle architecture du code, plus efficace et plus maniable.
