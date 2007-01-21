@@ -89,6 +89,8 @@ Dcr.defaults = { -- {{{
     -- how many to show in the livelist
     Amount_Of_Afflicted = 3,
 
+    LV_OnlyInRange = false,
+
     -- how many seconds to "black list" someone with a failed spell
     CureBlacklist	= 5.0,
 
@@ -264,6 +266,15 @@ Dcr.options = { -- {{{
 		    set = function() Dcr:ShowHideLiveList() end, -- XXX not sure if it works correctly
 		    disabled = function() return Dcr.db.profile.LiveListTied end,
 		    order = 100
+		},
+		OnlyInRange = {
+		    type = "toggle",
+		    name = L[Dcr.LOC.OPT_LVONLYINRANGE],
+		    desc = L[Dcr.LOC.OPT_LVONLYINRANGE_DESC],
+		    get = function() return Dcr.db.profile.LV_OnlyInRange end,
+		    set = function() Dcr.db.profile.LV_OnlyInRange = not Dcr.db.profile.LV_OnlyInRange end,
+		    disabled = function() return Dcr.db.profile.Hide_LiveList end,
+		    order = 100.5
 		},
 		ToolTips = {
 		    type = "toggle",

@@ -215,8 +215,17 @@ end --}}}
 
 function Dcr:ScanUnit( Unit, Index) --{{{
     Debuff = Dcr:UnitCurableDebuffs(Unit, true);
-    
+   
     if (Debuff and Debuff[1] and Debuff[1].Type) then
+
+	if (Dcr.db.profile.LV_OnlyInRange) then
+	    local RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[Debuff[1].Type], Unit);
+
+	    if (not RangeStatus or RangeStatus == 0) then
+		return false;
+	    end
+	end
+
 	Dcr:UpdateLiveDisplay(Index, Unit, Debuff[1]);
 	return true;
     end

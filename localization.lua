@@ -238,6 +238,9 @@ Dcr.LOC.OPT_READDDEFAULTSD = "Re-add default Debuffs";
 Dcr.LOC.OPT_READDDEFAULTSD_DESC1 = "Add missing Decursive's default debuffs to this list\nYour settings won't be changed";
 Dcr.LOC.OPT_READDDEFAULTSD_DESC2 = "All Decursive's  default debuffs are in this list";
 
+Dcr.LOC.OPT_LVONLYINRANGE = "Units in range only";
+Dcr.LOC.OPT_LVONLYINRANGE_DESC = "Only units in dispel range will be shown in the live-list";
+
 Dcr.LOC.HLP_LEFTCLICK = "Left-Click";
 Dcr.LOC.HLP_RIGHTCLICK = "Right-Click";
 Dcr.LOC.HLP_MIDDLECLICK = "Middle-Click";
@@ -475,7 +478,9 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_READDDEFAULTSD] = true,
     [Dcr.LOC.OPT_READDDEFAULTSD_DESC1] = true,
     [Dcr.LOC.OPT_READDDEFAULTSD_DESC2] = true,
-    
+
+    [Dcr.LOC.OPT_LVONLYINRANGE] = true,
+    [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = true,
     
     [Dcr.LOC.HLP_LEFTCLICK] = true,
     [Dcr.LOC.HLP_RIGHTCLICK] = true,
