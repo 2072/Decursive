@@ -620,15 +620,13 @@ function Dcr:UpdateMacro ()
     end
 
 
-    if (GetBindingAction(Dcr.db.profile.MacroBind) ~= string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
-	Dcr.db.profile.PreviousMacroKeyAction = GetBindingAction(Dcr.db.profile.MacroBind);
-    end
-
-    SetBindingMacro(Dcr.db.profile.MacroBind, Dcr.CONF.MACRONAME);
+    Dcr:SetMacroKey(Dcr.db.profile.MacroBind);
 
     return true;
 
 end
+
+
 
 -- }}}
 -------------------------------------------------------------------------------

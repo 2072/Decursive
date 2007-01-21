@@ -730,7 +730,7 @@ Dcr.options = { -- {{{
 	    name = Dcr:ColorText(L[Dcr.LOC.OPT_MACROOPTIONS], "FFCC99BB"),
 	    desc = L[Dcr.LOC.OPT_MACROOPTIONS_DESC],
 	    order = 147,
-	    disabled = function() return  not Dcr.Status.Enabled end,
+	    disabled = function() return  not Dcr.Status.Enabled or Dcr.Status.Combat end,
 	    args = {
 		SetKey = {
 		    type = "text",
@@ -738,25 +738,12 @@ Dcr.options = { -- {{{
 		    desc = L[Dcr.LOC.OPT_MACROBIND_DESC],
 		    validate = "keybinding",
 		    get = function ()
-			-- local key = GetBindingKey("MACRO %s", Dcr.CONF.MACRONAME);
-			-- return key;
-			return Dcr.db.profile.MacroBind;
+			local key = (GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME)));
+			return key;
+			-- return Dcr.db.profile.MacroBind;
 		    end,
 		    set = function (key)
-			if (key == Dcr.db.profile.MacroBind) then
-			    return;
-			end
-			-- Restore previous key state
-			if (not Dcr.db.profile.PreviousMacroKeyAction or Dcr.db.profile.PreviousMacroKeyAction == "") then
-			    SetBinding(Dcr.db.profile.MacroBind);
-			else
-			    SetBinding(Dcr.db.profile.MacroBind, Dcr.db.profile.PreviousMacroKeyAction);
-			end
-			Dcr.db.profile.MacroBind = key;
-			-- save current key assignement
-			Dcr.db.profile.PreviousMacroKeyAction = GetBindingAction(Dcr.db.profile.MacroBind)
-			-- set
-			SetBindingMacro(Dcr.db.profile.MacroBind, Dcr.CONF.MACRONAME);
+			 Dcr:SetMacroKey ( key );
 		    end,
 		    order = 100,
 		}
@@ -779,7 +766,7 @@ Dcr.options = { -- {{{
 	    disabled = function() return  not Dcr.Status.Enabled end,
 	    order = 150
 	},
-	spacer4 = {
+	spacer5 = {
 	    type = "header",
 	    order = 151
 	},
@@ -1243,4 +1230,59 @@ do -- this is a closure, it's a bit like {} blocks in C
 	Dcr.options.args.DebuffSkip.args = DebuffsSubMenu;
 
     end
+end
+
+
+function Dcr:SetMacroKey ( key )
+
+    if (key and key == Dcr.db.profile.MacroBind and GetBindingAction(key) == string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
+	return;
+    end
+
+    -- if there is current set key currently mapped to Decursive macro (it means we are changing the key)
+    if (Dcr.db.profile.MacroBind and GetBindingAction(Dcr.db.profile.MacroBind) == string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
+
+	-- clearing redudent mapping to Decursive macro.
+	local MappedKeys = Dcr:Pack(GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME)));
+	for _, key in pairs(MappedKeys) do
+	    Dcr:Debug("Unlinking [%s]", key);
+	    SetBinding(key, nil);
+	end
+
+	-- Restore previous key state
+	if (Dcr.db.profile.PreviousMacroKeyAction) then
+	    Dcr:Debug("Previous key action restored:", Dcr.db.profile.PreviousMacroKeyAction);
+	    if not SetBinding(Dcr.db.profile.MacroBind, Dcr.db.profile.PreviousMacroKeyAction) then
+		Dcr:Debug("Restoration failed");
+	    end
+	end
+    end
+
+
+    if (key) then
+	if (GetBindingAction(key) ~= "" and GetBindingAction(key) ~= string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
+	    -- save current key assignement
+	    Dcr.db.profile.PreviousMacroKeyAction = GetBindingAction(key)
+	    Dcr:Debug("Old key action saved:", Dcr.db.profile.PreviousMacroKeyAction);
+	    Dcr:errln(L[Dcr.LOC.MACROKEYALREADYMAPPED], key, Dcr.db.profile.PreviousMacroKeyAction);
+	else
+	    Dcr.db.profile.PreviousMacroKeyAction = nil;
+	    Dcr:Debug("Old key action not saved because it was mapped to nothing");
+	end
+
+	-- set
+	if (SetBindingMacro(key, Dcr.CONF.MACRONAME)) then
+	    Dcr.db.profile.MacroBind = key;
+	    Dcr:Println(L[Dcr.LOC.MACROKEYMAPPINGSUCCESS], key);
+	else
+	    Dcr:errln(L[Dcr.LOC.MACROKEYMAPPINGFAILED], key);
+	end
+    else
+	Dcr.db.profile.MacroBind = false;
+	Dcr:errln(L[Dcr.LOC.MACROKEYNOTMAPPED]);
+    end
+
+    -- save the bindings to disk
+    SaveBindings(1);
+
 end

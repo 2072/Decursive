@@ -5,6 +5,8 @@ Changes from Decursive 2.0 BETA 3 to 2.0 BETA 4
 - Changed the minimum number of MUF per row to 1
 - The 'Show Help' option also disable the handle tool-tip
 - The focused unit won't be scanned if it's unfriendly (you won't see it in the MUFs nor in the live-list).
+- The macro binding function has been enhanced, it correctly unbinds previously mapped key and restores previously mapped action and
+  displays messages when a mapping succeed/fails or replace a currently mapped action.
 
 
 Changes from Decursive 2.0 BETA 2 to 2.0 BETA 3
