@@ -12,8 +12,8 @@
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/?to=decursive.php
 ## X-eMail: Archarodim@teaser.fr
-## OptionalDeps: AceAddon-2.0, AceConsole-2.0, AceDB-2.0, AceDebug-2.0, AceEvent-2.0, AceLibrary, AceLocale-2.2, AceOO-2.0, Babble-Class-2.2, Dewdrop-2.0
-## X-Embeds: AceAddon-2.0, AceConsole-2.0, AceDB-2.0, AceDebug-2.0, AceEvent-2.0, AceLibrary, AceLocale-2.2, AceOO-2.0, Babble-Class-2.2, Dewdrop-2.0
+## OptionalDeps: Ace2, Babble-2.2, DewdropLib
+## X-Embeds: Ace2, Babble-2.2, DewdropLib
 
 
 Libs\AceLibrary\AceLibrary.lua
