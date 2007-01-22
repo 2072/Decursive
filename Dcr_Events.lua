@@ -65,10 +65,11 @@ function Dcr:UI_ERROR_MESSAGE (Error) -- {{{
     if (Error == SPELL_FAILED_LINE_OF_SIGHT or Error == SPELL_FAILED_BAD_TARGETS) then
 	Dcr:SpellCastFailed();
 
-	-- Throw an error if WE were casting something
+	--[[ Throw an error if WE were casting something
 	if (Dcr.Status.CastingSpellOn and Error == SPELL_FAILED_LINE_OF_SIGHT) then
 	    Dcr:errln("Out of sight!");
 	end
+	--]]
 
     end
 end -- }}}
@@ -76,6 +77,7 @@ end -- }}}
 function Dcr:UNIT_SPELLCAST_STOP() --{{{
     --Dcr:Debug("Spell cast stopped");
     Dcr.Status.CastingSpellOn = nil;
+    Dcr.Status.CastingSpellOnName = nil;
 end --}}}
 
 function Dcr:UNIT_SPELLCAST_FAILED(unit)
@@ -84,17 +86,16 @@ end
 
 function Dcr:UNIT_SPELLCAST_SENT( player, spell, rank, target )
     if (Dcr:tcheckforval(Dcr.Status.CuringSpells, spell)) then
-	--Dcr:Debug("Cleaning spell was cast on %s", target);
-	Dcr.Status.CastingSpellOn = target;
-	local unit = Dcr.Status.Unit_ArrayByName[Dcr.Status.CastingSpellOn] or "N/A";
-	-- Dcr:Println("%s |cFF00AA00==>|r %s", spell, Dcr:MakePlayerName((target)), unit);
+	Dcr.Status.CastingSpellOn = Dcr:NameToUnit(target); -- XXX
+	Dcr.Status.CastingSpellOnName = target;
     end
-    -- Dcr:Debug("%s cast sent from %s on %s", spell, player, target);
 end
 function Dcr:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
     if (Dcr:tcheckforval(Dcr.Status.CuringSpells, spell)) then
-	local unit = Dcr.Status.Unit_ArrayByName[Dcr.Status.CastingSpellOn] or "N/A";
-	Dcr:Println(L[Dcr.LOC.SUCCESSCAST], spell, Dcr:MakePlayerName((Dcr.Status.CastingSpellOn)));
+
+
+	Dcr:Println(L[Dcr.LOC.SUCCESSCAST], spell, Dcr:MakePlayerName((Dcr.Status.CastingSpellOnName)));
+
 	if (Dcr.Status.ClickedMF) then
 	    Dcr:Debug("Updating color of clicked frame");
 	    Dcr.Status.ClickedMF:SetColor();
@@ -183,21 +184,23 @@ function Dcr:AddDelayedFunctionCall(CallID,functionLink, ...)
 end
 
 function Dcr:SpellCastFailed() --{{{
+    Dcr:Debug("Not in line of sight!");
     if (
 	Dcr.Status.CastingSpellOn	    -- a cast failed and we were casting on someone
 	and not (
-	Dcr.Status.CastingSpellOn == UnitName("player")   -- we do not blacklist ourself
+	Dcr.Status.CastingSpellOn == "player"   -- we do not blacklist ourself
 	or
 	(
 	-- we do not blacklist people in the priority list
-	Dcr.db.profile.DoNot_Blacklist_Prio_List and Dcr:IsInPriorList(Dcr.Status.CastingSpellOn) 
+	Dcr.db.profile.DoNot_Blacklist_Prio_List and Dcr:IsInPriorList(Dcr.Status.CastingSpellOnName) 
 	)
 	)
 	) then
-	Dcr:Println("%s is blaclisted for %d seconds", Dcr.Status.CastingSpellOn, Dcr.db.profile.CureBlacklist);
+	Dcr:Println("%s is blaclisted for %d seconds", Dcr.Status.CastingSpellOnName, Dcr.db.profile.CureBlacklist);
 
 	Dcr.Status.Blacklisted_Array[Dcr.Status.CastingSpellOn] = Dcr.db.profile.CureBlacklist;
 	Dcr.Status.CastingSpellOn = nil;
+	Dcr.Status.CastingSpellOnName = nil;
     end
 end --}}}
 

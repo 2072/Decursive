@@ -50,7 +50,7 @@ end --}}}
 -- Raid/Party Name Check Function (a terrible function, need optimising)
 -- this returns the UnitID that the Name points to
 -- this does not check "target" or "mouseover"
-local function NameToUnit( Name) --{{{
+function Dcr:NameToUnit( Name) --{{{
     if (not Name) then
 	return false;
     elseif (Name == (UnitName("player"))) then
@@ -121,7 +121,7 @@ function Dcr:GetUnitArray() --{{{
     local unit;
     -- First sort the prioritylist (remove missing units) and add its content to the main list
     for _, pname in pairs(Dcr.db.profile.PriorityList) do
-	unit = NameToUnit( pname );
+	unit = Dcr:NameToUnit( pname );
 	if (unit) then
 	    Dcr.Status.InternalPrioList[pname] = unit;
 	    -- use this loop to add prio characters to the main list
@@ -132,7 +132,7 @@ function Dcr:GetUnitArray() --{{{
 
     -- The same with the skip list
     for _, pname in pairs(Dcr.db.profile.SkipList) do
-	unit = NameToUnit( pname );
+	unit = Dcr:NameToUnit( pname );
 	if (unit) then
 	    Dcr.Status.InternalSkipList[pname] = unit;
 	end
