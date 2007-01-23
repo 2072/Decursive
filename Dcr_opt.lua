@@ -1097,7 +1097,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	classes["remove"] = {
 	    type = "execute",
-	    name = Dcr:ColorText(Dcr.LOC.OPT_REMOVETHISDEBUFF, "FFFF0000"),
+	    name = Dcr:ColorText(L[Dcr.LOC.OPT_REMOVETHISDEBUFF], "FFFF0000"),
 	    desc = string.format(L[Dcr.LOC.OPT_REMOVETHISDEBUFF_DESC], DebuffName),
 	    handler = {
 		["Debuff"] = DebuffName,
@@ -1124,7 +1124,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    type = "execute",
 	    -- the two statements below are like (()?:) in C
 	    name = not resetDisabled and Dcr:ColorText(L[Dcr.LOC.OPT_RESETDEBUFF], "FF11FF00") or L[Dcr.LOC.OPT_RESETDEBUFF],
-	    desc = not resetDisabled and string.format(Dcr.LOC.OPT_RESETDTDCRDEFAULT, DebuffName) or L[Dcr.LOC.OPT_USERDEBUFF],
+	    desc = not resetDisabled and string.format(L[Dcr.LOC.OPT_RESETDTDCRDEFAULT], DebuffName) or L[Dcr.LOC.OPT_USERDEBUFF],
 	    handler = {
 		["Debuff"] = DebuffName,
 		["reset"] = ResetFunc,
