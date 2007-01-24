@@ -1293,6 +1293,6 @@ function Dcr:SetMacroKey ( key )
     end
 
     -- save the bindings to disk
-    SaveBindings(1);
+    SaveBindings(GetCurrentBindingSet());
 
 end

@@ -10,6 +10,9 @@ Prio TODO:
 
 Other TODO:
 
+- Add something in the readme.txt file about why Decursive changed that much and why one can no longer click in the live-list, it's a recurrent question...
+- Add a border depending on the unit-class around an afflicted MUF
+- Make it so that the MUFs can be ordered by Class easily.
 - Change the live-list display
 - Clean up the code
 - Add comments

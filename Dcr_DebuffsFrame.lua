@@ -170,7 +170,7 @@ function Dcr:DebuffsFrame_Update()
 	local Unit = Dcr.Status.Unit_Array[MicroFrameThrottle];
 	local MF = MicroUnitF:Exists(MicroFrameThrottle);
 
-	-- should never fire
+	-- should never fire unless the player choosed to ignore himself
 	if not Unit then
 	    Dcr:Debug("Unit is nil :/");
 	    return false;
