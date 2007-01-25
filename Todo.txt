@@ -1,10 +1,8 @@
+Personal TODO file for Archarodim (will stop to be personal once I'll add comments and cleaned the code ;) )
+
 
 Prio TODO:
 
-- set the MUFs to a lower level
-- make it so that mages can see all Mind controlled targets in the MUFs currently they only see charmed unit with a magical debuffs.
-- Add an option to change the default alpha for non-afflicted units.
-- Changes unlocalized localization.LANG.lua so that [VARIABLE] = "ENGLISH TEXT" instead of [VARIABLE] = VARIABLE (Easier for translators)
 - Add an online help showing the localized readme.txt file (a script on my side will have to encode-escape the text before each commit)
 
 
