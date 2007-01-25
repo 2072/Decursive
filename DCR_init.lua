@@ -72,6 +72,8 @@ DcrC.ENEMYMAGIC = 2;
 DcrC.CURSE	= 4;
 DcrC.POISON	= 8;
 DcrC.DISEASE	= 16;
+DcrC.CHARMED	= 32;
+
 DcrC.BLACKTEXTURE = "Interface\\AddOns\\Decursive\\Textures\\BackDrop";
 DcrC.TRANSTEXTURE = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-transparent-white";
 
@@ -116,6 +118,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    [DcrC.CURSE]	= Dcr.LOC.CURSE;
 	    [DcrC.POISON]	= Dcr.LOC.POISON;
 	    [DcrC.DISEASE]	= Dcr.LOC.DISEASE;
+	    [DcrC.CHARMED]	= Dcr.LOC.CHARMED;
 	}
 
 	DcrC.NameToTypes = Dcr:tReverse(DcrC.TypeNames);
@@ -127,13 +130,14 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    [DcrC.CURSE]	= "DD22DD";
 	    [DcrC.POISON]	= "22DD22";
 	    [DcrC.DISEASE]	= "995533";
+	    [DcrC.CHARMED]	= "FF0000";
 	}
 
 	-- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DcrC.SpellsToUse = {
 
 	    [BS[Dcr.LOC.SPELL_POLYMORPH]]	    = {
-		Types = {DcrC.ENEMYMAGIC},
+		Types = {DcrC.CHARMED},
 		IsBest = false,
 	    },
 	    --[[
@@ -479,6 +483,7 @@ function Dcr:Configure() --{{{
     CuringSpells[DcrC.CURSE]	  = false;
     CuringSpells[DcrC.POISON]     = false;
     CuringSpells[DcrC.DISEASE]    = false;
+    CuringSpells[DcrC.CHARMED]    = false;
 
 
 

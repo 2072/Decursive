@@ -39,7 +39,8 @@ L:RegisterTranslations("esES", function() return {
     [Dcr.LOC.MAGIC]	=	'Magia',
     [Dcr.LOC.POISON]	=	'Veneno',
     [Dcr.LOC.CURSE]	=	'Maldición',
-    [Dcr.LOC.CHARMED]	=	'Control mental',
+    [Dcr.LOC.MAGICCHARMED]=	Dcr.LOC.MAGICCHARMED,
+    [Dcr.LOC.CHARMED]	  =	Dcr.LOC.CHARMED,
 
     -------------------------------------------------------------------------------
     -- English localization (Default)
@@ -199,6 +200,7 @@ L:RegisterTranslations("esES", function() return {
     [Dcr.LOC.OPT_IGNORESTEALTHED_DESC] = Dcr.LOC.OPT_IGNORESTEALTHED_DESC,
     [Dcr.LOC.OPT_CURINGORDEROPTIONS] = Dcr.LOC.OPT_CURINGORDEROPTIONS,
     [Dcr.LOC.OPT_MAGICCHECK_DESC] = Dcr.LOC.OPT_MAGICCHECK_DESC,
+    [Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC] = Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC,
     [Dcr.LOC.OPT_CHARMEDCHECK_DESC] = Dcr.LOC.OPT_CHARMEDCHECK_DESC,
     [Dcr.LOC.OPT_POISONCHECK_DESC] = Dcr.LOC.OPT_POISONCHECK_DESC,
     [Dcr.LOC.OPT_DISEASECHECK_DESC] = Dcr.LOC.OPT_DISEASECHECK_DESC,
@@ -231,6 +233,9 @@ L:RegisterTranslations("esES", function() return {
 
     [Dcr.LOC.OPT_LVONLYINRANGE] = Dcr.LOC.OPT_LVONLYINRANGE,
     [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = Dcr.LOC.OPT_LVONLYINRANGE_DESC,
+
+    [Dcr.LOC.OPT_MFALPHA] = OPT_MFALPHA,
+    [Dcr.LOC.OPT_MFALPHA_DESC] = OPT_MFALPHA_DESC,
 
     [Dcr.LOC.HLP_LEFTCLICK] = Dcr.LOC.HLP_LEFTCLICK,
     [Dcr.LOC.HLP_RIGHTCLICK] = Dcr.LOC.HLP_RIGHTCLICK,

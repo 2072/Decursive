@@ -40,7 +40,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.MAGIC]		=	"마법",
 	[Dcr.LOC.POISON]	=	"독",
 	[Dcr.LOC.CURSE]		=	"저주",
-	[Dcr.LOC.CHARMED]	=	"정신 지배",
+	[Dcr.LOC.MAGICCHARMED]	=	Dcr.LOC.MAGICCHARMED,
+	[Dcr.LOC.CHARMED]	=	Dcr.LOC.CHARMED,
 
 	-------------------------------------------------------------------------------
 	-- English localization (Default)
@@ -200,6 +201,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_IGNORESTEALTHED_DESC] = "은신한 대상을 무시합니다.",
 	[Dcr.LOC.OPT_CURINGORDEROPTIONS] = "해제 순서 설정",
 	[Dcr.LOC.OPT_MAGICCHECK_DESC]	= "체크 시 마법에 걸린 대상을 표시하고 치료합니다.",
+	[Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC] = "체크 시 지배에 걸린 대상을 표시하고 치료합니다.",
 	[Dcr.LOC.OPT_CHARMEDCHECK_DESC] = "체크 시 지배에 걸린 대상을 표시하고 치료합니다.",
 	[Dcr.LOC.OPT_POISONCHECK_DESC] = "체크 시 독에 걸린 대상을 표시하고 치료합니다.",
 	[Dcr.LOC.OPT_DISEASECHECK_DESC] = "체크 시 질병에 걸린 대상을 표시하고 치료합니다.",
@@ -232,6 +234,9 @@ L:RegisterTranslations("koKR", function() return {
 
 	[Dcr.LOC.OPT_LVONLYINRANGE] = "범위내 대상",
 	[Dcr.LOC.OPT_LVONLYINRANGE_DESC] = "해제 범위내 대상만 실시간 목록에 표시합니다.",
+
+    [Dcr.LOC.OPT_MFALPHA] = OPT_MFALPHA,
+    [Dcr.LOC.OPT_MFALPHA_DESC] = OPT_MFALPHA_DESC,
 
 	[Dcr.LOC.HLP_LEFTCLICK] 	= "좌-클릭",
 	[Dcr.LOC.HLP_RIGHTCLICK] 	= "우-클릭",

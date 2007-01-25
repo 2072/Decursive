@@ -149,7 +149,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.MAGIC]  = 'Magie',
     [Dcr.LOC.POISON]  = 'Poison',
     [Dcr.LOC.CURSE]  = 'Malédiction',
-    [Dcr.LOC.CHARMED] = 'Contrôle magique',
+    [Dcr.LOC.MAGICCHARMED] = 'Contrôle magique',
+    [Dcr.LOC.CHARMED] = 'Possession',
 
 
     [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
@@ -197,7 +198,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_IGNORESTEALTHED_DESC] = "Les unités camouflées seront ignorées",
     [Dcr.LOC.OPT_CURINGORDEROPTIONS] = "Options sur l'ordre de guérison",
     [Dcr.LOC.OPT_MAGICCHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités affligées par la magie",
-    [Dcr.LOC.OPT_CHARMEDCHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités charmées",
+    [Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités contrôlées par magie",
+    [Dcr.LOC.OPT_CHARMEDCHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités possédées",
     [Dcr.LOC.OPT_POISONCHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités empoisonnées",
     [Dcr.LOC.OPT_DISEASECHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités malade",
     [Dcr.LOC.OPT_CURSECHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités maudites",
@@ -229,6 +231,9 @@ L:RegisterTranslations("frFR", function() return {
 
     [Dcr.LOC.OPT_LVONLYINRANGE] = "Unités à portée seulement",
     [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = "Si cette option est activée, uniquement les unités à portée de sort seront affichées dans la liste",
+
+    [Dcr.LOC.OPT_MFALPHA] = "Transparence",
+    [Dcr.LOC.OPT_MFALPHA_DESC] = "Définie la transparence des micro-portrait lorsque l'unité n'est pas affligée",
 
     [Dcr.LOC.HLP_LEFTCLICK] = "Clic Gauche",
     [Dcr.LOC.HLP_RIGHTCLICK] = "Clic Droit",

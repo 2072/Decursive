@@ -53,11 +53,11 @@ local MF_colors = {
 		    { 1   ,  .5 ,  .25 ,  1	}, -- orange
 		    { 1   , 1   , 1    ,  1	}, -- white for undefined
 		    { 1   , 1   , 1    ,  1	}, -- white for undefined
-    ["normal"]	  = {  .0 ,  .3 ,  .1  ,   .4	}, -- dark green
+    ["normal"]	  = {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
     ["blacklist"] = { 0   , 0   , 0    ,  1	}, -- black
-    ["absent"]    = {  .4 ,  .4 ,  .4  ,   .4	}, -- transparent grey
-    ["far"]	  = {  .4 ,  .1 ,  .4  ,   .35	}, -- transparent purple
-    ["stealthed"] = {  .4 ,  .6 ,  .4  ,   .5	}, -- pale green
+    ["absent"]    = {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
+    ["far"]	  = {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
+    ["stealthed"] = {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
 };
 
 local MUF_Status = {
@@ -114,7 +114,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum)
 	self.Frame  = CreateFrame ("Button", "MicroUnit"..ID, self.Parent, "DcrMicroUnitTemplateSecure");
 	self.Frame.Object = self;
 	self.Frame:RegisterForClicks("AnyDown");
-	self.Frame:SetFrameStrata("HIGH");
+	self.Frame:SetFrameStrata("MEDIUM");
 
 	Dcr.MFContainer.UpdateYourself = true;
 	self:UpdateAttributes(Unit);
@@ -566,70 +566,76 @@ function Dcr:OnCornerClick (arg1, this)
     end
 end
 
-local color = {};
-function MicroUnitF.prototype:SetColor()
+do
+    local color = {};
+    local DebuffType, Unit;
+    function MicroUnitF.prototype:SetColor()
 
-    -- get the debuffs of this unit
-    self:SetDebuffs();
+	-- get the debuffs of this unit
+	self:SetDebuffs();
 
-    local DebuffType = false;
-    local Unit = self.CurrUnit;
+	DebuffType = false;
+	Unit = self.CurrUnit;
 
---  if 1 then return false; end
-    -- if unit not available
-    if (not UnitExists(Unit)) then
-	Dcr:tcopy(color, MF_colors[MUF_Status[2]]);
-	self.UnitStatus = MUF_Status[2];
+	--  if 1 then return false; end
+	-- if unit not available
+	if (not UnitExists(Unit)) then
+	    Dcr:tcopy(color, MF_colors[MUF_Status[2]]);
+	    self.UnitStatus = MUF_Status[2];
 
-    elseif (not UnitIsVisible(Unit) or UnitLevel(Unit) == -1) then
-	Dcr:tcopy(color, MF_colors[MUF_Status[3]]);
-	self.UnitStatus = MUF_Status[3];
+	elseif (not UnitIsVisible(Unit) or UnitLevel(Unit) == -1) then
+	    Dcr:tcopy(color, MF_colors[MUF_Status[3]]);
+	    self.UnitStatus = MUF_Status[3];
 
-    elseif (Dcr:CheckUnitStealth(Unit)) then
-	Dcr:tcopy(color, MF_colors[MUF_Status[4]]);
-	self.UnitStatus = MUF_Status[4];
-	-- if unit is blacklisted
-	--
-    elseif (Dcr.Status.Blacklisted_Array[Unit]) then
-	Dcr:tcopy(color, MF_colors[MUF_Status[5]]);
-	self.UnitStatus = MUF_Status[5];
+	elseif (Dcr:CheckUnitStealth(Unit)) then
+	    Dcr:tcopy(color, MF_colors[MUF_Status[4]]);
+	    self.UnitStatus = MUF_Status[4];
+	    -- if unit is blacklisted
+	    --
+	elseif (Dcr.Status.Blacklisted_Array[Unit]) then
+	    Dcr:tcopy(color, MF_colors[MUF_Status[5]]);
+	    self.UnitStatus = MUF_Status[5];
 
-    elseif (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
-	DebuffType = self.Debuffs[1].Type;
-	local priority = Dcr:GiveSpellPrioNum(DebuffType);
+	elseif (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
+	    DebuffType = self.Debuffs[1].Type;
+	    local priority = Dcr:GiveSpellPrioNum(DebuffType);
 
-	if (Dcr.Status.CuringSpells[DebuffType]) then
-	    Dcr:tcopy(color, MF_colors[priority]);
-	    self.UnitStatus = MUF_Status[6];
+	    if (Dcr.Status.CuringSpells[DebuffType]) then
+		Dcr:tcopy(color, MF_colors[priority]);
+		self.UnitStatus = MUF_Status[6];
 
-	    local RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[DebuffType], Unit);
+		local RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[DebuffType], Unit);
 
-	    if (not RangeStatus or RangeStatus == 0) then
-		color[4] = color[4] * 0.40;
+		if (not RangeStatus or RangeStatus == 0) then
+		    color[4] = color[4] * 0.40;
+		end
 	    end
+	else
+	    Dcr:tcopy(color, MF_colors[MUF_Status[1]]);
+	    self.UnitStatus = MUF_Status[1];
 	end
-    else
-	Dcr:tcopy(color, MF_colors[MUF_Status[1]]);
-	self.UnitStatus = MUF_Status[1];
+
+	if (not DebuffType) then
+	    color[4] = color[4] * Dcr.db.profile.DebuffsFrameElemAlpha;
+	end
+
+	if (not self.Texture ) then
+	    self.Texture = self.Frame:CreateTexture(nil, "MEDIUM");
+	    self.Texture:SetAllPoints(self.Frame);
+	end
+
+	local savedcolor = strjoin("", unpack(color));
+
+	if (self.Color ~= savedcolor) then
+	    self.Texture:SetTexture(unpack(color));
+	    Dcr:Debug("Color Applied");
+
+	    self.Color = savedcolor;
+	    return true;
+	end
+	return false;
+
     end
-
-
-    if (not self.Texture ) then
-	self.Texture = self.Frame:CreateTexture(nil, "HIGH");
-	self.Texture:SetAllPoints(self.Frame);
-    end
-
-    local savedcolor = strjoin("", unpack(color));
-
-    if (self.Color ~= savedcolor) then
-	self.Texture:SetTexture(unpack(color));
-	Dcr:Debug("Color Applied");
-
-	self.Color = savedcolor;
-	return true;
-    end
-    return false;
-    
 end
 
 function Dcr:GiveSpellPrioNum (Type)

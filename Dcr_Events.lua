@@ -247,7 +247,7 @@ function Dcr:RaidScanner_SC () --{{{
     end
 
     -- Charmed units are always displayed first what ever is the priority
-    if (Dcr.Status.CuringSpells[DcrC.ENEMYMAGIC]) then
+    if (Dcr.Status.CuringSpells[DcrC.ENEMYMAGIC] or Dcr.Status.CuringSpells[DcrC.CHARMED]) then
 	for _, unit in ipairs(Dcr.Status.Unit_Array) do
 	    if (index > Dcr.db.profile.Amount_Of_Afflicted) then
 		break;

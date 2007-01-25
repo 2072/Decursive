@@ -34,6 +34,7 @@ Dcr.LOC.DISEASE = 'Disease';
 Dcr.LOC.MAGIC   = 'Magic';
 Dcr.LOC.POISON  = 'Poison';
 Dcr.LOC.CURSE   = 'Curse';
+Dcr.LOC.MAGICCHARMED = 'Magic Charm';
 Dcr.LOC.CHARMED = 'Charm';
 
 -------------------------------------------------------------------------------
@@ -208,10 +209,11 @@ Dcr.LOC.OPT_CUREPETS_DESC = "Pets will be managed and cured";
 Dcr.LOC.OPT_IGNORESTEALTHED_DESC = "Stealthed units will be ignored";
 Dcr.LOC.OPT_CURINGORDEROPTIONS = "Curing Order Options";
 Dcr.LOC.OPT_MAGICCHECK_DESC	= "If checked you'll be able to see and cure magic afflicted units";
-Dcr.LOC.OPT_CHARMEDCHECK_DESC = "If checked you'll be able to see and cure charmed units";
+Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC = "If checked you'll be able to see and cure magic-charmed units";
+Dcr.LOC.OPT_CHARMEDCHECK_DESC = "If checked you'll be able to see and control charmed units";
 Dcr.LOC.OPT_POISONCHECK_DESC = "If checked you'll be able to see and cure poisonned units";
 Dcr.LOC.OPT_DISEASECHECK_DESC = "If checked you'll be able to see and cure diseased units";
-Dcr.LOC.OPT_CURSECHECK_DESC = "If checked you'll be able to see and cure cursed units"
+Dcr.LOC.OPT_CURSECHECK_DESC = "If checked you'll be able to see and cure cursed units";
 Dcr.LOC.OPT_DEBUFFFILTER = "Debuff filtering";
 Dcr.LOC.OPT_DEBUFFFILTER_DESC = "Select debuffs to filter out by name and class while you are in combat";
 Dcr.LOC.OPT_MACROOPTIONS = "Macro options";
@@ -240,6 +242,10 @@ Dcr.LOC.OPT_READDDEFAULTSD_DESC2 = "All Decursive's  default debuffs are in this
 
 Dcr.LOC.OPT_LVONLYINRANGE = "Units in range only";
 Dcr.LOC.OPT_LVONLYINRANGE_DESC = "Only units in dispel range will be shown in the live-list";
+
+Dcr.LOC.OPT_MFALPHA = "Transparency";
+Dcr.LOC.OPT_MFALPHA_DESC = "Défines the transparency of the MUFs when units are not afflicted";
+
 
 Dcr.LOC.HLP_LEFTCLICK = "Left-Click";
 Dcr.LOC.HLP_RIGHTCLICK = "Right-Click";
@@ -289,6 +295,7 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.MAGIC]	=	true,
     [Dcr.LOC.POISON]	=	true,
     [Dcr.LOC.CURSE]	=	true,
+    [Dcr.LOC.MAGICCHARMED]=	true,
     [Dcr.LOC.CHARMED]	=	true,
 
     -------------------------------------------------------------------------------
@@ -449,6 +456,7 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_IGNORESTEALTHED_DESC] = true,
     [Dcr.LOC.OPT_CURINGORDEROPTIONS] = true,
     [Dcr.LOC.OPT_MAGICCHECK_DESC] = true,
+    [Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC] = true,
     [Dcr.LOC.OPT_CHARMEDCHECK_DESC] = true,
     [Dcr.LOC.OPT_POISONCHECK_DESC] = true,
     [Dcr.LOC.OPT_DISEASECHECK_DESC] = true,
@@ -481,6 +489,9 @@ L:RegisterTranslations("enUS", function() return {
 
     [Dcr.LOC.OPT_LVONLYINRANGE] = true,
     [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = true,
+    
+    [Dcr.LOC.OPT_MFALPHA] = true,
+    [Dcr.LOC.OPT_MFALPHA_DESC] = true,
     
     [Dcr.LOC.HLP_LEFTCLICK] = true,
     [Dcr.LOC.HLP_RIGHTCLICK] = true,

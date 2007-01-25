@@ -300,9 +300,9 @@ function Dcr:GetUnitDebuff  (Unit, i) --{{{
 end --}}}
 
 do
-    -- there is a known maximum number of unit and a known maximum debuffs per unit so lets affect the memory needed only once.
+    -- there is a known maximum number of unit and a known maximum debuffs per unit so lets allocate the memory needed only once.
     local DebuffUnitCache = {};
-    local Texture, Applications, TypeName, Name, Type, i;
+    local Texture, Applications, TypeName, Name, Type, i, StoredDebuffIndex, CharmFound;
 
     function Dcr:GetUnitDebuffAll (Unit) --{{{
 
@@ -313,7 +313,8 @@ do
 	local ThisUnitDebuffs = DebuffUnitCache[Unit];
 
 	i = 1;
-	local StoredDebuffIndex = 1;
+	StoredDebuffIndex = 1;
+	CharmFound = false;
 	while (true) do
 	    Name, TypeName, Applications, Texture = Dcr:GetUnitDebuff(Unit, i);
 
@@ -323,9 +324,23 @@ do
 
 	    if (TypeName and TypeName ~= "") then
 		Type = DcrC.NameToTypes[TypeName];
-		if (Type == DcrC.MAGIC and UnitCanAttack(Unit, "player") and UnitIsCharmed(Unit)) then
+	    else
+		Type = false;
+	    end
+
+	    if (not CharmFound and UnitIsCharmed(Unit) and UnitCanAttack(Unit, "player")) then
+
+		if (Type == DcrC.MAGIC and Dcr.Status.CuringSpells[DcrC.MAGIC]) then
 		    Type = DcrC.ENEMYMAGIC;
+		else
+		    Type = DcrC.CHARMED;
+		    TypeName = DcrC.TypeNames[DcrC.CHARMED];
 		end
+		CharmFound = true;
+
+	    end
+
+	    if (Type) then
 
 
 		-- memory leak here

@@ -21,7 +21,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     -->
 
-    <Frame name="DcrMUFsContainer" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
+    <Frame name="DcrMUFsContainer" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
 	<Size>
 	    <AbsDimension x="20" y="20" />
 	</Size>

@@ -44,6 +44,8 @@ Dcr.defaults = { -- {{{
     DebuffsFrameMaxCount = 80,
 
     DebuffsFrameElemScale = 1,
+    
+    DebuffsFrameElemAlpha = .4,
 
     DebuffsFramePerline = 10,
 
@@ -142,6 +144,7 @@ Dcr.defaults = { -- {{{
 	[DcrC.CURSE]	    = 3,
 	[DcrC.POISON]	    = 4,
 	[DcrC.DISEASE]	    = 5,
+	[DcrC.CHARMED]	    = 6,
     },
 
 
@@ -512,6 +515,24 @@ Dcr.options = { -- {{{
 		    isPercent = true,
 		    order = 105,
 		},
+		Alpha = {
+		    type = 'range',
+		    name = L[Dcr.LOC.OPT_MFALPHA],
+		    desc = L[Dcr.LOC.OPT_MFALPHA_DESC],
+		    get = function() return Dcr.db.profile.DebuffsFrameElemAlpha end,
+		    set = function(v) 
+			if (v ~= Dcr.db.profile.DebuffsFrameElemAlpha) then
+			    Dcr.db.profile.DebuffsFrameElemAlpha = v;
+			end
+		    end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    min = 0,
+		    max = 1,
+		    step = 0.01,
+		    isPercent = true,
+		    order = 105.1,
+		},
+		
 		ToolTips = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.SHOW_TOOLTIP],
@@ -521,7 +542,7 @@ Dcr.options = { -- {{{
 			Dcr.db.profile.AfflictionTooltips = not Dcr.db.profile.AfflictionTooltips
 		    end,
 		    disabled = function() return  Dcr.db.profile.Hide_LiveList and not Dcr.db.profile.ShowDebuffsFrame end,
-		    order = 105.1
+		    order = 105.2
 		},
 		ShowHelp = {
 		    type = "toggle",
@@ -675,8 +696,8 @@ Dcr.options = { -- {{{
 		},
 		CureEnemyMagic = {
 		    type = "toggle",
-		    name = Dcr.L[Dcr.LOC.CHARMED],
-		    desc = L[Dcr.LOC.OPT_CHARMEDCHECK_DESC],
+		    name = Dcr.L[Dcr.LOC.MAGICCHARMED],
+		    desc = L[Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC],
 		    get = function() return Dcr:GetCureCheckBoxStatus(DcrC.ENEMYMAGIC) end,
 		    set = function()
 			Dcr:SetCureOrder (DcrC.ENEMYMAGIC);
@@ -720,6 +741,18 @@ Dcr.options = { -- {{{
 		    disabled = function() return not Dcr.Status.CuringSpells[DcrC.CURSE] end,
 		    CureType = DcrC.CURSE,
 		    order = 145
+		},
+		CureCharmed = {
+		    type = "toggle",
+		    name = Dcr.L[Dcr.LOC.CHARMED],
+		    desc = L[Dcr.LOC.OPT_CHARMEDCHECK_DESC],
+		    get = function() return Dcr:GetCureCheckBoxStatus(DcrC.CHARMED) end,
+		    set = function()
+			Dcr:SetCureOrder (DcrC.CHARMED);
+		    end,
+		    disabled = function() return not Dcr.Status.CuringSpells[DcrC.CHARMED] end,
+		    CureType = DcrC.CHARMED,
+		    order = 146
 		},
 	    }
 	}, -- }}}
@@ -791,6 +824,7 @@ Dcr.CureCheckBoxes = { -- just a shortcut
 [DcrC.CURSE]	    = Dcr.options.args.CureOptions.args.CureCurse,
 [DcrC.POISON]	    = Dcr.options.args.CureOptions.args.CurePoison,
 [DcrC.DISEASE]	    = Dcr.options.args.CureOptions.args.CureDisease,
+[DcrC.CHARMED]	    = Dcr.options.args.CureOptions.args.CureCharmed,
 }
 
 function Dcr:GetCureCheckBoxStatus (type)
@@ -826,6 +860,7 @@ function Dcr:CheckCureOrder ()
 	[DcrC.CURSE]	    = 3,
 	[DcrC.POISON]	    = 4,
 	[DcrC.DISEASE]	    = 5,
+	[DcrC.CHARMED]	    = 6,
     };
     local AuthorizedValues = {
 	[false]	= true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
@@ -835,6 +870,7 @@ function Dcr:CheckCureOrder ()
 	[3]	= DcrC.CURSE,
 	[4]	= DcrC.POISON,
 	[5]	= DcrC.DISEASE,
+	[6]	= DcrC.CHARMED,
     };
     local GivenValues = {};
 
