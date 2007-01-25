@@ -7,6 +7,7 @@ Changements entre Decursive 2.0 BETA 4 et 2.0 BETA 5
 - Un nouveau type d'affliction a été ajouté: 'Possession' qui s'applique aux unité possédés afin que les mages puissent les voir ; précédemment ils ne pouvaient voir que les unités possédées ayant une affliction magique (comme les prêtres). (Il faut tester cette nouvelle fonctionnalité car la situation est difficile à reproduire)
 - Une nouvelle option permet de changer la transparence (alpha) des micro-portrait lorsqu'une unité n'est pas affligée, elle peut être mise à 0 afin d'être totalement transparente.
 - Les micro-portrait se trouve à une strate plus basse.
+- "Déflagration des arcanes" ne sera plus indiqué comme étant une affliction.
 - Traduction complète en français par Sylvin.
 - Traduction complète en coréen par Fenlis.
 

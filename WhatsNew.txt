@@ -3,9 +3,10 @@ Decursive 2.0 BETA 5 by Archarodim
 Changes from Decursive 2.0 BETA 4 to 2.0 BETA 5
 
 - Fix a bug that caused the loss of per-character bindings.
-- Added a new debuff type: 'Charm' that applies to charmed units so mages can see all charmed units, previously they could see only charmed units with a magical debuff (as priests). (This need testing, the situation is difficult to reproduce)
+- Added a new debuff type: 'Charm' that applies to charmed units so mages can see all charmed units ; previously they could only see charmed units with a magical debuff (as priests). (This need testing, the situation is difficult to reproduce)
 - Added an option to change the transparency (Alpha) of the MUFs when a unit is not afflicted, it can be set to 0 to be completely transparent.
 - The micro unit frames (MUFs) are set to a lower strata.
+- "Arcane Blast" will no longer be shown as a Debuff.
 - Added full French localization by Sylvin
 - Added full Korean localization by Fenlis
 - Fixed typos in localization.lua and added a missing option description.

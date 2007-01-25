@@ -161,6 +161,7 @@ Dcr.defaults = { -- {{{
 	[L[Dcr.LOC.GDREAMLESSSLEEP]]	= true,
 	[BS[DCR_LOC_MINDVISION]]	= true,
 	[L[Dcr.LOC.MUTATINGINJECTION]]	= true,
+	[BS["Arcane Blast"]]		= true,
     },
 
     DebuffsSkipList = {
