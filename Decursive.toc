@@ -1,19 +1,28 @@
 ## Interface: 20003
+
 ## Title: Decursive |cff7fff7f -Ace2-|r
-## Name: Decursive
-## DefaultState: enabled
-## LoadOnDemand: 0
 ## Notes: This is a raid cleaning helper mod.
+
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
+
 ## Version: 2.0.0 BETA 5
-## Author: Archarodim (John Wellesz)
+## Author: Archarodim
+
+## X-License: GPL
+
 ## OptionalDeps: Ace2, Babble-2.2, DewdropLib
+## X-Embeds: Ace2, Babble-2.2, DewdropLib
+
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/?to=decursive.php
-## X-eMail: Archarodim@teaser.fr
-## X-Embeds: Ace2, Babble-2.2, DewdropLib
+
+## X-RelSite-WoWI: 4937
+## X-RelSite-Curse: 3011
+## X-RelSite-UI.WoW: 2506
+
+## X-eMail: archarodim@teaser.fr
 
 
 Libs\AceLibrary\AceLibrary.lua
