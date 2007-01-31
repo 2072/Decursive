@@ -146,7 +146,7 @@ L:RegisterTranslations("esES", function() return {
     [Dcr.LOC.DELUSIONOFJINDO]	= Dcr.LOC.DELUSIONOFJINDO,
 
     [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION;
-    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE"; -- Ideally the key just beneath the "escape" key
+    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE"; -- Ideally the key just beneath the "escape" key. Leave to "NONE" if you don't set a real key name.
     [Dcr.LOC.OPT_LIVELIST] = Dcr.LOC.OPT_LIVELIST,
     [Dcr.LOC.OPT_LIVELIST_DESC] = Dcr.LOC.OPT_LIVELIST_DESC,
     [Dcr.LOC.OPT_HIDELIVELIST_DESC] = Dcr.LOC.OPT_HIDELIVELIST_DESC,

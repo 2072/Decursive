@@ -157,7 +157,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.DELUSIONOFJINDO]	= "진도의 망상",
 
 	[Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
-	[Dcr.LOC.DEFAULT_MACROKEY] = Dcr.LOC.DEFAULT_MACROKEY, -- Ideally the key just beneath the "escape" key
+	[Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" if you don't set a real key name.
 	[Dcr.LOC.OPT_LIVELIST] = "실시간 목록",
 	[Dcr.LOC.OPT_LIVELIST_DESC] = "실시간 목록에 대한 설정입니다.",
 	[Dcr.LOC.OPT_HIDELIVELIST_DESC] = "숨긴다면 해제된 대상의 정보를 표시합니다.",
