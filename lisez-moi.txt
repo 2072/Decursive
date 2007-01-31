@@ -2,57 +2,59 @@ Decursive 2.0 ( Main download: http://www.2072productions.com/?to=decursive.php 
 
 Decursive est un addon permettant de dissiper la magie, les malédictions, les maladies ou les poisons. Son rôle est d'assister les classes capables de supprimer des afflictions.
 
-Vous n'avez besoin que de charger l'addon et lier une touche. Aucune configuration ou modification supplémentaire n'est nécessaire, il s'auto-confiure.
+Vous n'avez besoin que de charger l'addon et lui lier une touche. Aucune configuration ou modification supplémentaire n'est nécessaire, il s'auto-confiure.
 
-Actuellement, Decursive est paramétré pour automatiquement sélectionner les sorts des druides, prêtres, mages, chamans, chasseurs corrompus (felhunter) ou garde funeste (Doomguard).
+Actuellement, Decursive est paramétré pour automatiquement sélectionner 
+les sorts des druides, prêtres, mages, shamans, chasseurs corrompus (felhunter) ou garde funeste (Doomguard).
 Les mages sont aussi capable de surveiller les unités sous contrôle mentale (MC) et de les métamorphosées (Sheep) si besoin.
 
 Decursive vous simplifie la vie. Il vous présente clairement, qui est affligé par quelque chose que vous pouvez supprimer.
-Cela est fait en utilisant le "cadre de micro-portrait" (MUF ou Micor-Unit Frame). Un micro-portrait est un petit carré sur votre écran dont l'apparence change en fonction du statut de l'unité (personnage).
-Si vous cliquez sur une MUF, cela va automatiquement lancer un sort de dissipation. Le sort lancé dépendra du bouton de la souris sur lequel vous avez cliqué. Decursive gère l'allocation des sorts aux boutons de la souris automatiquement.
+Cela est fait en utilisant le "cadre de micro-portraits" (MUF ou Micro-Unit Frame). Un micro-portrait est un petit carré sur votre écran dont l'apparence change en fonction du statut de l'unité (personnage).
+Si vous cliquez sur un micro-portrait, cela va automatiquement lancer un sort de dissipation. Le sort lancé dépendra du bouton de la souris sur lequel vous avez cliqué. Decursive gère l'allocation des sorts aux boutons de la souris automatiquement.
 
-Une MUF a plusieurs couleurs :
-- Rouge : L'unité est à portée et est affectée par quelque chose que vous pouvez dissiper en cliquant avec le bouton gauche de la souris sur la MUF.
-- Bleu : Idem rouge mais la dissipation se fait avec le bouton droit de la souris.
-- Orange : Idem rouge mais la dissipation se fait avec la combinaison CTRL + bouton gauche de la souris.
+Un micro-portrait a plusieurs couleurs :
+- Rouge : L'unité est à portée et est affectée par quelque chose que vous pouvez dissiper en cliquant avec le bouton GAUCHE de la souris sur la micro-portrait.
+- Bleu : Idem rouge mais la dissipation se fait avec le bouton DROIT de la souris.
+- Orange : Idem rouge mais la dissipation se fait avec la combinaison CTRL + bouton GAUCHE de la souris.
 - Rouge/Bleu/Orange transparent : Idem que la couleur associée mais "hors de portée".
 - Gris transparent : L'unité n'existe pas.
 - Vert transparent : L'unité est à portée et n'est pas affligée par quoique ce soit que vous puissiez dissiper.
 - Violet transparent : L'unité est hors de portée pour être dissipée ou analysée.
 - Noir : L'unité a été mise en liste noire parce qu'elle était hors de vue quand vous avez essayé de la guérir - la durée de liste noire peut être changée dans les options.
 
-L'affichage des MUFs dépend de votre configuration. Vous pouvez en changer le nombre et la taille facilement (hors combat seulement).
+L'affichage des micro-portraits dépend de votre configuration. Vous pouvez en changer le nombre et la taille facilement (hors combat seulement).
 
-Les MUFs sont très discrètes quand aucune action n'est requise, vous pouvez voir au travers.
+Les micro-portraits sont très discrets quand aucune action n'est requise, vous pouvez voir au travers.
 
 Vous pouvez changer l'affectation des sorts aux boutons de la souris quand vous êtes hors-combat, la correspondance est faite selon vos priorités de dissipation.
 
-En plus de lancer des sorts, vous pouvez cibler le personnage de la MUF en utilisant le bouton du milieu de la souris. CTRL + bouton du milieu de la souris mettra le focus sur la cible.
+En plus de lancer des sorts, vous pouvez cibler le personnage du micro-portrait en utilisant le bouton du milieu de la souris. CTRL + bouton du milieu de la souris mettra le focus sur la cible.
 
 Les informations ci-dessus sont aussi fournis par des info-bulles dans le jeu.
 
-IMPORTANT : POUR BOUGER LES MUFS, CLIQUER, SANS LÂCHER, SUR LA POIGNÉE JUSTE AU DESSUS DE LA PREMIÈRE MUF (ELLE A LA MÊME TAILLE QU'UNE MUF ET EST MISE EN EXERGUE LORSQUE LA SOURIS PASSE AU DESSUS).
+IMPORTANT : POUR BOUGER LES MICRO-PORTRAITS, CLIQUER, SANS LÂCHER, SUR LA POIGNÉE JUSTE AU DESSUS DU PREMIER MICRO-PORTRAIT (ELLE A LA MÊME TAILLE QU'UN MICRO-PORTRAIT ET EST MISE EN EXERGUE LORSQUE LA SOURIS PASSE AU DESSUS).
 
-Decursive crée et gère une macro qui permet de dissiper un effet sur une unité (MUF ou autre portrait d'unité) au-dessus de laquelle se trouve la souris. Il vous suffit de choisir la touche à lier dans les options de Decursive.
+Decursive crée et gère une macro qui permet de dissiper un effet sur une unité (micro-portrait ou autre portrait d'unité) au-dessus de laquelle se trouve la souris. Il vous suffit de choisir la touche à lier dans les options de Decursive.
 En tapant la touche liée, Decursive lancera le premier sort (celui du clic gauche de la souris), CTRL + touche liée lancera le deuxième sort (celui du clic droit de la souris) et SHIFT (MAJ) + touche liée lancera le troisième sort (celui de CTRL + clic gauche). Vous pouvez placer la macro dans un raccourci de vos barres d'action en utilisant la fenêtre des macros de WoW.
 Decursive vous montre aussi si l'unité sous votre curseur est affligée par une malédiction à travers sa liste "temps réel" (sous les options de configurations)
 
 NOTE : Pour changer la touche par défaut ([`]), utilisez le menu graphique (accessible en cliquant sur le bouton droit de la souris sur la barre "Decursive" ou sur la poignée).
 Vous pouvez aussi utiliser la commande suivante pour changer cette valeur directement : "/dcr macro SetKey V" pour associer la touche V à la macro.
 
-Par défaut, les MUFs sont organisées intelligemment : Vous êtes toujours en premier, puis le reste de votre groupe, les groupes après le votre, les groupes avant le votre, les pets (vous pouvez aussi les exclure via les options) et enfin votre unité en focus (avec le CTRL + clic milieu ou /focus target).
+Par défaut, les micro-portraits sont organisés intelligemment : Vous 
+êtes toujours en premier, puis le reste de votre groupe, les groupes après le votre, les groupes avant le votre, les familiers (vous pouvez aussi les exclure via les options) et enfin votre unité en focus (avec le CTRL + clic milieu ou /focus target).
 Vous pouvez bien sûr complètement changer cela en utilisant les liste de priorités et d'exceptions...
 
-Decursive a été écrit avec qualité et optimisation maximal des performances à l'esprit, il ne devrait donc pas affecté votre taux de rafraîchissement.
-Decursive utilise les librairies ACE 2.0 (ces librairies sont incluses, vous n'avez pas de dépendance à installer).
+Decursive a été écrit à l'esprit la qualité et l'optimisation des performances, il ne devrait donc pas affecté votre taux de rafraîchissement.
+Decursive utilise les librairies ACE 2.0 (ces librairies sont incluses, vous n'avez pas de dépendances à installer).
 
 Beaucoup d'options sont disponibles, n'oubliez pas de les utiliser.
 
-Decursive a aussi une liste d'exceptions : Les personnages dans cette liste seront complètement ignorés et ne seront pas affichés dans les MUFs.
+Decursive a aussi une liste d'exceptions : Les personnages dans cette liste seront complètement ignorés et ne seront pas affichés dans les micro-portraits.
 
 Les commandes que vous pouvez utiliser :
 /dcrshow
----> Pour afficher la barre Decursive (aussi disponible avec la combinaison ALT + bouton gauche sur la poignée des MUFs)
+---> Pour afficher la barre Decursive (aussi disponible avec la combinaison ALT + bouton gauche sur la poignée des micro-portraits)
 /dcrhide
 ---> Pour cacher la barre Decursive (en laissant la liste des affligées "temps réel")
 /dcrreset
@@ -62,13 +64,13 @@ Les commandes que vous pouvez utiliser :
 /dcrprclear
 ---> Pour nettoyer la liste des priorités
 /dcrprshow
----> Pour afficher la liste des priorités (où vous pouvez ajouter, supprimer ou déplacer des joueurs) (ou encore CTRL + clic gauche sur la poignée des MUFs)
+---> Pour afficher la liste des priorités (où vous pouvez ajouter, supprimer ou déplacer des joueurs) (ou encore CTRL + clic gauche sur la poignée des micro-portraits)
 /dcrskadd
 ---> Ajouter la cible courante à la liste d'exceptions
 /dcrskclear
 ---> Nettoye la liste d'exceptions
 /dcrskshow
----> Affiche la liste d'exceptions (où vous pouvez ajouter, supprimer ou nettoyer) (ou encore SHIFT + clic gauche sur la poignée des MUFs)
+---> Affiche la liste d'exceptions (où vous pouvez ajouter, supprimer ou nettoyer) (ou encore SHIFT + clic gauche sur la poignée des micro-portraits)
 
 
 NOTE : Toutes ces commandes peuvent être associées à une touche grâce à l'interface de création de touche de raccourci de WoW
@@ -82,10 +84,10 @@ En cliquant avec le bouton du milieu ou CTRL + clic gauche sur le libellé "Decu
 Vous pouvez lier beaucoup de choses à des touches dans la section "Decursive"
 
 - LIER LA MACRO DECURSIVE A UNE TOUCHE (par défaut, liée à la touche '`', la touche juste en dessous de 'Esc' - pour les claviers non QWERTY, il vous faudra la changer).
-Cela ce fait par les options du menu Decursive (Decursive met à jour sa macro selon vos possibilités et votre paramétrage).
+Cela se fait par les options du menu Decursive (Decursive met à jour sa macro selon vos possibilités et votre paramétrage).
 
-- Taper sur la touche lié va guérir l'unité sous le pointeur de votre souris (la touche seule est pour le premier sort, CTRL + touche pour le deuxième sort et SHIFT + touche pour le troisième)
-Si vous affichez les MUFs (par défaut), vous pouvez cliquer sur une des MUF pour dissiper, cibler ou mettre en focus.
+- Taper sur la touche liée va guérir l'unité sous le pointeur de votre souris (la touche seule est pour le premier sort, CTRL + touche pour le deuxième sort et SHIFT + touche pour le troisième)
+Si vous affichez les micro-portraits (par défaut), vous pouvez cliquer sur un des micro-portrait pour dissiper, cibler ou mettre en focus.
 
 - DANS LE MENU D'OPTION, vous pouvez choisir ce que vous voulez guérir et la priorité de chaque affliction. La priorité détermine quelle affliction est montrée en premier, ainsi que la correspondance des sorts (voir les bulles d'aide)
 
@@ -93,11 +95,11 @@ Si vous affichez les MUFs (par défaut), vous pouvez cliquer sur une des MUF pou
 
 - DANS LE MENU D'OPTION, vous pouvez sauvegarder vos options par personnages/serveur/classe
 
-- Vous pouvez aussi choisir l'apparence des MUFs, modifier leur nombre, leur taille et les nombres d'unités par lignes
+- Vous pouvez aussi choisir l'apparence des micro-portraits, modifier leur nombre, leur taille et les nombres d'unités par lignes
 
-- Vous pouvez facilement organiser l'ordre des MUFs  en utilisant la liste des priorités et des exceptions qui sont accessible par la poignée ou par les boutons à coté de la barre "Decursive".
+- Vous pouvez facilement organiser l'ordre des micro-portraits  en utilisant la liste des priorités et des exceptions qui sont accessible par la poignée ou par les boutons à coté de la barre "Decursive".
 
 LES OPTIONS :
 
-Elles sont accessibles en cliquant droit sur la barre "Decursive" ou sur la poignée des MUFs ou encore par ligne de commande en tapant /dcr ou /decursive.
-Chaque option est expliqué par une info-bulle, n'hésitez pas à les explorer.
+Elles sont accessibles en cliquant droit sur la barre "Decursive" ou sur la poignée des micro-portraits ou encore par ligne de commande en tapant /dcr ou /decursive.
+Chaque option est expliquée par une info-bulle, n'hésitez pas à les explorer.
