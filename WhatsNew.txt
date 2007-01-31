@@ -1,4 +1,12 @@
-Decursive 2.0 BETA 5 by Archarodim
+Decursive 2.0 BETA 6 by Archarodim
+
+Changes from Decursive 2.0 BETA 5 to 2.0 BETA 6
+
+- Now a border is displayed around the MUFs, its color depends on the unit's class.
+- When a unit is charmed, a small green square is displayed inside its MUF.
+- Fix a bug that caused unit unable to cure magic on magic-charmed unit to see a curable magic debuff on these units.
+- Minor code optimizations.
+
 
 Changes from Decursive 2.0 BETA 4 to 2.0 BETA 5
 

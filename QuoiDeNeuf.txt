@@ -1,4 +1,11 @@
-Decursive 2.0 BETA 5 par Archarodim
+Decursive 2.0 BETA 6 par Archarodim
+
+
+Changements entre Decursive 2.0 BETA 5 et 2.0 BETA 6
+
+- Désormais, une bordure s'affiche autour des micro-portraits dont la couleur dépend de la classe de l'unité.
+- Lorsque une unité est possédée, un petit carré vert s'affiche dans les micro-portraits.
+- Correction d'un bug qui laissait voir une affliction de magie guérissable sur les unité possédées aux joueurs incapables d'enlever les afflictions magiques sur les unité ennemies.
 
 
 Changements entre Decursive 2.0 BETA 4 et 2.0 BETA 5

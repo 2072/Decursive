@@ -21,10 +21,6 @@
 --]]
 -------------------------------------------------------------------------------
 
--- TODO:
--- Find something better than the ugly tolltip "click to move".
--- Display something when poison is found but abolish is found.
-
 
 local L = Dcr.L;
 local BC = Dcr.BC;
@@ -47,17 +43,30 @@ local MF_Textures = { -- unused
     ["black"] = "Interface/AddOns/Decursive/Textures/BackDrop",
 };
 
+
+-- using power 2 values just to OR them but only CHARMED is ORed
+local NORMAL		    = 8;
+local ABSENT		    = 16;
+local FAR		    = 32;
+local STEALTHED		    = 64;
+local BLACKLISTED	    = 128;
+local AFFLICTED		    = 256;
+local AFFLICTED_NIR	    = 512;
+local CHARMED		    = 1024;
+
+
 local MF_colors = {
-		    {  .8 , 0   , 0    ,  1	}, -- red
-		    { 0   , 0   , 0.8  ,  1	}, -- blue
-		    { 1   ,  .5 ,  .25 ,  1	}, -- orange
-		    { 1   , 1   , 1    ,  1	}, -- white for undefined
-		    { 1   , 1   , 1    ,  1	}, -- white for undefined
-    ["normal"]	  = {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
-    ["blacklist"] = { 0   , 0   , 0    ,  1	}, -- black
-    ["absent"]    = {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
-    ["far"]	  = {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
-    ["stealthed"] = {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
+			  {  .8 , 0   , 0    ,  1	}, -- red
+			  { 0   , 0   , 0.8  ,  1	}, -- blue
+			  { 1   ,  .5 ,  .25 ,  1	}, -- orange
+			  { 1   , 1   , 1    ,  1	}, -- white for undefined
+			  { 1   , 1   , 1    ,  1	}, -- white for undefined
+    [NORMAL]		= {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
+    [BLACKLISTED]	= { 0   , 0   , 0    ,  1	}, -- black
+    [ABSENT]		= {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
+    [FAR]		= {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
+    [STEALTHED]		= {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
+    ["InnerCharmed"]	= {  0  , 1   , 0    ,  1	}, -- full green
 };
 
 local MUF_Status = {
@@ -67,6 +76,9 @@ local MUF_Status = {
     [4] = "stealthed";
     [5] = "blacklist";
     [6] = "afflicted";
+    [7] = "afflicted-far";
+    [8] = "afflicted-charmed";
+    [9] = "afflicted-charmed-far";
 }
 
 -- defines what is printed when the object is read as a string
@@ -101,17 +113,58 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum)
 	Dcr:Debug("Initializing MicroUnit object '%s' with FrameNum=%d", ID, FrameNum);
 
 
-	self.Parent = Container;
-	self.ID	    = ID;
-	self.FrameNum = FrameNum;
-	self.Debuff = false;
-	self.CurrUnit = false;
-	self.UnitStatus = "Unknown state";
-	self.Color = false;
-	self.UpdateMe = true;
-	self.LastAttribUpdate = 0;
+	self.Parent		= Container;
+	self.ID			= ID;
+	self.FrameNum		= FrameNum;
+	self.Debuff		= false;
+	self.CurrUnit		= false;
+	self.UnitStatus		= 0;
+	self.FirstDebuffType	= 0;
+	self.NormalAlpha	= 0;
+	self.BorderAlpha	= 0;
+	self.Color		= false;
+	self.IsCharmed		= false;
+	self.UpdateMe		= true;
+	self.LastAttribUpdate	= 0;
 
 	self.Frame  = CreateFrame ("Button", "MicroUnit"..ID, self.Parent, "DcrMicroUnitTemplateSecure");
+
+	-- outer texure (the class border)
+	-- Bottom side
+	self.OuterTexture1 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
+	self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
+
+	-- left side
+	self.OuterTexture2 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
+	self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
+
+	-- top side
+	self.OuterTexture3 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
+	self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
+
+	-- right side
+	self.OuterTexture4 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
+	self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
+
+
+	-- global texture
+	self.Texture = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
+	self.Texture:SetHeight(16);
+	self.Texture:SetWidth(16);
+
+	-- inner Texture (Charmed special texture)
+	self.InnerTexture = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
+	self.InnerTexture:SetHeight(7);
+	self.InnerTexture:SetWidth(7);
+	self.InnerTexture:SetTexture(unpack(MF_colors["InnerCharmed"]));
+
+
 	self.Frame.Object = self;
 	self.Frame:RegisterForClicks("AnyDown");
 	self.Frame:SetFrameStrata("MEDIUM");
@@ -396,7 +449,16 @@ function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
 	self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes
 	self.Frame:SetAttribute("unit", Unit); -- XXX test if the unit really changes
 	self.CurrUnit = Unit;
+	self.UnitClass = ((UnitClass(Unit)) and select(2, UnitClass(Unit)) or "WARRIOR");
 	ReturnValue = self;
+
+	-- update the border color
+	self.OuterTexture1:SetTexture( BC:GetColor(self.UnitClass) );
+	self.OuterTexture2:SetTexture( BC:GetColor(self.UnitClass) );
+	self.OuterTexture3:SetTexture( BC:GetColor(self.UnitClass) );
+	self.OuterTexture4:SetTexture( BC:GetColor(self.UnitClass) );
+
+
     end
 
     if (Dcr.Status.SpellsChanged == self.LastAttribUpdate) then
@@ -456,6 +518,12 @@ local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
 function Dcr:DebuffsFrameUnit_OnEnter()
     Dcr.Status.MouseOveringMUF = true;
     local MF = this.Object;
+    local Status;
+
+    -- removes the CHARMED bit from Status
+    Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED));
+
+
     if (Dcr.db.profile.AfflictionTooltips ) then
 	MF:SetColor();
 	local Unit = MF.CurrUnit;
@@ -471,22 +539,22 @@ function Dcr:DebuffsFrameUnit_OnEnter()
 
 	-- set UnitStatus text
 	local StatusText = "";
-	if (MF.UnitStatus == MUF_Status[1]) then
+	if (Status == NORMAL) then
 	    StatusText = L[Dcr.LOC.NORMAL];
 
-	elseif (MF.UnitStatus == MUF_Status[2]) then
+	elseif (Status == ABSENT) then
 	    StatusText = string.format(L[Dcr.LOC.ABSENT], Unit);
 
-	elseif (MF.UnitStatus == MUF_Status[3]) then
+	elseif (Status == FAR) then
 	    StatusText = L[Dcr.LOC.TOOFAR];
 
-	elseif (MF.UnitStatus == MUF_Status[4]) then
+	elseif (Status == STEALTHED) then
 	    StatusText = L[Dcr.LOC.STEALTHED];
 
-	elseif (MF.UnitStatus == MUF_Status[5]) then
+	elseif (Status == BLACKLISTED) then
 	    StatusText = L[Dcr.LOC.BLACKLISTED];
 
-	elseif (MF.UnitStatus == MUF_Status[6]) then
+	elseif (Status == AFFLICTED or Status == AFFLICTED_NIR) then
 	    local DebuffType = MF.Debuffs[1].Type;
 	    StatusText = string.format(L[Dcr.LOC.AFFLICTEDBY], Dcr:ColorText( L[DcrC.TypeNames[DebuffType]], "FF" .. DcrC.TypeColors[DebuffType]) );
 	end
@@ -546,7 +614,7 @@ function Dcr:DebuffsFrameUnit_OnAttributeChanged(self, name, value)
 end
 
 function MicroUnitF.prototype:SetDebuffs()
-    self.Debuffs = Dcr:UnitCurableDebuffs(self.CurrUnit);
+    self.Debuffs, self.IsCharmed = Dcr:UnitCurableDebuffs(self.CurrUnit);
 end
 
 
@@ -568,69 +636,98 @@ end
 
 do
     local color = {};
-    local DebuffType, Unit;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha;
     function MicroUnitF.prototype:SetColor()
 
 	-- get the debuffs of this unit
 	self:SetDebuffs();
-
+	BorderAlpha =  Dcr.db.profile.DebuffsFrameElemAlpha / 2;
 	DebuffType = false;
 	Unit = self.CurrUnit;
+	PreviousStatus = self.UnitStatus;
 
 	--  if 1 then return false; end
 	-- if unit not available
 	if (not UnitExists(Unit)) then
-	    Dcr:tcopy(color, MF_colors[MUF_Status[2]]);
-	    self.UnitStatus = MUF_Status[2];
+	    Dcr:tcopy(color, MF_colors[ABSENT]);
+	    self.UnitStatus = ABSENT;
 
 	elseif (not UnitIsVisible(Unit) or UnitLevel(Unit) == -1) then
-	    Dcr:tcopy(color, MF_colors[MUF_Status[3]]);
-	    self.UnitStatus = MUF_Status[3];
+	    Dcr:tcopy(color, MF_colors[FAR]);
+	    self.UnitStatus = FAR;
 
 	elseif (Dcr:CheckUnitStealth(Unit)) then
-	    Dcr:tcopy(color, MF_colors[MUF_Status[4]]);
-	    self.UnitStatus = MUF_Status[4];
+	    Dcr:tcopy(color, MF_colors[STEALTHED]);
+	    self.UnitStatus = STEALTHED;
+
 	    -- if unit is blacklisted
-	    --
 	elseif (Dcr.Status.Blacklisted_Array[Unit]) then
-	    Dcr:tcopy(color, MF_colors[MUF_Status[5]]);
-	    self.UnitStatus = MUF_Status[5];
+	    Dcr:tcopy(color, MF_colors[BLACKLISTED]);
+	    self.UnitStatus = BLACKLISTED;
 
 	elseif (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
 	    DebuffType = self.Debuffs[1].Type;
 	    local priority = Dcr:GiveSpellPrioNum(DebuffType);
 
-	    if (Dcr.Status.CuringSpells[DebuffType]) then
-		Dcr:tcopy(color, MF_colors[priority]);
-		self.UnitStatus = MUF_Status[6];
+	    --if (Dcr.Status.CuringSpells[DebuffType]) then
+	    Dcr:tcopy(color, MF_colors[priority]);
 
-		local RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[DebuffType], Unit);
+	    local RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[DebuffType], Unit);
 
-		if (not RangeStatus or RangeStatus == 0) then
-		    color[4] = color[4] * 0.40;
-		end
+	    if (not RangeStatus or RangeStatus == 0) then
+		color[4] = 0.40;
+		self.UnitStatus = AFFLICTED_NIR;
+	    else
+		self.UnitStatus = AFFLICTED;
+		BorderAlpha = 1;
 	    end
+	    --end
 	else
-	    Dcr:tcopy(color, MF_colors[MUF_Status[1]]);
-	    self.UnitStatus = MUF_Status[1];
+	    Dcr:tcopy(color, MF_colors[NORMAL]);
+	    self.UnitStatus = NORMAL;
+	end
+
+	if (self.IsCharmed) then
+	    self.UnitStatus = bit.bor( self.UnitStatus, CHARMED);
 	end
 
 	if (not DebuffType) then
 	    color[4] = color[4] * Dcr.db.profile.DebuffsFrameElemAlpha;
 	end
 
-	if (not self.Texture ) then
-	    self.Texture = self.Frame:CreateTexture(nil, "MEDIUM");
-	    self.Texture:SetAllPoints(self.Frame);
-	end
+--	if (not self.Texture ) then
+	    
+	    
 
-	local savedcolor = strjoin("", unpack(color));
+--	end
 
-	if (self.Color ~= savedcolor) then
+	-- this strjoin call is not pretty another solution should be found, this is a cause of garbage leak I think
+	-- local savedcolor = strjoin("", unpack(color), ( self.Debuffs.IsCharmed and "C" or "NC" ) );
+
+	if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= Dcr.db.profile.DebuffsFrameElemAlpha or self.FirstDebuffType ~= DebuffType) then
 	    self.Texture:SetTexture(unpack(color));
-	    Dcr:Debug("Color Applied");
 
-	    self.Color = savedcolor;
+	    if (self.IsCharmed) then
+		self.InnerTexture:Show();
+	    else
+		self.InnerTexture:Hide();
+	    end
+
+	    if (self.BorderAlpha ~= BorderAlpha) then
+		self.OuterTexture1:SetAlpha(BorderAlpha);
+		self.OuterTexture2:SetAlpha(BorderAlpha);
+		self.OuterTexture3:SetAlpha(BorderAlpha);
+		self.OuterTexture4:SetAlpha(BorderAlpha);
+	    end
+
+	    Dcr:Debug("Color Applied", self.UnitStatus);
+
+
+	    self.BorderAlpha = BorderAlpha;
+	    self.NormalAlpha = Dcr.db.profile.DebuffsFrameElemAlpha;
+	    self.FirstDebuffType = DebuffType;
+
+	    --self.Color = savedcolor;
 	    return true;
 	end
 	return false;

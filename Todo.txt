@@ -3,14 +3,12 @@ Personal TODO file for Archarodim (will stop to be personal once I'll add commen
 Important TODO:
 
 - Add an online help showing the localized readme.txt file (a script on my side will have to encode-escape the text before each commit)
-- Make it so Charmed unit are more noticeable, add a special something in or around the MUF
 - Make it so the sound will play even if the live-list is disabled.
 
 
 Other TODO:
 
 - Add something in the readme.txt file about why Decursive changed that much and why one can no longer click in the live-list, it's a recurrent question...
-- Add a border depending on the unit-class around an afflicted MUF
 - Make it so that the MUFs can be ordered by Class easily.
 - Change the live-list display
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff

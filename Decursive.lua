@@ -39,14 +39,6 @@ Dcr_Print_DEBUG = false;
 -------------------------------------------------------------------------------
 -- The printing functions {{{
 -------------------------------------------------------------------------------
-function Dcr_debug( Message) --{{{
-    if (Dcr_Print_DEBUG) then
-	Dcr.Status.OutputWindow:AddMessage(Message, 0.1, 0.1, 1);
-    end
-    return true;
-end --}}}
-
-
 
 function Dcr:Show_Cure_Order() --{{{
     Dcr:Println("printing cure order:");
@@ -114,7 +106,6 @@ function Dcr:ShowHidePriorityListUI() --{{{
     end
 end --}}}
 
--- skip list stuff
 function Dcr:ShowHideSkipListUI() --{{{
     if (DecursiveSkipListFrame:IsVisible()) then
 	DecursiveSkipListFrame:Hide();
@@ -122,8 +113,6 @@ function Dcr:ShowHideSkipListUI() --{{{
 	DecursiveSkipListFrame:Show();
     end
 end --}}}
-
-
 
 function Dcr:ShowHideButtons(UseCurrentValue) --{{{
 
@@ -152,8 +141,6 @@ function Dcr:ShowHideButtons(UseCurrentValue) --{{{
 	end
 
     end
-
-
 
 end --}}}
 
@@ -188,7 +175,7 @@ function Dcr:ResetWindow() --{{{
 end --}}}
 
 
-
+-- this displays the tooltips of the live-list
 function Dcr:DebuffTemplate_OnEnter() --{{{
     if (Dcr.db.profile.AfflictionTooltips) then
 	DcrDisplay_Tooltip:SetOwner(this, "ANCHOR_CURSOR");
@@ -197,7 +184,6 @@ function Dcr:DebuffTemplate_OnEnter() --{{{
 	DcrDisplay_Tooltip:Show();
     end
 end --}}}
-
 
 function Dcr:PlaySound () --{{{
     if (Dcr.db.profile.PlaySound and not Dcr.Status.SoundPlayed) then
@@ -208,10 +194,7 @@ function Dcr:PlaySound () --{{{
     end
 end --}}}
 
-
--- LIVE DISPLAY functions {{{
-
-    
+-- LIVE-LIST DISPLAY functions {{{
 
 function Dcr:ScanUnit( Unit, Index) --{{{
     Debuff = Dcr:UnitCurableDebuffs(Unit, true);
@@ -246,8 +229,6 @@ function Dcr:UpdateLiveDisplay( Index, Unit, Debuff) --{{{
 	return
     end
     Dcr:Debug("Updating: "..baseFrame.. Index);
-    --Dcr:Debug("Previous: ", item.debuff,  item.Name, item.unit, item.DebuffApps);
-    --Dcr:Debug("new     : ", Debuff.index,  Debuff.Name, Unit, Debuff.Applications);
 
     item.unit = Unit;
     item.Name = Debuff.Name;
@@ -267,9 +248,7 @@ function Dcr:UpdateLiveDisplay( Index, Unit, Debuff) --{{{
     getglobal(baseFrame..Index.."Type"):SetText(Dcr:MakeAfflictionName(Debuff.TypeName));
 
     getglobal(baseFrame..Index.."Affliction"):SetText(Debuff.Name);
-    --
-    --
-    -- item.UpdateMe = true;
+    
     item:Show();
 
     item = getglobal(baseFrame..Index.."Debuff");
@@ -281,7 +260,6 @@ function Dcr:UpdateLiveDisplay( Index, Unit, Debuff) --{{{
     item.debuff = Debuff.index;
 end --}}}
 
-
 -- }}}
 
 -- // }}}
@@ -290,6 +268,8 @@ end --}}}
 
 -- Scanning functionalties {{{
 -------------------------------------------------------------------------------
+
+-- This finction only returns interesting values of UnitDebuff()
 function Dcr:GetUnitDebuff  (Unit, i) --{{{
     local Name, rank, Texture, Applications, TypeName  = UnitDebuff(Unit, i);
     if (Name) then
@@ -300,21 +280,39 @@ function Dcr:GetUnitDebuff  (Unit, i) --{{{
 end --}}}
 
 do
-    -- there is a known maximum number of unit and a known maximum debuffs per unit so lets allocate the memory needed only once.
+    -- there is a known maximum number of unit and a known maximum debuffs per unit so lets allocate the memory needed only once. Memory will be allocated when needed and re-used...
     local DebuffUnitCache = {};
-    local Texture, Applications, TypeName, Name, Type, i, StoredDebuffIndex, CharmFound;
+
+    -- Variables are declared outside so that Lua doesn't initialize them at each call
+    local Texture, Applications, TypeName, Name, Type, i, StoredDebuffIndex, CharmFound, IsCharmed;
+
+
+    -- This is the core debuff scanning function of Decursive
+    -- This function does more than just reporting Debuffs. it also detects charmed units
 
     function Dcr:GetUnitDebuffAll (Unit) --{{{
 
+	-- create a Debuff table for this unit if there is not already one
 	if (not DebuffUnitCache[Unit]) then
 	    DebuffUnitCache[Unit] = {};
 	end
 
+	-- This is just a shortcut for easier readability
 	local ThisUnitDebuffs = DebuffUnitCache[Unit];
 
-	i = 1;
-	StoredDebuffIndex = 1;
-	CharmFound = false;
+	i = 1;			-- => to index all debuffs
+	StoredDebuffIndex = 1;	-- => this index only debuffs with a type
+	CharmFound = false;	-- => avoid to find that the unit is charmed again and again...
+
+
+	-- test if the unit is mind controlled once
+	if (UnitIsCharmed(Unit) and UnitCanAttack(Unit, "player")) then
+	    IsCharmed = true;
+	else
+	    IsCharmed = false;
+	end
+
+	-- iterate all available debuffs
 	while (true) do
 	    Name, TypeName, Applications, Texture = Dcr:GetUnitDebuff(Unit, i);
 
@@ -322,41 +320,48 @@ do
 		break;
 	    end
 
+	    -- test for a type (Magic Curse Disease or Poison)
 	    if (TypeName and TypeName ~= "") then
 		Type = DcrC.NameToTypes[TypeName];
 	    else
 		Type = false;
 	    end
 
-	    if (not CharmFound and UnitIsCharmed(Unit) and UnitCanAttack(Unit, "player")) then
+	    -- if the unit is charmed and we didn't took care of this information yet
+	    if (not CharmFound and IsCharmed) then
 
-		if (Type == DcrC.MAGIC and Dcr.Status.CuringSpells[DcrC.MAGIC]) then
+		-- If the unit has a magical debuff and we can cure it
+		-- (note that the target is not friendly in that case)
+		if (Type == DcrC.MAGIC and Dcr.Status.CuringSpells[DcrC.ENEMYMAGIC]) then
 		    Type = DcrC.ENEMYMAGIC;
-		else
+
+		    -- NOTE: if a unit is charmed and has another magical debuff
+		    -- this block will be executed...
+
+		else -- the unit doesn't have a magical debuff or we can't remove magical debuffs
 		    Type = DcrC.CHARMED;
 		    TypeName = DcrC.TypeNames[DcrC.CHARMED];
 		end
 		CharmFound = true;
-
 	    end
 
+
+	    -- If we found a type, register the Debuff
 	    if (Type) then
 
 
-		-- memory leak here
+		-- Create a Debuff index entry if necessary
 		if (not ThisUnitDebuffs[StoredDebuffIndex]) then
 		    ThisUnitDebuffs[StoredDebuffIndex] = {};
 		end
-		--if not (Type == ThisUnitDebuffs[StoredDebuffIndex].Type and Name == ThisUnitDebuffs[StoredDebuffIndex].Name and Applications ~= ThisUnitDebuffs[StoredDebuffIndex].Applications) then
 		ThisUnitDebuffs[StoredDebuffIndex].Texture	= Texture;
 		ThisUnitDebuffs[StoredDebuffIndex].Applications	= Applications;
 		ThisUnitDebuffs[StoredDebuffIndex].TypeName	= TypeName;
 		ThisUnitDebuffs[StoredDebuffIndex].Type		= Type;
 		ThisUnitDebuffs[StoredDebuffIndex].Name		= Name;
 		ThisUnitDebuffs[StoredDebuffIndex].index	= i;
-		--end
 
-
+		-- we can't use i, else we wouldn't have contiguous indexes in the table
 		StoredDebuffIndex = StoredDebuffIndex + 1;
 	    end
 
@@ -369,15 +374,14 @@ do
 	    StoredDebuffIndex = StoredDebuffIndex + 1;
 	end
 
-	--    TODO:
-	--    Add an 'unfriendly' type so that any controlled unit is shown
 
-	return ThisUnitDebuffs;
+	return ThisUnitDebuffs, IsCharmed;
     end --}}}
 end
 
 
 do
+    -- see the comemnt about DebuffUnitCache
     local ManagedDebuffUnitCache = {};
 
 
@@ -388,7 +392,9 @@ do
 	return cura < curb;
     end
 
-    function Dcr:UnitCurableDebuffs (Unit, JustOne)
+    -- This function will return a table containing only the Debuffs we can cure excepts the one we have to ignore
+    -- in different conditions.
+    function Dcr:UnitCurableDebuffs (Unit, JustOne) -- {{{
 
 	if not Unit then
 	    return false;
@@ -398,22 +404,22 @@ do
 	    ManagedDebuffUnitCache[Unit] = {};
 	end
 
-	local AllUnitDebuffs = Dcr:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
+	local AllUnitDebuffs, IsCharmed = Dcr:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
 
-	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then
-	    return false;
+	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no debuff
+	    return false, IsCharmed;
 	end
 
-	local Spells	= Dcr.Status.CuringSpells;
+	local Spells	= Dcr.Status.CuringSpells; -- shortcut to available spell by debuff type
 
 
-	local ManagedDebuffs = ManagedDebuffUnitCache[Unit];
+	local ManagedDebuffs = ManagedDebuffUnitCache[Unit]; -- shortcut for readability
 
 	--Dcr:Debug("Debuffs were found");
 
-	local DebuffNum = 1;
+	local DebuffNum = 1; -- number of found debuff (used for indexing)
 
-	local continue;
+	local continue; -- if we have to ignore a debuff, this will become false
 
 
 
@@ -446,31 +452,43 @@ do
 	    end
 
 	    -- }}}
-	    if continue then
-		-- Dcr:Debug("Debuffs matters");
-		-- if we are still here it means that this Debuff is something not to be ignored...
 
-		local DebuffType = Debuff.Type;
+	    
+	    if continue then
+		--	Dcr:Debug("Debuffs matters");
+		-- If we are still here it means that this Debuff is something not to be ignored...
+
 
 		-- We have a match for this type and we decided (checked) to cure it
-		if (Dcr.db.profile.CureOrder[DebuffType] and Dcr.db.profile.CureOrder[DebuffType] ~= -1) then
+		-- NOTE: Dcr.db.profile.CureOrder[DEBUFF_TYPE] is set to FALSE when the type is unchecked
+		-- and to -1 when there is no spell available for the type
+		-- (-1 is not a reliable value to test for spell avaibility)
+		if (Dcr.db.profile.CureOrder[Debuff.Type] and Dcr.db.profile.CureOrder[Debuff.Type] ~= -1) then
 
 
 		    -- Dcr:Debug("we can cure it");
 
-		    if (Spells[DebuffType]) then
-			if (Dcr.db.profile.Check_For_Abolish and (DebuffType == DcrC.POISON and Dcr:CheckUnitForBuffs(Unit, BS[Dcr.LOC.SPELL_ABOLISH_POISON]) or DebuffType == DcrC.DISEASE and Dcr:CheckUnitForBuffs(Unit, BS[Dcr.LOC.SPELL_ABOLISH_DISEASE]))) then
+		    -- if we do have a spell to cure
+		    if (Spells[Debuff.Type]) then
+			-- The user doesn't want to cure a unit afllicted by poison or disease if the unit
+			-- is beeing cured by an abolish spell
+
+			if (Dcr.db.profile.Check_For_Abolish and (Debuff.Type == DcrC.POISON and Dcr:CheckUnitForBuffs(Unit, BS[Dcr.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DcrC.DISEASE and Dcr:CheckUnitForBuffs(Unit, BS[Dcr.LOC.SPELL_ABOLISH_DISEASE]))) then
 			    Dcr:Debug("Abolish buff found, skipping");
 			else
-			   -- Dcr:Debug("It's managed");
+			    -- Dcr:Debug("It's managed");
 
+			    -- create an entry for this debuff index if necessary
 			    if (not ManagedDebuffs[DebuffNum]) then
 				ManagedDebuffs[DebuffNum] = {};
 			    end
 
+			    -- copy the debuff information to this table.
 			    Dcr:tcopy(ManagedDebuffs[DebuffNum], Debuff);
 
 			    DebuffNum = DebuffNum + 1;
+
+			    -- the live-list only reports the first debuf found and set JustOne to true
 			    if (JustOne) then
 				break;
 			    end
@@ -486,23 +504,24 @@ do
 	    DebuffNum = DebuffNum + 1;
 	end
 
-	-- sort the table only of it's not 'empty' and only if there is at least two debuffs
+	-- sort the table only if it's not 'empty' and only if there is at least two debuffs
 	if (ManagedDebuffs[1] and ManagedDebuffs[1].Type) then
 
 	    -- order Debuffs according to type priority order
 	    if (not JustOne and ManagedDebuffs[2] and ManagedDebuffs[2].Type) then
 		table.sort(ManagedDebuffs, sorting); -- uses memory..
 	    end
-	    return ManagedDebuffs;
+	    return ManagedDebuffs, IsCharmed;
 	else
-	    return false;
+	    return false, IsCharmed;
 	end
 
-    end
+    end -- // }}}
 
 end
 
 local UnitBuffsCache	= {};
+-- this function returns true if one of the debuff(s) passed to it is found on the specified unit
 function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
     if (not UnitBuffsCache[Unit]) then
@@ -510,7 +529,6 @@ function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
     end
 
     local UnitBuffs	= UnitBuffsCache[Unit];
-    -- local FoundBuffs	= {};
     local i		= 1;
 
     -- Gett all the unit's buffs
@@ -542,19 +560,9 @@ function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
 	    if Dcr:tcheckforval(UnitBuffs, Buff) then
 		return true;
-		-- FoundBuffs[Buff] = true;
 	    end
 
 	end
-
-	--[[
-	if (next(FoundBuffs)) then
-	    return FoundBuffs;
-	else
-	    return false;
-	end
-	--]]
-
     end
 
     return false;
@@ -573,18 +581,5 @@ function Dcr:CheckUnitStealth(Unit) --{{{
     return false;
 end --}}}
 -- }}}
-
---[[
-function Dcr_UnitInRange(Unit) --{{{
-    -- ==> XXX use result = IsSpellInRange(spell, [unit]) - is nil for no valid target, 0 for out of range, 1 for in range
-    -- and usable, noMana = IsUsableSpell(spell)
-    -- XXX will use them when mouseovering unit farmes
-    if (CheckInteractDistance(Unit, 4)) then
-	return true;
-    end
-    return false;
-end --}}}
--- }}}
---]]
 
 

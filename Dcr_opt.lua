@@ -520,10 +520,10 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_MFALPHA],
 		    desc = L[Dcr.LOC.OPT_MFALPHA_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFrameElemAlpha end,
+		    get = function() return 1 - Dcr.db.profile.DebuffsFrameElemAlpha end,
 		    set = function(v) 
 			if (v ~= Dcr.db.profile.DebuffsFrameElemAlpha) then
-			    Dcr.db.profile.DebuffsFrameElemAlpha = v;
+			    Dcr.db.profile.DebuffsFrameElemAlpha = 1 - v;
 			end
 		    end,
 		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,

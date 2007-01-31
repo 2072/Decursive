@@ -6,10 +6,10 @@
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
 
-## Version: 2.0.0 BETA 5
+## Version: 2.0.0 BETA 6-dev
 ## Author: Archarodim
 
-## X-License: GPL
+## X-License: GNU GPL
 
 ## OptionalDeps: Ace2, Babble-2.2, DewdropLib
 ## X-Embeds: Ace2, Babble-2.2, DewdropLib
