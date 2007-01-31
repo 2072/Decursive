@@ -186,7 +186,7 @@ Dcr.LOC.OPT_MFSETTINGS = "Micro Unit Frame Settings";
 Dcr.LOC.OPT_MFSETTINGS_DESC = "Set the micro units frame window options to suit your needs";
 Dcr.LOC.OPT_DISPLAYOPTIONS = "Display options";
 Dcr.LOC.OPT_SHOWMFS = "Show the micro units Frame";
-Dcr.LOC.OPT_SHOWMFS_DESC = "This must be enable if you want to cure by clicking";
+Dcr.LOC.OPT_SHOWMFS_DESC = "This must be enabled if you want to cure by clicking";
 Dcr.LOC.OPT_MAXMFS  = "Max units shown";
 Dcr.LOC.OPT_MAXMFS_DESC = "Defines the max number of micro unit frame to display";
 Dcr.LOC.OPT_UNITPERLINES = 'Number of units per line';
@@ -194,7 +194,7 @@ Dcr.LOC.OPT_UNITPERLINES_DESC = "Defines the max number of micro-unit-frames to 
 Dcr.LOC.OPT_MFSCALE = 'Scale of the micro-unit-frames';
 Dcr.LOC.OPT_MFSCALE_DESC = "Set the size of the micro-unit-frames";
 Dcr.LOC.OPT_SHOWHELP = "Show help";
-Dcr.LOC.OPT_SHOWHELP_DESC = "Shows an informational tooltip when your mouse is over a micro-unit-frame"
+Dcr.LOC.OPT_SHOWHELP_DESC = "Shows an detailed tooltip when you mouse-over a micro-unit-frame"
 Dcr.LOC.OPT_MFPERFOPT = "Performance options";
 Dcr.LOC.OPT_MFREFRESHRATE = 'Refresh rate'
 Dcr.LOC.OPT_MFREFRESHRATE_DESC = "Time between each refresh call (1 or several micro-unit-frames can be refreshed at once)";
@@ -217,7 +217,7 @@ Dcr.LOC.OPT_CURSECHECK_DESC = "If checked you'll be able to see and cure cursed 
 Dcr.LOC.OPT_DEBUFFFILTER = "Debuff filtering";
 Dcr.LOC.OPT_DEBUFFFILTER_DESC = "Select debuffs to filter out by name and class while you are in combat";
 Dcr.LOC.OPT_MACROOPTIONS = "Macro options";
-Dcr.LOC.OPT_MACROOPTIONS_DESC = "Set the behaviour of the macro cretaed by Decursive";
+Dcr.LOC.OPT_MACROOPTIONS_DESC = "Set the behaviour of the macro created by Decursive";
 Dcr.LOC.OPT_MACROBIND = "Set the macro binding key";
 Dcr.LOC.OPT_MACROBIND_DESC = "Defines the key on which the 'Decursive' macro will be called.\n\nPress the key and hit your 'Enter' keyboard key to save the new assignement (with your mouse cursor over the edit field)";
 Dcr.LOC.OPT_RESETOPTIONS = "Reset options to defaults";
@@ -244,7 +244,7 @@ Dcr.LOC.OPT_LVONLYINRANGE = "Units in range only";
 Dcr.LOC.OPT_LVONLYINRANGE_DESC = "Only units in dispel range will be shown in the live-list";
 
 Dcr.LOC.OPT_MFALPHA = "Transparency";
-Dcr.LOC.OPT_MFALPHA_DESC = "Défines the transparency of the MUFs when units are not afflicted";
+Dcr.LOC.OPT_MFALPHA_DESC = "Defines the transparency of the MUFs when units are not afflicted";
 
 
 Dcr.LOC.HLP_LEFTCLICK = "Left-Click";
