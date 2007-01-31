@@ -154,7 +154,7 @@ L:RegisterTranslations("frFR", function() return {
 
 
     [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
-    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" if you don't set a real key name.
+    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
     [Dcr.LOC.OPT_LIVELIST] = "Liste des affligés",
     [Dcr.LOC.OPT_LIVELIST_DESC] = "Options pour la liste des affligés",
     [Dcr.LOC.OPT_HIDELIVELIST_DESC] = "Si non cochée, affiche une liste des personnes affligés",
