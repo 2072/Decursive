@@ -24,7 +24,7 @@
 -------------------------------------------------------------------------------
 -- French localization {{{
 -- Revised by the Grinch 08.24.06 (From Release 1.9.8 RC2)
--- Traduit de l'anglais par Sylvin.
+-- Traduit de l'anglais par Sylvin (Last translation 2007-JAN-31)
 -------------------------------------------------------------------------------
 
 local L = Dcr.L;
@@ -116,7 +116,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.SCAN_LENGTH]	=	"Délais (Secs) entre les scans : ",
     [Dcr.LOC.ABOLISH_CHECK]	=	"Voir si \"Abolir\" sur la cible avant de guérir",
     [Dcr.LOC.RANDOM_ORDER]	=	"Guérir aléatoirement",
-    [Dcr.LOC.CURE_PETS]	=	"Contrôler et guérir les pets",
+    [Dcr.LOC.CURE_PETS]	=	"Contrôler et guérir les familiers",
     [Dcr.LOC.IGNORE_STEALTH]	=	"Ignorer les unités camouflées",
     [Dcr.LOC.PLAY_SOUND]	=	"Jouer un son quand il y a quelqu'un à guérir",
     [Dcr.LOC.ANCHOR]	=	"Ancre du texte",
@@ -154,15 +154,15 @@ L:RegisterTranslations("frFR", function() return {
 
 
     [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
-    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key
+    [Dcr.LOC.DEFAULT_MACROKEY] = "AUCUNE", -- Ideally the key just beneath the "escape" key
     [Dcr.LOC.OPT_LIVELIST] = "Liste des affligés",
     [Dcr.LOC.OPT_LIVELIST_DESC] = "Options pour la liste des affligés",
     [Dcr.LOC.OPT_HIDELIVELIST_DESC] = "Si non cochée, affiche une liste des personnes affligés",
-    [Dcr.LOC.OPT_SHOWTOOLTIP_DESC] = "Affiche une bulle d'informations détaillée à propos des afflictions sur les micro-portraits et dans la liste des affligés",
+    [Dcr.LOC.OPT_SHOWTOOLTIP_DESC] = "Affiche une bulle d'informations détaillées à propos des afflictions sur les micro-portraits et dans la liste des affligés",
     [Dcr.LOC.OPT_PLAYSOUND_DESC] = "Joue un son si quelqu'un est affligé",  
-    [Dcr.LOC.OPT_AMOUNT_AFFLIC_DESC] = "Défini le nombre max d'affligés affichés dans la liste des affligés",
-    [Dcr.LOC.OPT_BLACKLENTGH_DESC] = "Défini combien de temps quelqu'un reste sur liste noire",
-    [Dcr.LOC.OPT_SCANLENGTH_DESC] = "Défini le temps entre chaque scan",
+    [Dcr.LOC.OPT_AMOUNT_AFFLIC_DESC] = "Définit le nombre max d'affligés affichés dans la liste des affligés",
+    [Dcr.LOC.OPT_BLACKLENTGH_DESC] = "Définit combien de temps quelqu'un reste sur liste noire",
+    [Dcr.LOC.OPT_SCANLENGTH_DESC] = "Définit le temps entre chaque scan",
     [Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = "La liste des affligés se remplit de bas en haut",
     [Dcr.LOC.OPT_TIE_LIVELIST_DESC] = "L'affichage de la liste des affligés est lié à celui de la barre \"Decursive\"",
     [Dcr.LOC.OPT_MESSAGES] = "Messages",
@@ -172,16 +172,16 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_PRINT_ERRORS_DESC] = "Les erreurs seront affichées",
     [Dcr.LOC.OPT_ANCHOR_DESC] = "Montre l'ancre de la fenêtre de discussion spéciale",
     [Dcr.LOC.OPT_MFSETTINGS] = "Configuration des micro-portraits",
-    [Dcr.LOC.OPT_MFSETTINGS_DESC] = "Réglez les options de la fenêtre des micro-portrait selon vos besoins",
+    [Dcr.LOC.OPT_MFSETTINGS_DESC] = "Réglez les options de la fenêtre des micro-portraits selon vos besoins",
     [Dcr.LOC.OPT_DISPLAYOPTIONS] = "Options d'affichage",
     [Dcr.LOC.OPT_SHOWMFS] = "Affiche la fenêtre de micro-portraits",
-    [Dcr.LOC.OPT_SHOWMFS_DESC] = "Cela doit être activé si vous voulez guérir en cliquant avec la souris",
+    [Dcr.LOC.OPT_SHOWMFS_DESC] = "Cette option doit être activée, si vous voulez guérir en cliquant avec la souris",
     [Dcr.LOC.OPT_MAXMFS] = "Nombre maximum d'unités affichées",
-    [Dcr.LOC.OPT_MAXMFS_DESC] = "Défini le nombre maximum de micro-portraits à afficher",
+    [Dcr.LOC.OPT_MAXMFS_DESC] = "Définit le nombre maximum de micro-portraits à afficher",
     [Dcr.LOC.OPT_UNITPERLINES] = "Nombre d'unités par ligne",
-    [Dcr.LOC.OPT_UNITPERLINES_DESC] = "Définie le nombre max de micro-portraits à afficher par ligne",
+    [Dcr.LOC.OPT_UNITPERLINES_DESC] = "Définit le nombre max de micro-portraits à afficher par ligne",
     [Dcr.LOC.OPT_MFSCALE] = 'Echelle des micro-portraits',
-    [Dcr.LOC.OPT_MFSCALE_DESC] = "Défini la taille des micro-portraits",
+    [Dcr.LOC.OPT_MFSCALE_DESC] = "Définit la taille des micro-portraits",
     [Dcr.LOC.OPT_SHOWHELP] = "Affiche l'aide",
     [Dcr.LOC.OPT_SHOWHELP_DESC] = "Affiche une bulle d'aide lorsque la souris passe au-dessus d'un micro-portrait",
     [Dcr.LOC.OPT_MFPERFOPT] = "Options de performance",
@@ -190,11 +190,11 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_MFREFRESHSPEED] = 'Rapidité de rafraîchissement',
     [Dcr.LOC.OPT_MFREFRESHSPEED_DESC] = "Nombre de micro-portraits à rafraîchir à chaque passage",
     [Dcr.LOC.OPT_CURINGOPTIONS] = "Options de guérison",
-    [Dcr.LOC.OPT_CURINGOPTIONS_DESC] = "Défini les différents aspects du processus de guérison",
-    [Dcr.LOC.OPT_ABOLISHCHECK_DESC] = "Défini si les unités avec un sort 'Abolir' actif sont affichées et soignées",
+    [Dcr.LOC.OPT_CURINGOPTIONS_DESC] = "Définit les différents aspects du processus de guérison",
+    [Dcr.LOC.OPT_ABOLISHCHECK_DESC] = "Définit si les unités avec un sort 'Abolir' actif sont affichées et soignées",
     [Dcr.LOC.OPT_DONOTBLPRIO_DESC] = "Les unités prioritaires ne seront pas blacklistées",
     [Dcr.LOC.OPT_RANDOMORDER_DESC] = "Les unités seront affichées et guéries au hasard (non recommandé)",
-    [Dcr.LOC.OPT_CUREPETS_DESC] = "Les Pets seront affichés et guéris",
+    [Dcr.LOC.OPT_CUREPETS_DESC] = "Les familiers seront affichés et guéris",
     [Dcr.LOC.OPT_IGNORESTEALTHED_DESC] = "Les unités camouflées seront ignorées",
     [Dcr.LOC.OPT_CURINGORDEROPTIONS] = "Options sur l'ordre de guérison",
     [Dcr.LOC.OPT_MAGICCHECK_DESC] = "Si cochée, vous pourrez voir et guérir les unités affligées par la magie",
@@ -206,9 +206,9 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_DEBUFFFILTER] = "Filtrage des afflictions",
     [Dcr.LOC.OPT_DEBUFFFILTER_DESC] = "Sélectionner les afflictions à filtrer par nom et par classe pendant les combat",
     [Dcr.LOC.OPT_MACROOPTIONS] = "Options de la macro",
-    [Dcr.LOC.OPT_MACROOPTIONS_DESC] = "Défini le comportement de la macro créée par Decursive",
-    [Dcr.LOC.OPT_MACROBIND] = "Défini la touche liée à la macro",
-    [Dcr.LOC.OPT_MACROBIND_DESC] = "Défini la touche à partir de laquelle la macro 'Decursive' sera appelée.\n\nAppuyer sur la touche puis sur 'Entrée' pour sauvegarder la nouvelle affectation.",
+    [Dcr.LOC.OPT_MACROOPTIONS_DESC] = "Définit le comportement de la macro créée par Decursive",
+    [Dcr.LOC.OPT_MACROBIND] = "Définit la touche liée à la macro",
+    [Dcr.LOC.OPT_MACROBIND_DESC] = "Définit la touche à partir de laquelle la macro 'Decursive' sera appelée.\n\nAppuyer sur la touche puis sur 'Entrée' pour sauvegarder la nouvelle affectation.",
     [Dcr.LOC.OPT_RESETOPTIONS] = "Remet les options par défaut",
     [Dcr.LOC.OPT_RESETOPTIONS_DESC] = "Met les options du profil courant aux valeurs par défaut",
     [Dcr.LOC.OPT_REMOVESKDEBCONF] = "Êtes-vous sûr de vouloir enlever \n '%s' \nde la liste des exceptions ?",
@@ -220,7 +220,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_REMOVETHISDEBUFF_DESC] = "Supprime '%s' de la liste d'exception",
     [Dcr.LOC.OPT_RESETDEBUFF] = "Remet à zéro cette affliction",
     [Dcr.LOC.OPT_RESETDTDCRDEFAULT] = "Met '%s' aux valeurs par défaut de Decursive",
-    [Dcr.LOC.OPT_USERDEBUFF] = "Cette affliction  ne fait pas partie de la liste des afflictions par défaut de Decursive",
+    [Dcr.LOC.OPT_USERDEBUFF] = "Cette affliction ne fait pas partie de la liste des afflictions par défaut de Decursive",
     [Dcr.LOC.OPT_DEBUFFENTRY_DESC] = "Sélectionnez quelle classe doit être ignorée pour cette affliction",
     [Dcr.LOC.OPT_ADDDEBUFF] = "Ajouter une affliction à la liste",
     [Dcr.LOC.OPT_ADDDEBUFF_DESC] = "Ajoute une nouvelle affliction à cette liste",
@@ -230,10 +230,10 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_READDDEFAULTSD_DESC2] = "Toutes les afflictions par défaut de Decursive sont dans cette liste",
 
     [Dcr.LOC.OPT_LVONLYINRANGE] = "Unités à portée seulement",
-    [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = "Si cette option est activée, uniquement les unités à portée de sort seront affichées dans la liste",
+    [Dcr.LOC.OPT_LVONLYINRANGE_DESC] = "Si cette option est activée, uniquement les unités à portée de sorts seront affichées dans la liste",
 
     [Dcr.LOC.OPT_MFALPHA] = "Transparence",
-    [Dcr.LOC.OPT_MFALPHA_DESC] = "Définie la transparence des micro-portrait lorsque l'unité n'est pas affligée",
+    [Dcr.LOC.OPT_MFALPHA_DESC] = "Définit la transparence des micro-portraits, lorsque l'unité n'est pas affligée",
 
     [Dcr.LOC.HLP_LEFTCLICK] = "Clic Gauche",
     [Dcr.LOC.HLP_RIGHTCLICK] = "Clic Droit",
@@ -244,7 +244,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.SHIFT] = "Maj",
 
     [Dcr.LOC.TARGETUNIT] = "Cible l'unité",
-    [Dcr.LOC.FOCUSUNIT] = "Focus l'unité",
+    [Dcr.LOC.FOCUSUNIT] = "Se Focalise l'unité",
 
     [Dcr.LOC.ABSENT] = "Absente (%s)",
     [Dcr.LOC.TOOFAR] = "Hors de portée",
@@ -252,7 +252,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.STEALTHED] = "Camouflée",
     [Dcr.LOC.BLACKLISTED] = "Sur liste noire",
     [Dcr.LOC.UNITSTATUS] = "Statut de l'unité : ",
-    [Dcr.LOC.AFFLICTEDBY] = "Afflifgée par %s",
+    [Dcr.LOC.AFFLICTEDBY] = "Affligée par %s",
     
     [Dcr.LOC.SUCCESSCAST] = "%s sur %s |cFF00AA00réussi !|r",
 
