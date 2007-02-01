@@ -234,7 +234,7 @@ function Dcr:DebuffsFrame_Update()
 		MF = MicroUnitF:Create(MicroFrameThrottle, Unit);
 		ActionsDone = ActionsDone + 1;
 	    end
-	elseif (Dcr.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
+	elseif (Dcr.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit or not MF.UnitClass) then
 	    if (MF:UpdateAttributes(Unit, true)) then
 		ActionsDone = ActionsDone + 1;
 	    end
@@ -445,18 +445,25 @@ function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
     --Dcr:Debug("UpdateAttributes called for %s", Unit);
 
     local ReturnValue = false;
-    if (self.CurrUnit ~= Unit) then 
-	self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes
-	self.Frame:SetAttribute("unit", Unit); -- XXX test if the unit really changes
-	self.CurrUnit = Unit;
-	self.UnitClass = ((UnitClass(Unit)) and select(2, UnitClass(Unit)) or "WARRIOR");
+    if (self.CurrUnit ~= Unit or not self.UnitClass) then 
+	if (self.CurrUnit ~= Unit) then
+	    self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes
+	    self.Frame:SetAttribute("unit", Unit); -- XXX test if the unit really changes
+	    self.CurrUnit = Unit;
+	end
+	self.UnitClass = select(2, UnitClass(Unit));
 	ReturnValue = self;
 
-	-- update the border color
-	self.OuterTexture1:SetTexture( BC:GetColor(self.UnitClass) );
-	self.OuterTexture2:SetTexture( BC:GetColor(self.UnitClass) );
-	self.OuterTexture3:SetTexture( BC:GetColor(self.UnitClass) );
-	self.OuterTexture4:SetTexture( BC:GetColor(self.UnitClass) );
+	if (self.UnitClass) then
+	    -- update the border color
+	    self.OuterTexture1:SetTexture( BC:GetColor(self.UnitClass) );
+	    self.OuterTexture2:SetTexture( BC:GetColor(self.UnitClass) );
+	    self.OuterTexture3:SetTexture( BC:GetColor(self.UnitClass) );
+	    self.OuterTexture4:SetTexture( BC:GetColor(self.UnitClass) );
+	    ReturnValue = self;
+	--else
+	  --  Dcr:Debug("Class of unit %s is Nil", Unit);
+	end
 
 
     end
@@ -694,15 +701,6 @@ do
 	if (not DebuffType) then
 	    color[4] = color[4] * Dcr.db.profile.DebuffsFrameElemAlpha;
 	end
-
---	if (not self.Texture ) then
-	    
-	    
-
---	end
-
-	-- this strjoin call is not pretty another solution should be found, this is a cause of garbage leak I think
-	-- local savedcolor = strjoin("", unpack(color), ( self.Debuffs.IsCharmed and "C" or "NC" ) );
 
 	if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= Dcr.db.profile.DebuffsFrameElemAlpha or self.FirstDebuffType ~= DebuffType) then
 	    self.Texture:SetTexture(unpack(color));

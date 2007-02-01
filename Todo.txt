@@ -4,7 +4,7 @@ Important TODO:
 
 - Add an online help showing the localized readme.txt file (a script on my side will have to encode-escape the text before each commit)
 - Make it so the sound will play even if the live-list is disabled.
-
+- Add an option to grow the muf's upwards
 
 Other TODO:
 
