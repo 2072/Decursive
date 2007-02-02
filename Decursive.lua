@@ -26,9 +26,6 @@ Dcr:SetDateAndRevision("$Date$", "$Revision$");
 local L = Dcr.L;
 local BC = Dcr.BC;
 local BS = Dcr.BS;
-
--- print out a fuckload of info
-Dcr_Print_DEBUG = false;
 -------------------------------------------------------------------------------
 
 
