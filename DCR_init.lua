@@ -181,10 +181,12 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		Types = {DcrC.CURSE},
 		IsBest = true,
 	    },
+	    --[=[ -- disabled because of Korean locals... see below
 	    [BS[Dcr.LOC.SPELL_PURGE]]		    = {
 		Types = {DcrC.ENEMYMAGIC},
 		IsBest = true,
 	    },
+	    --]=]
 	    [BS[Dcr.LOC.PET_FEL_CAST]]		    = {
 		Types = {DcrC.MAGIC, DcrC.ENEMYMAGIC},
 		IsBest = true,
@@ -194,7 +196,18 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		IsBest = true,
 	    },
 
-	}; -- // }}}
+	};
+
+	-- Thanks to Korean localization team of WoW we have to make an exception....
+	-- They find the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
+	if (select(2, UnitClass("player")) == "SHAMAN") then
+	    DcrC.SpellsToUse[BS[Dcr.LOC.SPELL_PURGE]]		    = {
+		Types = {DcrC.ENEMYMAGIC},
+		IsBest = true,
+	    };
+	end
+	
+	-- // }}}
 
 end -- // }}}
 
