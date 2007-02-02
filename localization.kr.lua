@@ -156,8 +156,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.SONICBURST]		= "음파 폭발",
 	[Dcr.LOC.THUNDERCLAP]		= "천둥벼락",
 	[Dcr.LOC.DELUSIONOFJINDO]	= "진도의 망상",
-
-	[Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
+	[Dcr.LOC.MUTATINGINJECTION] = "Mutating Injection", -- check
 	[Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
 	[Dcr.LOC.OPT_LIVELIST] = "실시간 목록",
 	[Dcr.LOC.OPT_LIVELIST_DESC] = "실시간 목록에 대한 설정입니다.",
@@ -180,8 +179,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_DISPLAYOPTIONS] = "디스플레이 옵션",
 	[Dcr.LOC.OPT_SHOWMFS] = "작은 유닛 프레임 표시",
 	[Dcr.LOC.OPT_SHOWMFS_DESC] = "클릭으로 해제하려면 반드시 활성화 되어야 합니다.",
-	[Dcr.LOC.OPT_GROWDIRECTION] = Dcr.LOC.OPT_GROWDIRECTION,
-	[Dcr.LOC.OPT_GROWDIRECTION_DESC] = Dcr.LOC.OPT_GROWDIRECTION_DESC,
+	[Dcr.LOC.OPT_GROWDIRECTION] = "MUF 표시 반전",
+	[Dcr.LOC.OPT_GROWDIRECTION_DESC] = "MUF를 하단에서 상단으로 표시합니다.",
 	[Dcr.LOC.OPT_MAXMFS]  = "표시할 최대 유닛",
 	[Dcr.LOC.OPT_MAXMFS_DESC] = "표시할 작은 유닛 프레임의 최대 개수를 지정합니다.",
 	[Dcr.LOC.OPT_UNITPERLINES] = "한줄에 표시할 유닛의 수",
@@ -238,8 +237,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_LVONLYINRANGE] = "범위내 대상",
 	[Dcr.LOC.OPT_LVONLYINRANGE_DESC] = "해제 범위내 대상만 실시간 목록에 표시합니다.",
 
-    [Dcr.LOC.OPT_MFALPHA] = OPT_MFALPHA,
-    [Dcr.LOC.OPT_MFALPHA_DESC] = OPT_MFALPHA_DESC,
+	[Dcr.LOC.OPT_MFALPHA] = "투명도",
+	[Dcr.LOC.OPT_MFALPHA_DESC] = "디버프의 걸린 대상이 없을 때 MUF의 투명도를 지정합니다.",
 
 	[Dcr.LOC.HLP_LEFTCLICK] 	= "좌-클릭",
 	[Dcr.LOC.HLP_RIGHTCLICK] 	= "우-클릭",
@@ -260,8 +259,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.UNITSTATUS] 	= "상태: ",
 	[Dcr.LOC.AFFLICTEDBY] 	= "%s에 걸림",
 
-	[Dcr.LOC.SUCCESSCAST] 	= "%s|1으로;로 %s|1을;를; |cFF00AA00치료 성공!|r",
-
+	[Dcr.LOC.SUCCESSCAST] 	= "%s|1으로;로; %s |cFF00AA00치료 성공!|r",
 	[Dcr.LOC.HANDLEHELP] 	= "작은 유닛 프레임(MUFs) 모두 이동",
 
 	[Dcr.LOC.MACROKEYALREADYMAPPED] = "경고: The key mapped to Decursive macro [%s] was mapped to action '%s'.\nDecursive will restore the previous mapping if you set another key for its macro.",
