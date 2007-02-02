@@ -60,6 +60,8 @@ Dcr.defaults = { -- {{{
     
     DebuffsFrame_y = false,
 
+    DebuffsFrameGrowToTop = false,
+
     -- this is wether or not to show the "live" list	
     Hide_LiveList = false,
 
@@ -459,6 +461,20 @@ Dcr.options = { -- {{{
 		    disabled = function() return Dcr.Status.Combat end,
 		    order = 102,
 		},
+		GrowToTop = {
+		    type = "toggle",
+		    name = L[Dcr.LOC.OPT_GROWDIRECTION],
+		    desc = L[Dcr.LOC.OPT_GROWDIRECTION_DESC],
+		    get = function() return Dcr.db.profile.DebuffsFrameGrowToTop end,
+		    set = function(v)
+			if (v ~= Dcr.db.profile.DebuffsFrameGrowToTop) then
+			    Dcr.db.profile.DebuffsFrameGrowToTop = v;
+			    Dcr.MicroUnitF:ResetAllPositions ();
+			end
+		    end,
+		    disabled = function() return Dcr.Status.Combat end,
+		    order = 102.1,
+		},
 		MaxCount = {
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_MAXMFS],
@@ -494,7 +510,7 @@ Dcr.options = { -- {{{
 		    max = 40,
 		    step = 1,
 		    isPercent = false,
-		    order = 105,
+		    order = 104.9,
 		},
 		FrameScale = {
 		    type = 'range',

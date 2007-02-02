@@ -177,6 +177,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_DISPLAYOPTIONS] = "Options d'affichage",
     [Dcr.LOC.OPT_SHOWMFS] = "Affiche la fenêtre de micro-portraits",
     [Dcr.LOC.OPT_SHOWMFS_DESC] = "Cette option doit être activée, si vous voulez guérir en cliquant avec la souris",
+    [Dcr.LOC.OPT_GROWDIRECTION] = "Inverser l'affichage des micro-portraits",
+    [Dcr.LOC.OPT_GROWDIRECTION_DESC] = "Les micro-portraits seront affichés de bas en haut",
     [Dcr.LOC.OPT_MAXMFS] = "Nombre maximum d'unités affichées",
     [Dcr.LOC.OPT_MAXMFS_DESC] = "Définit le nombre maximum de micro-portraits à afficher",
     [Dcr.LOC.OPT_UNITPERLINES] = "Nombre d'unités par ligne",

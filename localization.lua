@@ -188,6 +188,8 @@ Dcr.LOC.OPT_MFSETTINGS_DESC = "Set the micro units frame window options to suit 
 Dcr.LOC.OPT_DISPLAYOPTIONS = "Display options";
 Dcr.LOC.OPT_SHOWMFS = "Show the micro units Frame";
 Dcr.LOC.OPT_SHOWMFS_DESC = "This must be enabled if you want to cure by clicking";
+Dcr.LOC.OPT_GROWDIRECTION = "Reverse MUFs Display";
+Dcr.LOC.OPT_GROWDIRECTION_DESC = "The MUFs will be displayed from bottom to top";
 Dcr.LOC.OPT_MAXMFS  = "Max units shown";
 Dcr.LOC.OPT_MAXMFS_DESC = "Defines the max number of micro unit frame to display";
 Dcr.LOC.OPT_UNITPERLINES = 'Number of units per line';
@@ -435,6 +437,8 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_DISPLAYOPTIONS] = true,
     [Dcr.LOC.OPT_SHOWMFS] = true,
     [Dcr.LOC.OPT_SHOWMFS_DESC] = true,
+    [Dcr.LOC.OPT_GROWDIRECTION] = true,
+    [Dcr.LOC.OPT_GROWDIRECTION_DESC] = true,
     [Dcr.LOC.OPT_MAXMFS] = true,
     [Dcr.LOC.OPT_MAXMFS_DESC] = true,
     [Dcr.LOC.OPT_UNITPERLINES] = true,

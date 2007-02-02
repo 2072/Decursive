@@ -269,8 +269,8 @@ local function GiveMFAnchor (ID)
     local LineNum = math.floor( (ID - 1) / MFPerLine);
     local NumOnLine = math.fmod( (ID - 1), MFPerLine);
 
-    local x = NumOnLine * (MFSize + Spaces[1]);
-    local y = LineNum * (Spaces[2] - MFSize);
+    local x = (Dcr.db.profile.DebuffsFrameGrowToTop and MFSize or 0) + NumOnLine * (MFSize + Spaces[1]);
+    local y = (Dcr.db.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * (Spaces[2] - MFSize);
 
 
     return { "TOPLEFT", x + 3, y - 20, "TOPLEFT" };
