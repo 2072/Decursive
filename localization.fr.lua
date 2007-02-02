@@ -26,6 +26,7 @@
 -- Revised by the Grinch 08.24.06 (From Release 1.9.8 RC2)
 -- Traduit de l'anglais par Sylvin (Last translation 2007-JAN-31)
 -------------------------------------------------------------------------------
+Dcr:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = Dcr.L;
 L:RegisterTranslations("frFR", function() return {

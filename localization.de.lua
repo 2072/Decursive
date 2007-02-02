@@ -24,6 +24,7 @@
 -------------------------------------------------------------------------------
 -- German localization
 -------------------------------------------------------------------------------
+Dcr:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = Dcr.L;
 L:RegisterTranslations("deDE", function() return {

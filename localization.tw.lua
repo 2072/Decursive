@@ -26,6 +26,7 @@
 -----------------------------------------------------------------------------------------------
 -- Chinese localization (Default)  By srshyu@seed.net.tw and snowwolf@seed.net.tw and Peter Sun
 -----------------------------------------------------------------------------------------------
+Dcr:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = Dcr.L;
 L:RegisterTranslations("zhTW", function() return {

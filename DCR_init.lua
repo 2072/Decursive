@@ -652,4 +652,27 @@ end
 
 
 -- }}}
+
+
+
+function Dcr:SetDateAndRevision (Date, Revision)
+
+    if not Dcr.TextVersion then
+	Dcr.TextVersion = GetAddOnMetadata("Decursive", "Version");
+	Dcr.Revision = 0;
+    end
+
+    local Rev = tonumber((string.gsub(Revision, "%$Revision: (%d+) %$", "%1")));
+
+    if  Rev and Dcr.Revision < Rev then
+	Dcr.Revision = Rev;
+	Dcr.date = Date:gsub("%$Date: (.-) %$", "%1");
+	Dcr.version = string.format("%s (|cFF11CCAARevision: %d|r)", Dcr.TextVersion, Rev);
+	--Dcr:Print("XXXXX VERSION SET to ", Dcr.version);
+    end
+
+
+end
+
+Dcr:SetDateAndRevision("$Date$", "$Revision$");
 -------------------------------------------------------------------------------

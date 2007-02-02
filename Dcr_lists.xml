@@ -20,6 +20,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     -->
+    <Script>
+	Dcr:SetDateAndRevision("$Date$", "$Revision$");
+    </Script>
 
     <!--  Dcr_ListEntryTemplate {{{ -->
     <Button name="Dcr_ListEntryTemplate" inherits="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
