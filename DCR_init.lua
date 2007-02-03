@@ -87,6 +87,7 @@ Dcr.Status.DelayedFunctionCalls = {};
 Dcr.Status.DelayedFunctionCallsCount = 0;
 
 Dcr.Status.Blacklisted_Array = {};
+Dcr.Status.ClassBordersAreInvalid = false;
 
 
 -- // }}}
@@ -314,6 +315,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PARTY_LEADER_CHANGED","GroupChanged");
     self:RegisterEvent("RAID_ROSTER_UPDATE","GroupChanged");
     self:RegisterEvent("UNIT_PET","UNIT_PET");
+    self:RegisterEvent("PLAYER_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
     self:RegisterEvent("UI_ERROR_MESSAGE","UI_ERROR_MESSAGE");
     self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
     --	self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
@@ -351,6 +353,7 @@ function Dcr:OnProfileEnable()
     Dcr.Status.CuringSpells = {};
     Dcr.Status.CuringSpellsPrio = {};
     Dcr.Status.Blacklisted_Array = {};
+    Dcr.Status.Unit_Array_UnitToName = {};
     Dcr.Status.DelayedFunctionCalls = {};
     Dcr.Status.DelayedFunctionCallsCount = 0;
 

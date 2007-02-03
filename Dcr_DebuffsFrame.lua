@@ -119,6 +119,8 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum)
 	self.FrameNum		= FrameNum;
 	self.Debuff		= false;
 	self.CurrUnit		= false;
+	self.UnitName		= false;
+	self.UnitClass		= false;
 	self.UnitStatus		= 0;
 	self.FirstDebuffType	= 0;
 	self.NormalAlpha	= 0;
@@ -188,6 +190,7 @@ function Dcr:DebuffsFrame_Update()
     Dcr:GetUnitArray();
     if (Dcr.Status.Unit_Array[#Dcr.Status.Unit_Array] ~= "focus" and UnitIsFriend("focus", "player")) then
 	table.insert(Dcr.Status.Unit_Array, "focus");
+	Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
 --	table.insert(Dcr.Status.Unit_Array, 1, "target"); -- XXX re-add this later
     end
 
@@ -235,7 +238,7 @@ function Dcr:DebuffsFrame_Update()
 		MF = MicroUnitF:Create(MicroFrameThrottle, Unit);
 		ActionsDone = ActionsDone + 1;
 	    end
-	elseif (Dcr.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit or not MF.UnitClass) then
+	elseif (Dcr.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
 	    if (MF:UpdateAttributes(Unit, true)) then
 		ActionsDone = ActionsDone + 1;
 	    end
@@ -432,87 +435,75 @@ local AvailableModifier = {
     "shift","ctrl","alt",
 }
 
-function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
-    self.UpdateMe = false;
-    -- Delay the call if we are fighting
-    if (Dcr.Status.Combat) then
-	if not DoNotDelay then
-	    Dcr:AddDelayedFunctionCall (
-	    "MicroUnit_" .. self.ID, self.UpdateAttributes,
-	    self, Unit);
-	end
-	return false;
-    end
-    --Dcr:Debug("UpdateAttributes called for %s", Unit);
-
+do
     local ReturnValue = false;
-    if (self.CurrUnit ~= Unit or not self.UnitClass) then 
-	if (self.CurrUnit ~= Unit) then
+    function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
+	self.UpdateMe = false;
+	-- Delay the call if we are fighting
+	if (Dcr.Status.Combat) then
+	    if not DoNotDelay then
+		Dcr:AddDelayedFunctionCall (
+		"MicroUnit_" .. self.ID, self.UpdateAttributes,
+		self, Unit);
+	    end
+	    return false;
+	end
+	--Dcr:Debug("UpdateAttributes called for %s", Unit);
+
+	ReturnValue = false;
+
+	if (self.CurrUnit ~= Unit) then 
 	    self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes
 	    self.Frame:SetAttribute("unit", Unit); -- XXX test if the unit really changes
 	    self.CurrUnit = Unit;
-	end
-	self.UnitClass = select(2, UnitClass(Unit));
-	ReturnValue = self;
-
-	if (self.UnitClass) then
-	    -- update the border color
-	    self.OuterTexture1:SetTexture( BC:GetColor(self.UnitClass) );
-	    self.OuterTexture2:SetTexture( BC:GetColor(self.UnitClass) );
-	    self.OuterTexture3:SetTexture( BC:GetColor(self.UnitClass) );
-	    self.OuterTexture4:SetTexture( BC:GetColor(self.UnitClass) );
 	    ReturnValue = self;
-	--else
-	  --  Dcr:Debug("Class of unit %s is Nil", Unit);
 	end
 
+	if (Dcr.Status.SpellsChanged == self.LastAttribUpdate) then
+	    return ReturnValue;
+	end
+	Dcr:Debug("UpdateAttributes() executed");
 
-    end
+	self.Frame:SetAttribute("type3", "target"); --never changes
+	self.Frame:SetAttribute("ctrl-type3", "focus"); -- never changes
+	self.Frame:SetAttribute("type1", "target"); -- required to disable an hidden cache somewhere...
+	self.Frame:SetAttribute("type1", "spell");
+	self.Frame:SetAttribute("ctrl-type1", "target");  -- required to disable an hidden cache somewhere...
+	self.Frame:SetAttribute("ctrl-type1", "spell");
+	self.Frame:SetAttribute("type2", "target"); -- required to disable an hidden cache somewhere...
+	self.Frame:SetAttribute("type2", "spell");
 
-    if (Dcr.Status.SpellsChanged == self.LastAttribUpdate) then
-	return ReturnValue;
-    end
-    Dcr:Debug("UpdateAttributes() executed");
+	-- We need:
+	--
+	--  - a table telling the priority of each spell
+	--		Dcr.Status.CuringSpellsPrio [ __SPELL_NAME__ ] = __PRIO_NUM__
 
-    self.Frame:SetAttribute("type3", "target"); --never changes
-    self.Frame:SetAttribute("ctrl-type3", "focus"); -- never changes
-    self.Frame:SetAttribute("type1", "target"); -- required to disable an hidden cache somewhere...
-    self.Frame:SetAttribute("type1", "spell");
-    self.Frame:SetAttribute("ctrl-type1", "target");  -- required to disable an hidden cache somewhere...
-    self.Frame:SetAttribute("ctrl-type1", "spell");
-    self.Frame:SetAttribute("type2", "target"); -- required to disable an hidden cache somewhere...
-    self.Frame:SetAttribute("type2", "spell");
-
-    -- We need:
-    --
-    --  - a table telling the priority of each spell
-    --		Dcr.Status.CuringSpellsPrio [ __SPELL_NAME__ ] = __PRIO_NUM__
-
-
-    if (Dcr.Status.SpellsChanged ~= self.TooltipUpdate) then
-	self.TooltipButtonsInfo = {};
-    end
-
-    for Spell, Prio in pairs(Dcr.Status.CuringSpellsPrio) do
-	self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
 
 	if (Dcr.Status.SpellsChanged ~= self.TooltipUpdate) then
-	    self.TooltipButtonsInfo[Prio] =
-	    string.format("%s: %s", Dcr:ColorText(AvailableButtonsReadable[Prio], Dcr:NumToHexColor(MF_colors[Prio])), Spell);
+	    self.TooltipButtonsInfo = {};
 	end
-    end
 
-    if (Dcr.Status.SpellsChanged ~= self.TooltipUpdate) then
-	table.insert(self.TooltipButtonsInfo, string.format("%s: %s", L[Dcr.LOC.HLP_MIDDLECLICK], L[Dcr.LOC.TARGETUNIT]));
-	table.insert(self.TooltipButtonsInfo, string.format("%s: %s", L[Dcr.LOC.CTRL] .. "-" .. L[Dcr.LOC.HLP_MIDDLECLICK], L[Dcr.LOC.FOCUSUNIT]));
-	self.TooltipButtonsInfo = table.concat(self.TooltipButtonsInfo, "\n");
-	self.TooltipUpdate = Dcr.Status.SpellsChanged;
-    end
+	for Spell, Prio in pairs(Dcr.Status.CuringSpellsPrio) do
+	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
 
-    self.LastAttribUpdate = Dcr.Status.SpellsChanged;
-    return self;
-    -- Dcr:PrintLiteral(Dcr.Status.CuringSpellsPrio);
-end -- }}}
+	    if (Dcr.Status.SpellsChanged ~= self.TooltipUpdate) then
+		self.TooltipButtonsInfo[Prio] =
+		string.format("%s: %s", Dcr:ColorText(AvailableButtonsReadable[Prio], Dcr:NumToHexColor(MF_colors[Prio])), Spell);
+	    end
+	end
+
+	if (Dcr.Status.SpellsChanged ~= self.TooltipUpdate) then
+	    table.insert(self.TooltipButtonsInfo, string.format("%s: %s", L[Dcr.LOC.HLP_MIDDLECLICK], L[Dcr.LOC.TARGETUNIT]));
+	    table.insert(self.TooltipButtonsInfo, string.format("%s: %s", L[Dcr.LOC.CTRL] .. "-" .. L[Dcr.LOC.HLP_MIDDLECLICK], L[Dcr.LOC.FOCUSUNIT]));
+	    self.TooltipButtonsInfo = table.concat(self.TooltipButtonsInfo, "\n");
+	    self.TooltipUpdate = Dcr.Status.SpellsChanged;
+	end
+
+	self.LastAttribUpdate = Dcr.Status.SpellsChanged;
+	return self;
+	-- Dcr:PrintLiteral(Dcr.Status.CuringSpellsPrio);
+    end -- }}}
+end
 
 -- Micro Frame Events
 function Dcr:DebuffsFrameUnit_OnLoad()
@@ -644,13 +635,14 @@ end
 
 do
     local color = {};
-    local DebuffType, Unit, PreviousStatus, BorderAlpha;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ReturnValue;
     function MicroUnitF.prototype:SetColor()
 
 	-- get the debuffs of this unit
 	self:SetDebuffs();
 	BorderAlpha =  Dcr.db.profile.DebuffsFrameElemAlpha / 2;
 	DebuffType = false;
+	ReturnValue = false;
 	Unit = self.CurrUnit;
 	PreviousStatus = self.UnitStatus;
 
@@ -695,6 +687,34 @@ do
 	    self.UnitStatus = NORMAL;
 	end
 
+
+	-- set the class border color when needed
+	if ((not self.UnitClass and self.UnitStatus ~= ABSENT) or Dcr.Status.Unit_Array_UnitToName[Unit] ~= self.UnitName) then
+
+	    self.UnitName = Dcr.Status.Unit_Array_UnitToName[Unit];
+
+	    Class = select(2, UnitClass(Unit));
+
+	    if (Class and Class ~= self.UnitClass) then
+		-- update the border color
+		self.OuterTexture1:SetTexture( BC:GetColor(Class) );
+		self.OuterTexture2:SetTexture( BC:GetColor(Class) );
+		self.OuterTexture3:SetTexture( BC:GetColor(Class) );
+		self.OuterTexture4:SetTexture( BC:GetColor(Class) );
+
+		self.UnitClass = Class;
+
+		ReturnValue = true;
+
+		Dcr:Debug("Class '%s' set for '%s'", Class, Unit);
+	    elseif not Class then
+		self.UnitClass = false;
+		--Dcr:Debug("Class of unit %s is Nil", Unit);
+	    end
+	end
+
+
+	-- set the main color of the MUF if needed
 	if (self.IsCharmed) then
 	    self.UnitStatus = bit.bor( self.UnitStatus, CHARMED);
 	end
@@ -702,6 +722,7 @@ do
 	if (not DebuffType) then
 	    color[4] = color[4] * Dcr.db.profile.DebuffsFrameElemAlpha;
 	end
+
 
 	if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= Dcr.db.profile.DebuffsFrameElemAlpha or self.FirstDebuffType ~= DebuffType) then
 	    self.Texture:SetTexture(unpack(color));
@@ -727,9 +748,10 @@ do
 	    self.FirstDebuffType = DebuffType;
 
 	    --self.Color = savedcolor;
-	    return true;
+	    ReturnValue = true;
 	end
-	return false;
+
+	return ReturnValue;
 
     end
 end

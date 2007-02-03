@@ -113,6 +113,11 @@ function Dcr:ADDON_ACTION_FORBIDDEN (Addon, protectedfunction)
    Dcr:errln("The add-on %s tried to use the forbidden function: %s", Addon, protectedfunction); 
 end
 
+function Dcr:PLAYER_FOCUS_CHANGED ()
+    Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+    Dcr:Debug("Focus changed");
+end
+
 function Dcr:OnDebugEnable ()
     Dcr.db.profile.debugging = true;
 end

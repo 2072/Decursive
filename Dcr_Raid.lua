@@ -27,13 +27,14 @@ local L			    = Dcr.L;
 local BC		    = Dcr.BC;
 local BS		    = Dcr.BS;
 
-local RaidRosterCache	    = { };
-local SortingTable	    = { };
-Dcr.Status.Unit_ArrayByName = { };
+local RaidRosterCache		= { };
+local SortingTable		= { };
+Dcr.Status.Unit_ArrayByName	= { };
+Dcr.Status.Unit_Array_UnitToName= { };
 
-Dcr.Status.InternalPrioList = { };
-Dcr.Status.InternalSkipList = { };
-Dcr.Status.Unit_Array	    = { };
+Dcr.Status.InternalPrioList	= { };
+Dcr.Status.InternalSkipList	= { };
+Dcr.Status.Unit_Array		= { };
 
 -------------------------------------------------------------------------------
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
@@ -260,8 +261,9 @@ function Dcr:GetUnitArray() --{{{
     -- to not care if we add a same unit several times (speed optimization)
     -- but we cannot use sort unless indexes are integer so:
     Dcr.Status.Unit_Array = {}
-    for _, value in pairs(Dcr.Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
-	table.insert(Dcr.Status.Unit_Array, value);
+    for name, unit in pairs(Dcr.Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
+	table.insert(Dcr.Status.Unit_Array, unit);
+	Dcr.Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table :)
     end
 
     table.sort(Dcr.Status.Unit_Array, function (a,b) return SortingTable[a] < SortingTable[b] end);
