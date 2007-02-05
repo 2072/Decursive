@@ -165,6 +165,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum)
 	self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.InnerTexture:SetHeight(7);
 	self.InnerTexture:SetWidth(7);
+	self.InnerTexture:SetDrawLayer("OVERLAY");
 	self.InnerTexture:SetTexture(unpack(MF_colors["InnerCharmed"]));
 
 
@@ -740,7 +741,7 @@ do
 		self.OuterTexture4:SetAlpha(BorderAlpha);
 	    end
 
-	    Dcr:Debug("Color Applied", self.UnitStatus);
+	    Dcr:Debug("Color Applied, MUF Status:", self.UnitStatus);
 
 
 	    self.BorderAlpha = BorderAlpha;
