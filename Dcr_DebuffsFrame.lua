@@ -520,12 +520,13 @@ function Dcr:DebuffsFrameUnit_OnEnter()
     local MF = this.Object;
     local Status;
 
-    -- removes the CHARMED bit from Status
-    Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED));
 
 
     if (Dcr.db.profile.AfflictionTooltips ) then
 	MF:SetColor();
+	-- removes the CHARMED bit from Status
+	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED));
+
 	local Unit = MF.CurrUnit;
 
 	local TooltipText = "";
@@ -554,7 +555,7 @@ function Dcr:DebuffsFrameUnit_OnEnter()
 	elseif (Status == BLACKLISTED) then
 	    StatusText = L[Dcr.LOC.BLACKLISTED];
 
-	elseif (Status == AFFLICTED or Status == AFFLICTED_NIR) then
+	elseif (MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR)) then
 	    local DebuffType = MF.Debuffs[1].Type;
 	    StatusText = string.format(L[Dcr.LOC.AFFLICTEDBY], Dcr:ColorText( L[DcrC.TypeNames[DebuffType]], "FF" .. DcrC.TypeColors[DebuffType]) );
 	end
