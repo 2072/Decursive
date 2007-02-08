@@ -249,6 +249,22 @@ Dcr.LOC.OPT_LVONLYINRANGE_DESC = "Only units in dispel range will be shown in th
 Dcr.LOC.OPT_MFALPHA = "Transparency";
 Dcr.LOC.OPT_MFALPHA_DESC = "Defines the transparency of the MUFs when units are not afflicted";
 
+Dcr.LOC.OPT_ADVDISP = "Advance display Options";
+Dcr.LOC.OPT_ADVDISP_DESC = "Allow to set Transparency of the border and center separately, to set the space between each MUF";
+Dcr.LOC.OPT_TIECENTERANDBORDER = "Tie center and border transparency";
+Dcr.LOC.OPT_TIECENTERANDBORDER_OPT = "The transparency of the border is half the center transparency when checked";
+Dcr.LOC.OPT_BORDERTRANSP = "Border transparency";
+Dcr.LOC.OPT_BORDERTRANSP_DESC = "Set the transparency of the border";
+Dcr.LOC.OPT_CENTERTRANSP = "Center transparency";
+Dcr.LOC.OPT_CENTERTRANSP_DESC = "Set the transparency of the center";
+Dcr.LOC.OPT_TIEXYSPACING = "Tie horizontal and vertical spacing";
+Dcr.LOC.OPT_TIEXYSPACING_DESC = "The horizontal and vertical space between MUFs are the same";
+Dcr.LOC.OPT_XSPACING = "Horizontal spacing";
+Dcr.LOC.OPT_XSPACING_DESC = "Set the Horizontal space between MUFs";
+Dcr.LOC.OPT_YSPACING = "Vertical spacing";
+Dcr.LOC.OPT_YSPACING_DESC = "Set the Vertical space between MUFs";
+
+
 
 Dcr.LOC.HLP_LEFTCLICK = "Left-Click";
 Dcr.LOC.HLP_RIGHTCLICK = "Right-Click";
@@ -294,12 +310,12 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.CLASS_WARLOCK]	=	true,
     [Dcr.LOC.CLASS_WARRIOR]	=	true,
 
-    [Dcr.LOC.DISEASE]	=	true,
-    [Dcr.LOC.MAGIC]	=	true,
-    [Dcr.LOC.POISON]	=	true,
-    [Dcr.LOC.CURSE]	=	true,
-    [Dcr.LOC.MAGICCHARMED]=	true,
-    [Dcr.LOC.CHARMED]	=	true,
+    [Dcr.LOC.DISEASE]	    =	true,
+    [Dcr.LOC.MAGIC]	    =	true,
+    [Dcr.LOC.POISON]	    =	true,
+    [Dcr.LOC.CURSE]	    =	true,
+    [Dcr.LOC.MAGICCHARMED]  =	true,
+    [Dcr.LOC.CHARMED]	    =	true,
 
     -------------------------------------------------------------------------------
     -- English localization (Default)
@@ -318,34 +334,34 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.CLASS_WARLOCK]	=	true,
     [Dcr.LOC.CLASS_WARRIOR]	=	true,
 
-    [Dcr.LOC.STR_OTHER]	=	true,
+    [Dcr.LOC.STR_OTHER]		=	true,
     [Dcr.LOC.STR_OPTIONS]	=	true,
-    [Dcr.LOC.STR_CLOSE]	=	true,
+    [Dcr.LOC.STR_CLOSE]		=	true,
     [Dcr.LOC.STR_DCR_PRIO]	=	true,
     [Dcr.LOC.STR_DCR_SKIP]	=	true,
     [Dcr.LOC.STR_QUICK_POP]	=	true,
-    [Dcr.LOC.STR_POP]	=	true,
-    [Dcr.LOC.STR_GROUP]	=	true,
+    [Dcr.LOC.STR_POP]		=	true,
+    [Dcr.LOC.STR_GROUP]		=	true,
 
 
 
 
     [Dcr.LOC.PRIORITY_SHOW]	=	true,
-    [Dcr.LOC.POPULATE]	=	true,
-    [Dcr.LOC.SKIP_SHOW]	=	true,
+    [Dcr.LOC.POPULATE]		=	true,
+    [Dcr.LOC.SKIP_SHOW]		=	true,
     [Dcr.LOC.CLEAR_PRIO]	=	true,
     [Dcr.LOC.CLEAR_SKIP]	=	true,
 
     [Dcr.LOC.PET_FEL_CAST]	=	true,
     [Dcr.LOC.PET_DOOM_CAST]	=	true,
 
-    [Dcr.LOC.SPELL_POLYMORPH]		  = true,
+    [Dcr.LOC.SPELL_POLYMORPH]		=	true,
     [Dcr.LOC.SPELL_CURE_DISEASE]	=	true,
     [Dcr.LOC.SPELL_ABOLISH_DISEASE]	=	true,
-    [Dcr.LOC.SPELL_PURIFY]	=	true,
-    [Dcr.LOC.SPELL_CLEANSE]	=	true,
+    [Dcr.LOC.SPELL_PURIFY]		=	true,
+    [Dcr.LOC.SPELL_CLEANSE]		=	true,
     [Dcr.LOC.SPELL_DISPELL_MAGIC]	=	true,
-    [Dcr.LOC.SPELL_CURE_POISON]	=	true,
+    [Dcr.LOC.SPELL_CURE_POISON]		=	true,
     [Dcr.LOC.SPELL_ABOLISH_POISON]	=	true,
     [Dcr.LOC.SPELL_REMOVE_LESSER_CURSE]	=	true,
     [Dcr.LOC.SPELL_REMOVE_CURSE]	=	true,
@@ -370,8 +386,8 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPTION_MENU]	=	true,
     [Dcr.LOC.POPULATE_LIST]	=	true,
     [Dcr.LOC.LIST_ENTRY_ACTIONS]=	true,
-    [Dcr.LOC.HIDE_MAIN]	=	true,
-    [Dcr.LOC.SHOW_MSG]	=	true,
+    [Dcr.LOC.HIDE_MAIN]		=	true,
+    [Dcr.LOC.SHOW_MSG]		=	true,
     [Dcr.LOC.IS_HERE_MSG]	=	true,
 
     [Dcr.LOC.PRINT_CHATFRAME]	=	true,
@@ -388,10 +404,10 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.SCAN_LENGTH]	=	true,
     [Dcr.LOC.ABOLISH_CHECK]	=	true,
     [Dcr.LOC.RANDOM_ORDER]	=	true,
-    [Dcr.LOC.CURE_PETS]	=	true,
+    [Dcr.LOC.CURE_PETS]		=	true,
     [Dcr.LOC.IGNORE_STEALTH]	=	true,
     [Dcr.LOC.PLAY_SOUND]	=	true,
-    [Dcr.LOC.ANCHOR]	=	true,
+    [Dcr.LOC.ANCHOR]		=	true,
     [Dcr.LOC.DONOT_BL_PRIO]	=	true,
 
     -- $s is spell name
@@ -497,7 +513,23 @@ L:RegisterTranslations("enUS", function() return {
     
     [Dcr.LOC.OPT_MFALPHA] = true,
     [Dcr.LOC.OPT_MFALPHA_DESC] = true,
-    
+   
+    [Dcr.LOC.OPT_ADVDISP]		 = true,
+    [Dcr.LOC.OPT_ADVDISP_DESC]		 = true,
+    [Dcr.LOC.OPT_TIECENTERANDBORDER]	 = true,
+    [Dcr.LOC.OPT_TIECENTERANDBORDER_OPT] = true,
+    [Dcr.LOC.OPT_BORDERTRANSP]		 = true,
+    [Dcr.LOC.OPT_BORDERTRANSP_DESC]	 = true,
+    [Dcr.LOC.OPT_CENTERTRANSP]		 = true,
+    [Dcr.LOC.OPT_CENTERTRANSP_DESC]	 = true,
+    [Dcr.LOC.OPT_TIEXYSPACING]		 = true,
+    [Dcr.LOC.OPT_TIEXYSPACING_DESC]	 = true,
+    [Dcr.LOC.OPT_XSPACING]		 = true,
+    [Dcr.LOC.OPT_XSPACING_DESC]		 = true,
+    [Dcr.LOC.OPT_YSPACING]		 = true,
+    [Dcr.LOC.OPT_YSPACING_DESC]		 = true,
+
+
     [Dcr.LOC.HLP_LEFTCLICK] = true,
     [Dcr.LOC.HLP_RIGHTCLICK] = true,
     [Dcr.LOC.HLP_MIDDLECLICK] = true,

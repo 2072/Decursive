@@ -70,7 +70,7 @@
 			this.isMoving = true;
 			end
 
-			Dcr:OnCornerClick(arg1, this);
+			Dcr.MicroUnitF:OnCornerClick(arg1, this);
 		    </OnMouseDown>
 		    <OnHide>
 			if ( this.isMoving ) then
@@ -113,13 +113,13 @@
 
 	<Scripts>
 	    <OnLoad>
-		Dcr:DebuffsFrameUnit_OnLoad();
+		Dcr.MicroUnitF:OnLoad();
 	    </OnLoad>
 	    <OnEnter>
-		Dcr:DebuffsFrameUnit_OnEnter();
+		Dcr.MicroUnitF:OnEnter();
 	    </OnEnter>
 	    <OnLeave>
-		Dcr:DebuffsFrameUnit_OnLeave();
+		Dcr.MicroUnitF:OnLeave();
 	    </OnLeave>
 	</Scripts>
     </Button>

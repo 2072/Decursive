@@ -47,8 +47,18 @@ Dcr.defaults = { -- {{{
     DebuffsFrameElemScale = 1,
     
     DebuffsFrameElemAlpha = .4,
+    
+    DebuffsFrameElemBorderAlpha = .2,
+
+    DebuffsFrameElemTieTransparency = true;
 
     DebuffsFramePerline = 10,
+   
+    DebuffsFrameTieSpacing = true,
+
+    DebuffsFrameXSpacing = 3,
+    
+    DebuffsFrameYSpacing = 3,
 
     DebuffsFrameRefreshRate = 0.06,
 
@@ -270,7 +280,7 @@ Dcr.options = { -- {{{
 		    name = L[Dcr.LOC.HIDE_LIVELIST],
 		    desc = L[Dcr.LOC.OPT_HIDELIVELIST_DESC],
 		    get = function() return  Dcr.db.profile.Hide_LiveList end,
-		    set = function() Dcr:ShowHideLiveList() end, -- XXX not sure if it works correctly
+		    set = function() Dcr:ShowHideLiveList() end,
 		    disabled = function() return Dcr.db.profile.LiveListTied end,
 		    order = 100
 		},
@@ -440,7 +450,7 @@ Dcr.options = { -- {{{
 		    name = L[Dcr.LOC.OPT_DISPLAYOPTIONS],
 		    textHeight = 13,
 		    justifyH = "CENTER",
-		    order = 101,
+		    order = 1001,
 		},
 		Show = {
 		    type = "toggle",
@@ -459,7 +469,7 @@ Dcr.options = { -- {{{
 			end
 		    end,
 		    disabled = function() return Dcr.Status.Combat end,
-		    order = 102,
+		    order = 1002,
 		},
 		GrowToTop = {
 		    type = "toggle",
@@ -473,7 +483,11 @@ Dcr.options = { -- {{{
 			end
 		    end,
 		    disabled = function() return Dcr.Status.Combat end,
-		    order = 102.1,
+		    order = 1003,
+		},
+		{
+		    type = "header",
+		    order = 1004,
 		},
 		MaxCount = {
 		    type = 'range',
@@ -492,7 +506,7 @@ Dcr.options = { -- {{{
 		    max = 82,
 		    step = 1,
 		    isPercent = false,
-		    order = 104,
+		    order = 1005,
 		},
 		MFPerline = {
 		    type = 'range',
@@ -510,7 +524,11 @@ Dcr.options = { -- {{{
 		    max = 40,
 		    step = 1,
 		    isPercent = false,
-		    order = 104.9,
+		    order = 1006,
+		},
+		{
+		    type = "header",
+		    order = 1007,
 		},
 		FrameScale = {
 		    type = 'range',
@@ -531,7 +549,7 @@ Dcr.options = { -- {{{
 		    max = 4,
 		    step = 0.01,
 		    isPercent = true,
-		    order = 105,
+		    order = 1008,
 		},
 		Alpha = {
 		    type = 'range',
@@ -541,16 +559,141 @@ Dcr.options = { -- {{{
 		    set = function(v) 
 			if (v ~= Dcr.db.profile.DebuffsFrameElemAlpha) then
 			    Dcr.db.profile.DebuffsFrameElemAlpha = 1 - v;
+			    Dcr.db.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame or not Dcr.db.profile.DebuffsFrameElemTieTransparency end,
 		    min = 0,
 		    max = 1,
 		    step = 0.01,
 		    isPercent = true,
-		    order = 105.1,
+		    order = 1009,
 		},
-		
+		AdvDispOptions = {
+		    type = "group",
+		    name = L[Dcr.LOC.OPT_ADVDISP],
+		    desc = L[Dcr.LOC.OPT_ADVDISP_DESC],
+		    order = 1010,
+		    args = {
+			TieTransparency = {
+			    type = "toggle",
+			    name = L[Dcr.LOC.OPT_TIECENTERANDBORDER],
+			    desc = L[Dcr.LOC.OPT_TIECENTERANDBORDER_OPT],
+			    get = function() return Dcr.db.profile.DebuffsFrameElemTieTransparency end,
+			    set = function(v)
+				if (v ~= Dcr.db.profile.DebuffsFrameElemTieTransparency) then
+				    Dcr.db.profile.DebuffsFrameElemTieTransparency = v;
+				    if v then
+					Dcr.db.profile.DebuffsFrameElemBorderAlpha = (Dcr.db.profile.DebuffsFrameElemAlpha / 2);
+				    end
+				end
+			    end,
+			    disabled = function() return Dcr.Status.Combat end,
+			    order = 100
+			},
+			BorderAlpha = {
+			    type = 'range',
+			    name = L[Dcr.LOC.OPT_BORDERTRANSP],
+			    desc = L[Dcr.LOC.OPT_BORDERTRANSP_DESC],
+			    get = function() return 1 - Dcr.db.profile.DebuffsFrameElemBorderAlpha end,
+			    set = function(v) 
+				if (v ~= Dcr.db.profile.DebuffsFrameElemBorderAlpha) then
+				    Dcr.db.profile.DebuffsFrameElemBorderAlpha = 1 - v;
+				end
+			    end,
+			    disabled = function() return Dcr.Status.Combat or Dcr.db.profile.DebuffsFrameElemTieTransparency end,
+			    min = 0,
+			    max = 1,
+			    step = 0.01,
+			    isPercent = true,
+			    order = 102,
+			},
+			CenterAlpha = {
+			    type = 'range',
+			    name = L[Dcr.LOC.OPT_CENTERTRANSP],
+			    desc = L[Dcr.LOC.OPT_CENTERTRANSP_DESC],
+			    get = function() return 1 - Dcr.db.profile.DebuffsFrameElemAlpha end,
+			    set = function(v) 
+				if (v ~= Dcr.db.profile.DebuffsFrameElemAlpha) then
+				    Dcr.db.profile.DebuffsFrameElemAlpha = 1 - v;
+				    if Dcr.db.profile.DebuffsFrameElemTieTransparency then
+					Dcr.db.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
+				    end
+				end
+			    end,
+			    disabled = function() return Dcr.Status.Combat end,
+			    min = 0,
+			    max = 1,
+			    step = 0.01,
+			    isPercent = true,
+			    order = 101,
+			},
+			{
+			    type = "header",
+			    order = 103,
+			},
+			TieXY = {
+			    type = "toggle",
+			    name = L[Dcr.LOC.OPT_TIEXYSPACING],
+			    desc = L[Dcr.LOC.OPT_TIEXYSPACING_DESC],
+			    get = function() return Dcr.db.profile.DebuffsFrameTieSpacing end,
+			    set = function(v)
+				if (v ~= Dcr.db.profile.DebuffsFrameTieSpacing) then
+				    Dcr.db.profile.DebuffsFrameTieSpacing = v;
+				    if v then
+					Dcr.db.profile.DebuffsFrameYSpacing = Dcr.db.profile.DebuffsFrameXSpacing;
+				    end
+				    Dcr.MicroUnitF:ResetAllPositions ();
+				end
+			    end,
+			    disabled = function() return Dcr.Status.Combat end,
+			    order = 104
+			},
+			XSpace = {
+			    type = 'range',
+			    name = L[Dcr.LOC.OPT_XSPACING],
+			    desc = L[Dcr.LOC.OPT_XSPACING_DESC],
+			    get = function() return Dcr.db.profile.DebuffsFrameXSpacing end,
+			    set = function(v) 
+				if (v ~= Dcr.db.profile.DebuffsFrameXSpacing) then
+				    Dcr.db.profile.DebuffsFrameXSpacing = v;
+				    if Dcr.db.profile.DebuffsFrameTieSpacing then
+					Dcr.db.profile.DebuffsFrameYSpacing = v;
+				    end
+				    Dcr.MicroUnitF:ResetAllPositions ();
+				end
+			    end,
+			    disabled = function() return Dcr.Status.Combat end,
+			    min = 0,
+			    max = 100,
+			    step = 1,
+			    isPercent = false,
+			    order = 105,
+			},
+			YSpace = {
+			    type = 'range',
+			    name = L[Dcr.LOC.OPT_YSPACING],
+			    desc = L[Dcr.LOC.OPT_YSPACING_DESC],
+			    get = function() return Dcr.db.profile.DebuffsFrameYSpacing end,
+			    set = function(v) 
+				if (v ~= Dcr.db.profile.DebuffsFrameYSpacing) then
+				    Dcr.db.profile.DebuffsFrameYSpacing = v;
+				    Dcr.MicroUnitF:ResetAllPositions ();
+				end
+			    end,
+			    disabled = function() return Dcr.Status.Combat or Dcr.db.profile.DebuffsFrameTieSpacing end,
+			    min = 0,
+			    max = 100,
+			    step = 1,
+			    isPercent = false,
+			    order = 106,
+			},
+		    }
+		},
+		{
+		    type = "header",
+		    order = 1011,
+		},
 		ToolTips = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.SHOW_TOOLTIP],
@@ -560,7 +703,7 @@ Dcr.options = { -- {{{
 			Dcr.db.profile.AfflictionTooltips = not Dcr.db.profile.AfflictionTooltips
 		    end,
 		    disabled = function() return  Dcr.db.profile.Hide_LiveList and not Dcr.db.profile.ShowDebuffsFrame end,
-		    order = 105.2
+		    order = 1012
 		},
 		ShowHelp = {
 		    type = "toggle",
@@ -572,18 +715,18 @@ Dcr.options = { -- {{{
 		
 		    end,
 		    disabled = function() return not Dcr.db.profile.ShowDebuffsFrame end,
-		    order = 105.3,
+		    order = 1013,
 		},
 		spacer2 = {
 		    type = "header",
-		    order = 106,
+		    order = 1014,
 		},
 		title2 = {
 		    type = "header",
 		    name = L[Dcr.LOC.OPT_MFPERFOPT],
 		    textHeight = 13,
 		    justifyH = "CENTER",
-		    order = 107,
+		    order = 1015,
 		},
 		UpdateRate = {
 		    type = 'range',
@@ -604,7 +747,7 @@ Dcr.options = { -- {{{
 		    max = 0.2,
 		    step = 0.01,
 		    isPercent = false,
-		    order = 108,
+		    order = 1016,
 		},
 		PerUpdate = {
 		    type = 'range',
@@ -621,7 +764,7 @@ Dcr.options = { -- {{{
 		    max = 20,
 		    step = 1,
 		    isPercent = false,
-		    order = 110,
+		    order = 1017,
 		},
 	    }
 	}, -- }}}
@@ -801,6 +944,7 @@ Dcr.options = { -- {{{
 		    validate = "keybinding",
 		    get = function ()
 			local key = (GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME)));
+			Dcr.db.profile.MacroBind = key;
 			return key;
 		    end,
 		    set = function (key)
@@ -1343,7 +1487,9 @@ function Dcr:SetMacroKey ( key )
 	end
     else
 	Dcr.db.profile.MacroBind = false;
-	Dcr:errln(L[Dcr.LOC.MACROKEYNOTMAPPED]);
+	if not (GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME))) then
+	    Dcr:errln(L[Dcr.LOC.MACROKEYNOTMAPPED]);
+	end
     end
 
     -- save the bindings to disk

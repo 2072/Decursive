@@ -77,6 +77,8 @@ DcrC.CHARMED	= 32;
 DcrC.BLACKTEXTURE = "Interface\\AddOns\\Decursive\\Textures\\BackDrop";
 DcrC.TRANSTEXTURE = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-transparent-white";
 
+DcrC.MFSIZE = 20;
+
 Dcr.MFContainer = false;
 
 Dcr.Status = {};
@@ -385,6 +387,7 @@ function Dcr:OnProfileEnable()
     Dcr.Groups_datas_are_invalid = true;
     Dcr:CreateDropDownFiltersMenu();
 
+    Dcr.MicroUnitF:ResetAllPositions ();
   
 
     Dcr.Status.Enabled = true;
