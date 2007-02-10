@@ -5,6 +5,11 @@ Changes from Decursive 2.0 BETA 5 to 2.0 BETA 6
 - Now a border is displayed around the MUFs, its color depends on the unit's class.
 - When a unit is charmed, a small green square is displayed inside its MUF.
 - Fix a bug that caused unit unable to cure magic on magic-charmed unit to see a curable magic debuff on these units.
+- Added two new sets of options:
+    - Class border and center transparency can be set separately
+    - Spacing between MUFs can be changed
+- Added spacers in MUFs option menu for better readability
+- The missing macro binding error message will not show if a global binding is available
 - Minor code optimizations.
 
 

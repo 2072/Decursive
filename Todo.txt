@@ -12,6 +12,7 @@ Other TODO:
 - Change the live-list display
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
 - Mages should be able to choose what metamorphose spell they want to use
+- Add an option to only show the MUF in raid
 - Clean up the code
 - Add comments
 

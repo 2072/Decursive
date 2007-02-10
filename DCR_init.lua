@@ -158,7 +158,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    },
 	    [BS[Dcr.LOC.SPELL_PURIFY]]		    = {
 		Types = {DcrC.DISEASE, DcrC.POISON},
-		IsBest = true,
+		IsBest = false,
 	    },
 	    [BS[Dcr.LOC.SPELL_CLEANSE]]		    = {
 		Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},
