@@ -115,7 +115,13 @@ end
 
 function Dcr:PLAYER_FOCUS_CHANGED ()
     Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
-    Dcr:Debug("Focus changed");
+
+    if (Dcr.Status.Unit_Array[#Dcr.Status.Unit_Array] == "focus" and not UnitExists("focus")) then
+	table.remove(Dcr.Status.Unit_Array, #Dcr.Status.Unit_Array);
+	Dcr:Debug("Focus removed");
+    else
+	Dcr:Debug("Focus changed");
+    end
 end
 
 function Dcr:OnDebugEnable ()

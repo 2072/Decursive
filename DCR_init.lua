@@ -318,6 +318,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("RAID_ROSTER_UPDATE","GroupChanged");
     self:RegisterEvent("UNIT_PET","UNIT_PET");
     self:RegisterEvent("PLAYER_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
+--    self:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
     self:RegisterEvent("UI_ERROR_MESSAGE","UI_ERROR_MESSAGE");
     self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
     --	self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
