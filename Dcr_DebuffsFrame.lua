@@ -383,8 +383,8 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.UnitClass		= false;
 	self.UnitStatus		= 0;
 	self.FirstDebuffType	= 0;
-	self.NormalAlpha	= 0;
-	self.BorderAlpha	= 0;
+	self.NormalAlpha	= false;
+	self.BorderAlpha	= false;
 	self.Color		= false;
 	self.IsCharmed		= false;
 	self.LastAttribUpdate	= 0;
