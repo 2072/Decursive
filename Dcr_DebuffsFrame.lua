@@ -347,11 +347,16 @@ end -- }}}
 
 function MicroUnitF:OnCornerClick (arg1, this) -- {{{
     if (arg1 == "RightButton") then
-	Dcr.DewDrop:Open(this,
-	'children', function()
-	    Dcr.DewDrop:FeedAceOptionsTable( Dcr.options )
+	if (not IsShiftKeyDown()) then
+	    Dcr.DewDrop:Open(this,
+	    'children', function()
+		Dcr.DewDrop:FeedAceOptionsTable( Dcr.options )
+	    end
+	    );
+	else
+
+	    Dcr.Waterfall:Open("Decursive");
 	end
-	);
     elseif (arg1 == "LeftButton" and IsAltKeyDown()) then
 	Dcr:Hide();
     elseif (arg1 == "LeftButton" and IsControlKeyDown()) then

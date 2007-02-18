@@ -35,6 +35,7 @@ Libs\AceEvent-2.0\AceEvent-2.0.lua
 Libs\AceLocale-2.2\AceLocale-2.2.lua
 Libs\Babble-Class-2.2\Babble-Class-2.2.lua
 Libs\Dewdrop-2.0\Dewdrop-2.0.lua
+Libs\Waterfall-1.0\Waterfall-1.0.lua
 Libs\Babble-Spell-2.2\Babble-Spell-2.2.lua
 
 DCR_init.lua

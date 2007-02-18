@@ -27,6 +27,7 @@ Dcr.L	    = AceLibrary("AceLocale-2.2"):new   ("Dcr");
 Dcr.BC	    = AceLibrary("Babble-Class-2.2");
 Dcr.BS	    = AceLibrary("Babble-Spell-2.2");
 Dcr.DewDrop = AceLibrary("Dewdrop-2.0");
+Dcr.Waterfall = AceLibrary("Waterfall-1.0");
 
 local L = Dcr.L;
 local BC = Dcr.BC;
@@ -114,6 +115,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    Dcr.DewDrop:FeedAceOptionsTable( Dcr.options )
 	end
 	)
+	Dcr.Waterfall:Register("Decursive","aceOptions", Dcr.options, 'title',  L[Dcr.LOC.STR_OPTIONS]);
 
 	DcrC.TypeNames = {
 	    [DcrC.MAGIC]	= Dcr.LOC.MAGIC;
