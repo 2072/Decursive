@@ -96,6 +96,8 @@ L:RegisterTranslations("koKR", function() return {
 
 	[BINDING_NAME_DCRSHOW]    	= "Decursive 메인바 표시/숨김",
 
+	[BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
+
 	[BINDING_NAME_DCRPRADD]     = "대상을 우선순위 목록에 추가",
 	[BINDING_NAME_DCRPRCLEAR]   = "우선순위 목록 초기화",
 	[BINDING_NAME_DCRPRLIST]    = "우선순위 목록 출력",
@@ -181,6 +183,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_SHOWMFS_DESC] = "클릭으로 해제하려면 반드시 활성화 되어야 합니다.",
 	[Dcr.LOC.OPT_GROWDIRECTION] = "MUF 표시 반전",
 	[Dcr.LOC.OPT_GROWDIRECTION_DESC] = "MUF를 하단에서 상단으로 표시합니다.",
+	[Dcr.LOC.OPT_SHOWBORDER] =  Dcr.LOC.OPT_SHOWBORDER,
+	[Dcr.LOC.OPT_SHOWBORDER_DESC] =  Dcr.LOC.OPT_SHOWBORDER_DESC,
 	[Dcr.LOC.OPT_MAXMFS]  = "표시할 최대 유닛",
 	[Dcr.LOC.OPT_MAXMFS_DESC] = "표시할 작은 유닛 프레임의 최대 개수를 지정합니다.",
 	[Dcr.LOC.OPT_UNITPERLINES] = "한줄에 표시할 유닛의 수",

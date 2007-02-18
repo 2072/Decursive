@@ -48,6 +48,8 @@ Dcr.defaults = { -- {{{
     
     DebuffsFrameElemAlpha = .4,
     
+    DebuffsFrameElemBorderShow = true,
+    
     DebuffsFrameElemBorderAlpha = .2,
 
     DebuffsFrameElemTieTransparency = true;
@@ -450,7 +452,7 @@ Dcr.options = { -- {{{
 		    name = L[Dcr.LOC.OPT_DISPLAYOPTIONS],
 		    textHeight = 13,
 		    justifyH = "CENTER",
-		    order = 1001,
+		    order = 1100,
 		},
 		Show = {
 		    type = "toggle",
@@ -458,18 +460,10 @@ Dcr.options = { -- {{{
 		    desc = L[Dcr.LOC.OPT_SHOWMFS_DESC],
 		    get = function() return Dcr.db.profile.ShowDebuffsFrame end,
 		    set = function()
-			Dcr.db.profile.ShowDebuffsFrame = not Dcr.db.profile.ShowDebuffsFrame;
 			Dcr:ShowHideDebuffsFrame ();
-			if (not Dcr.db.profile.ShowDebuffsFrame) then
-			    Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
-			    Dcr.Status.MicroFrameUpdateSchedule = false;
-			elseif (not Dcr.Status.MicroFrameUpdateSchedule) then
-			    Dcr.Status.MicroFrameUpdateSchedule =
-			    Dcr:ScheduleRepeatingEvent(Dcr.DebuffsFrame_Update, Dcr.db.profile.DebuffsFrameRefreshRate);
-			end
 		    end,
 		    disabled = function() return Dcr.Status.Combat end,
-		    order = 1002,
+		    order = 1200,
 		},
 		GrowToTop = {
 		    type = "toggle",
@@ -482,12 +476,25 @@ Dcr.options = { -- {{{
 			    Dcr.MicroUnitF:ResetAllPositions ();
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat end,
-		    order = 1003,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    order = 1300,
+		},
+		ShowBorder = {
+		    type = "toggle",
+		    name = L[Dcr.LOC.OPT_SHOWBORDER],
+		    desc = L[Dcr.LOC.OPT_SHOWBORDER_DESC],
+		    get = function() return Dcr.db.profile.DebuffsFrameElemBorderShow end,
+		    set = function(v)
+			if (v ~= Dcr.db.profile.DebuffsFrameElemBorderShow) then
+			    Dcr.db.profile.DebuffsFrameElemBorderShow = v;
+			end
+		    end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    order = 1350,
 		},
 		{
 		    type = "header",
-		    order = 1004,
+		    order = 1400,
 		},
 		MaxCount = {
 		    type = 'range',
@@ -506,7 +513,7 @@ Dcr.options = { -- {{{
 		    max = 82,
 		    step = 1,
 		    isPercent = false,
-		    order = 1005,
+		    order = 1500,
 		},
 		MFPerline = {
 		    type = 'range',
@@ -524,11 +531,11 @@ Dcr.options = { -- {{{
 		    max = 40,
 		    step = 1,
 		    isPercent = false,
-		    order = 1006,
+		    order = 1600,
 		},
 		{
 		    type = "header",
-		    order = 1007,
+		    order = 1700,
 		},
 		FrameScale = {
 		    type = 'range',
@@ -549,7 +556,7 @@ Dcr.options = { -- {{{
 		    max = 4,
 		    step = 0.01,
 		    isPercent = true,
-		    order = 1008,
+		    order = 1800,
 		},
 		Alpha = {
 		    type = 'range',
@@ -567,13 +574,14 @@ Dcr.options = { -- {{{
 		    max = 1,
 		    step = 0.01,
 		    isPercent = true,
-		    order = 1009,
+		    order = 1900,
 		},
 		AdvDispOptions = {
 		    type = "group",
 		    name = L[Dcr.LOC.OPT_ADVDISP],
 		    desc = L[Dcr.LOC.OPT_ADVDISP_DESC],
-		    order = 1010,
+		    order = 2000,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
 		    args = {
 			TieTransparency = {
 			    type = "toggle",
@@ -692,7 +700,7 @@ Dcr.options = { -- {{{
 		},
 		{
 		    type = "header",
-		    order = 1011,
+		    order = 2100,
 		},
 		ToolTips = {
 		    type = "toggle",
@@ -703,7 +711,7 @@ Dcr.options = { -- {{{
 			Dcr.db.profile.AfflictionTooltips = not Dcr.db.profile.AfflictionTooltips
 		    end,
 		    disabled = function() return  Dcr.db.profile.Hide_LiveList and not Dcr.db.profile.ShowDebuffsFrame end,
-		    order = 1012
+		    order = 2200
 		},
 		ShowHelp = {
 		    type = "toggle",
@@ -715,18 +723,18 @@ Dcr.options = { -- {{{
 		
 		    end,
 		    disabled = function() return not Dcr.db.profile.ShowDebuffsFrame end,
-		    order = 1013,
+		    order = 2300,
 		},
-		spacer2 = {
+		{
 		    type = "header",
-		    order = 1014,
+		    order = 2400,
 		},
 		title2 = {
 		    type = "header",
 		    name = L[Dcr.LOC.OPT_MFPERFOPT],
 		    textHeight = 13,
 		    justifyH = "CENTER",
-		    order = 1015,
+		    order = 2500,
 		},
 		UpdateRate = {
 		    type = 'range',
@@ -747,7 +755,7 @@ Dcr.options = { -- {{{
 		    max = 0.2,
 		    step = 0.01,
 		    isPercent = false,
-		    order = 1016,
+		    order = 2600,
 		},
 		PerUpdate = {
 		    type = 'range',
@@ -764,7 +772,7 @@ Dcr.options = { -- {{{
 		    max = 20,
 		    step = 1,
 		    isPercent = false,
-		    order = 1017,
+		    order = 2700,
 		},
 	    }
 	}, -- }}}
@@ -837,11 +845,13 @@ Dcr.options = { -- {{{
 		
 		
 
-		spacer2 = {type = "header", order = 138,}, Title2 = {
-		    type="header",  textHeight = 13,
-		    name = L[Dcr.LOC.OPT_CURINGORDEROPTIONS],
+		{
+		    type = "header", order = 138,}, Title2 = {
+			type="header",  textHeight = 13,
+			name = L[Dcr.LOC.OPT_CURINGORDEROPTIONS],
 		    order = 139,
-		}, spacer3 = { type = "header", order = 140,   },
+		},
+		{ type = "header", order = 140,   },
 
 		CureMagic = {
 		    type = "toggle",
@@ -1140,12 +1150,29 @@ function Dcr:SetCureOrder (ToChange)
 end
 
 function Dcr:ShowHideDebuffsFrame ()
+
+    if Dcr.Status.Combat then
+	return
+    end
+
+    Dcr.db.profile.ShowDebuffsFrame = not Dcr.db.profile.ShowDebuffsFrame;
+
     if (Dcr.MFContainer:IsVisible()) then
 	Dcr.MFContainer:Hide();
+	Dcr.db.profile.ShowDebuffsFrame = false;
     else
 	Dcr.MFContainer:Show();
 	Dcr.MFContainer:SetScale(Dcr.db.profile.DebuffsFrameElemScale);
 	Dcr.MicroUnitF:Place ();
+	Dcr.db.profile.ShowDebuffsFrame = true;
+    end
+    
+    if (not Dcr.db.profile.ShowDebuffsFrame) then
+	Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
+	Dcr.Status.MicroFrameUpdateSchedule = false;
+    elseif (not Dcr.Status.MicroFrameUpdateSchedule) then
+	Dcr.Status.MicroFrameUpdateSchedule =
+	Dcr:ScheduleRepeatingEvent(Dcr.DebuffsFrame_Update, Dcr.db.profile.DebuffsFrameRefreshRate);
     end
 end
 

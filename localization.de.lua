@@ -79,6 +79,8 @@ L:RegisterTranslations("deDE", function() return {
     [Dcr.LOC.SPELL_PURGE]	=	'Reinigen',
 
     [BINDING_NAME_DCRSHOW]	=	"Zeige/Verstecke Decursive Main Bar",
+    
+    [BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
 
     [BINDING_NAME_DCRPRADD]	=	"Ziel zur Prioritätenliste hinzufügen",
     [BINDING_NAME_DCRPRCLEAR]	=	"Prioritätenliste leeren",
@@ -175,6 +177,8 @@ L:RegisterTranslations("deDE", function() return {
     [Dcr.LOC.OPT_SHOWMFS_DESC] = Dcr.LOC.OPT_SHOWMFS_DESC,
     [Dcr.LOC.OPT_GROWDIRECTION] = Dcr.LOC.OPT_GROWDIRECTION,
     [Dcr.LOC.OPT_GROWDIRECTION_DESC] = Dcr.LOC.OPT_GROWDIRECTION_DESC,
+    [Dcr.LOC.OPT_SHOWBORDER] =  Dcr.LOC.OPT_SHOWBORDER,
+    [Dcr.LOC.OPT_SHOWBORDER_DESC] =  Dcr.LOC.OPT_SHOWBORDER_DESC,
     [Dcr.LOC.OPT_MAXMFS] = Dcr.LOC.OPT_MAXMFS,
     [Dcr.LOC.OPT_MAXMFS_DESC] = Dcr.LOC.OPT_MAXMFS_DESC,
     [Dcr.LOC.OPT_UNITPERLINES] = Dcr.LOC.OPT_UNITPERLINES,

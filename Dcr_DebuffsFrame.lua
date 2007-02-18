@@ -643,9 +643,12 @@ do
 	    self.UnitStatus = NORMAL;
 	end
 
+	if (not Dcr.db.profile.DebuffsFrameElemBorderShow) then
+		BorderAlpha = 0;
+	end
 
 	-- set the class border color when needed (the class is unknown and the unit exists or the unit name changed)
-	if ((not self.UnitClass and self.UnitStatus ~= ABSENT) or Dcr.Status.Unit_Array_UnitToName[Unit] ~= self.UnitName) then
+	if (BorderAlpha ~= 0 and ((not self.UnitClass and self.UnitStatus ~= ABSENT) or Dcr.Status.Unit_Array_UnitToName[Unit] ~= self.UnitName)) then
 
 	    -- Get the name of this unit
 	    self.UnitName = Dcr.Status.Unit_Array_UnitToName[Unit];

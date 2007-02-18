@@ -81,6 +81,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.SPELL_PURGE]	=	'Expiation',
 
     [BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive",
+    
+    [BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
 
     [BINDING_NAME_DCRPRADD]	=	"Ajouter la cible à la liste de priorités",
     [BINDING_NAME_DCRPRCLEAR]	=	"Effacer la liste de priorités",
@@ -179,6 +181,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_SHOWMFS_DESC] = "Cette option doit être activée, si vous voulez guérir en cliquant avec la souris",
     [Dcr.LOC.OPT_GROWDIRECTION] = "Inverser l'affichage des micro-portraits",
     [Dcr.LOC.OPT_GROWDIRECTION_DESC] = "Les micro-portraits seront affichés de bas en haut",
+    [Dcr.LOC.OPT_SHOWBORDER] =  "Afficher la bordure colorée des classes",
+    [Dcr.LOC.OPT_SHOWBORDER_DESC] =  "Une bordure colorée représentant la classe de l'unité est affichée autour des micro-portraits",
     [Dcr.LOC.OPT_MAXMFS] = "Nombre maximum d'unités affichées",
     [Dcr.LOC.OPT_MAXMFS_DESC] = "Définit le nombre maximum de micro-portraits à afficher",
     [Dcr.LOC.OPT_UNITPERLINES] = "Nombre d'unités par ligne",

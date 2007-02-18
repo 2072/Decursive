@@ -13,6 +13,7 @@ Changes from Decursive 2.0 BETA 5 to 2.0 BETA 6-Dev
 - Paladin always uses Cleanse instead of Purify (if they learned Cleanse).
 - The focus MUF now disappear when the player clear the focus.
 - There is no longer a default key bound to the macro, this caused too many problems with people not knowing how to change it.
+- You can bind a key to show/hide the micro-unit frames.
 - Minor code optimizations and bug fixes.
 
 

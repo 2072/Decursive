@@ -95,6 +95,8 @@ Dcr.LOC.SPELL_PURGE               = 'Purge';
 
 BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar";
 
+BINDING_NAME_DCRMUFSHOWHIDE = "Show or hide the micro-unit frames";
+
 BINDING_NAME_DCRPRADD     = "Add target to priority list";
 BINDING_NAME_DCRPRCLEAR   = "Clear the priority list";
 BINDING_NAME_DCRPRLIST    = "Print the priority list";
@@ -190,6 +192,8 @@ Dcr.LOC.OPT_SHOWMFS = "Show the micro units Frame";
 Dcr.LOC.OPT_SHOWMFS_DESC = "This must be enabled if you want to cure by clicking";
 Dcr.LOC.OPT_GROWDIRECTION = "Reverse MUFs Display";
 Dcr.LOC.OPT_GROWDIRECTION_DESC = "The MUFs will be displayed from bottom to top";
+Dcr.LOC.OPT_SHOWBORDER = "Show the class-colored borders";
+Dcr.LOC.OPT_SHOWBORDER_DESC = "A colored border will be displayed around the MUFs representing the unit's class";
 Dcr.LOC.OPT_MAXMFS  = "Max units shown";
 Dcr.LOC.OPT_MAXMFS_DESC = "Defines the max number of micro unit frame to display";
 Dcr.LOC.OPT_UNITPERLINES = 'Number of units per line';
@@ -368,6 +372,8 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.SPELL_PURGE]	=	true,
 
     [BINDING_NAME_DCRSHOW]	=	true,
+    
+    [BINDING_NAME_DCRMUFSHOWHIDE] =	true,
 
     [BINDING_NAME_DCRPRADD]	=	true,
     [BINDING_NAME_DCRPRCLEAR]	=	true,
@@ -455,6 +461,8 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_SHOWMFS_DESC] = true,
     [Dcr.LOC.OPT_GROWDIRECTION] = true,
     [Dcr.LOC.OPT_GROWDIRECTION_DESC] = true,
+    [Dcr.LOC.OPT_SHOWBORDER] = true,
+    [Dcr.LOC.OPT_SHOWBORDER_DESC] = true,
     [Dcr.LOC.OPT_MAXMFS] = true,
     [Dcr.LOC.OPT_MAXMFS_DESC] = true,
     [Dcr.LOC.OPT_UNITPERLINES] = true,

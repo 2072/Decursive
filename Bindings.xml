@@ -25,6 +25,9 @@
 	<Binding name="DCRSHOW" header="DECURSIVE">
 			Dcr:Hide(false);
 	</Binding>
+	<Binding name="DCRMUFSHOWHIDE" header="DECURSIVE">
+			Dcr:ShowHideDebuffsFrame ();
+	</Binding>
 	<Binding name="DCRPRADD">
 			Dcr:AddTargetToPriorityList();
 	</Binding>
