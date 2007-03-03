@@ -3,6 +3,10 @@ Personal TODO file for Archarodim (will stop to be personal once I'll add commen
 Important TODO:
 
 - Add an online help showing the localized readme.txt file (a script on my side will have to encode-escape the text before each commit)
+- Add a feature list in the readme and on release sites.
+
+- Add a checkbox in the debuff filters to allow permanent ignoring of debuffs
+- Add a way to dynamically order the MUFs by group or class
 
 Other TODO:
 

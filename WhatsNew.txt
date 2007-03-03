@@ -14,6 +14,8 @@ Changes from Decursive 2.0 BETA 5 to 2.0 BETA 6-Dev
 - The focus MUF now disappear when the player clear the focus.
 - There is no longer a default key bound to the macro, this caused too many problems with people not knowing how to change it.
 - You can bind a key to show/hide the micro-unit frames.
+- You can fill your priority/skip list with Paladins and Shamans correctly.
+- Warlock's spell priorities are saved when they change of pet.
 - Minor code optimizations and bug fixes.
 
 

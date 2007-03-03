@@ -25,7 +25,7 @@
 	<Binding name="DCRSHOW" header="DECURSIVE">
 			Dcr:Hide(false);
 	</Binding>
-	<Binding name="DCRMUFSHOWHIDE" header="DECURSIVE">
+	<Binding name="DCRMUFSHOWHIDE">
 			Dcr:ShowHideDebuffsFrame ();
 	</Binding>
 	<Binding name="DCRPRADD">

@@ -378,7 +378,7 @@
     <!-- DecursivePopulateListFrame {{{ -->
     <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
 	<Size>
-	    <AbsDimension x="168" y="245" />
+	    <AbsDimension x="168" y="265" />
 	</Size>
 
 	<Anchors>
@@ -401,14 +401,6 @@
 
 	<Scripts>
 	    <OnShow>
-		local _, faction = UnitFactionGroup("player");
-		if (faction == Dcr.L[Dcr.LOC.ALLIANCE_NAME]) then
-		DecursivePopulateListFrameOther.ClassType = Dcr.LOC.CLASS_PALADIN;
-		DecursivePopulateListFrameOther:SetText(Dcr:ColorText(Dcr.BC[DecursivePopulateListFrameOther.ClassType], "FF"..Dcr.BC:GetHexColor(DecursivePopulateListFrameOther.ClassType)));
-		else
-		DecursivePopulateListFrameOther.ClassType = Dcr.LOC.CLASS_SHAMAN;
-		DecursivePopulateListFrameOther:SetText(Dcr:ColorText(Dcr.BC[DecursivePopulateListFrameOther.ClassType], "FF"..Dcr.BC:GetHexColor(DecursivePopulateListFrameOther.ClassType)));
-		end
 		getglobal(this:GetName().."Title"):SetText(Dcr.L[Dcr.LOC.STR_QUICK_POP]);
 	    </OnShow>
 	</Scripts>
@@ -766,7 +758,7 @@
 		</Scripts>
 	    </Button>
 
-	    <Button name="$parentOther" inherits="GameMenuButtonTemplate" text="Other">
+	    <Button name="$parentShaman" inherits="GameMenuButtonTemplate" text="Shaman">
 		<Size>
 		    <AbsDimension x="80" y="20" />
 		</Size>
@@ -779,11 +771,33 @@
 		</Anchors>
 		<Scripts>
 		    <OnClick>
-			--this.ClassType = "OTHER";
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this:SetText(Dcr.L[Dcr.LOC.STR_OTHER]);
+			this.ClassType = Dcr.LOC.CLASS_SHAMAN;
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+		    </OnLoad>
+		</Scripts>
+	    </Button>
+
+	    <Button name="$parentPaladin" inherits="GameMenuButtonTemplate" text="Paladin">
+		<Size>
+		    <AbsDimension x="80" y="20" />
+		</Size>
+		<Anchors>
+		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentShaman">
+			<Offset>
+			    <AbsDimension x="-40" y="0" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+		<Scripts>
+		    <OnClick>
+			Dcr:PopulateButtonPress();
+		    </OnClick>
+		    <OnLoad>
+			this.ClassType = Dcr.LOC.CLASS_PALADIN;
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>

@@ -999,9 +999,9 @@ Dcr.CureCheckBoxes = { -- just a shortcut
 [DcrC.CHARMED]	    = Dcr.options.args.CureOptions.args.CureCharmed,
 }
 
-function Dcr:GetCureCheckBoxStatus (type)
+function Dcr:GetCureCheckBoxStatus (Type)
 
-    return (Dcr.db.profile.CureOrder[type] ~= false and Dcr.db.profile.CureOrder[type] ~= -1);
+    return (Dcr.db.profile.CureOrder[Type] and Dcr.db.profile.CureOrder[Type] > 0);
 end
 
 function Dcr:SetCureCheckBoxNum (Type)
@@ -1024,6 +1024,8 @@ end
 function Dcr:CheckCureOrder ()
 
     Dcr:Debug("Verifying CureOrder...");
+--    Dcr:Print("The list is:");
+--    Dcr:PrintLiteral(Dcr.db.profile.CureOrder);
 
     local TempTable = {};
     local AuthorizedKeys = {
@@ -1036,13 +1038,20 @@ function Dcr:CheckCureOrder ()
     };
     local AuthorizedValues = {
 	[false]	= true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
-	[-1]	= 0,
+	[-10]	= 0, -- used to parck spells yet to be discovered
+	-- Other <0  values are used when there used to be a spell...
 	[1]	= DcrC.ENEMYMAGIC,
+	[-1]	= DcrC.ENEMYMAGIC,
 	[2]	= DcrC.MAGIC,
+	[-2]	= DcrC.MAGIC,
 	[3]	= DcrC.CURSE,
+	[-3]	= DcrC.CURSE,
 	[4]	= DcrC.POISON,
+	[-4]	= DcrC.POISON,
 	[5]	= DcrC.DISEASE,
+	[-5]	= DcrC.DISEASE,
 	[6]	= DcrC.CHARMED,
+	[-6]	= DcrC.CHARMED,
     };
     local GivenValues = {};
 
@@ -1057,12 +1066,14 @@ function Dcr:CheckCureOrder ()
     -- Validate existing entries
     for key, value in pairs(Dcr.db.profile.CureOrder) do
 
-	if (AuthorizedKeys[key]) then
-	    if (AuthorizedValues[value] and not GivenValues[value]) then
+	if (AuthorizedKeys[key]) then -- is this a corect type ?
+	    if (AuthorizedValues[value] and not GivenValues[value and math.abs(value)]) then -- is this value authorized and not already given?
 		TempTable[key] = value;
-		GivenValues[value] = true;
-	    else
-		TempTable[key] = false;
+		GivenValues[value and math.abs(value)] = true;
+
+	    elseif (value and value ~= -10) then
+		Dcr:Debug("Incoherent value for (key, value, Duplicate?)", key, value, GivenValues[value]);
+		TempTable[key] = -10; -- if the value was wrong or already given to another type
 	    end
 	end
 
@@ -1080,38 +1091,49 @@ function Dcr:SetCureOrder (ToChange)
 
     local CureOrder = Dcr.db.profile.CureOrder;
     local tmpTable = {};
-    Dcr:Debug("SetCureOrder called");
+    Dcr:Debug("SetCureOrder called for prio ", CureOrder[ToChange]);
+    --Dcr:Print("The list is:");
+    --Dcr:PrintLiteral(Dcr.db.profile.CureOrder);
 
     if (ToChange) then
-	if (CureOrder[ToChange]) then
+	-- if there is a positive value, it means we want to disable thjis type, set it to false
+	if (type(CureOrder[ToChange]) == "number" and CureOrder[ToChange] > 0) then
 	    CureOrder[ToChange] = false;
-	else
+	    Dcr:Debug("SetCureOrder(): set to false");
+	else -- else if there was no value (or a negative one), add this type at the end
 	    CureOrder[ToChange] = 10;
+	    Dcr:Debug("SetCureOrder(): set to 10");
 	end
     end
 
 
     -- re-compute the position of each spell type
     for Type, Num in pairs (CureOrder) do
+
 	-- if we have a spell or if we checked the checkbox
-	if (CureOrder[Type] and Dcr.Status.CuringSpells[Type]) then
-	    --if (CureOrder[Type]) then -- for testing only
-	    table.insert(tmpTable, CureOrder[Type], Type);
+	if (Dcr.Status.CuringSpells[Type] and CureOrder[Type]) then
+	    table.insert(tmpTable, math.abs(CureOrder[Type]), Type);
+
 	elseif (not Dcr.Status.CuringSpells[Type]) then
-	    CureOrder[Type] = -1;
+	    -- if we don't have a spell for this type
+	    if (type(CureOrder[Type]) == "number" and CureOrder[Type] > 0) then -- if a priority is assigned (if we lost the spell)
+		CureOrder[Type] = -1 * CureOrder[Type]; -- save the position
+	    end
 	end
     end
 
 
+    -- we sort the tables
     tmpTable = Dcr:tSortUsingKeys(tmpTable);
 
+    -- apply the new priority to the types we can handle, leave their negative value to the others
     for Num, Type in ipairs (tmpTable) do
 	CureOrder[Type] = Num;
     end
 
     Dcr.Status.ReversedCureOrder = Dcr:tReverse(CureOrder);
 
---    Dcr:PrintLiteral(tmpTable);
+    --    Dcr:PrintLiteral(tmpTable);
     for Type, CheckBox in pairs(Dcr.CureCheckBoxes) do
 	Dcr:SetCureCheckBoxNum(Type);
     end
@@ -1230,7 +1252,6 @@ StaticPopupDialogs["DCR_CONFIRM_RESET"] = {
 
 	Dcr:Println(L[Dcr.LOC.OPT_PROFILERESET]);
 	Dcr:ResetDB("profile");
-	Dcr:OnProfileEnable();
 
     end,
     timeout = 0,

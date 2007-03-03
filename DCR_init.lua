@@ -550,24 +550,10 @@ function Dcr:Configure() --{{{
 		    Dcr.Status.FoundSpells[spellName] = {i, BookType}; -- save the id of the spell to be able to check for changes later
 		    CuringSpells[Type] = spellName;
 
-		    -- if this spell was not available before, activate it
-		    if (CheckedSpells[Type] == -1) then
-			CheckedSpells[Type] = false;
-			Dcr:SetCureOrder(Type);
-		    end
-
 		    Dcr:Debug("Spell \"%s\" registered for type %d ( %s )", spellName, Type, DcrC.TypeNames[Type]);
 		end
 
-
 		 Dcr.Status.HasSpell = true;
-
-		-- any of them will work for the cooldown... we store the last
-		--DCR_SPELL_COOLDOWN_CHECK[1] = i; DCR_SPELL_COOLDOWN_CHECK[2] = BookType;
-
-
-		-- Dcr:Debug( L[Dcr.LOC.SPELL_FOUND], spellName);
-
 	    end
 
 	    i = i + 1
