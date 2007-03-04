@@ -32,7 +32,7 @@ En plus de lancer des sorts, vous pouvez cibler le personnage du micro-portrait 
 
 Les informations ci-dessus sont aussi fournis par des info-bulles dans le jeu.
 
-IMPORTANT : POUR BOUGER LES MICRO-PORTRAITS, CLIQUER, SANS LÂCHER, SUR LA POIGNÉE JUSTE AU DESSUS DU PREMIER MICRO-PORTRAIT (ELLE A LA MÊME TAILLE QU'UN MICRO-PORTRAIT ET EST MISE EN EXERGUE LORSQUE LA SOURIS PASSE AU DESSUS).
+IMPORTANT : POUR DÉPLACER LES MICRO-PORTRAITS, ALT-CLIQUER, SANS LÂCHER, SUR LA POIGNÉE JUSTE AU DESSUS DU PREMIER MICRO-PORTRAIT (ELLE A LA MÊME TAILLE QU'UN MICRO-PORTRAIT ET EST MISE EN EXERGUE LORSQUE LA SOURIS PASSE AU DESSUS).
 
 Decursive crée et gère une macro qui permet de dissiper un effet sur une unité (micro-portrait ou autre portrait d'unité) au-dessus de laquelle se trouve la souris. Il vous suffit de choisir la touche à lier dans les options de Decursive.
 En tapant la touche liée, Decursive lancera le premier sort (celui du clic gauche de la souris), CTRL + touche liée lancera le deuxième sort (celui du clic droit de la souris) et SHIFT (MAJ) + touche liée lancera le troisième sort (celui de CTRL + clic gauche). Vous pouvez placer la macro dans un raccourci de vos barres d'action en utilisant la fenêtre des macros de WoW.

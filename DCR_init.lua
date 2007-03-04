@@ -50,7 +50,7 @@ BINDING_HEADER_DECURSIVE = "Decursive";
 Dcr.CONF.MACRO_COMMAND  = "/decursive";
 Dcr.CONF.MACRO_SHOW     = "/dcrshow";
 Dcr.CONF.MACRO_HIDE     = "/dcrhide";
-Dcr.CONF.MACRO_OPTION   = "/dcroption";
+Dcr.CONF.MACRO_OPTION   = "/dcroptions";
 Dcr.CONF.MACRO_RESET    = "/dcrreset";
 
 Dcr.CONF.MACRO_PRADD    = "/dcrpradd";
@@ -263,6 +263,11 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	SLASH_DECURSIVEHIDE1 = Dcr.CONF.MACRO_HIDE;
 	SlashCmdList["DECURSIVEHIDE"] = function(msg)
 	    Dcr:Hide(1);
+	end
+
+	SLASH_DECURSIVEOPTION1 = Dcr.CONF.MACRO_OPTION;
+	SlashCmdList["DECURSIVEOPTION"] = function(msg)
+	    Dcr.Waterfall:Open("Decursive");
 	end
 
 	SLASH_DECURSIVESHOWORDER1 = Dcr.CONF.MACRO_SHOW_ORDER

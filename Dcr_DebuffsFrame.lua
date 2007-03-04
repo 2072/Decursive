@@ -346,24 +346,26 @@ function MicroUnitF:OnLeave() -- {{{
 end -- }}}
 
 function MicroUnitF:OnCornerClick (arg1, this) -- {{{
-    if (arg1 == "RightButton") then
-	if (not IsShiftKeyDown()) then
+    if (arg1 == "RightButton" and not IsShiftKeyDown()) then
+
+	if (not IsAltKeyDown()) then
 	    Dcr.DewDrop:Open(this,
 	    'children', function()
 		Dcr.DewDrop:FeedAceOptionsTable( Dcr.options )
 	    end
 	    );
 	else
-
 	    Dcr.Waterfall:Open("Decursive");
 	end
-    elseif (arg1 == "LeftButton" and IsAltKeyDown()) then
+
+    elseif (arg1 == "RightButton" and IsShiftKeyDown()) then
 	Dcr:Hide();
     elseif (arg1 == "LeftButton" and IsControlKeyDown()) then
 	Dcr:ShowHidePriorityListUI();
     elseif (arg1 == "LeftButton" and IsShiftKeyDown()) then
 	Dcr:ShowHideSkipListUI();
     end
+
 end -- }}}
 
 -- }}}

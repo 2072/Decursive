@@ -94,6 +94,7 @@ L:RegisterTranslations("frFR", function() return {
     [BINDING_NAME_DCRSKLIST]	=	"Afficher la liste des exceptions",
     [BINDING_NAME_DCRSKSHOW]	=	"Afficher ou Cacher la liste des exceptions",
 
+    [BINDING_NAME_DCRSHOWOPTION]=	"Affiche le panneau des options",
 
 
     [Dcr.LOC.PRIORITY_LIST]	=	"Liste des priorités",
@@ -223,6 +224,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_PROFILERESET] = "Remise à zéro du profil...",
     [Dcr.LOC.OPT_AFFLICTEDBYSKIPPED] = "%s affligé(e) par %s sera ignoré",
     [Dcr.LOC.OPT_DEBCHECKEDBYDEF] = "\n\nCochée par défaut",
+    [Dcr.LOC.OPT_ALWAYSIGNORE] = "Ignorer aussi hors combat",
+    [Dcr.LOC.OPT_ALWAYSIGNORE_DESC] = "Si cochée, cette affliction sera aussi ignorée en dehors des combats",
     [Dcr.LOC.OPT_REMOVETHISDEBUFF] = "Enlever cette affliction",
     [Dcr.LOC.OPT_REMOVETHISDEBUFF_DESC] = "Supprime '%s' de la liste d'exception",
     [Dcr.LOC.OPT_RESETDEBUFF] = "Remettre à zéro cette affliction",
@@ -262,7 +265,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.HLP_MIDDLECLICK] = "Clic Milieu",
 
     [Dcr.LOC.CTRL] = "Ctrl",
-    [Dcr.LOC.ALT] = "ALt",
+    [Dcr.LOC.ALT] = "Alt",
     [Dcr.LOC.SHIFT] = "Maj",
 
     [Dcr.LOC.TARGETUNIT] = "Cible l'unité",

@@ -1,21 +1,30 @@
-Decursive 2.0 BETA 6-Dev by Archarodim
+Decursive 2.0 BETA 6-Pub by Archarodim
 
 Changes from Decursive 2.0 BETA 5 to 2.0 BETA 6-Dev
 
+    # Important changes:
+
+- Now you need to press Alt to move the MUFs clicking the handle.
 - Now a border is displayed around the MUFs, its color depends on the unit's class.
 - When a unit is charmed, a small green square is displayed inside its MUF.
-- Fix a bug that caused unit unable to cure magic on magic-charmed unit to see a curable magic debuff on these units.
+- A new static option panel is available by ALT-RIGHT-CLICKING on the handle or typing /dcroptions (ACE2 Waterfall library).
 - Added two new sets of options:
     - Class border and center transparency can be set separately.
     - Spacing between MUFs can be changed.
-- Added spacers in MUFs option menu for better readability.
-- The missing macro binding error message will not be shown if a global binding is available.
 - Paladin always uses Cleanse instead of Purify (if they learned Cleanse).
-- The focus MUF now disappear when the player clear the focus.
 - There is no longer a default key bound to the macro, this caused too many problems with people not knowing how to change it.
 - You can bind a key to show/hide the micro-unit frames.
-- You can fill your priority/skip list with Paladins and Shamans correctly.
+- In the debuff filtering system, you can now ignore a debuff permanently and not only when in combat.
+
+    # Minor changes:
+- MUFs display can be reversed (they will display from bottom to top instead of top to bottom).
+- The Readme.txt file has been reworked to be more clear, "FEATURES" and "FAQ" sections have been added.
 - Warlock's spell priorities are saved when they change of pet.
+- The focus MUF now disappear when the player clear the focus with "/clearfocus".
+- Fix a bug that caused unit unable to cure magic on magic-charmed unit to see a curable magic debuff on these units.
+- You can fill your priority/skip list with Paladins and Shamans correctly.
+- Added spacers in MUFs option menu for better readability.
+- The missing macro binding error message will not be shown if a global binding is available.
 - Minor code optimizations and bug fixes.
 
 

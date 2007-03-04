@@ -1,58 +1,106 @@
 Decursive 2.0 ( Main download: http://www.2072productions.com/?to=decursive.php )
 
+This is a cleaning mod. Its job is to help a class that can remove afflictions to do it with ease in every conditions (playing solo, in small groups or in big raids).
 
-This is a cleaning mod. Its job is to help a class that can remove afflictions to do it with ease.
 
-Load the mod, bind a key and run, no further configuration or editing needed, it auto configures.
+		###################################
+		# *** Decursive Main Features *** #
+		###################################
+
+    -	Support all cleansing spells in all localizations.
+    -	ULTRA low memory and CPU usage in all conditions.
+    -	Users can choose the types of affliction they want to cure and prioritize them.
+    -   Mages can sheep mind-controlled units.
+    -   Two solutions available to cleans afflictions: Macro and Micro-Unit Frames (MUFs)
+    -	Cleansing macro auto-configuration (cure people by mouse-overing and hitting a key)
+    -	User customisable debuff filtering system.
+    -	Easy configurable player priority and skip list.
+
+    -	Powerful interface:
+    -	    Highly customizable (scale, transparency, etc...)
+    -	    Saves screen real estate, Decursive interface is very discreet.
+    -	    Multiple alert system: visual and auditive.
+    -	    Clever ordering of micro-unit-frames to maximize cleansing efficiency.
+    -	    Show player classes and status (in range, cloaked, afflicted, Mind-controlled)
+    -	    Very simple and intuitive.
+    -	    Tool-tip help system for options and actions.
+
+    -	ACE 2.0 framework: Uses the powerful ACE 2.0 libraries.
+    -	    Decursive options are accessible through a drop down menu or a static option panel.
+    -	    Option can be saved/loaded to/from different profiles.
+    -	    Optimized event management system.
+
+
+To have details about all these features, read what follows.
 
 Currently Decursive is configured to automatically select Druid, Priest, Mage, Paladin, Shaman, Felhunter, and Doomguard cleansing spells.
 Mage are also able to monitor mind controlled unit and sheep them if needed.
 
-Decursive makes your life easier, it clearly shows you who is afflicted by something you can remove, this is done using "Micro-unit-frames" (MUF): a micro-unit-frame is a little square on your screen that changes of appearance according to the unit status
+
+
+		########################################
+		# *** The Micro-Unit Frames (MUFs) *** #
+		########################################
+
+Decursive makes your life easier, it clearly shows you who is afflicted by something you can remove, this is done using "Micro-unit-frames" (MUF): a micro-unit-frame is a little square on your screen that changes of appearance according to the unit status.
 If you click on a MUF, it automatically cast a cleaning spell, the choice of the spell depends of the mouse button you click, Decursive manages the button mapping automatically.
 MUF have several colors:
 
 - Full red: the unit is in range and is affected by something you can cure by left-clicking on the MUF.
 - Transparent red: the unit is out of range and affected by something you could cure by left-clicking on the MUF
 
-- Full blue: idem as red but with right-clicking instead of left-clicking
+- Full blue: idem as red but with right-clicking instead of left-clicking.
 
-- Full orange: idem as blue or red but with ctrl-left-clicking
+- Full orange: idem as blue or red but with ctrl-left-clicking.
 
 - Transparent grey: The unit does not exists.
 
-- Dark Transparent green: the unit is in scan range and is not afflicted by something you can cure
+- Dark Transparent green: the unit is in scan range and is not afflicted by something you can cure.
 
-- Transparent purple: The unit is too far to be scan or cured
+- Transparent purple: The unit is too far to be scan or cured.
 
-- Black, the unit has been blaclisted because it was out-of-sight when you tried to cure it, the time in blacklist can be change in the options.
+- Transparent light-green: The unit is cloaked.
+
+- Any color but with a little green square in the middle: the unit is MIND-CONTROLLED.
+
+- Black, the unit has been blacklisted because it was out-of-sight when you tried to cure it, the time in blacklist can be change in the options.
+
+The informations above are also indicated by tool-tips in the game.
 
 MUFs display is done according to your settings, you can change their number and size easily (only when not in combat).
 
 MUFs are very discreet when no action is required, you can see right through them.
 
-You can change the spell mapping when you are not in combat, the mapping is done according to your cure priorities.
+You can change the spell mapping when you are not in combat, the mapping is done according to your cure priorities ; go to the "curing options", the priorities are indicated by green numbers in front of the affliction types.
 
-Besides casting, MUFs allow you to target the units by middle-clicking, ctrl-middle-clicking will focus them.
+Besides casting, MUFs allow you to target the units by middle-clicking, ctrl-middle-clicking will focus them. (To clear the focused unit, use the command /clearfocus)
 
-The informations above are also indicated by tool-tips in the game.
+MUFs are organized intelligently by default, you're always first then the rest of your group, the groups after yours, the group before yours and the pets (you can choose to monitor them or not) and, at last, your focused unit (changed by wow when using /focus 'name' or by ctrl-middle-clicking on a MUF).
+You can completely change this by using the priority and skip list, a very manageable list of players.
 
-IMPORTANT: TO MOVE THE MUFS, CLICK AND HOLD THE HANDLE JUST ABOVE THE FIRST MUF (IT HAS THE SAME SIZE AS A MUF AND HIGHLIGHTS WHEN YOUR MOUSE POINTER IS OVER IT).
-This handle has several uses, a tooltip explains them all.
+Decursive has been written with optimisation, quality and performances in mind, it should not affect you refresh rate at all.
+
+###############
+---------------
+    IMPORTANT: TO MOVE THE MUFS, ALT-CLICK AND HOLD THE HANDLE JUST ABOVE THE FIRST MUF (IT HAS THE SAME SIZE AS A MUF AND HIGHLIGHTS WHEN YOUR MOUSE POINTER IS OVER IT).
+    This handle has several uses, a tooltip explains them all.
+---------------
+###############
+
+
+		#############################
+		# *** Decursive's MACRO *** #
+		#############################
 
 Decursive also creates and manages a macro that allows you to cure units (or other unit frames) you mouse-over, you choose the key in Decursive's options.
 Hitting the key alone will try to cast the first spell, ctrl-hitting, the second and shift-hitting will try to cast the third.
 Decursive will show you if the unit beneath your cursor is afflicted by something through its 'live-list'.
 You can also take the macro and place it on one of your action bar using the default Macros window.
 
-NOTE: To change the default key, ([`]) use the graphical menu, the graphical menu is accessed by right-clicking the handle or the "Decursive" bar.
+NOTE: To change the key, use the graphical menu, the graphical menu is accessed by right-clicking the handle or the "Decursive" bar.
 You can also use the command line for exemple, "/dcr macro SetKey V" wlll set the new key to [V].
 
 
-MUFs are organized intelligently by default, you're always first then the rest of your group, the groups after yours, the group before yours and the pets (you can choose to monitor them or not) and, at last, your focused unit (changed by wow when using /focus 'name' or by ctrl-middle-clicking on a MUF).
-You can completely change this by using the priority and skip list, a very manageable list of players.
-
-Decursive has been written with optimisation, quality and performances in mind, it should not affect you refresh rate at all.
 Decursive uses the expertise of the ACE 2.0 libraries (those libraries are embedded, you don't need to install any dependency).
 
 Many options are available, don't forget to try them.
@@ -60,11 +108,18 @@ Many options are available, don't forget to try them.
 Decursive also have a skip list, people in this list will be completely ignored and not displayed in the MUFs.
 
 
+
+		################################
+		# *** Decursive's COMMANDS *** #
+		################################
+
 COMMANDS YOU CAN USE:
 /dcrshow
 ---> To show main Decursive window (also available by alt-left-clicking the MUFs handle)
 /dcrhide
 ---> To hide main Decursive window (leaving live-list displayed)
+/dcroptions
+---> To show a static option panel
 /dcrreset
 ---> To reset Decursive windows position to the middle of your screen (useful when you loose a frame)
 /dcrpradd
@@ -82,7 +137,10 @@ COMMANDS YOU CAN USE:
 
 NOTE that all these commands can also be bound to a key through the key-binding WoW interface.
 
-ACTIONS YOU CAN TAKE:
+
+		###########################
+		# *** WHAT YOU CAN DO *** #
+		###########################
 
     - IN MAIN DCR BAR:
     Middle-Clicking or ctrl-left-clicking on the label "Decursive" will hide the buttons and lock the frame and the live-list.
@@ -90,7 +148,7 @@ ACTIONS YOU CAN TAKE:
     - IN WOW KEY BINDING INTERFACE:
     You can bind a lot of things to keys under "Decursive" section.
 
-    - BIND THE DECURSIVE MACRO TO A KEY (By default, it's bind to the '`' key, the key just beneath 'Esc' (non QWERTY keyboard owner will have to set a reachable key).
+    - BIND THE DECURSIVE MACRO TO A KEY
     This is done through Decursive menu options (Decursive maintain its macro and update it according to your settings and capabilities)
 
     - Hitting the bound key will cure the unit under your mouse pointer (the key alone is the first spell, use ctrl+key for 2nd spell and shift for the third)
@@ -101,7 +159,7 @@ ACTIONS YOU CAN TAKE:
 
     - IN THE OPTION MENU, you can choose/add/delete debuffs to ignore while in combat per class, it avoids to waste time and mana ; Decurive already has a comprehensive Debuff list ignored on specific classes.
 
-    - You can easily organize the unit frame order by using the priority and skip list, clicking on the buttons in the Decursive bar.
+    - You can easily organize the unit frame order by using the priority and skip list, clicking on the buttons in the Decursive bar (These list can be displayed by ).
 
     - IN THE OPTION MENU, you can save your options per character/server/class.
 
@@ -110,8 +168,55 @@ ACTIONS YOU CAN TAKE:
     - MOVE THE MICRO_UNIT_FRAMES by clicking above the first one, there is a handle to move the frame.
 
 
-OPTIONS YOU CAN SET:
-(on the "Decursive" bar or on the MUFs handle, right-click to display a drop-down menu option, or type /Dcr to access the options by command line)
+		###################
+		# *** OPTIONS *** #
+		###################
+
+There are several ways to access the options:
+
+    - On the "Decursive" bar or on the MUFs handle, right-click to display a drop-down menu option.
+    - Shift-right-click on the handle to display a static option panel.
+    - Type /Dcr to access the options by command line.
+    - Type /Dcroptions to display a static option panel.
+
 Note that each options has an explanation tool-tip. Just explore the menus.
+
+
+		######################################
+		# *** Frequently Asked Questions *** #
+		######################################
+
+
+*** QUESTION :
+	How do I move the Micro-unit frames?
+
+*** ANSWER :
+        To move the MUFs, press Alt and left-click and hold the handle just above the first MUF (it has the same size as a MUF and highlights when your mouse pointer is over it).
+        This handle has several uses, a tool-tip (in the lower right corner of your screen) explains them all.
+
+
+*** QUESTION :
+	Alright I have just one thing to say about this mod, no matter what key I bind it to... It only cleanse when he feels like it. I could push the key I bind cleanse like 300 time and it does not even try to attempt. If I click on a friend or myself now it will go right away. I remember the old one when we didn't have to click on people face to do so, that's why it was very useful in raids. Anyone knows how to fix it? Or it’s just that way?
+
+*** ANSWER :
+	You have to over the unit or unit's unit-frame you want to cure and then press the curring key... Or click on one of the MUF with the mouse-button corresponding to the color of the MUF.
+	How fast "Decursive" removes debuffs only depends on you...
+
+
+*** QUESTION :
+	How do I remove the 'focus' unit of the MUFs?
+
+*** ANSWER :
+	Type /clearfocus
+
+
+*** QUESTION :
+    **	 The old Decursive was so simple, why is it so complicate now?
+    **	 If by clicking on a specific MUF can cast spells on the specific target, wouldn't it stand to reason that if you code one button to change to the name of the priority target you would then only need one MUF instead of multiple MUFs?
+	
+*** ANSWER :
+    **	It's because of Blizzard changes in WoW 2.0, Add-ons can no longer target units or cast spells directly...
+    **	No it's impossible, unit-frame cannot be modified while the player is in combat... Blizzard wants players to take actions and think to play. So single button casting add-ons are impossible since WoW 2.0. Player have to choose manually their target and the spells they want to use.
+	Decursive uses new Blizzard's "click casting" solution, it's the only way for add-ons to use spells and target players.
 
 

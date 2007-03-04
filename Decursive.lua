@@ -439,7 +439,7 @@ do
 		continue = false;
 	    end
 
-	    if (Dcr.Status.Combat) then
+	    if (Dcr.Status.Combat or Dcr.db.profile.DebuffAlwaysSkipList[Debuff.Name]) then
 		local _, EnUClass = UnitClass(Unit);
 		if (Dcr.db.profile.skipByClass[EnUClass]) then
 		    if (Dcr.db.profile.skipByClass[EnUClass][Debuff.Name]) then

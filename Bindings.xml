@@ -28,6 +28,9 @@
 	<Binding name="DCRMUFSHOWHIDE">
 			Dcr:ShowHideDebuffsFrame ();
 	</Binding>
+	<Binding name="DCRSHOWOPTION">
+			Dcr.Waterfall:Open("Decursive");
+	</Binding>
 	<Binding name="DCRPRADD">
 			Dcr:AddTargetToPriorityList();
 	</Binding>

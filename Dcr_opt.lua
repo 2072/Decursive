@@ -165,7 +165,7 @@ Dcr.defaults = { -- {{{
 
     -- Debuffs {{{
 
-    DebuffsToIgnore = {
+    DebuffsToIgnore = { -- those debuffs prevent us from curing the unit
 	[BS["Phase Shift"]]		= true,
 	[BS["Banish"]]			= true,
 	[BS["Frost Trap Aura"]]		= true,
@@ -177,6 +177,9 @@ Dcr.defaults = { -- {{{
 	[BS[DCR_LOC_MINDVISION]]	= true,
 	[L[Dcr.LOC.MUTATINGINJECTION]]	= true,
 	[BS["Arcane Blast"]]		= true,
+    },
+
+    DebuffAlwaysSkipList = {
     },
 
     DebuffsSkipList = {
@@ -1226,13 +1229,17 @@ StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
 
 	local DebuffsSkipList	= Dcr.db.profile.DebuffsSkipList;
 	local skipByClass	= Dcr.db.profile.skipByClass;
+	local AlwaysSkipList	= Dcr.db.profile.DebuffAlwaysSkipList;
 
 
 	Dcr:tremovebyval(DebuffsSkipList, Dcr.Tmp.DebuffToRemove)
 
 	for class, debuffs in pairs (skipByClass) do
-	    skipByClass[class][Dcr.Tmp.DebuffToRemove] = false; -- does not remove it completely
+	    skipByClass[class][Dcr.Tmp.DebuffToRemove] = false; -- does not remove it completely -- WHY??? XXX
 	end
+
+	AlwaysSkipList[Dcr.Tmp.DebuffToRemove] = nil;
+
 	Dcr:Debug("%s removed!", Dcr.Tmp.DebuffToRemove);
 	Dcr:CreateDropDownFiltersMenu();
 	Dcr.Tmp.DebuffToRemove = false;
@@ -1263,7 +1270,7 @@ StaticPopupDialogs["DCR_CONFIRM_RESET"] = {
 
 do -- this is a closure, it's a bit like {} blocks in C
 
-    local DebuffsSkipList, DefaultDebuffsSkipList, skipByClass, DefaultSkipByClass;
+    local DebuffsSkipList, DefaultDebuffsSkipList, skipByClass, AlwaysSkipList, DefaultSkipByClass;
 
     local spacer = function(num) return { type="header", order = 100 + num } end;
 
@@ -1272,12 +1279,15 @@ do -- this is a closure, it's a bit like {} blocks in C
 
     
 
-
     local RemoveFunc = function (handler)
 	Dcr:Debug("Removing '%s'...", handler["Debuff"]);
 	Dcr.Tmp.DebuffToRemove = handler["Debuff"];
 	StaticPopup_Show ("DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION", Dcr:ColorText(handler["Debuff"], "FF11AA66"));
 	Dcr.DewDrop:Close(1);
+    end
+
+    local AddToAlwaysSkippFunc = function (handler, v)
+	AlwaysSkipList[handler["Debuff"]] = v;
     end
 
     local ResetFunc = function (handler)
@@ -1338,6 +1348,29 @@ do -- this is a closure, it's a bit like {} blocks in C
 	end
 
 	classes["spacer1"] = spacer(num);
+
+	num = num + 1;
+
+	classes["PermIgnore"] = {
+	    type = "toggle",
+	    name = Dcr:ColorText(L[Dcr.LOC.OPT_ALWAYSIGNORE], "FFFF9900"),
+	    desc = string.format(L[Dcr.LOC.OPT_ALWAYSIGNORE_DESC], DebuffName),
+	    handler = {
+		["Debuff"] = DebuffName,
+		["get"] = function (args)
+		    return AlwaysSkipList[args["Debuff"]];
+		end,
+		["set"] = AddToAlwaysSkippFunc,
+	    },
+	    get = "get",
+	    set = "set",
+	    order = 100 + num;
+
+	};
+
+	num = num + 1;
+
+	classes["spacer1p5"] = spacer(num);
 
 	num = num + 1;
 
@@ -1442,6 +1475,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	DefaultDebuffsSkipList    = Dcr.defaults.DebuffsSkipList;
 
 	skipByClass		    = Dcr.db.profile.skipByClass;
+	AlwaysSkipList		    = Dcr.db.profile.DebuffAlwaysSkipList;
 	DefaultSkipByClass	    = Dcr.defaults.skipByClass;
 
 	local DebuffsSubMenu = {};

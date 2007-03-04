@@ -1,11 +1,32 @@
-Decursive 2.0 BETA 6 par Archarodim
+Decursive 2.0 BETA 6-Pub par Archarodim
 
 
-Changements entre Decursive 2.0 BETA 5 et 2.0 BETA 6
+Changements entre Decursive 2.0 BETA 5 et 2.0 BETA 6-Pub
 
+    # Changements importants
+
+- Il faut désormais presser la touche ALT en cliquant-gauche sur la poignée des micro-portrait pour les déplacer.
 - Désormais, une bordure s'affiche autour des micro-portraits dont la couleur dépend de la classe de l'unité.
-- Lorsque une unité est possédée, un petit carré vert s'affiche dans les micro-portraits.
+- Lorsqu'une unité est possédée, un petit carré vert s'affiche dans son micro-portrait.
+- Un nouveau panneau d'option statique est disponible en ALT cliquant-droit sur la poignée ou en tappant "/dcroptions" (librairie Waterfall d'ACE 2)
+- Deux nouveaux groupes d'options ont été ajouté:
+    - La transparence de la bordure et du centre des MUFs peut être réglé indépendamment.
+    - L'espace entre les micro-portraits (MUFs) peut être modifié.
+- Les paladin utilises toujours "Epuration" au lieu de "Purification" (s'ils ont appris "Epuration").
+- On peut affecter une touche (dans la fenêtre des raccourcis de WoW) pour afficher/Cacher les micro-portraits.
+- Dans le système de filtrage des afflictions, on peut désormais ignorer une affliction de manière permanente et plus seulement pendant les combats.
+
+    # Changements mineurs
+
+- L'affichage des micro-portraits peut être inversé (ils s'afficheront de bas en haut au lieu de haut en bas).
+- Le fichier Readme.txt a été re-travaillé pour être plus clair, des sections "Features" et "FAQ" y ont été ajouté. (La version française n'a pas encore été retouchée).
+- Les priorités des sorts des démonistes sont sauvegardés lorsqu'ils changent de démon.
+- Le micro-portrait de l'unité en "focus" disparaît dés que l'on tappe "/clearfocus".
 - Correction d'un bug qui laissait voir une affliction de magie guérissable sur les unité possédées aux joueurs incapables d'enlever les afflictions magiques sur les unité ennemies.
+- La fonctions de remplissage des listes de priorité et d'exception fonctionne désormais correctement pour les chamans et les paladins.
+- Ajout d'espacements dans les options pour une meilleur lisibilité.
+- Le message d'erreur indiquant qu'aucune touche de macro n'est définie ne se montre plus si une touche globale est disponible.
+- Optimisation de code et correction de bug mineurs.
 
 
 Changements entre Decursive 2.0 BETA 4 et 2.0 BETA 5

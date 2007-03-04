@@ -106,7 +106,7 @@ BINDING_NAME_DCRSKADD   = "Add target to skip list";
 BINDING_NAME_DCRSKCLEAR = "Clear the skip list";
 BINDING_NAME_DCRSKLIST  = "Print the skip list";
 BINDING_NAME_DCRSKSHOW  = "Show or hide the skip list";
-
+BINDING_NAME_DCRSHOWOPTION = "Display the option static pannel";
 
 
 Dcr.LOC.PRIORITY_LIST  = "Decursive Priority List";
@@ -234,6 +234,8 @@ Dcr.LOC.OPT_RESTPROFILECONF = "Are you sure you want to reset the profile\n '(%s
 Dcr.LOC.OPT_PROFILERESET = "Profile reset...";
 Dcr.LOC.OPT_AFFLICTEDBYSKIPPED = "%s afflicted by %s will be skipped";
 Dcr.LOC.OPT_DEBCHECKEDBYDEF = "\n\nChecked by default";
+Dcr.LOC.OPT_ALWAYSIGNORE = "Also ignore when not in combat";
+Dcr.LOC.OPT_ALWAYSIGNORE_DESC = "If checked, this debuff will also be ignored when you are not in combat";
 Dcr.LOC.OPT_REMOVETHISDEBUFF = "Remove this debuff";
 Dcr.LOC.OPT_REMOVETHISDEBUFF_DESC = "Removes '%s' from the skip list";
 Dcr.LOC.OPT_RESETDEBUFF = "Reset this debuff";
@@ -384,6 +386,8 @@ L:RegisterTranslations("enUS", function() return {
     [BINDING_NAME_DCRSKCLEAR]	=	true,
     [BINDING_NAME_DCRSKLIST]	=	true,
     [BINDING_NAME_DCRSKSHOW]	=	true,
+    
+    [BINDING_NAME_DCRSHOWOPTION]=	true,
 
 
 
@@ -503,6 +507,8 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_PROFILERESET] = true,
     [Dcr.LOC.OPT_AFFLICTEDBYSKIPPED] = true,
     [Dcr.LOC.OPT_DEBCHECKEDBYDEF] = true,
+    [Dcr.LOC.OPT_ALWAYSIGNORE] = true,
+    [Dcr.LOC.OPT_ALWAYSIGNORE_DESC] = true,
     [Dcr.LOC.OPT_REMOVETHISDEBUFF] = true,
     [Dcr.LOC.OPT_REMOVETHISDEBUFF_DESC] = true,
     [Dcr.LOC.OPT_RESETDEBUFF] = true,
