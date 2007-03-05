@@ -41,8 +41,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.MAGIC]		=	"마법",
 	[Dcr.LOC.POISON]	=	"독",
 	[Dcr.LOC.CURSE]		=	"저주",
-	[Dcr.LOC.MAGICCHARMED]	=	Dcr.LOC.MAGICCHARMED,
-	[Dcr.LOC.CHARMED]	=	Dcr.LOC.CHARMED,
+	[Dcr.LOC.MAGICCHARMED]	=	"주술", -- check
+	[Dcr.LOC.CHARMED]	=	"지배", -- check
 
 	-------------------------------------------------------------------------------
 	-- English localization (Default)
@@ -95,8 +95,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.SPELL_PURGE]		=	"정화", -- 주술사
 
 	[BINDING_NAME_DCRSHOW]    	= "Decursive 메인바 표시/숨김",
-
-	[BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
+    
+	[BINDING_NAME_DCRMUFSHOWHIDE] =	"작은 유닛 프레임 표시/숨김",
 
 	[BINDING_NAME_DCRPRADD]     = "대상을 우선순위 목록에 추가",
 	[BINDING_NAME_DCRPRCLEAR]   = "우선순위 목록 초기화",
@@ -107,6 +107,8 @@ L:RegisterTranslations("koKR", function() return {
 	[BINDING_NAME_DCRSKCLEAR] 	= "제외 목록 초기화",
 	[BINDING_NAME_DCRSKLIST]  	= "제외 목록 출력",
 	[BINDING_NAME_DCRSKSHOW]  	= "제외 목록 표시/숨김",
+    
+	[BINDING_NAME_DCRSHOWOPTION]=	"고정창 옵션 표시",
 
 
 
@@ -158,7 +160,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.SONICBURST]		= "음파 폭발",
 	[Dcr.LOC.THUNDERCLAP]		= "천둥벼락",
 	[Dcr.LOC.DELUSIONOFJINDO]	= "진도의 망상",
-	[Dcr.LOC.MUTATINGINJECTION] = "돌연변이 유발", -- check
+	[Dcr.LOC.MUTATINGINJECTION] 	= "돌연변이 유발", -- check
+    -- NEW LOCALS FOR 2.0
 	[Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
 	[Dcr.LOC.OPT_LIVELIST] = "실시간 목록",
 	[Dcr.LOC.OPT_LIVELIST_DESC] = "실시간 목록에 대한 설정입니다.",
@@ -183,8 +186,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_SHOWMFS_DESC] = "클릭으로 해제하려면 반드시 활성화 되어야 합니다.",
 	[Dcr.LOC.OPT_GROWDIRECTION] = "MUF 표시 반전",
 	[Dcr.LOC.OPT_GROWDIRECTION_DESC] = "MUF를 하단에서 상단으로 표시합니다.",
-	[Dcr.LOC.OPT_SHOWBORDER] =  Dcr.LOC.OPT_SHOWBORDER,
-	[Dcr.LOC.OPT_SHOWBORDER_DESC] =  Dcr.LOC.OPT_SHOWBORDER_DESC,
+	[Dcr.LOC.OPT_SHOWBORDER] = "직업 색상 테두리 표시",
+	[Dcr.LOC.OPT_SHOWBORDER_DESC] = "MUF에 유닛의 직업에 따른 색상을 테두리로 표시합니다.",
 	[Dcr.LOC.OPT_MAXMFS]  = "표시할 최대 유닛",
 	[Dcr.LOC.OPT_MAXMFS_DESC] = "표시할 작은 유닛 프레임의 최대 개수를 지정합니다.",
 	[Dcr.LOC.OPT_UNITPERLINES] = "한줄에 표시할 유닛의 수",
@@ -225,6 +228,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_PROFILERESET] = "프로파일 초기화...",
 	[Dcr.LOC.OPT_AFFLICTEDBYSKIPPED] = "%s - %s에 걸리면 무시합니다.",
 	[Dcr.LOC.OPT_DEBCHECKEDBYDEF] = "\n\n기본값으로 설정됨",
+	[Dcr.LOC.OPT_ALWAYSIGNORE] = "비전투시에도 항상 무시",
+	[Dcr.LOC.OPT_ALWAYSIGNORE_DESC] = "선택시, 해당 디버프는 전투 중이 아닐 때에도 무시됩니다.",
 	[Dcr.LOC.OPT_REMOVETHISDEBUFF] = "해당 디버프 제거",
 	[Dcr.LOC.OPT_REMOVETHISDEBUFF_DESC] = "Skip 목록에서 '%s' 제거",
 	[Dcr.LOC.OPT_RESETDEBUFF] = "해당 디버프 초기화",
@@ -244,20 +249,20 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_MFALPHA] = "투명도",
 	[Dcr.LOC.OPT_MFALPHA_DESC] = "디버프의 걸린 대상이 없을 때 MUF의 투명도를 지정합니다.",
 
-	[Dcr.LOC.OPT_ADVDISP] = Dcr.LOC.OPT_ADVDISP,
-	[Dcr.LOC.OPT_ADVDISP_DESC] = Dcr.LOC.OPT_ADVDISP_DESC,
-	[Dcr.LOC.OPT_TIECENTERANDBORDER] = Dcr.LOC.OPT_TIECENTERANDBORDER,
-	[Dcr.LOC.OPT_TIECENTERANDBORDER_OPT] = Dcr.LOC.OPT_TIECENTERANDBORDER_OPT,
-	[Dcr.LOC.OPT_BORDERTRANSP] = Dcr.LOC.OPT_BORDERTRANSP,
-	[Dcr.LOC.OPT_BORDERTRANSP_DESC] = Dcr.LOC.OPT_BORDERTRANSP_DESC,
-	[Dcr.LOC.OPT_CENTERTRANSP] = Dcr.LOC.OPT_CENTERTRANSP,
-	[Dcr.LOC.OPT_CENTERTRANSP_DESC] = Dcr.LOC.OPT_CENTERTRANSP_DESC,
-	[Dcr.LOC.OPT_TIEXYSPACING] = Dcr.LOC.OPT_TIEXYSPACING,
-	[Dcr.LOC.OPT_TIEXYSPACING_DESC] = Dcr.LOC.OPT_TIEXYSPACING_DESC,
-	[Dcr.LOC.OPT_XSPACING] = Dcr.LOC.OPT_XSPACING,
-	[Dcr.LOC.OPT_XSPACING_DESC] = Dcr.LOC.OPT_XSPACING_DESC,
-	[Dcr.LOC.OPT_YSPACING] = Dcr.LOC.OPT_YSPACING,
-	[Dcr.LOC.OPT_YSPACING_DESC] = Dcr.LOC.OPT_YSPACING_DESC,
+	[Dcr.LOC.OPT_ADVDISP] = "고급 표시 설정",
+	[Dcr.LOC.OPT_ADVDISP_DESC] = "각 MUF 사이 간격 설정을 위해 테두리와 가운데 구분의 투명도를 설정할 수 있습니다.",
+	[Dcr.LOC.OPT_TIECENTERANDBORDER] = "가운데와 테두리의 투명도",
+	[Dcr.LOC.OPT_TIECENTERANDBORDER_OPT] = "체크 시 테두리의 투명도가 가운데 투명도의 반이됩니다.",
+	[Dcr.LOC.OPT_BORDERTRANSP] = "테두리 투명도",
+	[Dcr.LOC.OPT_BORDERTRANSP_DESC] = "테두리의 투명도를 설정합니다.",
+	[Dcr.LOC.OPT_CENTERTRANSP] = "가운데 투명도",
+	[Dcr.LOC.OPT_CENTERTRANSP_DESC] = "가운데의 투명도를 설정합니다.",
+	[Dcr.LOC.OPT_TIEXYSPACING] = "수평/수직 간격",
+	[Dcr.LOC.OPT_TIEXYSPACING_DESC] = "MUF의 수평과 수직 간격이 같아 집니다.",
+	[Dcr.LOC.OPT_XSPACING] = "수평 간격",
+	[Dcr.LOC.OPT_XSPACING_DESC] = "MUF 사이의 수평 간격을 설정하니다.",
+	[Dcr.LOC.OPT_YSPACING] = "수직 간격",
+	[Dcr.LOC.OPT_YSPACING_DESC] = "MUF 사이의 수직 간격을 설정합니다.",
 
 
 	[Dcr.LOC.HLP_LEFTCLICK] 	= "좌-클릭",
@@ -286,6 +291,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.MACROKEYMAPPINGSUCCESS] = "[%s] 키가 Decursive 매크로로 성공적으로 지정되었습니다.",
 	[Dcr.LOC.MACROKEYMAPPINGFAILED] = "[%s] 키는 Decursive 매크로로 지정할 수 없습니다!",
 	[Dcr.LOC.MACROKEYNOTMAPPED] = "Decursive 매크로가 지정되지 않앗습니다. 설정 메뉴를 통해 키를 지정할 수 있습니다.",
+    
+    -- OPTIONS
 
 } end);
 
