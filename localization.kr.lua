@@ -1,4 +1,4 @@
---[[
+﻿--[[
     Decursive (v 2.0) add-on for World of Warcraft UI
     Copyright (C) 2006-2007 John Wellesz (Archarodim) ( http://www.2072productions.com/?to=decursive.php )
     This is the continued work of the original Decursive (v1.9.4) by Quu
@@ -158,7 +158,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.SONICBURST]		= "음파 폭발",
 	[Dcr.LOC.THUNDERCLAP]		= "천둥벼락",
 	[Dcr.LOC.DELUSIONOFJINDO]	= "진도의 망상",
-	[Dcr.LOC.MUTATINGINJECTION] = "Mutating Injection", -- check
+	[Dcr.LOC.MUTATINGINJECTION] = "돌연변이 유발", -- check
 	[Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
 	[Dcr.LOC.OPT_LIVELIST] = "실시간 목록",
 	[Dcr.LOC.OPT_LIVELIST_DESC] = "실시간 목록에 대한 설정입니다.",
