@@ -8,41 +8,32 @@ toutes les conditions possibles (solo, groupe ou raid).
 		# *** Fonctions Principales de Decursive *** #
 		##############################################
 
-    -	Support de tous les sorts de dissipations dans toutes les 
-localizations
-    -	ULTRA faible consommation mémoire et CPU dans toutes les 
-conditions
-    -	Les utilisateurs peuvent choisir les types d'afflictions qu'ils 
-veulent guérir et les prioriser
-    -   Les Mages peuvent moutonner les unités sous contrôle mental 
-(MC).
+    -	Support de tous les sorts de dissipations dans toutes les localizations
+    -	ULTRA faible consommation mémoire et CPU dans toutes les conditions
+    -	Les utilisateurs peuvent choisir les types d'afflictions qu'ils veulent
+	guérir et les prioriser
+    -   Les Mages peuvent moutonner les unités sous contrôle mental (MC).
     -   2 solutions sont disponibles pour dissiper les afflictions : 
-Une macro et les micro-portraits (MUFs)
-    -	Auto-configuration de la macro de dissipation (dissipation en 
-survolant/pointant avec la souris sur le personnage et en appuyant sur 
-la touche de macro Decursive)
+	Une macro et les micro-portraits (MUFs)
+    -	Auto-configuration de la macro de dissipation (dissipation en survolant/pointant
+	avec la souris sur le personnage et en appuyant sur la touche de macro Decursive)
     -	Système de filtrage de debuff personalisable par l'utilisateur
-    -	Liste d'exception et de priorité de dissipation aisément 
-configurable
+    -	Liste d'exception et de priorité de dissipation aisément configurable
 
     -	Interface puissante :
     	-   Hautement personnalisable(Echelle, Transparence, etc...)
-	    -	Permet de conserver beaucoup de place à l'écran, l'interface 
-est très discrète
-    	-	Système d'alerte multiple : visuel et auditif.
-	    -	Tri intelligent des micro-portraits pour maximiser l'efficacité 
-des dissipations
-		-	Montre les classes des joueurs et leur status (à portée, affligé, 
-contrôle mental)
-	    -	Très simple et intuitive.
-		-	Système de bulle d'aide pour les options et actions
+	-   Permet de conserver beaucoup de place à l'écran, l'interface est très discrète
+	-   Système d'alerte multiple : visuel et auditif.
+	-   Tri intelligent des micro-portraits pour maximiser l'efficacité des dissipations
+	-   Montre les classes des joueurs et leur status (à portée, affligé, contrôle mental)
+        -   Très simple et intuitive.
+	-   Système de bulle d'aide pour les options et actions
 
     -	ACE 2.0 : Utilisation des librairies ACE 2.0.
-		- Les options de Decursive sont accessibles à travers un menu 
-défilant ou un panneau d'options statique.
-	    - Les options peuvent être sauvegardées/chargées vers/d'un profil 
-différent
-		- Système optimisé de gestion des évènements
+	- Les options de Decursive sont accessibles à travers un menu défilant ou un
+	  panneau d'options statique.
+        - Les options peuvent être sauvegardées/chargées vers/d'un profil différent
+	- Système optimisé de gestion des évènements
 
 
 Pour avoir plus de détails sur toutes ces fonctions, lisez ce qui suit:
@@ -71,20 +62,20 @@ Decursive gère automatiquement la configuration des boutons.
 Les MUFs ont plusieurs couleurs :
 
 - Rouge : L'unité est à portée et est affligée par quelque chose que 
-vous pouvez guérir en faisant un clic gauche sur le MUF.
+  vous pouvez guérir en faisant un clic gauche sur le MUF.
 - Rouge Transparent : Idem rouge, mais hors de portée.
-- Bleu : idem rouge mais boutn droit de la souris.
+- Bleu : idem rouge mais bouton droit de la souris.
 - Orange : idem bleu ou rouge mais avec ctrl + bouton gauche.
 - Gris Transparent : L'unité n'existe pas.
 - Vert Transparent : L'unité est à portée et n'est pas affligée par 
-quelque chose que vous pouvez dissiper
-- Pourpre Transparent : L'unité est trop loin pour scannée.
+  quelque chose que vous pouvez dissiper
+- Pourpre Transparent : L'unité est trop loin pour être scannée.
 - Vert-clair Transparent : L'unité est dissimulée.
 - N'importe quelle couleur avec un carré vers au milieu : L'unité est 
-sous contrôle mental.
-- Noir : L'unité a été mise sur la lite noire parce qu'elle était hors 
-de vue quand vous avez essayé de la guérir (la période de temps de 
-présence dans la liste noire peut être changée dans les options).
+  sous contrôle mental.
+- Noir : L'unité a été mise sur la liste noire parce qu'elle était hors 
+  de vue quand vous avez essayé de la guérir (la période de temps de 
+  présence dans la liste noire peut être changée dans les options).
 
 Les informations ci-dessus sont aussi indiquées par des bulles d'aide 
 dans le jeu.
@@ -102,16 +93,15 @@ nombres verts devant les types d'afflictions.
 
 En plus de lancer des sorts, les MUFs vous permettent de cibler les 
 unités en cliquant sur le bouton du milieu de la souris. Ctrl + bouton 
-du milieu va les mettre en focus (pour nettoyer les unités focused, 
-utiliser la commande /clearfocus)
+du milieu va les mettre en focus (équivalent de la commande /focus).
+Pour enlever le focus d'une unité, utiliser la commande /clearfocus.
 
 Les MUFs sont organisés par défaut de manière intelligente, vous êtes 
 toujours le premier, puis le reste de votre groupe, les groupes après 
 le votre, les groupes avant le votre et les familiers (vous pouvez 
-choisir de la suivre ou pas) et enfin votre unité focalisée (changée 
-par wow qui on utilise la commande /focus 'name' ou en Ctrl + clic 
-milieu sur le MUF).
-Vous pouvez changer complétement cela en utilisant les listes de 
+choisir de les voirs ou pas) et enfin votre unité focalisée (changée 
+avec la commande /focus 'name' ou en Ctrl + clic milieu sur le MUF).
+Vous pouvez changer complétement cet ordre en utilisant les listes de 
 priorités et d'exceptions.
 
 Decursive a été écrit en gardant à l'esprit les concepts 
@@ -121,20 +111,20 @@ affecter votre taux de rafraichissement.
 ###############
 ---------------
     IMPORTANT: POUR BOUGER LES MUFS, FAIRE ALT-CLICK ET MAINTENEZ LA 
-POIGNEE JUSTE AU-DESSUS DU PREMIER MUF (IL A LA MEME TAILLE QU'UN MUF 
-ET ET MIS EN EXERGUE LORSQUE VOTRE POINTEUR DE SOURIS PASSE DESSUS).
+POIGNÉE JUSTE AU-DESSUS DU PREMIER MUF (IL A LA MÊME TAILLE QU'UN MUF 
+ET EST MIS EN EXERGUE LORSQUE VOTRE POINTEUR DE SOURIS PASSE DESSUS).
     Cette poignée a beaucoup d'utilités, une bulle d'aide explique 
 l'ensemble.
 ---------------
 ###############
 
 
-		#############################
-		# *** MACRO Decursive *** #
-		#############################
+		##############################
+		# *** MACRO de Decursive *** #
+		##############################
 
 Decursive crée et gère un macro qui vous permet de dissiper des unités 
-(or d'autres frames) sur lesquels vous pointez la souris. Il vous 
+(ou d'autres portraits d'unité) sur lesquels vous pointez la souris. Il vous
 suffit de choisir la touche dans les options de Decursive.
 En appuyant sur la touche seule, Decursive va lancer le premier sort, 
 Ctrl + touche va lancer le deuxième sort et Shift + Touche va lancer le 
@@ -142,10 +132,10 @@ troisième sort.
 Decursive vous affichera aussi si l'unité en-dessous de votre curseur 
 est affligée par quelque chose à travers sa 'live-list'.
 Vous pouvez aussi affecter la macro à l'un de vos raccourcis de barre 
-d'actions en utilisant la fenêtre WoW standard.
+d'actions en utilisant la fenêtre des macros standard de WoW.
 
-NOTE: Pour changer la clé, utilisez le menu graphique en cliquant droit 
-sur la barre "Decursive".
+NOTE: Pour changer la touche, utilisez le menu graphique en cliquant droit 
+sur la barre "Decursive" (ou sur la poignée des MUFs).
 Vous pouvez aussi utiliser la ligne de commande suivante pour mettre la 
 touche [V] en touche de raccourci : "/dcr macro SetKey V".
 
@@ -164,36 +154,46 @@ seront complétement ignorés et ne seront pas affichés dans les MUFs.
 		################################
 
 COMMANDES UTILISABLES :
-/dcrshow
----> Pour afficher la fenêtre Decursive (aussi disponible par Alt+ Clic 
-gauche sur la poignée des MUFs)
-/dcrhide
----> Pour cacher la fenêtre Decursive (cela laisse affiché la live-list)
-/dcroptions
----> Pour afficher le panneau statique des options
-/dcrreset
----> Pour remettre à zéro la position de la fenêtre Decursive au milieu 
-de votre écran (utile lorsque vous perdez vos frames)
-/dcrpradd
----> Ajoute la cible courante dans la liste des priorités
-/dcrprclear
----> Vide la liste des priorités
-/dcrprshow
----> Affiche l'interface de liste des priorités (où vous pouvez 
-ajouter, supprimer, déplacer des joueurs) (aussi Ctrl + Clic gauche sur la 
-poignée des MUFs)
-/dcrskadd
----> Ajoute la cible courante à la liste d'exceptions
-/dcrskclear
----> Vide la liste d'exceptions
-/dcrskshow
----> Affiche l'interface de la liste d'exceptions (où vous pouvez 
-ajouter, supprimer, déplacer des joueurs) (aussi Shift + Clic gauche sur la 
-poignée des MUFs)
 
-NOTE 
-Toutes ces commandes peuvent aussi être liées à une touche avec l'aide 
-de l'interface standard de WoW.
+/DCRSHOW
+---> Pour afficher la fenêtre Decursive (aussi disponible par Alt + Clic 
+     gauche sur la poignée des MUFs)
+
+/DCRHIDE
+---> Pour cacher la fenêtre Decursive (cela laisse affiché la live-list)
+
+/DCROPTIONS
+---> Pour afficher le panneau statique des options
+
+/DCRRESET
+---> Pour remettre à zéro la position de la fenêtre Decursive au milieu 
+     de votre écran (utile lorsque vous perdez vos fenêtres)
+
+/DCRPRADD
+---> Ajoute la cible courante dans la liste des priorités
+
+/DCRPRCLEAR
+---> Vide la liste des priorités
+
+/DCRPRSHOW
+---> Affiche l'interface de liste des priorités (où vous pouvez 
+     ajouter, supprimer, déplacer des joueurs) (aussi Shift + Clic droit sur la 
+     poignée des MUFs)
+
+/DCRSKADD
+---> Ajoute la cible courante à la liste d'exceptions
+
+/DCRSKCLEAR
+---> Vide la liste d'exceptions
+
+/DCRSKSHOw
+---> Affiche l'interface de la liste d'exceptions (où vous pouvez 
+     ajouter, supprimer, déplacer des joueurs) (aussi Shift + Clic gauche sur la 
+     poignée des MUFs)
+
+NOTE :
+Toutes ces commandes peuvent aussi être liées à une touche avec l'interface
+standard des raccourcis de WoW.
 
 
 		################################
@@ -201,57 +201,63 @@ de l'interface standard de WoW.
 		################################
 
     - DANS LA BARRE PRINCIPALE DE DECURSIVE :
-	Clic milieu ou Ctrl + Clic gauche sur le libellé "Decursive" va cacher 
-les boutons et verrouiller le cadre et la live-list.
+      Clic milieu ou Ctrl + Clic gauche sur le libellé "Decursive" va cacher 
+      les boutons et verrouiller le cadre et la live-list.
 
     - DANS L'INTERFACE STANDARD DE WOW :
-    Vous pouvez lier beaucoup de macros à des touches dans la section "Decursive".
+      Vous pouvez lier beaucoup d'actions à des touches dans la section "Decursive".
 
     - LIER LA MACRO DECURSIVE A UNE TOUCHE
-    Cela est fait avec les options de menu de Decursive (Decursive 
-maintient sa macro et la met à jour suivant votre configuration et 
-capacités)
+      Cela ce fait dans les options de Decursive (Decursive 
+      maintient sa macro et la met à jour suivant votre configuration et 
+      vos capacités)
 
     - Appuyer sur la touche liée dissipera l'unité sous le pointeur de 
-votre souris (La touche seule est le premier sort, ctrl+touche pour 2nd 
-sort et shift pour le 3eme)
+      votre souris (La touche seule est le premier sort, ctrl+touche pour 2nd 
+      sort et shift pour le 3eme)
 
     - Si vous avez affiché les MUFs (par défaut), vous pouvez cliquer 
-sur un micro-portrait pour le guérir, le cibler ou le focaliser.
+      sur un micro-portrait pour le guérir, le cibler ou le focaliser.
 
     - DANS LE MENU D'OPTION, vous pouvez choisir ce que vous voulez 
-guérir et la priorité de chaque affliction. La priorité détermine 
-quelle affliction sera montrée en premier mais aussi l'affectation des 
-touches à vos sorts (regardez la bulle d'aide pour connaitre les liens 
-actuels)
-	- Vous pouvez aussi choisir/ajouter/supprimer des debuffs à ignorer 
-lors d'un combat suivant la classe, cela permet d'éviter du temps et de 
-la mana ; Decursive a déjà une liste de debuffs ignorés par classes.
-    - Vous pouvez aussi organiser l'ordre des micro-portraits en 
-utilisant les listes d'exceptions et de priorités en cliquant sur les 
-boutons de la barre.
-	- Vous pouvez sauvagrader vos options par personnages/serveur/classe.
-    - Vous pouvez choisir l'apparence des containers des MUFs, leur 
-nombre par lignes, leur contenu ...
+      guérir et la priorité de chaque affliction. La priorité détermine 
+      quelle affliction sera montrée en premier mais aussi l'affectation des 
+      touches à vos sorts (regardez la bulle d'aide pour connaitre les liens 
+      actuels)
 
-    - DEPLACER LES MICRO-PORTRAITS en cliquant au-dessus du premier, il 
-y a une poignée permettant de déplacer le cadre.
+    - Vous pouvez aussi choisir/ajouter/supprimer des afflictions à ignorer 
+      pendant les combats suivant la classe, cela permet d'éviter de perdre du
+      temps et de la mana ; Decursive a déjà une liste d'affliction à ignorés par
+      classes.
+
+    - Vous pouvez aussi organiser l'ordre des micro-portraits en 
+      utilisant les listes d'exceptions et de priorités (accessibles par les 
+      boutons de la barre "Decursive" ou par la poignée des MUFs).
+
+    - Vous pouvez sauvagrader vos options par personnages/serveur/classe et
+      créer des profiles d'options.
+
+    - Vous pouvez choisir l'apparence des MUFs, leur nombre par lignes, leur
+      contenu, etc...
+
+    - DEPLACER LES MICRO-PORTRAITS en alt-cliquant-gauace au-dessus du premier, il 
+      y a une poignée permettant de déplacer le cadre.
 
 
 		###################
 		# *** OPTIONS *** #
 		###################
 
-Il y a plusieurs facons d'accéder aux options:
+Il y a plusieurs façons d'accéder aux options:
 
     - Sur la barre "Decursive" ou sur la poignée des MUFs, clic droit 
-pour afficher un menu déroulant des options.
+      pour afficher un menu déroulant des options.
     - Shift + Clic droit sur la poignée pour afficher un panneau 
-statique d'options.
+      statique d'options.
     - Taper /Dcr pour accéder aux options par ligne de commande.
     - Taêr /Dcroptions pour afficher un panneau statique d'options.
 
-Note : Chaque option a une explication dans la bulle d'aide. 
+Note : Chaque option a une explication dans une bulle d'aide. 
 Explorez les menus.
 
 
@@ -264,10 +270,9 @@ Explorez les menus.
 	Comment bouger le cadre de mes micro-portraits ?
 
 *** ANSWER :
-	Pour bouger les micri-portraits, appuyer sur Alt+Clic gauche de la 
-souris sur la poignée au-dessus du premier micro-portrait, puis 
-déplacer. Cette poignée a plusieurs usages, une bulle d'ailde explique 
-les explique tous.
+	Pour bouger les micro-portraits, appuyer sur Alt + bouton gauche de la 
+souris sur la poignée au-dessus du premier micro-portrait, puis déplacer. Cette
+poignée a plusieurs usages, une bulle d'aide les explique tous.
 
 
 *** QUESTION :
@@ -280,12 +285,11 @@ c'était la raison pour laquelle cet addon était très utile en raid.
 Quelqu'un sait-il comment résoudre ce problème ?
 
 *** REPONSE :
-	Il faut maintenant aller au-dessus de l'unité ou son portrait et 
-appuyer sur la touche liée... Ou cliquer sur un des micro-portraits 
-avec le bouton de la souris correspondant à la couleur.
-La rapidité dont "Decursive" enlève les debuffs dépend uniquement de 
-vous...(n'oubliez pas que vous ne pouvez pas lancer plus d'un sort 
-toutes les secondes et demi).
+	Il faut maintenant aller au-dessus de l'unité ou de son portrait et
+appuyer sur la touche liée... Ou cliquer sur un des micro-portraits avec le
+bouton de la souris correspondant à la couleur.  La rapidité de "Decursive"
+dépend uniquement de vous... (n'oubliez pas que vous ne pouvez pas lancer plus
+d'un sort toutes les secondes et demi).
 
 
 *** QUESTION :
@@ -311,6 +315,6 @@ modifiés en combat... Blizzard veut que les joueurs pensent à ce qu'ils
 font lorsqu'ils jouent. Donc, depuis la version 2.0, les mono-boutons de 
 lancement de sorts sont impossible. Les joueurs doivent choisir 
 manuellement leur cible et le sort qu'ils veulent lancer.
-	Decursive utilises la nouvelle solution de Blizzard "click casting", 
+    Decursive utilise la nouvelle solution de Blizzard "click casting", 
 c'est la seule façon pour les addons d'utiliser des sorts et cibler des 
 joueurs.
