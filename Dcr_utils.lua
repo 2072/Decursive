@@ -89,6 +89,14 @@ end -- }}}
 
 -- tcopy: recursively copy contents of one table to another
 function Dcr:tcopy(to, from)   -- "to" must be a table (possibly empty)
+    if (type(from) ~= "table") then 
+	return error(("Dcr:tcopy: bad argument #2 'from' must be a table, got '%s' instead"):format(type(from)),2);
+    end
+
+    if (type(to) ~= "table") then 
+	return error(("Dcr:tcopy: bad argument #1 'to' must be a table, got '%s' instead"):format(type(to)),2);
+    end
+
     for k,v in pairs(from) do
 	if(type(v)=="table") then
 	    to[k] = {}
