@@ -8,7 +8,7 @@ Changements entre Decursive 2.0 BETA 5 et 2.0 BETA 6-Pub
 - Il faut désormais presser la touche ALT en cliquant-gauche sur la poignée des micro-portrait pour les déplacer.
 - Désormais, une bordure s'affiche autour des micro-portraits dont la couleur dépend de la classe de l'unité.
 - Lorsqu'une unité est possédée, un petit carré vert s'affiche dans son micro-portrait.
-- Un nouveau panneau d'option statique est disponible en ALT cliquant-droit sur la poignée ou en tappant "/dcroptions" (librairie Waterfall d'ACE 2)
+- Un nouveau panneau d'option statique est disponible en ALT cliquant-droit sur la poignée ou en tappant "/dcroptions" (librairie Waterfall d'Ace2)
 - Deux nouveaux groupes d'options ont été ajouté:
     - La transparence de la bordure et du centre des MUFs peut être réglé indépendamment.
     - L'espace entre les micro-portraits (MUFs) peut être modifié.
@@ -92,9 +92,9 @@ Changements importants pour l'utilisateur :
 
 - La fenêtre des options a été enlevée:
 
-	- Toutes les options sont accessibles par un menu déroulant (clique droit sur la barre "Decursive") (ACE DewDrop).
+	- Toutes les options sont accessibles par un menu déroulant (clique droit sur la barre "Decursive") (Ace2 DewDrop).
 	- Chaque entrée de menu a une petite explication en info-bulle.
-	- Toutes les options sont accessible par ligne de commande. (ACE-console)
+	- Toutes les options sont accessible par ligne de commande. (Ace2-console)
 
 - Gestion des afflictions à ignorer pendant les combats:
 	- On peut très facilement ajouter/enlever des afflictions à ignorer sur certaines classes pendant les combat.
@@ -106,7 +106,7 @@ Changements internes:
 
 - Decursive a été presque entièrement réorganisé et ré-écrit (la liste des affligés n'a pas encore été refaite).
 - Nouvelle architecture du code, plus efficace et plus maniable.
-- Decursive fait désormais parti de la famille ACE2 qui utilise les librairies ACE2 (elles sont incluses)
+- Decursive fait désormais parti de la famille Ace2 qui utilise les librairies Ace2 (elles sont incluses)
 
 
 Changements entre Decursive 1.9.8.3 et 1.9.8.4

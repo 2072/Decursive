@@ -7,7 +7,7 @@ Changes from Decursive 2.0 BETA 5 to 2.0 BETA 6-Pub
 - Now you need to press Alt to move the MUFs clicking the handle.
 - Now a border is displayed around the MUFs, its color depends on the unit's class.
 - When a unit is charmed, a small green square is displayed inside its MUF.
-- A new static option panel is available by ALT-RIGHT-CLICKING on the handle or typing /dcroptions (ACE2 Waterfall library).
+- A new static option panel is available by ALT-RIGHT-CLICKING on the handle or typing /dcroptions (Ace2 Waterfall library).
 - Added two new sets of options:
     - Class border and center transparency can be set separately.
     - Spacing between MUFs can be changed.
@@ -96,13 +96,13 @@ Internal changes:
 
 - Decursive was almost entirely rewritten and reorganized (the live list system has not been redisigned yet)
 - New code architecture, more ressource efficient and more scalable.
-- Decursive is now an ACE2 add-on using ACE2 embeded libraries.
+- Decursive is now an Ace2 add-on using Ace2 embeded libraries.
 
 
 Changes from Decursive 1.9.8.3 to 1.9.8.4
 
 - Fix syntax for compatibility with BC and LUA 5.1.1
-- Huge memory usage improvement, Decursive re-uses tables and uses the Compost ACE2 library so Decursive uses 0.0 Kib/s when idle or in action.
+- Huge memory usage improvement, Decursive re-uses tables and uses the Compost Ace2 library so Decursive uses 0.0 Kib/s when idle or in action.
 - Improved CPU usage, it should be minimum.
 
 

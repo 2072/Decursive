@@ -29,7 +29,7 @@ toutes les conditions possibles (solo, groupe ou raid).
         -   Très simple et intuitive.
 	-   Système de bulle d'aide pour les options et actions
 
-    -	ACE 2.0 : Utilisation des librairies ACE 2.0.
+    -	Ace2 : Utilisation des librairies Ace2.
 	- Les options de Decursive sont accessibles à travers un menu défilant ou un
 	  panneau d'options statique.
         - Les options peuvent être sauvegardées/chargées vers/d'un profil différent
@@ -139,7 +139,7 @@ sur la barre "Decursive" (ou sur la poignée des MUFs).
 Vous pouvez aussi utiliser la ligne de commande suivante pour mettre la 
 touche [V] en touche de raccourci : "/dcr macro SetKey V".
 
-Decursive utilises l'expertise des librairies ACE 2.0 (ces librairies 
+Decursive utilises l'expertise des librairies Ace2 (ces librairies 
 sont encapsulées, vous n'avez pas besoin d'installer les dépendances).
 
 Beaucoup d'options sont disponibles, n'oubliez pas de les essayer.

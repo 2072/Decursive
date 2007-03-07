@@ -27,7 +27,7 @@ raids).
     -	    Very simple and intuitive.
     -	    Tool-tip help system for options and actions.
 
-    -	ACE 2.0 framework: Uses the powerful ACE 2.0 libraries.
+    -	Ace2 framework: Uses the powerful Ace2 libraries.
     -	    Decursive options are accessible through a drop down menu or a static option panel.
     -	    Option can be saved/loaded to/from different profiles.
     -	    Optimized event management system.
@@ -133,7 +133,7 @@ by right-clicking the handle or the "Decursive" bar.  You can also use the
 command line for exemple, "/dcr macro SetKey V" wlll set the new key to [V].
 
 
-Decursive uses the expertise of the ACE 2.0 libraries (those libraries are
+Decursive uses the expertise of the Ace2 libraries (those libraries are
 embedded, you don't need to install any dependency).
 
 Many options are available, don't forget to try them.
