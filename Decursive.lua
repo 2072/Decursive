@@ -384,8 +384,8 @@ do
 
 
     local sorting = function (a, b)
-	cura = a.Type and Dcr.db.profile.CureOrder[a.Type] or 1024;
-	curb = b.Type and Dcr.db.profile.CureOrder[b.Type] or 1024;
+	cura = (a.Type and Dcr.db.profile.CureOrder[a.Type] and Dcr.db.profile.CureOrder[a.Type] > 0) and Dcr.db.profile.CureOrder[a.Type] or 1024;
+	curb = (b.Type and Dcr.db.profile.CureOrder[b.Type] and Dcr.db.profile.CureOrder[b.Type] > 0) and Dcr.db.profile.CureOrder[b.Type] or 1024;
 
 	return cura < curb;
     end
@@ -457,11 +457,14 @@ do
 		-- If we are still here it means that this Debuff is something not to be ignored...
 
 
-		-- We have a match for this type and we decided (checked) to cure it
-		-- NOTE: Dcr.db.profile.CureOrder[DEBUFF_TYPE] is set to FALSE when the type is unchecked
-		-- and to -1 when there is no spell available for the type
-		-- (-1 is not a reliable value to test for spell avaibility)
-		if (Dcr.db.profile.CureOrder[Debuff.Type] and Dcr.db.profile.CureOrder[Debuff.Type] ~= -1) then
+		-- We have a match for this type and we decided (checked) to
+		-- cure it NOTE: Dcr.db.profile.CureOrder[DEBUFF_TYPE] is set
+		-- to FALSE when the type is unchecked and to < 0 when there is
+		-- no spell available for the type or when the spell is gone
+		-- (it happens for warlocks or when using the same profile with
+		-- several characters)
+		--if (Dcr.db.profile.CureOrder[Debuff.Type] and Dcr.db.profile.CureOrder[Debuff.Type] > 0) then
+		if (Dcr:GetCureCheckBoxStatus(Debuff.Type)) then
 
 
 		    -- Dcr:Debug("we can cure it");
@@ -496,7 +499,7 @@ do
 	    end
 	end -- for END
 
-	-- erase ubused entries without freeing the memory (less garbage)
+	-- erase unused entries without freeing the memory (less garbage)
 	while (ManagedDebuffs[DebuffNum]) do
 	    ManagedDebuffs[DebuffNum].Type = false;
 	    DebuffNum = DebuffNum + 1;

@@ -123,16 +123,21 @@ function Dcr:tSortUsingKeys(tab)
     local SortedTable = {};
     local Keys = {};
 
+    -- store all the keys in a table
     for k,v in pairs(tab) do
 	table.insert(Keys, k);
     end
 
+    -- sort the table
     table.sort(Keys);
 
+    -- we now have a sorted table containing the keys
     for pos, k in pairs(Keys) do
+	-- insert the values in a new table using the position of each key
 	table.insert(SortedTable, pos, tab[k]);
     end
 
+    -- we return a new sorted table with new keys but with the same values
     return SortedTable;
 end
 

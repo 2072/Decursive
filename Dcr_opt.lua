@@ -1004,7 +1004,7 @@ Dcr.CureCheckBoxes = { -- just a shortcut
 
 function Dcr:GetCureCheckBoxStatus (Type)
 
-    return (Dcr.db.profile.CureOrder[Type] and Dcr.db.profile.CureOrder[Type] > 0);
+    return Dcr.db.profile.CureOrder[Type] and Dcr.db.profile.CureOrder[Type] > 0;
 end
 
 function Dcr:SetCureCheckBoxNum (Type)
@@ -1027,8 +1027,6 @@ end
 function Dcr:CheckCureOrder ()
 
     Dcr:Debug("Verifying CureOrder...");
---    Dcr:Print("The list is:");
---    Dcr:PrintLiteral(Dcr.db.profile.CureOrder);
 
     local TempTable = {};
     local AuthorizedKeys = {
@@ -1041,20 +1039,19 @@ function Dcr:CheckCureOrder ()
     };
     local AuthorizedValues = {
 	[false]	= true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
-	[-10]	= 0, -- used to parck spells yet to be discovered
 	-- Other <0  values are used when there used to be a spell...
 	[1]	= DcrC.ENEMYMAGIC,
-	[-1]	= DcrC.ENEMYMAGIC,
+	[-11]	= DcrC.ENEMYMAGIC,
 	[2]	= DcrC.MAGIC,
-	[-2]	= DcrC.MAGIC,
+	[-12]	= DcrC.MAGIC,
 	[3]	= DcrC.CURSE,
-	[-3]	= DcrC.CURSE,
+	[-13]	= DcrC.CURSE,
 	[4]	= DcrC.POISON,
-	[-4]	= DcrC.POISON,
+	[-14]	= DcrC.POISON,
 	[5]	= DcrC.DISEASE,
-	[-5]	= DcrC.DISEASE,
+	[-15]	= DcrC.DISEASE,
 	[6]	= DcrC.CHARMED,
-	[-6]	= DcrC.CHARMED,
+	[-16]	= DcrC.CHARMED,
     };
     local GivenValues = {};
 
@@ -1067,27 +1064,26 @@ function Dcr:CheckCureOrder ()
     end
 
     -- Validate existing entries
+    local WrongValue = 0;
     for key, value in pairs(Dcr.db.profile.CureOrder) do
 
-	if (AuthorizedKeys[key]) then -- is this a corect type ?
-	    if (AuthorizedValues[value] and not GivenValues[value and math.abs(value)]) then -- is this value authorized and not already given?
-		TempTable[key] = value;
-		GivenValues[value and math.abs(value)] = true;
+	if (AuthorizedKeys[key]) then -- is this a correct type ?
+	    if (AuthorizedValues[value] and not GivenValues[value]) then -- is this value authorized and not already given?
+		--TempTable[key] = value;
+		GivenValues[value] = true;
 
-	    elseif (value and value ~= -10) then
+	    elseif (value) then -- FALSE is the only value that can be given several times
 		Dcr:Debug("Incoherent value for (key, value, Duplicate?)", key, value, GivenValues[value]);
-		TempTable[key] = -10; -- if the value was wrong or already given to another type
+		
+		Dcr.db.profile.CureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
+		WrongValue = WrongValue + 1;
 	    end
+	else
+	    Dcr.db.profile.CureOrder[key] = nil;
 	end
-
     end
 
-
-
-    Dcr.db.profile.CureOrder = TempTable;
-
-
-
+    --Dcr.db.profile.CureOrder = TempTable;
 end
 
 function Dcr:SetCureOrder (ToChange)
@@ -1095,36 +1091,46 @@ function Dcr:SetCureOrder (ToChange)
     local CureOrder = Dcr.db.profile.CureOrder;
     local tmpTable = {};
     Dcr:Debug("SetCureOrder called for prio ", CureOrder[ToChange]);
-    --Dcr:Print("The list is:");
-    --Dcr:PrintLiteral(Dcr.db.profile.CureOrder);
 
     if (ToChange) then
-	-- if there is a positive value, it means we want to disable thjis type, set it to false
-	if (type(CureOrder[ToChange]) == "number" and CureOrder[ToChange] > 0) then
+	-- if there is a positive value, it means we want to disable this type, set it to false (see GetCureCheckBoxStatus())
+	if (Dcr:GetCureCheckBoxStatus(ToChange)) then
 	    CureOrder[ToChange] = false;
 	    Dcr:Debug("SetCureOrder(): set to false");
-	else -- else if there was no value (or a negative one), add this type at the end
-	    CureOrder[ToChange] = 10;
-	    Dcr:Debug("SetCureOrder(): set to 10");
+	else -- else if there was no value (or a negative one), add this type at the end (see GetCureCheckBoxStatus())
+	    CureOrder[ToChange] = 20; -- this will cause the spell to be added at the end
+	    Dcr:Debug("SetCureOrder(): set to 20");
 	end
     end
 
+    local LostSpells = {}; -- an orphanage for the lost spells :'(
+    local FoundSpell = 0; -- we wouldn't need that if #table was always returning something meaningful...
 
     -- re-compute the position of each spell type
     for Type, Num in pairs (CureOrder) do
 
-	-- if we have a spell or if we checked the checkbox
+	-- if we have a spell or if we did not unchecked the checkbox (note the difference between "checked" and "not unchecked")
 	if (Dcr.Status.CuringSpells[Type] and CureOrder[Type]) then
-	    table.insert(tmpTable, math.abs(CureOrder[Type]), Type);
-
-	elseif (not Dcr.Status.CuringSpells[Type]) then
-	    -- if we don't have a spell for this type
-	    if (type(CureOrder[Type]) == "number" and CureOrder[Type] > 0) then -- if a priority is assigned (if we lost the spell)
-		CureOrder[Type] = -1 * CureOrder[Type]; -- save the position
-	    end
+	    tmpTable[math.abs(CureOrder[Type])] = Type; -- CureOrder[Type] can have a <0 value if the spell was lost
+	    FoundSpell = FoundSpell + 1;
+	elseif (CureOrder[Type]) then -- if we don't have a spell for this type
+	    LostSpells[math.abs(CureOrder[Type])] = Type;  -- save the position
 	end
     end
 
+   -- take care of the lost spells here
+   -- Sort the lost spells so that they can be readded in the correct order
+   LostSpells =  Dcr:tSortUsingKeys(LostSpells);
+
+   -- Place the lost spells after the found ones but with <0 values so they
+   -- can be readded later using their former priorities
+   local AvailableSpot = (FoundSpell + 10 + 1) * -1; -- we add 10 so that they'll be re-added after any not-lost spell...
+
+   -- Dcr:PrintLiteral(LostSpells);
+   for FormerPrio, Type in ipairs(LostSpells) do
+       CureOrder[Type] = AvailableSpot
+       AvailableSpot = AvailableSpot - 1;
+   end
 
     -- we sort the tables
     tmpTable = Dcr:tSortUsingKeys(tmpTable);
@@ -1136,7 +1142,6 @@ function Dcr:SetCureOrder (ToChange)
 
     Dcr.Status.ReversedCureOrder = Dcr:tReverse(CureOrder);
 
-    --    Dcr:PrintLiteral(tmpTable);
     for Type, CheckBox in pairs(Dcr.CureCheckBoxes) do
 	Dcr:SetCureCheckBoxNum(Type);
     end
@@ -1157,7 +1162,7 @@ function Dcr:SetCureOrder (ToChange)
     local DebuffType;
     -- set the priority for each spell, Micro frames will use this to determine which button to map
     local affected = 1;
-    for i=1,5 do
+    for i=1,6 do
 	DebuffType = ReversedCureOrder[i]; -- there is no gap between indexes
 	if (DebuffType and not CuringSpellsPrio[ CuringSpells[DebuffType] ] ) then
 	    CuringSpellsPrio[ CuringSpells[DebuffType] ] = affected;
@@ -1305,7 +1310,6 @@ do -- this is a closure, it's a bit like {} blocks in C
     end
 
     local function ClassCheckbox (Class, DebuffName, num)
-	--Dcr:PrintLiteral(num);
 	local CheckedByDefault = false;
 
 	if (DefaultSkipByClass[Class][DebuffName]) then
@@ -1516,7 +1520,6 @@ do -- this is a closure, it's a bit like {} blocks in C
 	DebuffsSubMenu["spacer2"] = spacer(num);
 	num = num + 1;
 
-	-- Dcr:PrintLiteral(DebuffsSubMenu);
 	Dcr.options.args.DebuffSkip.args = DebuffsSubMenu;
 
     end

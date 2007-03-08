@@ -68,8 +68,8 @@ Dcr.CONF.MACRO_SHOW_ORDER   = "/dcrshoworder";
 -- CONSTANTS
 DcrC = {};
 
-DcrC.MAGIC	= 1;
 DcrC.ENEMYMAGIC = 2;
+DcrC.MAGIC	= 1;
 DcrC.CURSE	= 4;
 DcrC.POISON	= 8;
 DcrC.DISEASE	= 16;
@@ -523,8 +523,6 @@ function Dcr:Configure() --{{{
     local BookType = BOOKTYPE_SPELL;
     local break_flag = false
     local spellName, spellRank;
-
-    local CheckedSpells = Dcr.db.profile.CureOrder 
 
     -- This array will be used to test if a reconfiguration is required
     Dcr.Status.FoundSpells = {};
