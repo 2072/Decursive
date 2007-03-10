@@ -9,7 +9,7 @@ toutes les conditions possibles (solo, groupe ou raid).
 		##############################################
 
     -	Support de tous les sorts de dissipations dans toutes les localizations
-    -	ULTRA faible consommation mémoire et CPU dans toutes les conditions
+    -	Consommation mémoire et CPU minimale dans toutes les conditions
     -	Les utilisateurs peuvent choisir les types d'afflictions qu'ils veulent
 	guérir et les prioriser
     -   Les Mages peuvent moutonner les unités sous contrôle mental (MC).

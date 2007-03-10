@@ -10,7 +10,7 @@ raids).
 		###################################
 
     -	Support all cleansing spells in all localizations.
-    -	ULTRA low memory and CPU usage in all conditions.
+    -	Minimal memory and CPU usage in all conditions.
     -	Users can choose the types of affliction they want to cure and prioritize them.
     -   Mages can sheep mind-controlled units.
     -   Two solutions available to cleans afflictions: Macro and Micro-Unit Frames (MUFs)
@@ -30,7 +30,7 @@ raids).
     -	Ace2 framework: Uses the powerful Ace2 libraries.
     -	    Decursive options are accessible through a drop down menu or a static option panel.
     -	    Option can be saved/loaded to/from different profiles.
-    -	    Optimized event management system.
+    -	    Optimized event management system and more...
 
 
 To have details about all these features, read what follows.
