@@ -1,7 +1,7 @@
 ## Interface: 20003
 
 ## Title: Decursive |cff7fff7f -Ace2-|r
-## Notes: This is a raid cleaning helper mod.
+## Notes: Debuff display and cleaning for solo, group and raids with advanced filtering and priority system
 
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
@@ -11,8 +11,8 @@
 
 ## X-License: GNU GPL
 
-## OptionalDeps: Ace2, Babble-2.2, DewdropLib
-## X-Embeds: Ace2, Babble-2.2, DewdropLib
+## OptionalDeps: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0
+## X-Embeds: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0
 
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat
