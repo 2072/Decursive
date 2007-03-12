@@ -1,4 +1,9 @@
-Decursive 2.0 BETA 6-Pub par Archarodim
+Decursive 2.0 BETA 6-Pub-fixed par Archarodim
+
+
+Changements entre Decursive 2.0 BETA 6-Pub et Decursive 2.0 BETA 6-Pub-fixed
+
+- Correction de plusieurs problèmes avec le système de priorité des sorts.
 
 
 Changements entre Decursive 2.0 BETA 5 et 2.0 BETA 6-Pub
