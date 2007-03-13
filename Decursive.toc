@@ -6,7 +6,7 @@
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
 
-## Version: 2.0.0 BETA 6-Pub-fixed
+## Version: 2.0.0 BETA 7-dev
 ## Author: Archarodim
 
 ## X-License: GNU GPL
@@ -17,10 +17,12 @@
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/?to=decursive.php
+## X-Credits: Sylvin (French translation)
 
 ## X-RelSite-WoWI: 4937
 ## X-RelSite-Curse: 3011
 ## X-RelSite-UI.WoW: 2506
+## X-AceForum: 4328
 
 ## X-eMail: archarodim@teaser.fr
 
