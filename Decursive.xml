@@ -602,7 +602,7 @@
 	<FontString inherits="GameFontNormal" justifyH="CENTER"/>
     </MessageFrame>
 
-    <GameTooltip name="DcrDisplay_Tooltip" hidden="true" inherits="GameTooltipTemplate" parent="DecursiveAfflictedListFrame" />
+    <GameTooltip name="DcrDisplay_Tooltip" hidden="true" inherits="GameTooltipTemplate" parent="UIParent" />
 
     <!-- Frame to handle all core events -->
     <Frame name="Decursive">

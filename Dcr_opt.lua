@@ -354,11 +354,13 @@ Dcr.options = { -- {{{
 		    name = L[Dcr.LOC.SCAN_LENGTH],
 		    desc = L[Dcr.LOC.OPT_SCANLENGTH_DESC],
 		    get = function() return Dcr.db.profile.ScanTime end,
-		    set = function(v) 
-			Dcr:Debug("Scan delay changed");
-			Dcr.db.profile.ScanTime = v;
-			Dcr:CancelScheduledEvent(Dcr.Status.ScanShedule);
-			Dcr.Status.ScanShedule = Dcr:ScheduleRepeatingEvent(Dcr.RaidScanner_SC, Dcr.db.profile.ScanTime);
+		    set = function(v)
+			if (Dcr.Status.ScanShedule and v ~= Dcr.db.profile.ScanTime) then
+			    Dcr.db.profile.ScanTime = v;
+			    Dcr:CancelScheduledEvent(Dcr.Status.ScanShedule);
+			    Dcr.Status.ScanShedule = Dcr:ScheduleRepeatingEvent(Dcr.RaidScanner_SC, Dcr.db.profile.ScanTime);
+			    Dcr:Debug("LV scan delay changed:", Dcr.db.profile.ScanTime, v);
+			end
 		    end,
 		    disabled = function() return  Dcr.db.profile.Hide_LiveList end,
 		    min = 0.1,
@@ -745,12 +747,13 @@ Dcr.options = { -- {{{
 		    desc = L[Dcr.LOC.OPT_MFREFRESHRATE_DESC],
 		    get = function() return Dcr.db.profile.DebuffsFrameRefreshRate end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.DebuffsFrameRefreshRate) then
+			if (Dcr.Status.MicroFrameUpdateSchedule and v ~= Dcr.db.profile.DebuffsFrameRefreshRate) then
 			    Dcr.db.profile.DebuffsFrameRefreshRate = v;
 			
 			    Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
 			    Dcr.Status.MicroFrameUpdateSchedule =
 			    Dcr:ScheduleRepeatingEvent(Dcr.DebuffsFrame_Update, Dcr.db.profile.DebuffsFrameRefreshRate);
+			    Dcr:Debug("MUFs refresh rate changed:", Dcr.db.profile.DebuffsFrameRefreshRate, v);
 			end
 		    end,
 		    disabled = function() return not Dcr.db.profile.ShowDebuffsFrame end,
