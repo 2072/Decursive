@@ -151,7 +151,7 @@ Dcr.defaults = { -- {{{
     OutputWindow = "DEFAULT_CHAT_FRAME", -- ACEDB CRASHES if we set it directly
 
 
-    MacroBind = false, --L[Dcr.LOC.DEFAULT_MACROKEY],
+    MacroBind = false, --L[Dcr.LOC.DEFAULT_MACROKEY], -- there were too many unhappy people with this option
 
     CureOrder = {
 	[DcrC.ENEMYMAGIC]   = 1,

@@ -1,4 +1,15 @@
-Decursive 2.0 BETA 6-Pub-fixed by Archarodim
+Decursive 2.0 BETA 7-Dev-fixed by Archarodim
+
+Changes from Decursive 2.0 BETA 6-Pub-fixed to Decursive 2.0 BETA 7-Dev
+
+New features:
+- It's now possible to add dynamic groups and classes in the priority and skip list:
+    Instead of adding each unit separatly, class and/or group entities (ex: [ group 1 ] , [ Mages ]) will appear in the lists, the old behavior can still be used by maintaining [SHIFT] when clicking on a group or class-name in the populate tool (names will be added).
+- The last change also allow to sort unit per group AND classes.
+
+Fixed bug:
+- The status tool-tip was not displayed if the live-list was hidden.
+- When Waterfall displays disabled 'range' options it calls the 'set' method anyway, this caused a problem when the live-list or the MUFs were disabled...
 
 
 Changes from Decursive 2.0 BETA 6-Pub to Decursive 2.0 BETA 6-Pub-fixed

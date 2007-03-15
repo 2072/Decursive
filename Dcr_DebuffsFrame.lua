@@ -799,7 +799,7 @@ function Dcr:DebuffsFrame_Update() -- {{{
 	-- get it's MUF
 	local MF = MicroUnitF:Exists(MicroFrameUpdateIndex);
 
-	-- should never fire unless the player choosed to ignore himself or something is wrong somewhere in the code
+	-- should never fire unless the player choosed to ignore everything or something is wrong somewhere in the code
 	if not Unit then
 	    Dcr:Debug("Unit is nil :/");
 	    return false;

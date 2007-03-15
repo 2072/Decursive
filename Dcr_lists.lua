@@ -178,9 +178,16 @@ function Dcr:PrioSkipListEntry_Update(Entry) --{{{
 		classname = Dcr.db.profile.SkipListClass[name];
 	    end
 	    if not classname then
-		classname = "NONE";
+		classname = "WARRIOR";
 	    end
 	    if (name) then
+		if (type(name) == "number") then
+		    if (name < 10) then
+			name = string.format("[ %s %s ]", L[Dcr.LOC.STR_GROUP], name);
+		    else
+			name = string.format("[ %s ]", DcrC.ClassNumToName[name]);
+		    end
+		end
 		Entry:SetText(id.." - "..Dcr:ColorText(name, "FF"..BC:GetHexColor(classname)));
 	    else
 		Entry:SetText("Error - NO name!");
@@ -236,17 +243,36 @@ function Dcr:AddTargetToPriorityList() --{{{
 end --}}}
 
 function Dcr:AddUnitToPriorityList( unit, check ) --{{{
+
+    if (#Dcr.db.profile.PriorityList > 99) then
+	return false;
+    end
+
     if (not check or UnitExists(unit)) then
-	if (UnitIsPlayer(unit)) then
+	if (type(unit) == "number" or UnitIsPlayer(unit)) then
 	    Dcr:Debug("adding %s", unit);
-	    local name = (UnitName( unit));
+
+	    local name = "";
+
+	    if type(unit) == "number" then
+		name = unit;
+	    else
+		name = (UnitName( unit));
+	    end
+
 	    for _, pname in pairs(Dcr.db.profile.PriorityList) do
 		if (name == pname) then
 		    return false;
 		end
 	    end
+
 	    table.insert(Dcr.db.profile.PriorityList,name);
-	    _, Dcr.db.profile.PriorityListClass[name] = UnitClass(unit);
+
+	    if (type(unit) == "string") then
+		_, Dcr.db.profile.PriorityListClass[name] = UnitClass(unit);
+	    elseif unit > 10 then
+		Dcr.db.profile.PriorityListClass[unit] = string.upper(BC:GetReverseTranslation(DcrC.ClassNumToName[unit]));
+	    end
 
 	    DecursivePriorityListFrame.UpdateYourself = true;
 	    Dcr:Debug("Unit %s added to the prio list", name);
@@ -285,16 +311,36 @@ function Dcr:AddTargetToSkipList() --{{{
 end --}}}
 
 function Dcr:AddUnitToSkipList( unit) --{{{
+
+    if (#Dcr.db.profile.SkipList > 99) then
+	return false;
+    end
+
     if (not check or UnitExists(unit)) then
-	if (UnitIsPlayer(unit)) then
-	    local name = (UnitName( unit));
+	if (type(unit) == "number" or UnitIsPlayer(unit)) then
+	    Dcr:Debug("adding %s", unit);
+
+	    local name = "";
+	    
+	    if type(unit) == "number" then
+		name = unit;
+	    else
+		name = (UnitName( unit));
+	    end
+
 	    for _, pname in pairs(Dcr.db.profile.SkipList) do
 		if (name == pname) then
 		    return false;
 		end
 	    end
+
 	    table.insert(Dcr.db.profile.SkipList,name);
-	    _, Dcr.db.profile.SkipListClass[name] = UnitClass(unit);
+
+	    if (type(unit) == "string") then
+		_, Dcr.db.profile.SkipListClass[name] = UnitClass(unit);
+	    elseif unit > 10 then
+		Dcr.db.profile.SkipListClass[unit] = string.upper(BC:GetReverseTranslation(DcrC.ClassNumToName[unit]));
+	    end
 
 	    Dcr:Debug("Unit %s added to the skip list", name);
 	    DecursiveSkipListFrame.UpdateYourself = true;
@@ -348,18 +394,6 @@ function Dcr:IsInSkipList (name) --{{{
     return false
 end --}}}
 
-function Dcr:IsInSkipOrPriorList( name )  --{{{-- used internally
-    if (Dcr.Status.InternalSkipList[name]) then
-	return true;
-    end
-
-    if (Dcr.Status.InternalPrioList[name]) then
-	return true;
-    end
-    return false;
-
-
-end --}}}
 
 -- }}}
 
@@ -367,31 +401,35 @@ end --}}}
 
 function Dcr:PopulateButtonPress() --{{{
     local PopulateFrame = this:GetParent();
+    local UppedClass = "";
 
-    if (this.ClassType) then
-	this.ClassType = string.upper(this.ClassType);
+    if (IsShiftKeyDown() and this.ClassType) then
+
+	-- UnitClass returns uppercased class...
+	UppedClass = string.upper(this.ClassType);
+
 	Dcr:Debug("Populate called for %s", this.ClassType);
 	-- for the class type stuff... we do party
 
 	local _, pclass = UnitClass("player");
-	if (pclass == this.ClassType) then
+	if (pclass == UppedClass) then
 	    PopulateFrame:addFunction("player");
 	end
 
 	_, pclass = UnitClass("party1");
-	if (pclass == this.ClassType) then
+	if (pclass == UppedClass) then
 	    PopulateFrame:addFunction("party1");
 	end
 	_, pclass = UnitClass("party2");
-	if (pclass == this.ClassType) then
+	if (pclass == UppedClass) then
 	    PopulateFrame:addFunction("party2");
 	end
 	_, pclass = UnitClass("party3");
-	if (pclass == this.ClassType) then
+	if (pclass == UppedClass) then
 	    PopulateFrame:addFunction("party3");
 	end
 	_, pclass = UnitClass("party4");
-	if (pclass == this.ClassType) then
+	if (pclass == UppedClass) then
 	    PopulateFrame:addFunction("party4");
 	end
     end
@@ -399,23 +437,25 @@ function Dcr:PopulateButtonPress() --{{{
     local i, pgroup, pclass;
 
 
-    if (this.ClassType) then
+    if (IsShiftKeyDown() and this.ClassType) then
 	Dcr:Debug("Finding raid units with a macthing class");
 	for index, unit in ipairs(Dcr.Status.Unit_Array) do
 	    _, pclass = UnitClass(unit);
 
-	    if (pclass == this.ClassType) then
+	    if (pclass == UppedClass) then
 		Dcr:Debug("found %s", pclass);
 		PopulateFrame:addFunction(unit);
 	    end
 
 	end
+    elseif (this.ClassType) then
+	PopulateFrame:addFunction(DcrC.ClassNameToNum[BC[this.ClassType]]);
     end
 
 
     local max = GetNumRaidMembers();
 
-    if (this.GroupNumber and max > 0) then
+    if (IsShiftKeyDown() and this.GroupNumber and max > 0) then
 	Dcr:Debug("Finding raid units with a macthing group number");
 	for i = 1, max do
 	    _, _, pgroup, _, _, pclass = GetRaidRosterInfo(i);
@@ -425,6 +465,8 @@ function Dcr:PopulateButtonPress() --{{{
 		PopulateFrame:addFunction("raid"..i);
 	    end
 	end
+    elseif (not IsShiftKeyDown()) then
+	PopulateFrame:addFunction(this.GroupNumber);
     end
 
 end --}}}

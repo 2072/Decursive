@@ -3,12 +3,15 @@ Personal TODO file for Archarodim (will stop to be personal once I'll add commen
 Important TODO:
 
 - Add a way to dynamically order the MUFs by group or class
+- Change the live-list display
+    - rewrite poorly coded part
+    - user should be able to change its scale and transparency
+    - Make every indication disable-able
 
 Other TODO:
 
 - Make it so the sound will play even if the live-list is disabled.
 - Make it so that the MUFs can be ordered by Class easily.
-- Change the live-list display
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
 - Mages should be able to choose what metamorphose spell they want to use
 - Add an option to only show the MUF in raid
