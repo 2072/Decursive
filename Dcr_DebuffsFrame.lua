@@ -359,7 +359,7 @@ function MicroUnitF:OnCornerClick (arg1, this) -- {{{
 	end
 
     elseif (arg1 == "RightButton" and IsShiftKeyDown()) then
-	Dcr:Hide();
+	Dcr:HideBar();
     elseif (arg1 == "LeftButton" and IsControlKeyDown()) then
 	Dcr:ShowHidePriorityListUI();
     elseif (arg1 == "LeftButton" and IsShiftKeyDown()) then

@@ -21,7 +21,7 @@
 --]]
 -------------------------------------------------------------------------------
 
-Dcr	    = AceLibrary("AceAddon-2.0"):new    ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0");
+Dcr	    = AceLibrary("AceAddon-2.0"):new    ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0", "FuBarPlugin-2.0");
 Dcr.AOO	    = AceLibrary("AceOO-2.0");
 Dcr.L	    = AceLibrary("AceLocale-2.2"):new   ("Dcr");
 Dcr.BC	    = AceLibrary("Babble-Class-2.2");
@@ -97,8 +97,19 @@ Dcr.Status.ClassBordersAreInvalid = false;
 -------------------------------------------------------------------------------
 
 
+
+
 -- Dcr.Initialized = false;
 -------------------------------------------------------------------------------
+
+-- add support for FuBar
+Dcr.independentProfile	= true; -- for Fubar
+Dcr.hasIcon	    	= "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga";
+Dcr.defaultMinimapPosition = 250;
+Dcr.hideWithoutStandby	= true;
+Dcr.defaultPosition	= "LEFT";
+Dcr.hideMenuTitle 	= true;
+--Dcr.clickableTooltip	= true;
 
 function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	self:RegisterDB("DcrDB", "DcrCharDB");
@@ -106,6 +117,8 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	-- self:RegisterDefaults('profile', defaults );
 	self:RegisterChatCommand({'/dcr', '/decursive'}, Dcr.options )
 
+	-- add support for FuBar
+	Dcr.OnMenuRequest	= Dcr.options;
 
 	Dcr.MFContainer = DcrMUFsContainer;
 	Dcr.MicroUnitF.Frame = Dcr.MFContainer;
@@ -115,7 +128,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    Dcr.DewDrop:FeedAceOptionsTable( Dcr.options )
 	end
 	)
-	Dcr.Waterfall:Register("Decursive","aceOptions", Dcr.options, 'title',  L[Dcr.LOC.STR_OPTIONS]);
+	Dcr.Waterfall:Register("Decursive","aceOptions", Dcr.options, 'title',  L[Dcr.LOC.STR_OPTIONS],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
 
 	DcrC.TypeNames = {
 	    [DcrC.MAGIC]	= Dcr.LOC.MAGIC;
@@ -137,6 +150,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    [DcrC.DISEASE]	= "995533";
 	    [DcrC.CHARMED]	= "FF0000";
 	}
+
 
 	-- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DcrC.SpellsToUse = {
@@ -252,7 +266,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
 	SLASH_DECURSIVESHOW1 = Dcr.CONF.MACRO_SHOW;
 	SlashCmdList["DECURSIVESHOW"] = function(msg)
-	    Dcr:Hide(0);
+	    Dcr:HideBar(0);
 	end
 
 	SLASH_DECURSIVERESET1 = Dcr.CONF.MACRO_RESET;
@@ -262,7 +276,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
 	SLASH_DECURSIVEHIDE1 = Dcr.CONF.MACRO_HIDE;
 	SlashCmdList["DECURSIVEHIDE"] = function(msg)
-	    Dcr:Hide(1);
+	    Dcr:HideBar(1);
 	end
 
 	SLASH_DECURSIVEOPTION1 = Dcr.CONF.MACRO_OPTION;
@@ -284,7 +298,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	DecursiveTextFrame:SetTimeVisible(Dcr.CONF.TEXT_LIFETIME);
 
 
-	-- add support Earth panel
+	-- add support Earth panel (need to be checked I don't even know what Earth Panel is...) {{{
 	if(EarthFeature_AddButton) then
 	    EarthFeature_AddButton(
 	    {
@@ -292,20 +306,26 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 		name = BINDING_HEADER_DECURSIVE;
 		subtext = L[Dcr.LOC.OPTION_MENU];
 		tooltip = L[BINDING_NAME_DCRSHOW];
-		icon = "Interface\\Icons\\Spell_Nature_RemoveCurse";
+		icon = "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga";
 		callback = Dcr.ShowHidePriorityListUI;
 	    }
 	    );
-	end
+	end -- }}}
 
-	--hook the load macro thing
+
+	
+
+
+
+	-- hook the load macro thing {{{
+	-- So Decursive will re-update its macro when the lacro UI is closed
 	hooksecurefunc("ShowMacroFrame", function ()
 	    if (not Dcr.MacroSaveHooked) then
 		Dcr:Debug("Hooking MacroFrame_OnHide");
 		hooksecurefunc("MacroFrame_OnHide", function () Dcr:UpdateMacro(); end);
 		Dcr.MacroSaveHooked = true;
 	    end
-	end);
+	end); -- }}}
 
     end
 
@@ -316,7 +336,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
     self:RegisterEvent("UNIT_SPELLCAST_STOP","UNIT_SPELLCAST_STOP");
-   -- self:RegisterEvent("UNIT_SPELLCAST_FAILED","UNIT_SPELLCAST_FAILED");
+    -- self:RegisterEvent("UNIT_SPELLCAST_FAILED","UNIT_SPELLCAST_FAILED");
     self:RegisterEvent("UNIT_SPELLCAST_SENT","UNIT_SPELLCAST_SENT");
     self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED","UNIT_SPELLCAST_SUCCEEDED");
 
@@ -325,7 +345,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("RAID_ROSTER_UPDATE","GroupChanged");
     self:RegisterEvent("UNIT_PET","UNIT_PET");
     self:RegisterEvent("PLAYER_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
---    self:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
+    --  self:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
     self:RegisterEvent("UI_ERROR_MESSAGE","UI_ERROR_MESSAGE");
     self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
     --	self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
@@ -400,11 +420,13 @@ function Dcr:OnProfileEnable()
 
     Dcr.Status.Enabled = true;
 
-
+    -- set Fubar Icon
+    Dcr:SetIcon("Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga");
 end
 
 function Dcr:OnDisable() -- When the addon is disabled by ACE
     Dcr.Status.Enabled = false;
+    Dcr:SetIcon("Interface\\AddOns\\" .. Dcr.folderName .. "\\iconOFF.tga");
     if ( Dcr.db.profile.ShowDebuffsFrame) then
 	Dcr.MFContainer:Hide();
     end

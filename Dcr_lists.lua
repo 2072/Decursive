@@ -289,7 +289,7 @@ end --}}}
 
 function Dcr:RemoveIDFromPriorityList(id) --{{{
 
-    Dcr.db.profile.PriorityListClass[ Dcr.db.profile.PriorityList[id] ] = nil;
+    Dcr.db.profile.PriorityListClass[ Dcr.db.profile.PriorityList[id] ] = nil; -- remove it from the table
 
     table.remove( Dcr.db.profile.PriorityList, id );
 
@@ -357,7 +357,7 @@ end --}}}
 
 function Dcr:RemoveIDFromSkipList(id) --{{{
 
-    Dcr.db.profile.SkipListClass[ Dcr.db.profile.SkipList[id] ] = nil;
+    Dcr.db.profile.SkipListClass[ Dcr.db.profile.SkipList[id] ] = nil; -- remove it from the table
 
     table.remove( Dcr.db.profile.SkipList, id );
 

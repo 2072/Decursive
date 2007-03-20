@@ -4,8 +4,9 @@ Changes from Decursive 2.0 BETA 6-Pub-fixed to Decursive 2.0 BETA 7-Dev
 
 New features:
 - It's now possible to add dynamic groups and classes in the priority and skip list:
-    Instead of adding each unit separatly, class and/or group entities (ex: [ group 1 ] , [ Mages ]) will appear in the lists, the old behavior can still be used by maintaining [SHIFT] when clicking on a group or class-name in the populate tool (names will be added).
-- The last change also allow to sort unit per group AND classes.
+    Instead of adding each unit separately, class and/or group entities (ex: [ group 1 ] , [ Mage ]) will appear in the lists. The old behavior can still be used by maintaining [SHIFT] when clicking on a group or class-name in the populate list tool (names will be added).
+- The last change also allow to sort units per group AND classes at the same time.
+
 
 Fixed bug:
 - The status tool-tip was not displayed if the live-list was hidden.

@@ -11,8 +11,8 @@
 
 ## X-License: GNU GPL
 
-## OptionalDeps: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0
-## X-Embeds: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0
+## OptionalDeps: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0, Tablet-2.0, FuBarPlugin-2.0
+## X-Embeds: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0, Tablet-2.0, FuBarPlugin-2.0
 
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat
@@ -39,6 +39,8 @@ Libs\Babble-Class-2.2\Babble-Class-2.2.lua
 Libs\Dewdrop-2.0\Dewdrop-2.0.lua
 Libs\Waterfall-1.0\Waterfall-1.0.lua
 Libs\Babble-Spell-2.2\Babble-Spell-2.2.lua
+Libs\Tablet-2.0\Tablet-2.0.lua
+Libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua
 
 DCR_init.lua
 Dcr_utils.lua

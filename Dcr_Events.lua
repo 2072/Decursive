@@ -27,42 +27,47 @@ local BC = Dcr.BC;
 local BS = Dcr.BS;
 
 function Dcr:GroupChanged () -- {{{
+    -- this will trigger an update of the unit array
     Dcr.Groups_datas_are_invalid = true;
     Dcr:Debug("Groups changed");
 end -- }}}
 
-Dcr.Status.CheckingPET = nil;
+Dcr.Status.CheckingPET = false;
 
 function Dcr:UNIT_PET (Unit) -- {{{
 
+    -- when a pet changes somwhere, we update the unit array.
     if (UnitInRaid(Unit) or UnitInParty(Unit)) then
 	Dcr.Groups_datas_are_invalid = true;
     end
 
+    -- If the player's pet changed then we should check it for interesting spells
     if ( Unit == "player" and not Dcr.Status.CheckingPET) then
 	Dcr.Status.CheckingPET = self:ScheduleEvent(Dcr.UpdatePlayerPet, 2);
 	Dcr:Debug ("PLAYER pet detected! Poll in 2 seconds");
     end
 end -- }}}
 
-local curr_petType = nil;
-local last_petType = nil;
+local curr_petType = false;
+local last_petType = false;
 
 function Dcr:UpdatePlayerPet () -- {{{
     curr_petType = UnitCreatureFamily("pet");
 
-    if (curr_petType) then Dcr:Debug ("Pet Type: " .. curr_petType);  end;
+    if (curr_petType) then Dcr:Debug ("Pet Type: " .. curr_petType);  end; -- debug info only
 
+    -- if we've changed of pet
     if (last_petType ~= curr_petType) then
-	if (curr_petType) then Dcr:Debug ("Pet name changed: " .. curr_petType); else  Dcr:Debug ("No more pet!"); end;
+	if (curr_petType) then Dcr:Debug ("Pet name changed: " .. curr_petType); else  Dcr:Debug ("No more pet!"); end; -- debug info only
 
 	last_petType = curr_petType;
 	Dcr:Configure();
-	Dcr.Status.CheckingPET = nil;
+	Dcr.Status.CheckingPET = false;
     end
 end -- }}}
 
 function Dcr:UI_ERROR_MESSAGE (Error) -- {{{
+    -- this is the only way to detect out of line of sight casting failures
     if (Error == SPELL_FAILED_LINE_OF_SIGHT or Error == SPELL_FAILED_BAD_TARGETS) then
 	Dcr:SpellCastFailed();
 
@@ -77,12 +82,12 @@ end -- }}}
 
 function Dcr:UNIT_SPELLCAST_STOP() --{{{
     --Dcr:Debug("Spell cast stopped");
-    Dcr.Status.CastingSpellOn = nil;
-    Dcr.Status.CastingSpellOnName = nil;
+    Dcr.Status.CastingSpellOn = false;
+    Dcr.Status.CastingSpellOnName = false;
 end --}}}
 
 function Dcr:UNIT_SPELLCAST_FAILED(unit)
-    Dcr:Debug("Spell cast failed");
+    Dcr:Debug("Spell cast failed for unit: ", unit);
 end
 
 function Dcr:UNIT_SPELLCAST_SENT( player, spell, rank, target )
@@ -93,8 +98,6 @@ function Dcr:UNIT_SPELLCAST_SENT( player, spell, rank, target )
 end
 function Dcr:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
     if (Dcr:tcheckforval(Dcr.Status.CuringSpells, spell)) then
-
-
 	Dcr:Println(L[Dcr.LOC.SUCCESSCAST], spell, Dcr:MakePlayerName((Dcr.Status.CastingSpellOnName)));
 
 	if (Dcr.Status.ClickedMF) then
@@ -133,8 +136,8 @@ function Dcr:OnDebugDisable ()
 end
 
 -- This function update Decursive states :
---   - clear the black list
---   - Restor Self AutoCast
+--   - Clear the black list
+--   - Execute things we couldn't do when in combat
 function Dcr:SheduledTasks() -- {{{
 
     --Dcr:Debug("Schedul called");
@@ -142,17 +145,7 @@ function Dcr:SheduledTasks() -- {{{
     for unit in pairs(Dcr.Status.Blacklisted_Array) do
 	Dcr.Status.Blacklisted_Array[unit] = Dcr.Status.Blacklisted_Array[unit] - 0.1;
 	if (Dcr.Status.Blacklisted_Array[unit] < 0) then
-	    Dcr.Status.Blacklisted_Array[unit] = nil;
-	end
-    end
-
-    if (RestorSelfAutoCast) then
-	RestorSelfAutoCastTimeOut = RestorSelfAutoCastTimeOut - 0.1;
-	if (RestorSelfAutoCastTimeOut < 0) then
-	    RestorSelfAutoCast = false;
-	    SetCVar("autoSelfCast", "1");
-
-	    Dcr:Debug("autoSelfCast restored!");
+	    Dcr.Status.Blacklisted_Array[unit] = nil; -- remove it from the BL
 	end
     end
 
@@ -160,7 +153,7 @@ function Dcr:SheduledTasks() -- {{{
 	for Id, FuncAndArgs in pairs (Dcr.Status.DelayedFunctionCalls) do
 	    Dcr:Debug("Running post combat command %s", Id);
 	    local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
-	    Dcr.Status.DelayedFunctionCalls[Id] = nil;
+	    Dcr.Status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
 	    Dcr.Status.DelayedFunctionCallsCount = Dcr.Status.DelayedFunctionCallsCount - 1;
 	    if (DidSmth) then
 		break;
@@ -169,14 +162,14 @@ function Dcr:SheduledTasks() -- {{{
     end
 
     if (Dcr.Status.Combat and not InCombatLockdown()) then
-	Dcr.Status.Combat = false;
+	Dcr:LeaveCombat();
     end
 
 end --}}}
 
--- the combat saver functions and events. These keep us in combat mode // {{{
+-- the combat functions and events. // {{{
 -------------------------------------------------------------------------------
-function Dcr:EnterCombat() --{{{
+function Dcr:EnterCombat() -- called on PLAYER_REGEN_DISABLED {{{
     Dcr:Debug("Entering combat");
     Dcr.Status.Combat = true;
 end --}}}
@@ -187,16 +180,16 @@ function Dcr:LeaveCombat() --{{{
 end --}}}
 -- }}}
 
-
+-- This let us park command we can't execute while in combat to execute them later {{{
 function Dcr:AddDelayedFunctionCall(CallID,functionLink, ...)
     if (not Dcr.Status.DelayedFunctionCalls[CallID]) then 
-	Dcr.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  Dcr:Pack(...)};
+	Dcr.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};
 	Dcr.Status.DelayedFunctionCallsCount = Dcr.Status.DelayedFunctionCallsCount + 1;
     end
-end
+end -- }}}
 
-function Dcr:SpellCastFailed() --{{{
-    Dcr:Debug("Not in line of sight!");
+function Dcr:SpellCastFailed() -- the blacklisting function {{{
+    Dcr:Debug("Not in line of sight or bad target!");
     if (
 	Dcr.Status.CastingSpellOn	    -- a cast failed and we were casting on someone
 	and not (
@@ -208,16 +201,15 @@ function Dcr:SpellCastFailed() --{{{
 	)
 	)
 	) then
-	Dcr:Println("%s is blaclisted for %d seconds", Dcr.Status.CastingSpellOnName, Dcr.db.profile.CureBlacklist);
-
 	Dcr.Status.Blacklisted_Array[Dcr.Status.CastingSpellOn] = Dcr.db.profile.CureBlacklist;
-	Dcr.Status.CastingSpellOn = nil;
-	Dcr.Status.CastingSpellOnName = nil;
+	Dcr:Println("%s is blaclisted for %d seconds", Dcr.Status.CastingSpellOnName, Dcr.db.profile.CureBlacklist);
+	Dcr.Status.CastingSpellOn = false;
+	Dcr.Status.CastingSpellOnName = false;
     end
 end --}}}
 
 
-function Dcr:RaidScanner_SC () --{{{
+function Dcr:RaidScanner_SC () -- the live-list updater --{{{
 
     if Dcr.db.profile.Amount_Of_Afflicted < 1 then
 	Dcr.db.profile.Amount_Of_Afflicted = 1;
@@ -264,10 +256,10 @@ function Dcr:RaidScanner_SC () --{{{
 	    if (index > Dcr.db.profile.Amount_Of_Afflicted) then
 		break;
 	    end
+	    -- if the unit is even close by
 	    if (UnitIsVisible(unit) and not (targetexists and UnitIsUnit(unit, "target"))) then
-		-- if the unit is even close by
+		-- if the unit is mind controlled
 		if (UnitIsCharmed(unit)) then
-		    -- if the unit is mind controlled
 		    if (Dcr:ScanUnit(unit, index)) then
 			if (index == 1) then
 			    Dcr:PlaySound ();
@@ -279,7 +271,6 @@ function Dcr:RaidScanner_SC () --{{{
 	end
     end
 
-    -- Dcr_debug(" normal loop");
     for _, unit in ipairs(Dcr.Status.Unit_Array) do
 	if (index > Dcr.db.profile.Amount_Of_Afflicted) then
 	    break;

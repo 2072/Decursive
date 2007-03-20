@@ -72,7 +72,9 @@ function Dcr:ShowHideLiveList(hide) --{{{
 
 end --}}}
 
-function Dcr:Hide(hide) --{{{
+-- This functions hides or shows the "Decursive" bar depending on its current
+-- state, it's also able hide/show the live-list if the "tie live-list" option is active
+function Dcr:HideBar(hide) --{{{
 
     if (hide==1 or (not hide and DecursiveMainBar:IsVisible())) then
 	if (Dcr.db.profile.LiveListTied) then
@@ -112,6 +114,7 @@ function Dcr:ShowHideSkipListUI() --{{{
     end
 end --}}}
 
+-- This shows/hides the buttons near the "Decursive" bar
 function Dcr:ShowHideButtons(UseCurrentValue) --{{{
 
     local DecrFrame = "DecursiveMainBar";
@@ -253,9 +256,9 @@ function Dcr:UpdateLiveDisplay( Index, Unit, Debuff) --{{{
     item.unit = Unit;
     item.debuff = Debuff.index;
 
-    item = getglobal(baseFrame..Index.."ClickMe");
-    item.unit = Unit;
-    item.debuff = Debuff.index;
+    --item = getglobal(baseFrame..Index.."ClickMe");
+    --item.unit = Unit;
+    --item.debuff = Debuff.index;
 end --}}}
 
 -- }}}
@@ -264,7 +267,7 @@ end --}}}
 -------------------------------------------------------------------------------
 
 
--- Scanning functionalties {{{
+-- Scanning functionalities {{{
 -------------------------------------------------------------------------------
 
 -- This finction only returns interesting values of UnitDebuff()

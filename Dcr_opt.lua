@@ -1082,7 +1082,7 @@ function Dcr:CheckCureOrder ()
 		WrongValue = WrongValue + 1;
 	    end
 	else
-	    Dcr.db.profile.CureOrder[key] = nil;
+	    Dcr.db.profile.CureOrder[key] = nil; -- remove it from the table
 	end
     end
 
@@ -1246,7 +1246,7 @@ StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
 	    skipByClass[class][Dcr.Tmp.DebuffToRemove] = false; -- does not remove it completely -- WHY??? XXX
 	end
 
-	AlwaysSkipList[Dcr.Tmp.DebuffToRemove] = nil;
+	AlwaysSkipList[Dcr.Tmp.DebuffToRemove] = nil; -- remove it from the table
 
 	Dcr:Debug("%s removed!", Dcr.Tmp.DebuffToRemove);
 	Dcr:CreateDropDownFiltersMenu();
@@ -1539,10 +1539,10 @@ function Dcr:SetMacroKey ( key )
     if (Dcr.db.profile.MacroBind and GetBindingAction(Dcr.db.profile.MacroBind) == string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
 
 	-- clearing redudent mapping to Decursive macro.
-	local MappedKeys = Dcr:Pack(GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME)));
+	local MappedKeys = {GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME))};
 	for _, key in pairs(MappedKeys) do
 	    Dcr:Debug("Unlinking [%s]", key);
-	    SetBinding(key, nil);
+	    SetBinding(key, nil); -- clear the binding
 	end
 
 	-- Restore previous key state
@@ -1562,7 +1562,7 @@ function Dcr:SetMacroKey ( key )
 	    Dcr:Debug("Old key action saved:", Dcr.db.profile.PreviousMacroKeyAction);
 	    Dcr:errln(L[Dcr.LOC.MACROKEYALREADYMAPPED], key, Dcr.db.profile.PreviousMacroKeyAction);
 	else
-	    Dcr.db.profile.PreviousMacroKeyAction = nil;
+	    Dcr.db.profile.PreviousMacroKeyAction = false;
 	    Dcr:Debug("Old key action not saved because it was mapped to nothing");
 	end
 

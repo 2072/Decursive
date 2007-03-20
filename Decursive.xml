@@ -24,7 +24,7 @@
 	Dcr:SetDateAndRevision("$Date$", "$Revision$");
     </Script>
 
-    <Button name="DecursiveDebuffTemplate" virtual="true">
+    <Button name="DecursiveDebuffTemplate" virtual="true"> <!-- {{{ -->
 
 	<Size>
 	    <AbsDimension x="30" y="30"/>
@@ -70,9 +70,9 @@
 		DcrDisplay_Tooltip:Hide();
 	    </OnLeave>
 	</Scripts>
-    </Button>
+    </Button> <!-- }}} -->
 
-    <Frame name="DecursiveAfflictedTemplate" frameStrata="LOW" virtual="true" hidden="true">
+    <Frame name="DecursiveAfflictedTemplate" frameStrata="LOW" virtual="true" hidden="true"> <!-- {{{ -->
 	<Size>
 	    <AbsDimension x="180" y="32"/>
 	</Size>
@@ -132,30 +132,6 @@
 		    </Anchor>
 		</Anchors>
 	    </Button>
-	    <Button name="$parentClickMe" >
-
-		<Size>
-		    <AbsDimension x="150" y="32"/>
-		</Size>
-
-		<Anchors>
-		    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentDebuff"/>
-		</Anchors>
-
-		<Scripts>
-		    <OnLoad>
-			this.unit = "player";
-			this.debuff = 1;
-			this:RegisterForClicks('LeftButtonDown', 'RightButtonDown');
-		    </OnLoad>
-		    <OnEnter>
-			Dcr:DebuffTemplate_OnEnter();
-		    </OnEnter>
-		    <OnLeave>
-			DcrDisplay_Tooltip:Hide();
-		    </OnLeave>
-		</Scripts>
-	    </Button>
 	</Frames>
 	<Scripts>
 	    <OnLoad>
@@ -164,20 +140,10 @@
 		this.UpdateMe = false;
 	    </OnLoad>
 	</Scripts>
-    </Frame>
-
-    <Button name="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
-	<ButtonText name="$parentText" justifyH="LEFT" />
-	<NormalFont inherits="GameFontNormal" justifyH="LEFT" />
-	<HighlightFont inherits="GameFontHighlight" justifyH="LEFT" />
-	<DisabledFont inherits="GameFontDisable" justifyH="LEFT" />
-    </Button>
+    </Frame> <!-- }}} -->
 
 
-
-    
-
-    <Frame name="DecursiveMainBar" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent">
+    <Frame name="DecursiveMainBar" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent"> <!-- {{{ -->
 	<Size>
 	    <AbsDimension x="80" y="25" />
 	</Size>
@@ -189,10 +155,6 @@
 		</Offset>
 	    </Anchor>
 	</Anchors>
-
-	<!--
-	<TitleRegion setAllPoints="true"/>
-	-->
 
 	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 	    <EdgeSize>
@@ -258,13 +220,10 @@
 		this.isMoving = false;
 		end
 	    </OnHide>
-
-
 	</Scripts>
 
 	<Frames>
-
-	    <Button name="$parentPriority" inherits="GameMenuButtonTemplate" text="P">
+	    <Button name="$parentPriority" inherits="GameMenuButtonTemplate" text="P"> <!-- {{{ -->
 		<Size>
 		    <AbsDimension x="20" y="20" />
 		</Size>
@@ -289,9 +248,9 @@
 			DcrDisplay_Tooltip:Hide();
 		    </OnLeave>
 		</Scripts>
-	    </Button>
+	    </Button>  <!-- }}} -->
 
-	    <Button name="$parentSkip" inherits="GameMenuButtonTemplate" text="S">
+	    <Button name="$parentSkip" inherits="GameMenuButtonTemplate" text="S">  <!-- {{{ -->
 		<Size>
 		    <AbsDimension x="20" y="20" />
 		</Size>
@@ -316,9 +275,9 @@
 			DcrDisplay_Tooltip:Hide();
 		    </OnLeave>
 		</Scripts>
-	    </Button>
+	    </Button>  <!-- }}} -->
 
-	    <Button name="$parentHide" inherits="GameMenuButtonTemplate" text="X">
+	    <Button name="$parentHide" inherits="GameMenuButtonTemplate" text="X">  <!-- {{{ -->
 		<Size>
 		    <AbsDimension x="20" y="20" />
 		</Size>
@@ -331,7 +290,7 @@
 		</Anchors>
 		<Scripts>
 		    <OnClick>
-			Dcr:Hide(false);
+			Dcr:HideBar(false);
 		    </OnClick>
 		    <OnEnter>
 			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.HIDE_MAIN], this);
@@ -340,11 +299,12 @@
 			DcrDisplay_Tooltip:Hide();
 		    </OnLeave>
 		</Scripts>
-	    </Button>
+	    </Button>  <!-- }}} -->
 	</Frames>
-    </Frame>
 
-    <Frame name="DecursiveAfflictedListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent">
+    </Frame> <!-- }}} -->
+
+    <Frame name="DecursiveAfflictedListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent"> <!-- {{{ -->
 	<!--
 	<Size>
 	    <AbsDimension x="160" y="25" />
@@ -511,14 +471,11 @@
 		</Anchors>
 	    </Frame>
 	</Frames>
-    </Frame>
-
-
-
+    </Frame> <!-- }}} -->
 
     <!-- ================================================================== -->
    
-    <Frame name="DecursiveAnchor" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
+    <Frame name="DecursiveAnchor" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent"> <!-- {{{ -->
 	<Size>
 	    <AbsDimension x="180" y="25"/>
 	</Size>
@@ -585,9 +542,9 @@
 		</Scripts>
 	    </Button>
 	</Frames>
-    </Frame>
+    </Frame> <!-- }}} -->
 
-    <MessageFrame name="DecursiveTextFrame" insertMode="TOP" parent="UIParent" frameStrata="HIGH" toplevel="true" >
+    <MessageFrame name="DecursiveTextFrame" insertMode="TOP" parent="UIParent" frameStrata="HIGH" toplevel="true" > <!-- {{{ -->
 	<Size>
 	    <AbsDimension x="600" y="140"/>
 	</Size>
@@ -600,13 +557,12 @@
 	</Anchors>
 
 	<FontString inherits="GameFontNormal" justifyH="CENTER"/>
-    </MessageFrame>
+    </MessageFrame> <!-- }}} -->
 
     <GameTooltip name="DcrDisplay_Tooltip" hidden="true" inherits="GameTooltipTemplate" parent="UIParent" />
 
     <!-- Frame to handle all core events -->
     <Frame name="Decursive">
-
     </Frame>
-    <GameTooltip name="Dcr_Tooltip" hidden="true" inherits="GameTooltipTemplate"/>
+
 </Ui>

@@ -24,6 +24,13 @@
 	Dcr:SetDateAndRevision("$Date$", "$Revision$");
     </Script>
 
+    <Button name="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
+	<ButtonText name="$parentText" justifyH="LEFT" />
+	<NormalFont inherits="GameFontNormal" justifyH="LEFT" />
+	<HighlightFont inherits="GameFontHighlight" justifyH="LEFT" />
+	<DisabledFont inherits="GameFontDisable" justifyH="LEFT" />
+    </Button>
+
     <!--  Dcr_ListEntryTemplate {{{ -->
     <Button name="Dcr_ListEntryTemplate" inherits="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
 
