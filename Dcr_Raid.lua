@@ -426,7 +426,7 @@ do
 			    pname = pet;
 			end
 
-			AddToSort(pet, GetUnitPriority (pet, i, 1, (UnitClass(pet)) ), true);
+			AddToSort(pet, GetUnitPriority (pet, i, 1, (UnitClass(pet)), true) );
 
 			Dcr.Status.Unit_ArrayByName[pname] = pet;
 		    end
