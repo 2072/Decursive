@@ -107,8 +107,6 @@ end -- }}}
 
 -- this is used when a setting influencing MUF's position is changed
 function MicroUnitF:ResetAllPositions () -- {{{
-    -- Dcr:GetUnitArray();
-    -- local NumToShow = MicroUnitF:MFUsableNumber();
     local MicroFrame = false;
 
     Dcr:Debug("Resetting all MF position");
@@ -117,9 +115,7 @@ function MicroUnitF:ResetAllPositions () -- {{{
 
 	MicroFrame = MicroUnitF.ExistingPerID[i].Frame;
 
-	--if (i <= NumToShow and MicroFrame.Object.Shown) then
-	    MicroFrame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(i)));
-	--end
+	MicroFrame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(i)));
 
     end
 end -- }}}
@@ -145,6 +141,7 @@ function MicroUnitF:UpdateMIcroFrameDisplay () -- {{{
 
     -- This function cannot do anything if we are fighting
     if (Dcr.Status.Combat) then
+	-- if we are fighting, postpone the call
 	Dcr:AddDelayedFunctionCall (
 	"UpdateMicroUnitFrameDisplay", self.UpdateMIcroFrameDisplay,
 	self);
@@ -170,7 +167,7 @@ function MicroUnitF:UpdateMIcroFrameDisplay () -- {{{
 
     local MicroFrame = false;
 
---    Dcr:Debug("MicroUnitF.Number = %d", MicroUnitF.Number);
+    --  Dcr:Debug("MicroUnitF.Number = %d", MicroUnitF.Number);
 
     for i=1, MicroUnitF.Number do
 
@@ -182,7 +179,7 @@ function MicroUnitF:UpdateMIcroFrameDisplay () -- {{{
 	    break;
 	end
 
-	-- show and update position if necessary
+	-- show/hide and update position if necessary
 	if (i <= NumToShow and not MicroFrame.Object.Shown) then
 
 	    Dcr:Debug("Showing %d", i);
@@ -242,7 +239,7 @@ function MicroUnitF:SetScale (NewScale) -- {{{
     self:SavePos ();
     -- Setting the new scale
     self.Frame:SetScale(NewScale);
-    -- Place the frame adapting its position to the newscale
+    -- Place the frame adapting its position to the news cale
     self:Place ();
     
 end -- }}}
@@ -340,6 +337,7 @@ function MicroUnitF:OnLeave() -- {{{
     Dcr.Status.MouseOveringMUF = false;
     --Dcr:Debug("Micro unit Hidden");
     DcrDisplay_Tooltip:Hide();
+
     if (Dcr.db.profile.DebuffsFrameShowHelp) then
 	GameTooltip:Hide();
     end
@@ -399,7 +397,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	-- create the frame
 	self.Frame  = CreateFrame ("Button", "MicroUnit"..ID, self.Parent, "DcrMicroUnitTemplateSecure");
 
-	-- outer texure (the class border)
+	-- outer texture (the class border)
 	-- Bottom side
 	self.OuterTexture1 = self.Frame:CreateTexture(nil, "MEDIUM");
 	self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
@@ -439,7 +437,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.Frame.Object = self;
 
 	-- register events
-	self.Frame:RegisterForClicks("AnyDown");
+	self.Frame:RegisterForClicks("AnyUp");
 	self.Frame:SetFrameStrata("MEDIUM");
 
 	-- set the frame attributes
@@ -519,7 +517,6 @@ do
 	end
 
 	Dcr:Debug("UpdateAttributes() executed");
-
 	-- set the mouse middle-button action
 	self.Frame:SetAttribute("type3", "target"); --never changes
 
@@ -528,15 +525,15 @@ do
 
 	-- set the mouse left-button action
 	self.Frame:SetAttribute("type1", "target"); -- required to disable an hidden cache somewhere...
-	self.Frame:SetAttribute("type1", "spell");
+	self.Frame:SetAttribute("type1", "macro");
 
 	-- set the mouse ctrl-left-button action
 	self.Frame:SetAttribute("ctrl-type1", "target");  -- required to disable an hidden cache somewhere...
-	self.Frame:SetAttribute("ctrl-type1", "spell");
+	self.Frame:SetAttribute("ctrl-type1", "macro");
 
 	-- set the mouse right-button action
 	self.Frame:SetAttribute("type2", "target"); -- required to disable an hidden cache somewhere...
-	self.Frame:SetAttribute("type2", "spell");
+	self.Frame:SetAttribute("type2", "macro");
 
 	-- We need:
 	--
@@ -551,7 +548,8 @@ do
 	-- set the spells attributes using the lookup tables above
 	for Spell, Prio in pairs(Dcr.Status.CuringSpellsPrio) do
 
-	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
+	    --self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
+	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "macrotext"), string.format("/stopcasting\n/cast [target=mouseover] %s", Spell));
 
 	    -- set the tooltip text for the current prio if necessary
 	    if (Dcr.Status.SpellsChanged ~= self.TooltipUpdate) then
