@@ -10,11 +10,14 @@ New features:
 Small changes:
 - When a MUF is clicked, any spell targeting in progress is canceled.
 - The MUFs react upon mouse button release instead of mouse button press.
+- When adding a debuff to the filter, the entered name is trimed.
 
 
 Fixed bug:
 - The status tool-tip was not displayed if the live-list was hidden.
 - When Waterfall displays disabled 'range' options it calls the 'set' method anyway, this caused a problem when the live-list or the MUFs were disabled...
+- Warlock pet detection could fail in some conditions.
+- Default Warrior ignored debuffs were not used because of a spelling mistake.
 
 
 Changes from Decursive 2.0 BETA 6-Pub to Decursive 2.0 BETA 6-Pub-fixed

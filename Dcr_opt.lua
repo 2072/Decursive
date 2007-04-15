@@ -197,7 +197,7 @@ Dcr.defaults = { -- {{{
 	L[Dcr.LOC.DELUSIONOFJINDO]
     },
     skipByClass = {
-	["WARRIoR"] = {
+	["WARRIOR"] = {
 	    [L[Dcr.LOC.ANCIENTHYSTERIA]]   = true,
 	    [L[Dcr.LOC.IGNITE]]        = true,
 	    [L[Dcr.LOC.TAINTEDMIND]]       = true,
@@ -1243,7 +1243,7 @@ StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
 	Dcr:tremovebyval(DebuffsSkipList, Dcr.Tmp.DebuffToRemove)
 
 	for class, debuffs in pairs (skipByClass) do
-	    skipByClass[class][Dcr.Tmp.DebuffToRemove] = false; -- does not remove it completely -- WHY??? XXX
+	    skipByClass[class][Dcr.Tmp.DebuffToRemove] = nil; -- XXX changed from false to nil on 20040415 -- = false; -- does not remove it completely -- WHY??? XXX
 	end
 
 	AlwaysSkipList[Dcr.Tmp.DebuffToRemove] = nil; -- remove it from the table
@@ -1307,7 +1307,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    if (DefaultSkipByClass[Classe][DebuffName]) then
 		skipByClass[Classe][DebuffName] = true;
 	    else
-		skipByClass[Classe][DebuffName] = false;
+		skipByClass[Classe][DebuffName] = nil; -- Removes it XXX
 	    end
 	end
     end
@@ -1337,7 +1337,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 		end,
 		["set"] = function  (args, v)
 		    local skipByClass = Dcr.db.profile.skipByClass;
-		    skipByClass[args["Class"]][args["Debuff"]] = v;
+		    skipByClass[args["Class"]][string.trim(args["Debuff"])] = v;
 		end
 	    };
 	    get = "get",

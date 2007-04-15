@@ -396,6 +396,14 @@ function Dcr:OnProfileEnable()
     Dcr.printFrame = Dcr.Status.OutputWindow;
 
     Dcr:Debug("Loading profile datas...");
+
+    -- this is needed to fix a typo in previous versions...
+    if (Dcr.db.profile.skipByClass["WARRIoR"]) then
+	Dcr.db.profile.skipByClass["WARRIoR"] = nil;
+	Dcr.db.profile.skipByClass["WARRIOR"] = {};
+	Dcr:tcopy(Dcr.db.profile.skipByClass["WARRIOR"], Dcr.defaults.skipByClass["WARRIOR"]);
+    end
+
     Dcr:Init();
 
     if not Dcr.db.profile.Hide_LiveList then

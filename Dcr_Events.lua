@@ -32,18 +32,21 @@ function Dcr:GroupChanged () -- {{{
     Dcr:Debug("Groups changed");
 end -- }}}
 
-Dcr.Status.CheckingPET = false;
+local OncePetRetry = false;
 
 function Dcr:UNIT_PET (Unit) -- {{{
 
     -- when a pet changes somwhere, we update the unit array.
+
+    Dcr:Debug("Pet changed for: ", Unit);
     if (UnitInRaid(Unit) or UnitInParty(Unit)) then
 	Dcr.Groups_datas_are_invalid = true;
     end
 
     -- If the player's pet changed then we should check it for interesting spells
-    if ( Unit == "player" and not Dcr.Status.CheckingPET) then
-	Dcr.Status.CheckingPET = self:ScheduleEvent(Dcr.UpdatePlayerPet, 2);
+    if ( Unit == "player" ) then
+	self:ScheduleEvent("CheckPet", self.UpdatePlayerPet, 2, self);
+	OncePetRetry = false;
 	Dcr:Debug ("PLAYER pet detected! Poll in 2 seconds");
     end
 end -- }}}
@@ -56,13 +59,20 @@ function Dcr:UpdatePlayerPet () -- {{{
 
     if (curr_petType) then Dcr:Debug ("Pet Type: " .. curr_petType);  end; -- debug info only
 
+    -- if we had a pet and lost it, retry once later...
+    if (last_petType and not curr_petType and not OncePetRetry) then
+	OncePetRetry = true;
+	Dcr:Debug("Pet lost, retry in 10 seconds");
+	Dcr:ScheduleEvent("ReCheckPetOnce", Dcr.UpdatePlayerPet, 10, self);
+	return;
+    end
+
     -- if we've changed of pet
     if (last_petType ~= curr_petType) then
 	if (curr_petType) then Dcr:Debug ("Pet name changed: " .. curr_petType); else  Dcr:Debug ("No more pet!"); end; -- debug info only
 
 	last_petType = curr_petType;
 	Dcr:Configure();
-	Dcr.Status.CheckingPET = false;
     end
 end -- }}}
 
