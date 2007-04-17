@@ -22,14 +22,14 @@
 -------------------------------------------------------------------------------
 
 
--------------------------------------------------------------------------------
--- the constants for the mod (non localized)
--------------------------------------------------------------------------------
 Dcr:SetDateAndRevision("$Date$", "$Revision$");
 
 Dcr.LOC = {};
 
 
+-------------------------------------------------------------------------------
+-- English localization (Default)
+-------------------------------------------------------------------------------
 
 Dcr.LOC.DISEASE = 'Disease';
 Dcr.LOC.MAGIC   = 'Magic';
@@ -38,11 +38,6 @@ Dcr.LOC.CURSE   = 'Curse';
 Dcr.LOC.MAGICCHARMED = 'Magic Charm';
 Dcr.LOC.CHARMED = 'Charm';
 
--------------------------------------------------------------------------------
--- English localization (Default)
--------------------------------------------------------------------------------
-
---start added in Rc4
 Dcr.LOC.ALLIANCE_NAME = 'Alliance';
 
 Dcr.LOC.CLASS_DRUID   = 'Druid';
@@ -217,7 +212,7 @@ Dcr.LOC.OPT_IGNORESTEALTHED_DESC = "Stealthed units will be ignored";
 Dcr.LOC.OPT_CURINGORDEROPTIONS = "Curing Order Options";
 Dcr.LOC.OPT_MAGICCHECK_DESC	= "If checked you'll be able to see and cure magic afflicted units";
 Dcr.LOC.OPT_MAGICCHARMEDCHECK_DESC = "If checked you'll be able to see and cure magic-charmed units";
-Dcr.LOC.OPT_CHARMEDCHECK_DESC = "If checked you'll be able to see and control charmed units";
+Dcr.LOC.OPT_CHARMEDCHECK_DESC = "If checked you'll be able to see and deal with charmed units";
 Dcr.LOC.OPT_POISONCHECK_DESC = "If checked you'll be able to see and cure poisonned units";
 Dcr.LOC.OPT_DISEASECHECK_DESC = "If checked you'll be able to see and cure diseased units";
 Dcr.LOC.OPT_CURSECHECK_DESC = "If checked you'll be able to see and cure cursed units";
