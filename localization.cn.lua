@@ -49,7 +49,6 @@ L:RegisterTranslations("zhCN", function() return {
     -------------------------------------------------------------------------------
 
     --start added in Rc4
-    [Dcr.LOC.ALLIANCE_NAME]	=	Dcr.LOC.ALLIANCE_NAME,
 
     [Dcr.LOC.CLASS_DRUID]	=	Dcr.LOC.CLASS_DRUID,
     [Dcr.LOC.CLASS_HUNTER]	=	Dcr.LOC.CLASS_HUNTER,

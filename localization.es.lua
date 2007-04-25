@@ -38,7 +38,6 @@ L:RegisterTranslations("esES", function() return {
     -------------------------------------------------------------------------------
 
     --start added in Rc4
-    [Dcr.LOC.ALLIANCE_NAME]	=	'Alianza',
 
     [Dcr.LOC.CLASS_DRUID]	=	'Druida',
     [Dcr.LOC.CLASS_HUNTER]	=	'Cazador',

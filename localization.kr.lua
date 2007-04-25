@@ -49,7 +49,6 @@ L:RegisterTranslations("koKR", function() return {
 	-------------------------------------------------------------------------------
 
 	--start added in Rc4
-	[Dcr.LOC.ALLIANCE_NAME]	=	"얼라이언스",
 
 	[Dcr.LOC.CLASS_DRUID]	=	"드루이드",
 	[Dcr.LOC.CLASS_HUNTER]	=	"사냥꾼",

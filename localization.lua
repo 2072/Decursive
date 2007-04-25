@@ -38,7 +38,6 @@ Dcr.LOC.CURSE   = 'Curse';
 Dcr.LOC.MAGICCHARMED = 'Magic Charm';
 Dcr.LOC.CHARMED = 'Charm';
 
-Dcr.LOC.ALLIANCE_NAME = 'Alliance';
 
 Dcr.LOC.CLASS_DRUID   = 'Druid';
 Dcr.LOC.CLASS_HUNTER  = 'Hunter';
@@ -133,9 +132,6 @@ Dcr.LOC.PLAY_SOUND	    = "Play a sound when there is someone to cure";
 Dcr.LOC.ANCHOR          = "Decursive Text Anchor";
 Dcr.LOC.DONOT_BL_PRIO   = "Don't blacklist priority list names";
 
--- $s is spell name
--- $a is affliction name/type
--- $t is target name
 Dcr.LOC.SPELL_FOUND      = "%s spell found!";
 
 
@@ -323,7 +319,6 @@ L:RegisterTranslations("enUS", function() return {
     -------------------------------------------------------------------------------
 
     --start added in Rc4
-    [Dcr.LOC.ALLIANCE_NAME]	=	true,
 
     [Dcr.LOC.CLASS_DRUID]	=	true,
     [Dcr.LOC.CLASS_HUNTER]	=	true,

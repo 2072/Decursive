@@ -29,7 +29,6 @@ Dcr:SetDateAndRevision("$Date$", "$Revision$");
 local L = Dcr.L;
 L:RegisterTranslations("deDE", function() return {
     --start added in Rc4
-    [Dcr.LOC.ALLIANCE_NAME]	=	'Allianz',
 
     [Dcr.LOC.CLASS_DRUID]	=	'Druide',
     [Dcr.LOC.CLASS_HUNTER]	=	'Jäger',
