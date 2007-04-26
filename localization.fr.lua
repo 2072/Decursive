@@ -263,6 +263,10 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.HLP_RIGHTCLICK] = "Clic Droit",
     [Dcr.LOC.HLP_MIDDLECLICK] = "Clic Milieu",
 
+    [Dcr.LOC.HLP_NOTHINGTOCURE] = "Il n'y a rien à guérir !",
+    [Dcr.LOC.HLP_WRONGMBUTTON] = "Mauvais clique !",
+    [Dcr.LOC.HLP_USEXBUTTONTOCURE] = "Utilisez \"%s\" pour guérir cette affliction !",
+
     [Dcr.LOC.CTRL] = "Ctrl",
     [Dcr.LOC.ALT] = "Alt",
     [Dcr.LOC.SHIFT] = "Maj",

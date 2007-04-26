@@ -256,6 +256,10 @@ L:RegisterTranslations("zhTW", function() return {
    [Dcr.LOC.HLP_LEFTCLICK]             = "左鍵點擊";
    [Dcr.LOC.HLP_RIGHTCLICK]            = "右鍵點擊";
    [Dcr.LOC.HLP_MIDDLECLICK]           = "中鍵點擊";
+
+   [Dcr.LOC.HLP_NOTHINGTOCURE] = Dcr.LOC.HLP_NOTHINGTOCURE,
+   [Dcr.LOC.HLP_WRONGMBUTTON] = Dcr.LOC.HLP_WRONGMBUTTON,
+   [Dcr.LOC.HLP_USEXBUTTONTOCURE] = Dcr.LOC.HLP_USEXBUTTONTOCURE,
   
    [Dcr.LOC.CTRL]                      = "Ctrl";
    [Dcr.LOC.ALT]                       = "ALt";

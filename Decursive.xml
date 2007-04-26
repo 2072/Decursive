@@ -206,7 +206,7 @@
 		end
 	    </OnMouseUp>
 	    <OnMouseDown>
-		if ( ( ( not this.isLocked ) or ( this.isLocked == 0 ) ) and ( arg1 == "LeftButton" ) ) then
+		if ( ( ( not this.isLocked ) or ( this.isLocked == 0 ) or IsAltKeyDown()) and ( arg1 == "LeftButton" ) ) then
 		this:StartMoving();
 		this.isMoving = true;
 		end

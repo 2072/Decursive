@@ -6,11 +6,14 @@ New features:
 - It's now possible to add dynamic groups and classes in the priority and skip list:
     Instead of adding each unit separately, class and/or group entities (ex: [ group 1 ] , [ Mage ]) will appear in the lists. The old behavior can still be used by maintaining [SHIFT] when clicking on a group or class-name in the populate list tool (names will be added).
 - The last change also allow to sort units per group AND classes at the same time.
+- An informative help message is displayed when the user doesn't click a MUF with the correct mouse button.
+- Added revised Traditional Chinese translation by Whocare (losomelian AT yahoo DOT com DOT tw) 2007/04/19
 
 Small changes:
 - When a MUF is clicked, any spell targeting in progress is canceled.
 - The MUFs react upon mouse button release instead of mouse button press.
-- When adding a debuff to the filter, the entered name is trimed.
+- When adding an affliction to the filter, the entered name is trimmed.
+- It is now possible to move the "Decursive" bar maintaining the key Alt pushed with the buttons hidden.
 
 
 Fixed bug:

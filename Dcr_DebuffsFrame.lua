@@ -859,9 +859,33 @@ function MicroUnitF:OnLoad()
     this:SetScript("PostClick", MicroUnitF.OnPostClick);
 end
 
-function MicroUnitF:OnPreClick()
---	Dcr:Debug("Micro unit Preclicked");
+function MicroUnitF:OnPreClick(Button)
+	-- Dcr:Debug("Micro unit Preclicked: ", Button);
 	Dcr.Status.ClickedMF = this.Object;
+
+	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
+
+	    Dcr:Println(L[Dcr.LOC.HLP_NOTHINGTOCURE]);
+
+	elseif (this.Object.UnitStatus == AFFLICTED) then
+	    local NeededPrio = Dcr:GiveSpellPrioNum(this.Object.Debuffs[1].Type);
+	    local RequestedPrio = false;
+
+	    if (Button == "LeftButton") then
+		if (IsControlKeyDown()) then
+		    RequestedPrio = 3;
+		else
+		    RequestedPrio = 1;
+		end
+	    elseif (Button == "RightButton") then
+		RequestedPrio = 2;
+	    end
+
+	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
+		Dcr:errln(L[Dcr.LOC.HLP_WRONGMBUTTON]);
+		Dcr:Println(L[Dcr.LOC.HLP_USEXBUTTONTOCURE], Dcr:ColorText(AvailableButtonsReadable[NeededPrio], Dcr:NumToHexColor(MF_colors[NeededPrio])));
+	    end
+	end
 end
 function MicroUnitF:OnPostClick()
 --	Dcr:Debug("Micro unit PostClicked");

@@ -268,6 +268,10 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.HLP_RIGHTCLICK] 	= "우-클릭",
 	[Dcr.LOC.HLP_MIDDLECLICK] 	= "가운데-클릭",
 
+	[Dcr.LOC.HLP_NOTHINGTOCURE] = Dcr.LOC.HLP_NOTHINGTOCURE,
+	[Dcr.LOC.HLP_WRONGMBUTTON] = Dcr.LOC.HLP_WRONGMBUTTON,
+	[Dcr.LOC.HLP_USEXBUTTONTOCURE] = Dcr.LOC.HLP_USEXBUTTONTOCURE,
+
 	[Dcr.LOC.CTRL] 	= "CTRL",
 	[Dcr.LOC.ALT] 	= "ALT",
 	[Dcr.LOC.SHIFT] = "SHIFT",

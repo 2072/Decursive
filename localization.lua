@@ -266,6 +266,10 @@ Dcr.LOC.OPT_YSPACING_DESC = "Set the Vertical space between MUFs";
 Dcr.LOC.HLP_LEFTCLICK = "Left-Click";
 Dcr.LOC.HLP_RIGHTCLICK = "Right-Click";
 Dcr.LOC.HLP_MIDDLECLICK = "Middle-Click";
+
+Dcr.LOC.HLP_NOTHINGTOCURE = "There is nothing to cure!";
+Dcr.LOC.HLP_WRONGMBUTTON = "Wrong mouse button!";
+Dcr.LOC.HLP_USEXBUTTONTOCURE = "Use \"%s\" to cure this affliction!";
   
 Dcr.LOC.CTRL = "Ctrl";
 Dcr.LOC.ALT = "ALt";
@@ -537,7 +541,11 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.HLP_LEFTCLICK] = true,
     [Dcr.LOC.HLP_RIGHTCLICK] = true,
     [Dcr.LOC.HLP_MIDDLECLICK] = true,
-    
+
+    [Dcr.LOC.HLP_NOTHINGTOCURE] = true,
+    [Dcr.LOC.HLP_WRONGMBUTTON] = true,
+    [Dcr.LOC.HLP_USEXBUTTONTOCURE] = true,
+
     [Dcr.LOC.CTRL] = true,
     [Dcr.LOC.ALT] = true,
     [Dcr.LOC.SHIFT] = true,
