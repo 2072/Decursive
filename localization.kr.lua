@@ -27,6 +27,7 @@ Dcr:SetDateAndRevision("$Date$", "$Revision$");
 local L = Dcr.L;
 L:RegisterTranslations("koKR", function() return {
 
+
 	[Dcr.LOC.CLASS_DRUID]	=	"드루이드",
 	[Dcr.LOC.CLASS_HUNTER]	=	"사냥꾼",
 	[Dcr.LOC.CLASS_MAGE]	=	"마법사",
@@ -45,7 +46,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.CHARMED]	=	"지배", -- check
 
 	-------------------------------------------------------------------------------
-	-- English localization (Default)
+	-- Korean localization
 	-------------------------------------------------------------------------------
 
 	--start added in Rc4
@@ -268,9 +269,9 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.HLP_RIGHTCLICK] 	= "우-클릭",
 	[Dcr.LOC.HLP_MIDDLECLICK] 	= "가운데-클릭",
 
-	[Dcr.LOC.HLP_NOTHINGTOCURE] = Dcr.LOC.HLP_NOTHINGTOCURE,
-	[Dcr.LOC.HLP_WRONGMBUTTON] = Dcr.LOC.HLP_WRONGMBUTTON,
-	[Dcr.LOC.HLP_USEXBUTTONTOCURE] = Dcr.LOC.HLP_USEXBUTTONTOCURE,
+	[Dcr.LOC.HLP_NOTHINGTOCURE] = "치료할 것이 없습니다!",
+	[Dcr.LOC.HLP_WRONGMBUTTON] = "잘못된 마우스 버튼입니다!",
+	[Dcr.LOC.HLP_USEXBUTTONTOCURE] = "해당 디버프를 치료하려면 \"%s\" 버튼을 사용하세요",
 
 	[Dcr.LOC.CTRL] 	= "CTRL",
 	[Dcr.LOC.ALT] 	= "ALT",
