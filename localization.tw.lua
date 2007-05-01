@@ -182,6 +182,8 @@ L:RegisterTranslations("zhTW", function() return {
    [Dcr.LOC.OPT_UNITPERLINES_DESC]     = "設定每行顯示的微縮圖像數目";
    [Dcr.LOC.OPT_MFSCALE]               = '微縮圖像尺寸';
    [Dcr.LOC.OPT_MFSCALE_DESC]          = "設定微縮圖像的尺寸大小";
+   [Dcr.LOC.OPT_LLSCALE] = Dcr.LOC.OPT_LLSCALE,
+   [Dcr.LOC.OPT_LLSCALE_DESC] = Dcr.LOC.OPT_LLSCALE_DESC,
    [Dcr.LOC.OPT_SHOWHELP]              = "顯示說明";
    [Dcr.LOC.OPT_SHOWHELP_DESC]         = "當滑鼠掠過微縮圖像時顯示詳細提示";
    [Dcr.LOC.OPT_MFPERFOPT]             = "效能選項";
@@ -236,6 +238,9 @@ L:RegisterTranslations("zhTW", function() return {
 
    [Dcr.LOC.OPT_MFALPHA]               = "透明度";
    [Dcr.LOC.OPT_MFALPHA_DESC]          = "設定未受魔法侵犯玩家的微縮圖像透明度";
+    
+    [Dcr.LOC.OPT_LLALPHA] = Dcr.LOC.OPT_LLALPHA,
+    [Dcr.LOC.OPT_LLALPHA_DESC] = Dcr.LOC.OPT_LLALPHA_DESC,
 
    [Dcr.LOC.OPT_ADVDISP]               = "進階顯示選項";
    [Dcr.LOC.OPT_ADVDISP_DESC]          = "容許分別設定邊框與中心的透明度 另可設定微縮圖像的間距";

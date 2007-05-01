@@ -45,37 +45,45 @@ Dcr.defaults = { -- {{{
     DebuffsFrameMaxCount = 80,
 
     DebuffsFrameElemScale = 1,
-    
+
     DebuffsFrameElemAlpha = .4,
-    
+
     DebuffsFrameElemBorderShow = true,
-    
+
     DebuffsFrameElemBorderAlpha = .2,
 
     DebuffsFrameElemTieTransparency = true;
 
     DebuffsFramePerline = 10,
-   
+
     DebuffsFrameTieSpacing = true,
 
     DebuffsFrameXSpacing = 3,
-    
+
     DebuffsFrameYSpacing = 3,
 
     DebuffsFrameRefreshRate = 0.06,
 
     DebuffsFramePerUPdate = 10,
-    
+
     DebuffsFrameShowHelp = true,
-    
+
     DebuffsFrame_x = false,
-    
+
     DebuffsFrame_y = false,
 
     DebuffsFrameGrowToTop = false,
 
     -- this is wether or not to show the "live" list	
     Hide_LiveList = false,
+
+    LiveListAlpha = 1.0;
+
+    LiveListScale = 1.0;
+
+    MainBarX = false;
+
+    MainBarY = false;
 
     -- This will turn on and off the sending of messages to the default chat frame
     Print_ChatFrame = true,
@@ -391,6 +399,44 @@ Dcr.options = { -- {{{
 		    disabled = function() return  Dcr.db.profile.Hide_LiveList end,
 		    order = 108
 		},
+		FrameScaleLL = {
+		    type = 'range',
+		    name = L[Dcr.LOC.OPT_LLSCALE],
+		    desc = L[Dcr.LOC.OPT_LLSCALE_DESC],
+		    get = function() return Dcr.db.profile.LiveListScale end, -- Dcr.db.profile.DebuffsFrameElemScale end,
+		    set = function(v) 
+			if (v ~= Dcr.db.profile.LiveListScale) then
+			    Dcr.db.profile.LiveListScale = v;
+
+			    Dcr:SetLLScale(Dcr.db.profile.LiveListScale);
+			end
+		    end,
+		    disabled = function() return Dcr.db.profile.Hide_LiveList or Dcr.db.profile.Hidden end,
+		    min = 0.3,
+		    max = 4,
+		    step = 0.01,
+		    isPercent = true,
+		    order = 109,
+		},
+		AlphaLL = {
+		     type = 'range',
+		    name = L[Dcr.LOC.OPT_LLALPHA],
+		    desc = L[Dcr.LOC.OPT_LLALPHA_DESC],
+		    get = function() return 1 - Dcr.db.profile.LiveListAlpha end,
+		    set = function(v) 
+			if (v ~= Dcr.db.profile.LiveListAlpha) then
+			    Dcr.db.profile.LiveListAlpha = 1 - v;
+			    DecursiveMainBar:SetAlpha(Dcr.db.profile.LiveListAlpha);
+			    DecursiveAfflictedListFrame:SetAlpha(Dcr.db.profile.LiveListAlpha);
+			end
+		    end,
+		    disabled = function() return Dcr.db.profile.Hide_LiveList or Dcr.db.profile.Hidden end,
+		    min = 0,
+		    max = 0.8,
+		    step = 0.01,
+		    isPercent = true,
+		    order = 110,
+		}
 	    },
 	}, -- // }}}
 
@@ -550,7 +596,7 @@ Dcr.options = { -- {{{
 		    set = function(v) 
 			if (v ~= Dcr.db.profile.DebuffsFrameElemScale) then
 			    Dcr.db.profile.DebuffsFrameElemScale = v;
-			    
+
 
 			    Dcr.MicroUnitF:SetScale(Dcr.db.profile.DebuffsFrameElemScale);
 
@@ -725,7 +771,7 @@ Dcr.options = { -- {{{
 		    get = function() return Dcr.db.profile.DebuffsFrameShowHelp end,
 		    set = function()
 			Dcr.db.profile.DebuffsFrameShowHelp = not Dcr.db.profile.DebuffsFrameShowHelp;
-		
+
 		    end,
 		    disabled = function() return not Dcr.db.profile.ShowDebuffsFrame end,
 		    order = 2300,
@@ -749,7 +795,7 @@ Dcr.options = { -- {{{
 		    set = function(v) 
 			if (Dcr.Status.MicroFrameUpdateSchedule and v ~= Dcr.db.profile.DebuffsFrameRefreshRate) then
 			    Dcr.db.profile.DebuffsFrameRefreshRate = v;
-			
+
 			    Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
 			    Dcr.Status.MicroFrameUpdateSchedule =
 			    Dcr:ScheduleRepeatingEvent(Dcr.DebuffsFrame_Update, Dcr.db.profile.DebuffsFrameRefreshRate);
@@ -782,7 +828,7 @@ Dcr.options = { -- {{{
 		},
 	    }
 	}, -- }}}
-	
+
 	spacer5 = {
 	    type = "header",
 	    order = 131
@@ -848,8 +894,8 @@ Dcr.options = { -- {{{
 		    end,
 		    order = 134
 		},
-		
-		
+
+
 
 		{
 		    type = "header", order = 138,}, Title2 = {
@@ -982,7 +1028,7 @@ Dcr.options = { -- {{{
 		Dcr.Tmp.Profile = Dcr:GetProfile();
 		StaticPopup_Show ("DCR_CONFIRM_RESET", Dcr:GetProfile());
 		Dcr.DewDrop:Close(1);
-		
+
 	    end,
 	    disabled = function() return  not Dcr.Status.Enabled end,
 	    order = 150
@@ -1077,7 +1123,7 @@ function Dcr:CheckCureOrder ()
 
 	    elseif (value) then -- FALSE is the only value that can be given several times
 		Dcr:Debug("Incoherent value for (key, value, Duplicate?)", key, value, GivenValues[value]);
-		
+
 		Dcr.db.profile.CureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
 		WrongValue = WrongValue + 1;
 	    end
@@ -1199,7 +1245,7 @@ function Dcr:ShowHideDebuffsFrame ()
 	Dcr.MicroUnitF:Place ();
 	Dcr.db.profile.ShowDebuffsFrame = true;
     end
-    
+
     if (not Dcr.db.profile.ShowDebuffsFrame) then
 	Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
 	Dcr.Status.MicroFrameUpdateSchedule = false;
@@ -1285,7 +1331,7 @@ do -- this is a closure, it's a bit like {} blocks in C
     -- so we can pass arguments to functions like StaticPopupDialogs...
     Dcr.Tmp = {};
 
-    
+
 
     local RemoveFunc = function (handler)
 	Dcr:Debug("Removing '%s'...", handler["Debuff"]);
@@ -1428,7 +1474,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	return classes;
     end
 
-    
+
 
     --Entry Templates
     local function DebuffEntryGroup (DebuffName, num)

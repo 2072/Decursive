@@ -14,6 +14,7 @@ Small changes:
 - The MUFs react upon mouse button release instead of mouse button press.
 - When adding an affliction to the filter, the entered name is trimmed.
 - It is now possible to move the "Decursive" bar maintaining the key Alt pushed with the buttons hidden.
+- The scale and transparency of the live-list can be changed in the options.
 
 
 Fixed bug:

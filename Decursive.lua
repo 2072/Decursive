@@ -261,6 +261,53 @@ function Dcr:UpdateLiveDisplay( Index, Unit, Debuff) --{{{
     --item.debuff = Debuff.index;
 end --}}}
 
+-- Those set the scalling of the LIVELIST container
+-- SACALING FUNCTIONS {{{
+-- Place the LIVELIST container according to its scale
+function Dcr:PlaceLL () -- {{{
+    local UIScale	= UIParent:GetEffectiveScale()
+    local FrameScale	= DecursiveMainBar:GetEffectiveScale();
+    local x, y = Dcr.db.profile.MainBarX, Dcr.db.profile.MainBarY;
+
+    -- Executed for the very first time, then put it in the top right corner of the screen
+    if (not x or not y) then
+	x =    (UIParent:GetWidth()  * UIScale) / 2;
+	y =  - (UIParent:GetHeight() * UIScale) / 2 + 250;
+    end
+
+    -- set to the scaled position
+    DecursiveMainBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
+    DecursiveAfflictedListFrame:ClearAllPoints();
+    DecursiveAfflictedListFrame:SetPoint("TOPLEFT", DecursiveMainBar, "BOTTOMLEFT");
+end -- }}}
+
+-- Save the position of the frame without its scale
+function Dcr:SaveLLPos () -- {{{
+    if DecursiveMainBar:IsVisible() then
+	-- We save the unscalled position (no problem if the sacale is changed behind our back)
+	Dcr.db.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
+	Dcr.db.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
+
+	--	Dcr:Debug("Frame position saved");
+    end
+
+end -- }}}
+
+-- set the scaling of the LIVELIST container according to the user settings
+function Dcr:SetLLScale (NewScale) -- {{{
+    
+    -- save the current position without any scaling
+    Dcr:SaveLLPos ();
+    -- Set the new scale
+    DecursiveMainBar:SetScale(NewScale);
+    DecursiveAfflictedListFrame:SetScale(NewScale);
+    -- Place the frame adapting its position to the news cale
+    Dcr:PlaceLL ();
+    
+end -- }}}
+-- }}}
+
+
 -- }}}
 
 -- // }}}

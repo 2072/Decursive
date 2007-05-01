@@ -79,7 +79,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.SPELL_REMOVE_CURSE]	=	'Délivrance de la malédiction',
     [Dcr.LOC.SPELL_PURGE]	=	'Expiation',
 
-    [BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive",
+    [BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive\n(Ancre de la liste des affligés)",
     
     [BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
 
@@ -189,6 +189,8 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_UNITPERLINES_DESC] = "Définit le nombre max de micro-portraits à afficher par ligne",
     [Dcr.LOC.OPT_MFSCALE] = 'Echelle des micro-portraits',
     [Dcr.LOC.OPT_MFSCALE_DESC] = "Définit la taille des micro-portraits",
+    [Dcr.LOC.OPT_LLSCALE] = 'Echelle de la liste des affligés',
+    [Dcr.LOC.OPT_LLSCALE_DESC] = "Définit la taille de la barre principale de Decursive et de la liste des affligés",
     [Dcr.LOC.OPT_SHOWHELP] = "Affiche l'aide",
     [Dcr.LOC.OPT_SHOWHELP_DESC] = "Affiche une bulle d'aide lorsque la souris passe au-dessus d'un micro-portrait",
     [Dcr.LOC.OPT_MFPERFOPT] = "Options de performance",
@@ -243,6 +245,10 @@ L:RegisterTranslations("frFR", function() return {
 
     [Dcr.LOC.OPT_MFALPHA] = "Transparence",
     [Dcr.LOC.OPT_MFALPHA_DESC] = "Définit la transparence des micro-portraits, lorsque l'unité n'est pas affligée",
+    
+    [Dcr.LOC.OPT_LLALPHA] = "Transparence",
+    [Dcr.LOC.OPT_LLALPHA_DESC] = "Définit la transparence de la barre principale de Decursive et de la liste des affligés",
+
 
     [Dcr.LOC.OPT_ADVDISP] = "Options avancées",
     [Dcr.LOC.OPT_ADVDISP_DESC] = "Permet de régler la transparence de la bordure et du centre séparemment, permet de régler l'espace entre les micro-portraits",

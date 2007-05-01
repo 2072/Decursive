@@ -112,7 +112,7 @@ Dcr.hideMenuTitle 	= true;
 --Dcr.clickableTooltip	= true;
 
 function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
-	self:RegisterDB("DcrDB", "DcrCharDB");
+	self:RegisterDB("DcrDB");
 	self:RegisterDefaults('profile', Dcr.defaults )
 	-- self:RegisterDefaults('profile', defaults );
 	self:RegisterChatCommand({'/dcr', '/decursive'}, Dcr.options )
@@ -459,6 +459,34 @@ function Dcr:Init() --{{{
 
 
 
+    -- SET MF FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
+    -- Set the scale and place the MF container correctly
+    Dcr.MFContainer:Show();
+    Dcr.MFContainer:SetScale(Dcr.db.profile.DebuffsFrameElemScale);
+    Dcr.MicroUnitF:Place();
+
+    if (Dcr.db.profile.ShowDebuffsFrame) then
+	Dcr.MFContainer:Show();
+    else
+	Dcr.MFContainer:Hide();
+    end
+    -- }}}
+
+    -- SET THE LIVE_LIST FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
+	
+	-- Set poristion and scale
+    DecursiveMainBar:Show();
+    DecursiveMainBar:SetScale(Dcr.db.profile.LiveListScale);
+    DecursiveAfflictedListFrame:Show();
+    DecursiveAfflictedListFrame:SetScale(Dcr.db.profile.LiveListScale);
+    Dcr:PlaceLL();
+
+    if (Dcr.db.profile.Hidden) then
+	DecursiveMainBar:Hide();
+    else
+	DecursiveMainBar:Show();
+    end
+
     -- displays frame according to the current profile
     if (Dcr.db.profile.Hide_LiveList) then
 	DecursiveAfflictedListFrame:Hide();
@@ -468,19 +496,10 @@ function Dcr:Init() --{{{
 	DecursiveAfflictedListFrame:Show();
     end
 
-    if (Dcr.db.profile.ShowDebuffsFrame) then
-	Dcr.MFContainer:Show();
-	Dcr.MFContainer:SetScale(Dcr.db.profile.DebuffsFrameElemScale);
-	Dcr.MicroUnitF:Place();
-    else
-	Dcr.MFContainer:Hide();
-    end
-    if (Dcr.db.profile.Hidden) then
-	DecursiveMainBar:Hide();
-    else
-	DecursiveMainBar:Show();
-    end
-
+    -- set Alpha
+    DecursiveMainBar:SetAlpha(Dcr.db.profile.LiveListAlpha);
+    DecursiveAfflictedListFrame:SetAlpha(Dcr.db.profile.LiveListAlpha);
+    -- }}}
 
     if (Dcr.db.profile.MacroBind == "NONE") then
 	Dcr.db.profile.MacroBind = false;

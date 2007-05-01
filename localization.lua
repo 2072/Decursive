@@ -87,7 +87,7 @@ Dcr.LOC.SPELL_REMOVE_LESSER_CURSE = 'Remove Lesser Curse';
 Dcr.LOC.SPELL_REMOVE_CURSE        = 'Remove Curse';
 Dcr.LOC.SPELL_PURGE               = 'Purge';
 
-BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar";
+BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar\n(live-list anchor)";
 
 BINDING_NAME_DCRMUFSHOWHIDE = "Show or hide the micro-unit frames";
 
@@ -191,6 +191,8 @@ Dcr.LOC.OPT_UNITPERLINES = 'Number of units per line';
 Dcr.LOC.OPT_UNITPERLINES_DESC = "Defines the max number of micro-unit-frames to display per line";
 Dcr.LOC.OPT_MFSCALE = 'Scale of the micro-unit-frames';
 Dcr.LOC.OPT_MFSCALE_DESC = "Set the size of the micro-unit-frames";
+Dcr.LOC.OPT_LLSCALE = 'Scale of the Live-list';
+Dcr.LOC.OPT_LLSCALE_DESC = "Set the size of the Decursive main bar and of the Live-list";
 Dcr.LOC.OPT_SHOWHELP = "Show help";
 Dcr.LOC.OPT_SHOWHELP_DESC = "Shows an detailed tooltip when you mouse-over a micro-unit-frame"
 Dcr.LOC.OPT_MFPERFOPT = "Performance options";
@@ -245,6 +247,9 @@ Dcr.LOC.OPT_LVONLYINRANGE_DESC = "Only units in dispel range will be shown in th
 
 Dcr.LOC.OPT_MFALPHA = "Transparency";
 Dcr.LOC.OPT_MFALPHA_DESC = "Defines the transparency of the MUFs when units are not afflicted";
+
+Dcr.LOC.OPT_LLALPHA = "Live-list transparency";
+Dcr.LOC.OPT_LLALPHA_DESC = "Changes Decursive main bar and live-list transparency";
 
 Dcr.LOC.OPT_ADVDISP = "Advance display Options";
 Dcr.LOC.OPT_ADVDISP_DESC = "Allow to set Transparency of the border and center separately, to set the space between each MUF";
@@ -467,6 +472,8 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_UNITPERLINES_DESC] = true,
     [Dcr.LOC.OPT_MFSCALE] = true,
     [Dcr.LOC.OPT_MFSCALE_DESC] = true,
+    [Dcr.LOC.OPT_LLSCALE] = true,
+    [Dcr.LOC.OPT_LLSCALE_DESC] = true,
     [Dcr.LOC.OPT_SHOWHELP] = true,
     [Dcr.LOC.OPT_SHOWHELP_DESC] = true,
     [Dcr.LOC.OPT_MFPERFOPT] = true,
@@ -521,6 +528,10 @@ L:RegisterTranslations("enUS", function() return {
     
     [Dcr.LOC.OPT_MFALPHA] = true,
     [Dcr.LOC.OPT_MFALPHA_DESC] = true,
+
+    [Dcr.LOC.OPT_LLALPHA] = true,
+    [Dcr.LOC.OPT_LLALPHA_DESC] = true,
+
    
     [Dcr.LOC.OPT_ADVDISP]		 = true,
     [Dcr.LOC.OPT_ADVDISP_DESC]		 = true,

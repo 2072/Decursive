@@ -200,6 +200,7 @@
 	    </OnLeave>
 
 	    <OnMouseUp>
+		Dcr:SaveLLPos();
 		if ( this.isMoving ) then
 		this:StopMovingOrSizing();
 		this.isMoving = false;

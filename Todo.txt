@@ -4,7 +4,6 @@ Important TODO:
 
 - Change the live-list display
     - rewrite poorly coded part
-    - user should be able to change its scale and transparency
     - Make every indication disable-able
 
 Other TODO:
