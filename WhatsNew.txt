@@ -22,6 +22,7 @@ Fixed bug:
 - When Waterfall displays disabled 'range' options it calls the 'set' method anyway, this caused a problem when the live-list or the MUFs were disabled...
 - Warlock pet detection could fail in some conditions.
 - Default Warrior ignored debuffs were not used because of a spelling mistake.
+- When you are already in combat when logging-in or if you reload your UI in combat, Decursive will operate correctly.
 
 
 Changes from Decursive 2.0 BETA 6-Pub to Decursive 2.0 BETA 6-Pub-fixed

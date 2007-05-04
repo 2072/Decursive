@@ -387,6 +387,12 @@ function Dcr:OnProfileEnable()
     Dcr.Status.DelayedFunctionCalls = {};
     Dcr.Status.DelayedFunctionCallsCount = 0;
 
+    -- if we log in and we are already fighting...
+    if (InCombatLockdown()) then 
+	Dcr.Status.Combat = true;
+    end
+
+
     if type (Dcr.db.profile.OutputWindow) == "string" then
 	Dcr.Status.OutputWindow = getglobal(Dcr.db.profile.OutputWindow);
     end

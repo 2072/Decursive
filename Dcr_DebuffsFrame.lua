@@ -77,6 +77,14 @@ end -- }}}
 -- The Factory for MicroUnitF objects
 function MicroUnitF:Create(ID, Unit) -- {{{
 
+    if (Dcr.Status.Combat) then
+	-- if we are fighting, postpone the call
+	Dcr:AddDelayedFunctionCall (
+	"Create"..ID, self.Create,
+	ID, Unit);
+	return false;
+    end
+
     -- if we attempt to create a MUF that already exists, update it instead
     if (MicroUnitF.ExistingPerID[ID]) then
 	MicroUnitF.ExistingPerID[ID]:UpdateAttributes(Unit);
