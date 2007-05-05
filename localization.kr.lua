@@ -94,7 +94,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.SPELL_REMOVE_CURSE]	=	"저주 해제",
 	[Dcr.LOC.SPELL_PURGE]		=	"정화", -- 주술사
 
-	[BINDING_NAME_DCRSHOW]    	= "Decursive 메인바 표시/숨김",
+	[BINDING_NAME_DCRSHOW]    	= "Decursive 메인바 표시/숨김\n(실시간 목록 고정위치)",
     
 	[BINDING_NAME_DCRMUFSHOWHIDE] =	"작은 유닛 프레임 표시/숨김",
 
@@ -194,8 +194,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_UNITPERLINES_DESC] = "한줄에 표시할 작은 유닛 프레임의 최대 개수를 지정합니다.",
 	[Dcr.LOC.OPT_MFSCALE] = "작은 유닛 프레임의 크기",
 	[Dcr.LOC.OPT_MFSCALE_DESC] = "작은 유닛 프레임의 크기를 설정합니다.",
-	[Dcr.LOC.OPT_LLSCALE] = Dcr.LOC.OPT_LLSCALE,
-	[Dcr.LOC.OPT_LLSCALE_DESC] = Dcr.LOC.OPT_LLSCALE_DESC,
+	[Dcr.LOC.OPT_LLSCALE] = "실시간 목록 크기",
+	[Dcr.LOC.OPT_LLSCALE_DESC] = "Decursive 메인바와 실시간 목록의 크기를 설정합니다.",
 	[Dcr.LOC.OPT_SHOWHELP] = "도움말 표시",
 	[Dcr.LOC.OPT_SHOWHELP_DESC] = "작은 유닛 프레임에 마우스를 올리면 정보 툴팁을 표시합니다.",
 	[Dcr.LOC.OPT_MFPERFOPT] = "성능 설정",
@@ -251,8 +251,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_MFALPHA] = "투명도",
 	[Dcr.LOC.OPT_MFALPHA_DESC] = "디버프의 걸린 대상이 없을 때 MUF의 투명도를 지정합니다.",
 
-	[Dcr.LOC.OPT_LLALPHA] = Dcr.LOC.OPT_LLALPHA,
-	[Dcr.LOC.OPT_LLALPHA_DESC] = Dcr.LOC.OPT_LLALPHA_DESC,
+	[Dcr.LOC.OPT_LLALPHA] = "실시간 목록 투명도",
+	[Dcr.LOC.OPT_LLALPHA_DESC] = "Decursive 메인바와 실시간 목록의 투명도를 변경합니다.",
 
 	[Dcr.LOC.OPT_ADVDISP] = "고급 표시 설정",
 	[Dcr.LOC.OPT_ADVDISP_DESC] = "각 MUF 사이 간격 설정을 위해 테두리와 가운데 구분의 투명도를 설정할 수 있습니다.",
