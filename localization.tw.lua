@@ -143,7 +143,7 @@ L:RegisterTranslations("zhTW", function() return {
     [Dcr.LOC.CRIPLES]		= "殘廢術",
     [Dcr.LOC.DUSTCLOUD]	= "灰塵之雲",
     [Dcr.LOC.WIDOWSEMBRACE]	= "寡婦之擁",
-    [Dcr.LOC.CURSEOFTONGUES]	= "語言詛咒"; -- further translated by BS
+    [Dcr.LOC.CURSEOFTONGUES]	= "語言詛咒", -- further translated by BS
     [Dcr.LOC.SONICBURST]	= "音爆",
     [Dcr.LOC.THUNDERCLAP]	= "雷霆一擊",
     [Dcr.LOC.DELUSIONOFJINDO] = "金度的欺騙",
@@ -153,7 +153,7 @@ L:RegisterTranslations("zhTW", function() return {
 
     -- NEW LOCALS FOR 2.0
 
-    [Dcr.LOC.DEFAULT_MACROKEY] = "`"; -- the key just beneath the escape key on a QWERTY keyboard
+    [Dcr.LOC.DEFAULT_MACROKEY] = "`", -- the key just beneath the escape key on a QWERTY keyboard
 
     [Dcr.LOC.OPT_LIVELIST] = "即時清單",
     [Dcr.LOC.OPT_LIVELIST_DESC] = "即時清單設定選項。",
