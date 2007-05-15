@@ -253,8 +253,8 @@ end -- }}}
 -- This function only returns interesting values of UnitDebuff()
 function Dcr:GetUnitDebuff  (Unit, i) --{{{
 
-    if Dcr.LiveList.TestItemDisplayed and i == 1 then
-	Dcr:Debug("|cFFFF0000Setting test debuff|r");
+    if Dcr.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" then
+	Dcr:Debug("|cFFFF0000Setting test debuff for |r", Unit);
 	return "Name of the afflication (Test)", DcrC.TypeNames[Dcr.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga";
     end
 

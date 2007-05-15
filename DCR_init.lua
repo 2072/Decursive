@@ -164,6 +164,27 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    'text2', Dcr.L[BINDING_NAME_DCRSHOW]
 	    );
 
+	    if (Dcr.profile.debugging) then
+		 local cat2 = Dcr.T:AddCategory(
+		'text', "Debugging info",
+		'columns', 2,
+		'child_textR', 0.8,
+		'child_textG', 1,
+		'child_textB', 0.8,
+		'child_textR2', 0.7,
+		'child_textG2', 0.6,
+		'child_textB2', 0.5,
+		'child_justify1', 'LEFT',
+		'child_justify2', 'LEFT'
+		);
+
+		cat2:AddLine(
+		'text', "Afflicted units count:",
+		'text2',  Dcr.ForLLDebuffedUnitsNum
+		);
+
+	    end
+
 	    
 	end	
 
@@ -211,7 +232,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		Types = {DcrC.CHARMED},
 		IsBest = false,
 	    },
-	    --[[
+	    ---[[
 	    [BS["Dampen Magic"] ]	    = {
 		Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},
 		IsBest = false,
@@ -583,7 +604,7 @@ function Dcr:Init() --{{{
 
     -- set Alpha
     DecursiveMainBar:SetAlpha(Dcr.profile.LiveListAlpha);
-    DcrLiveList:SetAlpha(Dcr.profile.LiveListAlpha);
+    --DcrLiveList:SetAlpha(Dcr.profile.LiveListAlpha);
     -- }}}
 
     if (Dcr.profile.MacroBind == "NONE") then

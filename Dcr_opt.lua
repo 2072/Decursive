@@ -77,7 +77,7 @@ Dcr.defaults = { -- {{{
     -- this is wether or not to show the "live" list	
     Hide_LiveList = false,
 
-    LiveListAlpha = 1.0;
+    LiveListAlpha = 0.7;
 
     LiveListScale = 1.0;
 
@@ -310,7 +310,7 @@ Dcr.options = { -- {{{
 		    desc = L[Dcr.LOC.OPT_LVONLYINRANGE_DESC],
 		    get = function() return Dcr.profile.LV_OnlyInRange end,
 		    set = function() Dcr.profile.LV_OnlyInRange = not Dcr.profile.LV_OnlyInRange end,
-		    disabled = function() return Dcr.profile.Hide_LiveList end,
+		    disabled = function() return Dcr.profile.Hide_LiveList or Dcr.ForLLDebuffedUnitsNum > 0 end,
 		    order = 100.5
 		},
 		ToolTips = {

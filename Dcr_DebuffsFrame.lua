@@ -39,7 +39,6 @@ MicroUnitF.ExistingPerID = {};
 MicroUnitF.ExistingPerNum = {};
 MicroUnitF.Number   = 0;
 MicroUnitF.UnitShown   = 0;
-Dcr.DebuffedUnitsNum = 0; -- XXX does not belong here
 
 
 -- using power 2 values just to OR them but only CHARMED is ORed (it's a C style bitfield)
@@ -768,10 +767,17 @@ end -- }}}
 function MicroUnitF.prototype:SetDebuffs() -- {{{
     self.Debuffs, self.IsCharmed = Dcr:UnitCurableDebuffs(self.CurrUnit);
 
+    if self.IsDebuffed and not Dcr.profile.LV_OnlyInRange then
+	Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum - 1;
+    end
 
     if (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
 	self.IsDebuffed = true;
 	self.Debuff1Prio = Dcr:GiveSpellPrioNum( self.Debuffs[1].Type );
+	if not Dcr.profile.LV_OnlyInRange then
+	    Dcr.UnitDebuffed[self.CurrUnit] = true;
+	    Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum + 1;
+	end
 
     else
 	self.IsDebuffed = false;
@@ -861,11 +867,11 @@ do
 		    self.UnitStatus = AFFLICTED;
 		    BorderAlpha = 1;
 
-		    Dcr.DebuffedUnitsNum = Dcr.DebuffedUnitsNum + 1;
 		    if (not Dcr.Status.SoundPlayed) then
 			Dcr:PlaySound (self.CurrUnit);
 		    end
 		    if profile.LV_OnlyInRange then
+			Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum + 1;
 			Dcr.UnitDebuffed[self.CurrUnit] = true;
 		    end
 
@@ -878,9 +884,11 @@ do
 	end
 
 	if PreviousStatus == AFFLICTED or PreviousStatus == AFFLICTED_AND_CHARMED  then
-	    Dcr.DebuffedUnitsNum = Dcr.DebuffedUnitsNum - 1;
+	    if profile.LV_OnlyInRange then
+		Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum - 1;
+	    end
 
-	    if (Dcr.DebuffedUnitsNum == 0) then
+	    if (Dcr.ForLLDebuffedUnitsNum == 0) then
 		Dcr.Status.SoundPlayed = false;
 	    end
 	end
