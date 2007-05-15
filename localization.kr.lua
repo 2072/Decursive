@@ -172,8 +172,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_BLACKLENTGH_DESC] =  "블랙리스트에 등록할 시간을 지정합니다.",
 	[Dcr.LOC.OPT_SCANLENGTH_DESC] = "각 탐색의 시간 간격을 지정합니다.",
 	[Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = "실시간 목록을 아래에서 위로 생성합니다.",
-	[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF,
-	[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC,
+	[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = "시각적인 테스트 디버프 생성",
+	[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = "디버프 발생 시 어떻게 보여지는 지를 표시하도록 합니다.",
 	[Dcr.LOC.OPT_TIE_LIVELIST_DESC] = "실시간 목록을 아래에서 위로 생성합니다.",
 	[Dcr.LOC.OPT_MESSAGES]	= "메세지",
 	[Dcr.LOC.OPT_MESSAGES_DESC] = "메세지 표시에 대한 설정입니다.",
@@ -197,7 +197,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_MFSCALE] = "작은 유닛 프레임의 크기",
 	[Dcr.LOC.OPT_MFSCALE_DESC] = "작은 유닛 프레임의 크기를 설정합니다.",
 	[Dcr.LOC.OPT_LLSCALE] = "실시간 목록 크기",
-	[Dcr.LOC.OPT_LLSCALE_DESC] = "Decursive 메인바와 실시간 목록의 크기를 설정합니다.",
+	[Dcr.LOC.OPT_LLSCALE_DESC] = "Decursive 메인바와 실시간 목록의 크기를 설정합니다. (메인바가 표시되어 있어야 함)",
 	[Dcr.LOC.OPT_SHOWHELP] = "도움말 표시",
 	[Dcr.LOC.OPT_SHOWHELP_DESC] = "작은 유닛 프레임에 마우스를 올리면 정보 툴팁을 표시합니다.",
 	[Dcr.LOC.OPT_MFPERFOPT] = "성능 설정",
@@ -254,7 +254,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_MFALPHA_DESC] = "디버프의 걸린 대상이 없을 때 MUF의 투명도를 지정합니다.",
 
 	[Dcr.LOC.OPT_LLALPHA] = "실시간 목록 투명도",
-	[Dcr.LOC.OPT_LLALPHA_DESC] = "Decursive 메인바와 실시간 목록의 투명도를 변경합니다.",
+	[Dcr.LOC.OPT_LLALPHA_DESC] = "Decursive 메인바와 실시간 목록의 투명도를 변경합니다. (메인바가 표시되어 있어야 함)",
 
 	[Dcr.LOC.OPT_ADVDISP] = "고급 표시 설정",
 	[Dcr.LOC.OPT_ADVDISP_DESC] = "각 MUF 사이 간격 설정을 위해 테두리와 가운데 구분의 투명도를 설정할 수 있습니다.",
@@ -272,7 +272,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_YSPACING_DESC] = "MUF 사이의 수직 간격을 설정합니다.",
 
 
-	[Dcr.LOC.HLP_LL_ONCLICK_TEXT] = Dcr.LOC.HLP_LL_ONCLICK_TEXT,
+	[Dcr.LOC.HLP_LL_ONCLICK_TEXT] = "실시간 목록을 클릭하는 것은 WoW 2.0 이후 사용할 수 없습니다. Decursive 폴더에 위치한 \"Readme.txt\" 읽어 보세요...",
 	[Dcr.LOC.HLP_LEFTCLICK] 	= "좌-클릭",
 	[Dcr.LOC.HLP_RIGHTCLICK] 	= "우-클릭",
 	[Dcr.LOC.HLP_MIDDLECLICK] 	= "가운데-클릭",
