@@ -159,8 +159,8 @@ L:RegisterTranslations("zhCN", function() return {
     [Dcr.LOC.DELUSIONOFJINDO]	= "金度的欺騙",
 
 
-    [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION;
-    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE"; -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
+    [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
+    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
     [Dcr.LOC.OPT_LIVELIST] = Dcr.LOC.OPT_LIVELIST,
     [Dcr.LOC.OPT_LIVELIST_DESC] = Dcr.LOC.OPT_LIVELIST_DESC,
     [Dcr.LOC.OPT_HIDELIVELIST_DESC] = Dcr.LOC.OPT_HIDELIVELIST_DESC,
@@ -170,6 +170,8 @@ L:RegisterTranslations("zhCN", function() return {
     [Dcr.LOC.OPT_BLACKLENTGH_DESC] = Dcr.LOC.OPT_BLACKLENTGH_DESC,
     [Dcr.LOC.OPT_SCANLENGTH_DESC] = Dcr.LOC.OPT_SCANLENGTH_DESC,
     [Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = Dcr.LOC.OPT_REVERSE_LIVELIST_DESC,
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF,
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC,
     [Dcr.LOC.OPT_TIE_LIVELIST_DESC] = Dcr.LOC.OPT_TIE_LIVELIST_DESC,
     [Dcr.LOC.OPT_MESSAGES] = Dcr.LOC.OPT_MESSAGES,
     [Dcr.LOC.OPT_MESSAGES_DESC] = Dcr.LOC.OPT_MESSAGES_DESC,
@@ -266,6 +268,7 @@ L:RegisterTranslations("zhCN", function() return {
     [Dcr.LOC.OPT_YSPACING_DESC] = Dcr.LOC.OPT_YSPACING_DESC,
 
 
+    [Dcr.LOC.HLP_LL_ONCLICK_TEXT] = Dcr.LOC.HLP_LL_ONCLICK_TEXT,
     [Dcr.LOC.HLP_LEFTCLICK] = Dcr.LOC.HLP_LEFTCLICK,
     [Dcr.LOC.HLP_RIGHTCLICK] = Dcr.LOC.HLP_RIGHTCLICK,
     [Dcr.LOC.HLP_MIDDLECLICK] = Dcr.LOC.HLP_MIDDLECLICK,

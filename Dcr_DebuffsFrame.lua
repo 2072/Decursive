@@ -39,6 +39,7 @@ MicroUnitF.ExistingPerID = {};
 MicroUnitF.ExistingPerNum = {};
 MicroUnitF.Number   = 0;
 MicroUnitF.UnitShown   = 0;
+Dcr.DebuffedUnitsNum = 0; -- XXX does not belong here
 
 
 -- using power 2 values just to OR them but only CHARMED is ORed (it's a C style bitfield)
@@ -50,6 +51,7 @@ local BLACKLISTED	    = 128;
 local AFFLICTED		    = 256;
 local AFFLICTED_NIR	    = 512;
 local CHARMED		    = 1024;
+local AFFLICTED_AND_CHARMED = bit.bor(AFFLICTED, CHARMED);
 
 
 -- Those are the different colors used for the MUFs main texture
@@ -66,6 +68,35 @@ local MF_colors = {
     [STEALTHED]		= {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
     ["InnerCharmed"]	= {  0  , 1   , 0    ,  1	}, -- full green
 };
+-- Those are lookups table to set the frame attributes
+local AvailableButtons = { -- {{{
+    "%s1", -- left mouse button
+    "%s2", -- right mouse button
+    "ctrl-%s1",
+    "ctrl-%s2",
+    "shift-%s1",
+    "shift-%s2",
+    "alt-%s1",
+    "alt-%s2",
+    -- 3, -- middle mouse button || RESERVED FOR TARGETTING
+}; -- }}}
+
+local AvailableButtonsReadable = { -- {{{
+    L[Dcr.LOC.HLP_LEFTCLICK], -- left mouse button
+    L[Dcr.LOC.HLP_RIGHTCLICK], -- right mouse button
+    L[Dcr.LOC.CTRL] .. "-" .. L[Dcr.LOC.HLP_LEFTCLICK],
+    L[Dcr.LOC.CTRL] .. "-" .. L[Dcr.LOC.HLP_RIGHTCLICK],
+    L[Dcr.LOC.SHIFT] .. "-" .. L[Dcr.LOC.HLP_LEFTCLICK],
+    L[Dcr.LOC.SHIFT] .. "-" .. L[Dcr.LOC.HLP_RIGHTCLICK],
+    L[Dcr.LOC.ALT] .. "-" .. L[Dcr.LOC.HLP_LEFTCLICK],
+    L[Dcr.LOC.ALT] .. "-" .. L[Dcr.LOC.HLP_RIGHTCLICK],
+    -- 3, -- middle mouse button || RESERVED FOR TARGETTING
+}; -- }}}
+
+-- modifier for the macro
+local AvailableModifier = { -- {{{
+    "shift","ctrl","alt",
+} -- }}}
 
 -- MicroUnitF STATIC methods {{{
 
@@ -110,7 +141,7 @@ end -- }}}
 
 -- return the number MUFs we can use
 function MicroUnitF:MFUsableNumber () -- {{{
-    return ((Dcr.MFContainer.MaxUnit > #Dcr.Status.Unit_Array) and #Dcr.Status.Unit_Array or Dcr.MFContainer.MaxUnit);
+    return ((MicroUnitF.MaxUnit > Dcr.Status.UnitNum) and Dcr.Status.UnitNum or MicroUnitF.MaxUnit);
 end -- }}}
 
 -- this is used when a setting influencing MUF's position is changed
@@ -130,20 +161,27 @@ end -- }}}
 
 -- return the anchor of a given MUF depending on its creation ID
 function MicroUnitF:GiveMFAnchor (ID) -- {{{
-    local LineNum = math.floor( (ID - 1) / Dcr.db.profile.DebuffsFramePerline);
-    local NumOnLine = math.fmod( (ID - 1), Dcr.db.profile.DebuffsFramePerline);
+    local LineNum = math.floor( (ID - 1) / Dcr.profile.DebuffsFramePerline);
+    local NumOnLine = math.fmod( (ID - 1), Dcr.profile.DebuffsFramePerline);
 
-    local x = (Dcr.db.profile.DebuffsFrameGrowToTop and DcrC.MFSIZE or 0) + NumOnLine * (DcrC.MFSIZE + Dcr.db.profile.DebuffsFrameXSpacing);
-    local y = (Dcr.db.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * Dcr.db.profile.DebuffsFrameYSpacing) - DcrC.MFSIZE);
+    local x = (Dcr.profile.DebuffsFrameGrowToTop and DcrC.MFSIZE or 0) + NumOnLine * (DcrC.MFSIZE + Dcr.profile.DebuffsFrameXSpacing);
+    local y = (Dcr.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * Dcr.profile.DebuffsFrameYSpacing) - DcrC.MFSIZE);
 
 
     return { "TOPLEFT", x + 3, y - 20, "TOPLEFT" };
 end -- }}}
 
--- This update the MUFs display, show and hide MUFs as necessary
-function MicroUnitF:UpdateMIcroFrameDisplay () -- {{{
 
-    if (not Dcr.MFContainer.UpdateYourself) then
+function MicroUnitF:Delayed_MFsDisplay_Update ()
+    if (Dcr.profile.ShowDebuffsFrame) then
+	Dcr:ScheduleEvent("UpdateMUFsNUM", MicroUnitF.MFsDisplay_Update, 0.2, MicroUnitF);
+    end
+end
+
+-- This update the MUFs display, show and hide MUFs as necessary
+function MicroUnitF:MFsDisplay_Update () -- {{{
+
+    if (not Dcr.profile.ShowDebuffsFrame) then
 	return false;
     end
 
@@ -151,12 +189,13 @@ function MicroUnitF:UpdateMIcroFrameDisplay () -- {{{
     if (Dcr.Status.Combat) then
 	-- if we are fighting, postpone the call
 	Dcr:AddDelayedFunctionCall (
-	"UpdateMicroUnitFrameDisplay", self.UpdateMIcroFrameDisplay,
+	"UpdateMicroUnitFrameDisplay", self.MFsDisplay_Update,
 	self);
 	return false;
     end
 
-    Dcr.MFContainer.UpdateYourself = false;
+    -- Get an up to date unit array if necessary
+    Dcr:GetUnitArray();
 
     -- =======
     --  Begin
@@ -171,16 +210,31 @@ function MicroUnitF:UpdateMIcroFrameDisplay () -- {{{
 	return false;
     end
 
-    Dcr:Debug("Update required: NumToShow = %d", NumToShow);
 
-    local MicroFrame = false;
+    local MF_f = false;
+    local MF = false;
 
     --  Dcr:Debug("MicroUnitF.Number = %d", MicroUnitF.Number);
 
-    for i=1, MicroUnitF.Number do
+    local start;
+
+    -- if there are more MUFs than the actual unit number
+    if MicroUnitF.UnitShown > NumToShow then
+	start = NumToShow + 1;
+    -- if there is not enough MUFs
+    elseif MicroUnitF.UnitShown < NumToShow then
+	start = MicroUnitF.UnitShown + 1;
+    else
+	start = NumToShow;
+    end
+
+    Dcr:Debug("Update required: NumToShow = %d, starting at: %d", NumToShow, start);
+
+    for i=start, MicroUnitF.Number do
 
 	if MicroUnitF.ExistingPerID[i] then
-	    MicroFrame = MicroUnitF.ExistingPerID[i].Frame;
+	    MF = MicroUnitF.ExistingPerID[i];
+	    MF_f = MF.Frame;
 	else
 	    -- this should not happen
 	    Dcr:Debug("%s (positionned at %d) does not has a frame yet", Dcr.Status.Unit_Array[i], i);
@@ -188,20 +242,25 @@ function MicroUnitF:UpdateMIcroFrameDisplay () -- {{{
 	end
 
 	-- show/hide and update position if necessary
-	if (i <= NumToShow and not MicroFrame.Object.Shown) then
+	if (i <= NumToShow and not MF.Shown) then
 
-	    Dcr:Debug("Showing %d", i);
-	    MicroFrame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(i)));
-	    MicroFrame:Show();
-	    MicroFrame.Object.Shown = true;
-	    Dcr.MFContainer.UnitShown = Dcr.MFContainer.UnitShown + 1;
+	    MF_f:SetPoint(unpack(MicroUnitF:GiveMFAnchor(i)));
+	    MF_f:Show();
+	    MF.Shown = true;
+	    MicroUnitF.UnitShown = MicroUnitF.UnitShown + 1;
 
-	elseif (i > NumToShow and MicroFrame.Object.Shown) then
+	    -- Schedule an update for the MUF we just shown
+	    Dcr:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, Dcr.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF);
+	    --Dcr:Debug("Showing %d, scheduling update in %f", i, Dcr.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i));
+
+	elseif (i > NumToShow and MF.Shown) then
 	    Dcr:Debug("Hidding %d", i);
 
-	    MicroFrame.Object.Shown = false;
-	    Dcr.MFContainer.UnitShown = Dcr.MFContainer.UnitShown - 1;
-	    MicroFrame:Hide();
+	    MF.Shown = false;
+	    MicroUnitF.UnitShown = MicroUnitF.UnitShown - 1;
+	    Dcr:Debug("Hiding %d, scheduling update in %f", i, Dcr.profile.DebuffsFrameRefreshRate * (i - NumToShow));
+	    Dcr:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, Dcr.profile.DebuffsFrameRefreshRate * (i - NumToShow), MF, false, false);
+	    MF_f:Hide();
 
 	end
 
@@ -216,7 +275,7 @@ end -- }}}
 function MicroUnitF:Place () -- {{{
     local UIScale	= UIParent:GetEffectiveScale()
     local FrameScale	= self.Frame:GetEffectiveScale();
-    local x, y = Dcr.db.profile.DebuffsFrame_x, Dcr.db.profile.DebuffsFrame_y;
+    local x, y = Dcr.profile.DebuffsFrame_x, Dcr.profile.DebuffsFrame_y;
 
     -- Executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
@@ -232,8 +291,8 @@ end -- }}}
 function MicroUnitF:SavePos () -- {{{
     if self.Frame:IsVisible() then
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
-	Dcr.db.profile.DebuffsFrame_x = self.Frame:GetEffectiveScale() * self.Frame:GetLeft();
-	Dcr.db.profile.DebuffsFrame_y = self.Frame:GetEffectiveScale() * self.Frame:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
+	Dcr.profile.DebuffsFrame_x = self.Frame:GetEffectiveScale() * self.Frame:GetLeft();
+	Dcr.profile.DebuffsFrame_y = self.Frame:GetEffectiveScale() * self.Frame:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
 
 	--	Dcr:Debug("Frame position saved");
     end
@@ -253,8 +312,53 @@ function MicroUnitF:SetScale (NewScale) -- {{{
 end -- }}}
 -- }}}
 
+-- Update the MUF of a given unitid
+function MicroUnitF:UpdateMUFUnit(Unitid)
+    if not Dcr.profile.ShowDebuffsFrame then
+	return;
+    end
+
+    if (not Unitid) then
+	Dcr:Debug("XXXXX ==> UpdateMUFUnit: Unitid was nil!");
+    end
+
+    -- Update the unit array (GetUnitArray() will do something only if necessary)
+    Dcr:GetUnitArray();
+
+    local unit = false;
+
+    if (Unitid == "focus") then
+	unit = "focus";
+    elseif (UnitInRaid(Unitid) or UnitInParty(Unitid)) then
+	--unit = Dcr:NameToUnit(UnitName(Unitid)); -- needed so we have the same IDs than the ones we have in our lists (we won't get party\d when we are in raid but raid\d+)
+	unit = Unitid;
+    else
+	return;
+    end
+
+    -- get the MUF index that should represent this unit
+    local MUF_index = Dcr.Status.Unit_Array_UnitToIndex[unit];
+
+    if (not MUF_index) then
+	--Dcr:Debug("XXXXX ==> UpdateMUFUnit: Unitid (%s) was not found in table Unit_Array_UnitToIndex!", unit);
+	return;
+    end
+
+    -- get the MUF object
+    local MF = MicroUnitF:Exists(MUF_index);
+
+    if (MF and MF.Shown) then
+	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
+	-- but we don't miss any event
+	if (not Dcr:IsEventScheduled("Update"..unit)) then
+	    Dcr:ScheduleEvent("Update"..unit, MF.Update, Dcr.profile.DebuffsFrameRefreshRate, MF, false, false);
+	    Dcr:Debug("Update scheduled for, ", unit, MUF_index);
+	end
+    end
+end
+
 -- Event management functions
--- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnCornerClick) {{{
+-- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnCornerClick, OnLoad, OnPreClick) {{{
 
 -- It's outside the function to avoid creating and discarding this table at each call
 local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
@@ -265,8 +369,9 @@ function MicroUnitF:OnEnter() -- {{{
     local MF = this.Object;
     local Status;
 
-    if (Dcr.db.profile.AfflictionTooltips ) then
-	MF:SetColor(); -- will reset the color early and set the current status of the MUF
+    if (Dcr.profile.AfflictionTooltips ) then
+	MF:Update(); -- will reset the color early and set the current status of the MUF
+	MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
 	-- removes the CHARMED bit from Status, we don't need it
 	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED));
@@ -331,7 +436,7 @@ function MicroUnitF:OnEnter() -- {{{
     end
 
     -- show a help text in the Game default tooltip
-    if (Dcr.db.profile.DebuffsFrameShowHelp) then
+    if (Dcr.profile.DebuffsFrameShowHelp) then
 	local helpText = MF.TooltipButtonsInfo;
 	GameTooltip_SetDefaultAnchor(GameTooltip, this);
 	GameTooltip:SetText(helpText);
@@ -346,12 +451,13 @@ function MicroUnitF:OnLeave() -- {{{
     --Dcr:Debug("Micro unit Hidden");
     DcrDisplay_Tooltip:Hide();
 
-    if (Dcr.db.profile.DebuffsFrameShowHelp) then
+    if (Dcr.profile.DebuffsFrameShowHelp) then
 	GameTooltip:Hide();
     end
 end -- }}}
 
 function MicroUnitF:OnCornerClick (arg1, this) -- {{{
+    Dcr:Debug("clicked");
     if (arg1 == "RightButton" and not IsShiftKeyDown()) then
 
 	if (not IsAltKeyDown()) then
@@ -374,9 +480,71 @@ function MicroUnitF:OnCornerClick (arg1, this) -- {{{
 
 end -- }}}
 
+function Dcr.MicroUnitF:OnCornerEnter()
+    if (Dcr.profile.DebuffsFrameShowHelp) then
+	Dcr:DisplayGameTooltip(
+	string.format(
+	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
+	"|cFF11FF11%s|r: %s\n"..
+	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
+	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"..
+	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
+	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s",
+
+	Dcr.L[Dcr.LOC.ALT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK],	Dcr.L[Dcr.LOC.HANDLEHELP],
+
+	Dcr.L[Dcr.LOC.HLP_RIGHTCLICK],	Dcr.L[Dcr.LOC.STR_OPTIONS],
+	Dcr.L[Dcr.LOC.ALT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK],	Dcr.L[BINDING_NAME_DCRSHOWOPTION],
+
+	Dcr.L[Dcr.LOC.CTRL],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK],	Dcr.L[BINDING_NAME_DCRPRSHOW], 
+	Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK],	Dcr.L[BINDING_NAME_DCRSKSHOW],
+
+	Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK],	Dcr.L[BINDING_NAME_DCRSHOW]
+	));
+    end;
+end
+
+
+function MicroUnitF:OnLoad() -- {{{
+    this:SetScript("PreClick", MicroUnitF.OnPreClick);
+    this:SetScript("PostClick", MicroUnitF.OnPostClick);
+end
+-- }}}
+
+function MicroUnitF:OnPreClick(Button) -- {{{
+	-- Dcr:Debug("Micro unit Preclicked: ", Button);
+	Dcr.Status.ClickedMF = this.Object; -- used to update the MUF on cast success
+
+	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
+
+	    Dcr:Println(L[Dcr.LOC.HLP_NOTHINGTOCURE]);
+
+	elseif (this.Object.UnitStatus == AFFLICTED) then
+	    local NeededPrio = Dcr:GiveSpellPrioNum(this.Object.Debuffs[1].Type);
+	    local RequestedPrio = false;
+
+	    if (Button == "LeftButton") then
+		if (IsControlKeyDown()) then
+		    RequestedPrio = 3;
+		else
+		    RequestedPrio = 1;
+		end
+	    elseif (Button == "RightButton") then
+		RequestedPrio = 2;
+	    end
+
+	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
+		Dcr:errln(L[Dcr.LOC.HLP_WRONGMBUTTON]);
+		Dcr:Println(L[Dcr.LOC.HLP_USEXBUTTONTOCURE], Dcr:ColorText(AvailableButtonsReadable[NeededPrio], Dcr:NumToHexColor(MF_colors[NeededPrio])));
+	    end
+	end
+end -- }}}
+
 -- }}}
 
 -- }}}
+
+
 
 -- MicroUnitF NON STATIC METHODS {{{
 -- init a new micro frame (Call internally by :new() only)
@@ -390,55 +558,59 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.Parent		= Container;
 	self.ID			= ID;
 	self.FrameNum		= FrameNum;
-	self.Debuff		= false;
-	self.CurrUnit		= false;
+	self.Debuffs		= false;
+	self.Debuff1Prio	= false;
+	self.PrevDebuff1Prio	= false;
+	self.IsDebuffed		= false;
+	self.CurrUnit		= "";
 	self.UnitName		= false;
 	self.UnitClass		= false;
 	self.UnitStatus		= 0;
 	self.FirstDebuffType	= 0;
 	self.NormalAlpha	= false;
 	self.BorderAlpha	= false;
-	self.Color		= false;
+	self.Color		= {};
 	self.IsCharmed		= false;
+	self.UpdateCountDown	= 3;
 	self.LastAttribUpdate	= 0;
 
 	-- create the frame
-	self.Frame  = CreateFrame ("Button", "MicroUnit"..ID, self.Parent, "DcrMicroUnitTemplateSecure");
+	self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..ID, self.Parent, "DcrMicroUnitTemplateSecure");
 
 	-- outer texture (the class border)
 	-- Bottom side
-	self.OuterTexture1 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture1 = self.Frame:CreateTexture(nil, "BORDER");
 	self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
 	self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
 
 	-- left side
-	self.OuterTexture2 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture2 = self.Frame:CreateTexture(nil, "BORDER");
 	self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
 	self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
 
 	-- top side
-	self.OuterTexture3 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture3 = self.Frame:CreateTexture(nil, "BORDER");
 	self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
 	self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 
 	-- right side
-	self.OuterTexture4 = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.OuterTexture4 = self.Frame:CreateTexture(nil, "BORDER");
 	self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 	self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
 
 
 	-- global texture
-	self.Texture = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.Texture = self.Frame:CreateTexture(nil, "ARTWORK");
 	self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.Texture:SetHeight(16);
 	self.Texture:SetWidth(16);
 
 	-- inner Texture (Charmed special texture)
-	self.InnerTexture = self.Frame:CreateTexture(nil, "MEDIUM");
+	self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY");
 	self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.InnerTexture:SetHeight(7);
 	self.InnerTexture:SetWidth(7);
-	self.InnerTexture:SetDrawLayer("OVERLAY");
+	--self.InnerTexture:SetDrawLayer("OVERLAY");
 	self.InnerTexture:SetTexture(unpack(MF_colors["InnerCharmed"]));
 
 	-- a reference to this object
@@ -449,43 +621,52 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.Frame:SetFrameStrata("MEDIUM");
 
 	-- set the frame attributes
-	Dcr.MFContainer.UpdateYourself = true;
 	self:UpdateAttributes(Unit);
+
+	-- once the MF frame is set up, schedule an event to show and place it
+	MicroUnitF:Delayed_MFsDisplay_Update();
 end -- }}}
+
+
+function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs)
+
+    -- get the unit this MUF should show
+    local MF = self;
+    local Unit = Dcr.Status.Unit_Array[MF.ID];
+    local ActionsDone = 0;
+
+    if not Unit then 
+	Dcr:Debug("No Unit for MUF #", MF.ID);
+	return 0
+    end
+
+    -- Update the frame attribute if necessary
+    if (Dcr.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
+	Dcr:Debug("Attributes update required");
+	if (MF:UpdateAttributes(Unit, true)) then
+	    ActionsDone = ActionsDone + 1; -- count expensive things done
+	    SkipSetColor = false; SkipDebuffs = false; -- if some attributes were updated then update the rest
+	end
+    end
+
+    if (not SkipSetColor) then
+	if (not SkipDebuffs) then
+	    -- get the manageable debuffs of this unit
+	    MF:SetDebuffs();
+	    --Dcr:Debug("Debuff set for ", MF.ID);
+	end
+
+	if (MF:SetColor()) then
+	    ActionsDone = ActionsDone + 1; -- count expensive things done
+	end
+    end
+
+    return ActionsDone;
+end
 
 -- UPDATE attributes (Spells and Unit) {{{
 
 
--- Those are lookups table we are going to use to set the frame attributes
-
-local AvailableButtons = {
-    "%s1", -- left mouse button
-    "%s2", -- right mouse button
-    "ctrl-%s1",
-    "ctrl-%s2",
-    "shift-%s1",
-    "shift-%s2",
-    "alt-%s1",
-    "alt-%s2",
-    -- 3, -- middle mouse button || RESERVED FOR TARGETTING
-};
-
-local AvailableButtonsReadable = {
-    L[Dcr.LOC.HLP_LEFTCLICK], -- left mouse button
-    L[Dcr.LOC.HLP_RIGHTCLICK], -- right mouse button
-    L[Dcr.LOC.CTRL] .. "-" .. L[Dcr.LOC.HLP_LEFTCLICK],
-    L[Dcr.LOC.CTRL] .. "-" .. L[Dcr.LOC.HLP_RIGHTCLICK],
-    L[Dcr.LOC.SHIFT] .. "-" .. L[Dcr.LOC.HLP_LEFTCLICK],
-    L[Dcr.LOC.SHIFT] .. "-" .. L[Dcr.LOC.HLP_RIGHTCLICK],
-    L[Dcr.LOC.ALT] .. "-" .. L[Dcr.LOC.HLP_LEFTCLICK],
-    L[Dcr.LOC.ALT] .. "-" .. L[Dcr.LOC.HLP_RIGHTCLICK],
-    -- 3, -- middle mouse button || RESERVED FOR TARGETTING
-};
-
--- modifier for the macro
-local AvailableModifier = {
-    "shift","ctrl","alt",
-}
 
 do
     -- used to tell if we changed something to improve performances.
@@ -514,6 +695,8 @@ do
 	    self.Frame:SetAttribute("unit", Unit);
 
 	    self.CurrUnit = Unit;
+
+	    self:SetClassBorder();
 
 	    -- set the return value because we did something expensive
 	    ReturnValue = self;
@@ -574,6 +757,8 @@ do
 	    self.TooltipUpdate = Dcr.Status.SpellsChanged;
 	end
 
+	self.Debuff1Prio = false;
+
 	-- the update timestamp
 	self.LastAttribUpdate = Dcr.Status.SpellsChanged;
 	return self;
@@ -582,26 +767,36 @@ end -- }}}
 
 function MicroUnitF.prototype:SetDebuffs() -- {{{
     self.Debuffs, self.IsCharmed = Dcr:UnitCurableDebuffs(self.CurrUnit);
+
+
+    if (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
+	self.IsDebuffed = true;
+	self.Debuff1Prio = Dcr:GiveSpellPrioNum( self.Debuffs[1].Type );
+
+    else
+	self.IsDebuffed = false;
+	self.Debuff1Prio = false;
+	self.PrevDebuff1Prio = false;
+	Dcr.UnitDebuffed[self.CurrUnit] = false; -- used by the live-list only
+    end
 end -- }}}
 
 do
     --[=[
     --	    This function is responsible for setting all the textures of a MUF object:
     --		- The main color
-    --		- The color of the border
     --		- Showing/Hiding the charmed alert square
     --		- The Alpha of the center and borders
     --	    This function also set the Status of the MUF that will be used in the tooltip
     --]=]
-    local color = {};
-    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ReturnValue;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ReturnValue, RangeStatus, Alpha;
+    local profile = {};
     function MicroUnitF.prototype:SetColor() -- {{{
 
-	-- get the manageable debuffs of this unit
-	self:SetDebuffs();
+	profile = Dcr.profile;
 
 	-- register default alpha of the border
-	BorderAlpha =  Dcr.db.profile.DebuffsFrameElemBorderAlpha;
+	BorderAlpha =  profile.DebuffsFrameElemBorderAlpha;
 
 	-- register local variables
 	DebuffType = false;
@@ -609,65 +804,168 @@ do
 	Unit = self.CurrUnit;
 	PreviousStatus = self.UnitStatus;
 
+	
+
+
 	-- if unit not available, if a unit cease to exist (this happen often for pets)
-	if (not UnitExists(Unit)) then
-	    Dcr:tcopy(color, MF_colors[ABSENT]);
-	    self.UnitStatus = ABSENT;
+	if not UnitExists(Unit) then
+	    if PreviousStatus ~= ABSENT then
+		self.Color = MF_colors[ABSENT];
+		self.UnitStatus = ABSENT;
+	    end
 
 	    -- UnitIsVisible() behavior is not 100% reliable so we also use UnitLevel() that will return -1 when the Unit is too far...
-	elseif (not UnitIsVisible(Unit) or UnitLevel(Unit) == -1) then
-	    Dcr:tcopy(color, MF_colors[FAR]);
-	    self.UnitStatus = FAR;
+	elseif not UnitIsVisible(Unit) or UnitLevel(Unit) < 1 then
+	    if PreviousStatus ~= FAR then
+		self.Color = MF_colors[FAR];
+		self.UnitStatus = FAR;
+	    end
 
 	    -- If the Unit is invisible
-	elseif (Dcr:CheckUnitStealth(Unit)) then
-	    Dcr:tcopy(color, MF_colors[STEALTHED]);
-	    self.UnitStatus = STEALTHED;
-
-	    -- if unit is blacklisted
-	elseif (Dcr.Status.Blacklisted_Array[Unit]) then
-	    Dcr:tcopy(color, MF_colors[BLACKLISTED]);
-	    self.UnitStatus = BLACKLISTED;
-
-	    -- if the unit has some debuffs we can handle
-	elseif (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
-	    DebuffType = self.Debuffs[1].Type;
-
-	    -- Get the priority of the affliction type (the one written in green in the option menu...)
-	    local priority = Dcr:GiveSpellPrioNum(DebuffType);
-
-	    -- Get a local copy of the wanted color (we will change its alpha)
-	    Dcr:tcopy(color, MF_colors[priority]);
-
-	    -- Test if the spell we are going to use is in range
-	    local RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[DebuffType], Unit);
-
-	    -- set the status according to RangeStatus
-	    if (not RangeStatus or RangeStatus == 0) then
-		color[4] = 0.40;
-		self.UnitStatus = AFFLICTED_NIR;
-	    else
-		self.UnitStatus = AFFLICTED;
-		BorderAlpha = 1;
-	    end
 	else
-	    -- the unit has nothing special, set the status to normal
-	    Dcr:tcopy(color, MF_colors[NORMAL]);
-	    self.UnitStatus = NORMAL;
+	    if Dcr.profile.Ingore_Stealthed and Dcr.Stealthed_Units[Unit] then
+		if PreviousStatus ~= STEALTHED then
+		    self.Color = MF_colors[STEALTHED];
+		    self.UnitStatus = STEALTHED;
+		end
+
+		-- if unit is blacklisted
+	    elseif Dcr.Status.Blacklisted_Array[Unit] then
+		if PreviousStatus ~= BLACKLISTED then
+		    self.Color = MF_colors[BLACKLISTED];
+		    self.UnitStatus = BLACKLISTED;
+		end
+
+		-- if the unit has some debuffs we can handle
+	    elseif (self.IsDebuffed) then
+		DebuffType = self.Debuffs[1].Type;
+
+		if self.PrevDebuff1Prio ~= self.Debuff1Prio then
+		    self.Color = MF_colors[self.Debuff1Prio];
+		    self.PrevDebuff1Prio = self.Debuff1Prio;
+		end
+
+		-- Test if the spell we are going to use is in range
+		RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[DebuffType], Unit);
+
+		-- set the status according to RangeStatus
+		if (not RangeStatus or RangeStatus == 0) then
+		    Alpha = 0.40;
+		    self.UnitStatus = AFFLICTED_NIR;
+
+		    if profile.LV_OnlyInRange then
+			Dcr.UnitDebuffed[self.CurrUnit] = false;
+		    end
+		else
+		    Alpha = 1;
+		    self.UnitStatus = AFFLICTED;
+		    BorderAlpha = 1;
+
+		    Dcr.DebuffedUnitsNum = Dcr.DebuffedUnitsNum + 1;
+		    if (not Dcr.Status.SoundPlayed) then
+			Dcr:PlaySound (self.CurrUnit);
+		    end
+		    if profile.LV_OnlyInRange then
+			Dcr.UnitDebuffed[self.CurrUnit] = true;
+		    end
+
+		end
+	    elseif PreviousStatus ~= NORMAL then
+		-- the unit has nothing special, set the status to normal
+		self.Color = MF_colors[NORMAL];
+		self.UnitStatus = NORMAL;
+	    end
 	end
 
-	if (not Dcr.db.profile.DebuffsFrameElemBorderShow) then
-		BorderAlpha = 0;
+	if PreviousStatus == AFFLICTED or PreviousStatus == AFFLICTED_AND_CHARMED  then
+	    Dcr.DebuffedUnitsNum = Dcr.DebuffedUnitsNum - 1;
+
+	    if (Dcr.DebuffedUnitsNum == 0) then
+		Dcr.Status.SoundPlayed = false;
+	    end
 	end
+
+	if (not profile.DebuffsFrameElemBorderShow) then
+	    BorderAlpha = 0;
+	end
+
 
 	-- set the class border color when needed (the class is unknown and the unit exists or the unit name changed)
-	if (BorderAlpha ~= 0 and ((not self.UnitClass and self.UnitStatus ~= ABSENT) or Dcr.Status.Unit_Array_UnitToName[Unit] ~= self.UnitName)) then
+	--self:SetClassBorder();
+	
+	-- set the alpha of the border if necessary
+	if (self.BorderAlpha ~= BorderAlpha) then
+	    self.OuterTexture1:SetAlpha(BorderAlpha);
+	    self.OuterTexture2:SetAlpha(BorderAlpha);
+	    self.OuterTexture3:SetAlpha(BorderAlpha);
+	    self.OuterTexture4:SetAlpha(BorderAlpha);
+
+	    self.BorderAlpha = BorderAlpha;
+
+	    -- set this to true because we just did something expensive...
+	    ReturnValue = true;
+	    Dcr:Debug("border alpha set");
+	end
+
+
+	-- Add the charm status to the bitfield (note that it's treated separatly because it's shown even if the unit is not afflicetd by anything we can cure)
+	if (self.IsCharmed) then
+	    self.UnitStatus = bit.bor( self.UnitStatus, CHARMED);
+	end
+
+	-- if the unit is not afflicted or too far set the color to a lower alpha
+	if (not DebuffType) then -- if DebuffType was not set, it means that the unit is too far
+	    Alpha = self.Color[4] * profile.DebuffsFrameElemAlpha;
+	    self.PrevDebuff1Prio = false;
+	end
+
+
+	-- Apply the colors and alphas only if necessary
+	--	The MUF status changed
+	--	The user changed the defaultAlpha
+	--	The first affliction changed
+	if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= profile.DebuffsFrameElemAlpha or self.FirstDebuffType ~= DebuffType) then
+
+	    -- Set the main texture
+	    self.Texture:SetTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
+	    --self.Texture:SetAlpha(Alpha);
+
+	    -- Show the charmed alert square
+	    if (self.IsCharmed) then
+		self.InnerTexture:Show();
+	    else
+		self.InnerTexture:Hide();
+	    end
+
+	    Dcr:Debug("Color Applied, MUF Status:", self.UnitStatus);
+
+
+	    -- save the current global status
+	    self.NormalAlpha = profile.DebuffsFrameElemAlpha;
+	    self.FirstDebuffType = DebuffType;
+
+	    -- set this to true because we just did something expensive...
+	    ReturnValue = true;
+	end
+
+	return ReturnValue;
+
+    end -- }}}
+
+    function MicroUnitF.prototype:SetClassBorder()
+	ReturnValue = false;
+
+	if (Dcr.profile.DebuffsFrameElemBorderShow and (Dcr.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName or (not self.UnitClass and UnitExists(self.CurrUnit)))) then
 
 	    -- Get the name of this unit
-	    self.UnitName = Dcr.Status.Unit_Array_UnitToName[Unit];
+	    self.UnitName = Dcr.Status.Unit_Array_UnitToName[self.CurrUnit];
 
-	    -- Get its class
-	    Class = select(2, UnitClass(Unit));
+	    if self.UnitName then -- can be nil because of focus...
+		-- Get its class
+		Class = select(2, UnitClass(self.CurrUnit));
+	    else
+		Class = false;
+	    end
 
 	    -- if the class changed
 	    if (Class and Class ~= self.UnitClass) then
@@ -683,170 +981,104 @@ do
 		-- set this to true because we just did something expensive...
 		ReturnValue = true;
 
-		Dcr:Debug("Class '%s' set for '%s'", Class, Unit);
-	    elseif not Class then
+		Dcr:Debug("Class '%s' set for '%s'", Class, self.CurrUnit);
+	    elseif not Class and self.UnitClass then
 		-- if the class is not available, set it to false so this test will be done again and again until a class is found
 		self.UnitClass = false;
-		--Dcr:Debug("Class of unit %s is Nil", Unit);
+		BorderAlpha = 0;
+		self.OuterTexture1:SetAlpha(BorderAlpha);
+		self.OuterTexture2:SetAlpha(BorderAlpha);
+		self.OuterTexture3:SetAlpha(BorderAlpha);
+		self.OuterTexture4:SetAlpha(BorderAlpha);
+
+		self.BorderAlpha = BorderAlpha;
+
+		ReturnValue = true;
+		--Dcr:Debug("Class of unit %s is Nil", self.CurrUnit);
 	    end
 	end
-
-	-- set the alpha of the border if necessary
-	if (self.BorderAlpha ~= BorderAlpha) then
-	    self.OuterTexture1:SetAlpha(BorderAlpha);
-	    self.OuterTexture2:SetAlpha(BorderAlpha);
-	    self.OuterTexture3:SetAlpha(BorderAlpha);
-	    self.OuterTexture4:SetAlpha(BorderAlpha);
-
-	    self.BorderAlpha = BorderAlpha;
-
-	    -- set this to true because we just did something expensive...
-	    ReturnValue = true;
-	end
-
-
-	-- Add the charm status to the bitfield (note that it's treated separatly because it's shown even if the unit is not afflicetd by anything we can cure)
-	if (self.IsCharmed) then
-	    self.UnitStatus = bit.bor( self.UnitStatus, CHARMED);
-	end
-
-	-- if the unit is not afflicted set the color to a lower alpha
-	if (not DebuffType) then
-	    color[4] = color[4] * Dcr.db.profile.DebuffsFrameElemAlpha;
-	end
-
-
-	-- Apply the colors and alphas only if necessary
-	--	The MUF status changed
-	--	The user changed the defaultAlpha
-	--	The first affliction changed
-	if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= Dcr.db.profile.DebuffsFrameElemAlpha or self.FirstDebuffType ~= DebuffType) then
-
-	    -- Set the main texture, including the alpha
-	    self.Texture:SetTexture(unpack(color));
-
-	    -- Show the charmed alert square
-	    if (self.IsCharmed) then
-		self.InnerTexture:Show();
-	    else
-		self.InnerTexture:Hide();
-	    end
-
-	    Dcr:Debug("Color Applied, MUF Status:", self.UnitStatus);
-
-
-	    -- save the current global status
-	    self.NormalAlpha = Dcr.db.profile.DebuffsFrameElemAlpha;
-	    self.FirstDebuffType = DebuffType;
-
-	    -- set this to true because we just did something expensive...
-	    ReturnValue = true;
-	end
-
 	return ReturnValue;
 
-    end -- }}}
+    end
+
 end 
 -- }}}
 
+do
+    local MicroFrameUpdateIndex = 1; -- MUFs are not updated all together
+    local NumToShow, ActionsDone, Unit, MF, pass;
+    -- updates the micro frames if needed (called regularly by ACE event, changed in the option menu)
+    function Dcr:DebuffsFrame_Update() -- {{{
 
-local MicroFrameUpdateIndex = 1; -- MUFs are not updated all together
--- updates the micro frames if needed (called regularly by ACE event, changed in the option menu)
-function Dcr:DebuffsFrame_Update() -- {{{
-
-    -- Update the unit array (GetUnitArray() will do something only if necessary)
-    Dcr:GetUnitArray();
-
-    -- Add "focus" to the unit array if it's not already done
-    if (Dcr.Status.Unit_Array[#Dcr.Status.Unit_Array] ~= "focus" and UnitIsFriend("focus", "player")) then
-	table.insert(Dcr.Status.Unit_Array, "focus");
-	Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
-
-	--	table.insert(Dcr.Status.Unit_Array, 1, "target"); -- XXX re-add this later
-    end
-
-
-    -- get the maximum number of MUFs we want to show
-    Dcr.MFContainer.MaxUnit = Dcr.db.profile.DebuffsFrameMaxCount;
-
-    local NumToShow = MicroUnitF:MFUsableNumber();
-
-    -- we cannot show or hide a MUF while in combat
-    if (not Dcr.Status.Combat and
-
-	-- is physical display update necessary?
-	--   if there are more unit shown than available units
-	--   if There are less unit shown than available and authorized units
-
-	(Dcr.MFContainer.UnitShown > #Dcr.Status.Unit_Array or
-	Dcr.MFContainer.UnitShown < NumToShow
-	)) then
-
-	Dcr.MFContainer.UpdateYourself = true;
-    end
-
-    -- update the display if Dcr.MFContainer.UpdateYourself == true
-    MicroUnitF:UpdateMIcroFrameDisplay();
-
-    local PerUpdate = Dcr.db.profile.DebuffsFramePerUPdate; -- how many MUF we check per update call ?
-    local ActionsDone = 0; -- used to limit the maximum number of consecutive UI actions
-
-    -- we don't check all the MUF at each call, only some of them (changed in the options)
-    for pass = 1, PerUpdate do
-
-	-- When all frames have been updated, go back to the first
-	if (MicroFrameUpdateIndex > Dcr.MFContainer.MaxUnit or MicroFrameUpdateIndex > #Dcr.Status.Unit_Array) then
-	    MicroFrameUpdateIndex = 1;
-	    -- Dcr:Debug("last micro frame updated,,:: %d", #Dcr.Status.Unit_Array);
+	-- Update the unit array (GetUnitArray() will do something only if necessary)
+	if (Dcr.Groups_datas_are_invalid) then
+	    Dcr:GetUnitArray();
 	end
 
-	-- get a unit
-	local Unit = Dcr.Status.Unit_Array[MicroFrameUpdateIndex];
-	-- get it's MUF
-	local MF = MicroUnitF:Exists(MicroFrameUpdateIndex);
+	NumToShow = ((MicroUnitF.MaxUnit > Dcr.Status.UnitNum) and Dcr.Status.UnitNum or MicroUnitF.MaxUnit);
+	--NumToShow = MicroUnitF:MFUsableNumber();
 
-	-- should never fire unless the player choosed to ignore everything or something is wrong somewhere in the code
-	if not Unit then
-	    Dcr:Debug("Unit is nil :/");
-	    return false;
-	end
+	ActionsDone = 0; -- used to limit the maximum number of consecutive UI actions
 
-	-- if no MUF then create it
-	if (not MF) then
-	    if (not Dcr.Status.Combat) then
-		MF = MicroUnitF:Create(MicroFrameUpdateIndex, Unit);
-		ActionsDone = ActionsDone + 1;
+	--if 1 then return false; end -- XXX
+
+	-- we don't check all the MUF at each call, only some of them (changed in the options)
+	for pass = 1, Dcr.profile.DebuffsFramePerUPdate do
+
+	    -- When all frames have been updated, go back to the first
+	    if (MicroFrameUpdateIndex > NumToShow) then
+		MicroFrameUpdateIndex = 1;
+		-- Dcr:Debug("last micro frame updated,,:: %d", #Dcr.Status.Unit_Array);
 	    end
-	-- If there is a MUF update its attributes if necessary
-	elseif (Dcr.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
-	    if (MF:UpdateAttributes(Unit, true)) then
-		ActionsDone = ActionsDone + 1; -- count expensive things done
+
+	    -- get a unit
+	    Unit = Dcr.Status.Unit_Array[MicroFrameUpdateIndex];
+
+	    -- should never fire unless the player choosed to ignore everything or something is wrong somewhere in the code
+	    if not Unit then
+		--Dcr:Debug("Unit is nil :/");
+		return false;
 	    end
-	end
 
+	    -- get it's MUF
+	    MF = MicroUnitF.ExistingPerID[MicroFrameUpdateIndex];
+	    --MF = MicroUnitF:Exists(MicroFrameUpdateIndex);
 
-	-- if we got a MUF, set it to the right color
-	if (MF) then
-	    if (MF:SetColor()) then
-		ActionsDone = ActionsDone + 1; -- count expensive things done
+	    -- if no MUF then create it (All MUFs are created here)
+	    if (not MF) then
+		if (not Dcr.Status.Combat) then
+		    MF = MicroUnitF:Create(MicroFrameUpdateIndex, Unit);
+		    ActionsDone = ActionsDone + 1;
+		end
 	    end
-	end
 
-	-- we are done for this frame, go to te next
-	MicroFrameUpdateIndex = MicroFrameUpdateIndex + 1;
+	    -- update the MUF attributes and its colors XXX
+	    --ActionsDone = ActionsDone + MF:Update(not MF.IsDebuffed and true or false, true);
+	    if MF then
+		if not MF.IsDebuffed and MF.UpdateCountDown ~= 0 then
+		    MF.UpdateCountDown = MF.UpdateCountDown - 1;
+		else -- if MF.IsDebuffed or MF.UpdateCountDown == 0
+		    ActionsDone = ActionsDone + MF:Update(false, true);--not MF.IsDebuffed and true or false, true);
+		    MF.UpdateCountDown = 3;
+		end
+	    end
 
-	if (ActionsDone > 5) then
-	    Dcr:Debug("Max actions count reached");
-	    break;
-	end
+	    -- we are done for this frame, go to te next
+	    MicroFrameUpdateIndex = MicroFrameUpdateIndex + 1;
 
-	-- don't loop when reaching the end, wait for the next call
-	if (pass == NumToShow) then
-	    break;
+	    if (ActionsDone > 5 or pass == NumToShow) then
+		--Dcr:Debug("Max actions count reached");
+		break;
+	    end
+
+	    -- don't loop when reaching the end, wait for the next call (useful when less MUFs than PerUpdate)
+	    --if (pass == NumToShow) then
+	--	break;
+	   -- end
 	end
-    end
-    --    end
-end -- }}}
+	--    end
+    end -- }}}
+end
 
 -- This little function returns the priority of the spell corresponding to an affliction type (one spell can be used for several types)
 function Dcr:GiveSpellPrioNum (Type) -- {{{
@@ -859,42 +1091,11 @@ end -- }}}
 
 
 
+
 -- old unused variables and functions
 -- UNUSED STUFF {{{
 -- Micro Frame Events, useless for now
-function MicroUnitF:OnLoad()
-    this:SetScript("PreClick", MicroUnitF.OnPreClick);
-    this:SetScript("PostClick", MicroUnitF.OnPostClick);
-end
 
-function MicroUnitF:OnPreClick(Button)
-	-- Dcr:Debug("Micro unit Preclicked: ", Button);
-	Dcr.Status.ClickedMF = this.Object;
-
-	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
-
-	    Dcr:Println(L[Dcr.LOC.HLP_NOTHINGTOCURE]);
-
-	elseif (this.Object.UnitStatus == AFFLICTED) then
-	    local NeededPrio = Dcr:GiveSpellPrioNum(this.Object.Debuffs[1].Type);
-	    local RequestedPrio = false;
-
-	    if (Button == "LeftButton") then
-		if (IsControlKeyDown()) then
-		    RequestedPrio = 3;
-		else
-		    RequestedPrio = 1;
-		end
-	    elseif (Button == "RightButton") then
-		RequestedPrio = 2;
-	    end
-
-	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
-		Dcr:errln(L[Dcr.LOC.HLP_WRONGMBUTTON]);
-		Dcr:Println(L[Dcr.LOC.HLP_USEXBUTTONTOCURE], Dcr:ColorText(AvailableButtonsReadable[NeededPrio], Dcr:NumToHexColor(MF_colors[NeededPrio])));
-	    end
-	end
-end
 function MicroUnitF:OnPostClick()
 --	Dcr:Debug("Micro unit PostClicked");
 end

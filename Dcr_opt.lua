@@ -46,7 +46,7 @@ Dcr.defaults = { -- {{{
 
     DebuffsFrameElemScale = 1,
 
-    DebuffsFrameElemAlpha = .4,
+    DebuffsFrameElemAlpha = .35,
 
     DebuffsFrameElemBorderShow = true,
 
@@ -62,7 +62,7 @@ Dcr.defaults = { -- {{{
 
     DebuffsFrameYSpacing = 3,
 
-    DebuffsFrameRefreshRate = 0.06,
+    DebuffsFrameRefreshRate = 0.10,
 
     DebuffsFramePerUPdate = 10,
 
@@ -292,51 +292,59 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name = L[Dcr.LOC.HIDE_LIVELIST],
 		    desc = L[Dcr.LOC.OPT_HIDELIVELIST_DESC],
-		    get = function() return  Dcr.db.profile.Hide_LiveList end,
-		    set = function() Dcr:ShowHideLiveList() end,
-		    disabled = function() return Dcr.db.profile.LiveListTied end,
+		    get = function() return  Dcr.profile.Hide_LiveList end,
+		    set = function()
+			Dcr:ShowHideLiveList()
+			if Dcr.profile.Hide_LiveList and not Dcr.profile.ShowDebuffsFrame then
+			    Dcr:SetIcon(DcrC.IconOFF);
+			else
+			    Dcr:SetIcon(DcrC.IconON);
+			end
+		    end,
+		    disabled = function() return Dcr.profile.LiveListTied end,
 		    order = 100
 		},
 		OnlyInRange = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.OPT_LVONLYINRANGE],
 		    desc = L[Dcr.LOC.OPT_LVONLYINRANGE_DESC],
-		    get = function() return Dcr.db.profile.LV_OnlyInRange end,
-		    set = function() Dcr.db.profile.LV_OnlyInRange = not Dcr.db.profile.LV_OnlyInRange end,
-		    disabled = function() return Dcr.db.profile.Hide_LiveList end,
+		    get = function() return Dcr.profile.LV_OnlyInRange end,
+		    set = function() Dcr.profile.LV_OnlyInRange = not Dcr.profile.LV_OnlyInRange end,
+		    disabled = function() return Dcr.profile.Hide_LiveList end,
 		    order = 100.5
 		},
 		ToolTips = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.SHOW_TOOLTIP],
 		    desc = L[Dcr.LOC.OPT_SHOWTOOLTIP_DESC],
-		    get = function() return Dcr.db.profile.AfflictionTooltips end,
+		    get = function() return Dcr.profile.AfflictionTooltips end,
 		    set = function()
-			Dcr.db.profile.AfflictionTooltips = not Dcr.db.profile.AfflictionTooltips
+			Dcr.profile.AfflictionTooltips = not Dcr.profile.AfflictionTooltips
 		    end,
-		    disabled = function() return  Dcr.db.profile.Hide_LiveList and not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return  Dcr.profile.Hide_LiveList and not Dcr.profile.ShowDebuffsFrame end,
 		    order = 102
 		},
 		Sound = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.PLAY_SOUND],
 		    desc = L[Dcr.LOC.OPT_PLAYSOUND_DESC],
-		    get = function() return Dcr.db.profile.PlaySound end,
+		    get = function() return Dcr.profile.PlaySound end,
 		    set = function()
-			Dcr.db.profile.PlaySound = not Dcr.db.profile.PlaySound
+			Dcr.profile.PlaySound = not Dcr.profile.PlaySound
 		    end,
-		    disabled = function() return  Dcr.db.profile.Hide_LiveList end,
+		    disabled = function() return  Dcr.profile.Hide_LiveList and not  Dcr.profile.ShowDebuffsFrame end,
 		    order = 103
 		},
 		livenum = {
 		    type = 'range',
 		    name = L[Dcr.LOC.AMOUNT_AFFLIC],
 		    desc = L[Dcr.LOC.OPT_AMOUNT_AFFLIC_DESC],
-		    get = function() return Dcr.db.profile.Amount_Of_Afflicted end,
+		    get = function() return Dcr.profile.Amount_Of_Afflicted end,
 		    set = function(v) 
-			Dcr.db.profile.Amount_Of_Afflicted = v
+			Dcr.profile.Amount_Of_Afflicted = v;
+			Dcr.LiveList:RestAllPosition();
 		    end,
-		    disabled = function() return  Dcr.db.profile.Hide_LiveList end,
+		    disabled = function() return  Dcr.profile.Hide_LiveList end,
 		    min = 1,
 		    max = Dcr.CONF.MAX_LIVE_SLOTS,
 		    step = 1,
@@ -347,9 +355,9 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.BLACK_LENGTH],
 		    desc = L[Dcr.LOC.OPT_BLACKLENTGH_DESC],
-		    get = function() return Dcr.db.profile.CureBlacklist end,
+		    get = function() return Dcr.profile.CureBlacklist end,
 		    set = function(v) 
-			Dcr.db.profile.CureBlacklist = v
+			Dcr.profile.CureBlacklist = v
 		    end,
 		    min = 1,
 		    max = 20,
@@ -361,16 +369,16 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.SCAN_LENGTH],
 		    desc = L[Dcr.LOC.OPT_SCANLENGTH_DESC],
-		    get = function() return Dcr.db.profile.ScanTime end,
+		    get = function() return Dcr.profile.ScanTime end,
 		    set = function(v)
-			if (Dcr.Status.ScanShedule and v ~= Dcr.db.profile.ScanTime) then
-			    Dcr.db.profile.ScanTime = v;
+			if (Dcr.Status.ScanShedule and v ~= Dcr.profile.ScanTime) then
+			    Dcr.profile.ScanTime = v;
 			    Dcr:CancelScheduledEvent(Dcr.Status.ScanShedule);
-			    Dcr.Status.ScanShedule = Dcr:ScheduleRepeatingEvent(Dcr.RaidScanner_SC, Dcr.db.profile.ScanTime);
-			    Dcr:Debug("LV scan delay changed:", Dcr.db.profile.ScanTime, v);
+			    Dcr.Status.ScanShedule = Dcr:ScheduleRepeatingEvent("LLupdate", Dcr.LiveList.Update_Display, Dcr.profile.ScanTime, Dcr.LiveList);
+			    Dcr:Debug("LV scan delay changed:", Dcr.profile.ScanTime, v);
 			end
 		    end,
-		    disabled = function() return  Dcr.db.profile.Hide_LiveList end,
+		    disabled = function() return  Dcr.profile.Hide_LiveList end,
 		    min = 0.1,
 		    max = 1,
 		    step = 0.1,
@@ -381,61 +389,81 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name = L[Dcr.LOC.REVERSE_LIVELIST],
 		    desc = L[Dcr.LOC.OPT_REVERSE_LIVELIST_DESC],
-		    get = function() return Dcr.db.profile.ReverseLiveDisplay end,
+		    get = function() return Dcr.profile.ReverseLiveDisplay end,
 		    set = function()
-			Dcr.db.profile.ReverseLiveDisplay = not Dcr.db.profile.ReverseLiveDisplay
+			Dcr.profile.ReverseLiveDisplay = not Dcr.profile.ReverseLiveDisplay
+			Dcr.LiveList:RestAllPosition();
 		    end,
-		    disabled = function() return  Dcr.db.profile.Hide_LiveList end,
+		    disabled = function() return  Dcr.profile.Hide_LiveList end,
 		    order = 107
 		},
 		TieLLVisibility = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.TIE_LIVELIST],
 		    desc = L[Dcr.LOC.OPT_TIE_LIVELIST_DESC],
-		    get = function() return Dcr.db.profile.LiveListTied end,
+		    get = function() return Dcr.profile.LiveListTied end,
 		    set = function()
-			Dcr.db.profile.LiveListTied = not Dcr.db.profile.LiveListTied
+			Dcr.profile.LiveListTied = not Dcr.profile.LiveListTied
 		    end,
-		    disabled = function() return  Dcr.db.profile.Hide_LiveList end,
+		    disabled = function() return  Dcr.profile.Hide_LiveList end,
 		    order = 108
+		},
+		{
+		    type = "header",
+		    order = 999,
+		},
+		ShowTestItem = {
+		    type = "toggle",
+		    name = L[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF],
+		    desc = L[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC],
+		    get = function() return  Dcr.LiveList.TestItemDisplayed end,
+		    set = function()
+			if not Dcr.LiveList.TestItemDisplayed then
+			    Dcr.LiveList:DisplayTestItem();
+			else
+			    Dcr.LiveList:HideTestItem();
+			end
+		    end,
+		    disabled = function() return Dcr.profile.Hide_LiveList and not Dcr.profile.ShowDebuffsFrame or not Dcr.Status.HasSpell end,
+		    order = 1000
 		},
 		FrameScaleLL = {
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_LLSCALE],
 		    desc = L[Dcr.LOC.OPT_LLSCALE_DESC],
-		    get = function() return Dcr.db.profile.LiveListScale end, -- Dcr.db.profile.DebuffsFrameElemScale end,
+		    get = function() return Dcr.profile.LiveListScale end, -- Dcr.profile.DebuffsFrameElemScale end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.LiveListScale) then
-			    Dcr.db.profile.LiveListScale = v;
+			if (v ~= Dcr.profile.LiveListScale) then
+			    Dcr.profile.LiveListScale = v;
 
-			    Dcr:SetLLScale(Dcr.db.profile.LiveListScale);
+			    Dcr:SetLLScale(Dcr.profile.LiveListScale);
 			end
 		    end,
-		    disabled = function() return Dcr.db.profile.Hide_LiveList or Dcr.db.profile.Hidden end,
+		    disabled = function() return Dcr.profile.Hide_LiveList or Dcr.profile.Hidden end,
 		    min = 0.3,
 		    max = 4,
 		    step = 0.01,
 		    isPercent = true,
-		    order = 109,
+		    order = 1009,
 		},
 		AlphaLL = {
 		     type = 'range',
 		    name = L[Dcr.LOC.OPT_LLALPHA],
 		    desc = L[Dcr.LOC.OPT_LLALPHA_DESC],
-		    get = function() return 1 - Dcr.db.profile.LiveListAlpha end,
+		    get = function() return 1 - Dcr.profile.LiveListAlpha end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.LiveListAlpha) then
-			    Dcr.db.profile.LiveListAlpha = 1 - v;
-			    DecursiveMainBar:SetAlpha(Dcr.db.profile.LiveListAlpha);
-			    DecursiveAfflictedListFrame:SetAlpha(Dcr.db.profile.LiveListAlpha);
+			if (v ~= Dcr.profile.LiveListAlpha) then
+			    Dcr.profile.LiveListAlpha = 1 - v;
+			    DecursiveMainBar:SetAlpha(Dcr.profile.LiveListAlpha);
+			    DcrLiveList:SetAlpha(Dcr.profile.LiveListAlpha);
 			end
 		    end,
-		    disabled = function() return Dcr.db.profile.Hide_LiveList or Dcr.db.profile.Hidden end,
+		    disabled = function() return Dcr.profile.Hide_LiveList or Dcr.profile.Hidden end,
 		    min = 0,
 		    max = 0.8,
 		    step = 0.01,
 		    isPercent = true,
-		    order = 110,
+		    order = 1010,
 		}
 	    },
 	}, -- // }}}
@@ -451,9 +479,9 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.PRINT_CHATFRAME],
 		    desc = L[Dcr.LOC.OPT_CHATFRAME_DESC],
-		    get = function() return Dcr.db.profile.Print_ChatFrame end,
+		    get = function() return Dcr.profile.Print_ChatFrame end,
 		    set = function()
-			Dcr.db.profile.Print_ChatFrame = not Dcr.db.profile.Print_ChatFrame;
+			Dcr.profile.Print_ChatFrame = not Dcr.profile.Print_ChatFrame;
 		    end,
 		    order = 120
 		},
@@ -461,9 +489,9 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.PRINT_CUSTOM],
 		    desc = L[Dcr.LOC.OPT_PRINT_CUSTOM_DESC],
-		    get = function() return Dcr.db.profile.Print_CustomFrame end,
+		    get = function() return Dcr.profile.Print_CustomFrame end,
 		    set = function()
-			Dcr.db.profile.Print_CustomFrame = not Dcr.db.profile.Print_CustomFrame;
+			Dcr.profile.Print_CustomFrame = not Dcr.profile.Print_CustomFrame;
 		    end,
 		    order = 121
 		},
@@ -471,9 +499,9 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.PRINT_ERRORS],
 		    desc =  L[Dcr.LOC.OPT_PRINT_ERRORS_DESC],
-		    get = function() return Dcr.db.profile.Print_Error end,
+		    get = function() return Dcr.profile.Print_Error end,
 		    set = function()
-			Dcr.db.profile.Print_Error = not Dcr.db.profile.Print_Error;
+			Dcr.profile.Print_Error = not Dcr.profile.Print_Error;
 		    end,
 		    order = 122
 		},
@@ -509,9 +537,14 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name = L[Dcr.LOC.OPT_SHOWMFS],
 		    desc = L[Dcr.LOC.OPT_SHOWMFS_DESC],
-		    get = function() return Dcr.db.profile.ShowDebuffsFrame end,
+		    get = function() return Dcr.profile.ShowDebuffsFrame end,
 		    set = function()
 			Dcr:ShowHideDebuffsFrame ();
+			if Dcr.profile.Hide_LiveList and not Dcr.profile.ShowDebuffsFrame then
+			    Dcr:SetIcon(DcrC.IconOFF);
+			else
+			    Dcr:SetIcon(DcrC.IconON);
+			end
 		    end,
 		    disabled = function() return Dcr.Status.Combat end,
 		    order = 1200,
@@ -520,27 +553,27 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name = L[Dcr.LOC.OPT_GROWDIRECTION],
 		    desc = L[Dcr.LOC.OPT_GROWDIRECTION_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFrameGrowToTop end,
+		    get = function() return Dcr.profile.DebuffsFrameGrowToTop end,
 		    set = function(v)
-			if (v ~= Dcr.db.profile.DebuffsFrameGrowToTop) then
-			    Dcr.db.profile.DebuffsFrameGrowToTop = v;
+			if (v ~= Dcr.profile.DebuffsFrameGrowToTop) then
+			    Dcr.profile.DebuffsFrameGrowToTop = v;
 			    Dcr.MicroUnitF:ResetAllPositions ();
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.profile.ShowDebuffsFrame end,
 		    order = 1300,
 		},
 		ShowBorder = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.OPT_SHOWBORDER],
 		    desc = L[Dcr.LOC.OPT_SHOWBORDER_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFrameElemBorderShow end,
+		    get = function() return Dcr.profile.DebuffsFrameElemBorderShow end,
 		    set = function(v)
-			if (v ~= Dcr.db.profile.DebuffsFrameElemBorderShow) then
-			    Dcr.db.profile.DebuffsFrameElemBorderShow = v;
+			if (v ~= Dcr.profile.DebuffsFrameElemBorderShow) then
+			    Dcr.profile.DebuffsFrameElemBorderShow = v;
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.profile.ShowDebuffsFrame end,
 		    order = 1350,
 		},
 		{
@@ -551,15 +584,16 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_MAXMFS],
 		    desc = L[Dcr.LOC.OPT_MAXMFS_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFrameMaxCount end,
+		    get = function() return Dcr.profile.DebuffsFrameMaxCount end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.DebuffsFrameMaxCount) then
-			    Dcr.db.profile.DebuffsFrameMaxCount = v;
-			    Dcr.Status.SpellsChanged = GetTime(); -- to force old previously unshown unit frames to update
-			    Dcr.MFContainer.UpdateYourself = true;
+			if (v ~= Dcr.profile.DebuffsFrameMaxCount) then
+			    Dcr.profile.DebuffsFrameMaxCount = v;
+			    Dcr.MicroUnitF.MaxUnit = v;
+			    -- Dcr.Status.SpellsChanged = GetTime(); -- to force old previously unshown unit frames to update XXX useful??
+			    Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.profile.ShowDebuffsFrame end,
 		    min = 1,
 		    max = 82,
 		    step = 1,
@@ -570,14 +604,14 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_UNITPERLINES],
 		    desc = L[Dcr.LOC.OPT_UNITPERLINES_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFramePerline end,
+		    get = function() return Dcr.profile.DebuffsFramePerline end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.DebuffsFramePerline) then
-			    Dcr.db.profile.DebuffsFramePerline = v;
+			if (v ~= Dcr.profile.DebuffsFramePerline) then
+			    Dcr.profile.DebuffsFramePerline = v;
 			    Dcr.MicroUnitF:ResetAllPositions ();
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.profile.ShowDebuffsFrame end,
 		    min = 1,
 		    max = 40,
 		    step = 1,
@@ -592,17 +626,17 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_MFSCALE],
 		    desc = L[Dcr.LOC.OPT_MFSCALE_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFrameElemScale end, -- Dcr.db.profile.DebuffsFrameElemScale end,
+		    get = function() return Dcr.profile.DebuffsFrameElemScale end, -- Dcr.profile.DebuffsFrameElemScale end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.DebuffsFrameElemScale) then
-			    Dcr.db.profile.DebuffsFrameElemScale = v;
+			if (v ~= Dcr.profile.DebuffsFrameElemScale) then
+			    Dcr.profile.DebuffsFrameElemScale = v;
 
 
-			    Dcr.MicroUnitF:SetScale(Dcr.db.profile.DebuffsFrameElemScale);
+			    Dcr.MicroUnitF:SetScale(Dcr.profile.DebuffsFrameElemScale);
 
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.profile.ShowDebuffsFrame end,
 		    min = 0.3,
 		    max = 4,
 		    step = 0.01,
@@ -613,14 +647,14 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_MFALPHA],
 		    desc = L[Dcr.LOC.OPT_MFALPHA_DESC],
-		    get = function() return 1 - Dcr.db.profile.DebuffsFrameElemAlpha end,
+		    get = function() return 1 - Dcr.profile.DebuffsFrameElemAlpha end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.DebuffsFrameElemAlpha) then
-			    Dcr.db.profile.DebuffsFrameElemAlpha = 1 - v;
-			    Dcr.db.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
+			if (v ~= Dcr.profile.DebuffsFrameElemAlpha) then
+			    Dcr.profile.DebuffsFrameElemAlpha = 1 - v;
+			    Dcr.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
 			end
 		    end,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame or not Dcr.db.profile.DebuffsFrameElemTieTransparency end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.profile.ShowDebuffsFrame or not Dcr.profile.DebuffsFrameElemTieTransparency end,
 		    min = 0,
 		    max = 1,
 		    step = 0.01,
@@ -632,18 +666,18 @@ Dcr.options = { -- {{{
 		    name = L[Dcr.LOC.OPT_ADVDISP],
 		    desc = L[Dcr.LOC.OPT_ADVDISP_DESC],
 		    order = 2000,
-		    disabled = function() return Dcr.Status.Combat or not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return Dcr.Status.Combat or not Dcr.profile.ShowDebuffsFrame end,
 		    args = {
 			TieTransparency = {
 			    type = "toggle",
 			    name = L[Dcr.LOC.OPT_TIECENTERANDBORDER],
 			    desc = L[Dcr.LOC.OPT_TIECENTERANDBORDER_OPT],
-			    get = function() return Dcr.db.profile.DebuffsFrameElemTieTransparency end,
+			    get = function() return Dcr.profile.DebuffsFrameElemTieTransparency end,
 			    set = function(v)
-				if (v ~= Dcr.db.profile.DebuffsFrameElemTieTransparency) then
-				    Dcr.db.profile.DebuffsFrameElemTieTransparency = v;
+				if (v ~= Dcr.profile.DebuffsFrameElemTieTransparency) then
+				    Dcr.profile.DebuffsFrameElemTieTransparency = v;
 				    if v then
-					Dcr.db.profile.DebuffsFrameElemBorderAlpha = (Dcr.db.profile.DebuffsFrameElemAlpha / 2);
+					Dcr.profile.DebuffsFrameElemBorderAlpha = (Dcr.profile.DebuffsFrameElemAlpha / 2);
 				    end
 				end
 			    end,
@@ -654,13 +688,13 @@ Dcr.options = { -- {{{
 			    type = 'range',
 			    name = L[Dcr.LOC.OPT_BORDERTRANSP],
 			    desc = L[Dcr.LOC.OPT_BORDERTRANSP_DESC],
-			    get = function() return 1 - Dcr.db.profile.DebuffsFrameElemBorderAlpha end,
+			    get = function() return 1 - Dcr.profile.DebuffsFrameElemBorderAlpha end,
 			    set = function(v) 
-				if (v ~= Dcr.db.profile.DebuffsFrameElemBorderAlpha) then
-				    Dcr.db.profile.DebuffsFrameElemBorderAlpha = 1 - v;
+				if (v ~= Dcr.profile.DebuffsFrameElemBorderAlpha) then
+				    Dcr.profile.DebuffsFrameElemBorderAlpha = 1 - v;
 				end
 			    end,
-			    disabled = function() return Dcr.Status.Combat or Dcr.db.profile.DebuffsFrameElemTieTransparency end,
+			    disabled = function() return Dcr.Status.Combat or Dcr.profile.DebuffsFrameElemTieTransparency end,
 			    min = 0,
 			    max = 1,
 			    step = 0.01,
@@ -671,12 +705,12 @@ Dcr.options = { -- {{{
 			    type = 'range',
 			    name = L[Dcr.LOC.OPT_CENTERTRANSP],
 			    desc = L[Dcr.LOC.OPT_CENTERTRANSP_DESC],
-			    get = function() return 1 - Dcr.db.profile.DebuffsFrameElemAlpha end,
+			    get = function() return 1 - Dcr.profile.DebuffsFrameElemAlpha end,
 			    set = function(v) 
-				if (v ~= Dcr.db.profile.DebuffsFrameElemAlpha) then
-				    Dcr.db.profile.DebuffsFrameElemAlpha = 1 - v;
-				    if Dcr.db.profile.DebuffsFrameElemTieTransparency then
-					Dcr.db.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
+				if (v ~= Dcr.profile.DebuffsFrameElemAlpha) then
+				    Dcr.profile.DebuffsFrameElemAlpha = 1 - v;
+				    if Dcr.profile.DebuffsFrameElemTieTransparency then
+					Dcr.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
 				    end
 				end
 			    end,
@@ -695,12 +729,12 @@ Dcr.options = { -- {{{
 			    type = "toggle",
 			    name = L[Dcr.LOC.OPT_TIEXYSPACING],
 			    desc = L[Dcr.LOC.OPT_TIEXYSPACING_DESC],
-			    get = function() return Dcr.db.profile.DebuffsFrameTieSpacing end,
+			    get = function() return Dcr.profile.DebuffsFrameTieSpacing end,
 			    set = function(v)
-				if (v ~= Dcr.db.profile.DebuffsFrameTieSpacing) then
-				    Dcr.db.profile.DebuffsFrameTieSpacing = v;
+				if (v ~= Dcr.profile.DebuffsFrameTieSpacing) then
+				    Dcr.profile.DebuffsFrameTieSpacing = v;
 				    if v then
-					Dcr.db.profile.DebuffsFrameYSpacing = Dcr.db.profile.DebuffsFrameXSpacing;
+					Dcr.profile.DebuffsFrameYSpacing = Dcr.profile.DebuffsFrameXSpacing;
 				    end
 				    Dcr.MicroUnitF:ResetAllPositions ();
 				end
@@ -712,12 +746,12 @@ Dcr.options = { -- {{{
 			    type = 'range',
 			    name = L[Dcr.LOC.OPT_XSPACING],
 			    desc = L[Dcr.LOC.OPT_XSPACING_DESC],
-			    get = function() return Dcr.db.profile.DebuffsFrameXSpacing end,
+			    get = function() return Dcr.profile.DebuffsFrameXSpacing end,
 			    set = function(v) 
-				if (v ~= Dcr.db.profile.DebuffsFrameXSpacing) then
-				    Dcr.db.profile.DebuffsFrameXSpacing = v;
-				    if Dcr.db.profile.DebuffsFrameTieSpacing then
-					Dcr.db.profile.DebuffsFrameYSpacing = v;
+				if (v ~= Dcr.profile.DebuffsFrameXSpacing) then
+				    Dcr.profile.DebuffsFrameXSpacing = v;
+				    if Dcr.profile.DebuffsFrameTieSpacing then
+					Dcr.profile.DebuffsFrameYSpacing = v;
 				    end
 				    Dcr.MicroUnitF:ResetAllPositions ();
 				end
@@ -733,14 +767,14 @@ Dcr.options = { -- {{{
 			    type = 'range',
 			    name = L[Dcr.LOC.OPT_YSPACING],
 			    desc = L[Dcr.LOC.OPT_YSPACING_DESC],
-			    get = function() return Dcr.db.profile.DebuffsFrameYSpacing end,
+			    get = function() return Dcr.profile.DebuffsFrameYSpacing end,
 			    set = function(v) 
-				if (v ~= Dcr.db.profile.DebuffsFrameYSpacing) then
-				    Dcr.db.profile.DebuffsFrameYSpacing = v;
+				if (v ~= Dcr.profile.DebuffsFrameYSpacing) then
+				    Dcr.profile.DebuffsFrameYSpacing = v;
 				    Dcr.MicroUnitF:ResetAllPositions ();
 				end
 			    end,
-			    disabled = function() return Dcr.Status.Combat or Dcr.db.profile.DebuffsFrameTieSpacing end,
+			    disabled = function() return Dcr.Status.Combat or Dcr.profile.DebuffsFrameTieSpacing end,
 			    min = 0,
 			    max = 100,
 			    step = 1,
@@ -757,23 +791,23 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name = L[Dcr.LOC.SHOW_TOOLTIP],
 		    desc = L[Dcr.LOC.OPT_SHOWTOOLTIP_DESC],
-		    get = function() return Dcr.db.profile.AfflictionTooltips end,
+		    get = function() return Dcr.profile.AfflictionTooltips end,
 		    set = function()
-			Dcr.db.profile.AfflictionTooltips = not Dcr.db.profile.AfflictionTooltips
+			Dcr.profile.AfflictionTooltips = not Dcr.profile.AfflictionTooltips
 		    end,
-		    disabled = function() return  Dcr.db.profile.Hide_LiveList and not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return  Dcr.profile.Hide_LiveList and not Dcr.profile.ShowDebuffsFrame end,
 		    order = 2200
 		},
 		ShowHelp = {
 		    type = "toggle",
 		    name = L[Dcr.LOC.OPT_SHOWHELP],
 		    desc = L[Dcr.LOC.OPT_SHOWHELP_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFrameShowHelp end,
+		    get = function() return Dcr.profile.DebuffsFrameShowHelp end,
 		    set = function()
-			Dcr.db.profile.DebuffsFrameShowHelp = not Dcr.db.profile.DebuffsFrameShowHelp;
+			Dcr.profile.DebuffsFrameShowHelp = not Dcr.profile.DebuffsFrameShowHelp;
 
 		    end,
-		    disabled = function() return not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return not Dcr.profile.ShowDebuffsFrame end,
 		    order = 2300,
 		},
 		{
@@ -791,18 +825,18 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_MFREFRESHRATE],
 		    desc = L[Dcr.LOC.OPT_MFREFRESHRATE_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFrameRefreshRate end,
+		    get = function() return Dcr.profile.DebuffsFrameRefreshRate end,
 		    set = function(v) 
-			if (Dcr.Status.MicroFrameUpdateSchedule and v ~= Dcr.db.profile.DebuffsFrameRefreshRate) then
-			    Dcr.db.profile.DebuffsFrameRefreshRate = v;
+			if (Dcr.Status.MicroFrameUpdateSchedule and v ~= Dcr.profile.DebuffsFrameRefreshRate) then
+			    Dcr.profile.DebuffsFrameRefreshRate = v;
 
 			    Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
 			    Dcr.Status.MicroFrameUpdateSchedule =
-			    Dcr:ScheduleRepeatingEvent(Dcr.DebuffsFrame_Update, Dcr.db.profile.DebuffsFrameRefreshRate);
-			    Dcr:Debug("MUFs refresh rate changed:", Dcr.db.profile.DebuffsFrameRefreshRate, v);
+			    Dcr:ScheduleRepeatingEvent("MUFupdate", Dcr.DebuffsFrame_Update, Dcr.profile.DebuffsFrameRefreshRate);
+			    Dcr:Debug("MUFs refresh rate changed:", Dcr.profile.DebuffsFrameRefreshRate, v);
 			end
 		    end,
-		    disabled = function() return not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return not Dcr.profile.ShowDebuffsFrame end,
 		    min = 0.017,
 		    max = 0.2,
 		    step = 0.01,
@@ -813,13 +847,13 @@ Dcr.options = { -- {{{
 		    type = 'range',
 		    name = L[Dcr.LOC.OPT_MFREFRESHSPEED],
 		    desc = L[Dcr.LOC.OPT_MFREFRESHSPEED_DESC],
-		    get = function() return Dcr.db.profile.DebuffsFramePerUPdate end,
+		    get = function() return Dcr.profile.DebuffsFramePerUPdate end,
 		    set = function(v) 
-			if (v ~= Dcr.db.profile.DebuffsFramePerUPdate) then
-			    Dcr.db.profile.DebuffsFramePerUPdate = v;
+			if (v ~= Dcr.profile.DebuffsFramePerUPdate) then
+			    Dcr.profile.DebuffsFramePerUPdate = v;
 			end
 		    end,
-		    disabled = function() return not Dcr.db.profile.ShowDebuffsFrame end,
+		    disabled = function() return not Dcr.profile.ShowDebuffsFrame end,
 		    min = 1,
 		    max = 20,
 		    step = 1,
@@ -846,9 +880,9 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.ABOLISH_CHECK],
 		    desc = L[Dcr.LOC.OPT_ABOLISHCHECK_DESC],
-		    get = function() return Dcr.db.profile.Check_For_Abolish end,
+		    get = function() return Dcr.profile.Check_For_Abolish end,
 		    set = function()
-			Dcr.db.profile.Check_For_Abolish = not Dcr.db.profile.Check_For_Abolish;
+			Dcr.profile.Check_For_Abolish = not Dcr.profile.Check_For_Abolish;
 		    end,
 		    order = 130
 		},
@@ -856,9 +890,9 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.DONOT_BL_PRIO],
 		    desc = L[Dcr.LOC.OPT_DONOTBLPRIO_DESC],
-		    get = function() return Dcr.db.profile.DoNot_Blacklist_Prio_List end,
+		    get = function() return Dcr.profile.DoNot_Blacklist_Prio_List end,
 		    set = function()
-			Dcr.db.profile.DoNot_Blacklist_Prio_List = not Dcr.db.profile.DoNot_Blacklist_Prio_List;
+			Dcr.profile.DoNot_Blacklist_Prio_List = not Dcr.profile.DoNot_Blacklist_Prio_List;
 		    end,
 		    order = 131
 		},
@@ -866,9 +900,9 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.RANDOM_ORDER],
 		    desc =  L[Dcr.LOC.OPT_RANDOMORDER_DESC],
-		    get = function() return Dcr.db.profile.Random_Order end,
+		    get = function() return Dcr.profile.Random_Order end,
 		    set = function()
-			Dcr.db.profile.Random_Order = not Dcr.db.profile.Random_Order;
+			Dcr.profile.Random_Order = not Dcr.profile.Random_Order;
 			Dcr.Groups_datas_are_invalid = true;
 		    end,
 		    order = 132
@@ -877,10 +911,11 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.CURE_PETS],
 		    desc = L[Dcr.LOC.OPT_CUREPETS_DESC],
-		    get = function() return Dcr.db.profile.Scan_Pets end,
+		    get = function() return Dcr.profile.Scan_Pets end,
 		    set = function()
-			Dcr.db.profile.Scan_Pets = not Dcr.db.profile.Scan_Pets;
+			Dcr.profile.Scan_Pets = not Dcr.profile.Scan_Pets;
 			Dcr.Groups_datas_are_invalid = true;
+			Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
 		    end,
 		    order = 133
 		},
@@ -888,9 +923,9 @@ Dcr.options = { -- {{{
 		    type = "toggle",
 		    name =  L[Dcr.LOC.IGNORE_STEALTH],
 		    desc = L[Dcr.LOC.OPT_IGNORESTEALTHED_DESC],
-		    get = function() return Dcr.db.profile.Ingore_Stealthed end,
+		    get = function() return Dcr.profile.Ingore_Stealthed end,
 		    set = function()
-			Dcr.db.profile.Ingore_Stealthed = not Dcr.db.profile.Ingore_Stealthed;
+			Dcr.profile.Ingore_Stealthed = not Dcr.profile.Ingore_Stealthed;
 		    end,
 		    order = 134
 		},
@@ -1006,7 +1041,7 @@ Dcr.options = { -- {{{
 		    validate = "keybinding",
 		    get = function ()
 			local key = (GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME)));
-			Dcr.db.profile.MacroBind = key;
+			Dcr.profile.MacroBind = key;
 			return key;
 		    end,
 		    set = function (key)
@@ -1053,7 +1088,7 @@ Dcr.CureCheckBoxes = { -- just a shortcut
 
 function Dcr:GetCureCheckBoxStatus (Type)
 
-    return Dcr.db.profile.CureOrder[Type] and Dcr.db.profile.CureOrder[Type] > 0;
+    return Dcr.profile.CureOrder[Type] and Dcr.profile.CureOrder[Type] > 0;
 end
 
 function Dcr:SetCureCheckBoxNum (Type)
@@ -1066,7 +1101,7 @@ function Dcr:SetCureCheckBoxNum (Type)
 
     -- add the number in green before the name if we have a spell available and if we checked the box
     if (Dcr:GetCureCheckBoxStatus(Type)) then
-	CheckBox.name = Dcr:ColorText(Dcr.db.profile.CureOrder[Type], "FF00FF00") .. " " .. CheckBox.NameOnly;
+	CheckBox.name = Dcr:ColorText(Dcr.profile.CureOrder[Type], "FF00FF00") .. " " .. CheckBox.NameOnly;
     else
 	CheckBox.name = "  " .. CheckBox.NameOnly;
     end
@@ -1107,14 +1142,14 @@ function Dcr:CheckCureOrder ()
 
     -- add missing entries...
     for key, value in pairs(AuthorizedKeys) do
-	if not Dcr.db.profile.CureOrder[key] then
-	    Dcr.db.profile.CureOrder[key] = false;
+	if not Dcr.profile.CureOrder[key] then
+	    Dcr.profile.CureOrder[key] = false;
 	end
     end
 
     -- Validate existing entries
     local WrongValue = 0;
-    for key, value in pairs(Dcr.db.profile.CureOrder) do
+    for key, value in pairs(Dcr.profile.CureOrder) do
 
 	if (AuthorizedKeys[key]) then -- is this a correct type ?
 	    if (AuthorizedValues[value] and not GivenValues[value]) then -- is this value authorized and not already given?
@@ -1124,20 +1159,20 @@ function Dcr:CheckCureOrder ()
 	    elseif (value) then -- FALSE is the only value that can be given several times
 		Dcr:Debug("Incoherent value for (key, value, Duplicate?)", key, value, GivenValues[value]);
 
-		Dcr.db.profile.CureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
+		Dcr.profile.CureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
 		WrongValue = WrongValue + 1;
 	    end
 	else
-	    Dcr.db.profile.CureOrder[key] = nil; -- remove it from the table
+	    Dcr.profile.CureOrder[key] = nil; -- remove it from the table
 	end
     end
 
-    --Dcr.db.profile.CureOrder = TempTable;
+    --Dcr.profile.CureOrder = TempTable;
 end
 
 function Dcr:SetCureOrder (ToChange)
 
-    local CureOrder = Dcr.db.profile.CureOrder;
+    local CureOrder = Dcr.profile.CureOrder;
     local tmpTable = {};
     Dcr:Debug("SetCureOrder called for prio ", CureOrder[ToChange]);
 
@@ -1189,6 +1224,7 @@ function Dcr:SetCureOrder (ToChange)
 	CureOrder[Type] = Num;
     end
 
+    -- create / update the ReversedCureOrder table (prio => type, ..., )
     Dcr.Status.ReversedCureOrder = Dcr:tReverse(CureOrder);
 
     for Type, CheckBox in pairs(Dcr.CureCheckBoxes) do
@@ -1234,24 +1270,24 @@ function Dcr:ShowHideDebuffsFrame ()
 	return
     end
 
-    Dcr.db.profile.ShowDebuffsFrame = not Dcr.db.profile.ShowDebuffsFrame;
+    Dcr.profile.ShowDebuffsFrame = not Dcr.profile.ShowDebuffsFrame;
 
     if (Dcr.MFContainer:IsVisible()) then
 	Dcr.MFContainer:Hide();
-	Dcr.db.profile.ShowDebuffsFrame = false;
+	Dcr.profile.ShowDebuffsFrame = false;
     else
 	Dcr.MFContainer:Show();
-	Dcr.MFContainer:SetScale(Dcr.db.profile.DebuffsFrameElemScale);
+	Dcr.MFContainer:SetScale(Dcr.profile.DebuffsFrameElemScale);
 	Dcr.MicroUnitF:Place ();
-	Dcr.db.profile.ShowDebuffsFrame = true;
+	Dcr.profile.ShowDebuffsFrame = true;
     end
 
-    if (not Dcr.db.profile.ShowDebuffsFrame) then
+    if (not Dcr.profile.ShowDebuffsFrame) then
 	Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
 	Dcr.Status.MicroFrameUpdateSchedule = false;
     elseif (not Dcr.Status.MicroFrameUpdateSchedule) then
 	Dcr.Status.MicroFrameUpdateSchedule =
-	Dcr:ScheduleRepeatingEvent(Dcr.DebuffsFrame_Update, Dcr.db.profile.DebuffsFrameRefreshRate);
+	Dcr:ScheduleRepeatingEvent("MUFupdate", Dcr.DebuffsFrame_Update, Dcr.profile.DebuffsFrameRefreshRate);
     end
 end
 
@@ -1281,15 +1317,15 @@ StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
     button2 = TEXT(CANCEL),
     OnAccept = function()
 
-	local DebuffsSkipList	= Dcr.db.profile.DebuffsSkipList;
-	local skipByClass	= Dcr.db.profile.skipByClass;
-	local AlwaysSkipList	= Dcr.db.profile.DebuffAlwaysSkipList;
+	local DebuffsSkipList	= Dcr.profile.DebuffsSkipList;
+	local skipByClass	= Dcr.profile.skipByClass;
+	local AlwaysSkipList	= Dcr.profile.DebuffAlwaysSkipList;
 
 
 	Dcr:tremovebyval(DebuffsSkipList, Dcr.Tmp.DebuffToRemove)
 
 	for class, debuffs in pairs (skipByClass) do
-	    skipByClass[class][Dcr.Tmp.DebuffToRemove] = nil; -- XXX changed from false to nil on 20040415 -- = false; -- does not remove it completely -- WHY??? XXX
+	    skipByClass[class][Dcr.Tmp.DebuffToRemove] = nil; -- XXX changed from false to nil on 20070415
 	end
 
 	AlwaysSkipList[Dcr.Tmp.DebuffToRemove] = nil; -- remove it from the table
@@ -1378,11 +1414,11 @@ do -- this is a closure, it's a bit like {} blocks in C
 		["Debuff"]=DebuffName,
 		["Class"]=Class,
 		["get"] = function  (args)
-		    local skipByClass = Dcr.db.profile.skipByClass;
+		    local skipByClass = Dcr.profile.skipByClass;
 		    return skipByClass[args["Class"]][args["Debuff"]]; 
 		end,
 		["set"] = function  (args, v)
-		    local skipByClass = Dcr.db.profile.skipByClass;
+		    local skipByClass = Dcr.profile.skipByClass;
 		    skipByClass[args["Class"]][string.trim(args["Debuff"])] = v;
 		end
 	    };
@@ -1524,11 +1560,11 @@ do -- this is a closure, it's a bit like {} blocks in C
     end
 
     function Dcr:CreateDropDownFiltersMenu()
-	DebuffsSkipList	    = Dcr.db.profile.DebuffsSkipList;
+	DebuffsSkipList	    = Dcr.profile.DebuffsSkipList;
 	DefaultDebuffsSkipList    = Dcr.defaults.DebuffsSkipList;
 
-	skipByClass		    = Dcr.db.profile.skipByClass;
-	AlwaysSkipList		    = Dcr.db.profile.DebuffAlwaysSkipList;
+	skipByClass		    = Dcr.profile.skipByClass;
+	AlwaysSkipList		    = Dcr.profile.DebuffAlwaysSkipList;
 	DefaultSkipByClass	    = Dcr.defaults.skipByClass;
 
 	local DebuffsSubMenu = {};
@@ -1577,12 +1613,12 @@ end
 
 function Dcr:SetMacroKey ( key )
 
-    if (key and key == Dcr.db.profile.MacroBind and GetBindingAction(key) == string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
+    if (key and key == Dcr.profile.MacroBind and GetBindingAction(key) == string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
 	return;
     end
 
     -- if there is current set key currently mapped to Decursive macro (it means we are changing the key)
-    if (Dcr.db.profile.MacroBind and GetBindingAction(Dcr.db.profile.MacroBind) == string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
+    if (Dcr.profile.MacroBind and GetBindingAction(Dcr.profile.MacroBind) == string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
 
 	-- clearing redudent mapping to Decursive macro.
 	local MappedKeys = {GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME))};
@@ -1592,9 +1628,9 @@ function Dcr:SetMacroKey ( key )
 	end
 
 	-- Restore previous key state
-	if (Dcr.db.profile.PreviousMacroKeyAction) then
-	    Dcr:Debug("Previous key action restored:", Dcr.db.profile.PreviousMacroKeyAction);
-	    if not SetBinding(Dcr.db.profile.MacroBind, Dcr.db.profile.PreviousMacroKeyAction) then
+	if (Dcr.profile.PreviousMacroKeyAction) then
+	    Dcr:Debug("Previous key action restored:", Dcr.profile.PreviousMacroKeyAction);
+	    if not SetBinding(Dcr.profile.MacroBind, Dcr.profile.PreviousMacroKeyAction) then
 		Dcr:Debug("Restoration failed");
 	    end
 	end
@@ -1604,23 +1640,23 @@ function Dcr:SetMacroKey ( key )
     if (key) then
 	if (GetBindingAction(key) ~= "" and GetBindingAction(key) ~= string.format("MACRO %s",Dcr.CONF.MACRONAME)) then
 	    -- save current key assignement
-	    Dcr.db.profile.PreviousMacroKeyAction = GetBindingAction(key)
-	    Dcr:Debug("Old key action saved:", Dcr.db.profile.PreviousMacroKeyAction);
-	    Dcr:errln(L[Dcr.LOC.MACROKEYALREADYMAPPED], key, Dcr.db.profile.PreviousMacroKeyAction);
+	    Dcr.profile.PreviousMacroKeyAction = GetBindingAction(key)
+	    Dcr:Debug("Old key action saved:", Dcr.profile.PreviousMacroKeyAction);
+	    Dcr:errln(L[Dcr.LOC.MACROKEYALREADYMAPPED], key, Dcr.profile.PreviousMacroKeyAction);
 	else
-	    Dcr.db.profile.PreviousMacroKeyAction = false;
+	    Dcr.profile.PreviousMacroKeyAction = false;
 	    Dcr:Debug("Old key action not saved because it was mapped to nothing");
 	end
 
 	-- set
 	if (SetBindingMacro(key, Dcr.CONF.MACRONAME)) then
-	    Dcr.db.profile.MacroBind = key;
+	    Dcr.profile.MacroBind = key;
 	    Dcr:Println(L[Dcr.LOC.MACROKEYMAPPINGSUCCESS], key);
 	else
 	    Dcr:errln(L[Dcr.LOC.MACROKEYMAPPINGFAILED], key);
 	end
     else
-	Dcr.db.profile.MacroBind = false;
+	Dcr.profile.MacroBind = false;
 	if not (GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME))) then
 	    Dcr:errln(L[Dcr.LOC.MACROKEYNOTMAPPED]);
 	end

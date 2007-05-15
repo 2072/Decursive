@@ -118,8 +118,10 @@ Dcr.LOC.PRINT_ERRORS    = "Print error messages";
 
 Dcr.LOC.SHOW_TOOLTIP    = "Show Tooltips on afflicted units";
 Dcr.LOC.REVERSE_LIVELIST= "Reverse live-list display";
-Dcr.LOC.TIE_LIVELIST    = "Tie live-list visibility to DCR window";
 Dcr.LOC.HIDE_LIVELIST   = "Hide the live-list";
+Dcr.LOC.TIE_LIVELIST    = "Tie live-list visibility to DCR window";
+Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF = "Create a virtual test affliction";
+Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC = "Lets you see how it looks like when an affliction is found";
 
 Dcr.LOC.AMOUNT_AFFLIC   = "The amount of afflicted to show : ";
 Dcr.LOC.BLACK_LENGTH    = "Seconds on the blacklist : ";
@@ -192,7 +194,7 @@ Dcr.LOC.OPT_UNITPERLINES_DESC = "Defines the max number of micro-unit-frames to 
 Dcr.LOC.OPT_MFSCALE = 'Scale of the micro-unit-frames';
 Dcr.LOC.OPT_MFSCALE_DESC = "Set the size of the micro-unit-frames";
 Dcr.LOC.OPT_LLSCALE = 'Scale of the Live-list';
-Dcr.LOC.OPT_LLSCALE_DESC = "Set the size of the Decursive main bar and of the Live-list";
+Dcr.LOC.OPT_LLSCALE_DESC = "Set the size of the Decursive main bar and of the Live-list (Main bar must be displayed)";
 Dcr.LOC.OPT_SHOWHELP = "Show help";
 Dcr.LOC.OPT_SHOWHELP_DESC = "Shows an detailed tooltip when you mouse-over a micro-unit-frame"
 Dcr.LOC.OPT_MFPERFOPT = "Performance options";
@@ -249,7 +251,7 @@ Dcr.LOC.OPT_MFALPHA = "Transparency";
 Dcr.LOC.OPT_MFALPHA_DESC = "Defines the transparency of the MUFs when units are not afflicted";
 
 Dcr.LOC.OPT_LLALPHA = "Live-list transparency";
-Dcr.LOC.OPT_LLALPHA_DESC = "Changes Decursive main bar and live-list transparency";
+Dcr.LOC.OPT_LLALPHA_DESC = "Changes Decursive main bar and live-list transparency (Main bar must be displayed)";
 
 Dcr.LOC.OPT_ADVDISP = "Advance display Options";
 Dcr.LOC.OPT_ADVDISP_DESC = "Allow to set Transparency of the border and center separately, to set the space between each MUF";
@@ -268,6 +270,7 @@ Dcr.LOC.OPT_YSPACING_DESC = "Set the Vertical space between MUFs";
 
 
 
+Dcr.LOC.HLP_LL_ONCLICK_TEXT = "Clicking on the live-list is useless since WoW 2.0. You should read the file \"Readme.txt\" located in Decursive folder...";
 Dcr.LOC.HLP_LEFTCLICK = "Left-Click";
 Dcr.LOC.HLP_RIGHTCLICK = "Right-Click";
 Dcr.LOC.HLP_MIDDLECLICK = "Middle-Click";
@@ -451,6 +454,8 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_SCANLENGTH_DESC] = true,
     [Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = true,
     [Dcr.LOC.OPT_TIE_LIVELIST_DESC] = true,
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = true,
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = true,
     [Dcr.LOC.OPT_MESSAGES] = true,
     [Dcr.LOC.OPT_MESSAGES_DESC] = true,
     [Dcr.LOC.OPT_CHATFRAME_DESC] = true,
@@ -549,6 +554,7 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.OPT_YSPACING_DESC]		 = true,
 
 
+    [Dcr.LOC.HLP_LL_ONCLICK_TEXT] = true;
     [Dcr.LOC.HLP_LEFTCLICK] = true,
     [Dcr.LOC.HLP_RIGHTCLICK] = true,
     [Dcr.LOC.HLP_MIDDLECLICK] = true,

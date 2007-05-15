@@ -11,13 +11,13 @@
 
 ## X-License: GNU GPL
 
-## OptionalDeps: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0, Tablet-2.0, FuBarPlugin-2.0
-## X-Embeds: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0, Tablet-2.0, FuBarPlugin-2.0
+## OptionalDeps: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0, Tablet-2.0, FuBarPlugin-2.0, SpecialEvents-Aura-2.0
+## X-Embeds: Ace2, Babble-2.2, DewdropLib, Waterfall-1.0, Tablet-2.0, FuBarPlugin-2.0, SpecialEvents-Aura-2.0
 
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/?to=decursive.php
-## X-Credits: Sylvin (French translation)
+## X-Credits: Sylvin (French translation), Peter Sun (ZhTW translation), Stalvan Mismantle (Cobaye)
 
 ## X-RelSite-WoWI: 4937
 ## X-RelSite-Curse: 3011
@@ -35,6 +35,7 @@ Libs\AceDB-2.0\AceDB-2.0.lua
 Libs\AceDebug-2.0\AceDebug-2.0.lua
 Libs\AceEvent-2.0\AceEvent-2.0.lua
 Libs\AceLocale-2.2\AceLocale-2.2.lua
+Libs\SpecialEvents-Aura-2.0\SpecialEvents-Aura-2.0.lua
 Libs\Babble-Class-2.2\Babble-Class-2.2.lua
 Libs\Dewdrop-2.0\Dewdrop-2.0.lua
 Libs\Waterfall-1.0\Waterfall-1.0.lua
@@ -66,3 +67,7 @@ Dcr_lists.xml
 
 Dcr_DebuffsFrame.lua
 Dcr_DebuffsFrame.xml
+
+Dcr_LiveList.lua
+Dcr_LiveList.xml
+

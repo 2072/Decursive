@@ -64,9 +64,9 @@ function Dcr:PrioSkipListFrame_OnUpdate() --{{{
 	local size;
 
 	if (this.Priority) then
-	    size = table.getn(Dcr.db.profile.PriorityList);
+	    size = table.getn(Dcr.profile.PriorityList);
 	else
-	    size = table.getn(Dcr.db.profile.SkipList);
+	    size = table.getn(Dcr.profile.SkipList);
 	end
 
 	if (size < 11 ) then
@@ -106,11 +106,11 @@ function Dcr:PrioSkipListEntryTemplate_OnClick() --{{{
 --    Dcr:PrintLiteral(arg1);
 
     if (this:GetParent().Priority) then
-	list = Dcr.db.profile.PriorityList;
-	UnitNum = getn(Dcr.db.profile.PriorityList);
+	list = Dcr.profile.PriorityList;
+	UnitNum = getn(Dcr.profile.PriorityList);
     else
-	list = Dcr.db.profile.SkipList;
-	UnitNum = getn(Dcr.db.profile.SkipList);
+	list = Dcr.profile.SkipList;
+	UnitNum = getn(Dcr.profile.SkipList);
     end
 
 
@@ -171,11 +171,11 @@ function Dcr:PrioSkipListEntry_Update(Entry) --{{{
 	if (id) then
 	    local name, classname;
 	    if (Entry:GetParent().Priority) then
-		name = Dcr.db.profile.PriorityList[id];
-		classname = Dcr.db.profile.PriorityListClass[name];
+		name = Dcr.profile.PriorityList[id];
+		classname = Dcr.profile.PriorityListClass[name];
 	    else
-		name = Dcr.db.profile.SkipList[id];
-		classname = Dcr.db.profile.SkipListClass[name];
+		name = Dcr.profile.SkipList[id];
+		classname = Dcr.profile.SkipListClass[name];
 	    end
 	    if not classname then
 		classname = "WARRIOR";
@@ -216,9 +216,9 @@ function Dcr:PrioSkipList_ScrollFrame_Update (ScrollFrame) -- {{{
     end
 
     if (ScrollFrame:GetParent().Priority) then
-	maxentry = table.getn(Dcr.db.profile.PriorityList);
+	maxentry = table.getn(Dcr.profile.PriorityList);
     else
-	maxentry = table.getn(Dcr.db.profile.SkipList);
+	maxentry = table.getn(Dcr.profile.SkipList);
     end
 
     FauxScrollFrame_Update(ScrollFrame,maxentry,10,16);
@@ -244,7 +244,7 @@ end --}}}
 
 function Dcr:AddUnitToPriorityList( unit, check ) --{{{
 
-    if (#Dcr.db.profile.PriorityList > 99) then
+    if (#Dcr.profile.PriorityList > 99) then
 	return false;
     end
 
@@ -260,18 +260,18 @@ function Dcr:AddUnitToPriorityList( unit, check ) --{{{
 		name = (UnitName( unit));
 	    end
 
-	    for _, pname in pairs(Dcr.db.profile.PriorityList) do
+	    for _, pname in pairs(Dcr.profile.PriorityList) do
 		if (name == pname) then
 		    return false;
 		end
 	    end
 
-	    table.insert(Dcr.db.profile.PriorityList,name);
+	    table.insert(Dcr.profile.PriorityList,name);
 
 	    if (type(unit) == "string") then
-		_, Dcr.db.profile.PriorityListClass[name] = UnitClass(unit);
+		_, Dcr.profile.PriorityListClass[name] = UnitClass(unit);
 	    elseif unit > 10 then
-		Dcr.db.profile.PriorityListClass[unit] = string.upper(BC:GetReverseTranslation(DcrC.ClassNumToName[unit]));
+		Dcr.profile.PriorityListClass[unit] = string.upper(BC:GetReverseTranslation(DcrC.ClassNumToName[unit]));
 	    end
 
 	    DecursivePriorityListFrame.UpdateYourself = true;
@@ -279,7 +279,10 @@ function Dcr:AddUnitToPriorityList( unit, check ) --{{{
 	    Dcr.Groups_datas_are_invalid = true;
 	    return true;
 	else
-	    Dcr:Debug("Unit is not a player");
+	    Dcr:Debug("Unit is not a player:", unit, check, UnitExists(unit));
+	    if (not unit) then
+		error("Dcr:AddUnitToPriorityList: bad argument #1 'unit' must be!",2);
+	    end
 	end
     else
 	    Dcr:Debug("Unit does not exist");
@@ -289,17 +292,17 @@ end --}}}
 
 function Dcr:RemoveIDFromPriorityList(id) --{{{
 
-    Dcr.db.profile.PriorityListClass[ Dcr.db.profile.PriorityList[id] ] = nil; -- remove it from the table
+    Dcr.profile.PriorityListClass[ Dcr.profile.PriorityList[id] ] = nil; -- remove it from the table
 
-    table.remove( Dcr.db.profile.PriorityList, id );
+    table.remove( Dcr.profile.PriorityList, id );
 
     Dcr.Groups_datas_are_invalid = true;
     DecursivePriorityListFrame.UpdateYourself = true;
 end --}}}
 
 function Dcr:ClearPriorityList() --{{{
-    Dcr.db.profile.PriorityList = {};
-    Dcr.db.profile.PriorityListClass = {};
+    Dcr.profile.PriorityList = {};
+    Dcr.profile.PriorityListClass = {};
     
     Dcr.Groups_datas_are_invalid = true;
     DecursivePriorityListFrame.UpdateYourself = true;
@@ -312,7 +315,7 @@ end --}}}
 
 function Dcr:AddUnitToSkipList( unit) --{{{
 
-    if (#Dcr.db.profile.SkipList > 99) then
+    if (#Dcr.profile.SkipList > 99) then
 	return false;
     end
 
@@ -328,18 +331,18 @@ function Dcr:AddUnitToSkipList( unit) --{{{
 		name = (UnitName( unit));
 	    end
 
-	    for _, pname in pairs(Dcr.db.profile.SkipList) do
+	    for _, pname in pairs(Dcr.profile.SkipList) do
 		if (name == pname) then
 		    return false;
 		end
 	    end
 
-	    table.insert(Dcr.db.profile.SkipList,name);
+	    table.insert(Dcr.profile.SkipList,name);
 
 	    if (type(unit) == "string") then
-		_, Dcr.db.profile.SkipListClass[name] = UnitClass(unit);
+		_, Dcr.profile.SkipListClass[name] = UnitClass(unit);
 	    elseif unit > 10 then
-		Dcr.db.profile.SkipListClass[unit] = string.upper(BC:GetReverseTranslation(DcrC.ClassNumToName[unit]));
+		Dcr.profile.SkipListClass[unit] = string.upper(BC:GetReverseTranslation(DcrC.ClassNumToName[unit]));
 	    end
 
 	    Dcr:Debug("Unit %s added to the skip list", name);
@@ -347,7 +350,7 @@ function Dcr:AddUnitToSkipList( unit) --{{{
 	    Dcr.Groups_datas_are_invalid = true;
 	    return true;
 	else
-	    Dcr:Debug("Unit is not a player");
+	    Dcr:Debug("Unit is not a player:", unit);
 	end
     else
 	    Dcr:Debug("Unit does not exist");
@@ -357,9 +360,9 @@ end --}}}
 
 function Dcr:RemoveIDFromSkipList(id) --{{{
 
-    Dcr.db.profile.SkipListClass[ Dcr.db.profile.SkipList[id] ] = nil; -- remove it from the table
+    Dcr.profile.SkipListClass[ Dcr.profile.SkipList[id] ] = nil; -- remove it from the table
 
-    table.remove( Dcr.db.profile.SkipList, id );
+    table.remove( Dcr.profile.SkipList, id );
 
     Dcr.Groups_datas_are_invalid = true;
     DecursiveSkipListFrame.UpdateYourself = true;
@@ -368,8 +371,8 @@ end --}}}
 function Dcr:ClearSkipList() --{{{
     local i;
 
-    Dcr.db.profile.SkipList = {};
-    Dcr.db.profile.SkipListClass = {};
+    Dcr.profile.SkipList = {};
+    Dcr.profile.SkipListClass = {};
     
     Dcr.Groups_datas_are_invalid = true;
     DecursiveSkipListFrame.UpdateYourself = true;
@@ -377,7 +380,7 @@ end --}}}
 
 
 function Dcr:IsInPriorList (name) --{{{
-    for _, PriorName in pairs(Dcr.db.profile.PriorityList) do
+    for _, PriorName in pairs(Dcr.profile.PriorityList) do
 	if (PriorName == name) then
 	    return true;
 	end
@@ -386,7 +389,7 @@ function Dcr:IsInPriorList (name) --{{{
 end --}}}
 
 function Dcr:IsInSkipList (name) --{{{
-    for _, SkipName in pairs(Dcr.db.profile.SkipList) do
+    for _, SkipName in pairs(Dcr.profile.SkipList) do
 	if (SkipName == name) then
 	    return true;
 	end
@@ -465,7 +468,7 @@ function Dcr:PopulateButtonPress() --{{{
 		PopulateFrame:addFunction("raid"..i);
 	    end
 	end
-    elseif (not IsShiftKeyDown()) then
+    elseif (not IsShiftKeyDown() and this.GroupNumber) then
 	PopulateFrame:addFunction(this.GroupNumber);
     end
 

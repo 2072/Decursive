@@ -44,19 +44,19 @@ end --}}}
 
 function Dcr:Println( ... ) --{{{
 
-    if (Dcr.db.profile.Print_ChatFrame) then
+    if (Dcr.profile.Print_ChatFrame) then
 	Dcr:CustomPrint (1,1,1, Dcr.Status.OutputWindow, Dcr.CONF.TEXT_LIFETIME, " ", ... );
     end
-    if (Dcr.db.profile.Print_CustomFrame) then
+    if (Dcr.profile.Print_CustomFrame) then
 	Dcr:CustomPrint (1,1,1, DecursiveTextFrame, Dcr.CONF.TEXT_LIFETIME, " ", ... );
     end
 end --}}}
 
 function Dcr:ColorPrint (r,g,b, ... )
-    if (Dcr.db.profile.Print_ChatFrame) then
+    if (Dcr.profile.Print_ChatFrame) then
 	Dcr:CustomPrint (r,g,b,Dcr.Status.OutputWindow, Dcr.CONF.TEXT_LIFETIME, " ", ... );
     end
-    if (Dcr.db.profile.Print_CustomFrame) then
+    if (Dcr.profile.Print_CustomFrame) then
 	Dcr:CustomPrint (r,g,b, DecursiveTextFrame, Dcr.CONF.TEXT_LIFETIME, " ", ... );
     end
 end
@@ -96,7 +96,6 @@ function Dcr:tcopy(to, from)   -- "to" must be a table (possibly empty)
     if (type(to) ~= "table") then 
 	return error(("Dcr:tcopy: bad argument #1 'to' must be a table, got '%s' instead"):format(type(to)),2);
     end
-
     for k,v in pairs(from) do
 	if(type(v)=="table") then
 	    to[k] = {}
@@ -192,11 +191,11 @@ function Dcr:DisplayGameTooltip(Message) --{{{
 end --}}}
 
 function Dcr:errln( ... ) --{{{
-    if (Dcr.db.profile.Print_Error) then
-	if (Dcr.db.profile.Print_ChatFrame) then
+    if (Dcr.profile.Print_Error) then
+	if (Dcr.profile.Print_ChatFrame) then
 	    Dcr:CustomPrint ( 1, 0.1, 0.1,Dcr.Status.OutputWindow, Dcr.CONF.TEXT_LIFETIME, " ", ... );
 	end
-	if (Dcr.db.profile.Print_CustomFrame) then
+	if (Dcr.profile.Print_CustomFrame) then
 	    Dcr:CustomPrint (1,0.1,0.1, DecursiveTextFrame, Dcr.CONF.TEXT_LIFETIME, " ", ... );
 	    -- DecursiveTextFrame:AddMessage(Message, 1, 0.1, 0.1, 0.9);
 	end

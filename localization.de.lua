@@ -98,7 +98,7 @@ L:RegisterTranslations("deDE", function() return {
     [Dcr.LOC.POPULATE_LIST]	=	"Schnellbestücken der Decursive Liste",
     [Dcr.LOC.LIST_ENTRY_ACTIONS]	=	Dcr.LOC.LIST_ENTRY_ACTIONS,
     [Dcr.LOC.HIDE_MAIN]	=	"Verstecke Decursive Fenster",
-    [Dcr.LOC.TIE_LIVELIST]    = Dcr.LOC.TIE_LIVELIST;
+    [Dcr.LOC.TIE_LIVELIST]    = Dcr.LOC.TIE_LIVELIST,
     [Dcr.LOC.SHOW_MSG]	=	"Um das Decursive Fenster anzuzeigen, /dcrshow eingeben",
     [Dcr.LOC.IS_HERE_MSG]	=	"Decursive wurde geladen, kontrolliere bitte die Einstellungen",
 
@@ -144,15 +144,15 @@ L:RegisterTranslations("deDE", function() return {
     [Dcr.LOC.DELUSIONOFJINDO]	= "Fluch der Schatten",
 
 
-    [Dcr.LOC.DISEASE] = 'Krankheit';
-    [Dcr.LOC.MAGIC]  = 'Magie';
-    [Dcr.LOC.POISON]  = 'Gift';
-    [Dcr.LOC.CURSE]  = 'Fluch';
-    [Dcr.LOC.MAGICCHARMED] = Dcr.LOC.MAGICCHARMED;
-    [Dcr.LOC.CHARMED] = Dcr.LOC.CHARMED;
+    [Dcr.LOC.DISEASE] = 'Krankheit',
+    [Dcr.LOC.MAGIC]  = 'Magie',
+    [Dcr.LOC.POISON]  = 'Gift',
+    [Dcr.LOC.CURSE]  = 'Fluch',
+    [Dcr.LOC.MAGICCHARMED] = Dcr.LOC.MAGICCHARMED,
+    [Dcr.LOC.CHARMED] = Dcr.LOC.CHARMED,
 
-    [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION;
-    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE"; -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
+    [Dcr.LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
+    [Dcr.LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
     [Dcr.LOC.OPT_LIVELIST] = Dcr.LOC.OPT_LIVELIST,
     [Dcr.LOC.OPT_LIVELIST_DESC] = Dcr.LOC.OPT_LIVELIST_DESC,
     [Dcr.LOC.OPT_HIDELIVELIST_DESC] = Dcr.LOC.OPT_HIDELIVELIST_DESC,
@@ -162,6 +162,8 @@ L:RegisterTranslations("deDE", function() return {
     [Dcr.LOC.OPT_BLACKLENTGH_DESC] = Dcr.LOC.OPT_BLACKLENTGH_DESC,
     [Dcr.LOC.OPT_SCANLENGTH_DESC] = Dcr.LOC.OPT_SCANLENGTH_DESC,
     [Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = Dcr.LOC.OPT_REVERSE_LIVELIST_DESC,
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF,
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC,
     [Dcr.LOC.OPT_TIE_LIVELIST_DESC] = Dcr.LOC.OPT_TIE_LIVELIST_DESC,
     [Dcr.LOC.OPT_MESSAGES] = Dcr.LOC.OPT_MESSAGES,
     [Dcr.LOC.OPT_MESSAGES_DESC] = Dcr.LOC.OPT_MESSAGES_DESC,
@@ -258,6 +260,7 @@ L:RegisterTranslations("deDE", function() return {
     [Dcr.LOC.OPT_YSPACING_DESC] = Dcr.LOC.OPT_YSPACING_DESC,
 
 
+    [Dcr.LOC.HLP_LL_ONCLICK_TEXT] = Dcr.LOC.HLP_LL_ONCLICK_TEXT,
     [Dcr.LOC.HLP_LEFTCLICK] = Dcr.LOC.HLP_LEFTCLICK,
     [Dcr.LOC.HLP_RIGHTCLICK] = Dcr.LOC.HLP_RIGHTCLICK,
     [Dcr.LOC.HLP_MIDDLECLICK] = Dcr.LOC.HLP_MIDDLECLICK,

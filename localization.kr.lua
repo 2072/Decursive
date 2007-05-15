@@ -172,6 +172,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_BLACKLENTGH_DESC] =  "블랙리스트에 등록할 시간을 지정합니다.",
 	[Dcr.LOC.OPT_SCANLENGTH_DESC] = "각 탐색의 시간 간격을 지정합니다.",
 	[Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = "실시간 목록을 아래에서 위로 생성합니다.",
+	[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF,
+	[Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC,
 	[Dcr.LOC.OPT_TIE_LIVELIST_DESC] = "실시간 목록을 아래에서 위로 생성합니다.",
 	[Dcr.LOC.OPT_MESSAGES]	= "메세지",
 	[Dcr.LOC.OPT_MESSAGES_DESC] = "메세지 표시에 대한 설정입니다.",
@@ -270,6 +272,7 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.OPT_YSPACING_DESC] = "MUF 사이의 수직 간격을 설정합니다.",
 
 
+	[Dcr.LOC.HLP_LL_ONCLICK_TEXT] = Dcr.LOC.HLP_LL_ONCLICK_TEXT,
 	[Dcr.LOC.HLP_LEFTCLICK] 	= "좌-클릭",
 	[Dcr.LOC.HLP_RIGHTCLICK] 	= "우-클릭",
 	[Dcr.LOC.HLP_MIDDLECLICK] 	= "가운데-클릭",

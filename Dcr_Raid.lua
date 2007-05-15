@@ -42,7 +42,7 @@ Dcr.Status.Unit_Array		= { };
 
 
 local function AddToSort (unit, index) -- // {{{
-    if (Dcr.db.profile.Random_Order and
+    if (Dcr.profile.Random_Order and
 	(not Dcr.Status.InternalPrioList[(UnitName(unit))]) and not UnitIsUnit(unit,"player")) then
 	index = random (1, 3000);
     end
@@ -62,6 +62,8 @@ function Dcr:NameToUnit( Name) --{{{
 	    return false;
 	elseif (Name == (UnitName("player"))) then
 	    return "player";
+	elseif (Name == (UnitName("focus"))) then
+	    return "focus";
 	elseif (Name == (UnitName("pet"))) then
 	    return "pet";
 	elseif (Name == (UnitName("party1"))) then
@@ -90,7 +92,7 @@ function Dcr:NameToUnit( Name) --{{{
 	    if ( Name == RaidName) then
 		return "raid"..i;
 	    end
-	    if ( Name == (UnitName("raidpet"..i))) then
+	    if ( Dcr.profile.Scan_Pets and Name == (UnitName("raidpet"..i))) then
 		return "raidpet"..i;
 	    end
 	end
@@ -273,7 +275,7 @@ do
 	GroupsPrio = { };
 
 	-- First clean and load the prioritylist (remove missing units)
-	for i, ListEntry in ipairs(Dcr.db.profile.PriorityList) do
+	for i, ListEntry in ipairs(Dcr.profile.PriorityList) do
 
 	    -- first add names present in our raid group
 	    if (type(ListEntry) == "string") then
@@ -300,7 +302,7 @@ do
 	ClassPrio  = Dcr:tReverse(ClassPrio);
 
 	-- Get a cleaned skip list
-	for i, ListEntry in ipairs(Dcr.db.profile.SkipList) do
+	for i, ListEntry in ipairs(Dcr.profile.SkipList) do
 	    if (type(ListEntry) == "string") then
 		unit = Dcr:NameToUnit( ListEntry );
 		if (unit) then
@@ -388,8 +390,9 @@ do
 
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyName, currentGroup, MyClassNum)) then
-		AddToSort( "player", 900);
-		Dcr.Status.Unit_ArrayByName[MyName] = "player";
+		local PlayerRID = Dcr:NameToUnit(MyName);
+		AddToSort( PlayerRID, 900);
+		Dcr.Status.Unit_ArrayByName[MyName] = PlayerRID;
 	    end
 
 	    -- Now we have a cache without the units we want to skip
@@ -405,7 +408,7 @@ do
 	end -- END if we are in a raid
 
 	-- If we have to scan pets...
-	if ( Dcr.db.profile.Scan_Pets ) then
+	if ( Dcr.profile.Scan_Pets ) then
 	    local pet = "";
 
 	    -- add our own pet
@@ -477,8 +480,20 @@ do
 	    end
 	end);
 
+	Dcr.Status.Unit_Array_UnitToIndex = {};
+	Dcr.Status.Unit_Array_UnitToIndex = Dcr:tReverse(Dcr.Status.Unit_Array);
+
+
+	if UnitExists("focus") and UnitIsFriend("focus", "player") then
+	    table.insert(Dcr.Status.Unit_Array, "focus");
+	    Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
+	    Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+	    Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
+	end
+
+	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
+
 	Dcr.Groups_datas_are_invalid = false;
-	Dcr.MFContainer.UpdateYourself = true;
 --	Dcr:PrintLiteral(SortingTable);
 	return;
     end 

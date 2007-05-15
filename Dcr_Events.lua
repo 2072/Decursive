@@ -29,6 +29,8 @@ local BS = Dcr.BS;
 function Dcr:GroupChanged () -- {{{
     -- this will trigger an update of the unit array
     Dcr.Groups_datas_are_invalid = true;
+    -- Update the MUFs display in a short moment
+    Dcr.MicroUnitF:Delayed_MFsDisplay_Update ();
     Dcr:Debug("Groups changed");
 end -- }}}
 
@@ -112,7 +114,8 @@ function Dcr:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
 
 	if (Dcr.Status.ClickedMF) then
 	    Dcr:Debug("Updating color of clicked frame");
-	    Dcr.Status.ClickedMF:SetColor();
+	    Dcr.Status.ClickedMF:Update();
+	    Dcr:ScheduleEvent("Update"..Dcr.Status.ClickedMF.CurrUnit, Dcr.Status.ClickedMF.Update, Dcr.profile.DebuffsFrameRefreshRate, Dcr.Status.ClickedMF, false, false);
 	    Dcr.Status.ClickedMF = false;
 	end
     end
@@ -131,18 +134,31 @@ function Dcr:PLAYER_FOCUS_CHANGED ()
 
     if (Dcr.Status.Unit_Array[#Dcr.Status.Unit_Array] == "focus" and not UnitExists("focus")) then
 	table.remove(Dcr.Status.Unit_Array, #Dcr.Status.Unit_Array);
+	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
+	Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
 	Dcr:Debug("Focus removed");
+
+    elseif Dcr.Status.Unit_Array[#Dcr.Status.Unit_Array] ~= "focus" and UnitExists("focus") and UnitIsFriend("focus", "player") then
+	table.insert(Dcr.Status.Unit_Array, "focus");
+	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
+	Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+	Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
+
+
+	Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
+	Dcr:Debug("Focus Added");
     else
+	Dcr.MicroUnitF:UpdateMUFUnit("focus");
 	Dcr:Debug("Focus changed");
     end
 end
 
 function Dcr:OnDebugEnable ()
-    Dcr.db.profile.debugging = true;
+    Dcr.profile.debugging = true;
 end
 
 function Dcr:OnDebugDisable ()
-    Dcr.db.profile.debugging = false;
+    Dcr.profile.debugging = false;
 end
 
 -- This function update Decursive states :
@@ -207,119 +223,67 @@ function Dcr:SpellCastFailed() -- the blacklisting function {{{
 	or
 	(
 	-- we do not blacklist people in the priority list
-	Dcr.db.profile.DoNot_Blacklist_Prio_List and Dcr:IsInPriorList(Dcr.Status.CastingSpellOnName) 
+	Dcr.profile.DoNot_Blacklist_Prio_List and Dcr:IsInPriorList(Dcr.Status.CastingSpellOnName) 
 	)
 	)
 	) then
-	Dcr.Status.Blacklisted_Array[Dcr.Status.CastingSpellOn] = Dcr.db.profile.CureBlacklist;
-	Dcr:Println("%s is blaclisted for %d seconds", Dcr.Status.CastingSpellOnName, Dcr.db.profile.CureBlacklist);
+	Dcr.Status.Blacklisted_Array[Dcr.Status.CastingSpellOn] = Dcr.profile.CureBlacklist;
+	Dcr:Println("%s is blaclisted for %d seconds", Dcr.Status.CastingSpellOnName, Dcr.profile.CureBlacklist);
 	Dcr.Status.CastingSpellOn = false;
 	Dcr.Status.CastingSpellOnName = false;
     end
 end --}}}
 
 
-function Dcr:RaidScanner_SC () -- the live-list updater --{{{
-
-    if Dcr.db.profile.Amount_Of_Afflicted < 1 then
-	Dcr.db.profile.Amount_Of_Afflicted = 1;
-    elseif Dcr.db.profile.Amount_Of_Afflicted > Dcr.CONF.MAX_LIVE_SLOTS then
-	Dcr.db.profile.Amount_Of_Afflicted = Dcr.CONF.MAX_LIVE_SLOTS;
+function Dcr:UPDATE_MOUSEOVER_UNIT ()
+    if not Dcr.profile.Hide_LiveList and not Dcr.Status.MouseOveringMUF and UnitIsFriend("mouseover", "player") then
+	Dcr:Debug("will check MouseOver");
+	Dcr.LiveList:DelayedGetDebuff("mouseover");
     end
+end
 
-
-    --Dcr:Debug("Dcr:RaidScanner_SC () called");
-
-    local index = 1;
-    local targetexists = false;
-    Dcr:GetUnitArray();
-
-    -- First scan the current target
-    if (UnitExists("target") and UnitIsFriend("target", "player") and not UnitIsUnit("target", "player")) then
-	if (UnitIsVisible("target") and not Dcr:CheckUnitStealth("target")) then
-	    targetexists = true;
-	    if (Dcr:ScanUnit("target", index)) then
-		if (index == 1) then
-		    Dcr:PlaySound ();
-		end
-		index = index + 1;
-	    end
-	end
+function Dcr:SpecialEvents_UnitDebuffGained (UnitID, debuffName, applications, debuffType, texture, rank, index)
+    Dcr:Debug("Debuff gained, UnitId: ", UnitID, debuffName);
+    if Dcr.profile.ShowDebuffsFrame and UnitID ~= "target" then
+	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
+    elseif not Dcr.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
+	Dcr:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
+	Dcr.LiveList:DelayedGetDebuff(UnitID);
     end
+end
 
-    -- Then the mouse-overed target
-    if (not Dcr.Status.MouseOveringMUF and UnitExists("mouseover") and UnitIsFriend("mouseover", "player")) then
-	if (UnitIsVisible("mouseover") and not Dcr:CheckUnitStealth("mouseover")) then
-	    targetexists = true;
-	    if (Dcr:ScanUnit("mouseover", index)) then
-		if (index == 1) then
-		    Dcr:PlaySound ();
-		end
-		index = index + 1;
-	    end
-	end
+function Dcr:SpecialEvents_UnitDebuffLost (UnitID, debuffName, applications, debuffType, texture, rank)
+    Dcr:Debug("Debuff LOST, UnitId: ", UnitID, debuffName);
+    if Dcr.profile.ShowDebuffsFrame and UnitID ~= "target" then
+	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
+    elseif not Dcr.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
+	Dcr:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
+	Dcr.LiveList:DelayedGetDebuff(UnitID);
     end
+end
 
-    -- Charmed units are always displayed first what ever is the priority
-    if (Dcr.Status.CuringSpells[DcrC.ENEMYMAGIC] or Dcr.Status.CuringSpells[DcrC.CHARMED]) then
-	for _, unit in ipairs(Dcr.Status.Unit_Array) do
-	    if (index > Dcr.db.profile.Amount_Of_Afflicted) then
-		break;
-	    end
-	    -- if the unit is even close by
-	    if (UnitIsVisible(unit) and not (targetexists and UnitIsUnit(unit, "target"))) then
-		-- if the unit is mind controlled
-		if (UnitIsCharmed(unit)) then
-		    if (Dcr:ScanUnit(unit, index)) then
-			if (index == 1) then
-			    Dcr:PlaySound ();
-			end
-			index = index + 1;
-		    end
-		end
-	    end
-	end
+
+function Dcr:SpecialEvents_UnitBuffGained(UnitID, buffName, index, applications, texture, rank)
+    --Dcr:Debug("Buff gained, UnitId: ", UnitID, buffName);
+
+    if DcrC.IsStealthBuff[buffName] then
+	Dcr:Debug("STEALTH GAINED: ", UnitID, buffName);
+
+	Dcr.Stealthed_Units[UnitID] = true;
+
+	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
     end
+end
 
-    for _, unit in ipairs(Dcr.Status.Unit_Array) do
-	if (index > Dcr.db.profile.Amount_Of_Afflicted) then
-	    break;
-	end
-	if (UnitIsVisible(unit) and not (targetexists and UnitIsUnit(unit, "target"))) then
-	    if (not UnitIsCharmed(unit) and not Dcr:CheckUnitStealth(unit)) then
-		-- if the unit is even close by
-		if (Dcr:ScanUnit(unit, index)) then
-		    if (index == 1) then
-			Dcr:PlaySound ();
-		    end
-		    index = index + 1;
-		end
-	    end
-	end
+function Dcr:SpecialEvents_UnitBuffLost(UnitID, buffName, applications, texture, rank)
+    --Dcr:Debug("Buff LOST, UnitId: ", UnitID, buffName);
+
+    if DcrC.IsStealthBuff[buffName] then
+	Dcr:Debug("STEALTH LOST: ", UnitID, buffName);
+
+	Dcr.Stealthed_Units[UnitID] = false;
+
+	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
     end
-
-    -- clear livelist
-    local i;
-    local Index;
-    local item;
-
-    for i = index, Dcr.CONF.MAX_LIVE_SLOTS do
-	if i == 1 then
-	    Dcr.Status.SoundPlayed = false;
-	end
-	Index = i;
-	if (Dcr.db.profile.ReverseLiveDisplay and not (i > Dcr.db.profile.Amount_Of_Afflicted)) then
-	    Index = Dcr.db.profile.Amount_Of_Afflicted + -1 * (Index - 1);
-	end
-	item = getglobal("DecursiveAfflictedListFrameListItem"..Index);
-	item.unit = "player";
-	item.debuff = 0;
-	item:Hide();
-    end
-
-    -- for testing only		
-    -- Dcr_UpdateLiveDisplay( 1, "player", 1)
-
-end --}}}
-
+end
 

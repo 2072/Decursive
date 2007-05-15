@@ -79,30 +79,10 @@
 			end
 		    </OnHide>
 		    <OnEnter>
-			if (Dcr.db.profile.DebuffsFrameShowHelp) then
-			Dcr:DisplayGameTooltip(
-			string.format(
-			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
-			"|cFF11FF11%s|r: %s\n"..
-			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
-			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"..
-			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
-			"|cFF11FF11%s|r-|cFF11FF11%s|r: %s",
-
-			Dcr.L[Dcr.LOC.ALT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK],	Dcr.L[Dcr.LOC.HANDLEHELP],
-
-							Dcr.L[Dcr.LOC.HLP_RIGHTCLICK],	Dcr.L[Dcr.LOC.STR_OPTIONS],
-			Dcr.L[Dcr.LOC.ALT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK],	Dcr.L[BINDING_NAME_DCRSHOWOPTION],
-
-			Dcr.L[Dcr.LOC.CTRL],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK],	Dcr.L[BINDING_NAME_DCRPRSHOW], 
-			Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK],	Dcr.L[BINDING_NAME_DCRSKSHOW],
-
-			Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK],	Dcr.L[BINDING_NAME_DCRSHOW]
-			));
-			end;
+			Dcr.MicroUnitF:OnCornerEnter();
 		    </OnEnter>
 		    <OnLeave>
-			if (Dcr.db.profile.DebuffsFrameShowHelp) then
+			if (Dcr.profile.DebuffsFrameShowHelp) then
 			GameTooltip:Hide();
 			end;
 		    </OnLeave>

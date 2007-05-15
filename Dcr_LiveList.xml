@@ -1,0 +1,171 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+    <!--
+    Decursive (v 2.0) add-on for World of Warcraft UI
+    Copyright (C) 2006-2007 John Wellesz (Archarodim) ( http://www.2072productions.com/?to=decursive.php )
+    This is the continued work of the original Decursive (v1.9.4) by Quu
+    Decursive 1.9.4 is in public domain ( www.quutar.com )
+
+    License:
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+    -->
+    <Script>
+	Dcr:SetDateAndRevision("$Date$", "$Revision$");
+    </Script>
+
+    <Frame name="DcrLiveList" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="DecursiveMainBar">
+		<Offset>
+		    <AbsDimension x="0" y="-2"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+    </Frame> <!-- }}} -->
+
+    <Button name="DcrLVItemTemplate"  virtual="true" hidden="true"> <!-- {{{ -->
+	<Size>
+	    <AbsDimension x="180" y="32"/>
+	</Size>
+	<Scripts>
+	    <OnClick>
+		Dcr.LiveList:Onclick();
+	    </OnClick>
+	    <OnEnter>
+		Dcr.LiveList:DebuffTemplate_OnEnter();
+	    </OnEnter>
+	    <OnLeave>
+		DcrDisplay_Tooltip:Hide();
+	    </OnLeave>
+	</Scripts>
+    </Button> <!-- }}} -->
+
+ 
+    <Texture name="DcrLVBackgroundTemplate" virtual="true"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="TOPLEFT" relativeTo="$parent" />
+	    <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+	</Anchors>
+	<Color  r="0" g="0" b="0" a="0.75" />
+    </Texture> <!-- }}} -->
+
+    <Texture name="DcrLVIconTemplate" file="Interface\AddOns\Decursive\iconON.tga" virtual="true"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent">
+		<Offset>
+		    <AbsDimension x="0" y="0"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+	<Size>
+	    <AbsDimension x="32" y="32" />
+	</Size>
+    </Texture> <!-- }}} -->
+
+
+    <FontString name="DcrLLAfflictionCountFont" inherits="NumberFontNormalSmall" maxLines="1" text="1" virtual="true"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent">
+		<Offset>
+		    <AbsDimension x="1" y="1"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+	<Color r="1.0" g="0.1" b="0.2"/>
+	<Shadow>
+	    <offset>
+		<AbsDimension x="1" y="1" />
+	    </offset>
+	    <color r="0" g="0" b="0" />
+	</Shadow>
+    </FontString> <!-- }}} -->
+
+    <FontString name="DcrLLUnitNameFont" inherits="GameFontNormalSmall" justifyH="LEFT" maxLines="1" text="Unit Name" virtual="true"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="TOPLEFT" relativeTo="$parent">
+		<Offset>
+		    <AbsDimension x="33" y="-1"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+	<Size>
+	    <AbsDimension x="73" />
+	</Size>
+	<Color r="1.0" g="0.1" b="0.2"/>
+    </FontString> <!-- }}} -->
+
+    <FontString name="DcrLLDebuffTypeFont" inherits="GameFontNormalSmall" justifyH="RIGHT" maxLines="1" text="Debuff Type" virtual="true"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent">
+		<Offset>
+		    <AbsDimension x="-1" y="-1"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+	<Size>
+	    <AbsDimension x="73" />
+	</Size>
+	<Color r="1.0" g="0.1" b="1.0"/>
+    </FontString> <!-- }}} -->
+
+    <FontString name="DcrLLDebuffNameFont" inherits="GameFontNormalSmall" justifyH="LEFT" maxLines="1" text="Name of the afflication" virtual="true"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent">
+		<Offset>
+		    <AbsDimension x="33" y="3"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+	<Size>
+	    <AbsDimension x="147" />
+	</Size>
+	<Color r="0.1" g="0.5" b="0.4"/>
+    </FontString> <!-- }}} -->
+
+    <!--
+	Live List specification
+	    - Dynamic: Create frames as necessary
+	    - Customizable: Change sizes (width, font size)
+	    - Uses No cpu if nothing to do
+	    - Simple API
+	    - Maintain an array with current Debuffs shown
+	    - When someone is debuffed, check for range changes
+	    - Shares MUFs ressources: uses the work done by the MUFs API if the MUFs are displayed
+		- Especially for in range checks
+		- Will also uses Debuffs found
+
+	Suggested APIs:
+
+	- :AddToLiveList( Unit, Debuff ) where Debuff is a Debuff table as used in Decursive
+	    - this function may also find the priority of the unit
+	- :DelayedAddToLivelist ( Unit, Debuff )
+	Object:SetDebuff(Unit, Debuff)
+
+	Static public properties:
+	.UnitShown : the number of unit currently displayed
+	.LiveListFull : Boolean, true if no more unit can be added (avoid a function call)
+
+	Others:
+	- Priority system:
+	    - Position in the unit array
+	    - X 100 if the unit is charmed
+
+	TODO:
+	- Add a message if the user cliks on the Live-List to cure...
+
+    -->
+
+
+
+</Ui>

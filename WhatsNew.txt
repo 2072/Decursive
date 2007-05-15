@@ -7,7 +7,8 @@ New features:
     Instead of adding each unit separately, class and/or group entities (ex: [ group 1 ] , [ Mage ]) will appear in the lists. The old behavior can still be used by maintaining [SHIFT] when clicking on a group or class-name in the populate list tool (names will be added).
 - The last change also allow to sort units per group AND classes at the same time.
 - An informative help message is displayed when the user doesn't click a MUF with the correct mouse button.
-- Added revised Traditional Chinese translation by Whocare (losomelian AT yahoo DOT com DOT tw) 2007/04/19
+- Major code optimization: reduced CPU usage from ~0.040 seconds per seconds to ~0.001 seconds per second (results obtained with up to date external ACE2 libraries, if Decursive's embeded shared libraries are the most up to date, Decursive CPU usage will also count the usage of the shared libraries by other add-ons).
+- Added revised Traditional Chinese translation by Peter Sun.
 
 Small changes:
 - When a MUF is clicked, any spell targeting in progress is canceled.
@@ -16,13 +17,22 @@ Small changes:
 - It is now possible to move the "Decursive" bar maintaining the key Alt pushed with the buttons hidden.
 - The scale and transparency of the live-list can be changed in the options.
 
+- Live-list system entirely rewritten.
+- A message is displayed if the user clicks on the live-list...
+- It is possible to here Decursive's debuff alert sound when the live-list is disabled.
+- Decursive uses SpecialEvent-Aura events to monitor debuffs.
+- You can create a virtual debuff to test the display (see in live-list options)
+- The MiniMap and FuBar Decursive Icon is now clickable and an information tool-tip is displayed when mouse-overing it.
+- Decursive Icon gets grey when both the live-list and MUFs are disabled.
+- Code cleaning.
+
 
 Fixed bug:
 - The status tool-tip was not displayed if the live-list was hidden.
-- When Waterfall displays disabled 'range' options it calls the 'set' method anyway, this caused a problem when the live-list or the MUFs were disabled...
+- When Waterfall displays disabled 'range' options it calls the 'set' method anyway, this caused a problem when the live-list or the MUFs were disabled.
 - Warlock pet detection could fail in some conditions.
 - Default Warrior ignored debuffs were not used because of a spelling mistake.
-- When you are already in combat when logging-in or if you reload your UI in combat, Decursive will operate correctly.
+- If you were already in combat when logging-in or if you reloaded your UI in combat, Decursive was unable to operate correctly.
 
 
 Changes from Decursive 2.0 BETA 6-Pub to Decursive 2.0 BETA 6-Pub-fixed

@@ -164,6 +164,8 @@ L:RegisterTranslations("zhTW", function() return {
     [Dcr.LOC.OPT_BLACKLENTGH_DESC] =  "設定一個人停留在排除名單中的時間。",
     [Dcr.LOC.OPT_SCANLENGTH_DESC] = "設定掃描時間間隔。",
     [Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = "由下到上填滿即時清單。",
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF,
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC,
     [Dcr.LOC.OPT_TIE_LIVELIST_DESC] = "即時清單顯示與否取決於 \"Decursive\" 工作條是否顯示。",
     [Dcr.LOC.OPT_MESSAGES]	= "訊息設定",
     [Dcr.LOC.OPT_MESSAGES_DESC] = "設定訊息顯示。",
@@ -258,6 +260,7 @@ L:RegisterTranslations("zhTW", function() return {
 
 
 
+    [Dcr.LOC.HLP_LL_ONCLICK_TEXT] = Dcr.LOC.HLP_LL_ONCLICK_TEXT,
     [Dcr.LOC.HLP_LEFTCLICK] = "左-鍵",
     [Dcr.LOC.HLP_RIGHTCLICK] = "右-鍵",
     [Dcr.LOC.HLP_MIDDLECLICK] = "中-鍵",

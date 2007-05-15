@@ -52,21 +52,21 @@ end --}}}
 
 function Dcr:ShowHideLiveList(hide) --{{{
     -- if hide is requested or if hide is not set and the live-list is shown
-    if (hide==1 or (not hide and DecursiveAfflictedListFrame:IsVisible())) then
-	Dcr.db.profile.Hide_LiveList = true;
-	DecursiveAfflictedListFrame:Hide();
+    if (hide==1 or (not hide and DcrLiveList:IsVisible())) then
+	Dcr.profile.Hide_LiveList = true;
+	DcrLiveList:Hide();
 	if Dcr.Status.ScanShedule then
 	    Dcr:CancelScheduledEvent(Dcr.Status.ScanShedule);
 	    Dcr.Status.ScanShedule = false;
 	end
     else
-	Dcr.db.profile.Hide_LiveList = false;
-	DecursiveAfflictedListFrame:ClearAllPoints();
-	DecursiveAfflictedListFrame:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
-	DecursiveAfflictedListFrame:Show();
+	Dcr.profile.Hide_LiveList = false;
+	DcrLiveList:ClearAllPoints();
+	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
+	DcrLiveList:Show();
 
 	if not Dcr.Status.ScanShedule then
-	    Dcr.Status.ScanShedule = Dcr:ScheduleRepeatingEvent(Dcr.RaidScanner_SC, Dcr.db.profile.ScanTime);
+	    Dcr.Status.ScanShedule = Dcr:ScheduleRepeatingEvent("LLupdate", Dcr.LiveList.Update_Display, Dcr.profile.ScanTime, Dcr.LiveList);
 	end
     end
 
@@ -77,22 +77,22 @@ end --}}}
 function Dcr:HideBar(hide) --{{{
 
     if (hide==1 or (not hide and DecursiveMainBar:IsVisible())) then
-	if (Dcr.db.profile.LiveListTied) then
+	if (Dcr.profile.LiveListTied) then
 	    Dcr:ShowHideLiveList(1);
 	end
-	Dcr.db.profile.Hidden = true;
+	Dcr.profile.Hidden = true;
 	DecursiveMainBar:Hide();
     else
-	if (Dcr.db.profile.LiveListTied) then
+	if (Dcr.profile.LiveListTied) then
 	    Dcr:ShowHideLiveList(0);
 	end
-	Dcr.db.profile.Hidden = false;
+	Dcr.profile.Hidden = false;
 	DecursiveMainBar:Show();
     end
 
-    if DecursiveMainBar:IsVisible() and DecursiveAfflictedListFrame:IsVisible() then
-	DecursiveAfflictedListFrame:ClearAllPoints();
-	DecursiveAfflictedListFrame:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
+    if DecursiveMainBar:IsVisible() and DcrLiveList:IsVisible() then
+	DcrLiveList:ClearAllPoints();
+	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
     else
 	Dcr:ColorPrint(0.3, 0.5, 1, L[Dcr.LOC.SHOW_MSG]);
     end
@@ -127,13 +127,13 @@ function Dcr:ShowHideButtons(UseCurrentValue) --{{{
     DCRframeObject = getglobal(DecrFrame);
 
     if (not UseCurrentValue) then
-	Dcr.db.profile.HideButtons = (not Dcr.db.profile.HideButtons);
+	Dcr.profile.HideButtons = (not Dcr.profile.HideButtons);
     end
 
     for _, ButtonName in pairs(buttons) do
 	Button = getglobal(ButtonName);
 
-	if (Dcr.db.profile.HideButtons) then
+	if (Dcr.profile.HideButtons) then
 	    Button:Hide();
 	    DCRframeObject.isLocked = 1;
 	else
@@ -156,9 +156,9 @@ function Dcr:ResetWindow() --{{{
     DecursiveMainBar:SetPoint("CENTER", UIParent);
     DecursiveMainBar:Show();
 
-    DecursiveAfflictedListFrame:ClearAllPoints();
-    DecursiveAfflictedListFrame:SetPoint("TOPLEFT", DecursiveMainBar, "BOTTOMLEFT");
-    DecursiveAfflictedListFrame:Show();
+    DcrLiveList:ClearAllPoints();
+    DcrLiveList:SetPoint("TOPLEFT", DecursiveMainBar, "BOTTOMLEFT");
+    DcrLiveList:Show();
 
     DecursivePriorityListFrame:ClearAllPoints();
     DecursivePriorityListFrame:SetPoint("CENTER", UIParent);
@@ -176,90 +176,23 @@ function Dcr:ResetWindow() --{{{
 end --}}}
 
 
--- this displays the tooltips of the live-list
-function Dcr:DebuffTemplate_OnEnter() --{{{
-    if (Dcr.db.profile.AfflictionTooltips) then
-	DcrDisplay_Tooltip:SetOwner(this, "ANCHOR_CURSOR");
-	DcrDisplay_Tooltip:ClearLines();
-	DcrDisplay_Tooltip:SetUnitDebuff(this.unit,this.debuff); -- OK
-	DcrDisplay_Tooltip:Show();
-    end
-end --}}}
 
-function Dcr:PlaySound () --{{{
-    if (Dcr.db.profile.PlaySound and not Dcr.Status.SoundPlayed) then
-	-- good sounds: Sound\\Doodad\\BellTollTribal.wav
-	--		Sound\\interface\\AuctionWindowOpen.wav
-	PlaySoundFile("Sound\\Doodad\\BellTollTribal.wav");
-	Dcr.Status.SoundPlayed = true;
+function Dcr:PlaySound (UnitID) --{{{
+    if (Dcr.profile.PlaySound and not Dcr.Status.SoundPlayed) then
+	local Debuffs = Dcr:UnitCurableDebuffs(UnitID, true);
+	if (Debuffs and Debuffs[1] and Debuffs[1].Type) then
+
+	    -- good sounds: Sound\\Doodad\\BellTollTribal.wav
+	    --		Sound\\interface\\AuctionWindowOpen.wav
+	    PlaySoundFile("Sound\\Doodad\\BellTollTribal.wav");
+	    Dcr.Status.SoundPlayed = true;
+	end
     end
 end --}}}
 
 -- LIVE-LIST DISPLAY functions {{{
 
-function Dcr:ScanUnit( Unit, Index) --{{{
-    Debuff = Dcr:UnitCurableDebuffs(Unit, true);
-   
-    if (Debuff and Debuff[1] and Debuff[1].Type) then
 
-	if (Dcr.db.profile.LV_OnlyInRange) then
-	    local RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[Debuff[1].Type], Unit);
-
-	    if (not RangeStatus or RangeStatus == 0) then
-		return false;
-	    end
-	end
-
-	Dcr:UpdateLiveDisplay(Index, Unit, Debuff[1]);
-	return true;
-    end
-    return false;
-end --}}}
-
-function Dcr:UpdateLiveDisplay( Index, Unit, Debuff) --{{{
-
-    if (Dcr.db.profile.ReverseLiveDisplay) then
-	Index = Dcr.db.profile.Amount_Of_Afflicted + -1 * (Index - 1);
-    end
-
-    local baseFrame = "DecursiveAfflictedListFrameListItem";
-
-    local item = getglobal(baseFrame..Index);
-    if (item.debuff == Debuff.index and item.Name == Debuff.Name and item.unit == Unit and item.DebuffApps == Debuff.Applications) then
-	-- it's already displayed...
-	return
-    end
-    Dcr:Debug("Updating: "..baseFrame.. Index);
-
-    item.unit = Unit;
-    item.Name = Debuff.Name;
-    item.debuff = Debuff.index;
-    item.DebuffApps = Debuff.Applications;
-
-    getglobal(baseFrame..Index.."DebuffIcon"):SetTexture(Debuff.Texture);
-
-    if (Debuff.Applications > 0) then
-	getglobal(baseFrame..Index.."DebuffCount"):SetText(Debuff.Applications);
-    else
-	getglobal(baseFrame..Index.."DebuffCount"):SetText("");
-    end
-
-    getglobal(baseFrame..Index.."Name"):SetText(Dcr:MakePlayerName((UnitName(Unit))));
-
-    getglobal(baseFrame..Index.."Type"):SetText(Dcr:MakeAfflictionName(Debuff.TypeName));
-
-    getglobal(baseFrame..Index.."Affliction"):SetText(Debuff.Name);
-    
-    item:Show();
-
-    item = getglobal(baseFrame..Index.."Debuff");
-    item.unit = Unit;
-    item.debuff = Debuff.index;
-
-    --item = getglobal(baseFrame..Index.."ClickMe");
-    --item.unit = Unit;
-    --item.debuff = Debuff.index;
-end --}}}
 
 -- Those set the scalling of the LIVELIST container
 -- SACALING FUNCTIONS {{{
@@ -267,7 +200,7 @@ end --}}}
 function Dcr:PlaceLL () -- {{{
     local UIScale	= UIParent:GetEffectiveScale()
     local FrameScale	= DecursiveMainBar:GetEffectiveScale();
-    local x, y = Dcr.db.profile.MainBarX, Dcr.db.profile.MainBarY;
+    local x, y = Dcr.profile.MainBarX, Dcr.profile.MainBarY;
 
     -- Executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
@@ -277,16 +210,16 @@ function Dcr:PlaceLL () -- {{{
 
     -- set to the scaled position
     DecursiveMainBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
-    DecursiveAfflictedListFrame:ClearAllPoints();
-    DecursiveAfflictedListFrame:SetPoint("TOPLEFT", DecursiveMainBar, "BOTTOMLEFT");
+    DcrLiveList:ClearAllPoints();
+    DcrLiveList:SetPoint("TOPLEFT", DecursiveMainBar, "BOTTOMLEFT");
 end -- }}}
 
 -- Save the position of the frame without its scale
 function Dcr:SaveLLPos () -- {{{
     if DecursiveMainBar:IsVisible() then
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
-	Dcr.db.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
-	Dcr.db.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
+	Dcr.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
+	Dcr.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
 
 	--	Dcr:Debug("Frame position saved");
     end
@@ -300,7 +233,7 @@ function Dcr:SetLLScale (NewScale) -- {{{
     Dcr:SaveLLPos ();
     -- Set the new scale
     DecursiveMainBar:SetScale(NewScale);
-    DecursiveAfflictedListFrame:SetScale(NewScale);
+    DcrLiveList:SetScale(NewScale);
     -- Place the frame adapting its position to the news cale
     Dcr:PlaceLL ();
     
@@ -317,8 +250,15 @@ end -- }}}
 -- Scanning functionalities {{{
 -------------------------------------------------------------------------------
 
--- This finction only returns interesting values of UnitDebuff()
+-- This function only returns interesting values of UnitDebuff()
 function Dcr:GetUnitDebuff  (Unit, i) --{{{
+
+    if Dcr.LiveList.TestItemDisplayed and i == 1 then
+	Dcr:Debug("|cFFFF0000Setting test debuff|r");
+	return "Name of the afflication (Test)", DcrC.TypeNames[Dcr.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga";
+    end
+
+
     local Name, rank, Texture, Applications, TypeName  = UnitDebuff(Unit, i);
     if (Name) then
 	return Name, TypeName, Applications, Texture;
@@ -429,13 +369,13 @@ end
 
 
 do
-    -- see the comemnt about DebuffUnitCache
-    local ManagedDebuffUnitCache = {};
+    -- see the comment about DebuffUnitCache
+    local ManagedDebuffUnitCache = Dcr.ManagedDebuffUnitCache;
 
 
     local sorting = function (a, b)
-	cura = (a.Type and Dcr.db.profile.CureOrder[a.Type] and Dcr.db.profile.CureOrder[a.Type] > 0) and Dcr.db.profile.CureOrder[a.Type] or 1024;
-	curb = (b.Type and Dcr.db.profile.CureOrder[b.Type] and Dcr.db.profile.CureOrder[b.Type] > 0) and Dcr.db.profile.CureOrder[b.Type] or 1024;
+	cura = (a.Type and Dcr.profile.CureOrder[a.Type] and Dcr.profile.CureOrder[a.Type] > 0) and Dcr.profile.CureOrder[a.Type] or 1024;
+	curb = (b.Type and Dcr.profile.CureOrder[b.Type] and Dcr.profile.CureOrder[b.Type] > 0) and Dcr.profile.CureOrder[b.Type] or 1024;
 
 	return cura < curb;
     end
@@ -479,20 +419,20 @@ do
 	    continue = true;
 
 	    -- test if we have to ignore this debuf  {{{ --
-	    if (Dcr.db.profile.DebuffsToIgnore[Debuff.Name]) then
+	    if (Dcr.profile.DebuffsToIgnore[Debuff.Name]) then
 		-- these are the BAD ones... the ones that make the target immune... abort this unit
 		break; -- exit here
 	    end
 
-	    if (Dcr.db.profile.BuffDebuff[Debuff.Name]) then
+	    if (Dcr.profile.BuffDebuff[Debuff.Name]) then
 		-- these are just ones you don't care about
 		continue = false;
 	    end
 
-	    if (Dcr.Status.Combat or Dcr.db.profile.DebuffAlwaysSkipList[Debuff.Name]) then
+	    if (Dcr.Status.Combat or Dcr.profile.DebuffAlwaysSkipList[Debuff.Name]) then
 		local _, EnUClass = UnitClass(Unit);
-		if (Dcr.db.profile.skipByClass[EnUClass]) then
-		    if (Dcr.db.profile.skipByClass[EnUClass][Debuff.Name]) then
+		if (Dcr.profile.skipByClass[EnUClass]) then
+		    if (Dcr.profile.skipByClass[EnUClass][Debuff.Name]) then
 			-- these are just ones you don't care about by class while in combat
 			continue = false;
 		    end
@@ -508,12 +448,12 @@ do
 
 
 		-- We have a match for this type and we decided (checked) to
-		-- cure it NOTE: Dcr.db.profile.CureOrder[DEBUFF_TYPE] is set
+		-- cure it NOTE: Dcr.profile.CureOrder[DEBUFF_TYPE] is set
 		-- to FALSE when the type is unchecked and to < 0 when there is
 		-- no spell available for the type or when the spell is gone
 		-- (it happens for warlocks or when using the same profile with
 		-- several characters)
-		--if (Dcr.db.profile.CureOrder[Debuff.Type] and Dcr.db.profile.CureOrder[Debuff.Type] > 0) then
+		--if (Dcr.profile.CureOrder[Debuff.Type] and Dcr.profile.CureOrder[Debuff.Type] > 0) then
 		if (Dcr:GetCureCheckBoxStatus(Debuff.Type)) then
 
 
@@ -524,7 +464,7 @@ do
 			-- The user doesn't want to cure a unit afllicted by poison or disease if the unit
 			-- is beeing cured by an abolish spell
 
-			if (Dcr.db.profile.Check_For_Abolish and (Debuff.Type == DcrC.POISON and Dcr:CheckUnitForBuffs(Unit, BS[Dcr.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DcrC.DISEASE and Dcr:CheckUnitForBuffs(Unit, BS[Dcr.LOC.SPELL_ABOLISH_DISEASE]))) then
+			if (Dcr.profile.Check_For_Abolish and (Debuff.Type == DcrC.POISON and Dcr.A:UnitHasBuff(Unit, BS[Dcr.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DcrC.DISEASE and Dcr.A:UnitHasBuff(Unit, BS[Dcr.LOC.SPELL_ABOLISH_DISEASE]))) then
 			    Dcr:Debug("Abolish buff found, skipping");
 			else
 			    -- Dcr:Debug("It's managed");
@@ -550,9 +490,11 @@ do
 	end -- for END
 
 	-- erase unused entries without freeing the memory (less garbage)
-	while (ManagedDebuffs[DebuffNum]) do
-	    ManagedDebuffs[DebuffNum].Type = false;
-	    DebuffNum = DebuffNum + 1;
+	if (not JustOne or DebuffNum == 1)  then -- if JustOne is set don't clear anything except if we found nothing
+	    while (ManagedDebuffs[DebuffNum]) do
+		ManagedDebuffs[DebuffNum].Type = false;
+		DebuffNum = DebuffNum + 1;
+	    end
 	end
 
 	-- sort the table only if it's not 'empty' and only if there is at least two debuffs
@@ -575,6 +517,7 @@ local UnitBuffsCache	= {};
 -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
 function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
+    --[=[
     if (not UnitBuffsCache[Unit]) then
 	UnitBuffsCache[Unit] = {};
     end
@@ -598,9 +541,12 @@ function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 	UnitBuffs[i] = false;
 	i = i + 1;
     end
+    --]=]
 
     if type(BuffNamesToCheck) ~= "table" then
-	if Dcr:tcheckforval(UnitBuffs, BuffNamesToCheck) then
+
+	if ( Dcr.A:UnitHasBuff(Unit, BuffNamesToCheck) ) then
+	--if Dcr:tcheckforval(UnitBuffs, BuffNamesToCheck) then
 	    return true;
 	else
 	    return false;
@@ -609,7 +555,8 @@ function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 	local Buff;
 	for _, Buff in pairs(BuffNamesToCheck) do
 
-	    if Dcr:tcheckforval(UnitBuffs, Buff) then
+	    if ( Dcr.A:UnitHasBuff(Unit, Buff) ) then
+	    --if Dcr:tcheckforval(UnitBuffs, Buff) then
 		return true;
 	    end
 
@@ -620,10 +567,16 @@ function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
 end --}}}
 
-local Stealthed = {BS["Prowl"], BS["Stealth"], BS["Shadowmeld"],}; -- BS["Ice Armor"],};
+local Stealthed = {BS["Prowl"], BS["Stealth"], BS["Shadowmeld"],  BS["Invisibility"]}; --, BS["Ice Armor"],};
+
+
+
+DcrC.IsStealthBuff = Dcr:tReverse(Stealthed);
+
+Dcr.Stealthed_Units = {};
 
 function Dcr:CheckUnitStealth(Unit) --{{{
-    if (Dcr.db.profile.Ingore_Stealthed) then
+    if (Dcr.profile.Ingore_Stealthed) then
 	if Dcr:CheckUnitForBuffs(Unit, Stealthed) then
 --	    Dcr:Debug("Sealth found !");
 	    return true;

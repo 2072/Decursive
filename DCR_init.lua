@@ -27,7 +27,9 @@ Dcr.L	    = AceLibrary("AceLocale-2.2"):new   ("Dcr");
 Dcr.BC	    = AceLibrary("Babble-Class-2.2");
 Dcr.BS	    = AceLibrary("Babble-Spell-2.2");
 Dcr.DewDrop = AceLibrary("Dewdrop-2.0");
+Dcr.A = AceLibrary("SpecialEvents-Aura-2.0");
 Dcr.Waterfall = AceLibrary("Waterfall-1.0");
+Dcr.T	    = AceLibrary("Tablet-2.0");
 
 local L = Dcr.L;
 local BC = Dcr.BC;
@@ -42,7 +44,7 @@ Dcr.Groups_datas_are_invalid = false;
 -- Internal HARD settings for decursive
 Dcr.CONF = {};
 Dcr.CONF.TEXT_LIFETIME = 4.0;
-Dcr.CONF.MAX_LIVE_SLOTS = 15;
+Dcr.CONF.MAX_LIVE_SLOTS = 10;
 Dcr.CONF.MACRONAME = "Decursive";
 
 BINDING_HEADER_DECURSIVE = "Decursive";
@@ -68,6 +70,9 @@ Dcr.CONF.MACRO_SHOW_ORDER   = "/dcrshoworder";
 -- CONSTANTS
 DcrC = {};
 
+DcrC.IconON = "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga";
+DcrC.IconOFF = "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconOFF.tga";
+
 DcrC.ENEMYMAGIC = 2;
 DcrC.MAGIC	= 1;
 DcrC.CURSE	= 4;
@@ -75,12 +80,10 @@ DcrC.POISON	= 8;
 DcrC.DISEASE	= 16;
 DcrC.CHARMED	= 32;
 
-DcrC.BLACKTEXTURE = "Interface\\AddOns\\Decursive\\Textures\\BackDrop";
-DcrC.TRANSTEXTURE = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-transparent-white";
-
 DcrC.MFSIZE = 20;
 
 Dcr.MFContainer = false;
+Dcr.LLContainer = false;
 
 Dcr.Status = {};
 
@@ -90,8 +93,12 @@ Dcr.Status.DelayedFunctionCalls = {};
 Dcr.Status.DelayedFunctionCallsCount = 0;
 
 Dcr.Status.Blacklisted_Array = {};
-Dcr.Status.ClassBordersAreInvalid = false;
+Dcr.Status.UnitNum = 0;
 
+-- An acces the debuff table
+Dcr.ManagedDebuffUnitCache = {};
+-- A table UnitID=>IsDebuffed (boolean)
+Dcr.UnitDebuffed = {};
 
 -- // }}}
 -------------------------------------------------------------------------------
@@ -104,7 +111,7 @@ Dcr.Status.ClassBordersAreInvalid = false;
 
 -- add support for FuBar
 Dcr.independentProfile	= true; -- for Fubar
-Dcr.hasIcon	    	= "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga";
+Dcr.hasIcon	    	= DcrC.IconON;
 Dcr.defaultMinimapPosition = 250;
 Dcr.hideWithoutStandby	= true;
 Dcr.defaultPosition	= "LEFT";
@@ -119,9 +126,54 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
 	-- add support for FuBar
 	Dcr.OnMenuRequest	= Dcr.options;
+	Dcr.OnMouseDown = Dcr.MicroUnitF.OnCornerClick;
+
+	Dcr.OnTooltipUpdate = function()
+	    Dcr:Debug("Updating FuBar tooltip");
+	    local cat = Dcr.T:AddCategory(
+	    --'text', "Alpha",
+	    'columns', 2,
+	    'child_textR', 0,
+	    'child_textG', 1,
+	    'child_textB', 0,
+	    'child_textR2', 1,
+	    'child_textG2', 1,
+	    'child_textB2', 1,
+	    'child_justify2', 'LEFT'
+	    );
+
+	    cat:AddLine(
+	    'text', ("%s: "):format(Dcr.L[Dcr.LOC.HLP_RIGHTCLICK]),
+	    'text2',  Dcr.L[Dcr.LOC.STR_OPTIONS]
+	    );
+
+	    cat:AddLine(
+	    'text', ("%s-%s: "):format(Dcr.L[Dcr.LOC.ALT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK]),
+	    'text2', Dcr.L[BINDING_NAME_DCRSHOWOPTION]
+	    );
+	    cat:AddLine(
+	    'text', ("%s-%s: "):format(Dcr.L[Dcr.LOC.CTRL],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK]),
+	    'text2', Dcr.L[BINDING_NAME_DCRPRSHOW]
+	    );
+	    cat:AddLine(
+	    'text', ("%s-%s: "):format(Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK]),
+	    'text2', Dcr.L[BINDING_NAME_DCRSKSHOW]
+	    );
+	    cat:AddLine(
+	    'text', ("%s-%s: " ):format(Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK]),
+	    'text2', Dcr.L[BINDING_NAME_DCRSHOW]
+	    );
+
+	    
+	end	
 
 	Dcr.MFContainer = DcrMUFsContainer;
 	Dcr.MicroUnitF.Frame = Dcr.MFContainer;
+
+
+	Dcr.LLContainer = DcrLiveList;
+	Dcr.LiveList.Frame = DcrLiveList;
+
 
 	Dcr.DewDrop:Register(DecursiveMainBar,
 	'children', function()
@@ -159,7 +211,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		Types = {DcrC.CHARMED},
 		IsBest = false,
 	    },
-	    --[[
+	    ---[[
 	    [BS["Dampen Magic"] ]	    = {
 		Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},
 		IsBest = false,
@@ -306,7 +358,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 		name = BINDING_HEADER_DECURSIVE;
 		subtext = L[Dcr.LOC.OPTION_MENU];
 		tooltip = L[BINDING_NAME_DCRSHOW];
-		icon = "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga";
+		icon = DcrC.IconON;
 		callback = Dcr.ShowHidePriorityListUI;
 	    }
 	    );
@@ -331,28 +383,49 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
 
     -- these events are automatically stopped when the addon is disabled by ACE
-    self:RegisterEvent("LEARNED_SPELL_IN_TAB","Configure",1);
-    self:RegisterEvent("SPELLS_CHANGED","ReConfigure", 1);
+
+    -- Spell changes events
+    self:RegisterEvent("LEARNED_SPELL_IN_TAB","Configure",0.5);
+    self:RegisterEvent("SPELLS_CHANGED","ReConfigure", 0.5);
+
+    -- Combat detection events
     self:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
+
+    -- Cast status events
     self:RegisterEvent("UNIT_SPELLCAST_STOP","UNIT_SPELLCAST_STOP");
-    -- self:RegisterEvent("UNIT_SPELLCAST_FAILED","UNIT_SPELLCAST_FAILED");
     self:RegisterEvent("UNIT_SPELLCAST_SENT","UNIT_SPELLCAST_SENT");
     self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED","UNIT_SPELLCAST_SUCCEEDED");
 
+    -- Raid/Group changes events
     self:RegisterEvent("PARTY_MEMBERS_CHANGED","GroupChanged");
     self:RegisterEvent("PARTY_LEADER_CHANGED","GroupChanged");
     self:RegisterEvent("RAID_ROSTER_UPDATE","GroupChanged");
-    self:RegisterEvent("UNIT_PET","UNIT_PET");
     self:RegisterEvent("PLAYER_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
-    --  self:RegisterEvent("PLAYER_FARSIGHT_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
+
+    -- Player pet detection event (used to find pet spells)
+    self:RegisterEvent("UNIT_PET","UNIT_PET");
+
+    -- used to find when a unit is not in line of sight
     self:RegisterEvent("UI_ERROR_MESSAGE","UI_ERROR_MESSAGE");
+
+
+    -- Buff and Debuff Events thses trigger a debuff scan, ther arguments are not used
+    self:RegisterEvent("SpecialEvents_UnitDebuffGained")
+    self:RegisterEvent("SpecialEvents_UnitDebuffLost")
+    self:RegisterEvent("SpecialEvents_UnitBuffGained")
+    self:RegisterEvent("SpecialEvents_UnitBuffLost")
+    
+    
+    self:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
+
+    -- used for Debugging purpose
     self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
     --	self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
 
 
 
-    self:ScheduleRepeatingEvent(Dcr.SheduledTasks, 0.12);
+    self:ScheduleRepeatingEvent("SheduledTasks", Dcr.SheduledTasks, 0.2);
     
     -- Configure specific profile dependent data
     Dcr:OnProfileEnable();
@@ -384,6 +457,8 @@ function Dcr:OnProfileEnable()
     Dcr.Status.CuringSpellsPrio = {};
     Dcr.Status.Blacklisted_Array = {};
     Dcr.Status.Unit_Array_UnitToName = {};
+    Dcr.Status.Unit_Array_UnitToIndex = {};
+    Dcr.Status.UnitNum = 0;
     Dcr.Status.DelayedFunctionCalls = {};
     Dcr.Status.DelayedFunctionCallsCount = 0;
 
@@ -392,36 +467,39 @@ function Dcr:OnProfileEnable()
 	Dcr.Status.Combat = true;
     end
 
+    Dcr.profile = Dcr.db.profile; -- Dcr.db has a metatable for __index so to avoid the call of a function each time we access a config data we set this shortcut.
 
-    if type (Dcr.db.profile.OutputWindow) == "string" then
-	Dcr.Status.OutputWindow = getglobal(Dcr.db.profile.OutputWindow);
+    if type (Dcr.profile.OutputWindow) == "string" then
+	Dcr.Status.OutputWindow = getglobal(Dcr.profile.OutputWindow);
     end
 
-    Dcr.debugging = Dcr.db.profile.debugging;
+    Dcr.debugging = Dcr.profile.debugging;
     Dcr.debugFrame = Dcr.Status.OutputWindow;
     Dcr.printFrame = Dcr.Status.OutputWindow;
 
     Dcr:Debug("Loading profile datas...");
 
     -- this is needed to fix a typo in previous versions...
-    if (Dcr.db.profile.skipByClass["WARRIoR"]) then
-	Dcr.db.profile.skipByClass["WARRIoR"] = nil;
-	Dcr.db.profile.skipByClass["WARRIOR"] = {};
-	Dcr:tcopy(Dcr.db.profile.skipByClass["WARRIOR"], Dcr.defaults.skipByClass["WARRIOR"]);
+    if (Dcr.profile.skipByClass["WARRIoR"]) then
+	Dcr.profile.skipByClass["WARRIoR"] = nil;
+	Dcr.profile.skipByClass["WARRIOR"] = {};
+	Dcr:tcopy(Dcr.profile.skipByClass["WARRIOR"], Dcr.defaults.skipByClass["WARRIOR"]);
     end
 
     Dcr:Init();
 
-    if not Dcr.db.profile.Hide_LiveList then
+    if not Dcr.profile.Hide_LiveList then
 	Dcr.Status.ScanShedule =
-	self:ScheduleRepeatingEvent(Dcr.RaidScanner_SC, Dcr.db.profile.ScanTime);
+	self:ScheduleRepeatingEvent("LLupdate", Dcr.LiveList.Update_Display, Dcr.profile.ScanTime, Dcr.LiveList);
     else
 	Dcr.Status.ScanShedule = false;
     end
 
-    if Dcr.db.profile.ShowDebuffsFrame then
+    Dcr.MicroUnitF.MaxUnit = Dcr.profile.DebuffsFrameMaxCount;
+
+    if Dcr.profile.ShowDebuffsFrame then
 	Dcr.Status.MicroFrameUpdateSchedule =
-	self:ScheduleRepeatingEvent(Dcr.DebuffsFrame_Update, 0.06);
+	self:ScheduleRepeatingEvent("MUFupdate", Dcr.DebuffsFrame_Update, Dcr.profile.DebuffsFrameRefreshRate);
     else
 	Dcr.Status.MicroFrameUpdateSchedule = false;
     end
@@ -434,14 +512,16 @@ function Dcr:OnProfileEnable()
 
     Dcr.Status.Enabled = true;
 
+    Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
+
     -- set Fubar Icon
-    Dcr:SetIcon("Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga");
+    Dcr:SetIcon(DcrC.IconON);
 end
 
 function Dcr:OnDisable() -- When the addon is disabled by ACE
     Dcr.Status.Enabled = false;
     Dcr:SetIcon("Interface\\AddOns\\" .. Dcr.folderName .. "\\iconOFF.tga");
-    if ( Dcr.db.profile.ShowDebuffsFrame) then
+    if ( Dcr.profile.ShowDebuffsFrame) then
 	Dcr.MFContainer:Hide();
     end
 end
@@ -454,9 +534,9 @@ end
 -------------------------------------------------------------------------------
 function Dcr:Init() --{{{
 
-    if (Dcr.db.profile.OutputWindow == nil or not Dcr.db.profile.OutputWindow) then
+    if (Dcr.profile.OutputWindow == nil or not Dcr.profile.OutputWindow) then
 	Dcr.Status.OutputWindow = DEFAULT_CHAT_FRAME;
-	Dcr.db.profile.OutputWindow =  "DEFAULT_CHAT_FRAME";
+	Dcr.profile.OutputWindow =  "DEFAULT_CHAT_FRAME";
     end
 
     Dcr:Println("%s %s by %s", Dcr.name, Dcr.version, Dcr.author);
@@ -464,14 +544,13 @@ function Dcr:Init() --{{{
     Dcr:Debug( "Decursive Initialization started!");
 
 
-
     -- SET MF FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
     -- Set the scale and place the MF container correctly
     Dcr.MFContainer:Show();
-    Dcr.MFContainer:SetScale(Dcr.db.profile.DebuffsFrameElemScale);
+    Dcr.MFContainer:SetScale(Dcr.profile.DebuffsFrameElemScale);
     Dcr.MicroUnitF:Place();
 
-    if (Dcr.db.profile.ShowDebuffsFrame) then
+    if (Dcr.profile.ShowDebuffsFrame) then
 	Dcr.MFContainer:Show();
     else
 	Dcr.MFContainer:Hide();
@@ -482,38 +561,38 @@ function Dcr:Init() --{{{
 	
 	-- Set poristion and scale
     DecursiveMainBar:Show();
-    DecursiveMainBar:SetScale(Dcr.db.profile.LiveListScale);
-    DecursiveAfflictedListFrame:Show();
-    DecursiveAfflictedListFrame:SetScale(Dcr.db.profile.LiveListScale);
+    DecursiveMainBar:SetScale(Dcr.profile.LiveListScale);
+    DcrLiveList:Show();
+    DcrLiveList:SetScale(Dcr.profile.LiveListScale);
     Dcr:PlaceLL();
 
-    if (Dcr.db.profile.Hidden) then
+    if (Dcr.profile.Hidden) then
 	DecursiveMainBar:Hide();
     else
 	DecursiveMainBar:Show();
     end
 
     -- displays frame according to the current profile
-    if (Dcr.db.profile.Hide_LiveList) then
-	DecursiveAfflictedListFrame:Hide();
+    if (Dcr.profile.Hide_LiveList) then
+	DcrLiveList:Hide();
     else
-	DecursiveAfflictedListFrame:ClearAllPoints();
-	DecursiveAfflictedListFrame:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
-	DecursiveAfflictedListFrame:Show();
+	DcrLiveList:ClearAllPoints();
+	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
+	DcrLiveList:Show();
     end
 
     -- set Alpha
-    DecursiveMainBar:SetAlpha(Dcr.db.profile.LiveListAlpha);
-    DecursiveAfflictedListFrame:SetAlpha(Dcr.db.profile.LiveListAlpha);
+    DecursiveMainBar:SetAlpha(Dcr.profile.LiveListAlpha);
+    DcrLiveList:SetAlpha(Dcr.profile.LiveListAlpha);
     -- }}}
 
-    if (Dcr.db.profile.MacroBind == "NONE") then
-	Dcr.db.profile.MacroBind = false;
+    if (Dcr.profile.MacroBind == "NONE") then
+	Dcr.profile.MacroBind = false;
     end
 
     Dcr:ShowHideButtons(true);
 
-    Dcr:ChangeTextFrameDirection(Dcr.db.profile.CustomeFrameInsertBottom);
+    Dcr:ChangeTextFrameDirection(Dcr.profile.CustomeFrameInsertBottom);
 
 
     -- Configure spells
@@ -696,7 +775,7 @@ function Dcr:UpdateMacro ()
     end
 
 
-    Dcr:SetMacroKey(Dcr.db.profile.MacroBind);
+    Dcr:SetMacroKey(Dcr.profile.MacroBind);
 
     return true;
 

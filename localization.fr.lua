@@ -167,7 +167,10 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_BLACKLENTGH_DESC] = "Définit combien de temps quelqu'un reste sur liste noire",
     [Dcr.LOC.OPT_SCANLENGTH_DESC] = "Définit le temps entre chaque scan",
     [Dcr.LOC.OPT_REVERSE_LIVELIST_DESC] = "La liste des affligés se remplit de bas en haut",
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF] = "Créer une affliction virtuelle de test",
+    [Dcr.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = "Permet de voir ce qu'il se passe lorsqu'une affliction est détectée",
     [Dcr.LOC.OPT_TIE_LIVELIST_DESC] = "L'affichage de la liste des affligés est lié à celui de la barre \"Decursive\"",
+[Dcr.LOC.HLP_LL_ONCLICK_TEXT] = "Cliquer sur la liste est inutil depuis WoW 2.0. Vous devriez lire le fichier \"lisez-moi.txt\" qui se trouve dans le répertoire de Decursive",
     [Dcr.LOC.OPT_MESSAGES] = "Messages",
     [Dcr.LOC.OPT_MESSAGES_DESC] = "Options sur les messages affichés",
     [Dcr.LOC.OPT_CHATFRAME_DESC] = "Les messages de Decursive seront affichés dans la fenêtre de discussion par défaut",
@@ -190,7 +193,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_MFSCALE] = 'Echelle des micro-portraits',
     [Dcr.LOC.OPT_MFSCALE_DESC] = "Définit la taille des micro-portraits",
     [Dcr.LOC.OPT_LLSCALE] = 'Echelle de la liste des affligés',
-    [Dcr.LOC.OPT_LLSCALE_DESC] = "Définit la taille de la barre principale de Decursive et de la liste des affligés",
+    [Dcr.LOC.OPT_LLSCALE_DESC] = "Définit la taille de la barre principale de Decursive et de la liste des affligés\n(la barre principale doit être affichée)",
     [Dcr.LOC.OPT_SHOWHELP] = "Affiche l'aide",
     [Dcr.LOC.OPT_SHOWHELP_DESC] = "Affiche une bulle d'aide lorsque la souris passe au-dessus d'un micro-portrait",
     [Dcr.LOC.OPT_MFPERFOPT] = "Options de performance",
@@ -247,7 +250,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.OPT_MFALPHA_DESC] = "Définit la transparence des micro-portraits, lorsque l'unité n'est pas affligée",
     
     [Dcr.LOC.OPT_LLALPHA] = "Transparence",
-    [Dcr.LOC.OPT_LLALPHA_DESC] = "Définit la transparence de la barre principale de Decursive et de la liste des affligés",
+    [Dcr.LOC.OPT_LLALPHA_DESC] = "Définit la transparence de la barre principale de Decursive et de la liste des affligés\n(la barre principale doit être affichée)",
 
 
     [Dcr.LOC.OPT_ADVDISP] = "Options avancées",
