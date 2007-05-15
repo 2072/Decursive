@@ -3,9 +3,6 @@ Personal TODO file for Archarodim (will stop to be personal once I'll add commen
 Important TODO:
 
 
-- test multidebuff
-- test live-list alone
-
 - create XML templates for the MUFs
 
 Other TODO:

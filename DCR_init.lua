@@ -232,7 +232,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		Types = {DcrC.CHARMED},
 		IsBest = false,
 	    },
-	    ---[[
+	    --[[
 	    [BS["Dampen Magic"] ]	    = {
 		Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},
 		IsBest = false,
