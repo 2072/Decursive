@@ -387,7 +387,6 @@ do
 
 	    end
 
-
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyName, currentGroup, MyClassNum)) then
 		local PlayerRID = Dcr:NameToUnit(MyName);
@@ -481,7 +480,7 @@ do
 	end);
 
 	Dcr.Status.Unit_Array_UnitToIndex = {};
-	Dcr.Status.Unit_Array_UnitToIndex = Dcr:tReverse(Dcr.Status.Unit_Array);
+	Dcr.Status.Unit_Array_UnitToIndex = Dcr:tReverse(Dcr.Status.Unit_Array); -- slow :/
 
 
 	if UnitExists("focus") and UnitIsFriend("focus", "player") then
@@ -494,7 +493,7 @@ do
 	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
 
 	Dcr.Groups_datas_are_invalid = false;
---	Dcr:PrintLiteral(SortingTable);
+
 	return;
     end 
 

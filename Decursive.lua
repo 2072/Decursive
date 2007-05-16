@@ -117,6 +117,11 @@ end --}}}
 -- This shows/hides the buttons near the "Decursive" bar
 function Dcr:ShowHideButtons(UseCurrentValue) --{{{
 
+    if not Dcr.profile then
+	return;
+    end
+
+
     local DecrFrame = "DecursiveMainBar";
     local buttons = {
 	DecrFrame .. "Priority",
@@ -216,14 +221,11 @@ end -- }}}
 
 -- Save the position of the frame without its scale
 function Dcr:SaveLLPos () -- {{{
-    if DecursiveMainBar:IsVisible() then
+    if Dcr.profile and DecursiveMainBar:IsVisible() then
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
 	Dcr.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
 	Dcr.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
-
-	--	Dcr:Debug("Frame position saved");
     end
-
 end -- }}}
 
 -- set the scaling of the LIVELIST container according to the user settings

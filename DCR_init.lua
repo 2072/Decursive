@@ -85,6 +85,8 @@ DcrC.MFSIZE = 20;
 Dcr.MFContainer = false;
 Dcr.LLContainer = false;
 
+Dcr.profile = {};
+
 Dcr.Status = {};
 
 Dcr.Status.CuringSpells = {};
