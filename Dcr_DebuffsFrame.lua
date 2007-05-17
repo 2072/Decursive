@@ -37,6 +37,7 @@ local MicroUnitF = Dcr.MicroUnitF;
 -- Init object factory defaults
 MicroUnitF.ExistingPerID = {};
 MicroUnitF.ExistingPerNum = {};
+MicroUnitF.UnitToMUF = {};
 MicroUnitF.Number   = 0;
 MicroUnitF.UnitShown   = 0;
 
@@ -335,23 +336,15 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
 	return;
     end
 
-    -- get the MUF index that should represent this unit
-    local MUF_index = Dcr.Status.Unit_Array_UnitToIndex[unit];
-
-    if (not MUF_index) then
-	--Dcr:Debug("XXXXX ==> UpdateMUFUnit: Unitid (%s) was not found in table Unit_Array_UnitToIndex!", unit);
-	return;
-    end
-
     -- get the MUF object
-    local MF = MicroUnitF:Exists(MUF_index);
+    local MF = MicroUnitF.UnitToMUF[unit];
 
     if (MF and MF.Shown) then
 	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
 	-- but we don't miss any event
 	if (not Dcr:IsEventScheduled("Update"..unit)) then
 	    Dcr:ScheduleEvent("Update"..unit, MF.Update, Dcr.profile.DebuffsFrameRefreshRate, MF, false, false);
-	    Dcr:Debug("Update scheduled for, ", unit, MUF_index);
+	    Dcr:Debug("Update scheduled for, ", unit, MF.ID);
 	end
     end
 end
@@ -692,6 +685,8 @@ do
 	if (self.CurrUnit ~= Unit) then 
 	    self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes without this line
 	    self.Frame:SetAttribute("unit", Unit);
+
+	    MicroUnitF.UnitToMUF[Unit] = self;
 
 	    self.CurrUnit = Unit;
 

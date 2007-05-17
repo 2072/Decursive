@@ -142,7 +142,7 @@ function Dcr:PLAYER_FOCUS_CHANGED ()
 	table.insert(Dcr.Status.Unit_Array, "focus");
 	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
 	Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
-	Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
+	--Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
 
 
 	Dcr.MicroUnitF:Delayed_MFsDisplay_Update();

@@ -479,15 +479,15 @@ do
 	    end
 	end);
 
-	Dcr.Status.Unit_Array_UnitToIndex = {};
-	Dcr.Status.Unit_Array_UnitToIndex = Dcr:tReverse(Dcr.Status.Unit_Array); -- slow :/
+	--Dcr.Status.Unit_Array_UnitToIndex = {};
+	--Dcr.Status.Unit_Array_UnitToIndex = Dcr:tReverse(Dcr.Status.Unit_Array); -- slow :/
 
 
 	if UnitExists("focus") and UnitIsFriend("focus", "player") then
 	    table.insert(Dcr.Status.Unit_Array, "focus");
 	    Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
 	    Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
-	    Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
+	    --Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
 	end
 
 	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;

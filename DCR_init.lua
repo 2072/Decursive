@@ -480,7 +480,7 @@ function Dcr:OnProfileEnable()
     Dcr.Status.CuringSpellsPrio = {};
     Dcr.Status.Blacklisted_Array = {};
     Dcr.Status.Unit_Array_UnitToName = {};
-    Dcr.Status.Unit_Array_UnitToIndex = {};
+    --Dcr.Status.Unit_Array_UnitToIndex = {};
     Dcr.Status.UnitNum = 0;
     Dcr.Status.DelayedFunctionCalls = {};
     Dcr.Status.DelayedFunctionCallsCount = 0;
