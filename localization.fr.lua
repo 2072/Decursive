@@ -134,6 +134,7 @@ L:RegisterTranslations("frFR", function() return {
     -- spells and potions
     [Dcr.LOC.DREAMLESSSLEEP]	= "Sommeil sans rêve",
     [Dcr.LOC.GDREAMLESSSLEEP]	= "Sommeil sans rêve supérieur",
+    [Dcr.LOC.MDREAMLESSSLEEP]	= "Sommeil sans rêve majeur",
     [Dcr.LOC.ANCIENTHYSTERIA]	= "Hystérie ancienne",
     [Dcr.LOC.IGNITE]		= "Enflammer le mana",
     [Dcr.LOC.TAINTEDMIND]	= "Esprit corrompu",

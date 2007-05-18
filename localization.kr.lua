@@ -149,6 +149,7 @@ L:RegisterTranslations("koKR", function() return {
 	-- spells and potions
 	[Dcr.LOC.DREAMLESSSLEEP]	= "숙면",
 	[Dcr.LOC.GDREAMLESSSLEEP]	= "상급 숙면",
+	[Dcr.LOC.MDREAMLESSSLEEP]	= Dcr.LOC.MDREAMLESSSLEEP,
 	[Dcr.LOC.ANCIENTHYSTERIA]	= "고대의 격분",
 	[Dcr.LOC.IGNITE]		= "마나 점화",
 	[Dcr.LOC.TAINTEDMIND]		= "부패한 정신",

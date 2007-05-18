@@ -136,6 +136,7 @@ L:RegisterTranslations("zhTW", function() return {
     -- spells and potions
     [Dcr.LOC.DREAMLESSSLEEP] = "無夢睡眠",
     [Dcr.LOC.GDREAMLESSSLEEP] = "強效昏睡",
+    [Dcr.LOC.MDREAMLESSSLEEP]	= Dcr.LOC.MDREAMLESSSLEEP,
     [Dcr.LOC.ANCIENTHYSTERIA] = "上古狂亂",
     [Dcr.LOC.IGNITE]	= "點燃法力",
     [Dcr.LOC.TAINTEDMIND]	= "污濁之魂",

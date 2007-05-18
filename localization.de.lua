@@ -131,6 +131,7 @@ L:RegisterTranslations("deDE", function() return {
     -- spells and potions
     [Dcr.LOC.DREAMLESSSLEEP]	= "Traumloser Schlaf",
     [Dcr.LOC.GDREAMLESSSLEEP]	= "Großer Trank des traumlosen Schlafs",
+    [Dcr.LOC.MDREAMLESSSLEEP]	= Dcr.LOC.MDREAMLESSSLEEP,
     [Dcr.LOC.ANCIENTHYSTERIA]	= "Uralte Hysterie",
     [Dcr.LOC.IGNITE]		= "Mana entzünden",
     [Dcr.LOC.TAINTEDMIND]	= "Verdorbene Gedanken",

@@ -141,6 +141,7 @@ Dcr.LOC.SPELL_FOUND      = "%s spell found!";
 -- spells and potions
 Dcr.LOC.DREAMLESSSLEEP = "Dreamless Sleep";
 Dcr.LOC.GDREAMLESSSLEEP = "Greater Dreamless Sleep";
+Dcr.LOC.MDREAMLESSSLEEP = "Major Dreamless Sleep";
 Dcr.LOC.ANCIENTHYSTERIA = "Ancient Hysteria";
 Dcr.LOC.IGNITE		= "Ignite Mana";
 Dcr.LOC.TAINTEDMIND	= "Tainted Mind";
@@ -430,6 +431,7 @@ L:RegisterTranslations("enUS", function() return {
     -- spells and potions
     [Dcr.LOC.DREAMLESSSLEEP] = true,
     [Dcr.LOC.GDREAMLESSSLEEP] = true,
+    [Dcr.LOC.MDREAMLESSSLEEP] = true,
     [Dcr.LOC.ANCIENTHYSTERIA] = true,
     [Dcr.LOC.IGNITE] = true,
     [Dcr.LOC.TAINTEDMIND] = true,

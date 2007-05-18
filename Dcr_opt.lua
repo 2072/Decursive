@@ -182,6 +182,7 @@ Dcr.defaults = { -- {{{
     BuffDebuff = { -- thoses debuffs are in fact buffs...
 	[L[Dcr.LOC.DREAMLESSSLEEP]]	= true,
 	[L[Dcr.LOC.GDREAMLESSSLEEP]]	= true,
+	[L[Dcr.LOC.MDREAMLESSSLEEP]]	= true,
 	[BS[DCR_LOC_MINDVISION]]	= true,
 	[L[Dcr.LOC.MUTATINGINJECTION]]	= true,
 	[BS["Arcane Blast"]]		= true,
