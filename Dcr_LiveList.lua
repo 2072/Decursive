@@ -30,11 +30,12 @@ local AceOO = Dcr.AOO;
 Dcr.LiveList = AceOO.Class();
 
 local LiveList = Dcr.LiveList;
+local MicroUnitF = Dcr.MicroUnitF;
 
-LiveList.ExistingPerID	= {};
-LiveList.Number		= 0;
-LiveList.NumberShown	= 0;
-Dcr.ForLLDebuffedUnitsNum = 0;
+LiveList.ExistingPerID	    = {};
+LiveList.Number		    = 0;
+LiveList.NumberShown	    = 0;
+Dcr.ForLLDebuffedUnitsNum   = 0;
 
 -- temporary variables often used in function
 local Debuff, Debuffs, IsCharmed, MF, i, Index, RangeStatus;
@@ -138,6 +139,7 @@ function LiveList.prototype:init(Container,ID) -- {{{
     self.UnitID		    = false;
     self.UnitName	    = false;
     self.PrevUnitName	    = false;
+    self.PrevUnitID	    = false;
     self.UnitClass	    = false;
     
     self.Debuff			= {};
@@ -164,22 +166,26 @@ function LiveList.prototype:init(Container,ID) -- {{{
     self.Frame:SetPoint(self:GiveAnchor());
 
     -- create the background
-    self.BackGroundTexture = self.Frame:CreateTexture(nil, "BACKGROUND", "DcrLVBackgroundTemplate");
+    self.BackGroundTexture = self.Frame:CreateTexture("DcrLiveListItem"..ID.."BackTexture", "BACKGROUND", "DcrLVBackgroundTemplate");
 
     -- Create the Icon Texture
-    self.IconTexture = self.Frame:CreateTexture(nil, "ARTWORK", "DcrLVIconTemplate");
+    self.IconTexture = self.Frame:CreateTexture("DcrLiveListItem"..ID.."Icon", "ARTWORK", "DcrLVIconTemplate");
 
     -- Create the Debuff application count font string
-    self.DebuffAppsFontString = self.Frame:CreateFontString(nil, "OVERLAY", "DcrLLAfflictionCountFont");
+    self.DebuffAppsFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Count", "OVERLAY", "DcrLLAfflictionCountFont");
 
     -- Create the character name Fontstring
-    self.UnitNameFontString = self.Frame:CreateFontString(nil, "OVERLAY", "DcrLLUnitNameFont");
+    self.UnitNameFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitName", "OVERLAY", "DcrLLUnitNameFont");
+    
+    -- Create the unitID Fontstring
+    self.UnitIDFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitID", "OVERLAY", "DcrLLUnitIDFont");
+    --self.UnitIDFontString:SetHeight(3);
 
     -- Create the debuff type fontstring
-    self.DebuffTypeFontString = self.Frame:CreateFontString(nil, "OVERLAY", "DcrLLDebuffTypeFont");
+    self.DebuffTypeFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Type", "OVERLAY", "DcrLLDebuffTypeFont");
 
     -- Create the debuff name fontstring
-    self.DebuffNameFontString = self.Frame:CreateFontString(nil, "OVERLAY", "DcrLLDebuffNameFont");
+    self.DebuffNameFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Name", "OVERLAY", "DcrLLDebuffNameFont");
 
 
     -- a reference to this object
@@ -209,12 +215,13 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
 
     -- Applications count
     if self.PrevDebuffApplicaton ~= Debuff.Applications then
-	if (Debuff.Applications > 0) then
+	if (Debuff.Applications > 1) then
 	    self.DebuffAppsFontString:SetText(Debuff.Applications);
+	    self.PrevDebuffApplicaton = Debuff.Applications;
 	else
 	    self.DebuffAppsFontString:SetText(" ");
+	    self.PrevDebuffApplicaton = " ";
 	end
-	self.PrevDebuffApplicaton = Debuff.Applications;
     end
 
     -- Unit Name
@@ -225,6 +232,13 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
 	    self.UnitNameFontString:SetTextColor(BC:GetColor(self.UnitClass));
 	end
 	self.PrevUnitName =  self.UnitName;
+	Dcr:Debug("(LiveList) Updating %d with %s", self.ID, UnitID);
+    end
+
+    -- Unit ID
+    if self.PrevUnitID ~= UnitID then
+	self.UnitIDFontString:SetText("( "..UnitID.." )");
+	self.PrevUnitID = UnitID;
     end
 
     -- Debuff Type Name
@@ -250,24 +264,25 @@ end -- }}}
 function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
+    Dcr:Debug("(LiveList) Getting Debuff for ", UnitID);
     if  UnitID == "target" and not UnitIsFriend(UnitID, "player") then
 	if Dcr.ManagedDebuffUnitCache[UnitID] and Dcr.ManagedDebuffUnitCache[UnitID][1] and Dcr.ManagedDebuffUnitCache[UnitID][1].Type then
 	    Dcr.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target debuff
+	    Dcr.UnitDebuffed["target"] = false;
 	end
 	return;
     end
 
-    Dcr:Debug("(LiveList) Getting Debuff for ", UnitID);
-    -- decrease the total debuff number if the MUFs system isn't already doing it or if it's the mouseover or target unit
-    if (not Dcr.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target") and Dcr.UnitDebuffed[UnitID]  then
+    -- decrease the total debuff number if the MUFs system isn't already doing it and if it's not the mouseover or target unit
+    if not Dcr.profile.ShowDebuffsFrame and Dcr.UnitDebuffed[UnitID] and UnitID ~= "mouseover" and UnitID ~= "target" then
 	Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum - 1;
     end
 
     -- Get the unit Debuffs
-    if (not Dcr.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target") then
+    if not Dcr.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target" then
 	Debuffs, IsCharmed = Dcr:UnitCurableDebuffs(UnitID, true);
     else -- The MUFs are active and Unit is not mouseover and is not target
-	MF = Dcr.MicroUnitF.UnitToMUF[UnitID];
+	MF = MicroUnitF.UnitToMUF[UnitID];
 	Debuffs = MF.Debuffs;
     end
 
@@ -276,7 +291,7 @@ function LiveList:GetDebuff(UnitID) -- {{{
 	Dcr.UnitDebuffed[UnitID] = true; -- register that this unit is debuffed
 
 	-- increase the total debuff number
-	if not Dcr.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target" then
+	if not Dcr.profile.ShowDebuffsFrame and UnitID ~= "mouseover" and UnitID ~= "target" then
 
 	    Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum + 1;
 
@@ -292,7 +307,8 @@ function LiveList:DelayedGetDebuff(UnitID) -- {{{
     end
 end -- }}}
 
-
+local IndexOffset = 0; -- used when target and/or mouseover are found
+local DebuffedUnitsNumber = 0;
 function LiveList:Update_Display() -- {{{
 
     -- Update the unit array
@@ -302,10 +318,16 @@ function LiveList:Update_Display() -- {{{
 
     Index = 0;
 
+    if Dcr.profile.ShowDebuffsFrame and Dcr.profile.LV_OnlyInRange then -- The MUFs are here and we test for range
+	DebuffedUnitsNumber = MicroUnitF.UnitsDebuffedInRange;
+    else -- the MUFs are not here or we don't test for range
+	DebuffedUnitsNumber = Dcr.ForLLDebuffedUnitsNum;
+    end
+
     -- Check the units in order of importance:
 
     -- First the Target
-    if Dcr.UnitDebuffed["target"] and UnitExists("target") then
+    if Dcr.UnitDebuffed["target"] and UnitExists("target") and UnitIsFriend("player", "target") then
 	Index = Index + 1;
 	self:DisplayItem(Index, "target");
 	if not Dcr.Status.SoundPlayed then
@@ -314,49 +336,58 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- Then the MouseOver
-    if not Dcr.Status.MouseOveringMUF and Dcr.UnitDebuffed["mouseover"] and UnitExists("mouseover") then
+    if not Dcr.Status.MouseOveringMUF and Dcr.UnitDebuffed["mouseover"] and UnitExists("mouseover") and UnitIsFriend("player", "mouseover") then
 	Index = Index + 1;
 	self:DisplayItem(Index, "mouseover");
 	if not Dcr.Status.SoundPlayed then
 	    Dcr:PlaySound ("mouseover");
 	end
     end
+    IndexOffset = Index;
 
     -- Then continue with all the remaining units if at least one of them is debuffed
     -- We need this loop because:
     --	    1, we have to show an ordered list (always true)
     --	    2, we want to test if the unit is in spell range (only if the option is active and the MUFs hidden)
     --	    There is no event to do the last and a not simple table.sort() would be needed for the first...
-    if Dcr.ForLLDebuffedUnitsNum - Index > 0 and Index < Dcr.profile.Amount_Of_Afflicted then
+    if DebuffedUnitsNumber > 0 and Index < Dcr.profile.Amount_Of_Afflicted then
 	for _, UnitID in ipairs(Dcr.Status.Unit_Array) do
-	    -- if the unit is debuffedm still exists and is not stealthedm check this only if the MUFs engine is not there, redudent tests otherwise...
+	    -- if the unit is debuffed and still exists and is not stealthedm check this only if the MUFs engine is not there, redudent tests otherwise...
 	    if Dcr.UnitDebuffed[UnitID] and UnitExists(UnitID) and not (not Dcr.profile.ShowDebuffsFrame and Dcr.profile.Ingore_Stealthed and Dcr.Stealthed_Units[UnitID]) then
 
-		-- The MUFs are shown or we don't care about range
-		if Dcr.profile.ShowDebuffsFrame or not Dcr.profile.LV_OnlyInRange then
+		-- we don't care about range
+		if not Dcr.profile.LV_OnlyInRange then
 		    Index = Index + 1;
 		    self:DisplayItem(Index, UnitID);
-		-- play the sound if not already done
-		if not Dcr.Status.SoundPlayed then
-		    Dcr:PlaySound (UnitID);
-		end
-		else -- The MUFS are hidden and we care about range
-		    RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[Dcr.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
 
-		    if (RangeStatus and RangeStatus ~= 0) then
+		    -- play the sound if not already done
+		    if not Dcr.Status.SoundPlayed then
+			Dcr:PlaySound (UnitID);
+		    end
 
+		else -- we care about range
+
+		    if Dcr.profile.ShowDebuffsFrame then
+			RangeStatus = MicroUnitF.UnitToMUF[UnitID].UnitStatus;
+			RangeStatus = (RangeStatus == DcrC.AFFLICTED or RangeStatus == DcrC.AFFLICTED_AND_CHARMED) and true or false;
+		    else
+			RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[Dcr.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
+			RangeStatus = (RangeStatus and RangeStatus ~= 0) and true or false;
+		    end
+
+		    if (RangeStatus) then
 			Index = Index + 1;
 			self:DisplayItem(Index, UnitID);
-		-- play the sound if not already done
-		if not Dcr.Status.SoundPlayed then
-		    Dcr:PlaySound (UnitID);
-		end
+			-- play the sound if not already done
+			if not Dcr.Status.SoundPlayed then
+			    Dcr:PlaySound (UnitID);
+			end
 		    end
 		end
 	    end
 
 	    -- don't loop if we reach the max displayed unit num or if all debuffed units have been displayed
-	    if Index == Dcr.profile.Amount_Of_Afflicted or Index == Dcr.ForLLDebuffedUnitsNum then
+	    if Index == Dcr.profile.Amount_Of_Afflicted or Index == DebuffedUnitsNumber + IndexOffset then
 		break;
 	    end
 	end

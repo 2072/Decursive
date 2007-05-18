@@ -310,7 +310,7 @@ Dcr.options = { -- {{{
 		    desc = L[Dcr.LOC.OPT_LVONLYINRANGE_DESC],
 		    get = function() return Dcr.profile.LV_OnlyInRange end,
 		    set = function() Dcr.profile.LV_OnlyInRange = not Dcr.profile.LV_OnlyInRange end,
-		    disabled = function() return Dcr.profile.Hide_LiveList or Dcr.ForLLDebuffedUnitsNum > 0 end,
+		    disabled = function() return Dcr.profile.Hide_LiveList end,
 		    order = 100.5
 		},
 		ToolTips = {
@@ -1280,6 +1280,15 @@ function Dcr:ShowHideDebuffsFrame ()
 	Dcr.MFContainer:SetScale(Dcr.profile.DebuffsFrameElemScale);
 	Dcr.MicroUnitF:Place ();
 	Dcr.profile.ShowDebuffsFrame = true;
+
+	local i = 0;
+
+	for ID, MF in pairs(Dcr.MicroUnitF.ExistingPerID) do
+	    if MF.IsDebuffed then
+		Dcr:ScheduleEvent("updMUF"..i, Dcr.SpecialEvents_UnitDebuffLost, i * (Dcr.profile.ScanTime / 2), Dcr, MF.CurrUnit, "Test item");
+		i = i + 1;
+	    end
+	end
     end
 
     if (not Dcr.profile.ShowDebuffsFrame) then

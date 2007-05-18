@@ -103,19 +103,19 @@ function Dcr:UNIT_SPELLCAST_FAILED(unit)
 end
 
 function Dcr:UNIT_SPELLCAST_SENT( player, spell, rank, target )
-    if (Dcr:tcheckforval(Dcr.Status.CuringSpells, spell)) then
+    if (Dcr.Status.CuringSpellsPrio[spell]) then
 	Dcr.Status.CastingSpellOn = Dcr:NameToUnit(target); -- XXX
 	Dcr.Status.CastingSpellOnName = target;
     end
 end
 function Dcr:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
-    if (Dcr:tcheckforval(Dcr.Status.CuringSpells, spell)) then
+    if (Dcr.Status.CuringSpellsPrio[spell]) then
 	Dcr:Println(L[Dcr.LOC.SUCCESSCAST], spell, Dcr:MakePlayerName((Dcr.Status.CastingSpellOnName)));
 
 	if (Dcr.Status.ClickedMF) then
-	    Dcr:Debug("Updating color of clicked frame");
-	    Dcr.Status.ClickedMF:Update();
-	    Dcr:ScheduleEvent("Update"..Dcr.Status.ClickedMF.CurrUnit, Dcr.Status.ClickedMF.Update, Dcr.profile.DebuffsFrameRefreshRate, Dcr.Status.ClickedMF, false, false);
+	    Dcr:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
+	    --Dcr.Status.ClickedMF:Update();
+	    Dcr:ScheduleEvent("UpdatePC"..Dcr.Status.ClickedMF.CurrUnit, Dcr.Status.ClickedMF.Update, 1, Dcr.Status.ClickedMF, false, false);
 	    Dcr.Status.ClickedMF = false;
 	end
     end

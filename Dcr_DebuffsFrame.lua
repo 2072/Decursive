@@ -35,23 +35,25 @@ Dcr.MicroUnitF = AceOO.Class();
 local MicroUnitF = Dcr.MicroUnitF;
 
 -- Init object factory defaults
-MicroUnitF.ExistingPerID = {};
-MicroUnitF.ExistingPerNum = {};
-MicroUnitF.UnitToMUF = {};
-MicroUnitF.Number   = 0;
-MicroUnitF.UnitShown   = 0;
+MicroUnitF.ExistingPerID	    = {};
+MicroUnitF.ExistingPerNum	    = {};
+MicroUnitF.UnitToMUF		    = {};
+MicroUnitF.Number		    = 0;
+MicroUnitF.UnitShown		    = 0;
+MicroUnitF.UnitsDebuffedInRange	    = 0;
+Dcr.ForLLDebuffedUnitsNum	    = 0;
 
 
 -- using power 2 values just to OR them but only CHARMED is ORed (it's a C style bitfield)
-local NORMAL		    = 8;
-local ABSENT		    = 16;
-local FAR		    = 32;
-local STEALTHED		    = 64;
-local BLACKLISTED	    = 128;
-local AFFLICTED		    = 256;
-local AFFLICTED_NIR	    = 512;
-local CHARMED		    = 1024;
-local AFFLICTED_AND_CHARMED = bit.bor(AFFLICTED, CHARMED);
+local NORMAL		    = DcrC.NORMAL;
+local ABSENT		    = DcrC.ABSENT;
+local FAR		    = DcrC.FAR;
+local STEALTHED		    = DcrC.STEALTHED;
+local BLACKLISTED	    = DcrC.BLACKLISTED;
+local AFFLICTED		    = DcrC.AFFLICTED;
+local AFFLICTED_NIR	    = DcrC.AFFLICTED_NIR;
+local CHARMED		    = DcrC.CHARMED;
+local AFFLICTED_AND_CHARMED = DcrC.AFFLICTED_AND_CHARMED;
 
 
 -- Those are the different colors used for the MUFs main texture
@@ -250,7 +252,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    MicroUnitF.UnitShown = MicroUnitF.UnitShown + 1;
 
 	    -- Schedule an update for the MUF we just shown
-	    Dcr:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, Dcr.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF);
+	    Dcr:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, Dcr.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF, false, false);
 	    --Dcr:Debug("Showing %d, scheduling update in %f", i, Dcr.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i));
 
 	elseif (i > NumToShow and MF.Shown) then
@@ -377,7 +379,7 @@ function MicroUnitF:OnEnter() -- {{{
 	    TooltipText =
 	    -- Colored unit name
 	    Dcr:ColorText(	    (UnitName(	  Unit    ))
-	    , "FF" .. ((UnitClass(Unit)) and BC:GetHexColor( (select(2, UnitClass(Unit))) ) or "AAAAAA"));
+	    , "FF" .. ((UnitClass(Unit)) and BC:GetHexColor( (select(2, UnitClass(Unit))) ) or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
 	end
 
 
@@ -571,38 +573,37 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 
 	-- outer texture (the class border)
 	-- Bottom side
-	self.OuterTexture1 = self.Frame:CreateTexture(nil, "BORDER");
+	self.OuterTexture1 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Bottom", "BORDER");
 	self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
 	self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
 
 	-- left side
-	self.OuterTexture2 = self.Frame:CreateTexture(nil, "BORDER");
+	self.OuterTexture2 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Left", "BORDER");
 	self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
 	self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
 
 	-- top side
-	self.OuterTexture3 = self.Frame:CreateTexture(nil, "BORDER");
+	self.OuterTexture3 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Top", "BORDER");
 	self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
 	self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 
 	-- right side
-	self.OuterTexture4 = self.Frame:CreateTexture(nil, "BORDER");
+	self.OuterTexture4 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Right", "BORDER");
 	self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 	self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
 
 
 	-- global texture
-	self.Texture = self.Frame:CreateTexture(nil, "ARTWORK");
+	self.Texture = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Back", "ARTWORK");
 	self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.Texture:SetHeight(16);
 	self.Texture:SetWidth(16);
 
 	-- inner Texture (Charmed special texture)
-	self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY");
+	self.InnerTexture = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Charmed", "OVERLAY");
 	self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.InnerTexture:SetHeight(7);
 	self.InnerTexture:SetWidth(7);
-	--self.InnerTexture:SetDrawLayer("OVERLAY");
 	self.InnerTexture:SetTexture(unpack(MF_colors["InnerCharmed"]));
 
 	-- a reference to this object
@@ -622,19 +623,30 @@ end -- }}}
 
 function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs)
 
-    -- get the unit this MUF should show
     local MF = self;
+    -- get the unit this MUF should show
     local Unit = Dcr.Status.Unit_Array[MF.ID];
     local ActionsDone = 0;
 
     if not Unit then 
 	Dcr:Debug("No Unit for MUF #", MF.ID);
-	return 0
+	if MF.CurrUnit ~= "" then
+	    Unit = MF.CurrUnit;
+	    Dcr:Debug(" Using previous unit: ", MF.CurrUnit);
+	else
+	    return 0
+	end
+    end
+
+    if MF.CurrUnit == Unit and Dcr.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName then
+	if MF:SetClassBorder() then
+	    ActionsDone = ActionsDone + 1; -- count expensive things done
+	end
     end
 
     -- Update the frame attribute if necessary
     if (Dcr.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
-	Dcr:Debug("Attributes update required");
+	Dcr:Debug("Attributes update required: ", MF.ID);
 	if (MF:UpdateAttributes(Unit, true)) then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
 	    SkipSetColor = false; SkipDebuffs = false; -- if some attributes were updated then update the rest
@@ -762,22 +774,21 @@ end -- }}}
 function MicroUnitF.prototype:SetDebuffs() -- {{{
     self.Debuffs, self.IsCharmed = Dcr:UnitCurableDebuffs(self.CurrUnit);
 
-    if self.IsDebuffed and not Dcr.profile.LV_OnlyInRange then
+    if Dcr.UnitDebuffed[self.CurrUnit] then
 	Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum - 1;
     end
 
     if (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
 	self.IsDebuffed = true;
 	self.Debuff1Prio = Dcr:GiveSpellPrioNum( self.Debuffs[1].Type );
-	if not Dcr.profile.LV_OnlyInRange then
-	    Dcr.UnitDebuffed[self.CurrUnit] = true;
-	    Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum + 1;
-	end
+
+	Dcr.UnitDebuffed[self.CurrUnit] = true;
+	Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum + 1;
 
     else
-	self.IsDebuffed = false;
-	self.Debuff1Prio = false;
-	self.PrevDebuff1Prio = false;
+	self.IsDebuffed			= false;
+	self.Debuff1Prio		= false;
+	self.PrevDebuff1Prio		= false;
 	Dcr.UnitDebuffed[self.CurrUnit] = false; -- used by the live-list only
     end
 end -- }}}
@@ -854,22 +865,19 @@ do
 		    Alpha = 0.40;
 		    self.UnitStatus = AFFLICTED_NIR;
 
-		    if profile.LV_OnlyInRange then
-			Dcr.UnitDebuffed[self.CurrUnit] = false;
-		    end
+		    --if profile.LV_OnlyInRange then
+		--	Dcr.UnitDebuffed[self.CurrUnit] = false;
+		  --  end
 		else
 		    Alpha = 1;
 		    self.UnitStatus = AFFLICTED;
 		    BorderAlpha = 1;
 
+		    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange + 1;
+
 		    if (not Dcr.Status.SoundPlayed) then
 			Dcr:PlaySound (self.CurrUnit);
 		    end
-		    if profile.LV_OnlyInRange then
-			Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum + 1;
-			Dcr.UnitDebuffed[self.CurrUnit] = true;
-		    end
-
 		end
 	    elseif PreviousStatus ~= NORMAL then
 		-- the unit has nothing special, set the status to normal
@@ -879,11 +887,9 @@ do
 	end
 
 	if PreviousStatus == AFFLICTED or PreviousStatus == AFFLICTED_AND_CHARMED  then
-	    if profile.LV_OnlyInRange then
-		Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum - 1;
-	    end
+	    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange - 1;
 
-	    if (Dcr.ForLLDebuffedUnitsNum == 0) then
+	    if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.LV_OnlyInRange) then
 		Dcr.Status.SoundPlayed = false;
 	    end
 	end

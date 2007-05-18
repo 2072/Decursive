@@ -80,6 +80,17 @@ DcrC.POISON	= 8;
 DcrC.DISEASE	= 16;
 DcrC.CHARMED	= 32;
 
+
+DcrC.NORMAL		    = 8;
+DcrC.ABSENT		    = 16;
+DcrC.FAR		    = 32;
+DcrC.STEALTHED		    = 64;
+DcrC.BLACKLISTED	    = 128;
+DcrC.AFFLICTED		    = 256;
+DcrC.AFFLICTED_NIR	    = 512;
+DcrC.CHARMED		    = 1024;
+DcrC.AFFLICTED_AND_CHARMED = bit.bor(DcrC.AFFLICTED, DcrC.CHARMED);
+
 DcrC.MFSIZE = 20;
 
 Dcr.MFContainer = false;
@@ -185,6 +196,10 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		'text2',  Dcr.ForLLDebuffedUnitsNum
 		);
 
+		cat2:AddLine(
+		'text', "Afflicted units count in range:",
+		'text2',  Dcr.MicroUnitF.UnitsDebuffedInRange
+		);
 	    end
 
 	    
@@ -226,6 +241,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    [DcrC.CHARMED]	= "FF0000";
 	}
 
+	-- /script DcrC.SpellsToUse[Dcr.BS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
 
 	-- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DcrC.SpellsToUse = {
