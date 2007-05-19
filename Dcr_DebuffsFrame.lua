@@ -331,10 +331,11 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
 
     if (Unitid == "focus") then
 	unit = "focus";
-    elseif (UnitInRaid(Unitid) or UnitInParty(Unitid)) then
+    elseif (Dcr.Status.Unit_Array_UnitToName[Unitid]) then
 	--unit = Dcr:NameToUnit(UnitName(Unitid)); -- needed so we have the same IDs than the ones we have in our lists (we won't get party\d when we are in raid but raid\d+)
 	unit = Unitid;
     else
+	Dcr:Debug("Unit %s, not in raid or party!", Unitid);
 	return;
     end
 

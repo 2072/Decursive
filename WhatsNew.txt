@@ -10,20 +10,21 @@ New features:
 - Major code optimization: reduced CPU usage from ~0.040 seconds per seconds to ~0.001 seconds per second (results obtained with up to date external ACE2 libraries, if Decursive's embeded shared libraries are the most up to date, Decursive CPU usage will also count the usage of the shared libraries by other add-ons).
 - Added revised Traditional Chinese translation by Peter Sun.
 
-Small changes:
+Changes:
 - When a MUF is clicked, any spell targeting in progress is canceled.
 - The MUFs react upon mouse button release instead of mouse button press.
 - When adding an affliction to the filter, the entered name is trimmed.
-- It is now possible to move the "Decursive" bar maintaining the key Alt pushed with the buttons hidden.
-- The scale and transparency of the live-list can be changed in the options.
+- It is now possible to move the "Decursive" bar maintaining the Alt key pushed with the buttons hidden.
 
 - Live-list system entirely rewritten.
+- The scale and transparency of the live-list can be changed in the options.
 - A message is displayed if the user clicks on the live-list...
 - It is possible to hear Decursive's debuff alert sound when the live-list is disabled.
 - Decursive uses SpecialEvent-Aura events to monitor debuffs.
 - You can create a virtual debuff to test the display (see in live-list options)
 - The MiniMap and FuBar Decursive Icon is now clickable and an information tool-tip is displayed when mouse-overing it.
 - Decursive Icon gets grey when both the live-list and MUFs are disabled.
+- Added Major Dreamless Sleep to the debuff skip list (Translation is needed for other localizations)
 - Code cleaning.
 
 

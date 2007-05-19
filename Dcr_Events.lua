@@ -41,7 +41,7 @@ function Dcr:UNIT_PET (Unit) -- {{{
     -- when a pet changes somwhere, we update the unit array.
 
     Dcr:Debug("Pet changed for: ", Unit);
-    if (UnitInRaid(Unit) or UnitInParty(Unit)) then
+    if (Dcr.Status.Unit_Array_UnitToName[Unit]) then
 	Dcr.Groups_datas_are_invalid = true;
     end
 
