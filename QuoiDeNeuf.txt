@@ -1,4 +1,65 @@
-Decursive 2.0 BETA 6-Pub-fixed par Archarodim
+Decursive 2.0 BETA 7-Pub par Archarodim
+
+Changements entre Decursive 2.0 BETA 6-Pub et Decursive 2.0 BETA 7-Pub
+
+Nouveautés :
+
+- Il est désormais possible d'ajouter des groupes et des classes dynamiques dans
+  la liste de priorité et d'exception : Au lieu d'ajouter chaque unité
+  séparément, des noms de groupes et/ou de classes apparaîtront dans la liste
+  (exemple [ Groupe 1 ], [ Mage ]).
+  L'ancien comportement peut toujours être obtenue en maintenant la touche
+  [SHIFT] du clavier en cliquant sur un nom de groupe ou de classe dans la
+  fenêtre de remplissage des listes (des noms seront ajoutés)
+
+- Le changement des listes de priorité permet aussi de classer les unités par
+  groupe et par classe en même temps.
+
+- Un message d'aide est affiché si l'utilisateur ne clique pas avec le bon
+  bouton sur un micro-portrait.
+
+- Optimisation majeure du code : L'utilisation du processeur est passée de 0.04
+  secondes par seconde à ~0.001 secondes par seconde.
+  (Résultats obtenus avec les librairies Ace2 externes à jour).
+
+- Ajout de la localisation en chinois traditionnel de Peter Sun.
+
+Changements :
+
+- Si un sort est en cours d'incantation lorsqu'un micro-portrait est cliqué, le
+  sort en cours est annulé.
+- Les micro-portrait réagissent lorsqu'on relâche le bouton de la souris au lieu
+  de réagir lorsqu'on appuie.
+- On peut déplacer la barre "Decursive" en maintenant la touche [ALT] enfoncée
+  même si les boutons sont cachés.
+
+- Le système de la liste des affligés a été entièrement ré-écrit.
+- L'échelle et la transparence de la liste des affligés peuvent être changés
+  dans les options.
+- Un message est affiché si l'utilisateur clique sur la liste des affligés.
+- Il est maintenant possible d'entendre le son d'alerte même si la liste des
+  affligés n'est pas affichée.
+- Decursive utilise la librairie SpecialEvent-Aura pour surveiller les
+  afflictions.
+- On peut créer une affliction virtuelle pour tester l'affichage (voir dans les
+  options de la liste des affligés)
+- L'icône de Decursive de la Minimap et de FuBar répond désormais aux cliques
+  et une bulle d'information est affichée lorsque la souris passe dessus.
+- L'icône de Decursive devient grise si les micro-portraits et la liste des
+  affligés sont désactivés.
+- Ajout de "Sommeil sans rêve majeur" à la liste des exceptions.
+
+Bugs corrigés :
+
+- Le statut de l'unité n'était pas affiché si la liste des affligés était
+  cachée.
+- La détection des familiers du démoniste pouvez échouer dans certaines
+  conditions.
+- Les afflictions ignorées par défaut sur les guerriers ne fonctionnaient pas à
+  cause d'une faute de frappe.
+- Si vous étiez déjà en combat à la connexion ou si vous rechargiez votre
+  interface pendant un combat, Decursive ne fonctionnait pas correctement.]
+- D'autres petits bugs ont été corrigés.
 
 
 Changements entre Decursive 2.0 BETA 6-Pub et Decursive 2.0 BETA 6-Pub-fixed

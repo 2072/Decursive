@@ -1,39 +1,55 @@
-Decursive 2.0 BETA 7-Dev by Archarodim
+Decursive 2.0 BETA 7-Pub by Archarodim
 
-Changes from Decursive 2.0 BETA 6-Pub-fixed to Decursive 2.0 BETA 7-Dev
+Changes from Decursive 2.0 BETA 6-Pub-fixed to Decursive 2.0 BETA 7-Pub
 
 New features:
+
 - It's now possible to add dynamic groups and classes in the priority and skip list:
-    Instead of adding each unit separately, class and/or group entities (ex: [ group 1 ] , [ Mage ]) will appear in the lists. The old behavior can still be used by maintaining [SHIFT] when clicking on a group or class-name in the populate list tool (names will be added).
+  Instead of adding each unit separately, class and/or group entities (ex: [
+  group 1 ] , [ Mage ]) will appear in the lists. The old behavior can still be
+  used by maintaining [SHIFT] when clicking on a group or class-name in the
+  populate list tool (names will be added).
+
 - The last change also allow to sort units per group AND classes at the same time.
-- An informative help message is displayed when the user doesn't click a MUF with the correct mouse button.
-- Major code optimization: reduced CPU usage from ~0.040 seconds per seconds to ~0.001 seconds per second (results obtained with up to date external ACE2 libraries, if Decursive's embeded shared libraries are the most up to date, Decursive CPU usage will also count the usage of the shared libraries by other add-ons).
+
+- An informative help message is displayed when the user doesn't click a MUF
+  with the correct mouse button.
+
+- Major code optimization: reduced CPU usage from ~0.04 seconds per seconds to
+  ~0.001 seconds per second (results obtained with up to date external Ace2
+  libraries, if Decursive's embedded shared libraries are the most up to date,
+  Decursive CPU usage will also count the usage of the shared libraries by other
+  add-ons).
+
 - Added revised Traditional Chinese translation by Peter Sun.
 
 Changes:
 - When a MUF is clicked, any spell targeting in progress is canceled.
 - The MUFs react upon mouse button release instead of mouse button press.
 - When adding an affliction to the filter, the entered name is trimmed.
-- It is now possible to move the "Decursive" bar maintaining the Alt key pushed with the buttons hidden.
+- It is now possible to move the "Decursive" bar maintaining the Alt key pushed
+  with the buttons hidden.
 
 - Live-list system entirely rewritten.
 - The scale and transparency of the live-list can be changed in the options.
 - A message is displayed if the user clicks on the live-list...
 - It is possible to hear Decursive's debuff alert sound when the live-list is disabled.
+
 - Decursive uses SpecialEvent-Aura events to monitor debuffs.
 - You can create a virtual debuff to test the display (see in live-list options)
-- The MiniMap and FuBar Decursive Icon is now clickable and an information tool-tip is displayed when mouse-overing it.
+- The MiniMap and FuBar Decursive Icon is now clickable and an information
+  tool-tip is displayed when mouse-overing it.
 - Decursive Icon gets grey when both the live-list and MUFs are disabled.
 - Added Major Dreamless Sleep to the debuff skip list (Translation is needed for other localizations)
-- Code cleaning.
 
 
 Fixed bug:
 - The status tool-tip was not displayed if the live-list was hidden.
-- When Waterfall displays disabled 'range' options it calls the 'set' method anyway, this caused a problem when the live-list or the MUFs were disabled.
 - Warlock pet detection could fail in some conditions.
 - Default Warrior ignored debuffs were not used because of a spelling mistake.
-- If you were already in combat when logging-in or if you reloaded your UI in combat, Decursive was unable to operate correctly.
+- If you were already in combat when logging-in or if you reloaded your UI in
+  combat, Decursive was unable to operate correctly.
+- Other little bugs were fixed.
 
 
 Changes from Decursive 2.0 BETA 6-Pub to Decursive 2.0 BETA 6-Pub-fixed

@@ -554,7 +554,11 @@ function Dcr:OnProfileEnable()
     Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
 
     -- set Fubar Icon
-    Dcr:SetIcon(DcrC.IconON);
+    if Dcr.profile.Hide_LiveList and not Dcr.profile.ShowDebuffsFrame then
+	Dcr:SetIcon(DcrC.IconOFF);
+    else
+	Dcr:SetIcon(DcrC.IconON);
+    end
 end
 
 function Dcr:OnDisable() -- When the addon is disabled by ACE

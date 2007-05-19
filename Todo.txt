@@ -3,8 +3,6 @@ Personal TODO file for Archarodim (will stop to be personal once I'll add commen
 Important TODO:
 
 
-- create XML templates for the MUFs
-
 Other TODO:
 
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
