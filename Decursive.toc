@@ -1,7 +1,8 @@
-## Interface: 20003
+﻿## Interface: 20003
 
 ## Title: Decursive |cff7fff7f -Ace2-|r
 ## Notes: Debuff display and cleaning for solo, group and raids with advanced filtering and priority system
+## Notes-zhTW: 提供驅魔輔助功能，包含進階的顯示及過濾功能
 
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
