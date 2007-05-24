@@ -66,6 +66,11 @@
 
 	<Scripts>
 	    <OnEnter>
+		if not Dcr then
+		local errmessage = "Decursive installation is corrupted! Delete Decursive's folder and re-install it conpletely, you may also use WinAceUpdater to update all your Ace add-ons properly";
+		message(errmessage);
+		return;
+		end
 		Dcr:DisplayTooltip(
 		string.format(
 		"|cFF0055AA%s %s by %s|r\n" ..
@@ -82,11 +87,11 @@
 	    </OnLeave>
 
 	    <OnMouseUp>
-		Dcr:SaveLLPos();
 		if ( this.isMoving ) then
 		this:StopMovingOrSizing();
 		this.isMoving = false;
 		end
+		Dcr:SaveLLPos();
 	    </OnMouseUp>
 	    <OnMouseDown>
 		if ( ( ( not this.isLocked ) or ( this.isLocked == 0 ) or IsAltKeyDown()) and ( arg1 == "LeftButton" ) ) then
