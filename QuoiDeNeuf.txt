@@ -1,6 +1,10 @@
-Decursive 2.0 BETA 7-Pub par Archarodim
+Decursive 2.0 RC1 par Archarodim
 
-Changements entre Decursive 2.0 BETA 6-Pub et Decursive 2.0 BETA 7-Pub
+Changements entre Decursive 2.0 BETA 7-Pub et Decursive 2.0 RC1
+
+- Un message d'erreur est affiché si Decursive ne parvient pas à charger ses librairies principales correctement
+- Il est désormais possible de désactiver l'avertissement affiché si aucune touche n'est associé à la macro.
+- Des descriptions en français et en chinois traditionnel ont été ajouté.
 
 Nouveautés :
 

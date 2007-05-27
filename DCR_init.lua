@@ -309,7 +309,7 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	};
 
 	-- Thanks to Korean localization team of WoW we have to make an exception....
-	-- They find the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
+	-- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
 	if (select(2, UnitClass("player")) == "SHAMAN") then
 	    DcrC.SpellsToUse[BS[Dcr.LOC.SPELL_PURGE]]		    = {
 		Types = {DcrC.ENEMYMAGIC},

@@ -1,13 +1,37 @@
 Personal TODO file for Archarodim (will stop to be personal once I'll add comments and cleaned the code ;) )
 
+
+In any case: Always submit clean and fully commented code, if what you want to do requires big changes, ask to the author first.
+There is a Decursive thread on WoWAce.com forums where you can talk:
+
+---->  http://www.wowace.com/forums/index.php?topic=4328.0
+
+Don't forget to update the wiki:
+---->  http://www.wowace.com/wiki/Decursive
+
+
+
+
 Important TODO:
 
+- Add an option to disable the map-a-key warning.
 
 Other TODO:
 
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
-- Mages should be able to choose what metamorphose spell they want to use
+  (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found)
+
+- Let the users choose the MUF colors
+  (may be useful for color-blind users)
+
+- Mages should be able to choose what polymorf spell they want to use
+  (just change the table DcrC.SpellsToUse and call Dcr:Configure();)
+
+- Add an option to let the user choose the alert sound.
+
 - Add an option to only show the MUF in raid or group
+  (This has been requested a couple of time but I'm not very keen to do it)
+
 - Clean up the code
 - Add comments
 

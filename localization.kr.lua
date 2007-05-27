@@ -304,6 +304,9 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.MACROKEYMAPPINGSUCCESS] = "[%s] 키가 Decursive 매크로로 성공적으로 지정되었습니다.",
 	[Dcr.LOC.MACROKEYMAPPINGFAILED] = "[%s] 키는 Decursive 매크로로 지정할 수 없습니다!",
 	[Dcr.LOC.MACROKEYNOTMAPPED] = "Decursive 매크로가 지정되지 않앗습니다. 설정 메뉴를 통해 키를 지정할 수 있습니다.",
+
+    [Dcr.LOC.OPT_NOKEYWARN] = Dcr.LOC.OPT_NOKEYWARN,
+    [Dcr.LOC.OPT_NOKEYWARN_DESC] = Dcr.LOC.OPT_NOKEYWARN_DESC,
     
     -- OPTIONS
 

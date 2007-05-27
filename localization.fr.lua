@@ -301,5 +301,7 @@ L:RegisterTranslations("frFR", function() return {
     [Dcr.LOC.MACROKEYMAPPINGFAILED] = "La touche [%s] n'a pas pu être affectée à la macro de Decursive",
     [Dcr.LOC.MACROKEYNOTMAPPED] = "Aucune touche n'est actuellement affectée à la macro de Decursive, vous pouvez affecter une touche par le menu des options (ne passez pas à coté de cette merveilleuse capacité)",
 
+    [Dcr.LOC.OPT_NOKEYWARN] = "Avertir si aucune touche",
+    [Dcr.LOC.OPT_NOKEYWARN_DESC] = "Affiche un avertissement si aucune touche n'est affectée à la macro.",
 
 } end);

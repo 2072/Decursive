@@ -42,6 +42,7 @@ Dcr.defaults = { -- {{{
     -- The micro units debuffs frame
     ShowDebuffsFrame = true,
 
+    -- The maximum number of MUFs to be displayed
     DebuffsFrameMaxCount = 80,
 
     DebuffsFrameElemScale = 1,
@@ -62,25 +63,31 @@ Dcr.defaults = { -- {{{
 
     DebuffsFrameYSpacing = 3,
 
+    -- The time between each MUF update
     DebuffsFrameRefreshRate = 0.10,
 
+    -- The number of MUFs updated every DebuffsFrameRefreshRate
     DebuffsFramePerUPdate = 10,
 
     DebuffsFrameShowHelp = true,
 
+    -- position x save
     DebuffsFrame_x = false,
 
+    -- position y save
     DebuffsFrame_y = false,
 
+    -- reverse MUFs disaplay
     DebuffsFrameGrowToTop = false,
 
-    -- this is wether or not to show the "live" list	
+    -- this is wether or not to show the live-list	
     Hide_LiveList = false,
 
     LiveListAlpha = 0.7;
 
     LiveListScale = 1.0;
 
+    -- position of the "Decursive" main bar, the live-list is anchored to this bar.
     MainBarX = false;
 
     MainBarY = false;
@@ -97,12 +104,7 @@ Dcr.defaults = { -- {{{
     -- check for abolish before curing poison or disease
     Check_For_Abolish = true,
 
-
-    -- this is "fix" for the fact that rank 1 of dispell magic does not always remove
-    -- the high level debuffs properly. This carrys over to other things.
-    AlwaysUseBestSpell = true,
-
-    -- should we do the orders randomly?
+    -- Will randomize the order of the live-list and of the MUFs
     Random_Order = false,
 
     -- should we scan pets
@@ -114,12 +116,13 @@ Dcr.defaults = { -- {{{
     -- how many to show in the livelist
     Amount_Of_Afflicted = 3,
 
+    -- The live-list will only display units in range of your curring spell
     LV_OnlyInRange = true,
 
     -- how many seconds to "black list" someone with a failed spell
     CureBlacklist	= 5.0,
 
-    -- how often to poll for afflictions in seconds
+    -- how often to poll for afflictions in seconds (for the live-list only)
     ScanTime = 0.3,
 
     -- Are prio list members protected from blacklisting?
@@ -131,15 +134,6 @@ Dcr.defaults = { -- {{{
     -- Hide the buttons
     HideButtons = false,
 
-    -- Cure magic if possible
-    CureMagic	= true,
-    -- Cure Poison if possible
-    CurePoison	= true,
-    -- Cure Disease if possible
-    CureDisease	= true,
-    -- Cure Curse if possible
-    CureCurse	= true,
-
     -- Display text above in the custom frame
     CustomeFrameInsertBottom = false,
 
@@ -149,18 +143,24 @@ Dcr.defaults = { -- {{{
     -- Reverse LiveList Display
     ReverseLiveDisplay = false,
 
-    -- Hide everything but the livelist
+    -- Hide the "Decursive" bar
     Hidden = false,
 
-    -- if true then the live list will show only if the main window is shown
+    -- if true then the live list will show only if the "Decursive" bar is shown
     LiveListTied = false,
 
     -- allow to changes the default output window
     OutputWindow = "DEFAULT_CHAT_FRAME", -- ACEDB CRASHES if we set it directly
 
 
+    -- the key to bind the macro to
     MacroBind = false, --L[Dcr.LOC.DEFAULT_MACROKEY], -- there were too many unhappy people with this option
 
+    -- Display a warning if no key is mapped.
+    NoKeyWarn = true,
+
+
+    -- Curring order (1 is the most important, 6 the lesser...)
     CureOrder = {
 	[DcrC.ENEMYMAGIC]   = 1,
 	[DcrC.MAGIC]	    = 2,
@@ -1049,6 +1049,16 @@ Dcr.options = { -- {{{
 			 Dcr:SetMacroKey ( key );
 		    end,
 		    order = 100,
+		},
+		NoKeyWarn = {
+		    type = "toggle",
+		    name = Dcr.L[Dcr.LOC.OPT_NOKEYWARN],
+		    desc = L[Dcr.LOC.OPT_NOKEYWARN_DESC],
+		    get = function() return Dcr.profile.NoKeyWarn end,
+		    set = function(v)
+			Dcr.profile.NoKeyWarn = v;
+		    end,
+		    order = 200
 		}
 	    }
 	},
@@ -1667,7 +1677,7 @@ function Dcr:SetMacroKey ( key )
 	end
     else
 	Dcr.profile.MacroBind = false;
-	if not (GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME))) then
+	if Dcr.profile.NoKeyWarn and not GetBindingKey(string.format("MACRO %s", Dcr.CONF.MACRONAME)) then
 	    Dcr:errln(L[Dcr.LOC.MACROKEYNOTMAPPED]);
 	end
     end

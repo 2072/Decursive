@@ -696,7 +696,7 @@ do
 
 	-- if the unit changed
 	if (self.CurrUnit ~= Unit) then 
-	    self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes without this line
+	    --self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes without this line
 	    self.Frame:SetAttribute("unit", Unit);
 
 	    MicroUnitF.UnitToMUF[Unit] = self;

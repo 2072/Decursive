@@ -67,7 +67,7 @@
 	<Scripts>
 	    <OnEnter>
 		if not Dcr then
-		local errmessage = "Decursive installation is corrupted! Delete Decursive's folder and re-install it conpletely, you may also use WinAceUpdater to update all your Ace add-ons properly";
+		local errmessage = "Decursive installation is corrupted! Delete Decursive's folder and re-install it, you may also use WinAceUpdater to update all your Ace add-ons properly";
 		message(errmessage);
 		return;
 		end

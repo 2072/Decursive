@@ -294,5 +294,8 @@ L:RegisterTranslations("zhTW", function() return {
     [Dcr.LOC.MACROKEYMAPPINGFAILED] = "按鍵 [%s] 不能被對應到 Decursive 巨集！",
     [Dcr.LOC.MACROKEYNOTMAPPED] = "Decursive 巨集未對應到一個按鍵，你可以透過設定選單來設定此一按鍵。(別錯過這個神奇的功能)",
 
+    [Dcr.LOC.OPT_NOKEYWARN] = Dcr.LOC.OPT_NOKEYWARN,
+    [Dcr.LOC.OPT_NOKEYWARN_DESC] = Dcr.LOC.OPT_NOKEYWARN_DESC,
+
 } end);
 

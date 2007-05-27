@@ -3,11 +3,12 @@
 ## Title: Decursive |cff7fff7f -Ace2-|r
 ## Notes: Debuff display and cleaning for solo, group and raids with advanced filtering and priority system
 ## Notes-zhTW: 提供驅魔輔助功能，包含進階的顯示及過濾功能
+## Notes-frFR: Affichage et guérison des afflictions avec un système évolué de filtrage et de priorité.
 
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
 
-## Version: 2.0.0 BETA 7-pub
+## Version: 2.0.0 RC1
 ## Author: Archarodim
 
 ## X-License: GNU GPL

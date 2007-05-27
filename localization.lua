@@ -161,7 +161,6 @@ DCR_LOC_MINDVISION	= "Mind Vision";  -- further translated by BS
 
 -- NEW LOCALS FOR 2.0
 
-Dcr.LOC.DEFAULT_MACROKEY = "`"; -- the key just beneath the escape key on a QWERTY keyboard
 
 Dcr.LOC.OPT_LIVELIST = "Live list";
 Dcr.LOC.OPT_LIVELIST_DESC = "Options for the live list";
@@ -304,6 +303,9 @@ Dcr.LOC.MACROKEYMAPPINGSUCCESS = "The key [%s] has been successfully mapped to D
 Dcr.LOC.MACROKEYMAPPINGFAILED = "The key [%s] could not be mapped to Decursive macro!";
 Dcr.LOC.MACROKEYNOTMAPPED = "Decursive macro is not mapped to a key, you can map a key through the option menu. (do not miss this wonderful feauture)";
 
+Dcr.LOC.DEFAULT_MACROKEY = "`"; -- the key just beneath the escape key on a QWERTY keyboard
+Dcr.LOC.OPT_NOKEYWARN = "Warn if no key";
+Dcr.LOC.OPT_NOKEYWARN_DESC = "Display a warning if no key is mapped.";
 
 -- Acelocal register for enUS // {{{
 local L = Dcr.L;
@@ -587,6 +589,9 @@ L:RegisterTranslations("enUS", function() return {
     [Dcr.LOC.MACROKEYMAPPINGSUCCESS] = true,
     [Dcr.LOC.MACROKEYMAPPINGFAILED] = true,
     [Dcr.LOC.MACROKEYNOTMAPPED] = true,
+
+    [Dcr.LOC.OPT_NOKEYWARN] = true,
+    [Dcr.LOC.OPT_NOKEYWARN_DESC] = true,
     
     -- OPTIONS
 
