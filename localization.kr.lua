@@ -149,7 +149,7 @@ L:RegisterTranslations("koKR", function() return {
 	-- spells and potions
 	[Dcr.LOC.DREAMLESSSLEEP]	= "숙면",
 	[Dcr.LOC.GDREAMLESSSLEEP]	= "상급 숙면",
-	[Dcr.LOC.MDREAMLESSSLEEP]	= Dcr.LOC.MDREAMLESSSLEEP,
+	[Dcr.LOC.MDREAMLESSSLEEP]	= "최상급 숙면",
 	[Dcr.LOC.ANCIENTHYSTERIA]	= "고대의 격분",
 	[Dcr.LOC.IGNITE]		= "마나 점화",
 	[Dcr.LOC.TAINTEDMIND]		= "부패한 정신",
@@ -305,8 +305,8 @@ L:RegisterTranslations("koKR", function() return {
 	[Dcr.LOC.MACROKEYMAPPINGFAILED] = "[%s] 키는 Decursive 매크로로 지정할 수 없습니다!",
 	[Dcr.LOC.MACROKEYNOTMAPPED] = "Decursive 매크로가 지정되지 않앗습니다. 설정 메뉴를 통해 키를 지정할 수 있습니다.",
 
-    [Dcr.LOC.OPT_NOKEYWARN] = Dcr.LOC.OPT_NOKEYWARN,
-    [Dcr.LOC.OPT_NOKEYWARN_DESC] = Dcr.LOC.OPT_NOKEYWARN_DESC,
+	[Dcr.LOC.OPT_NOKEYWARN] = "키 없음 경고",
+	[Dcr.LOC.OPT_NOKEYWARN_DESC] = "지정된 키가 없다면 경고를 표시합니다.",
     
     -- OPTIONS
 
