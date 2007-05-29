@@ -4,7 +4,9 @@ Changements entre Decursive 2.0 BETA 7-Pub et Decursive 2.0 RC1
 
 - Un message d'erreur est affiché si Decursive ne parvient pas à charger ses librairies principales correctement
 - Il est désormais possible de désactiver l'avertissement affiché si aucune touche n'est associé à la macro.
+- Il ne devrait plus y avoir de message "réussi sur NOMAME".
 - Des descriptions en français et en chinois traditionnel ont été ajouté.
+- Fichier .TOC mis à jour pour WoW 2.1.
 
 Nouveautés :
 

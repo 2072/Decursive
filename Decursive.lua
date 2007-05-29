@@ -20,12 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+local D = Dcr;
+D:SetDateAndRevision("$Date$", "$Revision$");
 
-
-local L = Dcr.L;
-local BC = Dcr.BC;
-local BS = Dcr.BS;
+local L = D.L;
+local BC = D.BC;
+local BS = D.BS;
+local DC = DcrC;
 -------------------------------------------------------------------------------
 
 
@@ -38,10 +39,10 @@ local BS = Dcr.BS;
 -- The printing functions {{{
 -------------------------------------------------------------------------------
 
-function Dcr:Show_Cure_Order() --{{{
-    Dcr:Println("printing cure order:");
-    for index, unit in ipairs(Dcr.Status.Unit_Array) do
-	Dcr:Println( unit, " - ", Dcr:MakePlayerName((UnitName(unit))) , " Index: ", index);
+function D:Show_Cure_Order() --{{{
+    self:Println("printing cure order:");
+    for index, unit in ipairs(self.Status.Unit_Array) do
+	self:Println( unit, " - ", self:MakePlayerName((UnitName(unit))) , " Index: ", index);
     end
 end --}}}
 
@@ -50,23 +51,23 @@ end --}}}
 
 -- Show Hide FUNCTIONS -- {{{
 
-function Dcr:ShowHideLiveList(hide) --{{{
+function D:ShowHideLiveList(hide) --{{{
     -- if hide is requested or if hide is not set and the live-list is shown
     if (hide==1 or (not hide and DcrLiveList:IsVisible())) then
-	Dcr.profile.Hide_LiveList = true;
+	D.profile.Hide_LiveList = true;
 	DcrLiveList:Hide();
-	if Dcr.Status.ScanShedule then
-	    Dcr:CancelScheduledEvent(Dcr.Status.ScanShedule);
-	    Dcr.Status.ScanShedule = false;
+	if D.Status.ScanShedule then
+	    D:CancelScheduledEvent(D.Status.ScanShedule);
+	    D.Status.ScanShedule = false;
 	end
     else
-	Dcr.profile.Hide_LiveList = false;
+	D.profile.Hide_LiveList = false;
 	DcrLiveList:ClearAllPoints();
 	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
 	DcrLiveList:Show();
 
-	if not Dcr.Status.ScanShedule then
-	    Dcr.Status.ScanShedule = Dcr:ScheduleRepeatingEvent("LLupdate", Dcr.LiveList.Update_Display, Dcr.profile.ScanTime, Dcr.LiveList);
+	if not D.Status.ScanShedule then
+	    D.Status.ScanShedule = D:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
 	end
     end
 
@@ -74,19 +75,19 @@ end --}}}
 
 -- This functions hides or shows the "Decursive" bar depending on its current
 -- state, it's also able hide/show the live-list if the "tie live-list" option is active
-function Dcr:HideBar(hide) --{{{
+function D:HideBar(hide) --{{{
 
     if (hide==1 or (not hide and DecursiveMainBar:IsVisible())) then
-	if (Dcr.profile.LiveListTied) then
-	    Dcr:ShowHideLiveList(1);
+	if (D.profile.LiveListTied) then
+	    D:ShowHideLiveList(1);
 	end
-	Dcr.profile.Hidden = true;
+	D.profile.Hidden = true;
 	DecursiveMainBar:Hide();
     else
-	if (Dcr.profile.LiveListTied) then
-	    Dcr:ShowHideLiveList(0);
+	if (D.profile.LiveListTied) then
+	    D:ShowHideLiveList(0);
 	end
-	Dcr.profile.Hidden = false;
+	D.profile.Hidden = false;
 	DecursiveMainBar:Show();
     end
 
@@ -94,11 +95,11 @@ function Dcr:HideBar(hide) --{{{
 	DcrLiveList:ClearAllPoints();
 	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
     else
-	Dcr:ColorPrint(0.3, 0.5, 1, L[Dcr.LOC.SHOW_MSG]);
+	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.SHOW_MSG]);
     end
 end --}}}
 
-function Dcr:ShowHidePriorityListUI() --{{{
+function D:ShowHidePriorityListUI() --{{{
     if (DecursivePriorityListFrame:IsVisible()) then
 	DecursivePriorityListFrame:Hide();
     else
@@ -106,7 +107,7 @@ function Dcr:ShowHidePriorityListUI() --{{{
     end
 end --}}}
 
-function Dcr:ShowHideSkipListUI() --{{{
+function D:ShowHideSkipListUI() --{{{
     if (DecursiveSkipListFrame:IsVisible()) then
 	DecursiveSkipListFrame:Hide();
     else
@@ -115,9 +116,9 @@ function Dcr:ShowHideSkipListUI() --{{{
 end --}}}
 
 -- This shows/hides the buttons near the "Decursive" bar
-function Dcr:ShowHideButtons(UseCurrentValue) --{{{
+function D:ShowHideButtons(UseCurrentValue) --{{{
 
-    if not Dcr.profile then
+    if not D.profile then
 	return;
     end
 
@@ -132,13 +133,13 @@ function Dcr:ShowHideButtons(UseCurrentValue) --{{{
     DCRframeObject = getglobal(DecrFrame);
 
     if (not UseCurrentValue) then
-	Dcr.profile.HideButtons = (not Dcr.profile.HideButtons);
+	D.profile.HideButtons = (not D.profile.HideButtons);
     end
 
     for _, ButtonName in pairs(buttons) do
 	Button = getglobal(ButtonName);
 
-	if (Dcr.profile.HideButtons) then
+	if (D.profile.HideButtons) then
 	    Button:Hide();
 	    DCRframeObject.isLocked = 1;
 	else
@@ -154,7 +155,7 @@ end --}}}
 
 
 -- this resets the location of the windows
-function Dcr:ResetWindow() --{{{
+function D:ResetWindow() --{{{
 
 
     DecursiveMainBar:ClearAllPoints();
@@ -175,22 +176,22 @@ function Dcr:ResetWindow() --{{{
     DecursivePopulateListFrame:SetPoint("CENTER", UIParent);
 
 
-    Dcr.MFContainer:ClearAllPoints();
-    Dcr.MFContainer:SetPoint("CENTER", UIParent, "CENTER", 200, 250);
+    D.MFContainer:ClearAllPoints();
+    D.MFContainer:SetPoint("CENTER", UIParent, "CENTER", 200, 250);
 
 end --}}}
 
 
 
-function Dcr:PlaySound (UnitID) --{{{
-    if (Dcr.profile.PlaySound and not Dcr.Status.SoundPlayed) then
-	local Debuffs = Dcr:UnitCurableDebuffs(UnitID, true);
+function D:PlaySound (UnitID) --{{{
+    if (self.profile.PlaySound and not self.Status.SoundPlayed) then
+	local Debuffs = self:UnitCurableDebuffs(UnitID, true);
 	if (Debuffs and Debuffs[1] and Debuffs[1].Type) then
 
 	    -- good sounds: Sound\\Doodad\\BellTollTribal.wav
 	    --		Sound\\interface\\AuctionWindowOpen.wav
 	    PlaySoundFile("Sound\\Doodad\\BellTollTribal.wav");
-	    Dcr.Status.SoundPlayed = true;
+	    self.Status.SoundPlayed = true;
 	end
     end
 end --}}}
@@ -202,10 +203,10 @@ end --}}}
 -- Those set the scalling of the LIVELIST container
 -- SACALING FUNCTIONS {{{
 -- Place the LIVELIST container according to its scale
-function Dcr:PlaceLL () -- {{{
+function D:PlaceLL () -- {{{
     local UIScale	= UIParent:GetEffectiveScale()
     local FrameScale	= DecursiveMainBar:GetEffectiveScale();
-    local x, y = Dcr.profile.MainBarX, Dcr.profile.MainBarY;
+    local x, y = D.profile.MainBarX, D.profile.MainBarY;
 
     -- Executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
@@ -220,24 +221,24 @@ function Dcr:PlaceLL () -- {{{
 end -- }}}
 
 -- Save the position of the frame without its scale
-function Dcr:SaveLLPos () -- {{{
-    if Dcr.profile and DecursiveMainBar:IsVisible() then
+function D:SaveLLPos () -- {{{
+    if self.profile and DecursiveMainBar:IsVisible() then
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
-	Dcr.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
-	Dcr.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
+	self.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
+	self.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
     end
 end -- }}}
 
 -- set the scaling of the LIVELIST container according to the user settings
-function Dcr:SetLLScale (NewScale) -- {{{
+function D:SetLLScale (NewScale) -- {{{
     
     -- save the current position without any scaling
-    Dcr:SaveLLPos ();
+    D:SaveLLPos ();
     -- Set the new scale
     DecursiveMainBar:SetScale(NewScale);
     DcrLiveList:SetScale(NewScale);
     -- Place the frame adapting its position to the news cale
-    Dcr:PlaceLL ();
+    D:PlaceLL ();
     
 end -- }}}
 -- }}}
@@ -253,11 +254,11 @@ end -- }}}
 -------------------------------------------------------------------------------
 
 -- This function only returns interesting values of UnitDebuff()
-function Dcr:GetUnitDebuff  (Unit, i) --{{{
+function D:GetUnitDebuff  (Unit, i) --{{{
 
-    if Dcr.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" then
-	Dcr:Debug("|cFFFF0000Setting test debuff for |r", Unit);
-	return "Name of the afflication (Test)", DcrC.TypeNames[Dcr.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga";
+    if self.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" then
+	self:Debug("|cFFFF0000Setting test debuff for |r", Unit);
+	return "Name of the afflication (Test)", DC.TypeNames[self.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga";
     end
 
 
@@ -276,11 +277,13 @@ do
     -- Variables are declared outside so that Lua doesn't initialize them at each call
     local Texture, Applications, TypeName, Name, Type, i, StoredDebuffIndex, CharmFound, IsCharmed;
 
+    local DcrC = DcrC; -- for faster access
+
 
     -- This is the core debuff scanning function of Decursive
     -- This function does more than just reporting Debuffs. it also detects charmed units
 
-    function Dcr:GetUnitDebuffAll (Unit) --{{{
+    function D:GetUnitDebuffAll (Unit) --{{{
 
 	-- create a Debuff table for this unit if there is not already one
 	if (not DebuffUnitCache[Unit]) then
@@ -304,7 +307,7 @@ do
 
 	-- iterate all available debuffs
 	while (true) do
-	    Name, TypeName, Applications, Texture = Dcr:GetUnitDebuff(Unit, i);
+	    Name, TypeName, Applications, Texture = self:GetUnitDebuff(Unit, i);
 
 	    if (not Name) then
 		break;
@@ -312,7 +315,7 @@ do
 
 	    -- test for a type (Magic Curse Disease or Poison)
 	    if (TypeName and TypeName ~= "") then
-		Type = DcrC.NameToTypes[TypeName];
+		Type = DC.NameToTypes[TypeName];
 	    else
 		Type = false;
 	    end
@@ -322,15 +325,15 @@ do
 
 		-- If the unit has a magical debuff and we can cure it
 		-- (note that the target is not friendly in that case)
-		if (Type == DcrC.MAGIC and Dcr.Status.CuringSpells[DcrC.ENEMYMAGIC]) then
-		    Type = DcrC.ENEMYMAGIC;
+		if (Type == DC.MAGIC and self.Status.CuringSpells[DC.ENEMYMAGIC]) then
+		    Type = DC.ENEMYMAGIC;
 
 		    -- NOTE: if a unit is charmed and has another magical debuff
 		    -- this block will be executed...
 
 		else -- the unit doesn't have a magical debuff or we can't remove magical debuffs
-		    Type = DcrC.CHARMED;
-		    TypeName = DcrC.TypeNames[DcrC.CHARMED];
+		    Type = DC.CHARMED;
+		    TypeName = DC.TypeNames[DC.CHARMED];
 		end
 		CharmFound = true;
 	    end
@@ -372,19 +375,20 @@ end
 
 do
     -- see the comment about DebuffUnitCache
-    local ManagedDebuffUnitCache = Dcr.ManagedDebuffUnitCache;
+    local ManagedDebuffUnitCache = D.ManagedDebuffUnitCache;
 
 
+    local D = D;
     local sorting = function (a, b)
-	cura = (a.Type and Dcr.profile.CureOrder[a.Type] and Dcr.profile.CureOrder[a.Type] > 0) and Dcr.profile.CureOrder[a.Type] or 1024;
-	curb = (b.Type and Dcr.profile.CureOrder[b.Type] and Dcr.profile.CureOrder[b.Type] > 0) and Dcr.profile.CureOrder[b.Type] or 1024;
+	cura = (a.Type and D.profile.CureOrder[a.Type] and D.profile.CureOrder[a.Type] > 0) and D.profile.CureOrder[a.Type] or 1024;
+	curb = (b.Type and D.profile.CureOrder[b.Type] and D.profile.CureOrder[b.Type] > 0) and D.profile.CureOrder[b.Type] or 1024;
 
 	return cura < curb;
     end
 
     -- This function will return a table containing only the Debuffs we can cure excepts the one we have to ignore
     -- in different conditions.
-    function Dcr:UnitCurableDebuffs (Unit, JustOne) -- {{{
+    function D:UnitCurableDebuffs (Unit, JustOne) -- {{{
 
 	if not Unit then
 	    return false;
@@ -394,18 +398,18 @@ do
 	    ManagedDebuffUnitCache[Unit] = {};
 	end
 
-	local AllUnitDebuffs, IsCharmed = Dcr:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
+	local AllUnitDebuffs, IsCharmed = self:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
 
 	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no debuff
 	    return false, IsCharmed;
 	end
 
-	local Spells	= Dcr.Status.CuringSpells; -- shortcut to available spell by debuff type
+	local Spells	= self.Status.CuringSpells; -- shortcut to available spell by debuff type
 
 
 	local ManagedDebuffs = ManagedDebuffUnitCache[Unit]; -- shortcut for readability
 
-	--Dcr:Debug("Debuffs were found");
+	--self:Debug("Debuffs were found");
 
 	local DebuffNum = 1; -- number of found debuff (used for indexing)
 
@@ -421,20 +425,20 @@ do
 	    continue = true;
 
 	    -- test if we have to ignore this debuf  {{{ --
-	    if (Dcr.profile.DebuffsToIgnore[Debuff.Name]) then
+	    if (self.profile.DebuffsToIgnore[Debuff.Name]) then
 		-- these are the BAD ones... the ones that make the target immune... abort this unit
 		break; -- exit here
 	    end
 
-	    if (Dcr.profile.BuffDebuff[Debuff.Name]) then
+	    if (self.profile.BuffDebuff[Debuff.Name]) then
 		-- these are just ones you don't care about
 		continue = false;
 	    end
 
-	    if (Dcr.Status.Combat or Dcr.profile.DebuffAlwaysSkipList[Debuff.Name]) then
+	    if (self.Status.Combat or self.profile.DebuffAlwaysSkipList[Debuff.Name]) then
 		local _, EnUClass = UnitClass(Unit);
-		if (Dcr.profile.skipByClass[EnUClass]) then
-		    if (Dcr.profile.skipByClass[EnUClass][Debuff.Name]) then
+		if (self.profile.skipByClass[EnUClass]) then
+		    if (self.profile.skipByClass[EnUClass][Debuff.Name]) then
 			-- these are just ones you don't care about by class while in combat
 			continue = false;
 		    end
@@ -445,31 +449,31 @@ do
 
 	    
 	    if continue then
-		--	Dcr:Debug("Debuffs matters");
+		--	self:Debug("Debuffs matters");
 		-- If we are still here it means that this Debuff is something not to be ignored...
 
 
 		-- We have a match for this type and we decided (checked) to
-		-- cure it NOTE: Dcr.profile.CureOrder[DEBUFF_TYPE] is set
+		-- cure it NOTE: self.profile.CureOrder[DEBUFF_TYPE] is set
 		-- to FALSE when the type is unchecked and to < 0 when there is
 		-- no spell available for the type or when the spell is gone
 		-- (it happens for warlocks or when using the same profile with
 		-- several characters)
-		--if (Dcr.profile.CureOrder[Debuff.Type] and Dcr.profile.CureOrder[Debuff.Type] > 0) then
-		if (Dcr:GetCureCheckBoxStatus(Debuff.Type)) then
+		--if (self.profile.CureOrder[Debuff.Type] and self.profile.CureOrder[Debuff.Type] > 0) then
+		if (self:GetCureCheckBoxStatus(Debuff.Type)) then
 
 
-		    -- Dcr:Debug("we can cure it");
+		    -- self:Debug("we can cure it");
 
 		    -- if we do have a spell to cure
 		    if (Spells[Debuff.Type]) then
 			-- The user doesn't want to cure a unit afllicted by poison or disease if the unit
 			-- is beeing cured by an abolish spell
 
-			if (Dcr.profile.Check_For_Abolish and (Debuff.Type == DcrC.POISON and Dcr.A:UnitHasBuff(Unit, BS[Dcr.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DcrC.DISEASE and Dcr.A:UnitHasBuff(Unit, BS[Dcr.LOC.SPELL_ABOLISH_DISEASE]))) then
-			    Dcr:Debug("Abolish buff found, skipping");
+			if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self.A:UnitHasBuff(Unit, BS[self.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DC.DISEASE and self.A:UnitHasBuff(Unit, BS[self.LOC.SPELL_ABOLISH_DISEASE]))) then
+			    self:Debug("Abolish buff found, skipping");
 			else
-			    -- Dcr:Debug("It's managed");
+			    -- self:Debug("It's managed");
 
 			    -- create an entry for this debuff index if necessary
 			    if (not ManagedDebuffs[DebuffNum]) then
@@ -477,7 +481,7 @@ do
 			    end
 
 			    -- copy the debuff information to this table.
-			    Dcr:tcopy(ManagedDebuffs[DebuffNum], Debuff);
+			    self:tcopy(ManagedDebuffs[DebuffNum], Debuff);
 
 			    DebuffNum = DebuffNum + 1;
 
@@ -517,7 +521,7 @@ end
 
 local UnitBuffsCache	= {};
 -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
-function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
+function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
     --[=[
     if (not UnitBuffsCache[Unit]) then
@@ -547,8 +551,8 @@ function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
     if type(BuffNamesToCheck) ~= "table" then
 
-	if ( Dcr.A:UnitHasBuff(Unit, BuffNamesToCheck) ) then
-	--if Dcr:tcheckforval(UnitBuffs, BuffNamesToCheck) then
+	if ( self.A:UnitHasBuff(Unit, BuffNamesToCheck) ) then
+	--if self:tcheckforval(UnitBuffs, BuffNamesToCheck) then
 	    return true;
 	else
 	    return false;
@@ -557,8 +561,8 @@ function Dcr:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 	local Buff;
 	for _, Buff in pairs(BuffNamesToCheck) do
 
-	    if ( Dcr.A:UnitHasBuff(Unit, Buff) ) then
-	    --if Dcr:tcheckforval(UnitBuffs, Buff) then
+	    if ( self.A:UnitHasBuff(Unit, Buff) ) then
+	    --if self:tcheckforval(UnitBuffs, Buff) then
 		return true;
 	    end
 
@@ -573,14 +577,14 @@ local Stealthed = {BS["Prowl"], BS["Stealth"], BS["Shadowmeld"],  BS["Invisibili
 
 
 
-DcrC.IsStealthBuff = Dcr:tReverse(Stealthed);
+DC.IsStealthBuff = D:tReverse(Stealthed);
 
-Dcr.Stealthed_Units = {};
+D.Stealthed_Units = {};
 
-function Dcr:CheckUnitStealth(Unit) --{{{
-    if (Dcr.profile.Ingore_Stealthed) then
-	if Dcr:CheckUnitForBuffs(Unit, Stealthed) then
---	    Dcr:Debug("Sealth found !");
+function D:CheckUnitStealth(Unit) --{{{
+    if (self.profile.Ingore_Stealthed) then
+	if self:CheckUnitForBuffs(Unit, Stealthed) then
+--	    self:Debug("Sealth found !");
 	    return true;
 	end
     end

@@ -22,96 +22,101 @@
 -------------------------------------------------------------------------------
 
 Dcr	    = AceLibrary("AceAddon-2.0"):new    ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0", "FuBarPlugin-2.0");
-Dcr.AOO	    = AceLibrary("AceOO-2.0");
-Dcr.L	    = AceLibrary("AceLocale-2.2"):new   ("Dcr");
-Dcr.BC	    = AceLibrary("Babble-Class-2.2");
-Dcr.BS	    = AceLibrary("Babble-Spell-2.2");
-Dcr.DewDrop = AceLibrary("Dewdrop-2.0");
-Dcr.A = AceLibrary("SpecialEvents-Aura-2.0");
-Dcr.Waterfall = AceLibrary("Waterfall-1.0");
-Dcr.T	    = AceLibrary("Tablet-2.0");
 
-local L = Dcr.L;
-local BC = Dcr.BC;
-local BS = Dcr.BS;
+local D = Dcr;
+
+D.AOO	    = AceLibrary("AceOO-2.0");
+D.L	    = AceLibrary("AceLocale-2.2"):new   ("Dcr");
+D.BC	    = AceLibrary("Babble-Class-2.2");
+D.BS	    = AceLibrary("Babble-Spell-2.2");
+D.DewDrop = AceLibrary("Dewdrop-2.0");
+D.A = AceLibrary("SpecialEvents-Aura-2.0");
+D.Waterfall = AceLibrary("Waterfall-1.0");
+D.T	    = AceLibrary("Tablet-2.0");
+
+local L = D.L;
+local BC = D.BC;
+local BS = D.BS;
 
 
 -------------------------------------------------------------------------------
 -- variables {{{
 -------------------------------------------------------------------------------
-Dcr.Groups_datas_are_invalid = false;
+D.Groups_datas_are_invalid = false;
 -------------------------------------------------------------------------------
 -- Internal HARD settings for decursive
-Dcr.CONF = {};
-Dcr.CONF.TEXT_LIFETIME = 4.0;
-Dcr.CONF.MAX_LIVE_SLOTS = 10;
-Dcr.CONF.MACRONAME = "Decursive";
+D.CONF = {};
+D.CONF.TEXT_LIFETIME = 4.0;
+D.CONF.MAX_LIVE_SLOTS = 10;
+D.CONF.MACRONAME = "Decursive";
 
 BINDING_HEADER_DECURSIVE = "Decursive";
 
-Dcr.CONF.MACRO_COMMAND  = "/decursive";
-Dcr.CONF.MACRO_SHOW     = "/dcrshow";
-Dcr.CONF.MACRO_HIDE     = "/dcrhide";
-Dcr.CONF.MACRO_OPTION   = "/dcroptions";
-Dcr.CONF.MACRO_RESET    = "/dcrreset";
+D.CONF.MACRO_COMMAND  = "/decursive";
+D.CONF.MACRO_SHOW     = "/dcrshow";
+D.CONF.MACRO_HIDE     = "/dcrhide";
+D.CONF.MACRO_OPTION   = "/dcroptions";
+D.CONF.MACRO_RESET    = "/dcrreset";
 
-Dcr.CONF.MACRO_PRADD    = "/dcrpradd";
-Dcr.CONF.MACRO_PRCLEAR  = "/dcrprclear";
-Dcr.CONF.MACRO_PRLIST   = "/dcrprlist";
-Dcr.CONF.MACRO_PRSHOW   = "/dcrprshow";
+D.CONF.MACRO_PRADD    = "/dcrpradd";
+D.CONF.MACRO_PRCLEAR  = "/dcrprclear";
+D.CONF.MACRO_PRLIST   = "/dcrprlist";
+D.CONF.MACRO_PRSHOW   = "/dcrprshow";
 
-Dcr.CONF.MACRO_SKADD    = "/dcrskadd";
-Dcr.CONF.MACRO_SKCLEAR  = "/dcrskclear";
-Dcr.CONF.MACRO_SKLIST   = "/dcrsklist";
-Dcr.CONF.MACRO_SKSHOW   = "/dcrskshow";
-Dcr.CONF.MACRO_DEBUG	   = "/dcrdebug";
-Dcr.CONF.MACRO_SHOW_ORDER   = "/dcrshoworder";
+D.CONF.MACRO_SKADD    = "/dcrskadd";
+D.CONF.MACRO_SKCLEAR  = "/dcrskclear";
+D.CONF.MACRO_SKLIST   = "/dcrsklist";
+D.CONF.MACRO_SKSHOW   = "/dcrskshow";
+D.CONF.MACRO_DEBUG	   = "/dcrdebug";
+D.CONF.MACRO_SHOW_ORDER   = "/dcrshoworder";
 
 -- CONSTANTS
 DcrC = {};
 
-DcrC.IconON = "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconON.tga";
-DcrC.IconOFF = "Interface\\AddOns\\" .. Dcr.folderName .. "\\iconOFF.tga";
+local DC = DcrC;
 
-DcrC.ENEMYMAGIC = 2;
-DcrC.MAGIC	= 1;
-DcrC.CURSE	= 4;
-DcrC.POISON	= 8;
-DcrC.DISEASE	= 16;
-DcrC.CHARMED	= 32;
+DC.IconON = "Interface\\AddOns\\" .. D.folderName .. "\\iconON.tga";
+DC.IconOFF = "Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga";
+
+DC.ENEMYMAGIC = 2;
+DC.MAGIC	= 1;
+DC.CURSE	= 4;
+DC.POISON	= 8;
+DC.DISEASE	= 16;
+DC.CHARMED	= 32;
 
 
-DcrC.NORMAL		    = 8;
-DcrC.ABSENT		    = 16;
-DcrC.FAR		    = 32;
-DcrC.STEALTHED		    = 64;
-DcrC.BLACKLISTED	    = 128;
-DcrC.AFFLICTED		    = 256;
-DcrC.AFFLICTED_NIR	    = 512;
-DcrC.CHARMED		    = 1024;
-DcrC.AFFLICTED_AND_CHARMED = bit.bor(DcrC.AFFLICTED, DcrC.CHARMED);
+DC.NORMAL		    = 8;
+DC.ABSENT		    = 16;
+DC.FAR			    = 32;
+DC.STEALTHED		    = 64;
+DC.BLACKLISTED		    = 128;
+DC.AFFLICTED		    = 256;
+DC.AFFLICTED_NIR	    = 512;
+DC.CHARMED		    = 1024;
+DC.AFFLICTED_AND_CHARMED = bit.bor(DC.AFFLICTED, DC.CHARMED);
 
-DcrC.MFSIZE = 20;
+DC.MFSIZE = 20;
 
-Dcr.MFContainer = false;
-Dcr.LLContainer = false;
+D.MFContainer = false;
+D.LLContainer = false;
 
-Dcr.profile = {};
+D.profile = {};
 
-Dcr.Status = {};
+D.Status = {};
 
-Dcr.Status.CuringSpells = {};
-Dcr.Status.CuringSpellsPrio = {};
-Dcr.Status.DelayedFunctionCalls = {};
-Dcr.Status.DelayedFunctionCallsCount = 0;
+D.Status.CuringSpells = {};
+D.Status.CuringSpellsPrio = {};
+D.Status.DelayedFunctionCalls = {};
+D.Status.DelayedFunctionCallsCount = 0;
 
-Dcr.Status.Blacklisted_Array = {};
-Dcr.Status.UnitNum = 0;
+D.Status.Blacklisted_Array = {};
+D.Status.UnitNum = 0;
 
 -- An acces the debuff table
-Dcr.ManagedDebuffUnitCache = {};
+D.ManagedDebuffUnitCache = {};
 -- A table UnitID=>IsDebuffed (boolean)
-Dcr.UnitDebuffed = {};
+D.UnitDebuffed = {};
 
 -- // }}}
 -------------------------------------------------------------------------------
@@ -119,31 +124,31 @@ Dcr.UnitDebuffed = {};
 
 
 
--- Dcr.Initialized = false;
+-- D.Initialized = false;
 -------------------------------------------------------------------------------
 
 -- add support for FuBar
-Dcr.independentProfile	= true; -- for Fubar
-Dcr.hasIcon	    	= DcrC.IconON;
-Dcr.defaultMinimapPosition = 250;
-Dcr.hideWithoutStandby	= true;
-Dcr.defaultPosition	= "LEFT";
-Dcr.hideMenuTitle 	= true;
---Dcr.clickableTooltip	= true;
+D.independentProfile	= true; -- for Fubar
+D.hasIcon	    	= DC.IconON;
+D.defaultMinimapPosition = 250;
+D.hideWithoutStandby	= true;
+D.defaultPosition	= "LEFT";
+D.hideMenuTitle 	= true;
+--D.clickableTooltip	= true;
 
-function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
+function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	self:RegisterDB("DcrDB");
-	self:RegisterDefaults('profile', Dcr.defaults )
+	self:RegisterDefaults('profile', D.defaults )
 	-- self:RegisterDefaults('profile', defaults );
-	self:RegisterChatCommand({'/dcr', '/decursive'}, Dcr.options )
+	self:RegisterChatCommand({'/dcr', '/decursive'}, D.options )
 
 	-- add support for FuBar
-	Dcr.OnMenuRequest	= Dcr.options;
-	Dcr.OnMouseDown = Dcr.MicroUnitF.OnCornerClick;
+	D.OnMenuRequest	= D.options;
+	D.OnMouseDown = D.MicroUnitF.OnCornerClick;
 
-	Dcr.OnTooltipUpdate = function()
-	    Dcr:Debug("Updating FuBar tooltip");
-	    local cat = Dcr.T:AddCategory(
+	D.OnTooltipUpdate = function()
+	    D:Debug("Updating FuBar tooltip");
+	    local cat = D.T:AddCategory(
 	    --'text', "Alpha",
 	    'columns', 2,
 	    'child_textR', 0,
@@ -156,29 +161,29 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    );
 
 	    cat:AddLine(
-	    'text', ("%s: "):format(Dcr.L[Dcr.LOC.HLP_RIGHTCLICK]),
-	    'text2',  Dcr.L[Dcr.LOC.STR_OPTIONS]
+	    'text', ("%s: "):format(D.L[D.LOC.HLP_RIGHTCLICK]),
+	    'text2',  D.L[D.LOC.STR_OPTIONS]
 	    );
 
 	    cat:AddLine(
-	    'text', ("%s-%s: "):format(Dcr.L[Dcr.LOC.ALT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK]),
-	    'text2', Dcr.L[BINDING_NAME_DCRSHOWOPTION]
+	    'text', ("%s-%s: "):format(D.L[D.LOC.ALT],		D.L[D.LOC.HLP_RIGHTCLICK]),
+	    'text2', D.L[BINDING_NAME_DCRSHOWOPTION]
 	    );
 	    cat:AddLine(
-	    'text', ("%s-%s: "):format(Dcr.L[Dcr.LOC.CTRL],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK]),
-	    'text2', Dcr.L[BINDING_NAME_DCRPRSHOW]
+	    'text', ("%s-%s: "):format(D.L[D.LOC.CTRL],		D.L[D.LOC.HLP_LEFTCLICK]),
+	    'text2', D.L[BINDING_NAME_DCRPRSHOW]
 	    );
 	    cat:AddLine(
-	    'text', ("%s-%s: "):format(Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_LEFTCLICK]),
-	    'text2', Dcr.L[BINDING_NAME_DCRSKSHOW]
+	    'text', ("%s-%s: "):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_LEFTCLICK]),
+	    'text2', D.L[BINDING_NAME_DCRSKSHOW]
 	    );
 	    cat:AddLine(
-	    'text', ("%s-%s: " ):format(Dcr.L[Dcr.LOC.SHIFT],		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK]),
-	    'text2', Dcr.L[BINDING_NAME_DCRSHOW]
+	    'text', ("%s-%s: " ):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_RIGHTCLICK]),
+	    'text2', D.L[BINDING_NAME_DCRSHOW]
 	    );
 
-	    if (Dcr.profile.debugging) then
-		 local cat2 = Dcr.T:AddCategory(
+	    if (D.profile.debugging) then
+		 local cat2 = D.T:AddCategory(
 		'text', "Debugging info",
 		'columns', 2,
 		'child_textR', 0.8,
@@ -193,116 +198,116 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
 		cat2:AddLine(
 		'text', "Afflicted units count:",
-		'text2',  Dcr.ForLLDebuffedUnitsNum
+		'text2',  D.ForLLDebuffedUnitsNum
 		);
 
 		cat2:AddLine(
 		'text', "Afflicted units count in range:",
-		'text2',  Dcr.MicroUnitF.UnitsDebuffedInRange
+		'text2',  D.MicroUnitF.UnitsDebuffedInRange
 		);
 	    end
 
 	    
 	end	
 
-	Dcr.MFContainer = DcrMUFsContainer;
-	Dcr.MicroUnitF.Frame = Dcr.MFContainer;
+	D.MFContainer = DcrMUFsContainer;
+	D.MicroUnitF.Frame = D.MFContainer;
 
 
-	Dcr.LLContainer = DcrLiveList;
-	Dcr.LiveList.Frame = DcrLiveList;
+	D.LLContainer = DcrLiveList;
+	D.LiveList.Frame = DcrLiveList;
 
 
-	Dcr.DewDrop:Register(DecursiveMainBar,
+	D.DewDrop:Register(DecursiveMainBar,
 	'children', function()
-	    Dcr.DewDrop:FeedAceOptionsTable( Dcr.options )
+	    D.DewDrop:FeedAceOptionsTable( D.options )
 	end
 	)
-	Dcr.Waterfall:Register("Decursive","aceOptions", Dcr.options, 'title',  L[Dcr.LOC.STR_OPTIONS],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
+	D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L[D.LOC.STR_OPTIONS],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
 
-	DcrC.TypeNames = {
-	    [DcrC.MAGIC]	= Dcr.LOC.MAGIC;
-	    [DcrC.ENEMYMAGIC]	= Dcr.LOC.MAGIC;
-	    [DcrC.CURSE]	= Dcr.LOC.CURSE;
-	    [DcrC.POISON]	= Dcr.LOC.POISON;
-	    [DcrC.DISEASE]	= Dcr.LOC.DISEASE;
-	    [DcrC.CHARMED]	= Dcr.LOC.CHARMED;
+	DC.TypeNames = {
+	    [DC.MAGIC]	= D.LOC.MAGIC;
+	    [DC.ENEMYMAGIC]	= D.LOC.MAGIC;
+	    [DC.CURSE]	= D.LOC.CURSE;
+	    [DC.POISON]	= D.LOC.POISON;
+	    [DC.DISEASE]	= D.LOC.DISEASE;
+	    [DC.CHARMED]	= D.LOC.CHARMED;
 	}
 
-	DcrC.NameToTypes = Dcr:tReverse(DcrC.TypeNames);
-	DcrC.NameToTypes[Dcr.LOC.MAGIC] = DcrC.MAGIC;
+	DC.NameToTypes = D:tReverse(DC.TypeNames);
+	DC.NameToTypes[D.LOC.MAGIC] = DC.MAGIC;
 
-	DcrC.TypeColors = {
-	    [DcrC.MAGIC]	= "2222DD";
-	    [DcrC.ENEMYMAGIC]	= "2222FF";
-	    [DcrC.CURSE]	= "DD22DD";
-	    [DcrC.POISON]	= "22DD22";
-	    [DcrC.DISEASE]	= "995533";
-	    [DcrC.CHARMED]	= "FF0000";
+	DC.TypeColors = {
+	    [DC.MAGIC]	= "2222DD";
+	    [DC.ENEMYMAGIC]	= "2222FF";
+	    [DC.CURSE]	= "DD22DD";
+	    [DC.POISON]	= "22DD22";
+	    [DC.DISEASE]	= "995533";
+	    [DC.CHARMED]	= "FF0000";
 	}
 
-	-- /script DcrC.SpellsToUse[Dcr.BS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
+	-- /script DC.SpellsToUse[D.BS["Dampen Magic"]] = {Types = {DC.MAGIC, DC.DISEASE, DC.POISON},IsBest = false}; D:Configure();
 
 	-- SPELL TABLE -- must be parsed after localisation is loaded {{{
-	DcrC.SpellsToUse = {
+	DC.SpellsToUse = {
 
-	    [BS[Dcr.LOC.SPELL_POLYMORPH]]	    = {
-		Types = {DcrC.CHARMED},
+	    [BS[D.LOC.SPELL_POLYMORPH]]	    = {
+		Types = {DC.CHARMED},
 		IsBest = false,
 	    },
 	    --[[
 	    [BS["Dampen Magic"] ]	    = {
-		Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},
+		Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
 		IsBest = false,
 	    }, --]]
-	    [BS[Dcr.LOC.SPELL_CURE_DISEASE]]	    = {
-		Types = {DcrC.DISEASE},
+	    [BS[D.LOC.SPELL_CURE_DISEASE]]	    = {
+		Types = {DC.DISEASE},
 		IsBest = false,
 	    },
-	    [BS[Dcr.LOC.SPELL_ABOLISH_DISEASE]]	    = {
-		Types = {DcrC.DISEASE},
+	    [BS[D.LOC.SPELL_ABOLISH_DISEASE]]	    = {
+		Types = {DC.DISEASE},
 		IsBest = true,
 	    },
-	    [BS[Dcr.LOC.SPELL_PURIFY]]		    = {
-		Types = {DcrC.DISEASE, DcrC.POISON},
+	    [BS[D.LOC.SPELL_PURIFY]]		    = {
+		Types = {DC.DISEASE, DC.POISON},
 		IsBest = false,
 	    },
-	    [BS[Dcr.LOC.SPELL_CLEANSE]]		    = {
-		Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},
+	    [BS[D.LOC.SPELL_CLEANSE]]		    = {
+		Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
 		IsBest = true,
 	    },
-	    [BS[Dcr.LOC.SPELL_DISPELL_MAGIC]]	    = {
-		Types = {DcrC.MAGIC, DcrC.ENEMYMAGIC},
+	    [BS[D.LOC.SPELL_DISPELL_MAGIC]]	    = {
+		Types = {DC.MAGIC, DC.ENEMYMAGIC},
 		IsBest = true,
 	    },
-	    [BS[Dcr.LOC.SPELL_CURE_POISON]]	    = {
-		Types = {DcrC.POISON},
+	    [BS[D.LOC.SPELL_CURE_POISON]]	    = {
+		Types = {DC.POISON},
 		IsBest = false,
 	    },
-	    [BS[Dcr.LOC.SPELL_ABOLISH_POISON]]	    = {
-		Types = {DcrC.POISON},
+	    [BS[D.LOC.SPELL_ABOLISH_POISON]]	    = {
+		Types = {DC.POISON},
 		IsBest = true,
 	    },
-	    [BS[Dcr.LOC.SPELL_REMOVE_LESSER_CURSE]] = {
-		Types = {DcrC.CURSE},
+	    [BS[D.LOC.SPELL_REMOVE_LESSER_CURSE]] = {
+		Types = {DC.CURSE},
 		IsBest = true,
 	    },
-	    [BS[Dcr.LOC.SPELL_REMOVE_CURSE]]	    = {
-		Types = {DcrC.CURSE},
+	    [BS[D.LOC.SPELL_REMOVE_CURSE]]	    = {
+		Types = {DC.CURSE},
 		IsBest = true,
 	    },
 	    --[=[ -- disabled because of Korean locals... see below
-	    [BS[Dcr.LOC.SPELL_PURGE]]		    = {
-		Types = {DcrC.ENEMYMAGIC},
+	    [BS[D.LOC.SPELL_PURGE]]		    = {
+		Types = {DC.ENEMYMAGIC},
 		IsBest = true,
 	    },
 	    --]=]
-	    [BS[Dcr.LOC.PET_FEL_CAST]]		    = {
-		Types = {DcrC.MAGIC, DcrC.ENEMYMAGIC},
+	    [BS[D.LOC.PET_FEL_CAST]]		    = {
+		Types = {DC.MAGIC, DC.ENEMYMAGIC},
 		IsBest = true,
 	    },
-	    [BS[Dcr.LOC.PET_DOOM_CAST]]		    = {
-		Types = {DcrC.MAGIC, DcrC.ENEMYMAGIC},
+	    [BS[D.LOC.PET_DOOM_CAST]]		    = {
+		Types = {DC.MAGIC, DC.ENEMYMAGIC},
 		IsBest = true,
 	    },
 
@@ -311,8 +316,8 @@ function Dcr:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	-- Thanks to Korean localization team of WoW we have to make an exception....
 	-- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
 	if (select(2, UnitClass("player")) == "SHAMAN") then
-	    DcrC.SpellsToUse[BS[Dcr.LOC.SPELL_PURGE]]		    = {
-		Types = {DcrC.ENEMYMAGIC},
+	    DC.SpellsToUse[BS[D.LOC.SPELL_PURGE]]		    = {
+		Types = {DC.ENEMYMAGIC},
 		IsBest = true,
 	    };
 	end
@@ -323,61 +328,61 @@ end -- // }}}
 
 --Old_MacroFrame_SaveMacro = false;
 
-function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
+function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     
     -- Register slashes command {{{
     if (first) then
-	SLASH_DECURSIVEPRADD1 = Dcr.CONF.MACRO_PRADD;
+	SLASH_DECURSIVEPRADD1 = D.CONF.MACRO_PRADD;
 	SlashCmdList["DECURSIVEPRADD"] = function(msg)
-	    Dcr:AddTargetToPriorityList();
+	    D:AddTargetToPriorityList();
 	end
-	SLASH_DECURSIVEPRCLEAR1 = Dcr.CONF.MACRO_PRCLEAR;
+	SLASH_DECURSIVEPRCLEAR1 = D.CONF.MACRO_PRCLEAR;
 	SlashCmdList["DECURSIVEPRCLEAR"] = function(msg)
-	    Dcr:ClearPriorityList();
+	    D:ClearPriorityList();
 	end
 
-	SLASH_DECURSIVEPRSHOW1 = Dcr.CONF.MACRO_PRSHOW;
+	SLASH_DECURSIVEPRSHOW1 = D.CONF.MACRO_PRSHOW;
 	SlashCmdList["DECURSIVEPRSHOW"] = function(msg)
-	    Dcr:ShowHidePriorityListUI();
+	    D:ShowHidePriorityListUI();
 	end
 
-	SLASH_DECURSIVESKADD1 = Dcr.CONF.MACRO_SKADD;
+	SLASH_DECURSIVESKADD1 = D.CONF.MACRO_SKADD;
 	SlashCmdList["DECURSIVESKADD"] = function(msg)
-	    Dcr:AddTargetToSkipList();
+	    D:AddTargetToSkipList();
 	end
-	SLASH_DECURSIVESKCLEAR1 = Dcr.CONF.MACRO_SKCLEAR;
+	SLASH_DECURSIVESKCLEAR1 = D.CONF.MACRO_SKCLEAR;
 	SlashCmdList["DECURSIVESKCLEAR"] = function(msg)
-	    Dcr:ClearSkipList();
+	    D:ClearSkipList();
 	end
 
-	SLASH_DECURSIVESKSHOW1 = Dcr.CONF.MACRO_SKSHOW;
+	SLASH_DECURSIVESKSHOW1 = D.CONF.MACRO_SKSHOW;
 	SlashCmdList["DECURSIVESKSHOW"] = function(msg)
-	    Dcr:ShowHideSkipListUI();
+	    D:ShowHideSkipListUI();
 	end
 
-	SLASH_DECURSIVESHOW1 = Dcr.CONF.MACRO_SHOW;
+	SLASH_DECURSIVESHOW1 = D.CONF.MACRO_SHOW;
 	SlashCmdList["DECURSIVESHOW"] = function(msg)
-	    Dcr:HideBar(0);
+	    D:HideBar(0);
 	end
 
-	SLASH_DECURSIVERESET1 = Dcr.CONF.MACRO_RESET;
+	SLASH_DECURSIVERESET1 = D.CONF.MACRO_RESET;
 	SlashCmdList["DECURSIVERESET"] = function(msg)
-	    Dcr:ResetWindow();
+	    D:ResetWindow();
 	end
 
-	SLASH_DECURSIVEHIDE1 = Dcr.CONF.MACRO_HIDE;
+	SLASH_DECURSIVEHIDE1 = D.CONF.MACRO_HIDE;
 	SlashCmdList["DECURSIVEHIDE"] = function(msg)
-	    Dcr:HideBar(1);
+	    D:HideBar(1);
 	end
 
-	SLASH_DECURSIVEOPTION1 = Dcr.CONF.MACRO_OPTION;
+	SLASH_DECURSIVEOPTION1 = D.CONF.MACRO_OPTION;
 	SlashCmdList["DECURSIVEOPTION"] = function(msg)
-	    Dcr.Waterfall:Open("Decursive");
+	    D.Waterfall:Open("Decursive");
 	end
 
-	SLASH_DECURSIVESHOWORDER1 = Dcr.CONF.MACRO_SHOW_ORDER
+	SLASH_DECURSIVESHOWORDER1 = D.CONF.MACRO_SHOW_ORDER
 	SlashCmdList["DECURSIVESHOWORDER"] = function(msg)
-	    Dcr:Show_Cure_Order();
+	    D:Show_Cure_Order();
 	end
     end -- }}}
 
@@ -385,8 +390,8 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     if (first) then
 	-- configure the message frame for Decursive
 	DecursiveTextFrame:SetFading(true);
-	DecursiveTextFrame:SetFadeDuration(Dcr.CONF.TEXT_LIFETIME / 3);
-	DecursiveTextFrame:SetTimeVisible(Dcr.CONF.TEXT_LIFETIME);
+	DecursiveTextFrame:SetFadeDuration(D.CONF.TEXT_LIFETIME / 3);
+	DecursiveTextFrame:SetTimeVisible(D.CONF.TEXT_LIFETIME);
 
 
 	-- add support Earth panel (need to be checked I don't even know what Earth Panel is...) {{{
@@ -395,10 +400,10 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	    {
 		id = "Decursive";
 		name = BINDING_HEADER_DECURSIVE;
-		subtext = L[Dcr.LOC.OPTION_MENU];
+		subtext = L[D.LOC.OPTION_MENU];
 		tooltip = L[BINDING_NAME_DCRSHOW];
-		icon = DcrC.IconON;
-		callback = Dcr.ShowHidePriorityListUI;
+		icon = DC.IconON;
+		callback = D.ShowHidePriorityListUI;
 	    }
 	    );
 	end -- }}}
@@ -411,10 +416,10 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	-- hook the load macro thing {{{
 	-- So Decursive will re-update its macro when the lacro UI is closed
 	hooksecurefunc("ShowMacroFrame", function ()
-	    if (not Dcr.MacroSaveHooked) then
-		Dcr:Debug("Hooking MacroFrame_OnHide");
-		hooksecurefunc("MacroFrame_OnHide", function () Dcr:UpdateMacro(); end);
-		Dcr.MacroSaveHooked = true;
+	    if (not D.MacroSaveHooked) then
+		D:Debug("Hooking MacroFrame_OnHide");
+		hooksecurefunc("MacroFrame_OnHide", function () D:UpdateMacro(); end);
+		D.MacroSaveHooked = true;
 	    end
 	end); -- }}}
 
@@ -432,7 +437,7 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
 
     -- Cast status events
-    self:RegisterEvent("UNIT_SPELLCAST_STOP","UNIT_SPELLCAST_STOP");
+    -- self:RegisterEvent("UNIT_SPELLCAST_STOP","UNIT_SPELLCAST_STOP"); -- Unused
     self:RegisterEvent("UNIT_SPELLCAST_SENT","UNIT_SPELLCAST_SENT");
     self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED","UNIT_SPELLCAST_SUCCEEDED");
 
@@ -464,108 +469,108 @@ function Dcr:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
 
 
-    self:ScheduleRepeatingEvent("SheduledTasks", Dcr.SheduledTasks, 0.2);
+    self:ScheduleRepeatingEvent("SheduledTasks", self.SheduledTasks, 0.2, self);
     
     -- Configure specific profile dependent data
-    Dcr:OnProfileEnable();
+    D:OnProfileEnable();
 
     if (first) then
-	Dcr:ColorPrint(0.3, 0.5, 1, L[Dcr.LOC.IS_HERE_MSG]);
-	Dcr:ColorPrint(0.3, 0.5, 1, L[Dcr.LOC.SHOW_MSG]);
+	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.IS_HERE_MSG]);
+	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.SHOW_MSG]);
     end
 
 
 
 end -- // }}}
 
-function Dcr:OnProfileEnable()
+function D:OnProfileEnable()
 
 
-    if (Dcr.Status.ScanShedule) then
-	Dcr:CancelScheduledEvent(Dcr.Status.ScanShedule);
+    if (D.Status.ScanShedule) then
+	D:CancelScheduledEvent(D.Status.ScanShedule);
     end
-    if (Dcr.Status.MicroFrameUpdateSchedule) then
-	Dcr:CancelScheduledEvent(Dcr.Status.MicroFrameUpdateSchedule);
+    if (D.Status.MicroFrameUpdateSchedule) then
+	D:CancelScheduledEvent(D.Status.MicroFrameUpdateSchedule);
     end
 
 
-    Dcr.Groups_datas_are_invalid = true;
-    Dcr.Status = {};
-    Dcr.Status.FoundSpells = {};
-    Dcr.Status.CuringSpells = {};
-    Dcr.Status.CuringSpellsPrio = {};
-    Dcr.Status.Blacklisted_Array = {};
-    Dcr.Status.Unit_Array_UnitToName = {};
-    --Dcr.Status.Unit_Array_UnitToIndex = {};
-    Dcr.Status.UnitNum = 0;
-    Dcr.Status.DelayedFunctionCalls = {};
-    Dcr.Status.DelayedFunctionCallsCount = 0;
+    D.Groups_datas_are_invalid = true;
+    D.Status = {};
+    D.Status.FoundSpells = {};
+    D.Status.CuringSpells = {};
+    D.Status.CuringSpellsPrio = {};
+    D.Status.Blacklisted_Array = {};
+    D.Status.Unit_Array_UnitToName = {};
+    --D.Status.Unit_Array_UnitToIndex = {};
+    D.Status.UnitNum = 0;
+    D.Status.DelayedFunctionCalls = {};
+    D.Status.DelayedFunctionCallsCount = 0;
 
     -- if we log in and we are already fighting...
     if (InCombatLockdown()) then 
-	Dcr.Status.Combat = true;
+	D.Status.Combat = true;
     end
 
-    Dcr.profile = Dcr.db.profile; -- Dcr.db has a metatable for __index so to avoid the call of a function each time we access a config data we set this shortcut.
+    D.profile = D.db.profile; -- D.db has a metatable for __index so to avoid the call of a function each time we access a config data we set this shortcut.
 
-    if type (Dcr.profile.OutputWindow) == "string" then
-	Dcr.Status.OutputWindow = getglobal(Dcr.profile.OutputWindow);
+    if type (D.profile.OutputWindow) == "string" then
+	D.Status.OutputWindow = getglobal(D.profile.OutputWindow);
     end
 
-    Dcr.debugging = Dcr.profile.debugging;
-    Dcr.debugFrame = Dcr.Status.OutputWindow;
-    Dcr.printFrame = Dcr.Status.OutputWindow;
+    D.debugging = D.profile.debugging;
+    D.debugFrame = D.Status.OutputWindow;
+    D.printFrame = D.Status.OutputWindow;
 
-    Dcr:Debug("Loading profile datas...");
+    D:Debug("Loading profile datas...");
 
     -- this is needed to fix a typo in previous versions...
-    if (Dcr.profile.skipByClass["WARRIoR"]) then
-	Dcr.profile.skipByClass["WARRIoR"] = nil;
-	Dcr.profile.skipByClass["WARRIOR"] = {};
-	Dcr:tcopy(Dcr.profile.skipByClass["WARRIOR"], Dcr.defaults.skipByClass["WARRIOR"]);
+    if (D.profile.skipByClass["WARRIoR"]) then
+	D.profile.skipByClass["WARRIoR"] = nil;
+	D.profile.skipByClass["WARRIOR"] = {};
+	D:tcopy(D.profile.skipByClass["WARRIOR"], D.defaults.skipByClass["WARRIOR"]);
     end
 
-    Dcr:Init();
+    D:Init();
 
-    if not Dcr.profile.Hide_LiveList then
-	Dcr.Status.ScanShedule =
-	self:ScheduleRepeatingEvent("LLupdate", Dcr.LiveList.Update_Display, Dcr.profile.ScanTime, Dcr.LiveList);
+    if not D.profile.Hide_LiveList then
+	D.Status.ScanShedule =
+	self:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     else
-	Dcr.Status.ScanShedule = false;
+	D.Status.ScanShedule = false;
     end
 
-    Dcr.MicroUnitF.MaxUnit = Dcr.profile.DebuffsFrameMaxCount;
+    D.MicroUnitF.MaxUnit = D.profile.DebuffsFrameMaxCount;
 
-    if Dcr.profile.ShowDebuffsFrame then
-	Dcr.Status.MicroFrameUpdateSchedule =
-	self:ScheduleRepeatingEvent("MUFupdate", Dcr.DebuffsFrame_Update, Dcr.profile.DebuffsFrameRefreshRate);
+    if D.profile.ShowDebuffsFrame then
+	D.Status.MicroFrameUpdateSchedule =
+	self:ScheduleRepeatingEvent("MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
     else
-	Dcr.Status.MicroFrameUpdateSchedule = false;
+	D.Status.MicroFrameUpdateSchedule = false;
     end
 
-    Dcr.Groups_datas_are_invalid = true;
-    Dcr:CreateDropDownFiltersMenu();
+    D.Groups_datas_are_invalid = true;
+    D:CreateDropDownFiltersMenu();
 
-    Dcr.MicroUnitF:ResetAllPositions ();
+    D.MicroUnitF:ResetAllPositions ();
   
 
-    Dcr.Status.Enabled = true;
+    D.Status.Enabled = true;
 
-    Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
+    D.MicroUnitF:Delayed_MFsDisplay_Update();
 
     -- set Fubar Icon
-    if Dcr.profile.Hide_LiveList and not Dcr.profile.ShowDebuffsFrame then
-	Dcr:SetIcon(DcrC.IconOFF);
+    if D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
+	D:SetIcon(DC.IconOFF);
     else
-	Dcr:SetIcon(DcrC.IconON);
+	D:SetIcon(DC.IconON);
     end
 end
 
-function Dcr:OnDisable() -- When the addon is disabled by ACE
-    Dcr.Status.Enabled = false;
-    Dcr:SetIcon("Interface\\AddOns\\" .. Dcr.folderName .. "\\iconOFF.tga");
-    if ( Dcr.profile.ShowDebuffsFrame) then
-	Dcr.MFContainer:Hide();
+function D:OnDisable() -- When the addon is disabled by ACE
+    D.Status.Enabled = false;
+    D:SetIcon("Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga");
+    if ( D.profile.ShowDebuffsFrame) then
+	D.MFContainer:Hide();
     end
 end
 
@@ -575,28 +580,28 @@ end
 -------------------------------------------------------------------------------
 -- init functions and configuration functions {{{
 -------------------------------------------------------------------------------
-function Dcr:Init() --{{{
+function D:Init() --{{{
 
-    if (Dcr.profile.OutputWindow == nil or not Dcr.profile.OutputWindow) then
-	Dcr.Status.OutputWindow = DEFAULT_CHAT_FRAME;
-	Dcr.profile.OutputWindow =  "DEFAULT_CHAT_FRAME";
+    if (D.profile.OutputWindow == nil or not D.profile.OutputWindow) then
+	D.Status.OutputWindow = DEFAULT_CHAT_FRAME;
+	D.profile.OutputWindow =  "DEFAULT_CHAT_FRAME";
     end
 
-    Dcr:Println("%s %s by %s", Dcr.name, Dcr.version, Dcr.author);
+    D:Println("%s %s by %s", D.name, D.version, D.author);
 
-    Dcr:Debug( "Decursive Initialization started!");
+    D:Debug( "Decursive Initialization started!");
 
 
     -- SET MF FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
     -- Set the scale and place the MF container correctly
-    Dcr.MFContainer:Show();
-    Dcr.MFContainer:SetScale(Dcr.profile.DebuffsFrameElemScale);
-    Dcr.MicroUnitF:Place();
+    D.MFContainer:Show();
+    D.MFContainer:SetScale(D.profile.DebuffsFrameElemScale);
+    D.MicroUnitF:Place();
 
-    if (Dcr.profile.ShowDebuffsFrame) then
-	Dcr.MFContainer:Show();
+    if (D.profile.ShowDebuffsFrame) then
+	D.MFContainer:Show();
     else
-	Dcr.MFContainer:Hide();
+	D.MFContainer:Hide();
     end
     -- }}}
 
@@ -604,19 +609,19 @@ function Dcr:Init() --{{{
 	
 	-- Set poristion and scale
     DecursiveMainBar:Show();
-    DecursiveMainBar:SetScale(Dcr.profile.LiveListScale);
+    DecursiveMainBar:SetScale(D.profile.LiveListScale);
     DcrLiveList:Show();
-    DcrLiveList:SetScale(Dcr.profile.LiveListScale);
-    Dcr:PlaceLL();
+    DcrLiveList:SetScale(D.profile.LiveListScale);
+    D:PlaceLL();
 
-    if (Dcr.profile.Hidden) then
+    if (D.profile.Hidden) then
 	DecursiveMainBar:Hide();
     else
 	DecursiveMainBar:Show();
     end
 
     -- displays frame according to the current profile
-    if (Dcr.profile.Hide_LiveList) then
+    if (D.profile.Hide_LiveList) then
 	DcrLiveList:Hide();
     else
 	DcrLiveList:ClearAllPoints();
@@ -625,35 +630,35 @@ function Dcr:Init() --{{{
     end
 
     -- set Alpha
-    DecursiveMainBar:SetAlpha(Dcr.profile.LiveListAlpha);
-    --DcrLiveList:SetAlpha(Dcr.profile.LiveListAlpha);
+    DecursiveMainBar:SetAlpha(D.profile.LiveListAlpha);
+    --DcrLiveList:SetAlpha(D.profile.LiveListAlpha);
     -- }}}
 
-    if (Dcr.profile.MacroBind == "NONE") then
-	Dcr.profile.MacroBind = false;
+    if (D.profile.MacroBind == "NONE") then
+	D.profile.MacroBind = false;
     end
 
-    Dcr:ShowHideButtons(true);
+    D:ShowHideButtons(true);
 
-    Dcr:ChangeTextFrameDirection(Dcr.profile.CustomeFrameInsertBottom);
+    D:ChangeTextFrameDirection(D.profile.CustomeFrameInsertBottom);
 
 
     -- Configure spells
-    Dcr:Configure();
+    D:Configure();
 
 end --}}}
 
-function Dcr:ReConfigure() --{{{
+function D:ReConfigure() --{{{
 
-    if not Dcr.Status.HasSpell then
+    if not D.Status.HasSpell then
 	return;
     end
 
-    Dcr:Debug("Dcr:ReConfigure was called!");
+    D:Debug("D:ReConfigure was called!");
 
     local DoNotReconfigure = true;
 
-    for Spell, id_booktype in pairs(Dcr.Status.FoundSpells) do
+    for Spell, id_booktype in pairs(D.Status.FoundSpells) do
 
 	if ( GetSpellName(id_booktype[1], id_booktype[2]) ~= Spell) then
 	    DoNotReconfigure = false;
@@ -663,35 +668,35 @@ function Dcr:ReConfigure() --{{{
     end
 
     if DoNotReconfigure == false then
-	Dcr:Debug("Dcr:ReConfigure RECONFIGURATION!");
-	Dcr:Configure();
+	D:Debug("D:ReConfigure RECONFIGURATION!");
+	D:Configure();
 	return;
     end
-    Dcr:Debug("Dcr:ReConfigure No reconfiguration required!");
+    D:Debug("D:ReConfigure No reconfiguration required!");
 
 end --}}}
 
-function Dcr:Configure() --{{{
+function D:Configure() --{{{
 
     -- first empty out the old "spellbook"
-     Dcr.Status.HasSpell = false;
+     D.Status.HasSpell = false;
 
 
     -- TODO
     -- ==> In the futur, Users will be able to choose keystrokes and clicks associated to their spells
 
-    local CuringSpells = Dcr.Status.CuringSpells;
+    local CuringSpells = D.Status.CuringSpells;
 
-    CuringSpells[DcrC.MAGIC]	  = false;
-    CuringSpells[DcrC.ENEMYMAGIC] = false;
-    CuringSpells[DcrC.CURSE]	  = false;
-    CuringSpells[DcrC.POISON]     = false;
-    CuringSpells[DcrC.DISEASE]    = false;
-    CuringSpells[DcrC.CHARMED]    = false;
+    CuringSpells[DC.MAGIC]	  = false;
+    CuringSpells[DC.ENEMYMAGIC] = false;
+    CuringSpells[DC.CURSE]	  = false;
+    CuringSpells[DC.POISON]     = false;
+    CuringSpells[DC.DISEASE]    = false;
+    CuringSpells[DC.CHARMED]    = false;
 
 
 
-    Dcr:Debug("Configuring Decursive...");
+    D:Debug("Configuring Decursive...");
     -- parse through the entire library...
     -- look for known cleaning spells...
 
@@ -702,7 +707,7 @@ function Dcr:Configure() --{{{
     local spellName, spellRank;
 
     -- This array will be used to test if a reconfiguration is required
-    Dcr.Status.FoundSpells = {};
+    D.Status.FoundSpells = {};
 
     while not break_flag  do
 	while (true) do -- I wish there was a continue statement in LUA...
@@ -718,22 +723,22 @@ function Dcr:Configure() --{{{
 
 	    end
 
-	    if (DcrC.SpellsToUse[spellName]) then
+	    if (DC.SpellsToUse[spellName]) then
 
-		for _, Type in pairs (DcrC.SpellsToUse[spellName].Types) do
+		for _, Type in pairs (DC.SpellsToUse[spellName].Types) do
 
-		    if	    (CuringSpells[Type] and DcrC.SpellsToUse[ CuringSpells[Type] ].IsBest)  -- we already registered the best
+		    if	    (CuringSpells[Type] and DC.SpellsToUse[ CuringSpells[Type] ].IsBest)  -- we already registered the best
 			or  (CuringSpells[Type] and CuringSpells[Type] == spellName) then	    -- this spell is already registered
 			break;
 		    end
 
-		    Dcr.Status.FoundSpells[spellName] = {i, BookType}; -- save the id of the spell to be able to check for changes later
+		    D.Status.FoundSpells[spellName] = {i, BookType}; -- save the id of the spell to be able to check for changes later
 		    CuringSpells[Type] = spellName;
 
-		    Dcr:Debug("Spell \"%s\" registered for type %d ( %s )", spellName, Type, DcrC.TypeNames[Type]);
+		    D:Debug("Spell \"%s\" registered for type %d ( %s )", spellName, Type, DC.TypeNames[Type]);
 		end
 
-		 Dcr.Status.HasSpell = true;
+		 D.Status.HasSpell = true;
 	    end
 
 	    i = i + 1
@@ -742,11 +747,11 @@ function Dcr:Configure() --{{{
 
 
     -- Verify the cure order list (if it was damaged)
-    Dcr:CheckCureOrder ();
+    D:CheckCureOrder ();
     -- Set the appropriate priorities according to debuffs types
-    Dcr:SetCureOrder ();
+    D:SetCureOrder ();
 
-    if (not Dcr.Status.HasSpell) then
+    if (not D.Status.HasSpell) then
 	return;
     end
 
@@ -769,25 +774,25 @@ end --}}}
 -- CreateMacro("name", icon, "body", local)   
 
 
-function Dcr:UpdateMacro ()
+function D:UpdateMacro ()
 
-    if (Dcr.Status.Combat) then
-	Dcr:AddDelayedFunctionCall (
+    if (D.Status.Combat) then
+	D:AddDelayedFunctionCall (
 	"UpdateMacro", self.UpdateMacro,
 	self);
 	return false;
     end
-    Dcr:Debug("UpdateMacro called");
+    D:Debug("UpdateMacro called");
 
 
-    local CuringSpellsPrio  = Dcr.Status.CuringSpellsPrio;
-    local ReversedCureOrder = Dcr.Status.ReversedCureOrder;
-    local CuringSpells	    = Dcr.Status.CuringSpells;
+    local CuringSpellsPrio  = D.Status.CuringSpellsPrio;
+    local ReversedCureOrder = D.Status.ReversedCureOrder;
+    local CuringSpells	    = D.Status.CuringSpells;
 
 
     -- Get an ordered spell table
     local Spells = {};
-    for Spell, Prio in pairs(Dcr.Status.CuringSpellsPrio) do
+    for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 	table.insert (Spells, Prio, Spell);
     end
 
@@ -800,25 +805,25 @@ function Dcr:UpdateMacro ()
     end
 
     local MacroParameters = {
-	Dcr.CONF.MACRONAME,
+	D.CONF.MACRONAME,
 	1,
-	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomodifier,exists] %s;  [target=mouseover,exists,modifier:ctrl] %s; [target=mouseover,exists,modifier:shift] %s", unpack(Spells)) or "/script Dcr:Println('No spell available')",
+	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomodifier,exists] %s;  [target=mouseover,exists,modifier:ctrl] %s; [target=mouseover,exists,modifier:shift] %s", unpack(Spells)) or "/script D:Println('No spell available')",
 	1
     };
 
-    --Dcr:PrintLiteral(GetMacroIndexByName(Dcr.CONF.MACRONAME));
-    if (GetMacroIndexByName(Dcr.CONF.MACRONAME) ~= 0) then
-	-- Dcr:Debug("Macro found");
-	EditMacro(Dcr.CONF.MACRONAME, unpack(MacroParameters));
+    --D:PrintLiteral(GetMacroIndexByName(D.CONF.MACRONAME));
+    if (GetMacroIndexByName(D.CONF.MACRONAME) ~= 0) then
+	-- D:Debug("Macro found");
+	EditMacro(D.CONF.MACRONAME, unpack(MacroParameters));
     elseif ((GetNumMacros()) < 18) then
 	CreateMacro(unpack(MacroParameters));
     else
-	Dcr:errln("Too many macros exist, Decursive cannot create its macro");
+	D:errln("Too many macros exist, Decursive cannot create its macro");
 	return false;
     end
 
 
-    Dcr:SetMacroKey(Dcr.profile.MacroBind);
+    D:SetMacroKey(D.profile.MacroBind);
 
     return true;
 
@@ -830,24 +835,24 @@ end
 
 
 
-function Dcr:SetDateAndRevision (Date, Revision)
+function D:SetDateAndRevision (Date, Revision)
 
-    if not Dcr.TextVersion then
-	Dcr.TextVersion = GetAddOnMetadata("Decursive", "Version");
-	Dcr.Revision = 0;
+    if not D.TextVersion then
+	D.TextVersion = GetAddOnMetadata("Decursive", "Version");
+	D.Revision = 0;
     end
 
     local Rev = tonumber((string.gsub(Revision, "%$Revision: (%d+) %$", "%1")));
 
-    if  Rev and Dcr.Revision < Rev then
-	Dcr.Revision = Rev;
-	Dcr.date = Date:gsub("%$Date: (.-) %$", "%1");
-	Dcr.version = string.format("%s (|cFF11CCAARevision: %d|r)", Dcr.TextVersion, Rev);
-	--Dcr:Print("XXXXX VERSION SET to ", Dcr.version);
+    if  Rev and D.Revision < Rev then
+	D.Revision = Rev;
+	D.date = Date:gsub("%$Date: (.-) %$", "%1");
+	D.version = string.format("%s (|cFF11CCAARevision: %d|r)", D.TextVersion, Rev);
+	--D:Print("XXXXX VERSION SET to ", D.version);
     end
 
 
 end
 
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+D:SetDateAndRevision("$Date$", "$Revision$");
 -------------------------------------------------------------------------------

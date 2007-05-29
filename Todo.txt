@@ -1,22 +1,13 @@
-Personal TODO file for Archarodim (will stop to be personal once I'll add comments and cleaned the code ;) )
-
-
-In any case: Always submit clean and fully commented code, if what you want to do requires big changes, ask to the author first.
+Always submit clean and fully commented code, if what you want to do requires big changes, ask to the author first.
 There is a Decursive thread on WoWAce.com forums where you can talk:
 
 ---->  http://www.wowace.com/forums/index.php?topic=4328.0
 
 Don't forget to update the wiki:
+
 ---->  http://www.wowace.com/wiki/Decursive
 
-
-
-
-Important TODO:
-
-- Add an option to disable the map-a-key warning.
-
-Other TODO:
+TODO:
 
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
   (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found)

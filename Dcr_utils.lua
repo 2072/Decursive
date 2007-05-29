@@ -20,21 +20,22 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+local D = Dcr;
+D:SetDateAndRevision("$Date$", "$Revision$");
 
-local L = Dcr.L;
-local BS = Dcr.BS;
+local L = D.L;
+local BS = D.BS;
 
-function Dcr:ColorText (text, color) --{{{
+function D:ColorText (text, color) --{{{
     return "|c".. color .. text .. "|r";
 end --}}}
 
-function Dcr:MakePlayerName (name) --{{{
+function D:MakePlayerName (name) --{{{
     if not name then name = "NONAME" end
     return "|cFFFFAA22|Hplayer:" .. name .. "|h" .. string.upper(name) .. "|h|r";
 end --}}}
 
-function Dcr:MakeAfflictionName (name) --{{{
+function D:MakeAfflictionName (name) --{{{
     if (name) then
 	return "|cFFFF6622" .. L[name] .. "|r";
     else
@@ -42,27 +43,27 @@ function Dcr:MakeAfflictionName (name) --{{{
     end
 end --}}}
 
-function Dcr:Println( ... ) --{{{
+function D:Println( ... ) --{{{
 
-    if (Dcr.profile.Print_ChatFrame) then
-	Dcr:CustomPrint (1,1,1, Dcr.Status.OutputWindow, Dcr.CONF.TEXT_LIFETIME, " ", ... );
+    if (D.profile.Print_ChatFrame) then
+	D:CustomPrint (1,1,1, D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
     end
-    if (Dcr.profile.Print_CustomFrame) then
-	Dcr:CustomPrint (1,1,1, DecursiveTextFrame, Dcr.CONF.TEXT_LIFETIME, " ", ... );
+    if (D.profile.Print_CustomFrame) then
+	D:CustomPrint (1,1,1, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
     end
 end --}}}
 
-function Dcr:ColorPrint (r,g,b, ... )
-    if (Dcr.profile.Print_ChatFrame) then
-	Dcr:CustomPrint (r,g,b,Dcr.Status.OutputWindow, Dcr.CONF.TEXT_LIFETIME, " ", ... );
+function D:ColorPrint (r,g,b, ... )
+    if (D.profile.Print_ChatFrame) then
+	D:CustomPrint (r,g,b,D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
     end
-    if (Dcr.profile.Print_CustomFrame) then
-	Dcr:CustomPrint (r,g,b, DecursiveTextFrame, Dcr.CONF.TEXT_LIFETIME, " ", ... );
+    if (D.profile.Print_CustomFrame) then
+	D:CustomPrint (r,g,b, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
     end
 end
 
 
-function Dcr:tremovebyval(tab, val) -- {{{
+function D:tremovebyval(tab, val) -- {{{
     local k;
     local v;
     for k,v in pairs(tab) do
@@ -74,7 +75,7 @@ function Dcr:tremovebyval(tab, val) -- {{{
     return false;
 end -- }}}
 
-function Dcr:tcheckforval(tab, val) -- {{{
+function D:tcheckforval(tab, val) -- {{{
     local k;
     local v;
     if (tab) then
@@ -88,18 +89,18 @@ function Dcr:tcheckforval(tab, val) -- {{{
 end -- }}}
 
 -- tcopy: recursively copy contents of one table to another
-function Dcr:tcopy(to, from)   -- "to" must be a table (possibly empty)
+function D:tcopy(to, from)   -- "to" must be a table (possibly empty)
     if (type(from) ~= "table") then 
-	return error(("Dcr:tcopy: bad argument #2 'from' must be a table, got '%s' instead"):format(type(from)),2);
+	return error(("D:tcopy: bad argument #2 'from' must be a table, got '%s' instead"):format(type(from)),2);
     end
 
     if (type(to) ~= "table") then 
-	return error(("Dcr:tcopy: bad argument #1 'to' must be a table, got '%s' instead"):format(type(to)),2);
+	return error(("D:tcopy: bad argument #1 'to' must be a table, got '%s' instead"):format(type(to)),2);
     end
     for k,v in pairs(from) do
 	if(type(v)=="table") then
 	    to[k] = {}
-	    Dcr:tcopy(to[k], v);
+	    D:tcopy(to[k], v);
 	else
 	    to[k] = v;
 	end
@@ -107,7 +108,7 @@ function Dcr:tcopy(to, from)   -- "to" must be a table (possibly empty)
 end
 
 
-function Dcr:tGiveValueIndex(tab, val)
+function D:tGiveValueIndex(tab, val)
     local k;
     local v;
     for k,v in pairs(tab) do
@@ -118,7 +119,7 @@ function Dcr:tGiveValueIndex(tab, val)
     return false;
 end
 
-function Dcr:tSortUsingKeys(tab)
+function D:tSortUsingKeys(tab)
     local SortedTable = {};
     local Keys = {};
 
@@ -140,7 +141,7 @@ function Dcr:tSortUsingKeys(tab)
     return SortedTable;
 end
 
-function Dcr:tReverse(tab)
+function D:tReverse(tab)
     local ReversedTable = {};
 
     for k,v in pairs(tab) do
@@ -150,7 +151,7 @@ function Dcr:tReverse(tab)
     return ReversedTable;
 end
 
-function Dcr:Pack(...)
+function D:Pack(...)
     local args = {};
     for i=1,select("#",...), 1 do
 	args[i]=select(i, ...);
@@ -158,22 +159,22 @@ function Dcr:Pack(...)
     return args;
 end
 
-function Dcr:MakeProperEnglishClassName (Name)
+function D:MakeProperEnglishClassName (Name)
     local newname = strsub(Name,1,1) .. string.lower(strsub(Name, 2));
     return newname;
 end
 
-function Dcr:ThisSetText(text) --{{{
+function D:ThisSetText(text) --{{{
     getglobal(this:GetName().."Text"):SetText(text);
 end --}}}
 
-function Dcr:ThisSetParentText(text) --{{{
+function D:ThisSetParentText(text) --{{{
     getglobal(this:GetParent():GetName().."Text"):SetText(text);
 end --}}}
 
 do
 local DefaultAnchorTab = {"ANCHOR_LEFT"};
-    function Dcr:DisplayTooltip(Message, RelativeTo, AnchorTab) --{{{
+    function D:DisplayTooltip(Message, RelativeTo, AnchorTab) --{{{
 	if (not AnchorTab) then
 	    AnchorTab = DefaultAnchorTab;
 	end
@@ -184,26 +185,26 @@ local DefaultAnchorTab = {"ANCHOR_LEFT"};
     end --}}}
 end
 
-function Dcr:DisplayGameTooltip(Message) --{{{
+function D:DisplayGameTooltip(Message) --{{{
     GameTooltip_SetDefaultAnchor(GameTooltip, this);
     GameTooltip:SetText(Message);
     GameTooltip:Show();
 end --}}}
 
-function Dcr:errln( ... ) --{{{
-    if (Dcr.profile.Print_Error) then
-	if (Dcr.profile.Print_ChatFrame) then
-	    Dcr:CustomPrint ( 1, 0.1, 0.1,Dcr.Status.OutputWindow, Dcr.CONF.TEXT_LIFETIME, " ", ... );
+function D:errln( ... ) --{{{
+    if (D.profile.Print_Error) then
+	if (D.profile.Print_ChatFrame) then
+	    D:CustomPrint ( 1, 0.1, 0.1,D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
 	end
-	if (Dcr.profile.Print_CustomFrame) then
-	    Dcr:CustomPrint (1,0.1,0.1, DecursiveTextFrame, Dcr.CONF.TEXT_LIFETIME, " ", ... );
+	if (D.profile.Print_CustomFrame) then
+	    D:CustomPrint (1,0.1,0.1, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
 	    -- DecursiveTextFrame:AddMessage(Message, 1, 0.1, 0.1, 0.9);
 	end
     end
 end --}}}
 
 
-function Dcr:NumToHexColor(ColorTable)
+function D:NumToHexColor(ColorTable)
 	return string.format("%02x%02x%02x%02x", ColorTable[4] * 255, ColorTable[1] * 255, ColorTable[2] * 255, ColorTable[3] * 255)
 end
 

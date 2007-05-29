@@ -4,7 +4,9 @@ Changes from Decursive 2.0 BETA 7-Pub to Decursive 2.0 RC1
 
 - An error message is displayed if Decursive cannot load its main libraries properly.
 - It's now possible to disable the warning displayed when no key in mapped for the macro.
+- There should be no more "succeeded on NONAME" messages.
 - Descriptions in French and Traditional Chinese have been added.
+- .TOC updated for WoW 2.1
 
 
 Changes from Decursive 2.0 BETA 6-Pub-fixed to Decursive 2.0 BETA 7-Pub

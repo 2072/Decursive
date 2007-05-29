@@ -20,270 +20,274 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+local D = Dcr;
+D:SetDateAndRevision("$Date$", "$Revision$");
 
-local L = Dcr.L;
-local BC = Dcr.BC;
-local BS = Dcr.BS;
 
-function Dcr:GroupChanged () -- {{{
+local L = D.L;
+local BC = D.BC;
+local BS = D.BS;
+local DC = DcrC;
+
+function D:GroupChanged () -- {{{
     -- this will trigger an update of the unit array
-    Dcr.Groups_datas_are_invalid = true;
+    D.Groups_datas_are_invalid = true;
     -- Update the MUFs display in a short moment
-    Dcr.MicroUnitF:Delayed_MFsDisplay_Update ();
-    Dcr:Debug("Groups changed");
+    D.MicroUnitF:Delayed_MFsDisplay_Update ();
+    D:Debug("Groups changed");
 end -- }}}
 
 local OncePetRetry = false;
 
-function Dcr:UNIT_PET (Unit) -- {{{
+function D:UNIT_PET (Unit) -- {{{
 
     -- when a pet changes somwhere, we update the unit array.
 
-    Dcr:Debug("Pet changed for: ", Unit);
-    if (Dcr.Status.Unit_Array_UnitToName[Unit]) then
-	Dcr.Groups_datas_are_invalid = true;
+    D:Debug("Pet changed for: ", Unit);
+    if (D.Status.Unit_Array_UnitToName[Unit]) then
+	D.Groups_datas_are_invalid = true;
     end
 
     -- If the player's pet changed then we should check it for interesting spells
     if ( Unit == "player" ) then
 	self:ScheduleEvent("CheckPet", self.UpdatePlayerPet, 2, self);
 	OncePetRetry = false;
-	Dcr:Debug ("PLAYER pet detected! Poll in 2 seconds");
+	D:Debug ("PLAYER pet detected! Poll in 2 seconds");
     end
 end -- }}}
 
 local curr_petType = false;
 local last_petType = false;
 
-function Dcr:UpdatePlayerPet () -- {{{
+function D:UpdatePlayerPet () -- {{{
     curr_petType = UnitCreatureFamily("pet");
 
-    if (curr_petType) then Dcr:Debug ("Pet Type: " .. curr_petType);  end; -- debug info only
+    if (curr_petType) then D:Debug ("Pet Type: " .. curr_petType);  end; -- debug info only
 
     -- if we had a pet and lost it, retry once later...
     if (last_petType and not curr_petType and not OncePetRetry) then
 	OncePetRetry = true;
-	Dcr:Debug("Pet lost, retry in 10 seconds");
-	Dcr:ScheduleEvent("ReCheckPetOnce", Dcr.UpdatePlayerPet, 10, self);
+	D:Debug("Pet lost, retry in 10 seconds");
+	D:ScheduleEvent("ReCheckPetOnce", D.UpdatePlayerPet, 10, self);
 	return;
     end
 
     -- if we've changed of pet
     if (last_petType ~= curr_petType) then
-	if (curr_petType) then Dcr:Debug ("Pet name changed: " .. curr_petType); else  Dcr:Debug ("No more pet!"); end; -- debug info only
+	if (curr_petType) then D:Debug ("Pet name changed: " .. curr_petType); else  D:Debug ("No more pet!"); end; -- debug info only
 
 	last_petType = curr_petType;
-	Dcr:Configure();
+	D:Configure();
     end
 end -- }}}
 
-function Dcr:UI_ERROR_MESSAGE (Error) -- {{{
+function D:UI_ERROR_MESSAGE (Error) -- {{{
     -- this is the only way to detect out of line of sight casting failures
     if (Error == SPELL_FAILED_LINE_OF_SIGHT or Error == SPELL_FAILED_BAD_TARGETS) then
-	Dcr:SpellCastFailed();
+	D:SpellCastFailed();
 
 	--[[ Throw an error if WE were casting something
-	if (Dcr.Status.CastingSpellOn and Error == SPELL_FAILED_LINE_OF_SIGHT) then
-	    Dcr:errln("Out of sight!");
+	if (D.Status.CastingSpellOn and Error == SPELL_FAILED_LINE_OF_SIGHT) then
+	    D:errln("Out of sight!");
 	end
 	--]]
 
     end
 end -- }}}
 
-function Dcr:UNIT_SPELLCAST_STOP() --{{{
-    --Dcr:Debug("Spell cast stopped");
-    Dcr.Status.CastingSpellOn = false;
-    Dcr.Status.CastingSpellOnName = false;
+function D:UNIT_SPELLCAST_STOP(UnitID) -- unused {{{
+    D:Debug("Spell cast stopped", UnitID);
+    D.Status.CastingSpellOn = false;
+    D.Status.CastingSpellOnName = false;
 end --}}}
 
-function Dcr:UNIT_SPELLCAST_FAILED(unit)
-    Dcr:Debug("Spell cast failed for unit: ", unit);
+function D:UNIT_SPELLCAST_FAILED(unit) -- unused
+    D:Debug("Spell cast failed for unit: ", unit);
 end
 
-function Dcr:UNIT_SPELLCAST_SENT( player, spell, rank, target )
-    if (Dcr.Status.CuringSpellsPrio[spell]) then
-	Dcr.Status.CastingSpellOn = Dcr:NameToUnit(target); -- XXX
-	Dcr.Status.CastingSpellOnName = target;
+function D:UNIT_SPELLCAST_SENT( player, spell, rank, target )
+    --D:Debug("|cFFFF0000Sending SPELL: ", player, spell, rank, target, "|r");
+    if (self.Status.CuringSpellsPrio[spell]) then
+	self.Status.CastingSpellOn = D:NameToUnit(target); -- XXX
+	self.Status.CastingSpellOnName = target;
     end
 end
-function Dcr:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
-    if (Dcr.Status.CuringSpellsPrio[spell]) then
-	Dcr:Println(L[Dcr.LOC.SUCCESSCAST], spell, Dcr:MakePlayerName((Dcr.Status.CastingSpellOnName)));
+function D:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
+    if (self.Status.CuringSpellsPrio[spell]) then
+	D:Println(L[self.LOC.SUCCESSCAST], spell, D:MakePlayerName((D.Status.CastingSpellOnName)));
 
-	if (Dcr.Status.ClickedMF) then
-	    Dcr:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
-	    --Dcr.Status.ClickedMF:Update();
-	    Dcr:ScheduleEvent("UpdatePC"..Dcr.Status.ClickedMF.CurrUnit, Dcr.Status.ClickedMF.Update, 1, Dcr.Status.ClickedMF, false, false);
-	    Dcr.Status.ClickedMF = false;
+	if (self.Status.ClickedMF) then
+	    D:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
+	    --self.Status.ClickedMF:Update();
+	    D:ScheduleEvent("UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
+	    self.Status.ClickedMF = false;
 	end
     end
 end
 
-function Dcr:ADDON_ACTION_BLOCKED (Addon, protectedfunction)
-   Dcr:errln("The add-on %s tried to use the protected function: %s", Addon, protectedfunction); 
+function D:ADDON_ACTION_BLOCKED (Addon, protectedfunction)
+   D:errln("The add-on %s tried to use the protected function: %s", Addon, protectedfunction); 
 end
 
-function Dcr:ADDON_ACTION_FORBIDDEN (Addon, protectedfunction)
-   Dcr:errln("The add-on %s tried to use the forbidden function: %s", Addon, protectedfunction); 
+function D:ADDON_ACTION_FORBIDDEN (Addon, protectedfunction)
+   D:errln("The add-on %s tried to use the forbidden function: %s", Addon, protectedfunction); 
 end
 
-function Dcr:PLAYER_FOCUS_CHANGED ()
-    Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+function D:PLAYER_FOCUS_CHANGED ()
+    self.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
 
-    if (Dcr.Status.Unit_Array[#Dcr.Status.Unit_Array] == "focus" and not UnitExists("focus")) then
-	table.remove(Dcr.Status.Unit_Array, #Dcr.Status.Unit_Array);
-	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
-	Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
-	Dcr:Debug("Focus removed");
+    if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and not UnitExists("focus")) then
+	table.remove(self.Status.Unit_Array, #self.Status.Unit_Array);
+	self.Status.UnitNum = #self.Status.Unit_Array;
+	self.MicroUnitF:Delayed_MFsDisplay_Update();
+	D:Debug("Focus removed");
 
-    elseif Dcr.Status.Unit_Array[#Dcr.Status.Unit_Array] ~= "focus" and UnitExists("focus") and UnitIsFriend("focus", "player") then
-	table.insert(Dcr.Status.Unit_Array, "focus");
-	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
-	Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
-	--Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
+    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" and UnitExists("focus") and UnitIsFriend("focus", "player") then
+	table.insert(self.Status.Unit_Array, "focus");
+	self.Status.UnitNum = #self.Status.Unit_Array;
+	self.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+	--self.Status.Unit_Array_UnitToIndex["focus"] = self.MicroUnitF:MFUsableNumber();
 
 
-	Dcr.MicroUnitF:Delayed_MFsDisplay_Update();
-	Dcr:Debug("Focus Added");
+	self.MicroUnitF:Delayed_MFsDisplay_Update();
+	D:Debug("Focus Added");
     else
-	Dcr.MicroUnitF:UpdateMUFUnit("focus");
-	Dcr:Debug("Focus changed");
+	self.MicroUnitF:UpdateMUFUnit("focus");
+	D:Debug("Focus changed");
     end
 end
 
-function Dcr:OnDebugEnable ()
-    Dcr.profile.debugging = true;
+function D:OnDebugEnable ()
+    self.profile.debugging = true;
 end
 
-function Dcr:OnDebugDisable ()
-    Dcr.profile.debugging = false;
+function D:OnDebugDisable ()
+    self.profile.debugging = false;
 end
 
 -- This function update Decursive states :
 --   - Clear the black list
 --   - Execute things we couldn't do when in combat
-function Dcr:SheduledTasks() -- {{{
+function D:SheduledTasks() -- {{{
 
-    --Dcr:Debug("Schedul called");
+    --D:Debug("Schedul called");
     -- clean up the blacklist
-    for unit in pairs(Dcr.Status.Blacklisted_Array) do
-	Dcr.Status.Blacklisted_Array[unit] = Dcr.Status.Blacklisted_Array[unit] - 0.1;
-	if (Dcr.Status.Blacklisted_Array[unit] < 0) then
-	    Dcr.Status.Blacklisted_Array[unit] = nil; -- remove it from the BL
+    for unit in pairs(self.Status.Blacklisted_Array) do
+	self.Status.Blacklisted_Array[unit] = self.Status.Blacklisted_Array[unit] - 0.1;
+	if (self.Status.Blacklisted_Array[unit] < 0) then
+	    self.Status.Blacklisted_Array[unit] = nil; -- remove it from the BL
 	end
     end
 
-    if (not Dcr.Status.Combat and Dcr.Status.DelayedFunctionCallsCount > 0) then
-	for Id, FuncAndArgs in pairs (Dcr.Status.DelayedFunctionCalls) do
-	    Dcr:Debug("Running post combat command %s", Id);
+    if (not self.Status.Combat and self.Status.DelayedFunctionCallsCount > 0) then
+	for Id, FuncAndArgs in pairs (self.Status.DelayedFunctionCalls) do
+	    D:Debug("Running post combat command %s", Id);
 	    local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
-	    Dcr.Status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
-	    Dcr.Status.DelayedFunctionCallsCount = Dcr.Status.DelayedFunctionCallsCount - 1;
+	    self.Status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
+	    self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount - 1;
 	    if (DidSmth) then
 		break;
 	    end
 	end
     end
 
-    if (Dcr.Status.Combat and not InCombatLockdown()) then
-	Dcr:LeaveCombat();
+    if (self.Status.Combat and not InCombatLockdown()) then -- just in case...
+	D:LeaveCombat();
     end
 
 end --}}}
 
 -- the combat functions and events. // {{{
 -------------------------------------------------------------------------------
-function Dcr:EnterCombat() -- called on PLAYER_REGEN_DISABLED {{{
-    Dcr:Debug("Entering combat");
-    Dcr.Status.Combat = true;
+function D:EnterCombat() -- called on PLAYER_REGEN_DISABLED {{{
+    D:Debug("Entering combat");
+    self.Status.Combat = true;
 end --}}}
 
-function Dcr:LeaveCombat() --{{{
-    Dcr:Debug("Leaving combat");
-    Dcr.Status.Combat = false;
+function D:LeaveCombat() --{{{
+    D:Debug("Leaving combat");
+    self.Status.Combat = false;
 end --}}}
 -- }}}
 
 -- This let us park command we can't execute while in combat to execute them later {{{
-function Dcr:AddDelayedFunctionCall(CallID,functionLink, ...)
-    if (not Dcr.Status.DelayedFunctionCalls[CallID]) then 
-	Dcr.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};
-	Dcr.Status.DelayedFunctionCallsCount = Dcr.Status.DelayedFunctionCallsCount + 1;
+function D:AddDelayedFunctionCall(CallID,functionLink, ...)
+    if (not self.Status.DelayedFunctionCalls[CallID]) then 
+	self.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};
+	self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount + 1;
     end
 end -- }}}
 
-function Dcr:SpellCastFailed() -- the blacklisting function {{{
-    Dcr:Debug("Not in line of sight or bad target!");
+function D:SpellCastFailed() -- the blacklisting function {{{
+    D:Debug("Not in line of sight or bad target!");
     if (
-	Dcr.Status.CastingSpellOn	    -- a cast failed and we were casting on someone
+	D.Status.CastingSpellOn	    -- a cast failed and we were casting on someone
 	and not (
-	Dcr.Status.CastingSpellOn == "player"   -- we do not blacklist ourself
+	D.Status.CastingSpellOn == "player"   -- we do not blacklist ourself
 	or
 	(
 	-- we do not blacklist people in the priority list
-	Dcr.profile.DoNot_Blacklist_Prio_List and Dcr:IsInPriorList(Dcr.Status.CastingSpellOnName) 
+	D.profile.DoNot_Blacklist_Prio_List and D:IsInPriorList(D.Status.CastingSpellOnName) 
 	)
 	)
 	) then
-	Dcr.Status.Blacklisted_Array[Dcr.Status.CastingSpellOn] = Dcr.profile.CureBlacklist;
-	Dcr:Println("%s is blaclisted for %d seconds", Dcr.Status.CastingSpellOnName, Dcr.profile.CureBlacklist);
-	Dcr.Status.CastingSpellOn = false;
-	Dcr.Status.CastingSpellOnName = false;
+	D.Status.Blacklisted_Array[D.Status.CastingSpellOn] = D.profile.CureBlacklist;
+	D:Println("%s is blaclisted for %d seconds", D.Status.CastingSpellOnName, D.profile.CureBlacklist);
+	D.Status.CastingSpellOn = false;
+	D.Status.CastingSpellOnName = false;
     end
 end --}}}
 
 
-function Dcr:UPDATE_MOUSEOVER_UNIT ()
-    if not Dcr.profile.Hide_LiveList and not Dcr.Status.MouseOveringMUF and UnitIsFriend("mouseover", "player") then
-	Dcr:Debug("will check MouseOver");
-	Dcr.LiveList:DelayedGetDebuff("mouseover");
+function D:UPDATE_MOUSEOVER_UNIT ()
+    if not self.profile.Hide_LiveList and not self.Status.MouseOveringMUF and UnitIsFriend("mouseover", "player") then
+	D:Debug("will check MouseOver");
+	self.LiveList:DelayedGetDebuff("mouseover");
     end
 end
 
-function Dcr:SpecialEvents_UnitDebuffGained (UnitID, debuffName, applications, debuffType, texture, rank, index)
-    Dcr:Debug("Debuff gained, UnitId: ", UnitID, debuffName);
-    if Dcr.profile.ShowDebuffsFrame and UnitID ~= "target" then
-	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
-    elseif not Dcr.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
-	Dcr:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
-	Dcr.LiveList:DelayedGetDebuff(UnitID);
+function D:SpecialEvents_UnitDebuffGained (UnitID, debuffName, applications, debuffType, texture, rank, index)
+    D:Debug("Debuff gained, UnitId: ", UnitID, debuffName);
+    if self.profile.ShowDebuffsFrame and UnitID ~= "target" then
+	self.MicroUnitF:UpdateMUFUnit(UnitID);
+    elseif not self.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
+	D:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
+	self.LiveList:DelayedGetDebuff(UnitID);
     end
 end
 
-function Dcr:SpecialEvents_UnitDebuffLost (UnitID, debuffName, applications, debuffType, texture, rank)
-    Dcr:Debug("Debuff LOST, UnitId: ", UnitID, debuffName);
-    if Dcr.profile.ShowDebuffsFrame and UnitID ~= "target" then
-	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
-    elseif not Dcr.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
-	Dcr:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
-	Dcr.LiveList:DelayedGetDebuff(UnitID);
+function D:SpecialEvents_UnitDebuffLost (UnitID, debuffName, applications, debuffType, texture, rank)
+    D:Debug("Debuff LOST, UnitId: ", UnitID, debuffName);
+    if self.profile.ShowDebuffsFrame and UnitID ~= "target" then
+	self.MicroUnitF:UpdateMUFUnit(UnitID);
+    elseif not self.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
+	D:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
+	self.LiveList:DelayedGetDebuff(UnitID);
     end
 end
 
 
-function Dcr:SpecialEvents_UnitBuffGained(UnitID, buffName, index, applications, texture, rank)
-    --Dcr:Debug("Buff gained, UnitId: ", UnitID, buffName);
+function D:SpecialEvents_UnitBuffGained(UnitID, buffName, index, applications, texture, rank)
+    --D:Debug("Buff gained, UnitId: ", UnitID, buffName);
 
-    if DcrC.IsStealthBuff[buffName] then
-	Dcr:Debug("STEALTH GAINED: ", UnitID, buffName);
+    if DC.IsStealthBuff[buffName] then
+	D:Debug("STEALTH GAINED: ", UnitID, buffName);
 
-	Dcr.Stealthed_Units[UnitID] = true;
+	self.Stealthed_Units[UnitID] = true;
 
-	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
+	self.MicroUnitF:UpdateMUFUnit(UnitID);
     end
 end
 
-function Dcr:SpecialEvents_UnitBuffLost(UnitID, buffName, applications, texture, rank)
-    --Dcr:Debug("Buff LOST, UnitId: ", UnitID, buffName);
+function D:SpecialEvents_UnitBuffLost(UnitID, buffName, applications, texture, rank)
+    --D:Debug("Buff LOST, UnitId: ", UnitID, buffName);
 
-    if DcrC.IsStealthBuff[buffName] then
-	Dcr:Debug("STEALTH LOST: ", UnitID, buffName);
+    if DC.IsStealthBuff[buffName] then
+	D:Debug("STEALTH LOST: ", UnitID, buffName);
 
-	Dcr.Stealthed_Units[UnitID] = false;
+	self.Stealthed_Units[UnitID] = false;
 
-	Dcr.MicroUnitF:UpdateMUFUnit(UnitID);
+	self.MicroUnitF:UpdateMUFUnit(UnitID);
     end
 end
 

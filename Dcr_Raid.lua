@@ -20,21 +20,23 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+local D = Dcr;
+D:SetDateAndRevision("$Date$", "$Revision$");
 
 
-local L			    = Dcr.L;
-local BC		    = Dcr.BC;
-local BS		    = Dcr.BS;
+local L	    = D.L;
+local BC    = D.BC;
+local BS    = D.BS;
+local DC    = DcrC;
 
 local RaidRosterCache		= { };
 local SortingTable		= { };
-Dcr.Status.Unit_ArrayByName	= { };
-Dcr.Status.Unit_Array_UnitToName= { };
+D.Status.Unit_ArrayByName	= { };
+D.Status.Unit_Array_UnitToName	= { };
 
-Dcr.Status.InternalPrioList	= { };
-Dcr.Status.InternalSkipList	= { };
-Dcr.Status.Unit_Array		= { };
+D.Status.InternalPrioList	= { };
+D.Status.InternalSkipList	= { };
+D.Status.Unit_Array		= { };
 
 -------------------------------------------------------------------------------
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
@@ -42,18 +44,18 @@ Dcr.Status.Unit_Array		= { };
 
 
 local function AddToSort (unit, index) -- // {{{
-    if (Dcr.profile.Random_Order and
-	(not Dcr.Status.InternalPrioList[(UnitName(unit))]) and not UnitIsUnit(unit,"player")) then
+    if (D.profile.Random_Order and
+	(not D.Status.InternalPrioList[(UnitName(unit))]) and not UnitIsUnit(unit,"player")) then
 	index = random (1, 3000);
     end
     SortingTable[unit] = index;
-    --Dcr:Debug("Adding to sort: ", unit, index);
+    --D:Debug("Adding to sort: ", unit, index);
 end --}}}
 
 -- Raid/Party Name Check Function (a terrible function, need optimising)
 -- this returns the UnitID that the Name points to
 -- this does not check "target" or "mouseover"
-function Dcr:NameToUnit( Name) --{{{
+function D:NameToUnit( Name) --{{{
 
     local numRaidMembers = GetNumRaidMembers();
 
@@ -92,7 +94,7 @@ function Dcr:NameToUnit( Name) --{{{
 	    if ( Name == RaidName) then
 		return "raid"..i;
 	    end
-	    if ( Dcr.profile.Scan_Pets and Name == (UnitName("raidpet"..i))) then
+	    if ( self.profile.Scan_Pets and Name == (UnitName("raidpet"..i))) then
 		return "raidpet"..i;
 	    end
 	end
@@ -103,27 +105,29 @@ end --}}}
 
 
 
-DcrC.ClassNumToName = {
-    [11]	= BC[Dcr.LOC.CLASS_DRUID],
-    [12]	= BC[Dcr.LOC.CLASS_HUNTER],
-    [13]	= BC[Dcr.LOC.CLASS_MAGE],
-    [14]	= BC[Dcr.LOC.CLASS_PALADIN],
-    [15]	= BC[Dcr.LOC.CLASS_PRIEST],
-    [16]	= BC[Dcr.LOC.CLASS_ROGUE],
-    [17]	= BC[Dcr.LOC.CLASS_SHAMAN],
-    [18]	= BC[Dcr.LOC.CLASS_WARLOCK],
-    [19]	= BC[Dcr.LOC.CLASS_WARRIOR], 
+DC.ClassNumToName = {
+    [11]	= BC[D.LOC.CLASS_DRUID],
+    [12]	= BC[D.LOC.CLASS_HUNTER],
+    [13]	= BC[D.LOC.CLASS_MAGE],
+    [14]	= BC[D.LOC.CLASS_PALADIN],
+    [15]	= BC[D.LOC.CLASS_PRIEST],
+    [16]	= BC[D.LOC.CLASS_ROGUE],
+    [17]	= BC[D.LOC.CLASS_SHAMAN],
+    [18]	= BC[D.LOC.CLASS_WARLOCK],
+    [19]	= BC[D.LOC.CLASS_WARRIOR], 
 }
 
-DcrC.ClassNameToNum = Dcr:tReverse(DcrC.ClassNumToName);
+DC.ClassNameToNum = D:tReverse(DC.ClassNumToName);
 
 
 -- this gets an array of units for us to check
 
 do
 
+    local D = D;
+
     function IsInSkipList ( name, group, classNum ) -- {{{
-	if (Dcr.Status.InternalSkipList[name] or Dcr.Status.InternalSkipList[group] or Dcr.Status.InternalSkipList[classNum]) then
+	if (D.Status.InternalSkipList[name] or D.Status.InternalSkipList[group] or D.Status.InternalSkipList[classNum]) then
 	    return true;
 	end
 
@@ -136,7 +140,7 @@ do
 	    return true;
 	end
 
-	if (Dcr.Status.InternalPrioList[name] or Dcr.Status.InternalPrioList[group] or Dcr.Status.InternalPrioList[classNum]) then
+	if (D.Status.InternalPrioList[name] or D.Status.InternalPrioList[group] or D.Status.InternalPrioList[classNum]) then
 	    return true;
 	end
 
@@ -202,8 +206,8 @@ do
 	local UnitPriority = GetUnitDefaultPriority(RaidId, UnitGroup);
 
 	-- Get the class priority if available
-	if ( LocalizedClass and ClassPrio[ DcrC.ClassNameToNum [LocalizedClass] ] ) then
-	    UnitPriority = UnitPriority + ( 9 + 1 - ClassPrio[DcrC.ClassNameToNum [LocalizedClass]]) * 1000;
+	if ( LocalizedClass and ClassPrio[ DC.ClassNameToNum [LocalizedClass] ] ) then
+	    UnitPriority = UnitPriority + ( 9 + 1 - ClassPrio[DC.ClassNameToNum [LocalizedClass]]) * 1000;
 	end
 
 	-- Get the group priority if available
@@ -218,16 +222,16 @@ do
 	    local PrioListIndex = 100;
 	    
 	    -- get the higher of the three...
-	    if (Dcr.Status.InternalPrioList[Unit_Name] and Dcr.Status.InternalPrioList[Unit_Name] < PrioListIndex) then
-		PrioListIndex = Dcr.Status.InternalPrioList[Unit_Name];
+	    if (D.Status.InternalPrioList[Unit_Name] and D.Status.InternalPrioList[Unit_Name] < PrioListIndex) then
+		PrioListIndex = D.Status.InternalPrioList[Unit_Name];
 	    end
 
-	    if (Dcr.Status.InternalPrioList[UnitGroup] and Dcr.Status.InternalPrioList[UnitGroup] < PrioListIndex) then
-		PrioListIndex = Dcr.Status.InternalPrioList[UnitGroup];
+	    if (D.Status.InternalPrioList[UnitGroup] and D.Status.InternalPrioList[UnitGroup] < PrioListIndex) then
+		PrioListIndex = D.Status.InternalPrioList[UnitGroup];
 	    end
 
-	    if (Dcr.Status.InternalPrioList[ DcrC.ClassNameToNum [LocalizedClass] ] and Dcr.Status.InternalPrioList[ DcrC.ClassNameToNum [LocalizedClass] ] < PrioListIndex) then
-		PrioListIndex = Dcr.Status.InternalPrioList[ DcrC.ClassNameToNum [LocalizedClass] ];
+	    if (D.Status.InternalPrioList[ DC.ClassNameToNum [LocalizedClass] ] and D.Status.InternalPrioList[ DC.ClassNameToNum [LocalizedClass] ] < PrioListIndex) then
+		PrioListIndex = D.Status.InternalPrioList[ DC.ClassNameToNum [LocalizedClass] ];
 	    end
 	    
 
@@ -244,26 +248,26 @@ do
     end -- }}}
 
   
-    function Dcr:GetUnitArray() --{{{
+    function D:GetUnitArray() --{{{
 
 	-- if the groups composition did not changed
-	if (not Dcr.Groups_datas_are_invalid) then
+	if (not self.Groups_datas_are_invalid) then
 	    return;
 	end
 
-	Dcr:Debug ("|cFFFF44FF-->|r Updating Units Array");
+	self:Debug ("|cFFFF44FF-->|r Updating Units Array");
 
 	local pname;
 	local raidnum = GetNumRaidMembers();
 	local MyName = (UnitName( "player"));
-	local MyClassNum = DcrC.ClassNameToNum[(UnitClass("player"))];
+	local MyClassNum = DC.ClassNameToNum[(UnitClass("player"))];
 
 
 	-- clear all the arrays
-	Dcr.Status.InternalPrioList	    = {}
-	Dcr.Status.InternalSkipList	    = {}
+	self.Status.InternalPrioList	    = {}
+	self.Status.InternalSkipList	    = {}
 	SortingTable			    = {}
-	Dcr.Status.Unit_ArrayByName	    = {}
+	self.Status.Unit_ArrayByName	    = {}
 	local RaidRosterCache		    = {}
 
 	local unit;
@@ -275,19 +279,19 @@ do
 	GroupsPrio = { };
 
 	-- First clean and load the prioritylist (remove missing units)
-	for i, ListEntry in ipairs(Dcr.profile.PriorityList) do
+	for i, ListEntry in ipairs(self.profile.PriorityList) do
 
 	    -- first add names present in our raid group
 	    if (type(ListEntry) == "string") then
-		unit = Dcr:NameToUnit( ListEntry );
+		unit = self:NameToUnit( ListEntry );
 		if (unit) then
-		    Dcr.Status.InternalPrioList[ListEntry] = i;
+		    self.Status.InternalPrioList[ListEntry] = i;
 		end
 
 	    else -- if ListEntry is a not a string, then it's a number
 		 -- representing the groups or the classes
 
-		Dcr.Status.InternalPrioList[ListEntry] = i;
+		self.Status.InternalPrioList[ListEntry] = i;
 
 		if (ListEntry < 10) then
 		    table.insert(GroupsPrio, ListEntry); 
@@ -298,18 +302,18 @@ do
 	end
 
 	-- Reverse GroupsPrio and ClassPrio so we can have something useful...
-	GroupsPrio = Dcr:tReverse(GroupsPrio);
-	ClassPrio  = Dcr:tReverse(ClassPrio);
+	GroupsPrio = self:tReverse(GroupsPrio);
+	ClassPrio  = self:tReverse(ClassPrio);
 
 	-- Get a cleaned skip list
-	for i, ListEntry in ipairs(Dcr.profile.SkipList) do
+	for i, ListEntry in ipairs(self.profile.SkipList) do
 	    if (type(ListEntry) == "string") then
-		unit = Dcr:NameToUnit( ListEntry );
+		unit = self:NameToUnit( ListEntry );
 		if (unit) then
-		    Dcr.Status.InternalSkipList[ListEntry] = i;
+		    self.Status.InternalSkipList[ListEntry] = i;
 		end
 	    else
-		Dcr.Status.InternalSkipList[ListEntry] = i;
+		self.Status.InternalSkipList[ListEntry] = i;
 	    end
 	end
 
@@ -321,11 +325,11 @@ do
 	    if (not IsInSkipOrPriorList(MyName, false, MyClassNum)) then
 		-- the player is not in a priority state, add to default prio
 		AddToSort( "player", 900);
-		Dcr.Status.Unit_ArrayByName[MyName] = "player";
+		self.Status.Unit_ArrayByName[MyName] = "player";
 	    elseif (not IsInSkipList(MyName, false, MyClassNum)) then
 		-- The player is contained within a priority rule
 		AddToSort("player",  GetUnitPriority ("player", 1, 1, (UnitClass("player")) ) );
-		Dcr.Status.Unit_ArrayByName[MyName] = "player";
+		self.Status.Unit_ArrayByName[MyName] = "player";
 	    end
 
 	    local unit = "";
@@ -343,9 +347,9 @@ do
 		    end
 
 		    -- check the name to see if we skip
-		    if (not IsInSkipList(pname, nil, DcrC.ClassNameToNum[(UnitClass(unit))])) then
+		    if (not IsInSkipList(pname, nil, DC.ClassNameToNum[(UnitClass(unit))])) then
 
-			Dcr.Status.Unit_ArrayByName[pname] = unit;
+			self.Status.Unit_ArrayByName[pname] = unit;
 
 			AddToSort(unit,  GetUnitPriority (unit, i + 1, 1, (UnitClass(unit)) ) );
 
@@ -369,7 +373,7 @@ do
 		end
 
 		-- add all except member to skip
-		if (not IsInSkipList(rName, rGroup, DcrC.ClassNameToNum[rClass]) ) then
+		if (not IsInSkipList(rName, rGroup, DC.ClassNameToNum[rClass]) ) then
 
 		    if (not RaidRosterCache[CaheID]) then
 			RaidRosterCache[CaheID] = {};
@@ -389,17 +393,17 @@ do
 
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyName, currentGroup, MyClassNum)) then
-		local PlayerRID = Dcr:NameToUnit(MyName);
+		local PlayerRID = self:NameToUnit(MyName);
 		AddToSort( PlayerRID, 900);
-		Dcr.Status.Unit_ArrayByName[MyName] = PlayerRID;
+		self.Status.Unit_ArrayByName[MyName] = PlayerRID;
 	    end
 
 	    -- Now we have a cache without the units we want to skip
 	    for _, raidMember in ipairs(RaidRosterCache) do
 		-- put each raid member with the right priority in our sorting table
-		if not Dcr.Status.Unit_ArrayByName[raidMember.rName] then
+		if not self.Status.Unit_ArrayByName[raidMember.rName] then
 		    AddToSort("raid"..raidMember.rIndex, GetUnitPriority ("raid"..raidMember.rIndex, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false) );
-		    Dcr.Status.Unit_ArrayByName[raidMember.rName] = "raid"..raidMember.rIndex;
+		    self.Status.Unit_ArrayByName[raidMember.rName] = "raid"..raidMember.rIndex;
 		end
 
 	    end
@@ -407,13 +411,13 @@ do
 	end -- END if we are in a raid
 
 	-- If we have to scan pets...
-	if ( Dcr.profile.Scan_Pets ) then
+	if ( self.profile.Scan_Pets ) then
 	    local pet = "";
 
 	    -- add our own pet
 	    if (UnitExists("pet")) then
 		AddToSort("pet", -900);
-		Dcr.Status.Unit_ArrayByName[(UnitName("pet"))] = "pet";
+		self.Status.Unit_ArrayByName[(UnitName("pet"))] = "pet";
 	    end
 
 	    -- the parties pets if they have them
@@ -430,7 +434,7 @@ do
 
 			AddToSort(pet, GetUnitPriority (pet, i, 1, (UnitClass(pet)), true) );
 
-			Dcr.Status.Unit_ArrayByName[pname] = pet;
+			self.Status.Unit_ArrayByName[pname] = pet;
 		    end
 		end
 	    end
@@ -450,11 +454,11 @@ do
 			end
 
 			-- add it only if not already in (could be the player pet...)
-			if (not Dcr.Status.Unit_ArrayByName[pname]) then
+			if (not self.Status.Unit_ArrayByName[pname]) then
 
 
 			    AddToSort(pet, GetUnitPriority (pet, i, RaidRosterCache[i].rGroup, (UnitClass(pet)), true) );
-			    Dcr.Status.Unit_ArrayByName[pname] = pet;
+			    self.Status.Unit_ArrayByName[pname] = pet;
 
 			end
 		    end
@@ -462,16 +466,16 @@ do
 	    end
 	end
 
-	-- we use a hash-key style table for Dcr.Status.Unit_ArrayByName because it allows us
+	-- we use a hash-key style table for self.Status.Unit_ArrayByName because it allows us
 	-- to not care if we add a same unit several times (speed optimization)
 	-- but we cannot use sort unless indexes are integer so:
-	Dcr.Status.Unit_Array = {}
-	for name, unit in pairs(Dcr.Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
-	    table.insert(Dcr.Status.Unit_Array, unit);
-	    Dcr.Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
+	self.Status.Unit_Array = {}
+	for name, unit in pairs(self.Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
+	    table.insert(self.Status.Unit_Array, unit);
+	    self.Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
 	end
 
-	table.sort(Dcr.Status.Unit_Array, function (a,b)
+	table.sort(self.Status.Unit_Array, function (a,b)
 	    if (not (SortingTable[a] < 0 and SortingTable[b] < 0)) then
 		return SortingTable[b] < SortingTable[a];
 	    else
@@ -479,20 +483,20 @@ do
 	    end
 	end);
 
-	--Dcr.Status.Unit_Array_UnitToIndex = {};
-	--Dcr.Status.Unit_Array_UnitToIndex = Dcr:tReverse(Dcr.Status.Unit_Array); -- slow :/
+	--self.Status.Unit_Array_UnitToIndex = {};
+	--self.Status.Unit_Array_UnitToIndex = self:tReverse(self.Status.Unit_Array); -- slow :/
 
 
 	if UnitExists("focus") and UnitIsFriend("focus", "player") then
-	    table.insert(Dcr.Status.Unit_Array, "focus");
-	    Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
-	    Dcr.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
-	    --Dcr.Status.Unit_Array_UnitToIndex["focus"] = Dcr.MicroUnitF:MFUsableNumber();
+	    table.insert(self.Status.Unit_Array, "focus");
+	    self.Status.UnitNum = #self.Status.Unit_Array;
+	    self.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+	    --self.Status.Unit_Array_UnitToIndex["focus"] = self.MicroUnitF:MFUsableNumber();
 	end
 
-	Dcr.Status.UnitNum = #Dcr.Status.Unit_Array;
+	self.Status.UnitNum = #self.Status.Unit_Array;
 
-	Dcr.Groups_datas_are_invalid = false;
+	self.Groups_datas_are_invalid = false;
 
 	return;
     end 

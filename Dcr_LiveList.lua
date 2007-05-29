@@ -20,22 +20,24 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+local D   = Dcr;
+D:SetDateAndRevision("$Date$", "$Revision$");
 
-local L	    = Dcr.L;
-local BC    = Dcr.BC;
-local BS    = Dcr.BS;
-local AceOO = Dcr.AOO;
+local L	    = D.L;
+local BC    = D.BC;
+local BS    = D.BS;
+local AceOO = D.AOO;
+local DC    = DcrC;
 
-Dcr.LiveList = AceOO.Class();
+D.LiveList = AceOO.Class();
 
-local LiveList = Dcr.LiveList;
-local MicroUnitF = Dcr.MicroUnitF;
+local LiveList = D.LiveList;
+local MicroUnitF = D.MicroUnitF;
 
 LiveList.ExistingPerID	    = {};
 LiveList.Number		    = 0;
 LiveList.NumberShown	    = 0;
-Dcr.ForLLDebuffedUnitsNum   = 0;
+D.ForLLDebuffedUnitsNum   = 0;
 
 -- temporary variables often used in function
 local Debuff, Debuffs, IsCharmed, MF, i, Index, RangeStatus;
@@ -48,26 +50,26 @@ end -- }}}
 -- The Factory for LiveList objects
 function LiveList:Create() -- {{{
 
-    if self.Number + 1 > Dcr.profile.Amount_Of_Afflicted then
+    if self.Number + 1 > D.profile.Amount_Of_Afflicted then
 	return false;
     end
 
     self.Number = self.Number + 1;
 
-    LiveList.ExistingPerID[self.Number] = LiveList:new(DcrLiveList, self.Number);
+    self.ExistingPerID[self.Number] = self:new(DcrLiveList, self.Number);
 
 
-    return LiveList.ExistingPerID[self.Number];
+    return self.ExistingPerID[self.Number];
 
 end -- }}}
 
 function LiveList:DisplayItem (ID, UnitID, Debuff) -- {{{
 
-    --Dcr:Debug("(LiveList) Displaying LVItem %d for UnitID %s", ID, UnitID);
+    --D:Debug("(LiveList) Displaying LVItem %d for UnitID %s", ID, UnitID);
     local LVItem = false;
 
-    if ID > LiveList.Number + 1 then
-	return error(("LiveList:DisplayItem: bad argument #1 'ID (= %d)' must be < LiveList.Number + 1 (LiveList.Number = %d)"):format(ID, LiveList.Number),2);
+    if ID > self.Number + 1 then
+	return error(("LiveList:DisplayItem: bad argument #1 'ID (= %d)' must be < LiveList.Number + 1 (LiveList.Number = %d)"):format(ID, self.Number),2);
     end
 
     if not self.ExistingPerID[ID] then
@@ -81,22 +83,22 @@ function LiveList:DisplayItem (ID, UnitID, Debuff) -- {{{
     end
 
     if not Debuff then
-	Debuff = Dcr.ManagedDebuffUnitCache[UnitID][1];
+	Debuff = D.ManagedDebuffUnitCache[UnitID][1];
     end
 
     LVItem:SetDebuff(UnitID, Debuff, nil);
-    --Dcr:Debug("XXXX => Updating ll item %d for %s", ID, UnitID);
+    --D:Debug("XXXX => Updating ll item %d for %s", ID, UnitID);
 
     if not LVItem.IsShown then
 	LVItem.Frame:Show();
-	LiveList.NumberShown = LiveList.NumberShown + 1;
+	self.NumberShown = self.NumberShown + 1;
 	LVItem.IsShown = true;
     end
 
 end -- }}}
 
 function LiveList:RestAllPosition () -- {{{
-    for _, LVitem in ipairs(LiveList.ExistingPerID) do
+    for _, LVitem in ipairs(self.ExistingPerID) do
 	LVitem.Frame:ClearAllPoints();
 	LVitem.Frame:SetPoint(LVitem:GiveAnchor());
     end
@@ -106,17 +108,17 @@ function LiveList.prototype:GiveAnchor() -- {{{
 
     local ItemHeight = self.Frame:GetHeight();
 
-    if Dcr.profile.ReverseLiveDisplay then
+    if D.profile.ReverseLiveDisplay then
     end
 
     if self.ID == 1 then
-	if Dcr.profile.ReverseLiveDisplay then
-	    return "BOTTOMLEFT", DecursiveMainBar, "BOTTOMLEFT", 5, -1 * (ItemHeight + 1) * Dcr.profile.Amount_Of_Afflicted;
+	if D.profile.ReverseLiveDisplay then
+	    return "BOTTOMLEFT", DecursiveMainBar, "BOTTOMLEFT", 5, -1 * (ItemHeight + 1) * D.profile.Amount_Of_Afflicted;
 	else
 	    return "TOPLEFT", DecursiveMainBar, "BOTTOMLEFT", 5, 0;
 	end
     else
-	if Dcr.profile.ReverseLiveDisplay then
+	if D.profile.ReverseLiveDisplay then
 	    return "BOTTOMLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "TOPLEFT", 0, 1;
 	else
 	    return "TOPLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "BOTTOMLEFT", 0, -1;
@@ -128,7 +130,7 @@ end -- }}}
 
 function LiveList.prototype:init(Container,ID) -- {{{
     LiveList.super.prototype.init(self); -- needed
-    Dcr:Debug("(LiveList) Initializing LiveList object '%s'", ID);
+    D:Debug("(LiveList) Initializing LiveList object '%s'", ID);
 
     --ObjectRelated
     self.ID		    = ID;
@@ -201,9 +203,9 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     self.Debuff		    = Debuff;
     self.IsCharmed	    = IsCharmed;
 
-    if Dcr.profile.LiveListAlpha ~= self.Alpha then
-	self.Frame:SetAlpha(Dcr.profile.LiveListAlpha);
-	self.Alpha = Dcr.profile.LiveListAlpha;
+    if D.profile.LiveListAlpha ~= self.Alpha then
+	self.Frame:SetAlpha(D.profile.LiveListAlpha);
+	self.Alpha = D.profile.LiveListAlpha;
     end
 
     -- Set the graphical elements to the right values
@@ -232,7 +234,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
 	    self.UnitNameFontString:SetTextColor(BC:GetColor(self.UnitClass));
 	end
 	self.PrevUnitName =  self.UnitName;
-	Dcr:Debug("(LiveList) Updating %d with %s", self.ID, UnitID);
+	D:Debug("(LiveList) Updating %d with %s", self.ID, UnitID);
     end
 
     -- Unit ID
@@ -244,8 +246,8 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     -- Debuff Type Name
     if self.PrevDebuffTypeName ~= Debuff.TypeName then
 	if Debuff.Type then
-	    self.DebuffTypeFontString:SetText(Dcr:ColorText(L[Debuff.TypeName], "FF" .. DcrC.TypeColors[Debuff.Type] ));
-	    --self.DebuffTypeFontString:SetTextColor(DcrC.TypeColors[Debuff.Type]);
+	    self.DebuffTypeFontString:SetText(D:ColorText(L[Debuff.TypeName], "FF" .. DC.TypeColors[Debuff.Type] ));
+	    --self.DebuffTypeFontString:SetTextColor(DC.TypeColors[Debuff.Type]);
 	else
 	    self.DebuffTypeFontString:SetText("Unknown");
 	end
@@ -264,23 +266,23 @@ end -- }}}
 function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
-    Dcr:Debug("(LiveList) Getting Debuff for ", UnitID);
+    D:Debug("(LiveList) Getting Debuff for ", UnitID);
     if  UnitID == "target" and not UnitIsFriend(UnitID, "player") then
-	if Dcr.ManagedDebuffUnitCache[UnitID] and Dcr.ManagedDebuffUnitCache[UnitID][1] and Dcr.ManagedDebuffUnitCache[UnitID][1].Type then
-	    Dcr.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target debuff
-	    Dcr.UnitDebuffed["target"] = false;
+	if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] and D.ManagedDebuffUnitCache[UnitID][1].Type then
+	    D.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target debuff
+	    D.UnitDebuffed["target"] = false;
 	end
 	return;
     end
 
     -- decrease the total debuff number if the MUFs system isn't already doing it and if it's not the mouseover or target unit
-    if not Dcr.profile.ShowDebuffsFrame and Dcr.UnitDebuffed[UnitID] and UnitID ~= "mouseover" and UnitID ~= "target" then
-	Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum - 1;
+    if not D.profile.ShowDebuffsFrame and D.UnitDebuffed[UnitID] and UnitID ~= "mouseover" and UnitID ~= "target" then
+	D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
     end
 
     -- Get the unit Debuffs
-    if not Dcr.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target" then
-	Debuffs, IsCharmed = Dcr:UnitCurableDebuffs(UnitID, true);
+    if not D.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target" then
+	Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID, true);
     else -- The MUFs are active and Unit is not mouseover and is not target
 	MF = MicroUnitF.UnitToMUF[UnitID];
 	Debuffs = MF.Debuffs;
@@ -288,22 +290,22 @@ function LiveList:GetDebuff(UnitID) -- {{{
 
     if (Debuffs and Debuffs[1] and Debuffs[1].Type) then -- there is a Debuff
 
-	Dcr.UnitDebuffed[UnitID] = true; -- register that this unit is debuffed
+	D.UnitDebuffed[UnitID] = true; -- register that this unit is debuffed
 
 	-- increase the total debuff number
-	if not Dcr.profile.ShowDebuffsFrame and UnitID ~= "mouseover" and UnitID ~= "target" then
+	if not D.profile.ShowDebuffsFrame and UnitID ~= "mouseover" and UnitID ~= "target" then
 
-	    Dcr.ForLLDebuffedUnitsNum = Dcr.ForLLDebuffedUnitsNum + 1;
+	    D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
 
 	end
     else
-	Dcr.UnitDebuffed[UnitID] = false; -- unregister this unit
+	D.UnitDebuffed[UnitID] = false; -- unregister this unit
     end
 end -- }}}
 
 function LiveList:DelayedGetDebuff(UnitID) -- {{{
-    if not Dcr:IsEventScheduled("GetDebuff"..UnitID) then
-	Dcr:ScheduleEvent("GetDebuff"..UnitID, LiveList.GetDebuff, Dcr.profile.ScanTime / 2, LiveList, UnitID);
+    if not D:IsEventScheduled("GetDebuff"..UnitID) then
+	D:ScheduleEvent("GetDebuff"..UnitID, self.GetDebuff, D.profile.ScanTime / 2, self, UnitID);
     end
 end -- }}}
 
@@ -312,35 +314,35 @@ local DebuffedUnitsNumber = 0;
 function LiveList:Update_Display() -- {{{
 
     -- Update the unit array
-    if (Dcr.Groups_datas_are_invalid) then
-	Dcr:GetUnitArray();
+    if (D.Groups_datas_are_invalid) then
+	D:GetUnitArray();
     end
 
     Index = 0;
 
-    if Dcr.profile.ShowDebuffsFrame and Dcr.profile.LV_OnlyInRange then -- The MUFs are here and we test for range
+    if D.profile.ShowDebuffsFrame and D.profile.LV_OnlyInRange then -- The MUFs are here and we test for range
 	DebuffedUnitsNumber = MicroUnitF.UnitsDebuffedInRange;
     else -- the MUFs are not here or we don't test for range
-	DebuffedUnitsNumber = Dcr.ForLLDebuffedUnitsNum;
+	DebuffedUnitsNumber = D.ForLLDebuffedUnitsNum;
     end
 
     -- Check the units in order of importance:
 
     -- First the Target
-    if Dcr.UnitDebuffed["target"] and UnitExists("target") and UnitIsFriend("player", "target") then
+    if D.UnitDebuffed["target"] and UnitExists("target") and UnitIsFriend("player", "target") then
 	Index = Index + 1;
 	self:DisplayItem(Index, "target");
-	if not Dcr.Status.SoundPlayed then
-	    Dcr:PlaySound ("target");
+	if not D.Status.SoundPlayed then
+	    D:PlaySound ("target");
 	end
     end
 
     -- Then the MouseOver
-    if not Dcr.Status.MouseOveringMUF and Dcr.UnitDebuffed["mouseover"] and UnitExists("mouseover") and UnitIsFriend("player", "mouseover") then
+    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and UnitExists("mouseover") and UnitIsFriend("player", "mouseover") then
 	Index = Index + 1;
 	self:DisplayItem(Index, "mouseover");
-	if not Dcr.Status.SoundPlayed then
-	    Dcr:PlaySound ("mouseover");
+	if not D.Status.SoundPlayed then
+	    D:PlaySound ("mouseover");
 	end
     end
     IndexOffset = Index;
@@ -350,28 +352,28 @@ function LiveList:Update_Display() -- {{{
     --	    1, we have to show an ordered list (always true)
     --	    2, we want to test if the unit is in spell range (only if the option is active and the MUFs hidden)
     --	    There is no event to do the last and a not simple table.sort() would be needed for the first...
-    if DebuffedUnitsNumber > 0 and Index < Dcr.profile.Amount_Of_Afflicted then
-	for _, UnitID in ipairs(Dcr.Status.Unit_Array) do
+    if DebuffedUnitsNumber > 0 and Index < D.profile.Amount_Of_Afflicted then
+	for _, UnitID in ipairs(D.Status.Unit_Array) do
 	    -- if the unit is debuffed and still exists and is not stealthedm check this only if the MUFs engine is not there, redudent tests otherwise...
-	    if Dcr.UnitDebuffed[UnitID] and UnitExists(UnitID) and not (not Dcr.profile.ShowDebuffsFrame and Dcr.profile.Ingore_Stealthed and Dcr.Stealthed_Units[UnitID]) then
+	    if D.UnitDebuffed[UnitID] and UnitExists(UnitID) and not (not D.profile.ShowDebuffsFrame and D.profile.Ingore_Stealthed and D.Stealthed_Units[UnitID]) then
 
 		-- we don't care about range
-		if not Dcr.profile.LV_OnlyInRange then
+		if not D.profile.LV_OnlyInRange then
 		    Index = Index + 1;
 		    self:DisplayItem(Index, UnitID);
 
 		    -- play the sound if not already done
-		    if not Dcr.Status.SoundPlayed then
-			Dcr:PlaySound (UnitID);
+		    if not D.Status.SoundPlayed then
+			D:PlaySound (UnitID);
 		    end
 
 		else -- we care about range
 
-		    if Dcr.profile.ShowDebuffsFrame then
+		    if D.profile.ShowDebuffsFrame then
 			RangeStatus = MicroUnitF.UnitToMUF[UnitID].UnitStatus;
-			RangeStatus = (RangeStatus == DcrC.AFFLICTED or RangeStatus == DcrC.AFFLICTED_AND_CHARMED) and true or false;
+			RangeStatus = (RangeStatus == DC.AFFLICTED or RangeStatus == DC.AFFLICTED_AND_CHARMED) and true or false;
 		    else
-			RangeStatus = IsSpellInRange(Dcr.Status.CuringSpells[Dcr.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
+			RangeStatus = IsSpellInRange(D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
 			RangeStatus = (RangeStatus and RangeStatus ~= 0) and true or false;
 		    end
 
@@ -379,15 +381,15 @@ function LiveList:Update_Display() -- {{{
 			Index = Index + 1;
 			self:DisplayItem(Index, UnitID);
 			-- play the sound if not already done
-			if not Dcr.Status.SoundPlayed then
-			    Dcr:PlaySound (UnitID);
+			if not D.Status.SoundPlayed then
+			    D:PlaySound (UnitID);
 			end
 		    end
 		end
 	    end
 
 	    -- don't loop if we reach the max displayed unit num or if all debuffed units have been displayed
-	    if Index == Dcr.profile.Amount_Of_Afflicted or Index == DebuffedUnitsNumber + IndexOffset then
+	    if Index == D.profile.Amount_Of_Afflicted or Index == DebuffedUnitsNumber + IndexOffset then
 		break;
 	    end
 	end
@@ -395,14 +397,14 @@ function LiveList:Update_Display() -- {{{
 
     -- reset the sound if no units were displayed
     if Index == 0 then
-	Dcr.Status.SoundPlayed = false; -- re-enable the sound if no more debuff
+	D.Status.SoundPlayed = false; -- re-enable the sound if no more debuff
     end
 
     -- Hide unneeded Items
     if self.NumberShown > Index then -- if there are more unit shown than the actual number of debuffed units
 	for i = Index + 1, self.NumberShown do
 	    if self.ExistingPerID[i] and self.ExistingPerID[i].IsShown then
-		Dcr:Debug("(LiveList) Hidding LVItem %d", i);
+		D:Debug("(LiveList) Hidding LVItem %d", i);
 		self.ExistingPerID[i].Frame:Hide();
 		self.ExistingPerID[i].IsShown = false;
 		self.NumberShown = self.NumberShown - 1;
@@ -418,19 +420,19 @@ end -- }}}
 
 
 function LiveList:DisplayTestItem() -- {{{
-    if not LiveList.TestItemDisplayed then
-	LiveList.TestItemDisplayed = true;
-	Dcr:SpecialEvents_UnitDebuffLost(Dcr:NameToUnit(UnitName("player")), "Test item");
+    if not self.TestItemDisplayed then
+	self.TestItemDisplayed = true;
+	D:SpecialEvents_UnitDebuffLost(D:NameToUnit(UnitName("player")), "Test item");
     end
 end -- }}}
 
 function LiveList:HideTestItem() -- {{{
-     LiveList.TestItemDisplayed = false;
+     self.TestItemDisplayed = false;
      local i = 1;
 
-     for UnitID, Debuffed in pairs(Dcr.UnitDebuffed) do
+     for UnitID, Debuffed in pairs(D.UnitDebuffed) do
 	 if Debuffed then
-	     Dcr:ScheduleEvent("rmt"..i, Dcr.SpecialEvents_UnitDebuffLost, i * (Dcr.profile.ScanTime / 2), Dcr, UnitID, "Test item");
+	     D:ScheduleEvent("rmt"..i, D.SpecialEvents_UnitDebuffLost, i * (D.profile.ScanTime / 2), D, UnitID, "Test item");
 	     i = i + 1;
 	 end
      end
@@ -440,7 +442,7 @@ end -- }}}
 
 -- this displays the tooltips of the live-list
 function LiveList:DebuffTemplate_OnEnter() --{{{
-    if (Dcr.profile.AfflictionTooltips and this.Object.UnitID) then
+    if (D.profile.AfflictionTooltips and this.Object.UnitID) then
 	DcrDisplay_Tooltip:SetOwner(this, "ANCHOR_CURSOR");
 	DcrDisplay_Tooltip:ClearLines();
 	DcrDisplay_Tooltip:SetUnitDebuff(this.Object.UnitID,this.Object.Debuff.index); -- OK
@@ -449,5 +451,5 @@ function LiveList:DebuffTemplate_OnEnter() --{{{
 end --}}}
 
 function LiveList:Onclick() -- {{{
-    Dcr:Println(L[Dcr.LOC.HLP_LL_ONCLICK_TEXT]);
+    D:Println(L[D.LOC.HLP_LL_ONCLICK_TEXT]);
 end -- }}}
