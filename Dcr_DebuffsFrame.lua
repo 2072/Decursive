@@ -750,7 +750,11 @@ do
 	for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
 	    --self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
-	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "macrotext"), string.format("/stopcasting\n/cast [target=mouseover] %s", Spell));
+	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "macrotext"), string.format("/stopcasting\n/cast [target=mouseover] %s%s", Spell,
+	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(D.Status.FoundSpells[Spell][3], '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+	    
+	    --D:Debug("XX-> macro: ",string.format("/stopcasting\n/cast [target=mouseover] %s%s", Spell,
+	    --(DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(D.Status.FoundSpells[Spell][3], '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 
 	    -- set the tooltip text for the current prio if necessary
 	    if (D.Status.SpellsChanged ~= self.TooltipUpdate) then

@@ -114,7 +114,7 @@ function D:UNIT_SPELLCAST_SENT( player, spell, rank, target )
 end
 function D:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
     if (self.Status.CuringSpellsPrio[spell]) then
-	D:Println(L[self.LOC.SUCCESSCAST], spell, D:MakePlayerName((D.Status.CastingSpellOnName)));
+	D:Println(L[self.LOC.SUCCESSCAST], spell, rank, D:MakePlayerName((D.Status.CastingSpellOnName)));
 
 	if (self.Status.ClickedMF) then
 	    D:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");

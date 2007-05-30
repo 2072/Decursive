@@ -254,6 +254,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    [BS[D.LOC.SPELL_POLYMORPH]]	    = {
 		Types = {DC.CHARMED},
 		IsBest = false,
+		Rank = 1,
 	    },
 	    --[[
 	    [BS["Dampen Magic"] ]	    = {
@@ -732,7 +733,7 @@ function D:Configure() --{{{
 			break;
 		    end
 
-		    D.Status.FoundSpells[spellName] = {i, BookType}; -- save the id of the spell to be able to check for changes later
+		    D.Status.FoundSpells[spellName] = {i, BookType, spellRank}; -- save the id of the spell to be able to check for changes later
 		    CuringSpells[Type] = spellName;
 
 		    D:Debug("Spell \"%s\" registered for type %d ( %s )", spellName, Type, DC.TypeNames[Type]);

@@ -294,7 +294,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.UNITSTATUS] = "Statut de l'unité : ",
     [LOC.AFFLICTEDBY] = "Affligée par %s",
     
-    [LOC.SUCCESSCAST] = "%s sur %s |cFF00AA00réussi !|r",
+    [LOC.SUCCESSCAST] = "|cFF22FFFF%s (%s)|r sur %s |cFF00AA00réussi !|r",
 
     [LOC.HANDLEHELP] = "Déplacer tous les micro-portraits",
 

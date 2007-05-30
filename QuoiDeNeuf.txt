@@ -8,6 +8,8 @@ Changements entre Decursive 2.0 BETA 7-Pub et Decursive 2.0 RC1
 - Des descriptions en français et en chinois traditionnel ont été ajouté.
 - Fichier .TOC mis à jour pour WoW 2.1.
 
+Changements entre Decursive 2.0 BETA 6-Pub-fixed et 2.0 BETA 7-Pub
+
 Nouveautés :
 
 - Il est désormais possible d'ajouter des groupes et des classes dynamiques dans
