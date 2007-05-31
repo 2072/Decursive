@@ -306,6 +306,7 @@ L:RegisterTranslations("zhCN", function() return {
 
     [LOC.OPT_NOKEYWARN] = LOC.OPT_NOKEYWARN,
     [LOC.OPT_NOKEYWARN_DESC] = LOC.OPT_NOKEYWARN_DESC,
+    [LOC.NOSPELL] = LOC.NOSPELL,
 
 } end);
 

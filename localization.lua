@@ -307,6 +307,7 @@ LOC.MACROKEYNOTMAPPED = "Decursive macro is not mapped to a key, you can map a k
 LOC.DEFAULT_MACROKEY = "`"; -- the key just beneath the escape key on a QWERTY keyboard
 LOC.OPT_NOKEYWARN = "Warn if no key";
 LOC.OPT_NOKEYWARN_DESC = "Display a warning if no key is mapped.";
+LOC.NOSPELL = "No spell available";
 
 -- Acelocal register for enUS // {{{
 local L = Dcr.L;
@@ -593,6 +594,7 @@ L:RegisterTranslations("enUS", function() return {
 
     [LOC.OPT_NOKEYWARN] = true,
     [LOC.OPT_NOKEYWARN_DESC] = true,
+    [LOC.NOSPELL] = true,
     
     -- OPTIONS
 

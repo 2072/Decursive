@@ -808,7 +808,7 @@ function D:UpdateMacro ()
     local MacroParameters = {
 	D.CONF.MACRONAME,
 	1,
-	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomodifier,exists] %s;  [target=mouseover,exists,modifier:ctrl] %s; [target=mouseover,exists,modifier:shift] %s", unpack(Spells)) or "/script D:Println('No spell available')",
+	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomodifier,exists] %s;  [target=mouseover,exists,modifier:ctrl] %s; [target=mouseover,exists,modifier:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L[D.LOC.NOSPELL].."')",
 	1
     };
 

@@ -308,6 +308,7 @@ L:RegisterTranslations("koKR", function() return {
 
 	[LOC.OPT_NOKEYWARN] = "키 없음 경고",
 	[LOC.OPT_NOKEYWARN_DESC] = "지정된 키가 없다면 경고를 표시합니다.",
+	[LOC.NOSPELL] = LOC.NOSPELL,
     
     -- OPTIONS
 

@@ -305,5 +305,6 @@ L:RegisterTranslations("frFR", function() return {
 
     [LOC.OPT_NOKEYWARN] = "Avertir si aucune touche",
     [LOC.OPT_NOKEYWARN_DESC] = "Affiche un avertissement si aucune touche n'est affectée à la macro.",
+    [LOC.NOSPELL] = "Aucun sort disponible",
 
 } end);
