@@ -148,7 +148,6 @@ Decursive a aussi une liste d'exceptions. Les joueurs de cette liste
 seront complétement ignorés et ne seront pas affichés dans les MUFs.
 
 
-
 		################################
 		# *** Commande de Decursive*** #
 		################################
@@ -156,8 +155,10 @@ seront complétement ignorés et ne seront pas affichés dans les MUFs.
 COMMANDES UTILISABLES :
 
 /DCRSHOW
----> Pour afficher la fenêtre Decursive (aussi disponible par Alt + Clic 
-     gauche sur la poignée des MUFs)
+---> Pour afficher la barre "Decursive" (aussi disponible par Shift + Clic 
+     droit sur la poignée des MUFs)
+     Cette barre est aussi l'ancre de la liste des affligés
+     (déplacer cette barre déplace la liste des affligés).
 
 /DCRHIDE
 ---> Pour cacher la fenêtre Decursive (cela laisse affiché la live-list)
@@ -177,7 +178,7 @@ COMMANDES UTILISABLES :
 
 /DCRPRSHOW
 ---> Affiche l'interface de liste des priorités (où vous pouvez 
-     ajouter, supprimer, déplacer des joueurs) (aussi Shift + Clic droit sur la 
+     ajouter, supprimer, déplacer des joueurs) (aussi Ctrl + Clic gauche sur la 
      poignée des MUFs)
 
 /DCRSKADD
@@ -273,6 +274,15 @@ Explorez les menus.
 	Pour bouger les micro-portraits, appuyer sur Alt + bouton gauche de la 
 souris sur la poignée au-dessus du premier micro-portrait, puis déplacer. Cette
 poignée a plusieurs usages, une bulle d'aide les explique tous.
+
+
+*** QUESTION :
+	Comment bouger la liste des affligés ?
+
+*** REPONSE :
+	Affichez la barre Decursive (/dcrshow ou shift-click-droit sur
+	la poignée des micro-portraits) et alt-cliquez sur la barre pour la bouger
+	(la liste des affligés est ancrée à la barre).
 
 
 *** QUESTION :

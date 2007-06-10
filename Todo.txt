@@ -7,6 +7,7 @@ Don't forget to update the wiki:
 
 ---->  http://www.wowace.com/wiki/Decursive
 
+
 TODO:
 
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
@@ -23,6 +24,7 @@ TODO:
 - Add an option to only show the MUF in raid or group
   (This has been requested a couple of time but I'm not very keen to do it)
 
-- Clean up the code
-- Add comments
+- Clean up the code (for Archarodim)
+
+- Add comments (for Archarodim)
 

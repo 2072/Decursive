@@ -211,7 +211,7 @@ function D:PlaceLL () -- {{{
     -- Executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
 	x =    (UIParent:GetWidth()  * UIScale) / 2;
-	y =  - (UIParent:GetHeight() * UIScale) / 2 + 250;
+	y =  - (UIParent:GetHeight() * UIScale) / 8;
     end
 
     -- set to the scaled position

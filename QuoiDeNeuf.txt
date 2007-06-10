@@ -1,4 +1,16 @@
-Decursive 2.0 RC1 par Archarodim
+Decursive 2.0 Final par Archarodim
+
+
+Changements entre Decursive 2.0 RC1 et Decursive 2.0 Final
+
+- Les mages lancent désormais métamorphose rang 1 au lieu du rang le plus élevé
+  (utilise moins de mana et dure moins longtemps).
+- Les messages de réussite de sort incluent le rang du sort.
+- Une erreur LUA a été corrigée lorsque la macro était utilisée alors qu'aucun
+  sort n'était enregistré.
+- Les positions par défaut de la liste des affligé et des micro-portraits ont été optimisées.
+- Une note sur comment bouger la liste des affligé a été ajouté (dans lisez-moi.txt et en jeux).
+
 
 Changements entre Decursive 2.0 BETA 7-Pub et Decursive 2.0 RC1
 

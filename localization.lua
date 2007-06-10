@@ -271,7 +271,7 @@ LOC.OPT_YSPACING_DESC = "Set the Vertical space between MUFs";
 
 
 
-LOC.HLP_LL_ONCLICK_TEXT = "Clicking on the live-list is useless since WoW 2.0. You should read the file \"Readme.txt\" located in Decursive folder...";
+LOC.HLP_LL_ONCLICK_TEXT = "Clicking on the live-list is useless since WoW 2.0. You should read the file \"Readme.txt\" located in Decursive folder...\n(To move this list move the Decursive bar, /dcrshow and left-alt-click to move)";
 LOC.HLP_LEFTCLICK = "Left-Click";
 LOC.HLP_RIGHTCLICK = "Right-Click";
 LOC.HLP_MIDDLECLICK = "Middle-Click";

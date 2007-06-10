@@ -148,11 +148,13 @@
  COMMANDS YOU CAN USE:
  
  /DCRSHOW
- ---> To show main Decursive window (also available by alt-left-clicking the
+ ---> To show main Decursive bar (also available by right-shift-clicking the
       MUFs handle)
+      Note that this bar is also the anchor of the live-list
+      (moving this bar moves the live-list).
  
  /DCRHIDE
- ---> To hide main Decursive window (leaving live-list displayed)
+ ---> To hide the Decursive bar (leaving live-list displayed)
  
  /DCROPTIONS
  ---> To show a static option panel
@@ -168,7 +170,7 @@
  ---> clear the priority list
  
  /DCRPRSHOW
- ---> Display the priority list UI (where you can add,delete,move players)
+ ---> Display the priority list UI (where you can add, delete, move players)
       (Ctrl-left-clicking the MUFs handle does the same)
  
  /DCRSKADD
@@ -193,6 +195,7 @@
      - IN MAIN DCR BAR:
        Middle-Clicking or ctrl-left-clicking on the label "Decursive" will hide
        the buttons and lock the frame and the live-list.
+       Alt-Click to move the bar and the live-list.
  
      - IN WOW KEY BINDING INTERFACE:
        You can bind a lot of things to keys under "Decursive" section.
@@ -259,7 +262,15 @@
  	just above the first MUF (it has the same size as a MUF and highlights when
  	your mouse pointer is over it). This handle has several uses, a tool-tip (in
  	the lower right corner of your screen) explains them all.
- 
+
+
+ *** QUESTION :
+ 	How do I move the live-list?
+
+ *** ANSWER :
+	Display the "Decursive" bar (/dcrshow or shift-right-click on the MUF
+	handle) and alt-click to move the bar (The live-list is anchored to this bar).
+
  
  *** QUESTION :
  	Alright I have just one thing to say about this mod, no matter what key

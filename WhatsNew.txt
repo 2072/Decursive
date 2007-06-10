@@ -1,10 +1,12 @@
-Decursive 2.0 RC2 by Archarodim
+Decursive 2.0 Final by Archarodim
 
-Changes from Decursive 2.0 RC1 to Decursive 2.0 RC2
+Changes from Decursive 2.0 RC1 to Decursive 2.0 Final
 
-- Mages will now cast polymorph rank one instead of the highest rank (uses less mana and last less time).
+- Mages will now cast polymorph rank 1 instead of the highest rank (uses less mana and last less time).
 - "Cast success" messages now include the spell rank.
-- Lua error fixed when using the decurse key and no spell are available.
+- Lua error fixed when using the decurse key when no spell are registered.
+- Default position of the MUFs and live-list have been optimized.
+- A note has been added on how to move the live-list (in readme.txt and in game).
 
 Changes from Decursive 2.0 BETA 7-Pub to Decursive 2.0 RC1
 
