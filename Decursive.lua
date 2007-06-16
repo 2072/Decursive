@@ -157,7 +157,6 @@ end --}}}
 -- this resets the location of the windows
 function D:ResetWindow() --{{{
 
-
     DecursiveMainBar:ClearAllPoints();
     DecursiveMainBar:SetPoint("CENTER", UIParent);
     DecursiveMainBar:Show();
@@ -175,9 +174,11 @@ function D:ResetWindow() --{{{
     DecursivePopulateListFrame:ClearAllPoints();
     DecursivePopulateListFrame:SetPoint("CENTER", UIParent);
 
-
     D.MFContainer:ClearAllPoints();
-    D.MFContainer:SetPoint("CENTER", UIParent, "CENTER", 200, 250);
+    D.MFContainer:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
+
+    DecursiveAnchor:ClearAllPoints();
+    DecursiveAnchor:SetPoint("TOP", UIErrorsFrame, "BOTTOM", 0, 0);
 
 end --}}}
 
@@ -208,13 +209,23 @@ function D:PlaceLL () -- {{{
     local FrameScale	= DecursiveMainBar:GetEffectiveScale();
     local x, y = D.profile.MainBarX, D.profile.MainBarY;
 
+    -- check if the coordinates are correct
+    if x and y and (x + 10 > UIParent:GetWidth()* UIScale or x < 0 or (-1 * y + 10) > UIParent:GetHeight() * UIScale or y > 0) then
+	x = false; -- reset to default position
+	message("Decursive's bar position reset to default");
+    end
+
     -- Executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
 	x =    (UIParent:GetWidth()  * UIScale) / 2;
 	y =  - (UIParent:GetHeight() * UIScale) / 8;
+
+	D.profile.MainBarX = x;
+	D.profile.MainBarY = y;
     end
 
     -- set to the scaled position
+    DecursiveMainBar:ClearAllPoints();
     DecursiveMainBar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
     DcrLiveList:ClearAllPoints();
     DcrLiveList:SetPoint("TOPLEFT", DecursiveMainBar, "BOTTOMLEFT");

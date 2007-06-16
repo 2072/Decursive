@@ -282,13 +282,23 @@ function MicroUnitF:Place () -- {{{
     local FrameScale	= self.Frame:GetEffectiveScale();
     local x, y = D.profile.DebuffsFrame_x, D.profile.DebuffsFrame_y;
 
+    -- check if the coordinates are correct
+    if x and y and (x + 10 > UIParent:GetWidth() * UIScale or x < 0 or (-1 * y + 10) > UIParent:GetHeight() * UIScale or y > 0) then
+	x = false; -- reset to default position
+	message("MUFs position reset to default");
+    end
+
     -- Executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
-	x =     UIParent:GetWidth() - (UIParent:GetWidth() * UIScale) / 4;
+	x =    (UIParent:GetWidth() * UIScale) - (UIParent:GetWidth() * UIScale) / 4;
 	y =  - (UIParent:GetHeight() * UIScale) / 5;
+
+	D.profile.DebuffsFrame_x = x;
+	D.profile.DebuffsFrame_y = y;
     end
 
     -- set to the scaled position
+    self.Frame:ClearAllPoints();
     self.Frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
 end -- }}}
 
