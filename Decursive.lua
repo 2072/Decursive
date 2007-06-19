@@ -56,19 +56,14 @@ function D:ShowHideLiveList(hide) --{{{
     if (hide==1 or (not hide and DcrLiveList:IsVisible())) then
 	D.profile.Hide_LiveList = true;
 	DcrLiveList:Hide();
-	if D.Status.ScanShedule then
-	    D:CancelScheduledEvent(D.Status.ScanShedule);
-	    D.Status.ScanShedule = false;
-	end
+	D:CancelScheduledEvent("LLupdate");
     else
 	D.profile.Hide_LiveList = false;
 	DcrLiveList:ClearAllPoints();
 	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
 	DcrLiveList:Show();
 
-	if not D.Status.ScanShedule then
-	    D.Status.ScanShedule = D:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
-	end
+	D:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     end
 
 end --}}}

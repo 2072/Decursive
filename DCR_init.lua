@@ -487,13 +487,8 @@ end -- // }}}
 function D:OnProfileEnable()
 
 
-    if (D.Status.ScanShedule) then
-	D:CancelScheduledEvent(D.Status.ScanShedule);
-    end
-    if (D.Status.MicroFrameUpdateSchedule) then
-	D:CancelScheduledEvent(D.Status.MicroFrameUpdateSchedule);
-    end
-
+    D:CancelScheduledEvent("LLupdate");
+    D:CancelScheduledEvent("MUFupdate");
 
     D.Groups_datas_are_invalid = true;
     D.Status = {};
@@ -534,19 +529,13 @@ function D:OnProfileEnable()
     D:Init();
 
     if not D.profile.Hide_LiveList then
-	D.Status.ScanShedule =
 	self:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
-    else
-	D.Status.ScanShedule = false;
     end
 
     D.MicroUnitF.MaxUnit = D.profile.DebuffsFrameMaxCount;
 
     if D.profile.ShowDebuffsFrame then
-	D.Status.MicroFrameUpdateSchedule =
 	self:ScheduleRepeatingEvent("MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
-    else
-	D.Status.MicroFrameUpdateSchedule = false;
     end
 
     D.Groups_datas_are_invalid = true;

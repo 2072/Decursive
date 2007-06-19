@@ -374,10 +374,9 @@ D.options = { -- {{{
 		    desc = L[D.LOC.OPT_SCANLENGTH_DESC],
 		    get = function() return D.profile.ScanTime end,
 		    set = function(v)
-			if (D.Status.ScanShedule and v ~= D.profile.ScanTime) then
+			if (v ~= D.profile.ScanTime) then
 			    D.profile.ScanTime = v;
-			    D:CancelScheduledEvent(D.Status.ScanShedule);
-			    D.Status.ScanShedule = D:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+			    D:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
 			    D:Debug("LV scan delay changed:", D.profile.ScanTime, v);
 			end
 		    end,
@@ -830,11 +829,9 @@ D.options = { -- {{{
 		    desc = L[D.LOC.OPT_MFREFRESHRATE_DESC],
 		    get = function() return D.profile.DebuffsFrameRefreshRate end,
 		    set = function(v) 
-			if (D.Status.MicroFrameUpdateSchedule and v ~= D.profile.DebuffsFrameRefreshRate) then
+			if (v ~= D.profile.DebuffsFrameRefreshRate) then
 			    D.profile.DebuffsFrameRefreshRate = v;
 
-			    D:CancelScheduledEvent(D.Status.MicroFrameUpdateSchedule);
-			    D.Status.MicroFrameUpdateSchedule =
 			    D:ScheduleRepeatingEvent("MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
 			    D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v);
 			end
@@ -1305,10 +1302,8 @@ function D:ShowHideDebuffsFrame ()
     end
 
     if (not D.profile.ShowDebuffsFrame) then
-	D:CancelScheduledEvent(D.Status.MicroFrameUpdateSchedule);
-	D.Status.MicroFrameUpdateSchedule = false;
-    elseif (not D.Status.MicroFrameUpdateSchedule) then
-	D.Status.MicroFrameUpdateSchedule =
+	D:CancelScheduledEvent("MUFupdate");
+    else
 	D:ScheduleRepeatingEvent("MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
     end
 end
