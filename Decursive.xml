@@ -73,7 +73,7 @@
 		end
 		Dcr:DisplayTooltip(
 		string.format(
-		"|cFF0055AA%s %s by %s|r\n" ..
+		"|cFF0055AA%s|r %s by %s|r\n" ..
 		"|cFF11FF11%s|r: %s\n" ..
 		"|cFF11FF11%s|r / |cFF11FF11%s|r-|cFF11FF11%s|r"
 		, Dcr.name, Dcr.version, Dcr.author,

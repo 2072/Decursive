@@ -173,7 +173,7 @@ function MicroUnitF:GiveMFAnchor (ID) -- {{{
     local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
 
 
-    return { "TOPLEFT", x + 3, y - 20, "TOPLEFT" };
+    return { "TOPLEFT", x, y - 20, "TOPLEFT" };
 end -- }}}
 
 
@@ -308,6 +308,14 @@ function MicroUnitF:SavePos () -- {{{
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
 	D.profile.DebuffsFrame_x = self.Frame:GetEffectiveScale() * self.Frame:GetLeft();
 	D.profile.DebuffsFrame_y = self.Frame:GetEffectiveScale() * self.Frame:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
+
+	if D.profile.DebuffsFrame_x < 0 then
+	    D.profile.DebuffsFrame_x = 0;
+	end
+
+	if D.profile.DebuffsFrame_y > 0 then
+	    D.profile.DebuffsFrame_y = 0;
+	end
 
 	--	D:Debug("Frame position saved");
     end

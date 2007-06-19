@@ -210,7 +210,7 @@ function D:PlaceLL () -- {{{
     local x, y = D.profile.MainBarX, D.profile.MainBarY;
 
     -- check if the coordinates are correct
-    if x and y and (x + 10 > UIParent:GetWidth()* UIScale or x < 0 or (-1 * y + 10) > UIParent:GetHeight() * UIScale or y > 0) then
+    if x and y and (x + 10 > UIParent:GetWidth() * UIScale or x < 0 or (-1 * y + 10) > UIParent:GetHeight() * UIScale or y > 0) then
 	x = false; -- reset to default position
 	message("Decursive's bar position reset to default");
     end
@@ -237,6 +237,16 @@ function D:SaveLLPos () -- {{{
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
 	self.profile.MainBarX = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetLeft();
 	self.profile.MainBarY = DecursiveMainBar:GetEffectiveScale() * DecursiveMainBar:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
+
+	
+	if self.profile.MainBarX < 0 then
+	    self.profile.MainBarX = 0;
+	end
+
+	if self.profile.MainBarY > 0 then
+	    self.profile.MainBarY = 0;
+	end
+
     end
 end -- }}}
 

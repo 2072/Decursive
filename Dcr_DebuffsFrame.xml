@@ -50,11 +50,13 @@
 		<Anchors>
 		    <Anchor point="TOPLEFT">
 			<Offset>
-			    <AbsDimension x="3" y="0"/>
+			    <AbsDimension x="0" y="0"/>
 			</Offset>
 		    </Anchor>
 		</Anchors>
-		<HighlightTexture inherits="UIPanelButtonHighlightTexture"/>
+		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
+		<!--<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD" /> -->
+		<!--<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/> -->
 
 		<Scripts>
 		    <OnMouseUp>
