@@ -298,7 +298,7 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.UNITSTATUS] 	= "상태: ",
 	[LOC.AFFLICTEDBY] 	= "%s에 걸림",
 
-	[LOC.SUCCESSCAST] 	= "|cFF22FFFF%s (%s)|r|1으로;로; %s |cFF00AA00치료 성공!|r",
+	[LOC.SUCCESSCAST] 	= "|cFF22FFFF%s %s|r|1으로;로; %s |cFF00AA00치료 성공!|r",
 	[LOC.HANDLEHELP] 	= "작은 유닛 프레임(MUFs) 모두 이동",
 
 	[LOC.MACROKEYALREADYMAPPED] = "경고: The key mapped to Decursive macro [%s] was mapped to action '%s'.\nDecursive will restore the previous mapping if you set another key for its macro.",

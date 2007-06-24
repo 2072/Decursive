@@ -295,7 +295,7 @@ LOC.BLACKLISTED = "Black-listed";
 LOC.UNITSTATUS = "Unit Status: ";
 LOC.AFFLICTEDBY = "%s Afflicted";
 
-LOC.SUCCESSCAST = "|cFF22FFFF%s (%s)|r |cFF00AA00succeeded on|r %s";
+LOC.SUCCESSCAST = "|cFF22FFFF%s %s|r |cFF00AA00succeeded on|r %s";
 
 LOC.HANDLEHELP = "Drag all the Micro-UnitFrames (MUFs)";
 

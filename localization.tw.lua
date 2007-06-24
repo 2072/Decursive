@@ -286,7 +286,7 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.UNITSTATUS] = "玩家狀態: ",
     [LOC.AFFLICTEDBY] = "受 %s 影響",
 
-    [LOC.SUCCESSCAST] = "|cFF22FFFF%s (%s)|r |cFF00AA00成功淨化|r %s",
+    [LOC.SUCCESSCAST] = "|cFF22FFFF%s %s|r |cFF00AA00成功淨化|r %s",
 
     [LOC.HANDLEHELP] = "拖曳移動所有的 Micro-UnitFrames (MUFs)",
 
