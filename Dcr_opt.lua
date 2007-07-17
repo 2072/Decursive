@@ -154,6 +154,8 @@ D.defaults = { -- {{{
     -- allow to changes the default output window
     OutputWindow = "DEFAULT_CHAT_FRAME", -- ACEDB CRASHES if we set it directly
 
+    -- Are we using the macro?
+    UseMacro = true,
 
     -- the key to bind the macro to
     MacroBind = false, --L[D.LOC.DEFAULT_MACROKEY], -- there were too many unhappy people with this option
@@ -1047,7 +1049,7 @@ D.options = { -- {{{
 		    set = function (key)
 			 D:SetMacroKey ( key );
 		    end,
-		    order = 100,
+		    order = 200,
 		},
 		NoKeyWarn = {
 		    type = "toggle",
@@ -1057,7 +1059,7 @@ D.options = { -- {{{
 		    set = function(v)
 			D.profile.NoKeyWarn = v;
 		    end,
-		    order = 200
+		    order = 300
 		}
 	    }
 	},

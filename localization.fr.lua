@@ -80,6 +80,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.SPELL_REMOVE_LESSER_CURSE]	=	'Délivrance de la malédiction mineure',
     [LOC.SPELL_REMOVE_CURSE]	=	'Délivrance de la malédiction',
     [LOC.SPELL_PURGE]	=	'Expiation',
+    --[LOC.SPELL_CYCLONE] =	'Cyclone',
 
     [BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive\n(Ancre de la liste des affligés)",
     

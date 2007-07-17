@@ -251,14 +251,24 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	-- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DC.SpellsToUse = {
 
-	    [BS[D.LOC.SPELL_POLYMORPH]]	    = {
+	    [BS[D.LOC.SPELL_POLYMORPH]]	    = { --Mages
 		Types = {DC.CHARMED},
 		IsBest = false,
 		Rank = 1,
 	    },
+
+	    [BS[D.LOC.SPELL_CYCLONE]]	    = { -- Druids
+		Types = {DC.CHARMED},
+		IsBest = false,
+	    },
 	    --[[
-	    [BS["Dampen Magic"] ]	    = {
-		Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+	    [BS["Dampen Magic"] ]	    = { -- used for testing only
+		Types = {DC.MAGIC},--, DC.DISEASE, DC.POISON},
+		IsBest = false,
+	    }, --]]
+	    --[[
+	    [BS["Amplify Magic"] ]	    = { -- used for testing only
+		Types = {DC.DISEASE, DC.POISON},
 		IsBest = false,
 	    }, --]]
 	    [BS[D.LOC.SPELL_CURE_DISEASE]]	    = {
@@ -273,7 +283,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		Types = {DC.DISEASE, DC.POISON},
 		IsBest = false,
 	    },
-	    [BS[D.LOC.SPELL_CLEANSE]]		    = {
+	    [BS[D.LOC.SPELL_CLEANSE]]		    = { -- paladins
 		Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
 		IsBest = true,
 	    },
@@ -289,11 +299,11 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		Types = {DC.POISON},
 		IsBest = true,
 	    },
-	    [BS[D.LOC.SPELL_REMOVE_LESSER_CURSE]] = {
+	    [BS[D.LOC.SPELL_REMOVE_LESSER_CURSE]]   = { -- mages
 		Types = {DC.CURSE},
 		IsBest = true,
 	    },
-	    [BS[D.LOC.SPELL_REMOVE_CURSE]]	    = {
+	    [BS[D.LOC.SPELL_REMOVE_CURSE]]	    = { -- druids
 		Types = {DC.CURSE},
 		IsBest = true,
 	    },
@@ -783,17 +793,20 @@ function D:UpdateMacro ()
     -- Get an ordered spell table
     local Spells = {};
     for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
-	table.insert (Spells, Prio, Spell);
+	--table.insert (Spells, Prio, Spell);
+	Spells[Prio] = Spell;
     end
 
+    --Dcr:PrintLiteral(Spells);
     if (next (Spells)) then
-	for i=1,3 do
+	for i=1,4 do
 	    if (not Spells[i]) then
 		table.insert (Spells, CuringSpells[ReversedCureOrder[1] ]);
 	    end
 	end
     end
 
+    --Dcr:PrintLiteral(D.Status.CuringSpellsPrio);
     local MacroParameters = {
 	D.CONF.MACRONAME,
 	1,

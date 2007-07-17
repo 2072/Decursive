@@ -64,6 +64,7 @@ local MF_colors = {
 			  {  .8 , 0   , 0    ,  1	}, -- red
 			  { 0   , 0   , 0.8  ,  1	}, -- blue
 			  { 1   ,  .5 ,  .25 ,  1	}, -- orange
+			  { 1   , 0   , 1    ,  1	}, -- purple
 			  { 1   , 1   , 1    ,  1	}, -- white for undefined
 			  { 1   , 1   , 1    ,  1	}, -- white for undefined
     [NORMAL]		= {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
@@ -546,7 +547,11 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 		    RequestedPrio = 1;
 		end
 	    elseif (Button == "RightButton") then
-		RequestedPrio = 2;
+		if (IsControlKeyDown()) then
+		    RequestedPrio = 4;
+		else
+		    RequestedPrio = 2;
+		end
 	    end
 
 	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
@@ -743,16 +748,20 @@ do
 	self.Frame:SetAttribute("ctrl-type3", "focus"); -- never changes
 
 	-- set the mouse left-button action
-	self.Frame:SetAttribute("type1", "target"); -- required to disable an hidden cache somewhere...
+	--self.Frame:SetAttribute("type1", "target"); -- required to disable an hidden cache somewhere...
 	self.Frame:SetAttribute("type1", "macro");
 
 	-- set the mouse ctrl-left-button action
-	self.Frame:SetAttribute("ctrl-type1", "target");  -- required to disable an hidden cache somewhere...
+	--self.Frame:SetAttribute("ctrl-type1", "target");  -- required to disable an hidden cache somewhere...
 	self.Frame:SetAttribute("ctrl-type1", "macro");
 
 	-- set the mouse right-button action
-	self.Frame:SetAttribute("type2", "target"); -- required to disable an hidden cache somewhere...
+	--self.Frame:SetAttribute("type2", "target"); -- required to disable an hidden cache somewhere...
 	self.Frame:SetAttribute("type2", "macro");
+
+	-- set the mouse ctrl-right-button action
+	--self.Frame:SetAttribute("ctrl-type2", "target"); -- required to disable an hidden cache somewhere...
+	self.Frame:SetAttribute("ctrl-type2", "macro");
 
 	-- We need:
 	--

@@ -87,6 +87,7 @@ LOC.SPELL_ABOLISH_POISON      = 'Abolish Poison';
 LOC.SPELL_REMOVE_LESSER_CURSE = 'Remove Lesser Curse';
 LOC.SPELL_REMOVE_CURSE        = 'Remove Curse';
 LOC.SPELL_PURGE               = 'Purge';
+LOC.SPELL_CYCLONE	      = 'Cyclone';
 
 BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar\n(live-list anchor)";
 
@@ -379,6 +380,7 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.SPELL_REMOVE_LESSER_CURSE]	=	true,
     [LOC.SPELL_REMOVE_CURSE]	=	true,
     [LOC.SPELL_PURGE]	=	true,
+    [LOC.SPELL_CYCLONE]	=	true,
 
     [BINDING_NAME_DCRSHOW]	=	true,
     
