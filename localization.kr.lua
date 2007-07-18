@@ -94,6 +94,7 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.SPELL_REMOVE_LESSER_CURSE] =	"하급 저주 해제",
 	[LOC.SPELL_REMOVE_CURSE]	=	"저주 해제",
 	[LOC.SPELL_PURGE]		=	"정화", -- 주술사
+	[LOC.SPELL_CYCLONE]	=	"회오리바람",
 
 	[BINDING_NAME_DCRSHOW]    	= "Decursive 메인바 표시/숨김\n(실시간 목록 고정위치)",
     
@@ -174,9 +175,9 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.OPT_BLACKLENTGH_DESC] =  "블랙리스트에 등록할 시간을 지정합니다.",
 	[LOC.OPT_SCANLENGTH_DESC] = "각 탐색의 시간 간격을 지정합니다.",
 	[LOC.OPT_REVERSE_LIVELIST_DESC] = "실시간 목록을 아래에서 위로 생성합니다.",
+	[LOC.OPT_TIE_LIVELIST_DESC] = "실시간 목록을 아래에서 위로 생성합니다.",
 	[LOC.OPT_CREATE_VIRTUAL_DEBUFF] = "시각적인 테스트 디버프 생성",
 	[LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = "디버프 발생 시 어떻게 보여지는 지를 표시하도록 합니다.",
-	[LOC.OPT_TIE_LIVELIST_DESC] = "실시간 목록을 아래에서 위로 생성합니다.",
 	[LOC.OPT_MESSAGES]	= "메세지",
 	[LOC.OPT_MESSAGES_DESC] = "메세지 표시에 대한 설정입니다.",
 	[LOC.OPT_CHATFRAME_DESC] = "Decursive의 메세지가 기본 대화창에 표시됩니다.",
@@ -258,6 +259,7 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.OPT_LLALPHA] = "실시간 목록 투명도",
 	[LOC.OPT_LLALPHA_DESC] = "Decursive 메인바와 실시간 목록의 투명도를 변경합니다. (메인바가 표시되어 있어야 함)",
 
+   
 	[LOC.OPT_ADVDISP] = "고급 표시 설정",
 	[LOC.OPT_ADVDISP_DESC] = "각 MUF 사이 간격 설정을 위해 테두리와 가운데 구분의 투명도를 설정할 수 있습니다.",
 	[LOC.OPT_TIECENTERANDBORDER] = "가운데와 테두리의 투명도",
@@ -274,7 +276,7 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.OPT_YSPACING_DESC] = "MUF 사이의 수직 간격을 설정합니다.",
 
 
-	[LOC.HLP_LL_ONCLICK_TEXT] = "실시간 목록을 클릭하는 것은 WoW 2.0 이후 사용할 수 없습니다. Decursive 폴더에 위치한 \"Readme.txt\" 읽어 보세요...",
+	[LOC.HLP_LL_ONCLICK_TEXT] = "실시간 목록을 클릭하는 것은 WoW 2.0 이후 사용할 수 없습니다. Decursive 폴더에 위치한 \"Readme.txt\" 읽어 보세요...\n(해당 목록을 이동하려면 /dcrshow 혹은 ALT-좌-클릭하세요.)",
 	[LOC.HLP_LEFTCLICK] 	= "좌-클릭",
 	[LOC.HLP_RIGHTCLICK] 	= "우-클릭",
 	[LOC.HLP_MIDDLECLICK] 	= "가운데-클릭",
