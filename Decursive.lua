@@ -456,6 +456,16 @@ do
 		if (self.profile.skipByClass[EnUClass]) then
 		    if (self.profile.skipByClass[EnUClass][Debuff.Name]) then
 			-- these are just ones you don't care about by class while in combat
+
+			-- This lead to a problem because once the fight is finished there are no event to trigger
+			-- a rescan of this unit, so the debuff does not appear...
+
+			-- solution to the above problem:
+
+			if not self.profile.DebuffAlwaysSkipList[Debuff.Name] then
+			    D:AddDelayedFunctionCall("ReScan"..Unit, D.MicroUnitF.UpdateMUFUnit, D.MicroUnitF, Unit);
+			end
+			
 			continue = false;
 		    end
 		end

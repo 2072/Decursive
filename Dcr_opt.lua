@@ -23,8 +23,6 @@
 local D = Dcr;
 D:SetDateAndRevision("$Date$", "$Revision$");
 
-
-
 local L  = D.L;
 local BS = D.BS;
 local BC = D.BC;

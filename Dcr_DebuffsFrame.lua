@@ -370,6 +370,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
 	if (not D:IsEventScheduled("Update"..unit)) then
 	    D:ScheduleEvent("Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate, MF, false, false);
 	    D:Debug("Update scheduled for, ", unit, MF.ID);
+	    return true; -- return value used to aknowledge that the function actually did something
 	end
     end
 end
@@ -836,7 +837,7 @@ do
     --		- The Alpha of the center and borders
     --	    This function also set the Status of the MUF that will be used in the tooltip
     --]=]
-    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ReturnValue, RangeStatus, Alpha;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ReturnValue, RangeStatus, Alpha, PrioChanged;
     local profile = {};
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -890,6 +891,7 @@ do
 		if self.PrevDebuff1Prio ~= self.Debuff1Prio then
 		    self.Color = MF_colors[self.Debuff1Prio];
 		    self.PrevDebuff1Prio = self.Debuff1Prio;
+		    PrioChanged = true;
 		end
 
 		-- Test if the spell we are going to use is in range
@@ -900,9 +902,9 @@ do
 		    Alpha = 0.40;
 		    self.UnitStatus = AFFLICTED_NIR;
 
-		    --if profile.LV_OnlyInRange then
-		--	D.UnitDebuffed[self.CurrUnit] = false;
-		  --  end
+		    --  if profile.LV_OnlyInRange then
+		    --	D.UnitDebuffed[self.CurrUnit] = false;
+		    --  end
 		else
 		    Alpha = 1;
 		    self.UnitStatus = AFFLICTED;
@@ -967,8 +969,10 @@ do
 	-- Apply the colors and alphas only if necessary
 	--	The MUF status changed
 	--	The user changed the defaultAlpha
-	--	The first affliction changed
-	if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= profile.DebuffsFrameElemAlpha or self.FirstDebuffType ~= DebuffType) then
+	--	The priority (and thus the color) of the first affliction changed
+	if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= profile.DebuffsFrameElemAlpha or PrioChanged) then-- or self.FirstDebuffType ~= DebuffType) then
+
+	    if PrioChanged then PrioChanged = false; end
 
 	    -- Set the main texture
 	    self.Texture:SetTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
@@ -1064,7 +1068,6 @@ do
 
 	ActionsDone = 0; -- used to limit the maximum number of consecutive UI actions
 
-	--if 1 then return false; end -- XXX
 
 	-- we don't check all the MUF at each call, only some of them (changed in the options)
 	for pass = 1, self.profile.DebuffsFramePerUPdate do
@@ -1096,7 +1099,7 @@ do
 		end
 	    end
 
-	    -- update the MUF attributes and its colors XXX
+	    -- update the MUF attributes and its colors XXX -- this is done by an event handler now (buff/debuff received...)
 	    --ActionsDone = ActionsDone + MF:Update(not MF.IsDebuffed and true or false, true);
 	    if MF then
 		if not MF.IsDebuffed and MF.UpdateCountDown ~= 0 then
@@ -1110,15 +1113,13 @@ do
 	    -- we are done for this frame, go to te next
 	    MicroFrameUpdateIndex = MicroFrameUpdateIndex + 1;
 
+	    -- don't update more than 5 MUF in a row
+	    -- don't loop when reaching the end, wait for the next call (useful when less MUFs than PerUpdate)
 	    if (ActionsDone > 5 or pass == NumToShow) then
 		--self:Debug("Max actions count reached");
 		break;
 	    end
 
-	    -- don't loop when reaching the end, wait for the next call (useful when less MUFs than PerUpdate)
-	    --if (pass == NumToShow) then
-	--	break;
-	   -- end
 	end
 	--    end
     end -- }}}

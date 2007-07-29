@@ -12,7 +12,8 @@
      -	Support all cleansing spells in all localizations.
      -	Minimal memory and CPU usage in all conditions.
      -	Users can choose the types of affliction they want to cure and prioritize them.
-     -   Mages can sheep mind-controlled units.
+     -   Mages can Sheep mind-controlled players.
+     -   Druids can Cyclone mind-controlled players.
      -   Two solutions available to cleans afflictions: Macro and Micro-Unit Frames (MUFs)
      -	Cleansing macro auto-configuration (cure people by mouse-overing and hitting a key)
      -	User customisable debuff filtering system.

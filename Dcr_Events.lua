@@ -112,6 +112,7 @@ function D:UNIT_SPELLCAST_SENT( player, spell, rank, target )
 	self.Status.CastingSpellOnName = target;
     end
 end
+
 function D:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
     if (self.Status.CuringSpellsPrio[spell]) then
 	D:Println(L[self.LOC.SUCCESSCAST], spell, rank, D:MakePlayerName((D.Status.CastingSpellOnName)));
@@ -211,6 +212,7 @@ end --}}}
 -- }}}
 
 -- This let us park command we can't execute while in combat to execute them later {{{
+    -- the called function must return a non false value when it does something to prevent UI lagging
 function D:AddDelayedFunctionCall(CallID,functionLink, ...)
     if (not self.Status.DelayedFunctionCalls[CallID]) then 
 	self.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};

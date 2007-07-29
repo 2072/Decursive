@@ -332,7 +332,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 		IsBest = true,
 	    };
 	end
-	
+
 	-- // }}}
 
 end -- // }}}

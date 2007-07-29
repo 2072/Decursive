@@ -10,6 +10,8 @@ Don't forget to update the wiki:
 
 TODO:
 
+- If the Unstable Affliction is detected on a player, add a warning status if the player can cure magic...
+
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
   (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found)
 
