@@ -440,6 +440,14 @@ function MicroUnitF:OnEnter() -- {{{
 		if (Debuff.Type) then
 		    local DebuffApps = Debuff.Applications;
 		    TooltipText = TooltipText .. "\n" .. string.format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and string.format(" (%d)", DebuffApps) or "");
+
+		    -- Create a warning if the Unstable Affliction is detected
+		    if Debuff.Name == BS["Unstable Affliction"] then
+		    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
+			Dcr:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName(MF.UnitName));
+			PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
+		    end
+
 		else
 		    break;
 		end
