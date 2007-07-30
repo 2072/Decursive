@@ -8,7 +8,7 @@
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
 
-## Version: 2.0.0 Final
+## Version: 2.0.1 
 ## Author: Archarodim
 
 ## X-License: GNU GPL
