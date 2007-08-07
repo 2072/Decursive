@@ -234,7 +234,7 @@ function D:SpellCastFailed() -- the blacklisting function {{{
 	)
 	) then
 	D.Status.Blacklisted_Array[D.Status.CastingSpellOn] = D.profile.CureBlacklist;
-	D:Println("%s is blaclisted for %d seconds", D.Status.CastingSpellOnName, D.profile.CureBlacklist);
+	D:Println("%s is blacklisted for %d seconds", D.Status.CastingSpellOnName, D.profile.CureBlacklist);
 	D.Status.CastingSpellOn = false;
 	D.Status.CastingSpellOnName = false;
     end

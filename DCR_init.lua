@@ -122,8 +122,6 @@ D.UnitDebuffed = {};
 -------------------------------------------------------------------------------
 
 
-
-
 -- D.Initialized = false;
 -------------------------------------------------------------------------------
 
@@ -564,6 +562,11 @@ function D:OnProfileEnable()
     else
 	D:SetIcon(DC.IconON);
     end
+
+    -- initialize the unit array to get all the variable existing
+    -- even if the Live-list and the MUFs are disabled... (some people are strange)
+    D:GetUnitArray();
+
 end
 
 function D:OnDisable() -- When the addon is disabled by ACE
