@@ -48,6 +48,8 @@ function D:UNIT_PET (Unit) -- {{{
 	D.Groups_datas_are_invalid = true;
     end
 
+    self.MicroUnitF:Delayed_MFsDisplay_Update();
+
     -- If the player's pet changed then we should check it for interesting spells
     if ( Unit == "player" ) then
 	self:ScheduleEvent("CheckPet", self.UpdatePlayerPet, 2, self);
