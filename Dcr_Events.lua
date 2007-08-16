@@ -107,10 +107,10 @@ function D:UNIT_SPELLCAST_FAILED(unit) -- unused
     D:Debug("Spell cast failed for unit: ", unit);
 end
 
-function D:UNIT_SPELLCAST_SENT( player, spell, rank, target )
+function D:UNIT_SPELLCAST_SENT( player, spell, rank, target)
     --D:Debug("|cFFFF0000Sending SPELL: ", player, spell, rank, target, "|r");
     if (self.Status.CuringSpellsPrio[spell]) then
-	self.Status.CastingSpellOn = D:NameToUnit(target); -- XXX
+	self.Status.CastingSpellOn = D:NameToUnit(target);
 	self.Status.CastingSpellOnName = target;
     end
 end
@@ -137,7 +137,7 @@ function D:ADDON_ACTION_FORBIDDEN (Addon, protectedfunction)
 end
 
 function D:PLAYER_FOCUS_CHANGED ()
-    self.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+    self.Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
 
     if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and not UnitExists("focus")) then
 	table.remove(self.Status.Unit_Array, #self.Status.Unit_Array);
@@ -148,7 +148,7 @@ function D:PLAYER_FOCUS_CHANGED ()
     elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" and UnitExists("focus") and UnitIsFriend("focus", "player") then
 	table.insert(self.Status.Unit_Array, "focus");
 	self.Status.UnitNum = #self.Status.Unit_Array;
-	self.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+	self.Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
 	--self.Status.Unit_Array_UnitToIndex["focus"] = self.MicroUnitF:MFUsableNumber();
 
 

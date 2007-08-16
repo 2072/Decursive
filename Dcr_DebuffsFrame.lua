@@ -354,7 +354,6 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
     if (Unitid == "focus") then
 	unit = "focus";
     elseif (D.Status.Unit_Array_UnitToName[Unitid]) then
-	--unit = D:NameToUnit(UnitName(Unitid)); -- needed so we have the same IDs than the ones we have in our lists (we won't get party\d when we are in raid but raid\d+)
 	unit = Unitid;
     else
 	D:Debug("Unit %s, not in raid or party!", Unitid);
@@ -387,22 +386,30 @@ function MicroUnitF:OnEnter() -- {{{
     local MF = this.Object;
     local Status;
 
-    if (D.profile.AfflictionTooltips ) then
+    if (D.profile.AfflictionTooltips) then
+
+	local Unit = MF.CurrUnit; -- shortcut
+	local TooltipText = "";
+
+	-- Compare the current unit name to the one storred when the group data were collected
+	if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then
+	    D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
+	end
+
 	MF:Update(); -- will reset the color early and set the current status of the MUF
 	MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
 	-- removes the CHARMED bit from Status, we don't need it
 	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED));
 
-	local Unit = MF.CurrUnit; -- shortcut
 
-	local TooltipText = "";
 
 	-- First, write the name of the unit in its class color
 	if (UnitExists(MF.CurrUnit)) then
 	    TooltipText =
 	    -- Colored unit name
-	    D:ColorText(	    (UnitName(	  Unit    ))
+	    -- D:ColorText(	    (D:PetUnitName(	  Unit, true    )) -- can be replaced by MF.UnitName, used for test purpose
+	    D:ColorText(	    MF.UnitName
 	    , "FF" .. ((UnitClass(Unit)) and BC:GetHexColor( (select(2, UnitClass(Unit))) ) or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
 	end
 

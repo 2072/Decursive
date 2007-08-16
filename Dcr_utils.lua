@@ -25,6 +25,7 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = D.L;
 local BS = D.BS;
+local DC = DcrC;
 
 function D:ColorText (text, color) --{{{
     return "|c".. color .. text .. "|r";
@@ -34,6 +35,22 @@ function D:MakePlayerName (name) --{{{
     if not name then name = "NONAME" end
     return "|cFFFFAA22|Hplayer:" .. name .. "|h" .. string.upper(name) .. "|h|r";
 end --}}}
+
+function D:PetUnitName (Unit, Check) -- {{{
+    local Name = (UnitName(Unit));
+
+    if not Name or Name == DC.UNKNOWN  then
+	Name = DC.UNKNOWN .. "_" .. Unit;
+	Dcr:Debug("Name of %s is unknown", Unit);
+    end
+
+    if not Check or not UnitIsPlayer(Unit) then
+	Name =  DC.PET .. " - " .. Name;
+    end
+    
+    return Name;
+
+end -- }}}
 
 function D:MakeAfflictionName (name) --{{{
     if (name) then

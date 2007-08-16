@@ -131,6 +131,9 @@ D.defaults = { -- {{{
     -- Play a sound when there is something to decurse
     PlaySound = true,
 
+    -- The sound file to use
+    SoundFile = "Sound\\Doodad\\BellTollTribal.wav";
+
     -- Hide the buttons
     HideButtons = false,
 

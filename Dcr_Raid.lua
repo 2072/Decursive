@@ -33,6 +33,7 @@ local RaidRosterCache		= { };
 local SortingTable		= { };
 D.Status.Unit_ArrayByName	= { };
 D.Status.Unit_Array_UnitToName	= { };
+D.Status.Unit_Array_NameToUnit	= { };
 
 D.Status.InternalPrioList	= { };
 D.Status.InternalSkipList	= { };
@@ -55,35 +56,45 @@ end --}}}
 -- Raid/Party Name Check Function (a terrible function, need optimising)
 -- this returns the UnitID that the Name points to
 -- this does not check "target" or "mouseover"
-function D:NameToUnit( Name) --{{{
+function D:NameToUnit( Name ) --{{{
 
     local numRaidMembers = GetNumRaidMembers();
+    local FoundUnit = false;
+
+    if (not Name) then
+	return false;
+    end
+
+    if D.Status.Unit_Array_NameToUnit[Name] ~= nil then
+	--Dcr:Debug("%s was found in cachetable to be %s", Name, D.Status.Unit_Array_NameToUnit[Name]);
+	return D.Status.Unit_Array_NameToUnit[Name];
+    end
 
     if (numRaidMembers == 0) then
-	if (not Name) then
-	    return false;
-	elseif (Name == (UnitName("player"))) then
-	    return "player";
+	if (Name == (UnitName("player"))) then
+	    FoundUnit =  "player";
 	elseif (Name == (UnitName("focus"))) then
-	    return "focus";
+	    return  "focus"; -- we won't store this value
 	elseif (Name == (UnitName("pet"))) then
-	    return "pet";
-	elseif (Name == (UnitName("party1"))) then
-	    return "party1";
-	elseif (Name == (UnitName("party2"))) then
-	    return "party2";
-	elseif (Name == (UnitName("party3"))) then
-	    return "party3";
-	elseif (Name == (UnitName("party4"))) then
-	    return "party4";
-	elseif (Name == (UnitName("partypet1"))) then
-	    return "partypet1";
-	elseif (Name == (UnitName("partypet2"))) then
-	    return "partypet2";
-	elseif (Name == (UnitName("partypet3"))) then
-	    return "partypet3";
-	elseif (Name == (UnitName("partypet4"))) then
-	    return "partypet4";
+	    FoundUnit =  "pet";
+	elseif GetNumPartyMembers() > 0 then
+	    if (Name == (UnitName("party1"))) then
+		FoundUnit =  "party1";
+	    elseif (Name == (UnitName("party2"))) then
+		FoundUnit =  "party2";
+	    elseif (Name == (UnitName("party3"))) then
+		FoundUnit =  "party3";
+	    elseif (Name == (UnitName("party4"))) then
+		FoundUnit =  "party4";
+	    elseif (Name == (UnitName("partypet1"))) then
+		FoundUnit =  "partypet1";
+	    elseif (Name == (UnitName("partypet2"))) then
+		FoundUnit =  "partypet2";
+	    elseif (Name == (UnitName("partypet3"))) then
+		FoundUnit =  "partypet3";
+	    elseif (Name == (UnitName("partypet4"))) then
+		FoundUnit =  "partypet4";
+	    end
 	end
     else
 	-- we are in a raid
@@ -92,14 +103,18 @@ function D:NameToUnit( Name) --{{{
 	for i=1, numRaidMembers do
 	    RaidName = GetRaidRosterInfo(i);
 	    if ( Name == RaidName) then
-		return "raid"..i;
+		FoundUnit =  "raid"..i;
 	    end
 	    if ( self.profile.Scan_Pets and Name == (UnitName("raidpet"..i))) then
-		return "raidpet"..i;
+		FoundUnit =  "raidpet"..i;
 	    end
 	end
     end
-    return false;
+
+    D.Status.Unit_Array_NameToUnit[Name] = FoundUnit;
+
+    return FoundUnit;
+
 end --}}}
 -- }}}
 
@@ -247,6 +262,7 @@ do
 	return UnitPriority;
     end -- }}}
 
+    
   
     function D:GetUnitArray() --{{{
 
@@ -264,11 +280,12 @@ do
 
 
 	-- clear all the arrays
-	self.Status.InternalPrioList	    = {}
-	self.Status.InternalSkipList	    = {}
-	SortingTable			    = {}
-	self.Status.Unit_ArrayByName	    = {}
-	local RaidRosterCache		    = {}
+	self.Status.InternalPrioList	    = {};
+	self.Status.InternalSkipList	    = {};
+	SortingTable			    = {};
+	self.Status.Unit_ArrayByName	    = {};
+	D.Status.Unit_Array_NameToUnit	    = {};
+	local RaidRosterCache		    = {};
 
 	local unit;
 
@@ -417,7 +434,7 @@ do
 	    -- add our own pet
 	    if (UnitExists("pet")) then
 		AddToSort("pet", -900);
-		self.Status.Unit_ArrayByName[(UnitName("pet"))] = "pet";
+		self.Status.Unit_ArrayByName[(D:PetUnitName("pet"))] = "pet";
 	    end
 
 	    -- the parties pets if they have them
@@ -426,7 +443,7 @@ do
 		    pet = "partypet"..i;
 
 		    if (UnitExists(pet)) then
-			pname = (UnitName(pet));
+			pname = (D:PetUnitName(pet));
 
 			if (not pname) then -- at logon sometimes pname is nil...
 			    pname = pet;
@@ -447,7 +464,7 @@ do
 
 		    if ( UnitExists(pet) ) then
 
-			pname = (UnitName(pet));
+			pname = (D:PetUnitName(pet));
 
 			if (not pname) then -- at logon sometimes pname is nil...
 			    pname = pet;
@@ -490,7 +507,7 @@ do
 	if UnitExists("focus") and UnitIsFriend("focus", "player") then
 	    table.insert(self.Status.Unit_Array, "focus");
 	    self.Status.UnitNum = #self.Status.Unit_Array;
-	    self.Status.Unit_Array_UnitToName["focus"] = (UnitName("focus"));
+	    self.Status.Unit_Array_UnitToName["focus"] = (PetUnitName("focus", true));
 	    --self.Status.Unit_Array_UnitToIndex["focus"] = self.MicroUnitF:MFUsableNumber();
 	end
 

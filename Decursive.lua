@@ -186,7 +186,7 @@ function D:PlaySound (UnitID) --{{{
 
 	    -- good sounds: Sound\\Doodad\\BellTollTribal.wav
 	    --		Sound\\interface\\AuctionWindowOpen.wav
-	    PlaySoundFile("Sound\\Doodad\\BellTollTribal.wav");
+	    PlaySoundFile(self.profile.SoundFile);
 	    self.Status.SoundPlayed = true;
 	end
     end

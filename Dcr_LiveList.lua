@@ -199,7 +199,7 @@ end -- }}}
 
 function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     self.UnitID		    = UnitID;
-    self.UnitName	    = UnitName(UnitID);
+    self.UnitName	    = D:PetUnitName(UnitID, true);
     self.Debuff		    = Debuff;
     self.IsCharmed	    = IsCharmed;
 
@@ -422,7 +422,7 @@ end -- }}}
 function LiveList:DisplayTestItem() -- {{{
     if not self.TestItemDisplayed then
 	self.TestItemDisplayed = true;
-	D:SpecialEvents_UnitDebuffLost(D:NameToUnit(UnitName("player")), "Test item");
+	D:SpecialEvents_UnitDebuffLost(D:NameToUnit((UnitName("player"))), "Test item");
     end
 end -- }}}
 

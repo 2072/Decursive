@@ -260,6 +260,9 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
 		name = unit;
 	    else
 		name = (UnitName( unit));
+		if name == DC.UNKNOWN then
+		    return false;
+		end
 	    end
 
 	    for _, pname in pairs(D.profile.PriorityList) do
@@ -331,6 +334,9 @@ function D:AddUnitToSkipList( unit) --{{{
 		name = unit;
 	    else
 		name = (UnitName( unit));
+		if name == DC.UNKNOWN then
+		    return false;
+		end
 	    end
 
 	    for _, pname in pairs(D.profile.SkipList) do

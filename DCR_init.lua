@@ -98,6 +98,12 @@ DC.AFFLICTED_AND_CHARMED = bit.bor(DC.AFFLICTED, DC.CHARMED);
 
 DC.MFSIZE = 20;
 
+-- This value is returned by UnitName when the name of a unit is not available yet
+DC.UNKNOWN = UNKNOWNOBJECT;
+
+-- Get the translation for "pet"
+DC.PET = SPELL_TARGET_TYPE8_DESC;
+
 D.MFContainer = false;
 D.LLContainer = false;
 
