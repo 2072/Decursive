@@ -399,6 +399,10 @@ function MicroUnitF:OnEnter() -- {{{
 	MF:Update(); -- will reset the color early and set the current status of the MUF
 	MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
+	if not Unit then
+	    return; -- If the user overs the MUF befor it's completely initialized
+	end
+
 	-- removes the CHARMED bit from Status, we don't need it
 	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED));
 
@@ -408,8 +412,8 @@ function MicroUnitF:OnEnter() -- {{{
 	if (UnitExists(MF.CurrUnit)) then
 	    TooltipText =
 	    -- Colored unit name
-	    -- D:ColorText(	    (D:PetUnitName(	  Unit, true    )) -- can be replaced by MF.UnitName, used for test purpose
-	    D:ColorText(	    MF.UnitName
+	    -- D:ColorText(	    (D:PetUnitName(	  Unit, true    )) -- cannot be replaced by MF.UnitName, (UnitName is set by SetClassBorder only if class borders are displayed)
+	    D:ColorText(	    (D:PetUnitName(	  Unit, true    ))
 	    , "FF" .. ((UnitClass(Unit)) and BC:GetHexColor( (select(2, UnitClass(Unit))) ) or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
 	end
 
@@ -451,7 +455,7 @@ function MicroUnitF:OnEnter() -- {{{
 		    -- Create a warning if the Unstable Affliction is detected
 		    if Debuff.Name == BS["Unstable Affliction"] then
 		    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
-			Dcr:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName(MF.UnitName));
+			Dcr:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(	  Unit, true    ))));
 			PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
 		    end
 
