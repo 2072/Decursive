@@ -129,7 +129,7 @@ DC.ClassNumToName = {
     [16]	= BC[D.LOC.CLASS_ROGUE],
     [17]	= BC[D.LOC.CLASS_SHAMAN],
     [18]	= BC[D.LOC.CLASS_WARLOCK],
-    [19]	= BC[D.LOC.CLASS_WARRIOR], 
+    [19]	= BC[D.LOC.CLASS_WARRIOR],
 }
 
 DC.ClassNameToNum = D:tReverse(DC.ClassNumToName);
@@ -188,7 +188,7 @@ do
 	-- A little explanation of the principle behind this function {{{
 	--[=[ ****************************************************************************
 	  levels of priority:
-	  
+
 	  0 --> PriorityList
 	  1 --> Group
 	  2 --> Class
@@ -201,7 +201,7 @@ do
 
 	  Priority list:    1,000,000 till 100,000,000
 	  Group indexes:    10,000, 20,000, 30,000, till 80,000
-	  class indexes:    1,000, 2,000, 3,000, till 9,000 
+	  class indexes:    1,000, 2,000, 3,000, till 9,000
 	  default indexes:  100 to 800 (palyer's index will be 900)
 	  pet indexes:	    Same as above but * -1
 
@@ -235,7 +235,7 @@ do
 	    local Unit_Name = (UnitName(Unit));
 
 	    local PrioListIndex = 100;
-	    
+
 	    -- get the higher of the three...
 	    if (D.Status.InternalPrioList[Unit_Name] and D.Status.InternalPrioList[Unit_Name] < PrioListIndex) then
 		PrioListIndex = D.Status.InternalPrioList[Unit_Name];
@@ -248,7 +248,7 @@ do
 	    if (D.Status.InternalPrioList[ DC.ClassNameToNum [LocalizedClass] ] and D.Status.InternalPrioList[ DC.ClassNameToNum [LocalizedClass] ] < PrioListIndex) then
 		PrioListIndex = D.Status.InternalPrioList[ DC.ClassNameToNum [LocalizedClass] ];
 	    end
-	    
+
 
 	    if ( PrioListIndex < 100) then
 		UnitPriority = UnitPriority + (100 + 1 - PrioListIndex) * 1000000;
@@ -262,8 +262,8 @@ do
 	return UnitPriority;
     end -- }}}
 
-    
-  
+
+
     function D:GetUnitArray() --{{{
 
 	-- if the groups composition did not changed
@@ -311,9 +311,9 @@ do
 		self.Status.InternalPrioList[ListEntry] = i;
 
 		if (ListEntry < 10) then
-		    table.insert(GroupsPrio, ListEntry); 
+		    table.insert(GroupsPrio, ListEntry);
 		else
-		    table.insert(ClassPrio, ListEntry); 
+		    table.insert(ClassPrio, ListEntry);
 		end
 	    end
 	end
@@ -507,7 +507,9 @@ do
 	if UnitExists("focus") and UnitIsFriend("focus", "player") then
 	    table.insert(self.Status.Unit_Array, "focus");
 	    self.Status.UnitNum = #self.Status.Unit_Array;
-	    self.Status.Unit_Array_UnitToName["focus"] = (PetUnitName("focus", true));
+	    if PetUnitName then
+		self.Status.Unit_Array_UnitToName["focus"] = (PetUnitName("focus", true));
+	    end
 	    --self.Status.Unit_Array_UnitToIndex["focus"] = self.MicroUnitF:MFUsableNumber();
 	end
 
@@ -516,7 +518,7 @@ do
 	self.Groups_datas_are_invalid = false;
 
 	return;
-    end 
+    end
 
 end
 
