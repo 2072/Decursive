@@ -599,7 +599,7 @@ function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
 end --}}}
 
-local Stealthed = {BS["Prowl"], BS["Stealth"], BS["Shadowmeld"],  BS["Invisibility"]}; --, BS["Ice Armor"],};
+local Stealthed = {BS["Prowl"], BS["Stealth"], BS["Shadowmeld"],  BS["Invisibility"], BS["Lesser Invisibility"]}; --, BS["Ice Armor"],};
 
 
 

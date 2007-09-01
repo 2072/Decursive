@@ -507,9 +507,7 @@ do
 	if UnitExists("focus") and UnitIsFriend("focus", "player") then
 	    table.insert(self.Status.Unit_Array, "focus");
 	    self.Status.UnitNum = #self.Status.Unit_Array;
-	    if PetUnitName then
-		self.Status.Unit_Array_UnitToName["focus"] = (PetUnitName("focus", true));
-	    end
+	    self.Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
 	    --self.Status.Unit_Array_UnitToIndex["focus"] = self.MicroUnitF:MFUsableNumber();
 	end
 

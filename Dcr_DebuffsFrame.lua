@@ -84,7 +84,7 @@ local AvailableButtons = { -- {{{
     "shift-%s2",
     "alt-%s1",
     "alt-%s2",
-    -- 3, -- middle mouse button || RESERVED FOR TARGETTING
+    -- 3, -- middle mouse button || RESERVED FOR TARGETING
 }; -- }}}
 
 local AvailableButtonsReadable = { -- {{{
