@@ -672,26 +672,27 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs)
 
     local MF = self;
     -- get the unit this MUF should show
-    local Unit = D.Status.Unit_Array[MF.ID];
+    local Unit = D.Status.Unit_Array[MF.ID]; -- get the unit the MUF should be attached to.
     local ActionsDone = 0;
 
-    if not Unit then 
+    if not Unit then -- if this MUF is being hidden (waiting for the end of the fight)
 	D:Debug("No Unit for MUF #", MF.ID);
-	if MF.CurrUnit ~= "" then
-	    Unit = MF.CurrUnit;
+	if MF.CurrUnit ~= "" then -- There is a unit attached to this MUF
+	    Unit = MF.CurrUnit; -- we will update the MUF according to its current unit.
 	    D:Debug(" Using previous unit: ", MF.CurrUnit);
 	else
-	    return 0
+	    return 0 -- This MUF has no purpose at all then...
 	end
     end
 
+    -- The unit is the same but the name isn't... (check for class change)
     if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName then
 	if MF:SetClassBorder() then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
 	end
     end
 
-    -- Update the frame attribute if necessary
+    -- Update the frame attribute if necessary (Spells priority or unit id changes)
     if (D.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
 	D:Debug("Attributes update required: ", MF.ID);
 	if (MF:UpdateAttributes(Unit, true)) then
@@ -834,6 +835,7 @@ function MicroUnitF.prototype:SetDebuffs() -- {{{
     end
 
     if (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
+	--Dcr:Debug("A debuff was found"); -- XXX
 	self.IsDebuffed = true;
 	self.Debuff1Prio = D:GiveSpellPrioNum( self.Debuffs[1].Type );
 
@@ -841,6 +843,7 @@ function MicroUnitF.prototype:SetDebuffs() -- {{{
 	D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
 
     else
+	--Dcr:Debug("No debuff found"); -- XXX
 	self.IsDebuffed			= false;
 	self.Debuff1Prio		= false;
 	self.PrevDebuff1Prio		= false;

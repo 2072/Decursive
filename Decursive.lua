@@ -407,6 +407,7 @@ do
     function D:UnitCurableDebuffs (Unit, JustOne) -- {{{
 
 	if not Unit then
+	    Dcr:Debug("No unit supplied to UnitCurableDebuffs()");
 	    return false;
 	end
 
@@ -417,6 +418,7 @@ do
 	local AllUnitDebuffs, IsCharmed = self:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
 
 	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no debuff
+	    --Dcr:Debug("UnitCurableDebuffs(): GetUnitDebuffAll returned no debuff");
 	    return false, IsCharmed;
 	end
 
@@ -443,12 +445,14 @@ do
 	    -- test if we have to ignore this debuf  {{{ --
 	    if (self.profile.DebuffsToIgnore[Debuff.Name]) then
 		-- these are the BAD ones... the ones that make the target immune... abort this unit
+		--Dcr:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
 		break; -- exit here
 	    end
 
 	    if (self.profile.BuffDebuff[Debuff.Name]) then
 		-- these are just ones you don't care about
 		continue = false;
+		--Dcr:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
 	    end
 
 	    if (self.Status.Combat or self.profile.DebuffAlwaysSkipList[Debuff.Name]) then
@@ -466,6 +470,7 @@ do
 			    D:AddDelayedFunctionCall("ReScan"..Unit, D.MicroUnitF.UpdateMUFUnit, D.MicroUnitF, Unit);
 			end
 			
+			Dcr:Debug("UnitCurableDebuffs(): %s is configured to be skipped", Debuff.Name);
 			continue = false;
 		    end
 		end

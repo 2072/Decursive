@@ -1273,6 +1273,13 @@ function D:SetCureOrder (ToChange)
     D:Debug("Spell changed");
     D.Status.SpellsChanged = GetTime();
 
+    -- If no spell is selected or none is available set Decursive icon to off
+    if FoundSpell ~= 0 then
+	D:SetIcon(DC.IconON);
+    else
+	D:SetIcon(DC.IconOFF);
+    end
+
 
 
 end

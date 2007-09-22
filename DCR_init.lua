@@ -480,7 +480,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
     -- used for Debugging purpose
     self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
-    --	self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
+    --self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
 
 
 
@@ -690,9 +690,6 @@ function D:Configure() --{{{
     -- first empty out the old "spellbook"
      D.Status.HasSpell = false;
 
-
-    -- TODO
-    -- ==> In the futur, Users will be able to choose keystrokes and clicks associated to their spells
 
     local CuringSpells = D.Status.CuringSpells;
 
