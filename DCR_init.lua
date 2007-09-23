@@ -444,8 +444,8 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     -- these events are automatically stopped when the addon is disabled by ACE
 
     -- Spell changes events
-    self:RegisterEvent("LEARNED_SPELL_IN_TAB","Configure",0.5);
-    self:RegisterEvent("SPELLS_CHANGED","ReConfigure", 0.5);
+    self:RegisterEvent("LEARNED_SPELL_IN_TAB");
+    self:RegisterEvent("SPELLS_CHANGED");
 
     -- Combat detection events
     self:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
@@ -479,7 +479,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
     -- used for Debugging purpose
-    self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
+    --self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
     --self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
 
 
@@ -563,7 +563,7 @@ function D:OnProfileEnable()
     D.MicroUnitF:Delayed_MFsDisplay_Update();
 
     -- set Fubar Icon
-    if D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
+    if not D.Status.HasSpell or D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
 	D:SetIcon(DC.IconOFF);
     else
 	D:SetIcon(DC.IconON);
@@ -663,7 +663,7 @@ function D:ReConfigure() --{{{
 	return;
     end
 
-    D:Debug("D:ReConfigure was called!");
+    D:Debug("|cFFFF0000D:ReConfigure was called!|r");
 
     local DoNotReconfigure = true;
 

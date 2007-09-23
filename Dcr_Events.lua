@@ -54,7 +54,7 @@ function D:UNIT_PET (Unit) -- {{{
     if ( Unit == "player" ) then
 	self:ScheduleEvent("CheckPet", self.UpdatePlayerPet, 2, self);
 	OncePetRetry = false;
-	D:Debug ("PLAYER pet detected! Poll in 2 seconds");
+	D:Debug ("PLAYER pet detected! Poll in 2 seconds...");
     end
 end -- }}}
 
@@ -63,23 +63,25 @@ local last_petType = false;
 
 function D:UpdatePlayerPet () -- {{{
     curr_petType = UnitCreatureFamily("pet");
-
-    if (curr_petType) then D:Debug ("Pet Type: " .. curr_petType);  end; -- debug info only
+    Dcr:Debug("|cFF0000FFCurrent Pet type is %s|r", curr_petType);
 
     -- if we had a pet and lost it, retry once later...
     if (last_petType and not curr_petType and not OncePetRetry) then
 	OncePetRetry = true;
-	D:Debug("Pet lost, retry in 10 seconds");
+
+	D:Debug("|cFF9900FFPet lost, retry in 10 seconds|r");
 	D:ScheduleEvent("ReCheckPetOnce", D.UpdatePlayerPet, 10, self);
 	return;
     end
 
     -- if we've changed of pet
     if (last_petType ~= curr_petType) then
-	if (curr_petType) then D:Debug ("Pet name changed: " .. curr_petType); else  D:Debug ("No more pet!"); end; -- debug info only
+	if (curr_petType) then D:Debug ("|cFF0066FFPet name changed: %s|r", curr_petType); else D:Debug ("|cFF0066FFNo more pet!|r"); end; -- debug info only
 
 	last_petType = curr_petType;
 	D:Configure();
+    else
+	D:Debug ("|cFFAA66FFNo change in Pet Type (%s)|r", curr_petType);
     end
 end -- }}}
 
@@ -295,3 +297,12 @@ function D:SpecialEvents_UnitBuffLost(UnitID, buffName, applications, texture, r
     end
 end
 
+function D:LEARNED_SPELL_IN_TAB()
+    D:Debug("|cFFFF0000A new spell was learned, scheduling a reconfiguration|r");
+    self:ScheduleEvent("NewSpellLearned", self.Configure, 5, self);
+end
+
+function D:SPELLS_CHANGED()
+    D:Debug("|cFFFF0000Spells were changed, scheduling a reconfiguration check|r");
+    self:ScheduleEvent("SpellsChanged", self.ReConfigure, 15, self);
+end

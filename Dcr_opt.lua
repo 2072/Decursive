@@ -1275,8 +1275,10 @@ function D:SetCureOrder (ToChange)
 
     -- If no spell is selected or none is available set Decursive icon to off
     if FoundSpell ~= 0 then
+	D:Debug("icon changed to ON");
 	D:SetIcon(DC.IconON);
     else
+	D:Debug("icon changed to OFF");
 	D:SetIcon(DC.IconOFF);
     end
 
