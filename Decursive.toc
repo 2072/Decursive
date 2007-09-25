@@ -1,4 +1,4 @@
-﻿## Interface: 20100
+﻿## Interface: 20200
 
 ## Title: Decursive |cff7fff7f -Ace2-|r
 ## Notes: Debuff display and cleaning for solo, group and raids with advanced filtering and priority system
@@ -8,7 +8,7 @@
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
 
-## Version: 2.0.2 
+## Version: 2.0.3 
 ## Author: Archarodim
 
 ## X-License: GNU GPL

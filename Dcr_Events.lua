@@ -88,7 +88,7 @@ end -- }}}
 function D:UI_ERROR_MESSAGE (Error) -- {{{
     -- this is the only way to detect out of line of sight casting failures
     if (Error == SPELL_FAILED_LINE_OF_SIGHT or Error == SPELL_FAILED_BAD_TARGETS) then
-	D:SpellCastFailed();
+	D:ScheduleEvent("CastFailed", D.SpellCastFailed, 0.8, self);
 
 	--[[ Throw an error if WE were casting something
 	if (D.Status.CastingSpellOn and Error == SPELL_FAILED_LINE_OF_SIGHT) then
@@ -110,7 +110,7 @@ function D:UNIT_SPELLCAST_FAILED(unit) -- unused
 end
 
 function D:UNIT_SPELLCAST_SENT( player, spell, rank, target)
-    --D:Debug("|cFFFF0000Sending SPELL: ", player, spell, rank, target, "|r");
+    D:Debug("|cFFFF0000Sending SPELL: ", player, spell, rank, target, "|r");
     if (self.Status.CuringSpellsPrio[spell]) then
 	self.Status.CastingSpellOn = D:NameToUnit(target);
 	self.Status.CastingSpellOnName = target;
@@ -238,7 +238,7 @@ function D:SpellCastFailed() -- the blacklisting function {{{
 	)
 	) then
 	D.Status.Blacklisted_Array[D.Status.CastingSpellOn] = D.profile.CureBlacklist;
-	D:Println("%s is blacklisted for %d seconds", D.Status.CastingSpellOnName, D.profile.CureBlacklist);
+	D:Debug("%s is blacklisted for %d seconds", D.Status.CastingSpellOnName, D.profile.CureBlacklist);
 	D.Status.CastingSpellOn = false;
 	D.Status.CastingSpellOnName = false;
     end

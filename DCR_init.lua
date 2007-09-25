@@ -842,10 +842,7 @@ end
 
 -- }}}
 
-
-
 function D:SetDateAndRevision (Date, Revision)
-
     if not D.TextVersion then
 	D.TextVersion = GetAddOnMetadata("Decursive", "Version");
 	D.Revision = 0;
@@ -857,10 +854,7 @@ function D:SetDateAndRevision (Date, Revision)
 	D.Revision = Rev;
 	D.date = Date:gsub("%$Date: (.-) %$", "%1");
 	D.version = string.format("%s (|cFF11CCAARevision: %d|r)", D.TextVersion, Rev);
-	--D:Print("XXXXX VERSION SET to ", D.version);
     end
-
-
 end
 
 D:SetDateAndRevision("$Date$", "$Revision$");
