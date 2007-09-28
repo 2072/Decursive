@@ -1,4 +1,59 @@
-Decursive 2.0 Final par Archarodim
+Decursive 2.0.3 par Archarodim
+
+
+Changements entre Decursive 2.0 Final et Decursive 2.0.3
+
+**Nouvelle fonctionnalités
+
+- Ajout d'un message et d'un son lorsque "affliction instable" est détecté sur
+  un micro-portrait sur lequel vous vous apprêté à cliquer. (Ne fonctionne que
+  si les info-bulles des micro-portraits sont activés)/
+
+- Decursive reconnaît désormais le sort "Cyclone" des druides afin de bloquer
+  les joueurs contrôlés par l'ennemi. À cause de cet ajout, la priorité de
+  guérison des affliction a changé pour les druides. Allez dans les options de
+  guérisons et changer les priorités à votre convenance.
+
+- Nouveau bouton de donation PayPal.
+
+**Bugs corrigés
+
+- Si certaines afflictions étaient filtrées pendant les combats, les
+  micro-portraits des unités affligées n'était pas mis à jour une fois le
+  combat terminé.
+
+- Si les priorités de guérisons étaient modifié pendant que des afflictions
+  étaient affichées dans les micro-portraits, ces derniers n'étaient pas mis à
+  jour.
+
+- Correction d'une erreur LUA qui se produisait lorsque l'utilisateur avait la
+  liste des affligées et les micro-portraits désactivés.
+
+- L'apparition et la disparition des familiers ne déclenchaient pas une mise à
+  jour du nombre de micro-portrait.
+
+- Correction d'une erreur LUA lorsque l'utilisateur passait la souris au dessus
+  des micro-portraits avec les bordures de classes désactivées.
+
+**Petits changements
+
+- Amélioration de la gestion des familiers.
+    - La détection du nom et de la classe devrait être beaucoup plus précise.
+    - Les noms des familiers sont précédés de "familiers".
+    - Correction d'un bug lorsque plusieurs familiers étaient vue en tant qu'entité inconnue.
+
+- Légère optimisation du système de liste noire.
+
+- Ajout d'invisibilité inférieur à la détection du camouflage.
+
+- Le sont joué lorsqu'une affliction est détectée est enregistré dans une
+  variable du profile de Decursive (profile.SoundFile).
+
+- L'icône de Decursive deviendra grise si aucun sort de guérison n'est utilisable ou s'ils sont tous désactivés.
+
+- Mise à jour de la localisation chinoise traditionnelle et coréenne.
+
+
 
 
 Changements entre Decursive 2.0 RC1 et Decursive 2.0 Final

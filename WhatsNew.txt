@@ -7,22 +7,28 @@ Changes from Decursive 2.0 Final to Decursive 2.0.3
 
 - Added a message and a sound when the Unstable Affliction is detected on a MUF
   you're about to click (works only if the MUFs' tool-tips are active.
+
 - Added support for Druid's Cyclone Spell on friendly mind-controlled players.
   Because of this change affliction cure priorities may have changed, go into
-  OPtions -> 'Curing Options' and change the priorities as you like.
-- New Paypal donation button.
+  Options -> 'Curing Options' and change the priorities as you like.
+
+- New PayPal donation button.
 
 **Fixed bugs
 
-- If some debuffs were filtered out while in combat, the MUFs of the afflicted
+- If some afflictions were filtered out while in combat, the MUFs of the afflicted
   units were not updated once the battle was over.
+
 - If you changed the cure priorities while some afflictions were already
   displayed in the MUFs, their color was not updated.
+
 - Fix a Lua error that occurred wen the user had the live-list AND the MUFs
   disabled at UI initialization and was changing its 'Focus' (/focus
-/clearfocus)
+  /clearfocus)
+
 - Pet appearance/disappearance events were not triggering an update of the
   number of MUFs displayed.
+
 - Fix a Lua error when mouse-overing the MUFs with the class borders disabled.
 
 **Small changes
@@ -33,13 +39,20 @@ Changes from Decursive 2.0 Final to Decursive 2.0.3
       localization)
     - Fix a possible issue with pet management (when several pets are 'unknown
       entities')
+
 - Small optimization when using cleansing spells (blacklist handling).
+
 - Added 'lesser invisibility' to stealth detection.
+
 - The sound played when a debuff is found is now in a profile setting
   (profile.SoundFile).
+
 - Decurive's icon will become gray if no curing spell is available or if all
   types of afflictions are unchecked in "curing options".
+
 - zhCN and koKR translation update.
+
+
 
 Changes from Decursive 2.0 RC1 to Decursive 2.0 Final
 
@@ -50,6 +63,7 @@ Changes from Decursive 2.0 RC1 to Decursive 2.0 Final
 - Default position of the MUFs and live-list have been optimized.
 - A note has been added on how to move the live-list (in readme.txt and in
   game).
+
 
 Changes from Decursive 2.0 BETA 7-Pub to Decursive 2.0 RC1
 
