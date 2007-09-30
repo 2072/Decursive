@@ -456,6 +456,7 @@ function MicroUnitF:OnEnter() -- {{{
 		    if Debuff.Name == BS["Unstable Affliction"] then
 		    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
 			Dcr:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(	  Unit, true    ))));
+			PlaySound("igMiniMapZoomIn"); --temporary fix for WOW 2.2 broken PlaySound() API... :/
 			PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
 		    end
 
