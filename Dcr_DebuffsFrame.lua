@@ -456,7 +456,6 @@ function MicroUnitF:OnEnter() -- {{{
 		    if Debuff.Name == BS["Unstable Affliction"] then
 		    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
 			Dcr:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(	  Unit, true    ))));
-			-- PlaySound("igMiniMapZoomIn"); --temporary fix for WOW 2.2 broken PlaySound() API... :/
 			PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
 		    end
 
@@ -918,7 +917,14 @@ do
 		end
 
 		-- Test if the spell we are going to use is in range
-		RangeStatus = IsSpellInRange(D.Status.CuringSpells[DebuffType], Unit);
+		-- Some time can elapsed between the instant the debuff is detected and the instant it is shown.
+		-- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
+		-- So we test before calling this api that we can still cure this debuff type
+		if D.Status.CuringSpells[DebuffType] then
+		    RangeStatus = IsSpellInRange(D.Status.CuringSpells[DebuffType], Unit);
+		else
+		    RangeStatus = false;
+		end
 
 		-- set the status according to RangeStatus
 		if (not RangeStatus or RangeStatus == 0) then

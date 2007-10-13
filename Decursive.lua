@@ -186,7 +186,6 @@ function D:PlaySound (UnitID) --{{{
 
 	    -- good sounds: Sound\\Doodad\\BellTollTribal.wav
 	    --		Sound\\interface\\AuctionWindowOpen.wav
-            --PlaySound("igMiniMapZoomIn"); --temporary fix for WOW 2.2 broken PlaySound() API... :/
 	    PlaySoundFile(self.profile.SoundFile);
 	    --self:ScheduleEvent("Playsound", PlaySoundFile, 0, self.profile.SoundFile);
 	    Dcr:Debug("Sound Played!");
