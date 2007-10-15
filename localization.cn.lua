@@ -78,7 +78,7 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.SPELL_PURGE]		=	"净化术",
 
     [BINDING_NAME_DCRSHOW]    = "显示或隐藏一键驱散状态条",
-    
+
     [BINDING_NAME_DCRMUFSHOWHIDE] = "显示或隐藏微单元面板(MUF)",
 
     [BINDING_NAME_DCRPRADD]     = "将目标加入优先列表",
@@ -177,8 +177,8 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_UNITPERLINES_DESC] = "设置每行最多可显示MUF的个数。",
     [LOC.OPT_MFSCALE] = 'MUF 缩放比例',
     [LOC.OPT_MFSCALE_DESC] = "设置微单元面板(MUF)的大小。",
-	[LOC.OPT_LLSCALE] = "设置实时列表缩放比例";
-	[LOC.OPT_LLSCALE_DESC] = "设置状态条以及其实时列表的大小（状态条必须显示）";
+    [LOC.OPT_LLSCALE] = "设置实时列表缩放比例",
+    [LOC.OPT_LLSCALE_DESC] = "设置状态条以及其实时列表的大小（状态条必须显示）",
     [LOC.OPT_SHOWHELP] = "显示帮助信息",
     [LOC.OPT_SHOWHELP_DESC] = "当鼠标移动到 MUF 上时显示信息提示窗口。",
     [LOC.OPT_MFPERFOPT] = "性能选项",
@@ -234,8 +234,8 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_MFALPHA] = "透明度",
     [LOC.OPT_MFALPHA_DESC] = "定义玩家没有受到负面效果影响时MUF的透明度。",
 
-	[LOC.OPT_LLALPHA] = "实时列表透明度";
-	[LOC.OPT_LLALPHA_DESC] = "改变一键驱散状态条面和实时列表的透明度（状态条必须可见）";
+    [LOC.OPT_LLALPHA] = "实时列表透明度",
+    [LOC.OPT_LLALPHA_DESC] = "改变一键驱散状态条面和实时列表的透明度（状态条必须可见）",
 
     [LOC.OPT_ADVDISP] = "高级显示选项",
     [LOC.OPT_ADVDISP_DESC] = "允许分别设置面板和边框的透明度，以及MUF的间距。",
@@ -258,7 +258,7 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.HLP_LEFTCLICK] = "鼠标左键",
     [LOC.HLP_RIGHTCLICK] = "鼠标右键",
     [LOC.HLP_MIDDLECLICK] = "鼠标中键",
-  
+
     [LOC.HLP_NOTHINGTOCURE] = "没有可处理的负面效果！",
     [LOC.HLP_WRONGMBUTTON] = "错误的鼠标按键！",
     [LOC.HLP_USEXBUTTONTOCURE] = "用 \"%s\" 來净化这个负面效果！",
@@ -292,5 +292,3 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.NOSPELL] = "没有相关技能",
 
 } end);
-
-
