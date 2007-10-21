@@ -310,6 +310,12 @@ LOC.OPT_NOKEYWARN = "Warn if no key";
 LOC.OPT_NOKEYWARN_DESC = "Display a warning if no key is mapped.";
 LOC.NOSPELL = "No spell available";
 
+LOC.GLOR1 = "In memory of Glorfindal";
+LOC.GLOR2 = "Decursive is dedicated to the memory of Bertrand who left way too soon.\nHe will always be remembered.";
+LOC.GLOR3 = "In remembrance of Bertrand Sense\n1969 - 2007";
+LOC.GLOR4 =  "Friendship and affection can take their roots anywhere, those who met Glorfindal in World of Warcraft knew a man of great commitment and a charismatic leader.\n\nHe was in life as he was in game, selfless, generous, dedicated to his friends and most of all, a passionate man.\n\nHe left us at the age of 38 leaving behind him not just anonymous players in a virtual world but, a group of true friends who will miss him forever.";
+LOC.GLOR5 = "He will always be remembered...";
+
 -- Acelocal register for enUS // {{{
 local L = Dcr.L;
 L:RegisterTranslations("enUS", function() return {
@@ -597,7 +603,14 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_NOKEYWARN] = true,
     [LOC.OPT_NOKEYWARN_DESC] = true,
     [LOC.NOSPELL] = true,
-    
+
+
+
+    [LOC.GLOR1] = true,
+    [LOC.GLOR2] = true,
+    [LOC.GLOR3] = true,
+    [LOC.GLOR4] = true,
+    [LOC.GLOR5] = true,
     -- OPTIONS
 
 } end);

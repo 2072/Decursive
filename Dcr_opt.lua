@@ -1081,9 +1081,179 @@ D.options = { -- {{{
 	    disabled = function() return  not D.Status.Enabled end,
 	    order = 150
 	},
-	spacer5 = {
+	spacer6 = {
 	    type = "header",
 	    order = 151
+	},
+	spacer7 = {
+	    type = "header",
+	    order = 152
+	},
+	spacer8 = {
+	    type = "header",
+	    order = 153
+	},
+	GlorfindalMemorium = { -- {{{
+	    type = "execute",
+	    name = D:ColorText(L[D.LOC.GLOR1], "FF" .. BC:GetHexColor( "WARRIOR" )),
+	    desc = L[D.LOC.GLOR2],
+	    func = function ()
+
+		if not Dcr.MemoriumFrame then
+		    Dcr.MemoriumFrame = CreateFrame("Frame", "DcrMemorium", UIParent);
+		    local f = Dcr.MemoriumFrame;
+		    local w = 512; local h = 390;
+		    
+		    f:SetFrameStrata("DIALOG");
+		    f:EnableKeyboard(true);
+		    --f:EnableMouse(true);
+		    f:SetScript("OnKeyUp", function (frame, event, arg1, arg2) Dcr.MemoriumFrame:Hide(); end);
+		    --f:SetScript("OnMouseUp", function (frame, event, arg1, arg2) Dcr.MemoriumFrame:Hide(); end);
+		    --[[
+		    f:SetScript("OnShow",
+			function ()
+			    -- I wanted to make the shadow to move over the marble very slowly as clouds
+			    -- I tried to make it rotate but the way I found would only make it rotate around its origin (which is rearely useful)
+			    -- so leaving it staedy for now... if someone got an idea, let me know.
+			    D:ScheduleRepeatingEvent("GlorMoveShadow",
+				function (f)
+				    local cos, sin = math.cos, math.sin;
+				    f.Shadow.Angle = f.Shadow.Angle + 1;
+				    if f.Shadow.Angle == 360 then f.Shadow.Angle = 0; end
+				    local angle = math.rad(f.Shadow.Angle);
+				    D:SetCoords(f.Shadow, cos(angle), sin(angle), 0, -sin(angle), cos(angle), 0);
+
+				end
+			    , 1/50, f);
+			end);
+			--]]
+		    --f:SetScript("OnHide", function() D:CancelScheduledEvent("GlorMoveShadow"); end)			
+		    f:SetWidth(w);
+		    f:SetHeight(h);
+		    f.tTL = f:CreateTexture("DcrMmTopLeft","BACKGROUND")
+		    f.tTL:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-TopLeft")
+		    f.tTL:SetWidth(w - w / 5);
+		    f.tTL:SetHeight(h - h / 3);
+		    f.tTL:SetTexCoord(0, 1, 5/256, 1);
+		    f.tTL:SetPoint("TOPLEFT", f, "TOPLEFT", 2, -10);
+
+		    f.tTR = f:CreateTexture("DcrMmTopRight","BACKGROUND")
+		    f.tTR:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-TopRight")
+		    f.tTR:SetWidth(w / 5 - 3);
+		    f.tTR:SetHeight(h - h / 3);
+		    f.tTR:SetTexCoord(0, 1, 5/256, 1);
+		    f.tTR:SetPoint("TOPLEFT", f.tTL, "TOPRIGHT", 0, 0);
+
+		    f.tBL = f:CreateTexture("DcrMmBotLeft","BACKGROUND")
+		    f.tBL:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-BotLeft")
+		    f.tBL:SetWidth(w - w / 5);
+		    f.tBL:SetHeight(h / 3 - 20);
+		    f.tBL:SetTexCoord(0,1,0, 408/512);
+		    f.tBL:SetPoint("TOPLEFT", f.tTL, "BOTTOMLEFT", 0, 0);
+
+		    f.tBR = f:CreateTexture("DcrMmBotRight","BACKGROUND")
+		    f.tBR:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-BotRight")
+		    f.tBR:SetWidth(w / 5 - 3);
+		    f.tBR:SetHeight(h / 3 - 20);
+		    f.tBR:SetTexCoord(0,1,0, 408/512);
+		    f.tBR:SetPoint("TOPLEFT", f.tBL, "TOPRIGHT", 0, 0);
+
+		    f.Shadow = f:CreateTexture("DcrMmShadow", "ARTWORK");
+		    f.Shadow:SetTexture("Interface\\TabardFrame\\TabardFrameBackground")
+		    f.Shadow:SetPoint("TOPLEFT", f, "TOPLEFT", 2, -9);
+		    f.Shadow:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -2, 9);
+		    f.Shadow:SetAlpha(0.1);
+		    --f.Shadow.Angle = 0;
+
+		    ---[[
+		    f.fB = f:CreateTexture("DcrMmGoldBorder","OVERLAY")
+		    f.fB:SetTexture("Interface\\AddOns\\Decursive\\Textures\\GoldBorder")
+		    f.fB:SetTexCoord(5/512, 324/512, 6/512, 287/512);
+		    f.fB:SetPoint("TOPLEFT", f, "TOPLEFT", 0, 0);
+		    f.fB:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 0);
+		    --]]
+
+
+		    f.FSt = f:CreateFontString("DcrMmTitleFont","OVERLAY", "MailTextFontNormal");
+		    f.FSt:SetFont("Fonts\\MORPHEUS.TTF", 18 );
+		    f.FSt:SetTextColor(0.18, 0.12, 0.06, 1);
+		    f.FSt:SetPoint("TOPLEFT", f.tTL, "TOPLEFT", 5, -20);
+		    f.FSt:SetPoint("TOPRIGHT", f.tTR, "TOPRIGHT", -5, -20);
+		    f.FSt:SetJustifyH("CENTER");
+		    f.FSt:SetText(L[D.LOC.GLOR3]);
+		    f.FSt:SetAlpha(0.80);
+
+		    f.FSc = f:CreateFontString("DcrMmCntFont","OVERLAY", "MailTextFontNormal");
+		    f.FSc:SetFont("Fonts\\MORPHEUS.TTF", 15 );
+		    f.FSc:SetTextColor(0.18, 0.12, 0.06, 1);
+		    f.FSc:SetHeight(h - 30 - 60);
+		    f.FSc:SetPoint("TOP", f.FSt, "BOTTOM", 0, -28);
+		    f.FSc:SetPoint("LEFT", f.tTL, "LEFT", 30, 0);
+		    f.FSc:SetPoint("RIGHT", f.tTR, "RIGHT", -30, 0);
+		    f.FSc:SetJustifyH("CENTER");
+		    f.FSc:SetJustifyV("TOP");
+		    f.FSc:SetSpacing(5);
+
+		    f.FSc:SetText(L[D.LOC.GLOR4]);
+
+
+		    f.FSc:SetAlpha(0.80);
+
+		    f.FSl = f:CreateFontString("DcrMmlastFont","OVERLAY", "MailTextFontNormal");
+		    f.FSl:SetFont("Fonts\\MORPHEUS.TTF", 15 );
+		    f.FSl:SetTextColor(0.18, 0.12, 0.06, 1);
+		    f.FSl:SetJustifyH("LEFT");
+		    f.FSl:SetJustifyV("BOTTOM");
+		    f.FSl:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 30, 33);
+		    f.FSl:SetAlpha(0.80);
+		    f.FSl:SetText(L[D.LOC.GLOR5]);
+
+		    f:SetPoint("CENTER",0,0);
+
+		end
+		Dcr.MemoriumFrame:Show();
+
+		--[[
+		
+		In remembrance of Bertrand Sense
+			1969 - 2007
+
+		
+		Friendship and affection can take their roots anywhere, those
+		who met Glorfindal in World of Warcraft knew a man of great
+		commitment and a charismatic leader.
+
+		He was in life as he was in game, selfless, generous, dedicated
+		to his friends and most of all, a passionate man.
+
+		He left us at the age of 38 leaving behind him not just
+		anonymous players in a virtual world, but a group of true
+		friends who will miss him forever.
+
+		He will always be remembered...
+
+		--
+
+		En souvenir de Bertrand Sense
+			1969 - 2007
+
+		L'amitié et l'affection peuvent prendre naissance n'importe où,
+		ceux qui ont rencontré Glorfindal dans World Of Warcraft on
+		connu un homme engagé et un leader charismatique.
+
+		Il était dans la vie comme dans le jeux, désintéressé,
+		généreux, dévoué envers les siens et surtout un homme passionné.
+
+		Il nous a quitté à l'âge de 38 ans laissant derrière lui pas
+		seulement des joueurs anonymes dans un monde virtuel, mais un
+		groupe de véritables amis à qui il manquera eternellement.
+
+		On ne l'oubliera jamais...
+
+		--]]
+		-- }}}
+	    end,
+	    order = 154
 	},
     },
 } -- }}}
@@ -1639,6 +1809,7 @@ do -- this is a closure, it's a bit like {} blocks in C
     end
 end
 
+-- to test on 2.3 : /script Dcr:PrintLiteral(GetBindingAction(Dcr.profile.MacroBind));
 
 function D:SetMacroKey ( key )
 

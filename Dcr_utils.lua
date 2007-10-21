@@ -225,4 +225,16 @@ function D:NumToHexColor(ColorTable)
 	return string.format("%02x%02x%02x%02x", ColorTable[4] * 255, ColorTable[1] * 255, ColorTable[2] * 255, ColorTable[3] * 255)
 end
 
+-- function taken from http://www.wowwiki.com/SetTexCoord_Transformations
+function D:SetCoords(t, A, B, C, D, E, F)
+	local det = A*E - B*D;
+	local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy;
+	
+	ULx, ULy = ( B*F - C*E ) / det, ( -(A*F) + C*D ) / det;
+	LLx, LLy = ( -B + B*F - C*E ) / det, ( A - A*F + C*D ) / det;
+	URx, URy = ( E + B*F - C*E ) / det, ( -D - A*F + C*D ) / det;
+	LRx, LRy = ( E - B + B*F - C*E ) / det, ( -D + A -(A*F) + C*D ) / det;
+	
+	t:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+end
 

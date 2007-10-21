@@ -289,7 +289,7 @@ function MicroUnitF:Place () -- {{{
 	message("MUFs position reset to default");
     end
 
-    -- Executed for the very first time, then put it in the top right corner of the screen
+    -- If executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
 	x =    (UIParent:GetWidth() * UIScale) - (UIParent:GetWidth() * UIScale) / 4;
 	y =  - (UIParent:GetHeight() * UIScale) / 5;

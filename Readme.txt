@@ -3,7 +3,9 @@
  This is a cleaning mod. Its job is to help a class that can remove afflictions
  to do it with ease in every conditions (playing solo, in small groups or in big
  raids).
- 
+
+Decursive is dedicated to the memory of Bertrand Sense known as Glorfindal on
+the European server Les Sentinelles.
  
  		###################################
  		# *** Decursive Main Features *** #
