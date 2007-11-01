@@ -6,6 +6,7 @@
 
 Decursive is dedicated to the memory of Bertrand Sense known as Glorfindal on
 the European server Les Sentinelles.
+He was the raid leader of our guild ( http://www.wow-horizon.org )
  
  		###################################
  		# *** Decursive Main Features *** #

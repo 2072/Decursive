@@ -1043,7 +1043,7 @@ D.options = { -- {{{
 		    desc = L[D.LOC.OPT_MACROBIND_DESC],
 		    validate = "keybinding",
 		    get = function ()
-			local key = (GetBindingKey(string.format("MACRO %s", D.CONF.MACRONAME)));
+			local key = (GetBindingKey(D.CONF.MACROCOMMAND));
 			D.profile.MacroBind = key;
 			return key;
 		    end,
@@ -1810,18 +1810,22 @@ do -- this is a closure, it's a bit like {} blocks in C
 end
 
 -- to test on 2.3 : /script Dcr:PrintLiteral(GetBindingAction(Dcr.profile.MacroBind));
+-- to test on 2.3 : /script Dcr:PrintLiteral(GetBindingKey(D.CONF.MACROCOMMAND));
 
 function D:SetMacroKey ( key )
 
-    if (key and key == D.profile.MacroBind and GetBindingAction(key) == string.format("MACRO %s",D.CONF.MACRONAME)) then
+    -- if the key is already correctly mapp, return here.
+    --if (key and key == D.profile.MacroBind and GetBindingAction(key) == D.CONF.MACROCOMMAND) then
+    if (key and key == D.profile.MacroBind and D:tcheckforval({GetBindingKey(D.CONF.MACROCOMMAND)}, key) ) then -- change for 2.3 where GetBindingAction() is no longer working
 	return;
     end
 
-    -- if there is current set key currently mapped to Decursive macro (it means we are changing the key)
-    if (D.profile.MacroBind and GetBindingAction(D.profile.MacroBind) == string.format("MACRO %s",D.CONF.MACRONAME)) then
+    -- if the current set key is currently mapped to Decursive macro (it means we are changing the key)
+    --if (D.profile.MacroBind and GetBindingAction(D.profile.MacroBind) == D.CONF.MACROCOMMAND) then
+    if (D.profile.MacroBind and D:tcheckforval({GetBindingKey(D.CONF.MACROCOMMAND)}, D.profile.MacroBind) ) then -- change for 2.3 where GetBindingAction() is no longer working
 
 	-- clearing redudent mapping to Decursive macro.
-	local MappedKeys = {GetBindingKey(string.format("MACRO %s", D.CONF.MACRONAME))};
+	local MappedKeys = {GetBindingKey(D.CONF.MACROCOMMAND)};
 	for _, key in pairs(MappedKeys) do
 	    D:Debug("Unlinking [%s]", key);
 	    SetBinding(key, nil); -- clear the binding
@@ -1838,7 +1842,7 @@ function D:SetMacroKey ( key )
 
 
     if (key) then
-	if (GetBindingAction(key) ~= "" and GetBindingAction(key) ~= string.format("MACRO %s",D.CONF.MACRONAME)) then
+	if (GetBindingAction(key) ~= "" and GetBindingAction(key) ~= D.CONF.MACROCOMMAND) then
 	    -- save current key assignement
 	    D.profile.PreviousMacroKeyAction = GetBindingAction(key)
 	    D:Debug("Old key action saved:", D.profile.PreviousMacroKeyAction);
@@ -1857,7 +1861,7 @@ function D:SetMacroKey ( key )
 	end
     else
 	D.profile.MacroBind = false;
-	if D.profile.NoKeyWarn and not GetBindingKey(string.format("MACRO %s", D.CONF.MACRONAME)) then
+	if D.profile.NoKeyWarn and not GetBindingKey(D.CONF.MACROCOMMAND) then
 	    D:errln(L[D.LOC.MACROKEYNOTMAPPED]);
 	end
     end
