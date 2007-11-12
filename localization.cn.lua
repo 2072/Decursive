@@ -289,8 +289,11 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_NOKEYWARN] = "没有映射按键",
     [LOC.OPT_NOKEYWARN_DESC] = "没有映射按键",
     [LOC.NOSPELL] = "没有相关技能",
+    
+    [LOC.FUBARMENU]  = LOC.FUBARMENU,
+    [LOC.FUBARMENU_DESC]  = LOC.FUBARMENU_DESC,
 	
-	[LOC.GLOR1] = "纪念 Glorfindal",
+    [LOC.GLOR1] = "纪念 Glorfindal",
     [LOC.GLOR2] = "献给匆匆离我们而去的Bertrand；他将永远被我们所铭记。",
     [LOC.GLOR3] = "纪念 Bertrand （１９６９－２００７）",
     [LOC.GLOR4] =  "对于那些在魔兽世界里遇见过Glorfindal的人来说，他是一个重承诺的男人，也是一个有超凡魅力的领袖。友谊和慈爱将永植于他们的心中。他在游戏中就如同在他生活中一样的无私，彬彬有礼，乐于奉献，最重要的是他对生活充满热情。他离开我们的时候才仅仅３８岁，随他离去的绝不会是虚拟世界匿名的角色；在这里还有一群忠实的朋友在永远想念他。",

@@ -275,6 +275,7 @@ D.defaults = { -- {{{
 
 D.options = { -- {{{
     type = "group",
+    handler = D,
     args = {
 	title = {
 	    type = "header",
@@ -1255,6 +1256,13 @@ D.options = { -- {{{
 	    end,
 	    order = 154
 	},
+	--[[FuBarOptions = {
+	    type = "group",
+	    name = L[D.LOC.MENU],
+	    desc = L[D.LOC.MENU],
+	    order = 402,
+	    args = {}
+	},--]]
     },
 } -- }}}
 

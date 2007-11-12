@@ -298,6 +298,9 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.OPT_NOKEYWARN] = LOC.OPT_NOKEYWARN,
     [LOC.OPT_NOKEYWARN_DESC] = LOC.OPT_NOKEYWARN_DESC,
     [LOC.NOSPELL] = LOC.NOSPELL,
+    
+    [LOC.FUBARMENU]  = LOC.FUBARMENU,
+    [LOC.FUBARMENU_DESC]  = LOC.FUBARMENU_DESC,
 
 
 } end);

@@ -310,6 +310,10 @@ LOC.OPT_NOKEYWARN = "Warn if no key";
 LOC.OPT_NOKEYWARN_DESC = "Display a warning if no key is mapped.";
 LOC.NOSPELL = "No spell available";
 
+LOC.FUBARMENU = "FuBar Menu";
+LOC.FUBARMENU_DESC = "Set options relative to FuBar icon";
+
+
 LOC.GLOR1 = "In memory of Glorfindal";
 LOC.GLOR2 = "Decursive is dedicated to the memory of Bertrand who left way too soon.\nHe will always be remembered.";
 LOC.GLOR3 = "In remembrance of Bertrand Sense\n1969 - 2007";
@@ -604,7 +608,8 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_NOKEYWARN_DESC] = true,
     [LOC.NOSPELL] = true,
 
-
+    [LOC.FUBARMENU]  = true,
+    [LOC.FUBARMENU_DESC]  = true,
 
     [LOC.GLOR1] = true,
     [LOC.GLOR2] = true,

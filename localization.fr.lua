@@ -308,6 +308,8 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.OPT_NOKEYWARN_DESC] = "Affiche un avertissement si aucune touche n'est affectée à la macro.",
     [LOC.NOSPELL] = "Aucun sort disponible",
 
+    [LOC.FUBARMENU]  = "Menu de Fubar",
+    [LOC.FUBARMENU_DESC]  = "Règles les options relatives à l'icône de FuBar",
     
     
     [LOC.GLOR1] = "À la mémoire de Glorfindal",
