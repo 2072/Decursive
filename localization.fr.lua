@@ -315,7 +315,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.GLOR1] = "À la mémoire de Glorfindal",
     [LOC.GLOR2] = "Decursive est dédié à la mémoire de Bertrand qui nous a quitté bien trop tôt. On se souviendra toujours de lui.",
     [LOC.GLOR3] = "En souvenir de Bertrand Sense\n1969 - 2007",
-    [LOC.GLOR4] = "L'amitié et l'affection peuvent prendre naissance n'importe où, ceux qui ont rencontré Glorfindal dans World Of Warcraft on connu un homme engagé et un leader charismatique.\n\nIl était dans la vie comme dans le jeux, désintéressé, généreux, dévoué envers les siens et surtout un homme passionné.\n\nIl nous a quitté à l'âge de 38 ans laissant derrière lui pas seulement des joueurs anonymes dans un monde virtuel, mais un groupe de véritables amis à qui il manquera éternellement.",
+    [LOC.GLOR4] = "L'amitié et l'affection peuvent prendre naissance n'importe où, ceux qui ont rencontré Glorfindal dans World Of Warcraft ont connu un homme engagé et un leader charismatique.\n\nIl était dans la vie comme dans le jeux, désintéressé, généreux, dévoué envers les siens et surtout un homme passionné.\n\nIl nous a quitté à l'âge de 38 ans laissant derrière lui pas seulement des joueurs anonymes dans un monde virtuel, mais un groupe de véritables amis à qui il manquera éternellement.",
     [LOC.GLOR5] = "On ne l'oubliera jamais...",
 
 } end);
