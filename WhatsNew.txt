@@ -1,4 +1,16 @@
-Decursive 2.0.3 by Archarodim
+Decursive 2.0.4 by Archarodim  (2007-11-13)
+
+
+Changes from Decursive 2.0.3 to Decursive 2.0.4
+
+- From now on, Decursive is dedicated to the memory of Bertrand Sense who died
+  a month ago and was known as Glorfindal on "Les Sentinelles" (EU server).
+  A special menu entry has been added.
+
+- Moved FuBarPlugin relative options to a sub-menu.
+- Fix problems with Spanish localization since WoW 2.2.3
+- Probably fixed a rare LUA error that could occur in race conditions.
+  (IsSpellInRange(): Invalid spell slot)
 
 
 Changes from Decursive 2.0 Final to Decursive 2.0.3
