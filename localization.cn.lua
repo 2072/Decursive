@@ -64,17 +64,17 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.PET_FEL_CAST]	=	"吞噬魔法",
     [LOC.PET_DOOM_CAST]	=	"驱散魔法",
 
-    [LOC.SPELL_POLYMORPH]		=	"变形术",
-    [LOC.SPELL_CURE_DISEASE]	=	"祛病术",
-    [LOC.SPELL_ABOLISH_DISEASE]	=	"驱除疾病",
-    [LOC.SPELL_PURIFY]		=	"纯净术",
-    [LOC.SPELL_CLEANSE]		=	"清洁术",
-    [LOC.SPELL_DISPELL_MAGIC]	=	"驱散魔法",
-    [LOC.SPELL_CURE_POISON]		=	"消毒术",
-    [LOC.SPELL_ABOLISH_POISON]	=	"驱毒术",
-    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	"解除次级诅咒",
-    [LOC.SPELL_REMOVE_CURSE]	=	"解除诅咒",
-    [LOC.SPELL_PURGE]		=	"净化术",
+    [LOC.SPELL_POLYMORPH]		=	"变形术", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_DISEASE]	=	"祛病术", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_DISEASE]	=	"驱除疾病", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURIFY]		=	"纯净术", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CLEANSE]		=	"清洁术", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_DISPELL_MAGIC]	=	"驱散魔法", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_POISON]		=	"消毒术", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_POISON]	=	"驱毒术", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	"解除次级诅咒", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_CURSE]	=	"解除诅咒", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURGE]		=	"净化术", -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]    = "显示或隐藏一键驱散状态条",
 
@@ -133,7 +133,7 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.CRIPLES]		= "残废术",
     [LOC.DUSTCLOUD]		= "尘雾之云",
     [LOC.WIDOWSEMBRACE]	= "黑女巫的拥抱",
-    [LOC.CURSEOFTONGUES]	= "语言诅咒",
+    [LOC.CURSEOFTONGUES]	= "语言诅咒",  -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SONICBURST]	= "音爆",
     [LOC.THUNDERCLAP]	= "雷霆一击",
     [LOC.DELUSIONOFJINDO]	= "金度的欺骗",

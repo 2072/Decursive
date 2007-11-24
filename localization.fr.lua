@@ -69,18 +69,18 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.PET_FEL_CAST]	=	"Dévorer la magie",
     [LOC.PET_DOOM_CAST]	=	"Dissipation de la magie",
 
-    [LOC.SPELL_POLYMORPH]		  = 'Métamorphose',
-    [LOC.SPELL_CURE_DISEASE]	=	'Guérison des maladies',
-    [LOC.SPELL_ABOLISH_DISEASE]	=	'Abolir maladie',
-    [LOC.SPELL_PURIFY]	=	'Purification',
-    [LOC.SPELL_CLEANSE]	=	'Epuration',
-    [LOC.SPELL_DISPELL_MAGIC]	=	'Dissipation de la magie',
-    [LOC.SPELL_CURE_POISON]	=	'Guérison du poison',
-    [LOC.SPELL_ABOLISH_POISON]	=	'Abolir le poison',
-    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	'Délivrance de la malédiction mineure',
-    [LOC.SPELL_REMOVE_CURSE]	=	'Délivrance de la malédiction',
-    [LOC.SPELL_PURGE]	=	'Expiation',
-    --[LOC.SPELL_CYCLONE] =	'Cyclone',
+    [LOC.SPELL_POLYMORPH]		  = 'Métamorphose', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_DISEASE]	=	'Guérison des maladies', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_DISEASE]	=	'Abolir maladie', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURIFY]	=	'Purification', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CLEANSE]	=	'Epuration', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_DISPELL_MAGIC]	=	'Dissipation de la magie', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_POISON]	=	'Guérison du poison', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_POISON]	=	'Abolir le poison', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	'Délivrance de la malédiction mineure', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_CURSE]	=	'Délivrance de la malédiction', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURGE]	=	'Expiation', -- This translation is for reference only the one used is from the library BabbleSpell
+    --[LOC.SPELL_CYCLONE] =	'Cyclone', -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive\n(Ancre de la liste des affligés)",
     
@@ -145,7 +145,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.CRIPLES]		= "Faiblesse",
     [LOC.DUSTCLOUD]		= "Nuage de poussière",
     [LOC.WIDOWSEMBRACE]	= "Baiser de la veuve",
-    [LOC.CURSEOFTONGUES]	= "Malédiction des langages",
+    [LOC.CURSEOFTONGUES]	= "Malédiction des langages",  -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SONICBURST]	= "Explosion sonore",
     [LOC.THUNDERCLAP]	= "Coup de tonnerre",
     [LOC.DELUSIONOFJINDO]	= "Illusions de Jin'do",

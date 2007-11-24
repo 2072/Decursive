@@ -73,18 +73,18 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.PET_DOOM_CAST] = "驅散魔法",
 
 
-    [LOC.SPELL_POLYMORPH]	    = '變形術',
-    [LOC.SPELL_CURE_DISEASE]        = '祛病術',
-    [LOC.SPELL_ABOLISH_DISEASE]     = '驅除疾病',
-    [LOC.SPELL_PURIFY]              = '純淨術',
-    [LOC.SPELL_CLEANSE]             = '淨化術',
-    [LOC.SPELL_DISPELL_MAGIC]       = '驅散魔法',
-    [LOC.SPELL_CURE_POISON]         = '消毒術',
-    [LOC.SPELL_ABOLISH_POISON]      = '驅毒術',
-    [LOC.SPELL_REMOVE_LESSER_CURSE] = '解除次級詛咒',
-    [LOC.SPELL_REMOVE_CURSE]        = '解除詛咒',
-    [LOC.SPELL_PURGE]               = '淨化術',
-    [LOC.SPELL_CYCLONE]             = '龍捲風';
+    [LOC.SPELL_POLYMORPH]	    = '變形術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_DISEASE]        = '祛病術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_DISEASE]     = '驅除疾病', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURIFY]              = '純淨術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CLEANSE]             = '淨化術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_DISPELL_MAGIC]       = '驅散魔法', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_POISON]         = '消毒術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_POISON]      = '驅毒術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_LESSER_CURSE] = '解除次級詛咒', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_CURSE]        = '解除詛咒', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURGE]               = '淨化術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CYCLONE]             = '龍捲風',  -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]    = "顯示或隱藏 Decursive 工作條",
 
@@ -119,8 +119,8 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.REVERSE_LIVELIST]= "反向顯示即時清單",
     [LOC.TIE_LIVELIST]    = "即時清單顯示與 DCR 視窗連結",
     [LOC.HIDE_LIVELIST]   = "隱藏即時清單",
-    [LOC.OPT_CREATE_VIRTUAL_DEBUFF]		= "建立虛擬效果測試";
-    [LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC]	= "讓你看到產生這個效果的情況";
+    [LOC.OPT_CREATE_VIRTUAL_DEBUFF]		= "建立虛擬效果測試",
+    [LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC]	= "讓你看到產生這個效果的情況",
 
     [LOC.AMOUNT_AFFLIC]   = "即時清單顯示人數: ",
     [LOC.BLACK_LENGTH]    = "停留在排除名單的時間: ",
@@ -148,15 +148,15 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.CRIPLES]		= "殘廢術",
     [LOC.DUSTCLOUD]	= "灰塵之雲",
     [LOC.WIDOWSEMBRACE]	= "寡婦之擁",
-    [LOC.CURSEOFTONGUES]	= "語言詛咒", -- further translated by BS
+    [LOC.CURSEOFTONGUES]	= "語言詛咒",  -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SONICBURST]	= "音爆",
     [LOC.THUNDERCLAP]	= "雷霆一擊",
     [LOC.DELUSIONOFJINDO] = "金度的欺騙",
 
     [LOC.MUTATINGINJECTION] = "突變注射",
 
---    [DCR_LOC_SILENCE]		= "沉默";  -- further translated by BS
---    [DCR_LOC_MINDVISION]	= "心靈幻象";  -- further translated by BS
+--    [DCR_LOC_SILENCE]		= "沉默",   -- This translation is for reference only the one used is from the library BabbleSpell
+--    [DCR_LOC_MINDVISION]	= "心靈幻象",   -- This translation is for reference only the one used is from the library BabbleSpell
 
     -- NEW LOCALS FOR 2.0
 
@@ -249,8 +249,8 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.OPT_MFALPHA] = "透明度",
     [LOC.OPT_MFALPHA_DESC] = "設定無 debuff 時 MUFs 的透明度。",
 
-    [LOC.OPT_LLALPHA]		= "實況清單的透明度";
-    [LOC.OPT_LLALPHA_DESC]	= "變更 Decursive 工作條及實況清單的透明度(工作條必須設定為顯示)";
+    [LOC.OPT_LLALPHA]		= "實況清單的透明度",
+    [LOC.OPT_LLALPHA_DESC]	= "變更 Decursive 工作條及實況清單的透明度(工作條必須設定為顯示)",
 
     [LOC.OPT_ADVDISP] = "進階顯示選項",
     [LOC.OPT_ADVDISP_DESC] = "可設定邊框與中央色塊各自的透明度，以及 MUFs 之間的距離。",
@@ -302,7 +302,7 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.MACROKEYMAPPINGFAILED] = "按鍵 [%s] 不能被對應到 Decursive 巨集！",
     [LOC.MACROKEYNOTMAPPED] = "Decursive 巨集未對應到一個按鍵，你可以透過設定選單來設定此一按鍵。(別錯過這個神奇的功能)",
 
-    [LOC.DEFAULT_MACROKEY] = "`"; -- the key just beneath the escape key on a QWERTY keyboard
+    [LOC.DEFAULT_MACROKEY] = "`", -- the key just beneath the escape key on a QWERTY keyboard
     [LOC.OPT_NOKEYWARN] = LOC.OPT_NOKEYWARN,
     [LOC.OPT_NOKEYWARN_DESC] = LOC.OPT_NOKEYWARN_DESC,
     [LOC.NOSPELL] = LOC.NOSPELL,

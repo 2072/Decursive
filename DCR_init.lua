@@ -38,6 +38,9 @@ local L = D.L;
 local BC = D.BC;
 local BS = D.BS;
 
+local BOOKTYPE_PET	= BOOKTYPE_PET;
+local BOOKTYPE_SPELL	= BOOKTYPE_SPELL;
+
 
 -------------------------------------------------------------------------------
 -- variables {{{
@@ -104,6 +107,9 @@ DC.UNKNOWN = UNKNOWNOBJECT;
 
 -- Get the translation for "pet"
 DC.PET = SPELL_TARGET_TYPE8_DESC;
+
+-- Holder for 'Rank #' translation
+DC.RANKNUMTRANS = false;
 
 D.MFContainer = false;
 D.LLContainer = false;
@@ -759,6 +765,17 @@ function D:Configure() --{{{
 
 	    end
 
+	    -- get a 'Rank #' string exemple (workaround due to the way the
+	    -- polymorph spell variants are handled in WoW 2.3)
+	    -- it will be used to select the rank of the spell found.
+	    -- We only test when we have found at least one spell else we would
+	    -- detect things that are not ranks such as 'Master' for Cooking...
+
+	    if not DC.RANKNUMTRANS and D.Status.HasSpell and spellName ~= BS[D.LOC.SPELL_POLYMORPH] and spellRank ~= "" then
+		DC.RANKNUMTRANS = spellRank;
+	    end
+
+
 	    if (DC.SpellsToUse[spellName]) then
 
 		for _, Type in pairs (DC.SpellsToUse[spellName].Types) do
@@ -846,7 +863,7 @@ function D:UpdateMacro ()
     local MacroParameters = {
 	D.CONF.MACRONAME,
 	1,
-	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomodifier,exists] %s;  [target=mouseover,exists,modifier:ctrl] %s; [target=mouseover,exists,modifier:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L[D.LOC.NOSPELL].."')",
+	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L[D.LOC.NOSPELL].."')",
 	1
     };
 

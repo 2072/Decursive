@@ -71,17 +71,17 @@ L:RegisterTranslations("esES", function() return {
     [LOC.PET_FEL_CAST]	=	"Devorar magia",
     [LOC.PET_DOOM_CAST]	=	"Disipar magia",
 
-    [LOC.SPELL_POLYMORPH]	    =	'Polimorfia',
-    [LOC.SPELL_CURE_DISEASE]	    =	'Curar enfermedad',
-    [LOC.SPELL_ABOLISH_DISEASE]	    =	'Suprimir enfermedad',
-    [LOC.SPELL_PURIFY]		    =	'Purificar',
-    [LOC.SPELL_CLEANSE]		    =	'Limpiar',
-    [LOC.SPELL_DISPELL_MAGIC]	    =	'Disipar magia',
-    [LOC.SPELL_CURE_POISON]	    =	'Curar envenenamiento',
-    [LOC.SPELL_ABOLISH_POISON]	    =	'Suprimir veneno',
-    [LOC.SPELL_REMOVE_LESSER_CURSE] =	"Eliminar Maldición Menor",
-    [LOC.SPELL_REMOVE_CURSE]	    =	"Eliminar Maldición",
-    [LOC.SPELL_PURGE]		    =	'Purgar',
+    [LOC.SPELL_POLYMORPH]	    =	'Polimorfia', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_DISEASE]	    =	'Curar enfermedad', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_DISEASE]	    =	'Suprimir enfermedad', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURIFY]		    =	'Purificar', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CLEANSE]		    =	'Limpiar', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_DISPELL_MAGIC]	    =	'Disipar magia', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_POISON]	    =	'Curar envenenamiento', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_POISON]	    =	'Suprimir veneno', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_LESSER_CURSE] =	"Eliminar maldición inferior", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_CURSE]	    =	"Eliminar maldición", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURGE]		    =	'Purgar', -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]	=	BINDING_NAME_DCRSHOW,
 
@@ -142,7 +142,7 @@ L:RegisterTranslations("esES", function() return {
     [LOC.CRIPLES]		= LOC.CRIPLES,
     [LOC.DUSTCLOUD]		= LOC.DUSTCLOUD,
     [LOC.WIDOWSEMBRACE]	= LOC.WIDOWSEMBRACE,
-    [LOC.CURSEOFTONGUES]	= LOC.CURSEOFTONGUES,
+    [LOC.CURSEOFTONGUES]	= LOC.CURSEOFTONGUES,  -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SONICBURST]	= LOC.SONICBURST,
     [LOC.THUNDERCLAP]	= LOC.THUNDERCLAP,
     [LOC.DELUSIONOFJINDO]	= LOC.DELUSIONOFJINDO,

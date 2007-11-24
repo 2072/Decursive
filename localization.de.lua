@@ -66,17 +66,17 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.PET_FEL_CAST]	=	"Magie verschlingen",
     [LOC.PET_DOOM_CAST]	=	"Magiebannung",
 
-    [LOC.SPELL_POLYMORPH]		  = "Verwandlung",
-    [LOC.SPELL_CURE_DISEASE]	=	'Krankheit heilen',
-    [LOC.SPELL_ABOLISH_DISEASE]	=	'Krankheit aufheben',
-    [LOC.SPELL_PURIFY]	=	'Läutern',
-    [LOC.SPELL_CLEANSE]	=	'Reinigung des Glaubens',
-    [LOC.SPELL_DISPELL_MAGIC]	=	'Magiebannung',
-    [LOC.SPELL_CURE_POISON]	=	'Vergiftung heilen',
-    [LOC.SPELL_ABOLISH_POISON]	=	'Vergiftung aufheben',
-    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	'Geringen Fluch aufheben',
-    [LOC.SPELL_REMOVE_CURSE]	=	'Fluch aufheben',
-    [LOC.SPELL_PURGE]	=	'Reinigen',
+    [LOC.SPELL_POLYMORPH]		  = "Verwandlung", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_DISEASE]	=	'Krankheit heilen', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_DISEASE]	=	'Krankheit aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURIFY]	=	'Läutern', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CLEANSE]	=	'Reinigung des Glaubens', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_DISPELL_MAGIC]	=	'Magiebannung', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CURE_POISON]	=	'Vergiftung heilen', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_ABOLISH_POISON]	=	'Vergiftung aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	'Geringen Fluch aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_REMOVE_CURSE]	=	'Fluch aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURGE]	=	'Reinigen', -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]	=	"Zeige/Verstecke Decursive Main Bar",
     
@@ -140,7 +140,7 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.CRIPLES]		= "Verkrüppeln",
     [LOC.DUSTCLOUD]		= "Staubwolke",
     [LOC.WIDOWSEMBRACE]	= "Umarmung der Witwe",
-    [LOC.CURSEOFTONGUES]	= "Fluch der Sprachen",
+    [LOC.CURSEOFTONGUES]	= "Fluch der Sprachen",  -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SONICBURST]	= "Schallexplosion",
     [LOC.THUNDERCLAP]	= "Donnerknall",
     [LOC.DELUSIONOFJINDO]	= "Fluch der Schatten",

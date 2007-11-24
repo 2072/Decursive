@@ -37,6 +37,10 @@ D.MicroUnitF = AceOO.Class();
 -- create a shortcut
 local MicroUnitF = D.MicroUnitF;
 
+-- since there are tens of thousands of globals defined at all times, lets use some locals!
+local BOOKTYPE_PET	= BOOKTYPE_PET;
+local BOOKTYPE_SPELL	= BOOKTYPE_SPELL;
+
 -- Init object factory defaults
 MicroUnitF.ExistingPerID	    = {};
 MicroUnitF.ExistingPerNum	    = {};
@@ -746,6 +750,9 @@ do
 	    --self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes without this line
 	    self.Frame:SetAttribute("unit", Unit);
 
+	    -- UnitToMUF[] can only be set when out of fight so it remains
+	    -- coherent with what is displayed when groups are changed during a
+	    -- fight
 	    MicroUnitF.UnitToMUF[Unit] = self;
 
 	    self.CurrUnit = Unit;
@@ -798,11 +805,19 @@ do
 	for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
 	    --self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
-	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "macrotext"), string.format("/stopcasting\n/cast [target=mouseover] %s%s", Spell,
-	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(D.Status.FoundSpells[Spell][3], '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "macrotext"), string.format("%s/cast [target=mouseover] %s%s",
+	    (D.Status.FoundSpells[Spell][2] == BOOKTYPE_SPELL and "/stopcasting\n" or ""),
+	    Spell,
+	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+
+	    --D.Status.FoundSpells[Spell][3]
 	    
-	    --D:Debug("XX-> macro: ",string.format("/stopcasting\n/cast [target=mouseover] %s%s", Spell,
-	    --(DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(D.Status.FoundSpells[Spell][3], '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+	    --[[
+	    D:Debug("XX-> macro: ",string.format(AvailableButtons[Prio], "macrotext"), string.format("%s/cast [target=mouseover] %s%s",
+	    (D.Status.FoundSpells[Spell][2] == BOOKTYPE_SPELL and "/stopcasting\n" or ""),
+	    Spell,
+	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+	    --]]
 
 	    -- set the tooltip text for the current prio if necessary
 	    if (D.Status.SpellsChanged ~= self.TooltipUpdate) then

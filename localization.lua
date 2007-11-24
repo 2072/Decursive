@@ -76,18 +76,18 @@ LOC.PET_FEL_CAST  = "Devour Magic";
 LOC.PET_DOOM_CAST = "Dispel Magic";
 
 
-LOC.SPELL_POLYMORPH		  = 'Polymorph';
-LOC.SPELL_CURE_DISEASE        = 'Cure Disease';
-LOC.SPELL_ABOLISH_DISEASE     = 'Abolish Disease';
-LOC.SPELL_PURIFY              = 'Purify';
-LOC.SPELL_CLEANSE             = 'Cleanse';
-LOC.SPELL_DISPELL_MAGIC       = 'Dispel Magic';
-LOC.SPELL_CURE_POISON         = 'Cure Poison';
-LOC.SPELL_ABOLISH_POISON      = 'Abolish Poison';
-LOC.SPELL_REMOVE_LESSER_CURSE = 'Remove Lesser Curse';
-LOC.SPELL_REMOVE_CURSE        = 'Remove Curse';
-LOC.SPELL_PURGE               = 'Purge';
-LOC.SPELL_CYCLONE	      = 'Cyclone';
+LOC.SPELL_POLYMORPH	      = 'Polymorph';  -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_CURE_DISEASE        = 'Cure Disease'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_ABOLISH_DISEASE     = 'Abolish Disease'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_PURIFY              = 'Purify'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_CLEANSE             = 'Cleanse'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_DISPELL_MAGIC       = 'Dispel Magic'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_CURE_POISON         = 'Cure Poison'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_ABOLISH_POISON      = 'Abolish Poison'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_REMOVE_LESSER_CURSE = 'Remove Lesser Curse'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_REMOVE_CURSE        = 'Remove Curse'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_PURGE               = 'Purge'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_CYCLONE	      = 'Cyclone'; -- This translation is for reference only the one used is from the library BabbleSpell
 
 BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar\n(live-list anchor)";
 
@@ -151,15 +151,15 @@ LOC.MAGMASHAKLES	= "Magma Shackles";
 LOC.CRIPLES		= "Cripple";
 LOC.DUSTCLOUD	= "Dust Cloud";
 LOC.WIDOWSEMBRACE	= "Widow's Embrace";
-LOC.CURSEOFTONGUES	= "Curse of Tongues"; -- further translated by BS
+LOC.CURSEOFTONGUES	= "Curse of Tongues"; -- This translation is for reference only the one used is from the library BabbleSpell
 LOC.SONICBURST	= "Sonic Burst";
 LOC.THUNDERCLAP	= "Thunderclap";
 LOC.DELUSIONOFJINDO = "Delusions of Jin'do";
 
 LOC.MUTATINGINJECTION = "Mutating Injection";
 
-DCR_LOC_SILENCE		= "Silence";  -- further translated by BS
-DCR_LOC_MINDVISION	= "Mind Vision";  -- further translated by BS
+DCR_LOC_SILENCE		= "Silence";  -- This translation is for reference only the one used is from the library BabbleSpell
+DCR_LOC_MINDVISION	= "Mind Vision";  -- This translation is for reference only the one used is from the library BabbleSpell
 
 -- NEW LOCALS FOR 2.0
 

@@ -1278,7 +1278,6 @@ D.CureCheckBoxes = { -- just a shortcut
 }
 
 function D:GetCureCheckBoxStatus (Type)
-
     return D.profile.CureOrder[Type] and D.profile.CureOrder[Type] > 0;
 end
 
