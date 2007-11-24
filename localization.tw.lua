@@ -1,4 +1,4 @@
-﻿--[[
+--[[
     Decursive (v 2.0) add-on for World of Warcraft UI
     Copyright (C) 2006-2007 John Wellesz (Archarodim) ( http://www.2072productions.com/?to=decursive.php )
     This is the continued work of the original Decursive (v1.9.4) by Quu
@@ -73,17 +73,18 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.PET_DOOM_CAST] = "驅散魔法",
 
 
-    [LOC.SPELL_POLYMORPH]		  = '變形術',
+    [LOC.SPELL_POLYMORPH]	    = '變形術',
     [LOC.SPELL_CURE_DISEASE]        = '祛病術',
     [LOC.SPELL_ABOLISH_DISEASE]     = '驅除疾病',
     [LOC.SPELL_PURIFY]              = '純淨術',
-    [LOC.SPELL_CLEANSE]            = '淨化術',
+    [LOC.SPELL_CLEANSE]             = '淨化術',
     [LOC.SPELL_DISPELL_MAGIC]       = '驅散魔法',
     [LOC.SPELL_CURE_POISON]         = '消毒術',
     [LOC.SPELL_ABOLISH_POISON]      = '驅毒術',
     [LOC.SPELL_REMOVE_LESSER_CURSE] = '解除次級詛咒',
     [LOC.SPELL_REMOVE_CURSE]        = '解除詛咒',
     [LOC.SPELL_PURGE]               = '淨化術',
+    [LOC.SPELL_CYCLONE]             = '龍捲風';
 
     [BINDING_NAME_DCRSHOW]    = "顯示或隱藏 Decursive 工作條",
 
@@ -118,6 +119,8 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.REVERSE_LIVELIST]= "反向顯示即時清單",
     [LOC.TIE_LIVELIST]    = "即時清單顯示與 DCR 視窗連結",
     [LOC.HIDE_LIVELIST]   = "隱藏即時清單",
+    [LOC.OPT_CREATE_VIRTUAL_DEBUFF]		= "建立虛擬效果測試";
+    [LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC]	= "讓你看到產生這個效果的情況";
 
     [LOC.AMOUNT_AFFLIC]   = "即時清單顯示人數: ",
     [LOC.BLACK_LENGTH]    = "停留在排除名單的時間: ",
@@ -130,8 +133,8 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.ANCHOR]          = "Decursive 文字定位點",
     [LOC.DONOT_BL_PRIO]   = "不添加優先名單的玩家到排除名單",
 
-
     [LOC.SPELL_FOUND]      = "找到 %s 法術",
+
 
 
     -- spells and potions
@@ -152,10 +155,11 @@ L:RegisterTranslations("zhTW", function() return {
 
     [LOC.MUTATINGINJECTION] = "突變注射",
 
+    [DCR_LOC_SILENCE]		= "沈默術";  -- further translated by BS
+    [DCR_LOC_MINDVISION]	= "精神視界";  -- further translated by BS
 
     -- NEW LOCALS FOR 2.0
 
-    [LOC.DEFAULT_MACROKEY] = "`", -- the key just beneath the escape key on a QWERTY keyboard
 
     [LOC.OPT_LIVELIST] = "即時清單",
     [LOC.OPT_LIVELIST_DESC] = "即時清單設定選項。",
@@ -245,6 +249,9 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.OPT_MFALPHA] = "透明度",
     [LOC.OPT_MFALPHA_DESC] = "設定無 debuff 時 MUFs 的透明度。",
 
+    [LOC.OPT_LLALPHA]		= "實況清單的透明度";
+    [LOC.OPT_LLALPHA_DESC]	= "變更 Decursive 工作條及實況清單的透明度(工作條必須設定為顯示)";
+
     [LOC.OPT_ADVDISP] = "進階顯示選項",
     [LOC.OPT_ADVDISP_DESC] = "可設定邊框與中央色塊各自的透明度，以及 MUFs 之間的距離。",
     [LOC.OPT_TIECENTERANDBORDER] = "固定 MUF 中央與邊框的透明度",
@@ -295,12 +302,19 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.MACROKEYMAPPINGFAILED] = "按鍵 [%s] 不能被對應到 Decursive 巨集！",
     [LOC.MACROKEYNOTMAPPED] = "Decursive 巨集未對應到一個按鍵，你可以透過設定選單來設定此一按鍵。(別錯過這個神奇的功能)",
 
+    [LOC.DEFAULT_MACROKEY] = "`"; -- the key just beneath the escape key on a QWERTY keyboard
     [LOC.OPT_NOKEYWARN] = LOC.OPT_NOKEYWARN,
     [LOC.OPT_NOKEYWARN_DESC] = LOC.OPT_NOKEYWARN_DESC,
     [LOC.NOSPELL] = LOC.NOSPELL,
     
     [LOC.FUBARMENU]  = LOC.FUBARMENU,
     [LOC.FUBARMENU_DESC]  = LOC.FUBARMENU_DESC,
+
+    [LOC.GLOR1] = "紀念 Glorfindal",
+    [LOC.GLOR2] = "獻給匆匆離我們而去的Bertrand；他將永遠被我們所銘記。",
+    [LOC.GLOR3] = "紀念 Bertrand （１９６９－２００７）",
+    [LOC.GLOR4] =  "對於那些在魔獸世界裡遇見過Glorfindal的人來說，他是一個重承諾的男人，也是一個有超凡魅力的領袖。友誼和慈愛將永植於他們的心中。他在遊戲中就如同在他生活中一樣的無私，彬彬有禮，樂於奉獻，最重要的是他對生活充滿熱情。他離開我們的時候才僅僅３８歲，隨他離去的絕不會是虛擬世界匿名的角色；在這裡還有一群忠實的朋友在永遠想念他。",
+    [LOC.GLOR5] = "他將永遠被我們所銘記。",
 
 } end);
 
