@@ -155,8 +155,8 @@ L:RegisterTranslations("zhTW", function() return {
 
     [LOC.MUTATINGINJECTION] = "突變注射",
 
-    [DCR_LOC_SILENCE]		= "沈默術";  -- further translated by BS
-    [DCR_LOC_MINDVISION]	= "精神視界";  -- further translated by BS
+--    [DCR_LOC_SILENCE]		= "沉默";  -- further translated by BS
+--    [DCR_LOC_MINDVISION]	= "心靈幻象";  -- further translated by BS
 
     -- NEW LOCALS FOR 2.0
 
