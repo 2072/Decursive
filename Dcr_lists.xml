@@ -21,6 +21,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     -->
     <Script>
+
+	if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_lists.lua"] then
+	    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_lists.lua not loaded)"); end;
+	    DcrCorrupted = true;
+	    return;
+	end
+
 	Dcr:SetDateAndRevision("$Date$", "$Revision$");
     </Script>
 
@@ -833,4 +840,8 @@
     </Frame>
     <!-- DecursivePopulateListFrame }}} -->
 
+    
+    <Script>
+	DcrLoadedFiles["Dcr_lists.xml"] = true;
+    </Script>
 </Ui>

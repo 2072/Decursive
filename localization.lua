@@ -22,6 +22,12 @@
 -------------------------------------------------------------------------------
 
 
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_utils.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_utils.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
 Dcr:SetDateAndRevision("$Date$", "$Revision$");
 
 Dcr.LOC = {};
@@ -622,3 +628,4 @@ L:RegisterTranslations("enUS", function() return {
 
 -- // }}}
 
+DcrLoadedFiles["localization.lua"] = true;

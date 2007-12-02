@@ -20,6 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
+
+if not DcrLoadedFiles or not DcrLoadedFiles["Decursive.xml"] or not DcrLoadedFiles["Decursive.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (Decursive.xml or Decursive.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
 local D = Dcr;
 D:SetDateAndRevision("$Date$", "$Revision$");
 
@@ -481,3 +488,5 @@ function D:PopulateButtonPress() --{{{
     end
 
 end --}}}
+
+DcrLoadedFiles["Dcr_lists.lua"] = true;

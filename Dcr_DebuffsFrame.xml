@@ -21,6 +21,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     -->
     <Script>
+
+	if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DebuffsFrame.lua"] then
+	    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_DebuffsFrame.lua not loaded)"); end;
+	    DcrCorrupted = true;
+	    return;
+	end
+
 	Dcr:SetDateAndRevision("$Date$", "$Revision$");
     </Script>
 
@@ -111,4 +118,8 @@
 	    </OnLeave>
 	</Scripts>
     </Button>
+    
+    <Script>
+	DcrLoadedFiles["Dcr_DebuffsFrame.xml"] = true;
+    </Script>
 </Ui>

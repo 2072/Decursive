@@ -21,6 +21,13 @@
 --]]
 -------------------------------------------------------------------------------
 -- Simplified Chinese by CWDG 剜刀
+
+if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
 Dcr:SetDateAndRevision("$Date$", "$Revision$");
 
 
@@ -300,3 +307,6 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.GLOR5] = "他将永远被我们所铭记。",
 
 } end);
+
+DcrLoadedFiles["localization.cn.lua"] = true;
+

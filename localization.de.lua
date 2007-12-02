@@ -21,6 +21,12 @@
 --]]
 -------------------------------------------------------------------------------
 
+
+if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
 -------------------------------------------------------------------------------
 -- German localization
 -------------------------------------------------------------------------------
@@ -304,3 +310,5 @@ L:RegisterTranslations("deDE", function() return {
 
 
 } end);
+
+DcrLoadedFiles["localization.de.lua"] = true;

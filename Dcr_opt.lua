@@ -20,6 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
+
+if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
 local D = Dcr;
 D:SetDateAndRevision("$Date$", "$Revision$");
 
@@ -1877,3 +1884,6 @@ function D:SetMacroKey ( key )
     SaveBindings(GetCurrentBindingSet());
 
 end
+
+DcrLoadedFiles["Dcr_opt.lua"] = true;
+

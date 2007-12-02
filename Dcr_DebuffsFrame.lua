@@ -20,6 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
+
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_lists.xml"] or not DcrLoadedFiles["Dcr_lists.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_lists.xml or Dcr_lists.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
 local D   = Dcr;
 D:SetDateAndRevision("$Date$", "$Revision$");
 
@@ -1218,3 +1225,4 @@ local MF_Textures = { -- unused
 
 -- }}}
 
+DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = true;

@@ -21,16 +21,22 @@
 --]]
 -------------------------------------------------------------------------------
 
-Dcr	    = AceLibrary("AceAddon-2.0"):new    ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0", "FuBarPlugin-2.0");
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DIAG.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_DIAG.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
+Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0", "FuBarPlugin-2.0");
 
 local D = Dcr;
 
 D.AOO	    = AceLibrary("AceOO-2.0");
-D.L	    = AceLibrary("AceLocale-2.2"):new   ("Dcr");
+D.L	    = AceLibrary("AceLocale-2.2"):new("Dcr");
 D.BC	    = AceLibrary("Babble-Class-2.2");
 D.BS	    = AceLibrary("Babble-Spell-2.2");
-D.DewDrop = AceLibrary("Dewdrop-2.0");
-D.A = AceLibrary("SpecialEvents-Aura-2.0");
+D.DewDrop   = AceLibrary("Dewdrop-2.0");
+D.A	    = AceLibrary("SpecialEvents-Aura-2.0");
 D.Waterfall = AceLibrary("Waterfall-1.0");
 D.T	    = AceLibrary("Tablet-2.0");
 
@@ -40,6 +46,9 @@ local BS = D.BS;
 
 local BOOKTYPE_PET	= BOOKTYPE_PET;
 local BOOKTYPE_SPELL	= BOOKTYPE_SPELL;
+
+
+
 
 
 -------------------------------------------------------------------------------
@@ -56,6 +65,7 @@ D.CONF.MACROCOMMAND = string.format("MACRO %s", D.CONF.MACRONAME);
 
 BINDING_HEADER_DECURSIVE = "Decursive";
 
+D.CONF.MACRO_DIAG     = "/dcrdiag";
 D.CONF.MACRO_COMMAND  = "/decursive";
 D.CONF.MACRO_SHOW     = "/dcrshow";
 D.CONF.MACRO_HIDE     = "/dcrhide";
@@ -154,231 +164,241 @@ function D:OnMenuRequest (level, value, inTooltip, v1, v2, v3)
 end
 
 function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
-	self:RegisterDB("DcrDB");
-	self:RegisterDefaults('profile', D.defaults )
-	self:RegisterChatCommand({'/dcr', '/decursive'}, D.options )
 
-	-- add support for FuBar
-	-- This will add Fubar relative options into a sub-menu
-	---[[
-	do
-	    local args = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(self)
-	    local options = D.options
+    if DecursiveSelfDiagnostic() == 2 then
+	return false;
+    end
 
-	    if not options.args[L[D.LOC.FUBARMENU] ] then
-		options.args.menuSpacer = {
-		    type = "header",
-		    name = " ",
-		    order = 401,
-		}
-		options.args[L[D.LOC.FUBARMENU] ] = {
-		    type = "group",
-		    name =L[D.LOC.FUBARMENU],
-		    desc = L[D.LOC.FUBARMENU_DESC],
-		    args = args,
-		    order = 402,
-		}
+    self:RegisterDB("DcrDB");
+    self:RegisterDefaults('profile', D.defaults )
+    self:RegisterChatCommand({'/dcr', '/decursive'}, D.options )
 
-		-- Because FuBarPlugin is a mixin its options are merged with ours
-		-- so remove them...
-		for k,v in pairs(args) do
-		    options.args[k] = nil;
-		end
+    -- add support for FuBar
+    -- This will add Fubar relative options into a sub-menu
+    ---[[
+    do
+	local args = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(self)
+	local options = D.options
 
+	if not options.args[L[D.LOC.FUBARMENU] ] then
+	    options.args.menuSpacer = {
+		type = "header",
+		name = " ",
+		order = 401,
+	    }
+	    options.args[L[D.LOC.FUBARMENU] ] = {
+		type = "group",
+		name =L[D.LOC.FUBARMENU],
+		desc = L[D.LOC.FUBARMENU_DESC],
+		args = args,
+		order = 402,
+	    }
+
+	    -- Because FuBarPlugin is a mixin its options are merged with ours
+	    -- so remove them...
+	    for k,v in pairs(args) do
+		options.args[k] = nil;
 	    end
+
 	end
-	--]]
+    end
+    --]]
 
-	D.OnMouseDown = D.MicroUnitF.OnCornerClick;
+    D.OnMouseDown = D.MicroUnitF.OnCornerClick;
 
-	D.OnTooltipUpdate = function()
-	    D:Debug("Updating FuBar tooltip");
-	    local cat = D.T:AddCategory(
-	    --'text', "Alpha",
+    D.OnTooltipUpdate = function()
+	D:Debug("Updating FuBar tooltip");
+	local cat = D.T:AddCategory(
+	--'text', "Alpha",
+	'columns', 2,
+	'child_textR', 0,
+	'child_textG', 1,
+	'child_textB', 0,
+	'child_textR2', 1,
+	'child_textG2', 1,
+	'child_textB2', 1,
+	'child_justify2', 'LEFT'
+	);
+
+	cat:AddLine(
+	'text', ("%s: "):format(D.L[D.LOC.HLP_RIGHTCLICK]),
+	'text2',  D.L[D.LOC.STR_OPTIONS]
+	);
+
+	cat:AddLine(
+	'text', ("%s-%s: "):format(D.L[D.LOC.ALT],		D.L[D.LOC.HLP_RIGHTCLICK]),
+	'text2', D.L[BINDING_NAME_DCRSHOWOPTION]
+	);
+	cat:AddLine(
+	'text', ("%s-%s: "):format(D.L[D.LOC.CTRL],		D.L[D.LOC.HLP_LEFTCLICK]),
+	'text2', D.L[BINDING_NAME_DCRPRSHOW]
+	);
+	cat:AddLine(
+	'text', ("%s-%s: "):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_LEFTCLICK]),
+	'text2', D.L[BINDING_NAME_DCRSKSHOW]
+	);
+	cat:AddLine(
+	'text', ("%s-%s: " ):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_RIGHTCLICK]),
+	'text2', D.L[BINDING_NAME_DCRSHOW]
+	);
+
+	if (D.profile.debugging) then
+	    local cat2 = D.T:AddCategory(
+	    'text', "Debugging info",
 	    'columns', 2,
-	    'child_textR', 0,
+	    'child_textR', 0.8,
 	    'child_textG', 1,
-	    'child_textB', 0,
-	    'child_textR2', 1,
-	    'child_textG2', 1,
-	    'child_textB2', 1,
+	    'child_textB', 0.8,
+	    'child_textR2', 0.7,
+	    'child_textG2', 0.6,
+	    'child_textB2', 0.5,
+	    'child_justify1', 'LEFT',
 	    'child_justify2', 'LEFT'
 	    );
 
-	    cat:AddLine(
-	    'text', ("%s: "):format(D.L[D.LOC.HLP_RIGHTCLICK]),
-	    'text2',  D.L[D.LOC.STR_OPTIONS]
+	    cat2:AddLine(
+	    'text', "Afflicted units count:",
+	    'text2',  D.ForLLDebuffedUnitsNum
 	    );
 
-	    cat:AddLine(
-	    'text', ("%s-%s: "):format(D.L[D.LOC.ALT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-	    'text2', D.L[BINDING_NAME_DCRSHOWOPTION]
+	    cat2:AddLine(
+	    'text', "Afflicted units count in range:",
+	    'text2',  D.MicroUnitF.UnitsDebuffedInRange
 	    );
-	    cat:AddLine(
-	    'text', ("%s-%s: "):format(D.L[D.LOC.CTRL],		D.L[D.LOC.HLP_LEFTCLICK]),
-	    'text2', D.L[BINDING_NAME_DCRPRSHOW]
-	    );
-	    cat:AddLine(
-	    'text', ("%s-%s: "):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_LEFTCLICK]),
-	    'text2', D.L[BINDING_NAME_DCRSKSHOW]
-	    );
-	    cat:AddLine(
-	    'text', ("%s-%s: " ):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-	    'text2', D.L[BINDING_NAME_DCRSHOW]
-	    );
-
-	    if (D.profile.debugging) then
-		 local cat2 = D.T:AddCategory(
-		'text', "Debugging info",
-		'columns', 2,
-		'child_textR', 0.8,
-		'child_textG', 1,
-		'child_textB', 0.8,
-		'child_textR2', 0.7,
-		'child_textG2', 0.6,
-		'child_textB2', 0.5,
-		'child_justify1', 'LEFT',
-		'child_justify2', 'LEFT'
-		);
-
-		cat2:AddLine(
-		'text', "Afflicted units count:",
-		'text2',  D.ForLLDebuffedUnitsNum
-		);
-
-		cat2:AddLine(
-		'text', "Afflicted units count in range:",
-		'text2',  D.MicroUnitF.UnitsDebuffedInRange
-		);
-	    end
-
-	    
-	end	
-
-	D.MFContainer = DcrMUFsContainer;
-	D.MicroUnitF.Frame = D.MFContainer;
-
-
-	D.LLContainer = DcrLiveList;
-	D.LiveList.Frame = DcrLiveList;
-
-
-	D.DewDrop:Register(DecursiveMainBar,
-	'children', function()
-	    D.DewDrop:FeedAceOptionsTable( D.options )
 	end
-	)
-	D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L[D.LOC.STR_OPTIONS],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
 
-	DC.TypeNames = {
-	    [DC.MAGIC]	= D.LOC.MAGIC;
-	    [DC.ENEMYMAGIC]	= D.LOC.MAGIC;
-	    [DC.CURSE]	= D.LOC.CURSE;
-	    [DC.POISON]	= D.LOC.POISON;
-	    [DC.DISEASE]	= D.LOC.DISEASE;
-	    [DC.CHARMED]	= D.LOC.CHARMED;
-	}
 
-	DC.NameToTypes = D:tReverse(DC.TypeNames);
-	DC.NameToTypes[D.LOC.MAGIC] = DC.MAGIC;
+    end	
 
-	DC.TypeColors = {
-	    [DC.MAGIC]	= "2222DD";
-	    [DC.ENEMYMAGIC]	= "2222FF";
-	    [DC.CURSE]	= "DD22DD";
-	    [DC.POISON]	= "22DD22";
-	    [DC.DISEASE]	= "995533";
-	    [DC.CHARMED]	= "FF0000";
-	}
+    D.MFContainer = DcrMUFsContainer;
+    D.MicroUnitF.Frame = D.MFContainer;
 
-	-- /script DC.SpellsToUse[D.BS["Dampen Magic"]] = {Types = {DC.MAGIC, DC.DISEASE, DC.POISON},IsBest = false}; D:Configure();
 
-	-- SPELL TABLE -- must be parsed after localisation is loaded {{{
+    D.LLContainer = DcrLiveList;
+    D.LiveList.Frame = DcrLiveList;
+
+
+    D.DewDrop:Register(DecursiveMainBar,
+    'children', function()
+	D.DewDrop:FeedAceOptionsTable( D.options )
+    end
+    )
+    D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L[D.LOC.STR_OPTIONS],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
+
+    DC.TypeNames = {
+	[DC.MAGIC]	= D.LOC.MAGIC;
+	[DC.ENEMYMAGIC]	= D.LOC.MAGIC;
+	[DC.CURSE]	= D.LOC.CURSE;
+	[DC.POISON]	= D.LOC.POISON;
+	[DC.DISEASE]	= D.LOC.DISEASE;
+	[DC.CHARMED]	= D.LOC.CHARMED;
+    }
+
+    DC.NameToTypes = D:tReverse(DC.TypeNames);
+    DC.NameToTypes[D.LOC.MAGIC] = DC.MAGIC;
+
+    DC.TypeColors = {
+	[DC.MAGIC]	= "2222DD";
+	[DC.ENEMYMAGIC]	= "2222FF";
+	[DC.CURSE]	= "DD22DD";
+	[DC.POISON]	= "22DD22";
+	[DC.DISEASE]	= "995533";
+	[DC.CHARMED]	= "FF0000";
+    }
+
+    -- /script DC.SpellsToUse[D.BS["Dampen Magic"]] = {Types = {DC.MAGIC, DC.DISEASE, DC.POISON},IsBest = false}; D:Configure();
+
+    -- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DC.SpellsToUse = {
 
 	    [BS[D.LOC.SPELL_POLYMORPH]]	    = { --Mages
-		Types = {DC.CHARMED},
-		IsBest = false,
-		Rank = 1,
-	    },
+	    Types = {DC.CHARMED},
+	    IsBest = false,
+	    Rank = 1,
+	},
+	-- Druids
+	[BS[D.LOC.SPELL_CYCLONE]]	    = {
+	    Types = {DC.CHARMED},
+	    IsBest = false,
+	},
+	--[[
+	-- used for testing only
+	[BS["Dampen Magic"] ]	    = {
+	    Types = {DC.MAGIC},--, DC.DISEASE, DC.POISON},
+	    IsBest = false,
+	}, --]]
+	--[[
+	-- used for testing only
+	[BS["Amplify Magic"] ]	    = {
+	    Types = {DC.DISEASE, DC.POISON},
+	    IsBest = false,
+	}, --]]
+	[BS[D.LOC.SPELL_CURE_DISEASE]]	    = {
+	    Types = {DC.DISEASE},
+	    IsBest = false,
+	},
+	[BS[D.LOC.SPELL_ABOLISH_DISEASE]]	    = {
+	    Types = {DC.DISEASE},
+	    IsBest = true,
+	},
+	[BS[D.LOC.SPELL_PURIFY]]		    = {
+	    Types = {DC.DISEASE, DC.POISON},
+	    IsBest = false,
+	},
+	-- paladins
+	[BS[D.LOC.SPELL_CLEANSE]]		    = {
+	    Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+	    IsBest = true,
+	},
+	[BS[D.LOC.SPELL_DISPELL_MAGIC]]	    = {
+	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+	    IsBest = true,
+	},
+	[BS[D.LOC.SPELL_CURE_POISON]]	    = {
+	    Types = {DC.POISON},
+	    IsBest = false,
+	},
+	[BS[D.LOC.SPELL_ABOLISH_POISON]]	    = {
+	    Types = {DC.POISON},
+	    IsBest = true,
+	},
+	-- mages
+	[BS[D.LOC.SPELL_REMOVE_LESSER_CURSE]]   = {
+	    Types = {DC.CURSE},
+	    IsBest = true,
+	},
+	-- druids
+	[BS[D.LOC.SPELL_REMOVE_CURSE]]	    = {
+	    Types = {DC.CURSE},
+	    IsBest = true,
+	},
+	--[=[ -- disabled because of Korean locals... see below
+	[BS[D.LOC.SPELL_PURGE]]		    = {
+	    Types = {DC.ENEMYMAGIC},
+	    IsBest = true,
+	},
+	--]=]
+	[BS[D.LOC.PET_FEL_CAST]]		    = {
+	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+	    IsBest = true,
+	},
+	[BS[D.LOC.PET_DOOM_CAST]]		    = {
+	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+	    IsBest = true,
+	},
 
-	    [BS[D.LOC.SPELL_CYCLONE]]	    = { -- Druids
-		Types = {DC.CHARMED},
-		IsBest = false,
-	    },
-	    --[[
-	    [BS["Dampen Magic"] ]	    = { -- used for testing only
-		Types = {DC.MAGIC},--, DC.DISEASE, DC.POISON},
-		IsBest = false,
-	    }, --]]
-	    --[[
-	    [BS["Amplify Magic"] ]	    = { -- used for testing only
-		Types = {DC.DISEASE, DC.POISON},
-		IsBest = false,
-	    }, --]]
-	    [BS[D.LOC.SPELL_CURE_DISEASE]]	    = {
-		Types = {DC.DISEASE},
-		IsBest = false,
-	    },
-	    [BS[D.LOC.SPELL_ABOLISH_DISEASE]]	    = {
-		Types = {DC.DISEASE},
-		IsBest = true,
-	    },
-	    [BS[D.LOC.SPELL_PURIFY]]		    = {
-		Types = {DC.DISEASE, DC.POISON},
-		IsBest = false,
-	    },
-	    [BS[D.LOC.SPELL_CLEANSE]]		    = { -- paladins
-		Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-		IsBest = true,
-	    },
-	    [BS[D.LOC.SPELL_DISPELL_MAGIC]]	    = {
-		Types = {DC.MAGIC, DC.ENEMYMAGIC},
-		IsBest = true,
-	    },
-	    [BS[D.LOC.SPELL_CURE_POISON]]	    = {
-		Types = {DC.POISON},
-		IsBest = false,
-	    },
-	    [BS[D.LOC.SPELL_ABOLISH_POISON]]	    = {
-		Types = {DC.POISON},
-		IsBest = true,
-	    },
-	    [BS[D.LOC.SPELL_REMOVE_LESSER_CURSE]]   = { -- mages
-		Types = {DC.CURSE},
-		IsBest = true,
-	    },
-	    [BS[D.LOC.SPELL_REMOVE_CURSE]]	    = { -- druids
-		Types = {DC.CURSE},
-		IsBest = true,
-	    },
-	    --[=[ -- disabled because of Korean locals... see below
-	    [BS[D.LOC.SPELL_PURGE]]		    = {
-		Types = {DC.ENEMYMAGIC},
-		IsBest = true,
-	    },
-	    --]=]
-	    [BS[D.LOC.PET_FEL_CAST]]		    = {
-		Types = {DC.MAGIC, DC.ENEMYMAGIC},
-		IsBest = true,
-	    },
-	    [BS[D.LOC.PET_DOOM_CAST]]		    = {
-		Types = {DC.MAGIC, DC.ENEMYMAGIC},
-		IsBest = true,
-	    },
+    };
 
+    -- Thanks to Korean localization team of WoW we have to make an exception....
+    -- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
+    if (select(2, UnitClass("player")) == "SHAMAN") then
+	DC.SpellsToUse[BS[D.LOC.SPELL_PURGE]]		    = {
+	    Types = {DC.ENEMYMAGIC},
+	    IsBest = true,
 	};
+    end
 
-	-- Thanks to Korean localization team of WoW we have to make an exception....
-	-- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
-	if (select(2, UnitClass("player")) == "SHAMAN") then
-	    DC.SpellsToUse[BS[D.LOC.SPELL_PURGE]]		    = {
-		Types = {DC.ENEMYMAGIC},
-		IsBest = true,
-	    };
-	end
-
-	-- // }}}
+    -- // }}}
 
 end -- // }}}
 
@@ -386,8 +406,17 @@ end -- // }}}
 
 function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     
+    if DecursiveSelfDiagnostic() == 2 then
+	return false;
+    end
+
     -- Register slashes command {{{
     if (first) then
+	SLASH_DECURSIVEDIAG1 = D.CONF.MACRO_DIAG;
+	SlashCmdList["DECURSIVEDIAG"] = function(msg)
+	    DecursiveSelfDiagnostic(true);
+	end
+
 	SLASH_DECURSIVEPRADD1 = D.CONF.MACRO_PRADD;
 	SlashCmdList["DECURSIVEPRADD"] = function(msg)
 	    D:AddTargetToPriorityList();
@@ -905,4 +934,7 @@ function D:SetDateAndRevision (Date, Revision)
 end
 
 D:SetDateAndRevision("$Date$", "$Revision$");
+
+DcrLoadedFiles["DCR_init.lua"] = true;
+
 -------------------------------------------------------------------------------

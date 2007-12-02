@@ -20,6 +20,12 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
+
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_opt.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_opt.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
 local D = Dcr;
 D:SetDateAndRevision("$Date$", "$Revision$");
 
@@ -306,3 +312,5 @@ function D:SPELLS_CHANGED()
     D:Debug("|cFFFF0000Spells were changed, scheduling a reconfiguration check|r");
     self:ScheduleEvent("SpellsChanged", self.ReConfigure, 15, self);
 end
+
+DcrLoadedFiles["Dcr_Events.lua"] = true;

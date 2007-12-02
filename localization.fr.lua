@@ -21,6 +21,13 @@
 --]]
 -------------------------------------------------------------------------------
 
+
+if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+    DcrCorrupted = true;
+    message("Decursive installation is corrupted!");
+    return;
+end
 -------------------------------------------------------------------------------
 -- French localization {{{
 -- Revised by the Grinch 08.24.06 (From Release 1.9.8 RC2)
@@ -319,3 +326,5 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.GLOR5] = "On ne l'oubliera jamais...",
 
 } end);
+
+DcrLoadedFiles["localization.fr.lua"] = true;

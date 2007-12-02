@@ -20,6 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
+
+if not DcrLoadedFiles or not DcrLoadedFiles["DCR_init.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (DCR_init.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
 local D = Dcr;
 D:SetDateAndRevision("$Date$", "$Revision$");
 
@@ -238,3 +245,4 @@ function D:SetCoords(t, A, B, C, D, E, F)
 	t:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
 end
 
+DcrLoadedFiles["Dcr_utils.lua"] = true;

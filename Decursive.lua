@@ -20,6 +20,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 --]]
 -------------------------------------------------------------------------------
+
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_Raid.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_Raid.lua not loaded)"); end;
+    DcrCorrupted = true;
+    return;
+end
+
 local D = Dcr;
 D:SetDateAndRevision("$Date$", "$Revision$");
 
@@ -626,3 +633,4 @@ end --}}}
 -- }}}
 
 
+DcrLoadedFiles["Decursive.lua"] = true;
