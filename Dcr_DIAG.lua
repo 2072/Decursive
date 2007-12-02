@@ -59,7 +59,9 @@ do
 
     local FatalError = function (TheError) StaticPopup_Show ("Decursive_Error_Frame", TheError); end
 
-    -- the beatiful error popup : {{{
+    local PrintMessage = function (message, ...) if DcrDiagStatus ~= 2 then Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
+
+    -- the beatiful error popup : {{{ -
     StaticPopupDialogs["Decursive_Error_Frame"] = {
 	text = "|cFFFF0000Decursive Error:|r\n%s",
 	button1 = "OK",
@@ -72,7 +74,7 @@ do
 	showAlert = 1,
     }; -- }}}
 
-    function DecursiveSelfDiagnostic (force) -- {{{
+    function DecursiveSelfDiagnostic (force, FromCommand) -- {{{
 
 	-- will not executes several times unless forced
 	if not force and DcrDiagStatus then
@@ -148,9 +150,55 @@ do
 	    DcrDiagStatus = FatalOccured and 2 or 1;
 	end
 
-	if force and DcrDiagStatus == 0 then
-	    Dcr:Print("Decursive self diagnostic complete, no problem found!");
-	end
+	-- if the diagnostic was requested by the user, we also test AceEvent functionalities {{{ -
+	if force and FromCommand and DcrDiagStatus == 0 then
+	    PrintMessage("|cFF00FF00No problem found in shared libraries or Decursive files!|r");
+	    PrintMessage("Now checking the event management library...");
+	    PrintMessage("If, in about 2 seconds, the message \"|cFF00FF00Event library functionning properly|r\" does not appear then there is a problem");
+
+	    local OneTimeEvent = "not set"; local ReapeatingEventRate = 1; local ReapeatingEventCount = 0; local CustomEvent = "DCR_TEST_DIAG_EVENT"; local CustomEventCaught = "not set";
+	    local ConfirmOneTimeEventMessage = "That was a good time!";
+	    local ConfirmCustomEventMessage = "I was really caught!";
+
+	    -- Register a curstom event
+	    Dcr:RegisterEvent(CustomEvent, function(DiagTestArg1) CustomEventCaught = DiagTestArg1; end);
+
+	    -- Schedule a function call in 0.5s
+	    Dcr:ScheduleEvent("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2 end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
+
+	    -- Set a repeating function call that will check for other test event completion
+	    Dcr:ScheduleRepeatingEvent("DcrDiagRepeat",
+	    function (argTest)
+		local argtestdone = false;
+		if not argtestdone and argTest ~= "test" then
+		    PrintMessage("|cFFFF0000Event lib management error: argument could not be read!|r");
+		    argtestdone = true;
+		end
+
+		if OneTimeEvent == ConfirmOneTimeEventMessage and CustomEventCaught == ConfirmCustomEventMessage then
+		    Dcr:CancelScheduledEvent("DcrDiagRepeat");
+		    Dcr:UnregisterEvent(CustomEvent);
+		    PrintMessage("|cFF00FF00Event library functionning properly!|r");
+		    PrintMessage("|cFF00FF00Everything seems to be OK.|r");
+		    return;
+		end
+
+		-- cast the custom event
+		Dcr:TriggerEvent(CustomEvent, ConfirmCustomEventMessage);
+
+		if ReapeatingEventCount == 4 then
+		    PrintMessage("|cFFFF0000A problem occured, OneTimeEvent='%s', CustomEventCaught='%s'|r", OneTimeEvent, CustomEventCaught);
+		    Dcr:CancelScheduledEvent("DcrDiagRepeat");
+		    Dcr:UnregisterEvent(CustomEvent);
+		    return;
+		end
+
+		ReapeatingEventCount = ReapeatingEventCount + 1;
+
+	    end,
+	    ReapeatingEventRate, "test");
+
+	end -- }}}
 
 	return DcrDiagStatus;
 

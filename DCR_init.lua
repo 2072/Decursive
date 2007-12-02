@@ -414,7 +414,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     if (first) then
 	SLASH_DECURSIVEDIAG1 = D.CONF.MACRO_DIAG;
 	SlashCmdList["DECURSIVEDIAG"] = function(msg)
-	    DecursiveSelfDiagnostic(true);
+	    DecursiveSelfDiagnostic(true, true);
 	end
 
 	SLASH_DECURSIVEPRADD1 = D.CONF.MACRO_PRADD;
