@@ -150,6 +150,11 @@ do
 	    DcrDiagStatus = FatalOccured and 2 or 1;
 	end
 
+	-- if no fatal error let this file update the date and revision of Decursive
+	if DcrDiagStatus ~= 2 then
+	    Dcr:SetDateAndRevision("$Date$", "$Revision$");
+	end
+
 	-- if the diagnostic was requested by the user, we also test AceEvent functionalities {{{ -
 	if force and FromCommand and DcrDiagStatus == 0 then
 	    PrintMessage("|cFF00FF00No problem found in shared libraries or Decursive files!|r");
