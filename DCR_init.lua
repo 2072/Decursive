@@ -125,6 +125,7 @@ D.MFContainer = false;
 D.LLContainer = false;
 
 D.profile = {};
+D.classprofile = {};
 
 D.Status = {};
 
@@ -170,7 +171,8 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     end
 
     self:RegisterDB("DcrDB");
-    self:RegisterDefaults('profile', D.defaults )
+    self:RegisterDefaults('profile', D.defaults );
+    self:RegisterDefaults('class', D.defaults.class );
     self:RegisterChatCommand({'/dcr', '/decursive'}, D.options )
 
     -- add support for FuBar
@@ -587,6 +589,7 @@ function D:OnProfileEnable()
     end
 
     D.profile = D.db.profile; -- D.db has a metatable for __index so to avoid the call of a function each time we access a config data we set this shortcut.
+    D.classprofile = D.db.class;
 
     if type (D.profile.OutputWindow) == "string" then
 	D.Status.OutputWindow = getglobal(D.profile.OutputWindow);

@@ -405,8 +405,8 @@ do
 
     local D = D;
     local sorting = function (a, b)
-	cura = (a.Type and D.profile.CureOrder[a.Type] and D.profile.CureOrder[a.Type] > 0) and D.profile.CureOrder[a.Type] or 1024;
-	curb = (b.Type and D.profile.CureOrder[b.Type] and D.profile.CureOrder[b.Type] > 0) and D.profile.CureOrder[b.Type] or 1024;
+	cura = (a.Type and D.classprofile.CureOrder[a.Type] and D.classprofile.CureOrder[a.Type] > 0) and D.classprofile.CureOrder[a.Type] or 1024;
+	curb = (b.Type and D.classprofile.CureOrder[b.Type] and D.classprofile.CureOrder[b.Type] > 0) and D.classprofile.CureOrder[b.Type] or 1024;
 
 	return cura < curb;
     end
@@ -494,12 +494,12 @@ do
 
 
 		-- We have a match for this type and we decided (checked) to
-		-- cure it NOTE: self.profile.CureOrder[DEBUFF_TYPE] is set
+		-- cure it NOTE: self.classprofile.CureOrder[DEBUFF_TYPE] is set
 		-- to FALSE when the type is unchecked and to < 0 when there is
 		-- no spell available for the type or when the spell is gone
 		-- (it happens for warlocks or when using the same profile with
 		-- several characters)
-		--if (self.profile.CureOrder[Debuff.Type] and self.profile.CureOrder[Debuff.Type] > 0) then
+		--if (self.classprofile.CureOrder[Debuff.Type] and self.classprofile.CureOrder[Debuff.Type] > 0) then
 		if (self:GetCureCheckBoxStatus(Debuff.Type)) then
 
 

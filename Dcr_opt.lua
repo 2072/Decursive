@@ -141,6 +141,8 @@ D.defaults = { -- {{{
     -- The sound file to use
     SoundFile = "Sound\\Doodad\\BellTollTribal.wav";
 
+    -- Example to change the sound : /run Dcr.profile.SoundFile = "Sound\\interface\\AuctionWindowOpen.wav"
+
     -- Hide the buttons
     HideButtons = false,
 
@@ -173,6 +175,7 @@ D.defaults = { -- {{{
 
 
     -- Curring order (1 is the most important, 6 the lesser...)
+    --[[
     CureOrder = {
 	[DC.ENEMYMAGIC]   = 1,
 	[DC.MAGIC]	    = 2,
@@ -181,6 +184,7 @@ D.defaults = { -- {{{
 	[DC.DISEASE]	    = 5,
 	[DC.CHARMED]	    = 6,
     },
+    --]]
 
 
     -- Debuffs {{{
@@ -279,6 +283,19 @@ D.defaults = { -- {{{
     -- }}}
 
 } -- }}}
+
+D.defaults.class = {
+    -- Curring order (1 is the most important, 6 the lesser...)
+    CureOrder = {
+	[DC.ENEMYMAGIC]     = 1,
+	[DC.MAGIC]	    = 2,
+	[DC.CURSE]	    = 3,
+	[DC.POISON]	    = 4,
+	[DC.DISEASE]	    = 5,
+	[DC.CHARMED]	    = 6,
+    },
+
+}
 
 D.options = { -- {{{
     type = "group",
@@ -1285,7 +1302,7 @@ D.CureCheckBoxes = { -- just a shortcut
 }
 
 function D:GetCureCheckBoxStatus (Type)
-    return D.profile.CureOrder[Type] and D.profile.CureOrder[Type] > 0;
+    return D.classprofile.CureOrder[Type] and D.classprofile.CureOrder[Type] > 0;
 end
 
 function D:SetCureCheckBoxNum (Type)
@@ -1298,7 +1315,7 @@ function D:SetCureCheckBoxNum (Type)
 
     -- add the number in green before the name if we have a spell available and if we checked the box
     if (D:GetCureCheckBoxStatus(Type)) then
-	CheckBox.name = D:ColorText(D.profile.CureOrder[Type], "FF00FF00") .. " " .. CheckBox.NameOnly;
+	CheckBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. CheckBox.NameOnly;
     else
 	CheckBox.name = "  " .. CheckBox.NameOnly;
     end
@@ -1339,14 +1356,14 @@ function D:CheckCureOrder ()
 
     -- add missing entries...
     for key, value in pairs(AuthorizedKeys) do
-	if not D.profile.CureOrder[key] then
-	    D.profile.CureOrder[key] = false;
+	if not D.classprofile.CureOrder[key] then
+	    D.classprofile.CureOrder[key] = false;
 	end
     end
 
     -- Validate existing entries
     local WrongValue = 0;
-    for key, value in pairs(D.profile.CureOrder) do
+    for key, value in pairs(D.classprofile.CureOrder) do
 
 	if (AuthorizedKeys[key]) then -- is this a correct type ?
 	    if (AuthorizedValues[value] and not GivenValues[value]) then -- is this value authorized and not already given?
@@ -1356,20 +1373,20 @@ function D:CheckCureOrder ()
 	    elseif (value) then -- FALSE is the only value that can be given several times
 		D:Debug("Incoherent value for (key, value, Duplicate?)", key, value, GivenValues[value]);
 
-		D.profile.CureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
+		D.classprofile.CureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
 		WrongValue = WrongValue + 1;
 	    end
 	else
-	    D.profile.CureOrder[key] = nil; -- remove it from the table
+	    D.classprofile.CureOrder[key] = nil; -- remove it from the table
 	end
     end
 
-    --D.profile.CureOrder = TempTable;
+    --D.classprofile.CureOrder = TempTable;
 end
 
 function D:SetCureOrder (ToChange)
 
-    local CureOrder = D.profile.CureOrder;
+    local CureOrder = D.classprofile.CureOrder;
     local tmpTable = {};
     D:Debug("SetCureOrder called for prio ", CureOrder[ToChange]);
 
