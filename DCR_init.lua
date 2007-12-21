@@ -92,8 +92,8 @@ local DC = DcrC;
 DC.IconON = "Interface\\AddOns\\" .. D.folderName .. "\\iconON.tga";
 DC.IconOFF = "Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga";
 
-DC.ENEMYMAGIC = 2;
 DC.MAGIC	= 1;
+DC.ENEMYMAGIC	= 2;
 DC.CURSE	= 4;
 DC.POISON	= 8;
 DC.DISEASE	= 16;
@@ -107,8 +107,8 @@ DC.STEALTHED		    = 64;
 DC.BLACKLISTED		    = 128;
 DC.AFFLICTED		    = 256;
 DC.AFFLICTED_NIR	    = 512;
-DC.CHARMED		    = 1024;
-DC.AFFLICTED_AND_CHARMED = bit.bor(DC.AFFLICTED, DC.CHARMED);
+DC.CHARMED_STATUS	    = 1024;
+DC.AFFLICTED_AND_CHARMED = bit.bor(DC.AFFLICTED, DC.CHARMED_STATUS);
 
 DC.MFSIZE = 20;
 

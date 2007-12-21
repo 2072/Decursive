@@ -58,7 +58,7 @@ MicroUnitF.UnitsDebuffedInRange	    = 0;
 D.ForLLDebuffedUnitsNum	    = 0;
 
 
--- using power 2 values just to OR them but only CHARMED is ORed (it's a C style bitfield)
+-- using power 2 values just to OR them but only CHARMED_STATUS is ORed (it's a C style bitfield)
 local NORMAL		    = DC.NORMAL;
 local ABSENT		    = DC.ABSENT;
 local FAR		    = DC.FAR;
@@ -66,7 +66,7 @@ local STEALTHED		    = DC.STEALTHED;
 local BLACKLISTED	    = DC.BLACKLISTED;
 local AFFLICTED		    = DC.AFFLICTED;
 local AFFLICTED_NIR	    = DC.AFFLICTED_NIR;
-local CHARMED		    = DC.CHARMED;
+local CHARMED_STATUS	    = DC.CHARMED_STATUS;
 local AFFLICTED_AND_CHARMED = DC.AFFLICTED_AND_CHARMED;
 
 
@@ -414,8 +414,8 @@ function MicroUnitF:OnEnter() -- {{{
 	    return; -- If the user overs the MUF befor it's completely initialized
 	end
 
-	-- removes the CHARMED bit from Status, we don't need it
-	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED));
+	-- removes the CHARMED_STATUS bit from Status, we don't need it
+	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
 
 
 
@@ -1007,7 +1007,7 @@ do
 
 	-- Add the charm status to the bitfield (note that it's treated separatly because it's shown even if the unit is not afflicetd by anything we can cure)
 	if (self.IsCharmed) then
-	    self.UnitStatus = bit.bor( self.UnitStatus, CHARMED);
+	    self.UnitStatus = bit.bor( self.UnitStatus, CHARMED_STATUS);
 	end
 
 	-- if the unit is not afflicted or too far set the color to a lower alpha
