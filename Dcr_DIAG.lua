@@ -85,21 +85,21 @@ do
 
 	-- Table with all the required libraries with their current revision at Decursive release time.
 	local LibrariesToCheck = { -- {{{
-	    ["AceLibrary"]		= 49421,
+	    ["AceLibrary"]		= 58127,
 	    ["AceOO-2.0"]		= 38641,
 	    ["AceDebug-2.0"]		= 34168,
 	    ["AceEvent-2.0"]		= 56171,
-	    ["AceDB-2.0"]		= 46764,
+	    ["AceDB-2.0"]		= 56534,
 	    ["AceConsole-2.0"]		= 48940,
 	    ["AceLocale-2.2"]		= 40629,
-	    ["AceAddon-2.0"]	        = 46764,
+	    ["AceAddon-2.0"]	        = 57245,
 	    ["SpecialEvents-Aura-2.0"]  = 54669,
 	    ["Babble-Class-2.2"]	= 54287 * 100000 + 40629, -- 40629 is AceLocale revision
-	    ["Babble-Spell-2.2"]	= 55718 * 100000 + 40629, -- 40629 is AceLocale revision
-	    ["Dewdrop-2.0"]		= 48630,
-	    ["Waterfall-1.0"]		= 54094,
+	    ["Babble-Spell-2.2"]	= 58622 * 100000 + 40629, -- 40629 is AceLocale revision
+	    ["Dewdrop-2.0"]		= 56529,
+	    ["Waterfall-1.0"]		= 56985,
 	    ["Tablet-2.0"]		= 55567,
-	    ["FuBarPlugin-2.0"]		= 52843,
+	    ["FuBarPlugin-2.0"]		= 57544,
 	}; -- }}}
 
 	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary|r) could not be found.\n";

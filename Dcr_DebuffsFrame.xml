@@ -77,9 +77,10 @@
 			if (   arg1 == "LeftButton" and IsAltKeyDown() ) then
 			this:GetParent():StartMoving();
 			this.isMoving = true;
+			else
+			Dcr.MicroUnitF:OnCornerClick(arg1, this);
 			end
 
-			Dcr.MicroUnitF:OnCornerClick(arg1, this);
 		    </OnMouseDown>
 		    <OnHide>
 			if ( this.isMoving ) then
