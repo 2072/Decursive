@@ -193,6 +193,8 @@ LOC.OPT_SHOWMFS = "Show the micro units Frame";
 LOC.OPT_SHOWMFS_DESC = "This must be enabled if you want to cure by clicking";
 LOC.OPT_GROWDIRECTION = "Reverse MUFs Display";
 LOC.OPT_GROWDIRECTION_DESC = "The MUFs will be displayed from bottom to top";
+LOC.OPT_STICKTORIGHT = "Align MUF window to the right";
+LOC.OPT_STICKTORIGHT_DESC = "The MUF window will grow from right to left, the handle will be moved as necessary";
 LOC.OPT_SHOWBORDER = "Show the class-colored borders";
 LOC.OPT_SHOWBORDER_DESC = "A colored border will be displayed around the MUFs representing the unit's class";
 LOC.OPT_MAXMFS  = "Max units shown";
@@ -493,6 +495,8 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_SHOWMFS_DESC] = true,
     [LOC.OPT_GROWDIRECTION] = true,
     [LOC.OPT_GROWDIRECTION_DESC] = true,
+    [LOC.OPT_STICKTORIGHT_DESC] = true,
+    [LOC.OPT_STICKTORIGHT] = true,
     [LOC.OPT_SHOWBORDER] = true,
     [LOC.OPT_SHOWBORDER_DESC] = true,
     [LOC.OPT_MAXMFS] = true,

@@ -70,6 +70,8 @@ D.defaults = { -- {{{
 
     DebuffsFrameYSpacing = 3,
 
+    DebuffsFrameStickToRight = false;
+
     -- The time between each MUF update
     DebuffsFrameRefreshRate = 0.10,
 
@@ -592,6 +594,21 @@ D.options = { -- {{{
 		    end,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    order = 1300,
+		},
+		
+		StickToRight = {
+		    type = "toggle",
+		    name = L[D.LOC.OPT_STICKTORIGHT],
+		    desc = L[D.LOC.OPT_STICKTORIGHT_DESC],
+		    get = function() return D.profile.DebuffsFrameStickToRight end,
+		    set = function(v)
+			if (v ~= D.profile.DebuffsFrameStickToRight) then
+			    D.profile.DebuffsFrameStickToRight = v;
+			    D.MicroUnitF:SavePos();
+			end
+		    end,
+		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+		    order = 1310,
 		},
 		ShowBorder = {
 		    type = "toggle",

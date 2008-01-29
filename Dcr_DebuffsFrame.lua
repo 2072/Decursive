@@ -234,6 +234,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     --  D:Debug("self.Number = %d", self.Number);
 
     local start;
+    local Old_UnitShown = self.UnitShown;
 
     -- if there are more MUFs than the actual unit number
     if self.UnitShown > NumToShow then
@@ -278,7 +279,38 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    D:Debug("Hiding %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * (i - NumToShow));
 	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (i - NumToShow), MF, false, false);
 	    MF_f:Hide();
+	end
 
+    end
+
+    if self.UnitShown > 0 and Old_UnitShown ~= self.UnitShown then
+
+	local FirstLineNum = 0;
+	local RightEdge = 0;
+	local Handle_x = 0;
+
+	if self.UnitShown >= D.profile.DebuffsFramePerline then
+	    FirstLineNum = D.profile.DebuffsFramePerline;
+	else
+	    FirstLineNum = self.UnitShown;
+	end
+
+	if D.profile.DebuffsFrameStickToRight then
+	    Handle_x = -1 * (FirstLineNum - 1) * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) * self.Frame:GetEffectiveScale();
+	end
+
+	RightEdge = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing) + Handle_x;
+
+	if (RightEdge > UIParent:GetWidth() * UIParent:GetEffectiveScale()) then
+	    Handle_x = Handle_x - (RightEdge - UIParent:GetWidth() * UIParent:GetEffectiveScale());
+	    Dcr:Debug("put the MUF on the screen!!!");
+	end
+
+	-- if the handle needs to be moved
+	if (Handle_x ~= 0 or D.profile.DebuffsFrameStickToRight) and self.UnitShown > 0 then
+	    D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + Handle_x;
+	    MicroUnitF:Place();
+	    MicroUnitF:SavePos();
 	end
 
     end
@@ -320,6 +352,18 @@ function MicroUnitF:SavePos () -- {{{
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
 	D.profile.DebuffsFrame_x = self.Frame:GetEffectiveScale() * self.Frame:GetLeft();
 	D.profile.DebuffsFrame_y = self.Frame:GetEffectiveScale() * self.Frame:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
+
+
+	-- if we choosed to align the MUF to the right then we have to add the
+	-- width of the first line
+	if D.profile.DebuffsFrameStickToRight and self.UnitShown > 1 then
+	    if self.UnitShown >= D.profile.DebuffsFramePerline then
+		D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + (D.profile.DebuffsFramePerline - 1)   * (DC.MFSIZE  + D.profile.DebuffsFrameXSpacing) * self.Frame:GetEffectiveScale();
+	    else
+		D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + (self.UnitShown - 1)		    * (DC.MFSIZE  + D.profile.DebuffsFrameXSpacing) * self.Frame:GetEffectiveScale();
+	    end
+	end
+
 
 	if D.profile.DebuffsFrame_x < 0 then
 	    D.profile.DebuffsFrame_x = 0;
