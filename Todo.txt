@@ -15,9 +15,6 @@ TODO:
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
   (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found)
 
-- Let the users choose the MUF colors
-  (may be useful for color-blind users)
-
 - Mages should be able to choose what polymorf spell they want to use
   (just change the table DcrC.SpellsToUse and call Dcr:Configure();)
 

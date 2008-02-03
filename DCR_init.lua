@@ -623,11 +623,15 @@ function D:OnProfileEnable()
     D.Groups_datas_are_invalid = true;
     D:CreateDropDownFiltersMenu();
 
+    D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors);
+    D:CreateDropDownMUFcolorsMenu();
+
     D.MicroUnitF:ResetAllPositions ();
   
 
     D.Status.Enabled = true;
 
+    D.MicroUnitF:Delayed_Force_FullUpdate();
     D.MicroUnitF:Delayed_MFsDisplay_Update();
 
     -- set Fubar Icon

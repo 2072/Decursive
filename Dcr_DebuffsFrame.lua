@@ -71,20 +71,9 @@ local AFFLICTED_AND_CHARMED = DC.AFFLICTED_AND_CHARMED;
 
 
 -- Those are the different colors used for the MUFs main texture
-local MF_colors = {
-			  {  .8 , 0   , 0    ,  1	}, -- red
-			  { 0   , 0   , 0.8  ,  1	}, -- blue
-			  { 1   ,  .5 ,  .25 ,  1	}, -- orange
-			  { 1   , 0   , 1    ,  1	}, -- purple
-			  { 1   , 1   , 1    ,  1	}, -- white for undefined
-			  { 1   , 1   , 1    ,  1	}, -- white for undefined
-    [NORMAL]		= {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
-    [BLACKLISTED]	= { 0   , 0   , 0    ,  1	}, -- black
-    [ABSENT]		= {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
-    [FAR]		= {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
-    [STEALTHED]		= {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
-    ["InnerCharmed"]	= {  0  , 1   , 0    ,  1	}, -- full green
-};
+local MF_colors = { };
+
+
 -- Those are lookups table to set the frame attributes
 local AvailableButtons = { -- {{{
     "%s1", -- left mouse button
@@ -98,7 +87,7 @@ local AvailableButtons = { -- {{{
     -- 3, -- middle mouse button || RESERVED FOR TARGETING
 }; -- }}}
 
-local AvailableButtonsReadable = { -- {{{
+DC.AvailableButtonsReadable = { -- {{{
     L[D.LOC.HLP_LEFTCLICK], -- left mouse button
     L[D.LOC.HLP_RIGHTCLICK], -- right mouse button
     L[D.LOC.CTRL] .. "-" .. L[D.LOC.HLP_LEFTCLICK],
@@ -116,6 +105,11 @@ local AvailableModifier = { -- {{{
 } -- }}}
 
 -- MicroUnitF STATIC methods {{{
+
+-- Updates the color table
+function MicroUnitF:RegisterMUFcolors ()
+    MF_colors = D.profile.MF_colors;
+end
 
 -- defines what is printed when the object is read as a string
 function MicroUnitF:ToString() -- {{{
@@ -317,6 +311,44 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
     return true;
 end -- }}}
+
+
+function MicroUnitF:Delayed_Force_FullUpdate ()
+    if (D.profile.ShowDebuffsFrame) then
+	D:ScheduleEvent("Force_FullUpdate", self.Force_FullUpdate, 0.2, self);
+    end
+end
+
+function MicroUnitF:Force_FullUpdate () -- {{{
+    if (not D.profile.ShowDebuffsFrame) then
+	return false;
+    end
+
+    -- This function cannot do anything if we are fighting
+    if (D.Status.Combat) then
+	-- if we are fighting, postpone the call
+	D:AddDelayedFunctionCall (
+	"Force_FullUpdate", self.Force_FullUpdate,
+	self);
+	return false;
+    end
+
+    local MF;--, MF_f;
+
+    D.Status.SpellsChanged = GetTime(); -- will force an update of all MUFs attributes
+
+    for i=1, self.Number do
+	if self.ExistingPerID[i] then
+	    MF = self.ExistingPerID[i];
+	    MF.UnitStatus = 0; -- reset status to force SetColor to update
+	    MF.TooltipUpdate = 0; -- force help tooltip to update
+	    --MF_f = MF.Frame;
+
+	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false);
+	end
+    end
+end -- }}}
+
 
 -- Those set the scalling of the MUF container
 -- SACALING FUNCTIONS (MicroUnitF Children) {{{
@@ -638,7 +670,7 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 
 	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
 		D:errln(L[D.LOC.HLP_WRONGMBUTTON]);
-		D:Println(L[D.LOC.HLP_USEXBUTTONTOCURE], D:ColorText(AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
+		D:Println(L[D.LOC.HLP_USEXBUTTONTOCURE], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
 	    end
 	end
 end -- }}}
@@ -713,7 +745,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.InnerTexture:SetHeight(7);
 	self.InnerTexture:SetWidth(7);
-	self.InnerTexture:SetTexture(unpack(MF_colors["InnerCharmed"]));
+	self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
 	-- a reference to this object
 	self.Frame.Object = self;
@@ -880,7 +912,7 @@ do
 	    -- set the tooltip text for the current prio if necessary
 	    if (D.Status.SpellsChanged ~= self.TooltipUpdate) then
 		self.TooltipButtonsInfo[Prio] =
-		string.format("%s: %s", D:ColorText(AvailableButtonsReadable[Prio], D:NumToHexColor(MF_colors[Prio])), Spell);
+		string.format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[Prio], D:NumToHexColor(MF_colors[Prio])), Spell);
 	    end
 	end
 

@@ -195,6 +195,15 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.OPT_SHOWMFS_DESC] = "Cette option doit être activée, si vous voulez guérir en cliquant avec la souris",
     [LOC.OPT_GROWDIRECTION] = "Inverser l'affichage des micro-portraits",
     [LOC.OPT_GROWDIRECTION_DESC] = "Les micro-portraits seront affichés de bas en haut",
+
+    [LOC.OPT_STICKTORIGHT]	= "Aligner la fenêtre à droite",
+    [LOC.OPT_STICKTORIGHT_DESC]	= "La fenêtre des micro-portrait se développera de la droite vers la gauche, la poignée sera déplacée automatiquement.",
+    [LOC.OPT_MUFSCOLORS]	= "Couleures",
+    [LOC.OPT_MUFSCOLORS_DESC]	= "Change les couleures des micro-portraits.",
+    [LOC.MISSINGUNIT]		= "Unité absente",
+    [LOC.COLORALERT]		= "Règle la couleure d'alerte quand un '%s' est requis.",
+    [LOC.COLORSTATUS]		= "Règle la couleure du statut '%s'.",
+
     [LOC.OPT_SHOWBORDER] =  "Afficher la bordure colorée des classes",
     [LOC.OPT_SHOWBORDER_DESC] =  "Une bordure colorée représentant la classe de l'unité est affichée autour des micro-portraits",
     [LOC.OPT_MAXMFS] = "Nombre maximum d'unités affichées",

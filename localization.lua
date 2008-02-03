@@ -193,8 +193,15 @@ LOC.OPT_SHOWMFS = "Show the micro units Frame";
 LOC.OPT_SHOWMFS_DESC = "This must be enabled if you want to cure by clicking";
 LOC.OPT_GROWDIRECTION = "Reverse MUFs Display";
 LOC.OPT_GROWDIRECTION_DESC = "The MUFs will be displayed from bottom to top";
+
 LOC.OPT_STICKTORIGHT = "Align MUF window to the right";
-LOC.OPT_STICKTORIGHT_DESC = "The MUF window will grow from right to left, the handle will be moved as necessary";
+LOC.OPT_STICKTORIGHT_DESC = "The MUF window will grow from right to left, the handle will be moved as necessary.";
+LOC.OPT_MUFSCOLORS = "Colors";
+LOC.OPT_MUFSCOLORS_DESC = "Change the colors of the Micro Unit Frames.";
+LOC.MISSINGUNIT = "Missing unit";
+LOC.COLORALERT = "Set the color alert when a '%s' is required.";
+LOC.COLORSTATUS = "Set the color for the '%s' MUF status.";
+
 LOC.OPT_SHOWBORDER = "Show the class-colored borders";
 LOC.OPT_SHOWBORDER_DESC = "A colored border will be displayed around the MUFs representing the unit's class";
 LOC.OPT_MAXMFS  = "Max units shown";
@@ -296,7 +303,7 @@ LOC.SHIFT = "Shift";
 LOC.TARGETUNIT = "Target Unit";
 LOC.FOCUSUNIT = "Focus Unit";
 
-LOC.ABSENT = "Absent (%s)";
+LOC.ABSENT = "Missing (%s)";
 LOC.TOOFAR = "Too far";
 LOC.NORMAL = "Normal";
 LOC.STEALTHED = "stealthed";
@@ -495,8 +502,16 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_SHOWMFS_DESC] = true,
     [LOC.OPT_GROWDIRECTION] = true,
     [LOC.OPT_GROWDIRECTION_DESC] = true,
-    [LOC.OPT_STICKTORIGHT_DESC] = true,
-    [LOC.OPT_STICKTORIGHT] = true,
+
+    [LOC.OPT_STICKTORIGHT_DESC]	= true,
+    [LOC.OPT_STICKTORIGHT]	= true,
+    [LOC.OPT_MUFSCOLORS_DESC]	= true,
+    [LOC.OPT_MUFSCOLORS]	= true,
+    [LOC.MISSINGUNIT]		= true,
+    [LOC.COLORALERT]		= true,
+    [LOC.COLORSTATUS]		= true,
+
+    [LOC.OPT_MUFSCOLORS] = true,
     [LOC.OPT_SHOWBORDER] = true,
     [LOC.OPT_SHOWBORDER_DESC] = true,
     [LOC.OPT_MAXMFS] = true,

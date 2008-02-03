@@ -175,7 +175,21 @@ D.defaults = { -- {{{
     -- Display a warning if no key is mapped.
     NoKeyWarn = true,
 
-
+    -- Those are the different colors used for the MUFs main texture
+    MF_colors = {
+		[1]		=   {  .8 , 0   , 0    ,  1	}, -- red
+		[2]		=   { 0   , 0   , 0.8  ,  1	}, -- blue
+		[3]		=   { 1   ,  .5 ,  .25 ,  1	}, -- orange
+		[4]		=   { 1   , 0   , 1    ,  1	}, -- purple
+		[5]		=   { 1   , 1   , 1    ,  1	}, -- white for undefined
+		[6]		=   { 1   , 1   , 1    ,  1	}, -- white for undefined
+	[DC.NORMAL]		=   {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
+	[DC.BLACKLISTED]	=   { 0   , 0   , 0    ,  1	}, -- black
+	[DC.ABSENT]		=   {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
+	[DC.FAR]		=   {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
+	[DC.STEALTHED]		=   {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
+	[DC.CHARMED_STATUS]	=   {  0  , 1   , 0    ,  1	}, -- full green
+    },
     -- Curring order (1 is the most important, 6 the lesser...)
     --[[
     CureOrder = {
@@ -605,6 +619,7 @@ D.options = { -- {{{
 			if (v ~= D.profile.DebuffsFrameStickToRight) then
 			    D.profile.DebuffsFrameStickToRight = v;
 			    D.MicroUnitF:SavePos();
+			    D.MicroUnitF:Delayed_MFsDisplay_Update();
 			end
 		    end,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
@@ -668,6 +683,18 @@ D.options = { -- {{{
 		{
 		    type = "header",
 		    order = 1700,
+		},
+		MUFsColors = {
+		    type = "group",
+		    name = D:ColorText(L[D.LOC.OPT_MUFSCOLORS], "FFFF00CA"),
+		    desc = L[D.LOC.OPT_MUFSCOLORS_DESC],
+		    order = 1705,
+		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+		    args = {}
+		},
+		{
+		    type = "header",
+		    order = 1710,
 		},
 		FrameScale = {
 		    type = 'range',
@@ -1656,7 +1683,6 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    (CheckedByDefault and D:ColorText("  *", "FFFFAA00") or ""),
 	    desc = string.format(L[D.LOC.OPT_AFFLICTEDBYSKIPPED], BC[FormattedClass], DebuffName) ..
 	    (CheckedByDefault and D:ColorText(L[D.LOC.OPT_DEBCHECKEDBYDEF], "FFFFAA00") or "");
-	    -- There is no other way to pass arguments to the set and get functions...
 	    handler = {
 		["Debuff"]=DebuffName,
 		["Class"]=Class,
@@ -1854,6 +1880,114 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	D.options.args.DebuffSkip.args = DebuffsSubMenu;
 
+    end
+end
+
+do
+
+    local MF_colors = {};
+    local function GetNameAndDesc (ColorReason)
+	local name, desc;
+
+	if (type(ColorReason) == "number" and ColorReason <= 6) then
+
+	    name = D:ColorText(DC.AvailableButtonsReadable[ColorReason], D:NumToHexColor(MF_colors[ColorReason]));
+	    desc = (L[D.LOC.COLORALERT]):format(DC.AvailableButtonsReadable[ColorReason]);
+
+	elseif (type(ColorReason) == "number")	    then
+	    local Text = "";
+
+	    if (ColorReason == DC.NORMAL)	    then
+		Text =  L[D.LOC.NORMAL];
+
+	    elseif (ColorReason == DC.ABSENT)	    then
+		Text =  L[D.LOC.MISSINGUNIT];
+
+	    elseif (ColorReason == DC.FAR)	    then
+		Text =  L[D.LOC.TOOFAR];
+
+	    elseif (ColorReason == DC.STEALTHED)    then
+		Text =  L[D.LOC.STEALTHED];
+
+	    elseif (ColorReason == DC.BLACKLISTED)  then
+		Text =  L[D.LOC.BLACKLISTED];
+
+	    elseif (ColorReason == DC.CHARMED_STATUS) then
+		Text =  L[D.LOC.CHARMED];
+	    end
+
+	    name = ("%s %s"):format(L[D.LOC.UNITSTATUS], D:ColorText(Text, D:NumToHexColor(MF_colors[ColorReason])) );
+	    desc = (L[D.LOC.COLORSTATUS]):format(Text);
+
+	end
+
+	return {name, desc};
+    end
+
+    local function GetColor (handler)
+	-- Dcr:PrintLiteral("Name: " .. handler["ColorReason"], unpack(MF_colors[handler["ColorReason"]]));
+	return unpack(D.profile.MF_colors[handler["ColorReason"]]);
+    end
+
+    local function SetColor (handler, r, g, b, a)
+	D.profile.MF_colors[handler["ColorReason"]] = {r, g, b, a and a or 1};
+	D.MicroUnitF:RegisterMUFcolors();
+	MF_colors = D.profile.MF_colors;
+
+	local NameAndDesc = GetNameAndDesc(handler["ColorReason"]);
+
+	D.options.args.MicroFrameOpt.args.MUFsColors.args[handler["ColorReason"]].name = NameAndDesc[1];
+	D.options.args.MicroFrameOpt.args.MUFsColors.args[handler["ColorReason"]].desc = NameAndDesc[2];
+
+	D.MicroUnitF:Delayed_Force_FullUpdate();
+
+	Dcr:Debug("MUF color setting %d changed.", handler["ColorReason"]);
+    end
+
+
+ 
+
+    function D:CreateDropDownMUFcolorsMenu()
+	MF_colors = D.profile.MF_colors;
+
+	local MUFsColorsSubMenu = {};
+	local num = 0;
+	local NameAndDesc = {};
+
+	for ColorReason, Color in pairs(MF_colors) do
+
+	    if type(ColorReason) == "number" and (ColorReason - 2) == 6 then
+		MUFsColorsSubMenu["Spece"] = {
+		    type = "header",
+		    order = 100 + num;
+		}
+		num = num + 1;
+	    end
+
+	    NameAndDesc = GetNameAndDesc(ColorReason);
+
+	    MUFsColorsSubMenu[ColorReason] =  {
+		type = "color",
+		name = NameAndDesc[1],
+		desc = NameAndDesc[2],
+		hasAlpha = true,
+		order = 100 + num,
+
+		handler = {
+		    ["ColorReason"]  = ColorReason,
+		    ["get"]	    = GetColor,
+		    ["set"]	    = SetColor,
+		},
+
+		get = "get",
+		set = "set",
+	    };
+
+	    
+	    num = num + 1;
+	end
+
+	D.options.args.MicroFrameOpt.args.MUFsColors.args = MUFsColorsSubMenu;
     end
 end
 
