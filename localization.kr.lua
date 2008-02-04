@@ -197,16 +197,16 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.OPT_SHOWMFS] = "작은 유닛 프레임 표시",
 	[LOC.OPT_SHOWMFS_DESC] = "클릭으로 해제하려면 반드시 활성화 되어야 합니다.",
 	[LOC.OPT_GROWDIRECTION] = "MUF 표시 반전",
-
-	[LOC.OPT_STICKTORIGHT]		= LOC.OPT_STICKTORIGHT,
-	[LOC.OPT_STICKTORIGHT_DESC]	= LOC.OPT_STICKTORIGHT_DESC,
-	[LOC.OPT_MUFSCOLORS]		= LOC.OPT_MUFSCOLORS,
-	[LOC.OPT_MUFSCOLORS_DESC]	= LOC.OPT_MUFSCOLORS_DESC,
-	[LOC.MISSINGUNIT]		= LOC.MISSINGUNIT,
-	[LOC.COLORALERT]		= LOC.COLORALERT,
-	[LOC.COLORSTATUS]		= LOC.COLORSTATUS,
-
 	[LOC.OPT_GROWDIRECTION_DESC] = "MUF를 하단에서 상단으로 표시합니다.",
+
+	[LOC.OPT_STICKTORIGHT]		= "MUF창 오른쪽으로 정렬",
+	[LOC.OPT_STICKTORIGHT_DESC]	= "MUF창은 오른쪽에서 왼쪽으로 증가되며 동작은 자동적으로 이루어질 것입니다.",
+	[LOC.OPT_MUFSCOLORS]		= "색상",
+	[LOC.OPT_MUFSCOLORS_DESC]	= "작은 유닛 프레임의 색상을 변경합니다.",
+	[LOC.MISSINGUNIT]		= "잘못된 대상",
+	[LOC.COLORALERT]		= "'%s'이 필요할때의 알림 색상을 설정합니다.",
+	[LOC.COLORSTATUS]		= "MUF 상태가 '%s'일때 색상을 설정합니다.",
+
 	[LOC.OPT_SHOWBORDER] = "직업 색상 테두리 표시",
 	[LOC.OPT_SHOWBORDER_DESC] = "MUF에 유닛의 직업에 따른 색상을 테두리로 표시합니다.",
 	[LOC.OPT_MAXMFS]  = "표시할 최대 유닛",
@@ -243,7 +243,7 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.OPT_MACROOPTIONS] = "매크로 설정",
 	[LOC.OPT_MACROOPTIONS_DESC] = "Decursive에 의해 생성된 매크로의 동작을 설정합니다.",
 	[LOC.OPT_MACROBIND] = "매크로 단축키 설정",
-	[LOC.OPT_MACROBIND_DESC] = "'Decursive' 매크로를 호출 할 키을 지정합니다.\n\nPress the key and hit your 'Enter' keyboard key to save the new assignement (with your mouse cursor over the edit field)",
+	[LOC.OPT_MACROBIND_DESC] = "'Decursive' 매크로를 호출 할 키을 지정합니다.\n\n키를 누르고 키보드의 'Enter'키를 누르면 새롭게 지정된 키가 저장됩니다.(당신의 마우스 커서가 편집 구역내에 있어야 합니다)",
 	[LOC.OPT_RESETOPTIONS] = "기본값으로 설정 초기화",
 	[LOC.OPT_RESETOPTIONS_DESC] =  "현재 프로파일을 기본값으로 초기화합니다.",
 	[LOC.OPT_REMOVESKDEBCONF] = "정말로 Decursive의 디버프 제외 목록에서\n %s|1을;를; 를 제거 하시겠습니까?",
@@ -319,17 +319,17 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.SUCCESSCAST] 	= "|cFF22FFFF%s %s|r|1으로;로; %s |cFF00AA00치료 성공!|r",
 	[LOC.HANDLEHELP] 	= "작은 유닛 프레임(MUFs) 모두 이동",
 
-	[LOC.MACROKEYALREADYMAPPED] = "경고: The key mapped to Decursive macro [%s] was mapped to action '%s'.\nDecursive will restore the previous mapping if you set another key for its macro.",
+	[LOC.MACROKEYALREADYMAPPED] = "경고: Decursive 매크로에 지정한 [%s]키는 '%s'를 위해 지정되어 있었습니다.\n당신이 매크로에 다른 키를 지정하면 Decursive는 이전 설정을 복원할 것입니다.",
 	[LOC.MACROKEYMAPPINGSUCCESS] = "[%s] 키가 Decursive 매크로로 성공적으로 지정되었습니다.",
 	[LOC.MACROKEYMAPPINGFAILED] = "[%s] 키는 Decursive 매크로로 지정할 수 없습니다!",
-	[LOC.MACROKEYNOTMAPPED] = "Decursive 매크로가 지정되지 않앗습니다. 설정 메뉴를 통해 키를 지정할 수 있습니다.",
+	[LOC.MACROKEYNOTMAPPED] = "Decursive 매크로가 지정되지 않았습니다. 설정 메뉴를 통해 키를 지정할 수 있습니다.",
 
 	[LOC.OPT_NOKEYWARN] = "키 없음 경고",
 	[LOC.OPT_NOKEYWARN_DESC] = "지정된 키가 없다면 경고를 표시합니다.",
 	[LOC.NOSPELL] = "이용가능한 주문이 없습니다.",
 
-	[LOC.FUBARMENU]  = LOC.FUBARMENU,
-	[LOC.FUBARMENU_DESC]  = LOC.FUBARMENU_DESC,
+	[LOC.FUBARMENU]  = "FuBar 메뉴",
+	[LOC.FUBARMENU_DESC]  = "FuBar 아이콘에 관련된 옵션을 설정합니다.",
     
     -- OPTIONS
 
