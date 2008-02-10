@@ -189,8 +189,22 @@ LOC.OPT_ANCHOR_DESC	= "Shows the anchor of the custom message frame";
 LOC.OPT_MFSETTINGS = "Micro Unit Frame Settings";
 LOC.OPT_MFSETTINGS_DESC = "Set the micro units frame window options to suit your needs";
 LOC.OPT_DISPLAYOPTIONS = "Display options";
-LOC.OPT_SHOWMFS = "Show the micro units Frame";
+
+LOC.OPT_SHOWMFS = "Show the Micro Units Frame";
 LOC.OPT_SHOWMFS_DESC = "This must be enabled if you want to cure by clicking";
+
+LOC.OPT_AUTOHIDEMFS	    = "Auto-Hide the MUF window";
+LOC.OPT_AUTOHIDEMFS_DESC    = "Choose when to hide the MUF window";
+
+LOC.OPT_HIDEMFS_SOLO		= "Solo";
+LOC.OPT_HIDEMFS_SOLO_DESC	= "Hide the MUF window when you are not in a party or raid";
+
+LOC.OPT_HIDEMFS_GROUP		= "Solo/Party";
+LOC.OPT_HIDEMFS_GROUP_DESC	= "Hide the MUF window when you are not in a raid";
+
+LOC.OPT_HIDEMFS_NEVER		= "Never";
+LOC.OPT_HIDEMFS_NEVER_DESC	= "Never auto-hide the MUF window";
+
 LOC.OPT_GROWDIRECTION = "Reverse MUFs Display";
 LOC.OPT_GROWDIRECTION_DESC = "The MUFs will be displayed from bottom to top";
 
@@ -500,6 +514,16 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_DISPLAYOPTIONS] = true,
     [LOC.OPT_SHOWMFS] = true,
     [LOC.OPT_SHOWMFS_DESC] = true,
+
+    [LOC.OPT_AUTOHIDEMFS] = true,
+    [LOC.OPT_AUTOHIDEMFS_DESC] = true,
+    [LOC.OPT_HIDEMFS_SOLO] = true,
+    [LOC.OPT_HIDEMFS_SOLO_DESC] = true,
+    [LOC.OPT_HIDEMFS_GROUP] = true,
+    [LOC.OPT_HIDEMFS_GROUP_DESC] = true,
+    [LOC.OPT_HIDEMFS_NEVER] = true,
+    [LOC.OPT_HIDEMFS_NEVER_DESC] = true,
+
     [LOC.OPT_GROWDIRECTION] = true,
     [LOC.OPT_GROWDIRECTION_DESC] = true,
 

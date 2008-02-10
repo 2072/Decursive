@@ -633,6 +633,7 @@ function D:OnProfileEnable()
 
     D.MicroUnitF:Delayed_Force_FullUpdate();
     D.MicroUnitF:Delayed_MFsDisplay_Update();
+    D:AutoHideShowMUFs();
 
     -- set Fubar Icon
     if not D.Status.HasSpell or D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then

@@ -49,6 +49,8 @@ D.defaults = { -- {{{
     -- The micro units debuffs frame
     ShowDebuffsFrame = true,
 
+    AutoHideDebuffsFrame = 0,
+
     -- The maximum number of MUFs to be displayed
     DebuffsFrameMaxCount = 80,
 
@@ -586,14 +588,47 @@ D.options = { -- {{{
 		    get = function() return D.profile.ShowDebuffsFrame end,
 		    set = function()
 			D:ShowHideDebuffsFrame ();
-			if D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
-			    D:SetIcon(DC.IconOFF);
-			else
-			    D:SetIcon(DC.IconON);
-			end
 		    end,
 		    disabled = function() return D.Status.Combat end,
 		    order = 1200,
+		},
+		AutoHide = {
+		    type = "group",
+		    name = L[D.LOC.OPT_AUTOHIDEMFS],
+		    desc = L[D.LOC.OPT_AUTOHIDEMFS_DESC],
+		    order = 1210,
+		    args = {
+			Never = {
+			    type = "toggle",
+			    name = L[D.LOC.OPT_HIDEMFS_NEVER],
+			    desc = L[D.LOC.OPT_HIDEMFS_NEVER_DESC],
+			    order = 1210,
+			    get = function() return  D.profile.AutoHideDebuffsFrame == 0 end,
+			    set = function() D.profile.AutoHideDebuffsFrame = 0 end,
+			},
+			Solo = {
+			    type = "toggle",
+			    name = L[D.LOC.OPT_HIDEMFS_SOLO],
+			    desc = L[D.LOC.OPT_HIDEMFS_SOLO_DESC],
+			    order = 1220,
+			    get = function() return  D.profile.AutoHideDebuffsFrame == 1 end,
+			    set = function()
+				D.profile.AutoHideDebuffsFrame = 1;
+				D:AutoHideShowMUFs();
+			    end,
+			},
+			GroupNoRaid = {
+			    type = "toggle",
+			    name = L[D.LOC.OPT_HIDEMFS_GROUP],
+			    desc = L[D.LOC.OPT_HIDEMFS_GROUP_DESC],
+			    order = 1230,
+			    get = function() return  D.profile.AutoHideDebuffsFrame == 2 end,
+			    set = function()
+				D.profile.AutoHideDebuffsFrame = 2;
+				D:AutoHideShowMUFs();
+			    end,
+			}
+		    }
 		},
 		GrowToTop = {
 		    type = "toggle",
@@ -1563,6 +1598,14 @@ function D:ShowHideDebuffsFrame ()
     else
 	D:ScheduleRepeatingEvent("MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
     end
+
+    -- set Fubar Icon
+    if not D.Status.HasSpell or D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
+	D:SetIcon(DC.IconOFF);
+    else
+	D:SetIcon(DC.IconON);
+    end
+
 end
 
 function D:ShowHideTextAnchor() --{{{
@@ -2051,6 +2094,43 @@ function D:SetMacroKey ( key )
     -- save the bindings to disk
     SaveBindings(GetCurrentBindingSet());
 
+end
+
+
+function D:AutoHideShowMUFs ()
+
+   -- This function cannot do anything if we are fighting
+    if (D.Status.Combat) then
+	-- if we are fighting, postpone the call
+	D:AddDelayedFunctionCall (
+	"CheckIfHideShow", self.AutoHideShowMUFs,
+	self);
+	return false;
+    end
+
+    if D.profile.AutoHideDebuffsFrame == 0 then
+	return;
+    else
+	-- if we want to hide the MUFs when in solo or not in raid
+	local InGroup = (GetNumRaidMembers() ~= 0 or (D.profile.AutoHideDebuffsFrame ~= 2 and GetNumPartyMembers() ~= 0) );
+	Dcr:Debug("AutoHideShowMUFs, InGroup: ", InGroup);
+
+	-- if we are not in such a group
+	if not InGroup then
+	    -- if the frame is displayed
+	    if D.profile.ShowDebuffsFrame then
+		-- hide it
+		D:ShowHideDebuffsFrame ();
+	    end
+	else
+	    -- if we are in a group
+	    -- if the frame is not displayed
+	    if not D.profile.ShowDebuffsFrame then
+		-- show it
+		D:ShowHideDebuffsFrame ();
+	    end
+	end
+    end
 end
 
 DcrLoadedFiles["Dcr_opt.lua"] = true;

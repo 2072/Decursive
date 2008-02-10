@@ -40,6 +40,13 @@ function D:GroupChanged () -- {{{
     D.Groups_datas_are_invalid = true;
     -- Update the MUFs display in a short moment
     D.MicroUnitF:Delayed_MFsDisplay_Update ();
+
+
+    -- Test if we have to hide Decursive MUF window
+    if D.profile.AutoHideDebuffsFrame ~= 0 then
+	D:ScheduleEvent("CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
+    end
+
     D:Debug("Groups changed");
 end -- }}}
 

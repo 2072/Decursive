@@ -3,7 +3,7 @@ There is a Decursive thread on WoWAce.com forums where you can talk:
 
 ---->  http://www.wowace.com/forums/index.php?topic=4328.0
 
-Don't forget to update the wiki:
+Don't forget to update the wiki and the readme files:
 
 ---->  http://www.wowace.com/wiki/Decursive
 
@@ -19,9 +19,6 @@ TODO:
   (just change the table DcrC.SpellsToUse and call Dcr:Configure();)
 
 - Add an option to let the user choose the alert sound.
-
-- Add an option to only show the MUF in raid or group
-  (This has been requested a couple of time but I'm not very keen to do it)
 
 - Clean up the code (for Archarodim)
 

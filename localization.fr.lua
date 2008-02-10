@@ -204,6 +204,15 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.COLORALERT]		= "Règle la couleure d'alerte quand un '%s' est requis.",
     [LOC.COLORSTATUS]		= "Règle la couleure du statut '%s'.",
 
+    [LOC.OPT_AUTOHIDEMFS]	    = "Masquer automatiquement",
+    [LOC.OPT_AUTOHIDEMFS_DESC]	    = "Choisissez quand la fenêtre des micro-portraits doit être masquée automatiquement.",
+    [LOC.OPT_HIDEMFS_SOLO]	    = "Solo",
+    [LOC.OPT_HIDEMFS_SOLO_DESC]	    = "Masque la fenêtre lorsque vous n'êtes pas dans un groupe ou dans un raid.",
+    [LOC.OPT_HIDEMFS_GROUP]	    = "Solo / Groupe",
+    [LOC.OPT_HIDEMFS_GROUP_DESC]    = "Masque la fenêtre lorsque vous n'êtes pas dans un raid.",
+    [LOC.OPT_HIDEMFS_NEVER]	    = "Jamais",
+    [LOC.OPT_HIDEMFS_NEVER_DESC]    = "Ne jamais masquer la fenêtre automatiquement.",
+
     [LOC.OPT_SHOWBORDER] =  "Afficher la bordure colorée des classes",
     [LOC.OPT_SHOWBORDER_DESC] =  "Une bordure colorée représentant la classe de l'unité est affichée autour des micro-portraits",
     [LOC.OPT_MAXMFS] = "Nombre maximum d'unités affichées",
