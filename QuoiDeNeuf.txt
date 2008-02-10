@@ -1,4 +1,39 @@
-Decursive 2.0.4 par Archarodim  (2007-11-13)
+Decursive 2.1.0 par Archarodim  (2008-02-10)
+
+
+Changements entre Decursive 2.0.4 et Decursive 2.1.0
+
+* Changements importants :
+
+- Ajout d'un système d'auto-diagnostique également disponible en utilisant la
+  commande /DCRDIAG. Ce diagnostique est exécuté lorsque l'add-on est chargé et
+  teste si toutes les librairies requises sont disponibles et à jour.
+  Lorsque la commande /DCRDIAG est utilisée, le bon fonctionnement de la
+  librairie AceEvent est également vérifié.
+
+- Nouvelle option : "Aligner la fenêtre à droite" dans les options des
+  micro-portraits (désactivée par défaut)
+  Quand activée, la fenêtre des micro-portrait se développera de la droite vers
+  la gauche, la poignée sera déplacée automatiquement.
+
+- Nouvelle option : "Couleurs" dans les options des micro-portraits.
+  Toutes les couleurs des micro-portraits peuvent être modifiées.
+
+- Les priorités de guérison sont désormais sauvegardées par classe.
+  (Ce changement remet aux valeurs par défaut vos priorités de guérison)
+
+* Changements mineurs :
+
+- Lorsqu'un nouveau micro-portrait est créé en dehors de l'écran, la fenêtre
+  des micro-portraits est automatiquement déplacée de sorte que tous les
+  micro-portraits soient visibles.
+
+- Les sorts gérées par les familiers n'interrompent plus les sorts des joueurs
+  (lorsque les micro-portraits sont utilisés).
+
+- Decursive utilise à nouveau le premier rang de Métamorphose.
+
+- Clarification dans les différents fichiers de localisation.
 
 
 Changements entre Decursive 2.0.3 et Decursive 2.0.4

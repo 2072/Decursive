@@ -1,4 +1,43 @@
-Decursive 2.0.4 by Archarodim  (2007-11-13)
+Decursive 2.1.0 by Archarodim  (2008-02-10)
+
+
+Changes from Decursive 2.0.4 to Decursive 2.1.0
+
+* Important changes:
+
+- Added an automatic self-diagnostic feature also available through the
+  /DCRDIAG command. This diagnostic is run when the add-on is loaded and check
+  if all required libraries are available and are up to date.
+  It also checks if all Decursive internal files are loaded correctly.
+  When the command /DCRDIAG is used it also tests if the library AceEvent is
+  functioning properly.
+
+- New option: "Align MUF window to the right" (defaults to off)
+  If enabled, the MUFs will grow from right to left and the handle will be
+  moved automatically.
+    
+- New option: "Auto-Hide the MUF window" (defaults to "Never")
+  Lets you choose if you want to auto-hide/show the MUF window when in party or raid.
+
+- New option: "Colors" in the "Micro Unit Frame Settings" sub-menu
+  It is now possible to change all the MUFs colors.
+
+- The cure order priorities are now saved per class
+  (This change resets your cure order priorities to default values)
+
+* Minor changes:
+
+- When a new MUF is created outside the screen, the MUF window is always
+  automatically moved so that all MUFs are visible.
+
+- Spells handled by pets will no longer interrupt the player spells (when using
+  the MUFs)
+
+- Workaround for polymorph spells name change in WoW 2.3 (Decursive was no
+  longer casting rank 1 of this spell...)
+
+- Clarification in the different localization files.
+
 
 
 Changes from Decursive 2.0.3 to Decursive 2.0.4
