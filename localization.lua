@@ -193,7 +193,7 @@ LOC.OPT_DISPLAYOPTIONS = "Display options";
 LOC.OPT_SHOWMFS = "Show the Micro Units Frame";
 LOC.OPT_SHOWMFS_DESC = "This must be enabled if you want to cure by clicking";
 
-LOC.OPT_AUTOHIDEMFS	    = "Auto-Hide the MUF window";
+LOC.OPT_AUTOHIDEMFS	    = "Auto-Hide";
 LOC.OPT_AUTOHIDEMFS_DESC    = "Choose when to hide the MUF window";
 
 LOC.OPT_HIDEMFS_SOLO		= "Solo";

@@ -16,6 +16,10 @@ Changements entre Decursive 2.0.4 et Decursive 2.1.0
   Quand activée, la fenêtre des micro-portrait se développera de la droite vers
   la gauche, la poignée sera déplacée automatiquement.
 
+- Nouvelle option : "Masquer automatiquement" ("jamais" par défaut)
+  Permet de choisir de masquer automatiquement la fenêtre des micro-portraits si
+  le joueur n'est pas en groupe ou pas en raid.
+
 - Nouvelle option : "Couleurs" dans les options des micro-portraits.
   Toutes les couleurs des micro-portraits peuvent être modifiées.
 

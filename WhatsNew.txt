@@ -16,7 +16,7 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0
   If enabled, the MUFs will grow from right to left and the handle will be
   moved automatically.
     
-- New option: "Auto-Hide the MUF window" (defaults to "Never")
+- New option: "Auto-Hide" (defaults to "Never")
   Lets you choose if you want to auto-hide/show the MUF window when in party or raid.
 
 - New option: "Colors" in the "Micro Unit Frame Settings" sub-menu
