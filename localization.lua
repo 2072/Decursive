@@ -332,7 +332,7 @@ LOC.HANDLEHELP = "Drag all the Micro-UnitFrames (MUFs)";
 LOC.MACROKEYALREADYMAPPED = "WARNING: The key mapped to Decursive macro [%s] was mapped to action '%s'.\nDecursive will restore the previous mapping if you set another key for its macro.";
 LOC.MACROKEYMAPPINGSUCCESS = "The key [%s] has been successfully mapped to Decursive macro.";
 LOC.MACROKEYMAPPINGFAILED = "The key [%s] could not be mapped to Decursive macro!";
-LOC.MACROKEYNOTMAPPED = "Decursive macro is not mapped to a key, you can map a key through the option menu. (do not miss this wonderful feature)";
+LOC.MACROKEYNOTMAPPED = "Decursive mouse-over macro is not mapped to a key, take a look at the 'Macro' options!";
 
 LOC.DEFAULT_MACROKEY = "`"; -- the key just beneath the escape key on a QWERTY keyboard
 LOC.OPT_NOKEYWARN = "Warn if no key";

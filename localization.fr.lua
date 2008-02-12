@@ -327,7 +327,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.MACROKEYALREADYMAPPED] = "ATTENTION: La touche affectée à la macro de Decursive [%s] était affectée à l'action '%s'.\nDecursive restaurera l'action originale si vous affectez une autre touche à la macro.",
     [LOC.MACROKEYMAPPINGSUCCESS] = "La touche [%s] a été correctement affectée à la macro de Decursive.",
     [LOC.MACROKEYMAPPINGFAILED] = "La touche [%s] n'a pas pu être affectée à la macro de Decursive",
-    [LOC.MACROKEYNOTMAPPED] = "Aucune touche n'est actuellement affectée à la macro de Decursive, vous pouvez affecter une touche par le menu des options (ne passez pas à coté de cette merveilleuse capacité)",
+    [LOC.MACROKEYNOTMAPPED] = "Aucune touche n'est affectée à la macro de Decursive, reportez-vous aux options concernant la macro !",
 
     [LOC.OPT_NOKEYWARN] = "Avertir si aucune touche",
     [LOC.OPT_NOKEYWARN_DESC] = "Affiche un avertissement si aucune touche n'est affectée à la macro.",
