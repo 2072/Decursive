@@ -500,7 +500,7 @@ do
 		-- (it happens for warlocks or when using the same profile with
 		-- several characters)
 		--if (self.classprofile.CureOrder[Debuff.Type] and self.classprofile.CureOrder[Debuff.Type] > 0) then
-		if (self:GetCureCheckBoxStatus(Debuff.Type)) then
+		if (self:GetCureCheckBoxStatus(Debuff.Type)) then -- XXX can be the source of a problem
 
 
 		    -- self:Debug("we can cure it");

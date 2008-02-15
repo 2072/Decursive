@@ -10,6 +10,12 @@ Don't forget to update the wiki and the readme files:
 
 TODO:
 
+- Add a user debuff warning mechanism where you could define debuff names you
+  want to be aware of, then Decursive would add a special status, such as a
+  little colored triangle in the middle of the MUFs and then you will have to
+  create a mouseover macro (using default Blizzard macro interface) and use it on
+  the MUF of your choice...
+
 - If the Unstable Affliction is detected on a player, add a warning status if the player can cure magic...
 
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
