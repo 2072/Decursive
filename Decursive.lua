@@ -274,6 +274,58 @@ end -- }}}
 -- // }}}
 -------------------------------------------------------------------------------
 
+do
+   local iterator = 1;
+   local DebuffHistHashTable = {};
+
+   function D:Debuff_History_Add( DebuffName, DebuffType )
+
+       if not DebuffHistHashTable[DebuffName] then
+
+	   -- reset iterator if out of boundaries
+	   if iterator > DC.DebuffHistoryLength then
+	       iterator = 1;
+	   end
+
+	   -- clean hastable if necessary before adding a new entry
+	   if DebuffHistHashTable[D.DebuffHistory[iterator]] then
+	       DebuffHistHashTable[D.DebuffHistory[iterator]] = nil;
+	   end
+
+	   -- Register the name in the HashTable using the debuff type
+	   DebuffHistHashTable[DebuffName] = (DebuffType and DC.NameToTypes[DebuffType] or DC.NOTYPE);
+	   --Dcr:Debug(DebuffName, DebuffHistHashTable[DebuffName]);
+
+	   -- Put this debuff in our history
+	   D.DebuffHistory[iterator] = DebuffName;
+
+	   -- This is a useless comment
+	   iterator = iterator + 1;
+       end
+
+   end
+
+   function D:Debuff_History_Get (Index, Colored)
+
+       local HumanIndex = iterator - Index;
+
+       if HumanIndex < 1 then
+	   HumanIndex = HumanIndex + DC.DebuffHistoryLength;
+       end
+
+       if not D.DebuffHistory[HumanIndex] then
+	   return "|cFF777777Empty|r";
+       end
+
+       if Colored then
+	   --Dcr:Debug(D.DebuffHistory[HumanIndex], DebuffHistHashTable[D.DebuffHistory[HumanIndex]]);
+	   return D:ColorText(D.DebuffHistory[HumanIndex], "FF" .. DC.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex]]])
+       else
+	   return D.DebuffHistory[HumanIndex];
+       end
+   end
+
+end
 
 -- Scanning functionalities {{{
 -------------------------------------------------------------------------------

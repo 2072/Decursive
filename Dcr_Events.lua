@@ -35,6 +35,8 @@ local BC = D.BC;
 local BS = D.BS;
 local DC = DcrC;
 
+D.DebuffUpdateRequest = 0;
+
 function D:GroupChanged () -- {{{
     -- this will trigger an update of the unit array
     D.Groups_datas_are_invalid = true;
@@ -186,6 +188,7 @@ end
 -- This function update Decursive states :
 --   - Clear the black list
 --   - Execute things we couldn't do when in combat
+D.Status.MaxConcurentUpdateDebuff = 0;
 function D:SheduledTasks() -- {{{
 
     --D:Debug("Schedul called");
@@ -212,6 +215,12 @@ function D:SheduledTasks() -- {{{
     if (self.Status.Combat and not InCombatLockdown()) then -- just in case...
 	D:LeaveCombat();
     end
+
+    if D.DebuffUpdateRequest > D.Status.MaxConcurentUpdateDebuff then
+	D.Status.MaxConcurentUpdateDebuff = D.DebuffUpdateRequest;
+    end
+
+    D.DebuffUpdateRequest = 0;
 
 end --}}}
 
@@ -267,7 +276,13 @@ end
 
 function D:SpecialEvents_UnitDebuffGained (UnitID, debuffName, applications, debuffType, texture, rank, index)
     D:Debug("Debuff gained, UnitId: ", UnitID, debuffName);
+
     if self.profile.ShowDebuffsFrame and UnitID ~= "target" then
+
+	if UnitID ~= "focus" then -- focus can be an enemy and get a lot of debuff...
+	    D:Debuff_History_Add( debuffName, debuffType );
+	end
+
 	self.MicroUnitF:UpdateMUFUnit(UnitID);
     elseif not self.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
 	D:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);

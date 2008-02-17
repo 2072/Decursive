@@ -452,10 +452,13 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
 
     if (MF and MF.Shown) then
 	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
-	-- but we don't miss any event
+	-- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
 	if (not D:IsEventScheduled("Update"..unit)) then
-	    D:ScheduleEvent("Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate, MF, false, false);
+	    D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
+	    D:ScheduleEvent("Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false);
 	    D:Debug("Update scheduled for, ", unit, MF.ID);
+
+
 	    return true; -- return value used to aknowledge that the function actually did something
 	end
     end

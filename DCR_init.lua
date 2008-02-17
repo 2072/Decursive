@@ -98,6 +98,7 @@ DC.CURSE	= 4;
 DC.POISON	= 8;
 DC.DISEASE	= 16;
 DC.CHARMED	= 32;
+DC.NOTYPE	= 64;
 
 
 DC.NORMAL		    = 8;
@@ -120,6 +121,10 @@ DC.PET = SPELL_TARGET_TYPE8_DESC;
 
 -- Holder for 'Rank #' translation
 DC.RANKNUMTRANS = false;
+
+DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage creation
+
+D.DebuffHistory = {};
 
 D.MFContainer = false;
 D.LLContainer = false;
@@ -245,6 +250,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	);
 
 	if (D.profile.debugging) then
+	    local HistoryIndex = 1;
 	    local cat2 = D.T:AddCategory(
 	    'text', "Debugging info",
 	    'columns', 2,
@@ -267,6 +273,28 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    'text', "Afflicted units count in range:",
 	    'text2',  D.MicroUnitF.UnitsDebuffedInRange
 	    );
+
+	    cat2:AddLine(
+	    'text', "Max Concurrent update events:",
+	    'text2',  D.Status.MaxConcurentUpdateDebuff
+	    );
+
+
+	    cat2:AddLine(
+	    'text', "Debuff seen history:",
+	    'text2',  " "
+	    );
+
+	    while HistoryIndex < 10 do
+		cat2:AddLine(
+		'text', HistoryIndex,
+		'text2',  D:Debuff_History_Get (HistoryIndex, true)
+		);
+
+		HistoryIndex = HistoryIndex + 1;
+
+	    end
+
 	end
 
 
@@ -306,6 +334,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	[DC.POISON]	= "22DD22";
 	[DC.DISEASE]	= "995533";
 	[DC.CHARMED]	= "FF0000";
+	[DC.NOTYPE]	= "AAAAAA";
     }
 
     -- /script DC.SpellsToUse[D.BS["Dampen Magic"]] = {Types = {DC.MAGIC, DC.DISEASE, DC.POISON},IsBest = false}; D:Configure();
@@ -582,6 +611,7 @@ function D:OnProfileEnable()
     D.Status.UnitNum = 0;
     D.Status.DelayedFunctionCalls = {};
     D.Status.DelayedFunctionCallsCount = 0;
+    D.Status.MaxConcurentUpdateDebuff = 0;
 
     -- if we log in and we are already fighting...
     if (InCombatLockdown()) then 

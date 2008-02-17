@@ -312,7 +312,8 @@ end -- }}}
 
 function LiveList:DelayedGetDebuff(UnitID) -- {{{
     if not D:IsEventScheduled("GetDebuff"..UnitID) then
-	D:ScheduleEvent("GetDebuff"..UnitID, self.GetDebuff, D.profile.ScanTime / 2, self, UnitID);
+	D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
+	D:ScheduleEvent("GetDebuff"..UnitID, self.GetDebuff, (D.profile.ScanTime / 2) * (1 + floor(D.DebuffUpdateRequest / 7.5)), self, UnitID);
     end
 end -- }}}
 
