@@ -213,6 +213,9 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.OPT_HIDEMFS_NEVER]	    = "Jamais",
     [LOC.OPT_HIDEMFS_NEVER_DESC]    = "Ne jamais masquer la fenêtre automatiquement.",
 
+    [LOC.OPT_ADDDEBUFFFHIST]		= "Ajouter une affliction récente",
+    [LOC.OPT_ADDDEBUFFFHIST_DESC]	= "Ajouter une affliction depuis l'historique",
+
     [LOC.OPT_SHOWBORDER] =  "Afficher la bordure colorée des classes",
     [LOC.OPT_SHOWBORDER_DESC] =  "Une bordure colorée représentant la classe de l'unité est affichée autour des micro-portraits",
     [LOC.OPT_MAXMFS] = "Nombre maximum d'unités affichées",
@@ -265,7 +268,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.OPT_RESETDTDCRDEFAULT] = "Met '%s' aux valeurs par défaut de Decursive",
     [LOC.OPT_USERDEBUFF] = "Cette affliction ne fait pas partie de la liste des afflictions par défaut de Decursive",
     [LOC.OPT_DEBUFFENTRY_DESC] = "Sélectionnez quelle classe doit être ignorée pour cette affliction",
-    [LOC.OPT_ADDDEBUFF] = "Ajouter une affliction à la liste",
+    [LOC.OPT_ADDDEBUFF] = "Ajouter une affliction",
     [LOC.OPT_ADDDEBUFF_DESC] = "Ajoute une nouvelle affliction à cette liste",
     [LOC.OPT_ADDDEBUFF_USAGE] = "<Nom de l'affliction>",
     [LOC.OPT_READDDEFAULTSD] = "Ré-ajouter les afflictions par défaut",

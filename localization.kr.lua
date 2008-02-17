@@ -216,6 +216,9 @@ L:RegisterTranslations("koKR", function() return {
     [LOC.OPT_HIDEMFS_NEVER]	    = LOC.OPT_HIDEMFS_NEVER,
     [LOC.OPT_HIDEMFS_NEVER_DESC]    = LOC.OPT_HIDEMFS_NEVER_DESC,
 
+    [LOC.OPT_ADDDEBUFFFHIST]		= LOC.OPT_ADDDEBUFFFHIST,
+    [LOC.OPT_ADDDEBUFFFHIST_DESC]	= LOC.OPT_ADDDEBUFFFHIST_DESC,
+
 	[LOC.OPT_SHOWBORDER] = "직업 색상 테두리 표시",
 	[LOC.OPT_SHOWBORDER_DESC] = "MUF에 유닛의 직업에 따른 색상을 테두리로 표시합니다.",
 	[LOC.OPT_MAXMFS]  = "표시할 최대 유닛",

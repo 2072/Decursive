@@ -205,6 +205,9 @@ LOC.OPT_HIDEMFS_GROUP_DESC	= "Hide the MUF window when you are not in a raid";
 LOC.OPT_HIDEMFS_NEVER		= "Never";
 LOC.OPT_HIDEMFS_NEVER_DESC	= "Never auto-hide the MUF window";
 
+LOC.OPT_ADDDEBUFFFHIST		= "Add a recent affliction";
+LOC.OPT_ADDDEBUFFFHIST_DESC	= "Add an affliction using the history";
+
 LOC.OPT_GROWDIRECTION = "Reverse MUFs Display";
 LOC.OPT_GROWDIRECTION_DESC = "The MUFs will be displayed from bottom to top";
 
@@ -247,33 +250,33 @@ LOC.OPT_CHARMEDCHECK_DESC = "If checked you'll be able to see and deal with char
 LOC.OPT_POISONCHECK_DESC = "If checked you'll be able to see and cure poisoned units";
 LOC.OPT_DISEASECHECK_DESC = "If checked you'll be able to see and cure diseased units";
 LOC.OPT_CURSECHECK_DESC = "If checked you'll be able to see and cure cursed units";
-LOC.OPT_DEBUFFFILTER = "Debuff filtering";
-LOC.OPT_DEBUFFFILTER_DESC = "Select debuffs to filter out by name and class while you are in combat";
+LOC.OPT_DEBUFFFILTER = "Affliction filtering";
+LOC.OPT_DEBUFFFILTER_DESC = "Select afflictions to filter out by name and class while you are in combat";
 LOC.OPT_MACROOPTIONS = "Macro options";
 LOC.OPT_MACROOPTIONS_DESC = "Set the behaviour of the macro created by Decursive";
 LOC.OPT_MACROBIND = "Set the macro binding key";
 LOC.OPT_MACROBIND_DESC = "Defines the key on which the 'Decursive' macro will be called.\n\nPress the key and hit your 'Enter' keyboard key to save the new assignment (with your mouse cursor over the edit field)";
 LOC.OPT_RESETOPTIONS = "Reset options to defaults";
 LOC.OPT_RESETOPTIONS_DESC =  "Reset the current profile to the default values";
-LOC.OPT_REMOVESKDEBCONF = "Are you sure you want to remove\n '%s' \nfrom Decursive's debuff skip list?";
+LOC.OPT_REMOVESKDEBCONF = "Are you sure you want to remove\n '%s' \nfrom Decursive's affliction skip list?";
 LOC.OPT_RESTPROFILECONF = "Are you sure you want to reset the profile\n '(%s) %s'\n to default options?";
 LOC.OPT_PROFILERESET = "Profile reset...";
 LOC.OPT_AFFLICTEDBYSKIPPED = "%s afflicted by %s will be skipped";
 LOC.OPT_DEBCHECKEDBYDEF = "\n\nChecked by default";
 LOC.OPT_ALWAYSIGNORE = "Also ignore when not in combat";
-LOC.OPT_ALWAYSIGNORE_DESC = "If checked, this debuff will also be ignored when you are not in combat";
-LOC.OPT_REMOVETHISDEBUFF = "Remove this debuff";
+LOC.OPT_ALWAYSIGNORE_DESC = "If checked, this affliction will also be ignored when you are not in combat";
+LOC.OPT_REMOVETHISDEBUFF = "Remove this affliction";
 LOC.OPT_REMOVETHISDEBUFF_DESC = "Removes '%s' from the skip list";
-LOC.OPT_RESETDEBUFF = "Reset this debuff";
+LOC.OPT_RESETDEBUFF = "Reset this affliction";
 LOC.OPT_RESETDTDCRDEFAULT = "Resets '%s' to Decursive default";
-LOC.OPT_USERDEBUFF = "This Debuff is not part of Decursive's default debuffs";
-LOC.OPT_DEBUFFENTRY_DESC = "Select what class should be ignored in combat when afflicted by this debuff";
-LOC.OPT_ADDDEBUFF = "Add a debuff to the list";
-LOC.OPT_ADDDEBUFF_DESC = "Adds a new debuff to this list";
-LOC.OPT_ADDDEBUFF_USAGE = "<Debuff name>";
-LOC.OPT_READDDEFAULTSD = "Re-add default Debuffs";
-LOC.OPT_READDDEFAULTSD_DESC1 = "Add missing Decursive's default debuffs to this list\nYour settings won't be changed";
-LOC.OPT_READDDEFAULTSD_DESC2 = "All Decursive's  default debuffs are in this list";
+LOC.OPT_USERDEBUFF = "This affliction is not part of Decursive's default afflictions";
+LOC.OPT_DEBUFFENTRY_DESC = "Select what class should be ignored in combat when afflicted by this affliction";
+LOC.OPT_ADDDEBUFF = "Add a custom affliction";
+LOC.OPT_ADDDEBUFF_DESC = "Adds a new affliction to this list";
+LOC.OPT_ADDDEBUFF_USAGE = "<Affliction name>";
+LOC.OPT_READDDEFAULTSD = "Re-add default afflictions";
+LOC.OPT_READDDEFAULTSD_DESC1 = "Add missing Decursive's default afflictions to this list\nYour settings won't be changed";
+LOC.OPT_READDDEFAULTSD_DESC2 = "All Decursive's default afflictions are in this list";
 
 LOC.OPT_LVONLYINRANGE = "Units in range only";
 LOC.OPT_LVONLYINRANGE_DESC = "Only units in dispel range will be shown in the live-list";
@@ -523,6 +526,9 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_HIDEMFS_GROUP_DESC] = true,
     [LOC.OPT_HIDEMFS_NEVER] = true,
     [LOC.OPT_HIDEMFS_NEVER_DESC] = true,
+
+    [LOC.OPT_ADDDEBUFFFHIST]		= true;
+    [LOC.OPT_ADDDEBUFFFHIST_DESC]	= true;
 
     [LOC.OPT_GROWDIRECTION] = true,
     [LOC.OPT_GROWDIRECTION_DESC] = true,

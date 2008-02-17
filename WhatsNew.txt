@@ -1,7 +1,7 @@
-Decursive 2.1.0 by Archarodim  (2008-02-10)
+Decursive 2.1.0b2 by Archarodim  (2008-02-17)
 
 
-Changes from Decursive 2.0.4 to Decursive 2.1.0
+Changes from Decursive 2.0.4 to Decursive 2.1.0b2
 
 * Important changes:
 
@@ -21,6 +21,9 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0
 
 - New option: "Colors" in the "Micro Unit Frame Settings" sub-menu
   It is now possible to change all the MUFs colors.
+
+- It is now possible to add afflictions to the filters from a list of recently
+  seen afflictions instead of typing their names.
 
 - The cure order priorities are now saved per class
   (This change resets your cure order priorities to default values)

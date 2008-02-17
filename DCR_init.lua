@@ -288,7 +288,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    while HistoryIndex < 10 do
 		cat2:AddLine(
 		'text', HistoryIndex,
-		'text2',  D:Debuff_History_Get (HistoryIndex, true)
+		'text2',  (D:Debuff_History_Get (HistoryIndex, true))
 		);
 
 		HistoryIndex = HistoryIndex + 1;

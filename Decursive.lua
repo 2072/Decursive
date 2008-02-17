@@ -314,14 +314,14 @@ do
        end
 
        if not D.DebuffHistory[HumanIndex] then
-	   return "|cFF777777Empty|r";
+	   return "|cFF777777Empty|r", false;
        end
 
        if Colored then
 	   --Dcr:Debug(D.DebuffHistory[HumanIndex], DebuffHistHashTable[D.DebuffHistory[HumanIndex]]);
-	   return D:ColorText(D.DebuffHistory[HumanIndex], "FF" .. DC.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex]]])
+	   return D:ColorText(D.DebuffHistory[HumanIndex], "FF" .. DC.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex]]]), true;
        else
-	   return D.DebuffHistory[HumanIndex];
+	   return D.DebuffHistory[HumanIndex], true;
        end
    end
 

@@ -1,7 +1,7 @@
-Decursive 2.1.0 par Archarodim  (2008-02-10)
+Decursive 2.1.0b2 par Archarodim  (2008-02-17)
 
 
-Changements entre Decursive 2.0.4 et Decursive 2.1.0
+Changements entre Decursive 2.0.4 et Decursive 2.1.0b2
 
 * Changements importants :
 
@@ -22,6 +22,9 @@ Changements entre Decursive 2.0.4 et Decursive 2.1.0
 
 - Nouvelle option : "Couleurs" dans les options des micro-portraits.
   Toutes les couleurs des micro-portraits peuvent être modifiées.
+
+- Il est désormais possible d'ajouter une affliction aux filtres en utilisant
+  un historique des afflictions récentes au lieu de taper leur noms.
 
 - Les priorités de guérison sont désormais sauvegardées par classe.
   (Ce changement remet aux valeurs par défaut vos priorités de guérison)

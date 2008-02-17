@@ -592,7 +592,6 @@ D.options = { -- {{{
 		    disabled = function() return D.Status.Combat end,
 		    order = 1200,
 		},
-		
 		AutoHide = {
 		    type = "text",
 		    name = L[D.LOC.OPT_AUTOHIDEMFS],
@@ -633,7 +632,6 @@ D.options = { -- {{{
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    order = 1300,
 		},
-		
 		StickToRight = {
 		    type = "toggle",
 		    name = L[D.LOC.OPT_STICKTORIGHT],
@@ -1864,6 +1862,30 @@ do -- this is a closure, it's a bit like {} blocks in C
 	return true;
     end
 
+    local DebuffHistTable = {};
+    local First = "";
+
+    local GetHistoryDebuff = function ()
+	local DebuffName, exists, index;
+
+	for index=1, DC.DebuffHistoryLength do
+	    DebuffName, exists = D:Debuff_History_Get (index, true);
+
+	    if not exists or index == 1 and DebuffName == First then
+		break;
+	    end
+
+	    if index == 1 then
+		First = DebuffName;
+	    end
+
+	    DebuffHistTable[index] = DebuffName;
+	    index = index + 1;
+	end
+
+	return DebuffHistTable;
+    end
+
     function D:CreateDropDownFiltersMenu()
 	DebuffsSkipList	    = D.profile.DebuffsSkipList;
 	DefaultDebuffsSkipList    = D.defaults.DebuffsSkipList;
@@ -1891,6 +1913,20 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    get = false,
 	    set = AddFunc,
 	    order = 100 + num,
+	};
+
+	num = num + 1;
+
+	DebuffsSubMenu["addFromHist"] = {
+	    type = "text",
+	    name = L[D.LOC.OPT_ADDDEBUFFFHIST], --"Add from Debuff history",
+	    desc = L[D.LOC.OPT_ADDDEBUFFFHIST_DESC], --"Add a recently seen debuff",
+	    disabled = function () GetHistoryDebuff(); return (#DebuffHistTable == 0) end,
+	    get = function() GetHistoryDebuff(); return false; end,
+	    set = function(value)
+		AddFunc(D:RemoveColor(value)); end,
+	    order = 100 + num,
+	    validate = DebuffHistTable, --GetHistoryDebuff(),
 	};
 
 

@@ -38,6 +38,10 @@ function D:ColorText (text, color) --{{{
     return "|c".. color .. text .. "|r";
 end --}}}
 
+function D:RemoveColor (text)
+    return string.sub(text, 11, -3);
+end
+
 function D:MakePlayerName (name) --{{{
     if not name then name = "NONAME" end
     return "|cFFFFAA22|Hplayer:" .. name .. "|h" .. string.upper(name) .. "|h|r";
