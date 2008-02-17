@@ -592,43 +592,32 @@ D.options = { -- {{{
 		    disabled = function() return D.Status.Combat end,
 		    order = 1200,
 		},
+		
 		AutoHide = {
-		    type = "group",
+		    type = "text",
 		    name = L[D.LOC.OPT_AUTOHIDEMFS],
 		    desc = L[D.LOC.OPT_AUTOHIDEMFS_DESC],
 		    order = 1210,
-		    args = {
-			Never = {
-			    type = "toggle",
-			    name = L[D.LOC.OPT_HIDEMFS_NEVER],
-			    desc = L[D.LOC.OPT_HIDEMFS_NEVER_DESC],
-			    order = 1210,
-			    get = function() return  D.profile.AutoHideDebuffsFrame == 0 end,
-			    set = function() D.profile.AutoHideDebuffsFrame = 0 end,
-			},
-			Solo = {
-			    type = "toggle",
-			    name = L[D.LOC.OPT_HIDEMFS_SOLO],
-			    desc = L[D.LOC.OPT_HIDEMFS_SOLO_DESC],
-			    order = 1220,
-			    get = function() return  D.profile.AutoHideDebuffsFrame == 1 end,
-			    set = function()
-				D.profile.AutoHideDebuffsFrame = 1;
-				D:AutoHideShowMUFs();
-			    end,
-			},
-			GroupNoRaid = {
-			    type = "toggle",
-			    name = L[D.LOC.OPT_HIDEMFS_GROUP],
-			    desc = L[D.LOC.OPT_HIDEMFS_GROUP_DESC],
-			    order = 1230,
-			    get = function() return  D.profile.AutoHideDebuffsFrame == 2 end,
-			    set = function()
-				D.profile.AutoHideDebuffsFrame = 2;
-				D:AutoHideShowMUFs();
-			    end,
-			}
-		    }
+		    validate	    = {L[D.LOC.OPT_HIDEMFS_NEVER],	L[D.LOC.OPT_HIDEMFS_SOLO],	L[D.LOC.OPT_HIDEMFS_GROUP]},
+		    validateDesc    = {
+			[L[D.LOC.OPT_HIDEMFS_NEVER]]	= L[D.LOC.OPT_HIDEMFS_NEVER_DESC],
+			[L[D.LOC.OPT_HIDEMFS_SOLO]]	= L[D.LOC.OPT_HIDEMFS_SOLO_DESC],
+			[L[D.LOC.OPT_HIDEMFS_GROUP]]	= L[D.LOC.OPT_HIDEMFS_GROUP_DESC]
+		    },
+		    set = function(value)
+			--Dcr:Debug(value);
+			local GetUseableValue = {
+			    [L[D.LOC.OPT_HIDEMFS_NEVER]]	= 0,
+			    [L[D.LOC.OPT_HIDEMFS_SOLO]]		= 1,
+			    [L[D.LOC.OPT_HIDEMFS_GROUP]]	= 2,
+			};
+			D.profile.AutoHideDebuffsFrame = GetUseableValue[value];
+			D:AutoHideShowMUFs();
+		    end,
+		    get = function()
+			local GetUseableNames = {L[D.LOC.OPT_HIDEMFS_NEVER],	L[D.LOC.OPT_HIDEMFS_SOLO],	L[D.LOC.OPT_HIDEMFS_GROUP]};
+			return  GetUseableNames[D.profile.AutoHideDebuffsFrame + 1];
+		    end,
 		},
 		GrowToTop = {
 		    type = "toggle",
