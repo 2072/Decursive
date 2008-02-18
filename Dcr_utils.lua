@@ -55,7 +55,7 @@ function D:PetUnitName (Unit, Check) -- {{{
 	Dcr:Debug("Name of %s is unknown", Unit);
     end
 
-    if not Check or (not UnitIsPlayer(Unit) and not Unit == "focus") then
+    if not Check or (not UnitIsPlayer(Unit) and Unit ~= "focus") then
 	Name =  DC.PET .. " - " .. Name;
     end
     
