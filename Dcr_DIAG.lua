@@ -95,21 +95,44 @@ do
 	    ["AceAddon-2.0"]	        = 57245,
 	    ["SpecialEvents-Aura-2.0"]  = 54669,
 	    ["Babble-Class-2.2"]	= 54287 * 100000 + 40629, -- 40629 is AceLocale revision
-	    ["Babble-Spell-2.2"]	= 58622 * 100000 + 40629, -- 40629 is AceLocale revision
+	    --["Babble-Spell-2.2"]	= 58622 * 100000 + 40629, -- 40629 is AceLocale revision
 	    ["Dewdrop-2.0"]		= 56529,
 	    ["Waterfall-1.0"]		= 56985,
 	    ["Tablet-2.0"]		= 55567,
 	    ["FuBarPlugin-2.0"]		= 57544,
 	}; -- }}}
 
-	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary|r) could not be found.\n";
+	--LibStub:GetLibrary
+	local UseLibStub = {
+	    ["LibBabble-Spell-3.0"] = 61882,
+	};
+
+	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
 	local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use |cFF00FF00JWoWUpdater|r (Google it) to update |cFFFF0000ALL|r your Ace add-ons properly.";
 
 	local ErrorFound = false;
 	local Errors = {};
 	FatalOccured = false;
 
-	-- Check each version of the required libraries
+	-- Check each version of the required libraries that use LibStub
+	if LibStub then
+	    for k,v in pairs(UseLibStub) do
+		if LibStub:GetLibrary(k, true) then
+		    if select(2, LibStub:GetLibrary(k)) < v then
+			table.insert(Errors, ("The shared library |cFF00FF00%s|r is out-dated, revision |cFF0077FF%s|r at least is required.\n"):format(k, tostring(v)));
+		    end
+		else
+		    table.insert(Errors, ("The shared library |cFF00FF00%s|r could not be found!!!\n"):format(k));
+		    FatalOccured = true;
+		end
+	    end
+	else
+	    table.insert(Errors, GenericErrorMessage1);
+	    FatalOccured = true;
+	end
+
+
+	-- Check each version of the required libraries that use AceLibrary
 	if AceLibrary and AceLibrary:HasInstance("AceLibrary") then
 
 	    for k,v in pairs(LibrariesToCheck) do
