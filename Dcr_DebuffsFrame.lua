@@ -108,7 +108,8 @@ local AvailableModifier = { -- {{{
 
 -- Updates the color table
 function MicroUnitF:RegisterMUFcolors ()
-    MF_colors = D.profile.MF_colors;
+   -- MF_colors = D.profile.MF_colors; -- this should be enough but is not because D.profile can change at unexpected times....
+    D:tcopy(MF_colors, D.profile.MF_colors);
 end
 
 -- defines what is printed when the object is read as a string

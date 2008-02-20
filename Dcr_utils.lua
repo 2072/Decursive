@@ -127,7 +127,7 @@ function D:tcopy(to, from)   -- "to" must be a table (possibly empty)
     end
     for k,v in pairs(from) do
 	if(type(v)=="table") then
-	    to[k] = {}
+	    to[k] = {}; -- this generate garbage
 	    D:tcopy(to[k], v);
 	else
 	    to[k] = v;

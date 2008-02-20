@@ -654,8 +654,8 @@ function D:OnProfileEnable()
     D.Groups_datas_are_invalid = true;
     D:CreateDropDownFiltersMenu();
 
-    D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors);
     D:CreateDropDownMUFcolorsMenu();
+    D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors);
 
     D.MicroUnitF:ResetAllPositions ();
   

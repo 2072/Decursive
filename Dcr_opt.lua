@@ -1953,13 +1953,15 @@ end
 
 do
 
-    local MF_colors = {};
+    local L_MF_colors = {};
     local function GetNameAndDesc (ColorReason)
 	local name, desc;
 
+	L_MF_colors = D.profile.MF_colors;
+
 	if (type(ColorReason) == "number" and ColorReason <= 6) then
 
-	    name = D:ColorText(DC.AvailableButtonsReadable[ColorReason], D:NumToHexColor(MF_colors[ColorReason]));
+	    name = D:ColorText(DC.AvailableButtonsReadable[ColorReason], D:NumToHexColor(L_MF_colors[ColorReason]));
 	    desc = (L[D.LOC.COLORALERT]):format(DC.AvailableButtonsReadable[ColorReason]);
 
 	elseif (type(ColorReason) == "number")	    then
@@ -1984,7 +1986,7 @@ do
 		Text =  L[D.LOC.CHARMED];
 	    end
 
-	    name = ("%s %s"):format(L[D.LOC.UNITSTATUS], D:ColorText(Text, D:NumToHexColor(MF_colors[ColorReason])) );
+	    name = ("%s %s"):format(L[D.LOC.UNITSTATUS], D:ColorText(Text, D:NumToHexColor(L_MF_colors[ColorReason])) );
 	    desc = (L[D.LOC.COLORSTATUS]):format(Text);
 
 	end
@@ -1993,14 +1995,15 @@ do
     end
 
     local function GetColor (handler)
-	-- Dcr:PrintLiteral("Name: " .. handler["ColorReason"], unpack(MF_colors[handler["ColorReason"]]));
+	-- Dcr:PrintLiteral("Name: " .. handler["ColorReason"], unpack(L_MF_colors[handler["ColorReason"]]));
 	return unpack(D.profile.MF_colors[handler["ColorReason"]]);
     end
 
     local function SetColor (handler, r, g, b, a)
-	D.profile.MF_colors[handler["ColorReason"]] = {r, g, b, a and a or 1};
+	D.profile.MF_colors[handler["ColorReason"]] = {r, g, b, (a and a or 1)};
+--	D:PrintLiteral(D.profile.MF_colors[handler["ColorReason"]]); --XXX
 	D.MicroUnitF:RegisterMUFcolors();
-	MF_colors = D.profile.MF_colors;
+	L_MF_colors = D.profile.MF_colors;
 
 	local NameAndDesc = GetNameAndDesc(handler["ColorReason"]);
 
@@ -2016,13 +2019,19 @@ do
  
 
     function D:CreateDropDownMUFcolorsMenu()
-	MF_colors = D.profile.MF_colors;
+	L_MF_colors = D.profile.MF_colors;
 
 	local MUFsColorsSubMenu = {};
 	local num = 0;
 	local NameAndDesc = {};
 
-	for ColorReason, Color in pairs(MF_colors) do
+	for ColorReason, Color in pairs(L_MF_colors) do
+
+
+	    if not L_MF_colors[ColorReason][4] then
+		D.profile.MF_colors[ColorReason][4] = 1;
+	    end
+
 
 	    if type(ColorReason) == "number" and (ColorReason - 2) == 6 then
 		MUFsColorsSubMenu["Spece"] = {
