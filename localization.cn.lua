@@ -82,6 +82,7 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.SPELL_REMOVE_LESSER_CURSE]	=	"解除次级诅咒", -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SPELL_REMOVE_CURSE]	=	"解除诅咒", -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SPELL_PURGE]		=	"净化术", -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CYCLONE]             = '飓风术',  -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]    = "显示或隐藏一键驱散状态条",
 
@@ -115,6 +116,8 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.REVERSE_LIVELIST]= "反向显示实时列表",
     [LOC.TIE_LIVELIST]    = "根据状态条是否可见 显示/隐藏 实时列表",
     [LOC.HIDE_LIVELIST]   = "隐藏实时列表",
+    [LOC.OPT_CREATE_VIRTUAL_DEBUFF]		= "建立虚拟效果测试",
+    [LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC]	= "让你看到产生这个效果的情况",
 
     [LOC.AMOUNT_AFFLIC]   = "实时列表显示人数: ",
     [LOC.BLACK_LENGTH]    = "黑名单持续时间: ",
