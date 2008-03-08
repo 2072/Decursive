@@ -13,8 +13,8 @@
 
 ## X-License: GNU GPL
 
-## OptionalDeps: Ace2, Babble-2.2, LibBabble-Spell-3.0, LibStub, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0, SpecialEventsEmbed
-## X-Embeds: Ace2, Babble-2.2, LibBabble-Spell-3.0, LibStub, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0, SpecialEventsEmbed
+## OptionalDeps: Ace2, LibBabble-Spell-3.0, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0, SpecialEventsEmbed
+## X-Embeds: Ace2, LibBabble-Spell-3.0, LibBabble-Class-3.0, LibStub, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0, SpecialEventsEmbed
 
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat

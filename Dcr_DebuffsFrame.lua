@@ -505,7 +505,7 @@ function MicroUnitF:OnEnter() -- {{{
 	    -- Colored unit name
 	    -- D:ColorText(	    (D:PetUnitName(	  Unit, true    )) -- cannot be replaced by MF.UnitName, (UnitName is set by SetClassBorder only if class borders are displayed)
 	    D:ColorText(	    (D:PetUnitName(	  Unit, true    ))
-	    , "FF" .. ((UnitClass(Unit)) and BC:GetHexColor( (select(2, UnitClass(Unit))) ) or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
+	    , "FF" .. ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
 	end
 
 
@@ -968,7 +968,7 @@ do
     --		- The Alpha of the center and borders
     --	    This function also set the Status of the MUF that will be used in the tooltip
     --]=]
-    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ReturnValue, RangeStatus, Alpha, PrioChanged;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged;
     local profile = {};
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -1155,11 +1155,12 @@ do
 
 	    -- if the class changed
 	    if (Class and Class ~= self.UnitClass) then
+		ClassColor = DC.ClassesColors[Class];
 		-- update the border color (the four borders)
-		self.OuterTexture1:SetTexture( BC:GetColor(Class) );
-		self.OuterTexture2:SetTexture( BC:GetColor(Class) );
-		self.OuterTexture3:SetTexture( BC:GetColor(Class) );
-		self.OuterTexture4:SetTexture( BC:GetColor(Class) );
+		self.OuterTexture1:SetTexture(  unpack(ClassColor) );
+		self.OuterTexture2:SetTexture(  unpack(ClassColor) );
+		self.OuterTexture3:SetTexture(  unpack(ClassColor) );
+		self.OuterTexture4:SetTexture(  unpack(ClassColor) );
 
 		-- save the class for futur reference
 		self.UnitClass = Class;

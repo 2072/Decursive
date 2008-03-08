@@ -1186,7 +1186,7 @@ D.options = { -- {{{
 	},
 	GlorfindalMemorium = { -- {{{
 	    type = "execute",
-	    name = D:ColorText(L[D.LOC.GLOR1], "FF" .. BC:GetHexColor( "WARRIOR" )),
+	    name = D:ColorText(L[D.LOC.GLOR1], "FF" .. D:GetClassHexColor( "WARRIOR" )),
 	    desc = L[D.LOC.GLOR2],
 	    func = function ()
 
@@ -1709,7 +1709,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	return {
 	    type = "toggle",
-	    name = D:ColorText( BC[FormattedClass], "FF"..BC:GetHexColor(FormattedClass)) ..
+	    name = D:ColorText( BC[FormattedClass], "FF"..DC.HexClassColor[Class]) ..
 	    (CheckedByDefault and D:ColorText("  *", "FFFFAA00") or ""),
 	    desc = string.format(L[D.LOC.OPT_AFFLICTEDBYSKIPPED], BC[FormattedClass], DebuffName) ..
 	    (CheckedByDefault and D:ColorText(L[D.LOC.OPT_DEBCHECKEDBYDEF], "FFFFAA00") or "");
@@ -1734,8 +1734,8 @@ do -- this is a closure, it's a bit like {} blocks in C
     local function DebuffSubmenu (DebuffName, num)
 	local classes = {};
 
-	for Classe, Debuffs in pairs(skipByClass) do
-	    classes[Classe] = ClassCheckbox(Classe, DebuffName, num);
+	for Class, Debuffs in pairs(skipByClass) do
+	    classes[Class] = ClassCheckbox(Class, DebuffName, num);
 	    num = num + 1;
 	end
 

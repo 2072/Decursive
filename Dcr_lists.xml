@@ -635,7 +635,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_WARRIOR;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -657,7 +657,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_PRIEST;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -679,7 +679,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_MAGE;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -701,7 +701,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_WARLOCK;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -723,7 +723,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_HUNTER;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -745,7 +745,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_ROGUE;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -767,7 +767,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_DRUID;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -789,7 +789,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_SHAMAN;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>
@@ -811,7 +811,7 @@
 		    </OnClick>
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_PALADIN;
-			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr.BC:GetHexColor(this.ClassType)));
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
 	    </Button>

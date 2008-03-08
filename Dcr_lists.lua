@@ -33,6 +33,7 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = D.L;
 local BC = D.BC;
+local BCR = D.BCR;
 local BS = D.BS;
 local DC = DcrC;
 
@@ -197,7 +198,7 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
 			name = string.format("[ %s ]", DC.ClassNumToName[name]);
 		    end
 		end
-		Entry:SetText(id.." - "..D:ColorText(name, "FF"..BC:GetHexColor(classname)));
+		Entry:SetText(id.." - "..D:ColorText(name, "FF"..DC.HexClassColor[classname]));
 	    else
 		Entry:SetText("Error - NO name!");
 	    end
@@ -283,7 +284,7 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
 	    if (type(unit) == "string") then
 		_, D.profile.PriorityListClass[name] = UnitClass(unit);
 	    elseif unit > 10 then
-		D.profile.PriorityListClass[unit] = string.upper(BC:GetReverseTranslation(DC.ClassNumToName[unit]));
+		D.profile.PriorityListClass[unit] = string.upper(BCR[DC.ClassNumToName[unit]]);
 	    end
 
 	    DecursivePriorityListFrame.UpdateYourself = true;
@@ -357,7 +358,7 @@ function D:AddUnitToSkipList( unit) --{{{
 	    if (type(unit) == "string") then
 		_, D.profile.SkipListClass[name] = UnitClass(unit);
 	    elseif unit > 10 then
-		D.profile.SkipListClass[unit] = string.upper(BC:GetReverseTranslation(DC.ClassNumToName[unit]));
+		D.profile.SkipListClass[unit] = string.upper(BCR[DC.ClassNumToName[unit]]);
 	    end
 
 	    D:Debug("Unit %s added to the skip list", name);

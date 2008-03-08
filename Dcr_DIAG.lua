@@ -61,7 +61,7 @@ do
 
     local PrintMessage = function (message, ...) if DcrDiagStatus ~= 2 then Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
-    -- the beatiful error popup : {{{ -
+    -- the beautiful error popup : {{{ -
     StaticPopupDialogs["Decursive_Error_Frame"] = {
 	text = "|cFFFF0000Decursive Error:|r\n%s",
 	button1 = "OK",
@@ -94,7 +94,7 @@ do
 	    ["AceLocale-2.2"]		= 40629,
 	    ["AceAddon-2.0"]	        = 57245,
 	    ["SpecialEvents-Aura-2.0"]  = 54669,
-	    ["Babble-Class-2.2"]	= 54287 * 100000 + 40629, -- 40629 is AceLocale revision
+	    --["Babble-Class-2.2"]	= 54287 * 100000 + 40629, -- 40629 is AceLocale revision
 	    --["Babble-Spell-2.2"]	= 58622 * 100000 + 40629, -- 40629 is AceLocale revision
 	    ["Dewdrop-2.0"]		= 56529,
 	    ["Waterfall-1.0"]		= 56985,
@@ -104,7 +104,8 @@ do
 
 	--LibStub:GetLibrary
 	local UseLibStub = {
-	    ["LibBabble-Spell-3.0"] = 61882,
+	    ["LibBabble-Spell-3.0"] = 63731,
+	    ["LibBabble-Class-3.0"] = 63957,
 	};
 
 	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";

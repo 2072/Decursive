@@ -33,7 +33,9 @@ local D = Dcr;
 
 D.AOO	    = AceLibrary("AceOO-2.0");
 D.L	    = AceLibrary("AceLocale-2.2"):new("Dcr");
-D.BC	    = AceLibrary("Babble-Class-2.2");
+--D.BC	    = AceLibrary("Babble-Class-2.2");
+D.BC	    = LibStub("LibBabble-Class-3.0"):GetLookupTable();
+D.BCR	    = LibStub("LibBabble-Class-3.0"):GetReverseLookupTable();
 D.BS	    = LibStub("LibBabble-Spell-3.0"):GetLookupTable();
 --D.BS	    = AceLibrary("Babble-Spell-2.2");
 D.DewDrop   = AceLibrary("Dewdrop-2.0");
@@ -534,6 +536,10 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 		D.MacroSaveHooked = true;
 	    end
 	end); -- }}}
+
+
+	-- Create some useful cache tables
+	D:CreateClassColorTables();
 
     end
 

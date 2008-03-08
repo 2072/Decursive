@@ -32,6 +32,7 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = D.L;
 local BS = D.BS;
+local BC = D.BC;
 local DC = DcrC;
 
 function D:ColorText (text, color) --{{{
@@ -247,6 +248,51 @@ function D:SetCoords(t, A, B, C, D, E, F)
 	LRx, LRy = ( E - B + B*F - C*E ) / det, ( -D + A -(A*F) + C*D ) / det;
 	
 	t:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy);
+end
+
+do
+
+    DC.ClassesColors = { };
+
+    function D:GetClassColor (EnglishClass)
+	EnglishClass = string.upper(EnglishClass);
+	if not DC.ClassesColors[EnglishClass] then
+	    if RAID_CLASS_COLORS and RAID_CLASS_COLORS[EnglishClass] then
+		DC.ClassesColors[EnglishClass] = { RAID_CLASS_COLORS[EnglishClass].r, RAID_CLASS_COLORS[EnglishClass].g, RAID_CLASS_COLORS[EnglishClass].b };
+	    else
+		DC.ClassesColors[EnglishClass] = { 0.63, 0.63, 0.63 };
+	    end
+	    DC.ClassesColors[BC[D:MakeProperEnglishClassName(EnglishClass)]] = DC.ClassesColors[EnglishClass];
+	end
+	return unpack(DC.ClassesColors[EnglishClass]);
+    end
+
+    DC.HexClassColor = { };
+
+    function D:GetClassHexColor(EnglishClass)
+	if not DC.HexClassColor[EnglishClass] then
+	    local r, g, b = self:GetClassColor(EnglishClass)
+	    DC.HexClassColor[EnglishClass] = string.format("%02x%02x%02x", r * 255, g * 255, b * 255);
+	    DC.HexClassColor[BC[D:MakeProperEnglishClassName(EnglishClass)]] = DC.HexClassColor[EnglishClass];
+
+	end
+
+	return DC.HexClassColor[EnglishClass];
+    end
+
+
+    function D:CreateClassColorTables ()
+    if RAID_CLASS_COLORS then
+	local class, colors;
+	for class in pairs(RAID_CLASS_COLORS) do
+	    D:GetClassHexColor(class);
+	    D:GetClassColor(class);
+	end
+    else
+	Dcr:Error("global RAID_CLASS_COLORS does not exist...");
+    end
+    end
+
 end
 
 DcrLoadedFiles["Dcr_utils.lua"] = true;
