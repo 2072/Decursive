@@ -238,7 +238,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
 	self.UnitClass = select(2, UnitClass(UnitID));
 	self.UnitNameFontString:SetText(self.UnitName);
 	if self.UnitClass then
-	    self.UnitNameFontString:SetTextColor(BC:GetColor(self.UnitClass));
+	    self.UnitNameFontString:SetTextColor(unpack(DC.ClassesColors[self.UnitClass]));
 	end
 	self.PrevUnitName =  self.UnitName;
 	D:Debug("(LiveList) Updating %d with %s", self.ID, UnitID);
