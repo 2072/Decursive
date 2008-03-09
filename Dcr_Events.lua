@@ -78,7 +78,7 @@ local last_petType = false;
 
 function D:UpdatePlayerPet () -- {{{
     curr_petType = UnitCreatureFamily("pet");
-    Dcr:Debug("|cFF0000FFCurrent Pet type is %s|r", curr_petType);
+    D:Debug("|cFF0000FFCurrent Pet type is %s|r", curr_petType);
 
     -- if we had a pet and lost it, retry once later...
     if (last_petType and not curr_petType and not OncePetRetry) then

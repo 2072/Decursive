@@ -97,6 +97,7 @@ function LiveList:DisplayItem (ID, UnitID, Debuff) -- {{{
     --D:Debug("XXXX => Updating ll item %d for %s", ID, UnitID);
 
     if not LVItem.IsShown then
+	D:Debug("(LiveList) Showing LVItem %d", ID);
 	LVItem.Frame:Show();
 	self.NumberShown = self.NumberShown + 1;
 	LVItem.IsShown = true;
@@ -274,11 +275,12 @@ function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
     D:Debug("(LiveList) Getting Debuff for ", UnitID);
-    if  UnitID == "target" and not UnitIsFriend(UnitID, "player") then
+    if (UnitID == "target" or UnitID == "mouseover") and not UnitIsFriend(UnitID, "player") then
 	if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] and D.ManagedDebuffUnitCache[UnitID][1].Type then
-	    D.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target debuff
+	    D.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target/mouseover debuff
 	    D.UnitDebuffed["target"] = false;
 	end
+	D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile.", UnitID);
 	return;
     end
 

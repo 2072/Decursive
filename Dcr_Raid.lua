@@ -73,7 +73,7 @@ function D:NameToUnit( Name ) --{{{
     end
 
     if D.Status.Unit_Array_NameToUnit[Name] ~= nil then
-	--Dcr:Debug("%s was found in cachetable to be %s", Name, D.Status.Unit_Array_NameToUnit[Name]);
+	--D:Debug("%s was found in cachetable to be %s", Name, D.Status.Unit_Array_NameToUnit[Name]);
 	return D.Status.Unit_Array_NameToUnit[Name];
     end
 

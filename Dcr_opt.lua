@@ -604,7 +604,7 @@ D.options = { -- {{{
 			[L[D.LOC.OPT_HIDEMFS_GROUP]]	= L[D.LOC.OPT_HIDEMFS_GROUP_DESC]
 		    },
 		    set = function(value)
-			--Dcr:Debug(value);
+			--D:Debug(value);
 			local GetUseableValue = {
 			    [L[D.LOC.OPT_HIDEMFS_NEVER]]	= 0,
 			    [L[D.LOC.OPT_HIDEMFS_SOLO]]		= 1,
@@ -1190,16 +1190,16 @@ D.options = { -- {{{
 	    desc = L[D.LOC.GLOR2],
 	    func = function ()
 
-		if not Dcr.MemoriumFrame then
-		    Dcr.MemoriumFrame = CreateFrame("Frame", "DcrMemorium", UIParent);
-		    local f = Dcr.MemoriumFrame;
+		if not D.MemoriumFrame then
+		    D.MemoriumFrame = CreateFrame("Frame", "DcrMemorium", UIParent);
+		    local f = D.MemoriumFrame;
 		    local w = 512; local h = 390;
 		    
 		    f:SetFrameStrata("DIALOG");
 		    f:EnableKeyboard(true);
 		    --f:EnableMouse(true);
-		    f:SetScript("OnKeyUp", function (frame, event, arg1, arg2) Dcr.MemoriumFrame:Hide(); end);
-		    --f:SetScript("OnMouseUp", function (frame, event, arg1, arg2) Dcr.MemoriumFrame:Hide(); end);
+		    f:SetScript("OnKeyUp", function (frame, event, arg1, arg2) D.MemoriumFrame:Hide(); end);
+		    --f:SetScript("OnMouseUp", function (frame, event, arg1, arg2) D.MemoriumFrame:Hide(); end);
 		    --[[
 		    f:SetScript("OnShow",
 			function ()
@@ -1302,7 +1302,7 @@ D.options = { -- {{{
 		    f:SetPoint("CENTER",0,0);
 
 		end
-		Dcr.MemoriumFrame:Show();
+		D.MemoriumFrame:Show();
 
 		--[[
 		
@@ -1995,7 +1995,7 @@ do
     end
 
     local function GetColor (handler)
-	-- Dcr:PrintLiteral("Name: " .. handler["ColorReason"], unpack(L_MF_colors[handler["ColorReason"]]));
+	-- D:PrintLiteral("Name: " .. handler["ColorReason"], unpack(L_MF_colors[handler["ColorReason"]]));
 	return unpack(D.profile.MF_colors[handler["ColorReason"]]);
     end
 
@@ -2012,7 +2012,7 @@ do
 
 	D.MicroUnitF:Delayed_Force_FullUpdate();
 
-	Dcr:Debug("MUF color setting %d changed.", handler["ColorReason"]);
+	D:Debug("MUF color setting %d changed.", handler["ColorReason"]);
     end
 
 
@@ -2068,8 +2068,8 @@ do
     end
 end
 
--- to test on 2.3 : /script Dcr:PrintLiteral(GetBindingAction(Dcr.profile.MacroBind));
--- to test on 2.3 : /script Dcr:PrintLiteral(GetBindingKey(D.CONF.MACROCOMMAND));
+-- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(Dcr.profile.MacroBind));
+-- to test on 2.3 : /script D:PrintLiteral(GetBindingKey(D.CONF.MACROCOMMAND));
 
 function D:SetMacroKey ( key )
 
@@ -2147,7 +2147,7 @@ function D:AutoHideShowMUFs ()
     else
 	-- if we want to hide the MUFs when in solo or not in raid
 	local InGroup = (GetNumRaidMembers() ~= 0 or (D.profile.AutoHideDebuffsFrame ~= 2 and GetNumPartyMembers() ~= 0) );
-	Dcr:Debug("AutoHideShowMUFs, InGroup: ", InGroup);
+	D:Debug("AutoHideShowMUFs, InGroup: ", InGroup);
 
 	-- if we are not in such a group
 	if not InGroup then

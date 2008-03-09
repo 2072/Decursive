@@ -30,6 +30,10 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0b2
 
 * Minor changes:
 
+- When moving the cursor quickly over friendly and hostile units, sometimes a
+  phantom affliction could appear in the live-list for 0.2 seconds this has
+  been fixed.
+
 - When a new MUF is created outside the screen, the MUF window is always
   automatically moved so that all MUFs are visible.
 

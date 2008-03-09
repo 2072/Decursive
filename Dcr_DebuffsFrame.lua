@@ -298,7 +298,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
 	if (RightEdge > UIParent:GetWidth() * UIParent:GetEffectiveScale()) then
 	    Handle_x = Handle_x - (RightEdge - UIParent:GetWidth() * UIParent:GetEffectiveScale());
-	    Dcr:Debug("put the MUF on the screen!!!");
+	    D:Debug("put the MUF on the screen!!!");
 	end
 
 	-- if the handle needs to be moved
@@ -546,7 +546,7 @@ function MicroUnitF:OnEnter() -- {{{
 		    -- Create a warning if the Unstable Affliction is detected
 		    if Debuff.Name == BS["Unstable Affliction"] then
 		    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
-			Dcr:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(	  Unit, true    ))));
+			D:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(	  Unit, true    ))));
 			PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
 		    end
 
@@ -944,7 +944,7 @@ function MicroUnitF.prototype:SetDebuffs() -- {{{
     end
 
     if (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
-	--Dcr:Debug("A debuff was found"); -- XXX
+	--D:Debug("A debuff was found"); -- XXX
 	self.IsDebuffed = true;
 	self.Debuff1Prio = D:GiveSpellPrioNum( self.Debuffs[1].Type );
 
@@ -952,7 +952,7 @@ function MicroUnitF.prototype:SetDebuffs() -- {{{
 	D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
 
     else
-	--Dcr:Debug("No debuff found"); -- XXX
+	--D:Debug("No debuff found"); -- XXX
 	self.IsDebuffed			= false;
 	self.Debuff1Prio		= false;
 	self.PrevDebuff1Prio		= false;

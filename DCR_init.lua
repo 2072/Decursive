@@ -924,7 +924,7 @@ function D:UpdateMacro ()
 	Spells[Prio] = Spell;
     end
 
-    --Dcr:PrintLiteral(Spells);
+    --D:PrintLiteral(Spells);
     if (next (Spells)) then
 	for i=1,4 do
 	    if (not Spells[i]) then
@@ -933,11 +933,11 @@ function D:UpdateMacro ()
 	end
     end
 
-    --Dcr:PrintLiteral(D.Status.CuringSpellsPrio);
+    --D:PrintLiteral(D.Status.CuringSpellsPrio);
     local MacroParameters = {
 	D.CONF.MACRONAME,
 	1,
-	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L[D.LOC.NOSPELL].."')",
+	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script D:Println('"..L[D.LOC.NOSPELL].."')",
 	1
     };
 

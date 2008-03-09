@@ -31,6 +31,10 @@ Changements entre Decursive 2.0.4 et Decursive 2.1.0b2
 
 * Changements mineurs :
 
+- Quand on déplaçait le curseur rapidement sur des unités amies et hostiles,
+  une affliction fantôme pouvait apparaître dans la liste des affligés pendant
+  0,2 secondes, cela a été corrigé.
+
 - Lorsqu'un nouveau micro-portrait est créé en dehors de l'écran, la fenêtre
   des micro-portraits est automatiquement déplacée de sorte que tous les
   micro-portraits soient visibles.
