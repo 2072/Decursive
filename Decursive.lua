@@ -195,7 +195,7 @@ function D:PlaySound (UnitID) --{{{
 	    --		Sound\\interface\\AuctionWindowOpen.wav
 	    PlaySoundFile(self.profile.SoundFile);
 	    --self:ScheduleEvent("Playsound", PlaySoundFile, 0, self.profile.SoundFile);
-	    Dcr:Debug("Sound Played!");
+	    D:Debug("Sound Played!");
 	    self.Status.SoundPlayed = true;
 	end
     end
@@ -294,7 +294,7 @@ do
 
 	   -- Register the name in the HashTable using the debuff type
 	   DebuffHistHashTable[DebuffName] = (DebuffType and DC.NameToTypes[DebuffType] or DC.NOTYPE);
-	   --Dcr:Debug(DebuffName, DebuffHistHashTable[DebuffName]);
+	   --D:Debug(DebuffName, DebuffHistHashTable[DebuffName]);
 
 	   -- Put this debuff in our history
 	   D.DebuffHistory[iterator] = DebuffName;
@@ -318,7 +318,7 @@ do
        end
 
        if Colored then
-	   --Dcr:Debug(D.DebuffHistory[HumanIndex], DebuffHistHashTable[D.DebuffHistory[HumanIndex]]);
+	   --D:Debug(D.DebuffHistory[HumanIndex], DebuffHistHashTable[D.DebuffHistory[HumanIndex]]);
 	   return D:ColorText(D.DebuffHistory[HumanIndex], "FF" .. DC.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex]]]), true;
        else
 	   return D.DebuffHistory[HumanIndex], true;
@@ -468,7 +468,7 @@ do
     function D:UnitCurableDebuffs (Unit, JustOne) -- {{{
 
 	if not Unit then
-	    Dcr:Debug("No unit supplied to UnitCurableDebuffs()");
+	    D:Debug("No unit supplied to UnitCurableDebuffs()");
 	    return false;
 	end
 
@@ -479,7 +479,7 @@ do
 	local AllUnitDebuffs, IsCharmed = self:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
 
 	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no debuff
-	    --Dcr:Debug("UnitCurableDebuffs(): GetUnitDebuffAll returned no debuff");
+	    --D:Debug("UnitCurableDebuffs(): GetUnitDebuffAll returned no debuff");
 	    return false, IsCharmed;
 	end
 
@@ -506,14 +506,14 @@ do
 	    -- test if we have to ignore this debuf  {{{ --
 	    if (self.profile.DebuffsToIgnore[Debuff.Name]) then
 		-- these are the BAD ones... the ones that make the target immune... abort this unit
-		--Dcr:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
+		--D:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
 		break; -- exit here
 	    end
 
 	    if (self.profile.BuffDebuff[Debuff.Name]) then
 		-- these are just ones you don't care about
 		continue = false;
-		--Dcr:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
+		--D:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
 	    end
 
 	    if (self.Status.Combat or self.profile.DebuffAlwaysSkipList[Debuff.Name]) then
@@ -531,7 +531,7 @@ do
 			    D:AddDelayedFunctionCall("ReScan"..Unit, D.MicroUnitF.UpdateMUFUnit, D.MicroUnitF, Unit);
 			end
 			
-			Dcr:Debug("UnitCurableDebuffs(): %s is configured to be skipped", Debuff.Name);
+			D:Debug("UnitCurableDebuffs(): %s is configured to be skipped", Debuff.Name);
 			continue = false;
 		    end
 		end
