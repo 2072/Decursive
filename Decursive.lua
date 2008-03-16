@@ -36,6 +36,15 @@ local BS = D.BS;
 local DC = DcrC;
 -------------------------------------------------------------------------------
 
+local pairs		= _G.pairs;
+local ipairs		= _G.ipairs;
+local type		= _G.type;
+local table		= _G.table;
+local UnitName		= _G.UnitName;
+local UnitDebuff	= _G.UnitDebuff;
+local UnitIsCharmed	= _G.UnitIsCharmed;
+local UnitCanAttack	= _G.UnitCanAttack;
+local UnitClass		= _G.UnitClass;
 
 
 -------------------------------------------------------------------------------
@@ -339,7 +348,7 @@ function D:GetUnitDebuff  (Unit, i) --{{{
     end
 
 
-    local Name, rank, Texture, Applications, TypeName  = UnitDebuff(Unit, i);
+    local Name, rank, Texture, Applications, TypeName = UnitDebuff(Unit, i);
     if (Name) then
 	return Name, TypeName, Applications, Texture;
     else
@@ -356,6 +365,8 @@ do
 
     local DcrC = DcrC; -- for faster access
 
+    local UnitIsCharmed	= _G.UnitIsCharmed;
+    local UnitCanAttack	= _G.UnitCanAttack;
 
     -- This is the core debuff scanning function of Decursive
     -- This function does more than just reporting Debuffs. it also detects charmed units

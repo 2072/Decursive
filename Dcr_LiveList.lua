@@ -49,6 +49,19 @@ D.ForLLDebuffedUnitsNum   = 0;
 -- temporary variables often used in function
 local Debuff, Debuffs, IsCharmed, MF, i, Index, RangeStatus;
 
+-- local shortcuts to often called global functions
+local _G		= _G;
+local pairs		= _G.pairs;
+local ipairs		= _G.ipairs;
+local next		= _G.next;
+local select		= _G.select;
+local table		= _G.table;
+local UnitExists	= _G.UnitExists;
+local IsSpellInRange	= _G.IsSpellInRange;
+local UnitClass	= _G.UnitClass;
+local UnitIsFriend	= _G.UnitIsFriend;
+
+
 -- defines what is printed when the object is read as a string
 function LiveList:ToString() -- {{{
     return "Decursive Live-List object";
@@ -280,7 +293,7 @@ function LiveList:GetDebuff(UnitID) -- {{{
 	    D.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target/mouseover debuff
 	    D.UnitDebuffed["target"] = false;
 	end
-	D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile.", UnitID);
+	D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile or gone.", UnitID);
 	return;
     end
 

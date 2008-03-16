@@ -73,6 +73,14 @@ local AFFLICTED_AND_CHARMED = DC.AFFLICTED_AND_CHARMED;
 -- Those are the different colors used for the MUFs main texture
 local MF_colors = { };
 
+local unpack =_G.unpack;
+local select =_G.select;
+local pairs =_G.pairs;
+local ipairs =_G.ipairs;
+local table =_G.table;
+local string =_G.string;
+local UnitExists =_G.UnitExists;
+local UnitClass =_G.UnitClass;
 
 -- Those are lookups table to set the frame attributes
 local AvailableButtons = { -- {{{
@@ -970,6 +978,15 @@ do
     --]=]
     local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged;
     local profile = {};
+
+    local IsSpellInRange = _G.IsSpellInRange;
+    local UnitClass = _G.UnitClass;
+    local UnitExists = _G.UnitExists;
+    local UnitIsVisible = _G.UnitIsVisible;
+    local UnitLevel = _G.UnitLevel;
+    local unpack = _G.unpack;
+    local select = _G.select;
+
     function MicroUnitF.prototype:SetColor() -- {{{
 
 	profile = D.profile;
@@ -983,7 +1000,6 @@ do
 	Unit = self.CurrUnit;
 	PreviousStatus = self.UnitStatus;
 
-	
 
 
 	-- if unit not available, if a unit cease to exist (this happen often for pets)

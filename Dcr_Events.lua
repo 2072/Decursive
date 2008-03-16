@@ -37,6 +37,19 @@ local DC = DcrC;
 
 D.DebuffUpdateRequest = 0;
 
+local _G	= _G;
+local pairs	= _G.pairs;
+local next	= _G.next;
+local pairs	= _G.pairs;
+local ipairs	= _G.ipairs;
+local unpack	= _G.unpack;
+local table		= _G.table;
+local UnitCreatureFamily	= _G.UnitCreatureFamily;
+local InCombatLockdown	= _G.InCombatLockdown;
+local UnitExists	= _G.UnitExists;
+local UnitIsFriend	= _G.UnitIsFriend;
+
+
 function D:GroupChanged () -- {{{
     -- this will trigger an update of the unit array
     D.Groups_datas_are_invalid = true;

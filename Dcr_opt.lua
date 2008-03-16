@@ -35,6 +35,11 @@ local BS = D.BS;
 local BC = D.BC;
 local DC = DcrC;
 
+local pairs		= _G.pairs;
+local ipairs		= _G.ipairs;
+local table		= _G.table;
+local GetNumRaidMembers		= _G.GetNumRaidMembers;
+local GetNumPartyMembers	= _G.GetNumPartyMembers;
 -- Default values for the option
 
 D.defaults = { -- {{{

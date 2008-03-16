@@ -38,6 +38,10 @@ local BS = D.BS;
 local DC = DcrC;
 
 
+local pairs		= _G.pairs;
+local ipairs		= _G.ipairs;
+local table		= _G.table;
+
 -- Dcr_ListFrameTemplate specific internal functions {{{
 function D:ListFrameTemplate_OnLoad()
     this.ScrollFrame = getglobal(this:GetName().."ScrollFrame");

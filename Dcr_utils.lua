@@ -35,6 +35,18 @@ local BS = D.BS;
 local BC = D.BC;
 local DC = DcrC;
 
+local pairs		= _G.pairs;
+local ipairs		= _G.ipairs;
+local type		= _G.type;
+local unpack		= _G.unpack;
+local select		= _G.select;
+local table		= _G.table;
+local UnitName		= _G.UnitName;
+local UnitIsPlayer	= _G.UnitIsPlayer;
+local strsub		= _G.strsub;
+local string		= _G.string;
+
+
 function D:ColorText (text, color) --{{{
     return "|c".. color .. text .. "|r";
 end --}}}
@@ -53,7 +65,7 @@ function D:PetUnitName (Unit, Check) -- {{{
 
     if not Name or Name == DC.UNKNOWN  then
 	Name = DC.UNKNOWN .. "_" .. Unit;
-	Dcr:Debug("Name of %s is unknown", Unit);
+	D:Debug("Name of %s is unknown", Unit);
     end
 
     if not Check or (not UnitIsPlayer(Unit) and Unit ~= "focus") then
@@ -289,7 +301,7 @@ do
 	    D:GetClassColor(class);
 	end
     else
-	Dcr:Error("global RAID_CLASS_COLORS does not exist...");
+	D:Error("global RAID_CLASS_COLORS does not exist...");
     end
     end
 

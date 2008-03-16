@@ -46,6 +46,19 @@ D.Status.InternalPrioList	= { };
 D.Status.InternalSkipList	= { };
 D.Status.Unit_Array		= { };
 
+local pairs		= _G.pairs;
+local ipairs		= _G.ipairs;
+local type		= _G.type;
+local GetNumRaidMembers		= _G.GetNumRaidMembers;
+local GetNumPartyMembers	= _G.GetNumPartyMembers;
+local UnitName	= _G.UnitName;
+local random	= _G.random;
+local UnitIsUnit	= _G.UnitIsUnit;
+local GetRaidRosterInfo	= _G.GetRaidRosterInfo;
+local UnitClass	= _G.UnitClass;
+local UnitExists	= _G.UnitExists;
+local table	= _G.table;
+
 -------------------------------------------------------------------------------
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
 -------------------------------------------------------------------------------
