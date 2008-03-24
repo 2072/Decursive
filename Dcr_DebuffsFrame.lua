@@ -485,22 +485,23 @@ function MicroUnitF:OnEnter() -- {{{
     local MF = this.Object;
     local Status;
 
+    local Unit = MF.CurrUnit; -- shortcut
+    local TooltipText = "";
+
+    -- Compare the current unit name to the one storred when the group data were collected
+    if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then
+	D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
+    end
+
+    MF:Update(); -- will reset the color early and set the current status of the MUF
+    MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
+
+    if not Unit then
+	return; -- If the user overs the MUF befor it's completely initialized
+    end
+
     if (D.profile.AfflictionTooltips) then
 
-	local Unit = MF.CurrUnit; -- shortcut
-	local TooltipText = "";
-
-	-- Compare the current unit name to the one storred when the group data were collected
-	if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then
-	    D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
-	end
-
-	MF:Update(); -- will reset the color early and set the current status of the MUF
-	MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
-
-	if not Unit then
-	    return; -- If the user overs the MUF befor it's completely initialized
-	end
 
 	-- removes the CHARMED_STATUS bit from Status, we don't need it
 	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
