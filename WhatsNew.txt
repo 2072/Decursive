@@ -1,7 +1,7 @@
-Decursive 2.1.0b2 by Archarodim  (2008-02-17)
+Decursive 2.1.0b2 by Archarodim  (2008-03-26)
 
 
-Changes from Decursive 2.0.4 to Decursive 2.1.0b2
+Changes from Decursive 2.0.4 to Decursive 2.1.0b3
 
 * Important changes:
 
@@ -39,6 +39,8 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0b2
 
 - Spells handled by pets will no longer interrupt the player spells (when using
   the MUFs)
+
+- Performance optimisations.
 
 - Workaround for polymorph spells name change in WoW 2.3 (Decursive was no
   longer casting rank 1 of this spell...)

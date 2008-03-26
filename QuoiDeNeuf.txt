@@ -1,7 +1,7 @@
-Decursive 2.1.0b2 par Archarodim  (2008-02-17)
+Decursive 2.1.0b2 par Archarodim  (2008-03-26)
 
 
-Changements entre Decursive 2.0.4 et Decursive 2.1.0b2
+Changements entre Decursive 2.0.4 et Decursive 2.1.0b3
 
 * Changements importants :
 
@@ -41,6 +41,8 @@ Changements entre Decursive 2.0.4 et Decursive 2.1.0b2
 
 - Les sorts gérées par les familiers n'interrompent plus les sorts des joueurs
   (lorsque les micro-portraits sont utilisés).
+
+- Optimisations de performance.
 
 - Decursive utilise à nouveau le premier rang de Métamorphose.
 
