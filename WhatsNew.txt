@@ -1,4 +1,4 @@
-Decursive 2.1.0b2 by Archarodim  (2008-03-26)
+Decursive 2.1.0 RC1 by Archarodim  (2008-03-26)
 
 
 Changes from Decursive 2.0.4 to Decursive 2.1.0b3

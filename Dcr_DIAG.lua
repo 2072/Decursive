@@ -88,23 +88,23 @@ do
 	    ["AceLibrary"]		= 58127,
 	    ["AceOO-2.0"]		= 38641,
 	    ["AceDebug-2.0"]		= 34168,
-	    ["AceEvent-2.0"]		= 56171,
+	    ["AceEvent-2.0"]		= 66043,
 	    ["AceDB-2.0"]		= 56534,
 	    ["AceConsole-2.0"]		= 48940,
 	    ["AceLocale-2.2"]		= 40629,
 	    ["AceAddon-2.0"]	        = 57245,
-	    ["SpecialEvents-Aura-2.0"]  = 54669,
+	    ["SpecialEvents-Aura-2.0"]  = 59749,
 	    --["Babble-Class-2.2"]	= 54287 * 100000 + 40629, -- 40629 is AceLocale revision
 	    --["Babble-Spell-2.2"]	= 58622 * 100000 + 40629, -- 40629 is AceLocale revision
 	    ["Dewdrop-2.0"]		= 56529,
 	    ["Waterfall-1.0"]		= 56985,
-	    ["Tablet-2.0"]		= 55567,
-	    ["FuBarPlugin-2.0"]		= 57544,
+	    ["Tablet-2.0"]		= 64130,
+	    ["FuBarPlugin-2.0"]		= 63898,
 	}; -- }}}
 
 	--LibStub:GetLibrary
 	local UseLibStub = {
-	    ["LibBabble-Spell-3.0"] = 63731,
+	    ["LibBabble-Spell-3.0"] = 66012,
 	    ["LibBabble-Class-3.0"] = 63957,
 	};
 
