@@ -201,6 +201,8 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_GROWDIRECTION_DESC] = "MUF将从下向上显示。",
     [LOC.OPT_SHOWBORDER] = "显示职业彩色边框",
     [LOC.OPT_SHOWBORDER_DESC] = "MUF边框将会显示出代表该玩家职业的颜色。",
+    [LOC.OPT_SHOWCHRONO] = LOC.OPT_SHOWCHRONO,
+    [LOC.OPT_SHOWCHRONO_DESC] = LOC.OPT_SHOWCHRONO_DESC,
     [LOC.OPT_MAXMFS]  = "最大MUF数",
     [LOC.OPT_MAXMFS_DESC] = "设置在屏幕上显示的MUF的个数。",
     [LOC.OPT_UNITPERLINES] = '每行MUF数',

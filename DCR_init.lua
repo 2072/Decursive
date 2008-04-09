@@ -43,6 +43,8 @@ D.A	    = AceLibrary("SpecialEvents-Aura-2.0");
 D.Waterfall = AceLibrary("Waterfall-1.0");
 D.T	    = AceLibrary("Tablet-2.0");
 
+D.DcrFullyInitialized = false;
+
 local L = D.L;
 local BC = D.BC;
 local BS = D.BS;
@@ -340,7 +342,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	[DC.NOTYPE]	= "AAAAAA";
     }
 
-    -- /script DC.SpellsToUse[D.BS["Dampen Magic"]] = {Types = {DC.MAGIC, DC.DISEASE, DC.POISON},IsBest = false}; D:Configure();
+    -- /script DcrC.SpellsToUse[Dcr.BS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DC.SpellsToUse = {
@@ -544,7 +546,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     end
 
 
-    -- these events are automatically stopped when the addon is disabled by ACE
+    -- these events are automatically stopped when the addon is disabled by Ace
 
     -- Spell changes events
     self:RegisterEvent("LEARNED_SPELL_IN_TAB");
@@ -603,7 +605,7 @@ end -- // }}}
 
 function D:OnProfileEnable()
 
-
+    D.DcrFullyInitialized = false;
     D:CancelScheduledEvent("LLupdate");
     D:CancelScheduledEvent("MUFupdate");
 
@@ -647,15 +649,9 @@ function D:OnProfileEnable()
 
     D:Init();
 
-    if not D.profile.Hide_LiveList then
-	self:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
-    end
 
     D.MicroUnitF.MaxUnit = D.profile.DebuffsFrameMaxCount;
 
-    if D.profile.ShowDebuffsFrame then
-	self:ScheduleRepeatingEvent("MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
-    end
 
     D.Groups_datas_are_invalid = true;
     D:CreateDropDownFiltersMenu();
@@ -682,7 +678,16 @@ function D:OnProfileEnable()
     -- initialize the unit array to get all the variable existing
     -- even if the Live-list and the MUFs are disabled... (some people are strange)
     D:GetUnitArray();
+   
+    -- put the updater events at the end of the init so there is no chance they could be called before everything is ready
+    if not D.profile.Hide_LiveList then
+	self:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+    end
 
+    if D.profile.ShowDebuffsFrame then
+	self:ScheduleRepeatingEvent("MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
+    end
+    D.DcrFullyInitialized = true;
 end
 
 function D:OnDisable() -- When the addon is disabled by ACE

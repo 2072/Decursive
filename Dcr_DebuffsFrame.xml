@@ -119,7 +119,26 @@
 	    </OnLeave>
 	</Scripts>
     </Button>
-    
+
+
+    <FontString name="DcrMicroUnitChronoFont" inherits="NumberFontNormalSmall" maxLines="1" text=" " virtual="true"> <!-- {{{ -->
+	<Anchors>
+	    <Anchor point="CENTER" relativePoint="CENTER" relativeTo="$parent">
+		<Offset>
+		    <AbsDimension x="0" y="0"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+	<Color r="0.5" g="0.1" b="0.2" a="0.6"/>
+	<Shadow>
+	    <offset>
+		<AbsDimension x="0.3" y="0.3" />
+	    </offset>
+	    <color r="0" g="0" b="0" />
+	</Shadow>
+    </FontString> <!-- }}} -->
+
+
     <Script>
 	DcrLoadedFiles["Dcr_DebuffsFrame.xml"] = true;
     </Script>

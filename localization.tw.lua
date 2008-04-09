@@ -89,7 +89,7 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.SPELL_ABOLISH_POISON]      = '驅毒術', -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SPELL_REMOVE_LESSER_CURSE] = '解除次級詛咒', -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SPELL_REMOVE_CURSE]        = '解除詛咒', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_PURGE]               = '淨化術', -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_PURGE]               = '淨魔術', -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SPELL_CYCLONE]             = '龍捲風',  -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]    = "顯示或隱藏 Decursive 工作條",
@@ -217,6 +217,8 @@ L:RegisterTranslations("zhTW", function() return {
 
     [LOC.OPT_SHOWBORDER] = "顯示職業顏色邊框",
     [LOC.OPT_SHOWBORDER_DESC] = "MUFs 邊框會顯示出該玩家的職業代表顏色。",
+    [LOC.OPT_SHOWCHRONO] = LOC.OPT_SHOWCHRONO,
+    [LOC.OPT_SHOWCHRONO_DESC] = LOC.OPT_SHOWCHRONO_DESC,
     [LOC.OPT_MAXMFS]  = "最多顯示幾個",
     [LOC.OPT_MAXMFS_DESC] = "設定在螢幕上最多顯示幾個 micro unit frames。",
     [LOC.OPT_UNITPERLINES] = '每一行幾個 MUF',

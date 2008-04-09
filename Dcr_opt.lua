@@ -95,6 +95,9 @@ D.defaults = { -- {{{
 
     -- reverse MUFs disaplay
     DebuffsFrameGrowToTop = false,
+    
+    -- display chronometer on MUFs
+    DebuffsFrameChrono = true,
 
     -- this is wether or not to show the live-list	
     Hide_LiveList = false,
@@ -664,6 +667,19 @@ D.options = { -- {{{
 		    end,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    order = 1350,
+		},
+		ShowChrono = {
+		    type = "toggle",
+		    name = L[D.LOC.OPT_SHOWCHRONO],
+		    desc = L[D.LOC.OPT_SHOWCHRONO_DESC],
+		    get = function() return D.profile.DebuffsFrameChrono end,
+		    set = function(v)
+			if (v ~= D.profile.DebuffsFrameChrono) then
+			    D.profile.DebuffsFrameChrono = v;
+			end
+		    end,
+		    disabled = function() return not D.profile.ShowDebuffsFrame end,
+		    order = 1360,
 		},
 		{
 		    type = "header",
@@ -1560,7 +1576,7 @@ end
 
 function D:ShowHideDebuffsFrame ()
 
-    if D.Status.Combat then
+    if D.Status.Combat or not D.DcrFullyInitialized then
 	return
     end
 

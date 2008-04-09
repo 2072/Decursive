@@ -221,6 +221,8 @@ LOC.COLORSTATUS = "Set the color for the '%s' MUF status.";
 
 LOC.OPT_SHOWBORDER = "Show the class-colored borders";
 LOC.OPT_SHOWBORDER_DESC = "A colored border will be displayed around the MUFs representing the unit's class";
+LOC.OPT_SHOWCHRONO = "Show chronometers";
+LOC.OPT_SHOWCHRONO_DESC = "The number of seconds elapsed since a unit has been afflicted is displayed";
 LOC.OPT_MAXMFS  = "Max units shown";
 LOC.OPT_MAXMFS_DESC = "Defines the max number of micro unit frame to display";
 LOC.OPT_UNITPERLINES = 'Number of units per line';
@@ -544,6 +546,8 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_MUFSCOLORS] = true,
     [LOC.OPT_SHOWBORDER] = true,
     [LOC.OPT_SHOWBORDER_DESC] = true,
+    [LOC.OPT_SHOWCHRONO] = true,
+    [LOC.OPT_SHOWCHRONO_DESC] = true,
     [LOC.OPT_MAXMFS] = true,
     [LOC.OPT_MAXMFS_DESC] = true,
     [LOC.OPT_UNITPERLINES] = true,

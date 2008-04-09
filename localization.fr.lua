@@ -218,6 +218,8 @@ L:RegisterTranslations("frFR", function() return {
 
     [LOC.OPT_SHOWBORDER] =  "Afficher la bordure colorée des classes",
     [LOC.OPT_SHOWBORDER_DESC] =  "Une bordure colorée représentant la classe de l'unité est affichée autour des micro-portraits",
+    [LOC.OPT_SHOWCHRONO] = "Afficher les chronomètres",
+    [LOC.OPT_SHOWCHRONO_DESC] = "Le nombre de secondes écoulées depuis qu'une unité a été affligé s'affiche",
     [LOC.OPT_MAXMFS] = "Nombre maximum d'unités affichées",
     [LOC.OPT_MAXMFS_DESC] = "Définit le nombre maximum de micro-portraits à afficher",
     [LOC.OPT_UNITPERLINES] = "Nombre d'unités par ligne",

@@ -721,6 +721,9 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.IsCharmed		= false;
 	self.UpdateCountDown	= 3;
 	self.LastAttribUpdate	= 0;
+	self.LitTime		= false;
+	self.Chrono		= false;
+	self.PrevChrono		= false;
 
 	-- create the frame
 	self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..ID, self.Parent, "DcrMicroUnitTemplateSecure");
@@ -759,6 +762,9 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.InnerTexture:SetHeight(7);
 	self.InnerTexture:SetWidth(7);
 	self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
+
+	-- Chrono Font string
+	self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..ID.."Chrono", "OVERLAY", "DcrMicroUnitChronoFont");
 
 	-- a reference to this object
 	self.Frame.Object = self;
@@ -977,16 +983,19 @@ do
     --		- The Alpha of the center and borders
     --	    This function also set the Status of the MUF that will be used in the tooltip
     --]=]
-    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged, PrevChrono, Time;
     local profile = {};
 
-    local IsSpellInRange = _G.IsSpellInRange;
-    local UnitClass = _G.UnitClass;
-    local UnitExists = _G.UnitExists;
-    local UnitIsVisible = _G.UnitIsVisible;
-    local UnitLevel = _G.UnitLevel;
-    local unpack = _G.unpack;
-    local select = _G.select;
+    -- global access optimization
+    local IsSpellInRange    = _G.IsSpellInRange;
+    local UnitClass	    = _G.UnitClass;
+    local UnitExists	    = _G.UnitExists;
+    local UnitIsVisible	    = _G.UnitIsVisible;
+    local UnitLevel	    = _G.UnitLevel;
+    local unpack	    = _G.unpack;
+    local select	    = _G.select;
+    local GetTime	    = _G.GetTime;
+    local floor		    = _G.floor;
 
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -1008,6 +1017,11 @@ do
 	    if PreviousStatus ~= ABSENT then
 		self.Color = MF_colors[ABSENT];
 		self.UnitStatus = ABSENT;
+		if self.LitTime then
+		    self.LitTime = false;
+		    self.ChronoFontString:SetText(" ");
+
+		end
 	    end
 
 	    -- UnitIsVisible() behavior is not 100% reliable so we also use UnitLevel() that will return -1 when the Unit is too far...
@@ -1015,6 +1029,11 @@ do
 	    if PreviousStatus ~= FAR then
 		self.Color = MF_colors[FAR];
 		self.UnitStatus = FAR;
+		if self.LitTime then
+		    self.LitTime = false;
+		    self.ChronoFontString:SetText(" ");
+
+		end
 	    end
 
 	    -- If the Unit is invisible
@@ -1023,6 +1042,11 @@ do
 		if PreviousStatus ~= STEALTHED then
 		    self.Color = MF_colors[STEALTHED];
 		    self.UnitStatus = STEALTHED;
+		    if self.LitTime then
+			self.LitTime = false;
+			self.ChronoFontString:SetText(" ");
+
+		    end
 		end
 
 		-- if unit is blacklisted
@@ -1030,6 +1054,11 @@ do
 		if PreviousStatus ~= BLACKLISTED then
 		    self.Color = MF_colors[BLACKLISTED];
 		    self.UnitStatus = BLACKLISTED;
+		    if self.LitTime then
+			self.LitTime = false;
+			self.ChronoFontString:SetText(" ");
+
+		    end
 		end
 
 		-- if the unit has some debuffs we can handle
@@ -1052,6 +1081,23 @@ do
 		    RangeStatus = false;
 		end
 
+		-- update the chrono
+		if profile.DebuffsFrameChrono then
+		    if self.LitTime then
+			Time = GetTime();
+			PrevChrono = self.Chrono;
+
+			self.Chrono = floor(Time - self.LitTime + 0.5);
+
+			if self.Chrono ~= PrevChrono then
+			    self.ChronoFontString:SetText( ((self.Chrono < 60) and self.Chrono or (floor(self.Chrono / 60) .. "\'") ));
+			end
+		    else
+			self.LitTime = GetTime();
+		    end
+		end
+
+
 		-- set the status according to RangeStatus
 		if (not RangeStatus or RangeStatus == 0) then
 		    Alpha = 0.40;
@@ -1067,6 +1113,28 @@ do
 
 		    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange + 1;
 
+
+		    --[[
+		    -- update the countdown
+		    --TimeLeft = self.Debuffs[1].TimeLeft;
+		    SpottedTime = self.Debuffs[1].TimeStamp;
+		    if SpottedTime then
+
+			Time = GetTime();
+			-- T 10 spt 6 TL 7 --> 3 ==> TL - (T - SpT)
+			PrevCountDown = self.CountDown;
+			self.CountDown = floor((Time - SpottedTime) + 0.5);
+
+			if self.CountDown >= 0 and self.CountDown ~= PrevCountDown then
+				self.CountDownFontString:SetText( ((self.CountDown < 60) and self.CountDown or (floor(self.CountDown / 60) .. "\'") ));
+			end
+
+		    elseif self.CountDown then
+			self.CountDown = false;
+			self.CountDownFontString:SetText(" ");
+		    end
+		    --]]
+
 		    if (not D.Status.SoundPlayed) then
 			D:PlaySound (self.CurrUnit);
 		    end
@@ -1075,6 +1143,11 @@ do
 		-- the unit has nothing special, set the status to normal
 		self.Color = MF_colors[NORMAL];
 		self.UnitStatus = NORMAL;
+		if self.LitTime then
+		    self.LitTime = false;
+		    self.ChronoFontString:SetText(" ");
+
+		end
 	    end
 	end
 
@@ -1330,4 +1403,4 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = true;
+DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "$Revision$";

@@ -1,7 +1,7 @@
 Decursive 2.1.0 RC1 par Archarodim  (2008-03-26)
 
 
-Changements entre Decursive 2.0.4 et Decursive 2.1.0b3
+Changements entre Decursive 2.0.4 et Decursive 2.1.0 RC1
 
 * Changements importants :
 
