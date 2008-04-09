@@ -125,7 +125,7 @@
 	<Anchors>
 	    <Anchor point="CENTER" relativePoint="CENTER" relativeTo="$parent">
 		<Offset>
-		    <AbsDimension x="0" y="0"/>
+		    <AbsDimension x="1" y="-1"/>
 		</Offset>
 	    </Anchor>
 	</Anchors>
