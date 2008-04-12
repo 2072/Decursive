@@ -151,8 +151,8 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.IGNITE]	= "點燃法力",
     [LOC.TAINTEDMIND]	= "污濁之魂",
     [LOC.MAGMASHAKLES]	= "熔岩鐐銬",
-    [LOC.CRIPLES]		= "殘廢術",
-    [LOC.DUSTCLOUD]	= "灰塵之雲",
+    [LOC.CRIPLES]	= "殘廢術",
+    [LOC.DUSTCLOUD]	= "塵霧之雲",
     [LOC.WIDOWSEMBRACE]	= "寡婦之擁",
     [LOC.CURSEOFTONGUES]	= "語言詛咒",  -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SONICBURST]	= "音爆",
