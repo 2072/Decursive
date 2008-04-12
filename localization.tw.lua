@@ -90,7 +90,7 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.SPELL_REMOVE_LESSER_CURSE] = '解除次級詛咒', -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SPELL_REMOVE_CURSE]        = '解除詛咒', -- This translation is for reference only the one used is from the library BabbleSpell
     [LOC.SPELL_PURGE]               = '淨魔術', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CYCLONE]             = '龍捲風',  -- This translation is for reference only the one used is from the library BabbleSpell
+    [LOC.SPELL_CYCLONE]             = '颶風術',  -- This translation is for reference only the one used is from the library BabbleSpell
 
     [BINDING_NAME_DCRSHOW]    = "顯示或隱藏 Decursive 工作條",
 
@@ -146,7 +146,7 @@ L:RegisterTranslations("zhTW", function() return {
     -- spells and potions
     [LOC.DREAMLESSSLEEP] = "無夢睡眠",
     [LOC.GDREAMLESSSLEEP] = "強效昏睡",
-    [LOC.MDREAMLESSSLEEP]	= LOC.MDREAMLESSSLEEP,
+    [LOC.MDREAMLESSSLEEP] = "極效昏睡",
     [LOC.ANCIENTHYSTERIA] = "上古狂亂",
     [LOC.IGNITE]	= "點燃法力",
     [LOC.TAINTEDMIND]	= "污濁之魂",
