@@ -94,8 +94,6 @@ do
 	    ["AceLocale-2.2"]		= 40629,
 	    ["AceAddon-2.0"]	        = 57245,
 	    ["SpecialEvents-Aura-2.0"]  = 59749,
-	    --["Babble-Class-2.2"]	= 54287 * 100000 + 40629, -- 40629 is AceLocale revision
-	    --["Babble-Spell-2.2"]	= 58622 * 100000 + 40629, -- 40629 is AceLocale revision
 	    ["Dewdrop-2.0"]		= 56529,
 	    ["Waterfall-1.0"]		= 56985,
 	    ["Tablet-2.0"]		= 64130,
@@ -104,7 +102,6 @@ do
 
 	--LibStub:GetLibrary
 	local UseLibStub = {
-	    ["LibBabble-Spell-3.0"] = 66012,
 	    ["LibBabble-Class-3.0"] = 63957,
 	};
 
