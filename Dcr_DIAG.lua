@@ -181,7 +181,14 @@ do
 
 	-- if the diagnostic was requested by the user, we also test AceEvent functionalities {{{ -
 	if force and FromCommand and DcrDiagStatus == 0 then
+
 	    PrintMessage("|cFF00FF00No problem found in shared libraries or Decursive files!|r");
+
+	    PrintMessage("Now checking spell translations...");
+	    if Dcr:GetSpellsTranslations(true) then
+		PrintMessage("|cFF00FF00No error found in spell translations!|r");
+	    end
+
 	    PrintMessage("Now checking the event management library...");
 	    PrintMessage("If, in about 2 seconds, the message \"|cFF00FF00Event library functionning properly|r\" does not appear then there is a problem");
 

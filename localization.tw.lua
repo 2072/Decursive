@@ -26,6 +26,8 @@ if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
     DcrCorrupted = true;
     return;
 end
+
+Dcr:SetDateAndRevision("$Date$", "$Revision$");
 -------------------------------------------------------------------------------
 -- Chinese localization (Default)
 -------------------------------------------------------------------------------

@@ -42,7 +42,7 @@ local GetNumRaidMembers		= _G.GetNumRaidMembers;
 local GetNumPartyMembers	= _G.GetNumPartyMembers;
 -- Default values for the option
 
-D:GetSpellsTranslations(); -- Register spell translations
+D:GetSpellsTranslations(false); -- Register spell translations
 
 
 D.defaults = { -- {{{

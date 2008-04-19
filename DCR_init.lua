@@ -862,16 +862,6 @@ function D:Configure() --{{{
 
 	    end
 
-	    -- get a 'Rank #' string exemple (workaround due to the way the
-	    -- polymorph spell variants are handled in WoW 2.3)
-	    -- it will be used to select the rank of the spell found.
-	    -- We only test when we have found at least one spell else we would
-	    -- detect things that are not ranks such as 'Master' for Cooking...
-
-	    if not DC.RANKNUMTRANS and D.Status.HasSpell and spellName ~= DS[D.LOC.SPELL_POLYMORPH] and spellRank ~= "" then
-		DC.RANKNUMTRANS = spellRank;
-	    end
-
 
 	    if (DC.SpellsToUse[spellName]) then
 
@@ -913,72 +903,79 @@ function D:Configure() --{{{
 
 end --}}}
 
-function D:GetSpellsTranslations()
+function D:GetSpellsTranslations(FromDIAG)
     local GetSpellInfo = _G.GetSpellInfo;
     local Spells = {
-	[D.LOC.SPELL_POLYMORPH]		= {	118,					},
-	[D.LOC.SPELL_CYCLONE]		= {	33786,					},
-	[D.LOC.SPELL_CURE_DISEASE]	= {	528, 2870,				},
-	[D.LOC.SPELL_ABOLISH_DISEASE]	= {	552,					},
-	[D.LOC.SPELL_PURIFY]		= {	1152,					},
-	[D.LOC.SPELL_CLEANSE]		= {	4987,					},
-	[D.LOC.SPELL_DISPELL_MAGIC]	= {	527, 988,				},
-	[D.LOC.SPELL_CURE_POISON]	= {	526, 8946,				},
-	[D.LOC.SPELL_ABOLISH_POISON]	= {	2893,					},
-	[D.LOC.SPELL_REMOVE_LESSER_CURSE]={	475,					},
-	[D.LOC.SPELL_REMOVE_CURSE]	= {	2782,					},
-	[D.LOC.SPELL_PURGE]		= {	370, 8012,				},
-	[D.LOC.PET_FEL_CAST]		= {	19505, 19731, 19734, 19736, 27276, 2727,},
-	[D.LOC.PET_DOOM_CAST]		= {	527, 988,				},
-	[D.LOC.CURSEOFTONGUES]		= {	1714, 11719,                            },
-	[D.LOC.DCR_LOC_SILENCE]		= {	15487,					},
-	[D.LOC.DCR_LOC_MINDVISION]	= {	2096, 10909,				},
-	[D.LOC.DREAMLESSSLEEP]		= {	15822,					},
-	[D.LOC.GDREAMLESSSLEEP]		= {	24360,					},
-	[D.LOC.MDREAMLESSSLEEP]		= {	28504,					},
-	[D.LOC.ANCIENTHYSTERIA]		= {	19372,					},
-	[D.LOC.IGNITE]			= {	19659,					},
-	[D.LOC.TAINTEDMIND]		= {	16567,					},
-	[D.LOC.MAGMASHAKLES]		= {	19496,					},
-	[D.LOC.CRIPLES]			= {	33787,					},
-	[D.LOC.DUSTCLOUD]		= {	26072,					},
-	[D.LOC.WIDOWSEMBRACE]		= {	28732,					},
-	[D.LOC.SONICBURST]		= {	39052,					},
-	[D.LOC.DELUSIONOFJINDO]		= {	24306,					},
-	[D.LOC.MUTATINGINJECTION]	= {	28169,					},
-	['Phase Shift']			= {	4511,					},
-	['Banish']			= {	710, 18647,				},
-	['Frost Trap Aura']		= {	13810,					},
-	['Arcane Blast']		= {	30451,					},
-	['Prowl']			= {	5215, 6783, 9913, 24450,		},
-	['Stealth']			= {	1784, 1785, 1786, 1787,			},
-	['Shadowmeld']			= {	20580,					},
-	['Invisibility']		= {	66,					},
-	['Lesser Invisibility']		= {	7870,                                   },
-	['Ice Armor']			= {	7302, 7320, 10219, 10220, 27124,	},
-	['Unstable Affliction']		= {	30108, 30404, 30405,			},
-	['Dampen Magic']		= {	604,					},
-	['Amplify Magic']		= {	1008,					},
+	[D.LOC.SPELL_POLYMORPH]		= {	118,					 },
+	[D.LOC.SPELL_CYCLONE]		= {	33786,					 },
+	[D.LOC.SPELL_CURE_DISEASE]	= {	528, 2870,				 },
+	[D.LOC.SPELL_ABOLISH_DISEASE]	= {	552,					 },
+	[D.LOC.SPELL_PURIFY]		= {	1152,					 },
+	[D.LOC.SPELL_CLEANSE]		= {	4987,					 },
+	[D.LOC.SPELL_DISPELL_MAGIC]	= {	527, 988,				 },
+	[D.LOC.SPELL_CURE_POISON]	= {	526, 8946,				 },
+	[D.LOC.SPELL_ABOLISH_POISON]	= {	2893,					 },
+	[D.LOC.SPELL_REMOVE_LESSER_CURSE]={	475,					 },
+	[D.LOC.SPELL_REMOVE_CURSE]	= {	2782,					 },
+	[D.LOC.SPELL_PURGE]		= {	370, 8012,				 },
+	[D.LOC.PET_FEL_CAST]		= {	19505, 19731, 19734, 19736, 27276, 27276,},
+	[D.LOC.PET_DOOM_CAST]		= {	527, 988,				 },
+	[D.LOC.CURSEOFTONGUES]		= {	1714, 11719,                             },
+	[D.LOC.DCR_LOC_SILENCE]		= {	15487,					 },
+	[D.LOC.DCR_LOC_MINDVISION]	= {	2096, 10909,				 },
+	[D.LOC.DREAMLESSSLEEP]		= {	15822,					 },
+	[D.LOC.GDREAMLESSSLEEP]		= {	24360,					 },
+	[D.LOC.MDREAMLESSSLEEP]		= {	28504,					 },
+	[D.LOC.ANCIENTHYSTERIA]		= {	19372,					 },
+	[D.LOC.IGNITE]			= {	19659,					 },
+	[D.LOC.TAINTEDMIND]		= {	16567,					 },
+	[D.LOC.MAGMASHAKLES]		= {	19496,					 },
+	[D.LOC.CRIPLES]			= {	33787,					 },
+	[D.LOC.DUSTCLOUD]		= {	26072,					 },
+	[D.LOC.WIDOWSEMBRACE]		= {	28732,					 },
+	[D.LOC.SONICBURST]		= {	39052,					 },
+	[D.LOC.DELUSIONOFJINDO]		= {	24306,					 },
+	[D.LOC.MUTATINGINJECTION]	= {	28169,					 },
+	['Phase Shift']			= {	4511,					 },
+	['Banish']			= {	710, 18647,				 },
+	['Frost Trap Aura']		= {	13810,					 },
+	['Arcane Blast']		= {	30451,					 },
+	['Prowl']			= {	5215, 6783, 9913, 24450,		 },
+	['Stealth']			= {	1784, 1785, 1786, 1787,			 },
+	['Shadowmeld']			= {	20580,					 },
+	['Invisibility']		= {	66,					 },
+	['Lesser Invisibility']		= {	7870,                                    },
+	['Ice Armor']			= {	7302, 7320, 10219, 10220, 27124,	 },
+	['Unstable Affliction']		= {	30108, 30404, 30405,			 },
+	['Dampen Magic']		= {	604,					 },
+	['Amplify Magic']		= {	1008,					 },
     };
 
 
-    local Sname, Sids, Sid, _;
+    local Sname, Sids, Sid, _, ok;
+    ok = true;
     for Sname, Sids in pairs(Spells) do
 	for _, Sid in ipairs(Sids) do
 
 	    if _ == 1 then
 		DS[Sname] = (GetSpellInfo(Sid));
-	    else
+	    elseif FromDIAG then
 		if DS[Sname] ~= (GetSpellInfo(Sid)) then
-		    D:Debug("Spell IDs %u and %u have different translations: %s and %s", Sids[1], Sids, DS[Sname], (GetSpellInfo(Sid)) );
-		    D:Debug("Please report this to ARCHARODIM@teaser.fr");
-		    D:errln("Spell IDs %u and %u have different translations: %s and %s", Sids[1], Sids, DS[Sname], (GetSpellInfo(Sid)) );
+		    D:errln("Spell IDs %s and %s have different translations: %s and %s", Sids[1], Sid, DS[Sname], (GetSpellInfo(Sid)) );
 		    D:errln("Please report this to ARCHARODIM@teaser.fr");
+		    ok = false;
 		end
 	    end
 
 	end
     end
+
+    -- get a 'Rank #' string exemple (workaround due to the way the
+    -- polymorph spell variants are handled in WoW 2.3)
+
+    DC.RANKNUMTRANS = select(2, GetSpellInfo(118));
+
+    return ok;
 
 end
 
