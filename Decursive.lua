@@ -32,8 +32,8 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = D.L;
 local BC = D.BC;
-local BS = D.BS;
 local DC = DcrC;
+local DS = DC.DS;
 -------------------------------------------------------------------------------
 
 local pairs		= _G.pairs;
@@ -45,7 +45,7 @@ local UnitDebuff	= _G.UnitDebuff;
 local UnitIsCharmed	= _G.UnitIsCharmed;
 local UnitCanAttack	= _G.UnitCanAttack;
 local UnitClass		= _G.UnitClass;
-
+local _= false;
 
 -------------------------------------------------------------------------------
 -- The UI functions {{{
@@ -474,6 +474,7 @@ do
 
 
     local D = D;
+    local _ = false;
     local CureOrder;
     local sorting = function (a, b)
 
@@ -584,7 +585,7 @@ do
 			-- The user doesn't want to cure a unit afllicted by poison or disease if the unit
 			-- is beeing cured by an abolish spell
 
-			if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self.A:UnitHasBuff(Unit, BS[self.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DC.DISEASE and self.A:UnitHasBuff(Unit, BS[self.LOC.SPELL_ABOLISH_DISEASE]))) then
+			if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self.A:UnitHasBuff(Unit, DS[self.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DC.DISEASE and self.A:UnitHasBuff(Unit, DS[self.LOC.SPELL_ABOLISH_DISEASE]))) then
 			    self:Debug("Abolish buff found, skipping");
 			else
 			    -- self:Debug("It's managed");
@@ -700,7 +701,7 @@ function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
 end --}}}
 
-local Stealthed = {BS["Prowl"], BS["Stealth"], BS["Shadowmeld"],  BS["Invisibility"], BS["Lesser Invisibility"]}; --, BS["Ice Armor"],};
+local Stealthed = {DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"]}; --, DS["Ice Armor"],};
 
 
 

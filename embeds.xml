@@ -13,12 +13,6 @@
 <Script file="libs\AceAddon-2.0\AceAddon-2.0.lua" />
 <Script file="Libs\SpecialEvents-Aura-2.0\SpecialEvents-Aura-2.0.lua" />
 
-<!--
-<Script file="Libs\Babble-Class-2.2\Babble-Class-2.2.lua" />
-<Script file="Libs\Babble-Spell-2.2\Babble-Spell-2.2.lua" />
--->
-
-<Include file="libs\LibBabble-Spell-3.0\lib.xml" />
 <Include file="libs\LibBabble-Class-3.0\lib.xml" />
 
 <Script file="libs\Dewdrop-2.0\Dewdrop-2.0.lua" />

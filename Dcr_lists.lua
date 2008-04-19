@@ -34,8 +34,8 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 local L = D.L;
 local BC = D.BC;
 local BCR = D.BCR;
-local BS = D.BS;
 local DC = DcrC;
+local DS = DC.DS;
 
 
 local pairs		= _G.pairs;

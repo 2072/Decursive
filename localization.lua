@@ -159,13 +159,13 @@ LOC.DUSTCLOUD	= "Dust Cloud";
 LOC.WIDOWSEMBRACE	= "Widow's Embrace";
 LOC.CURSEOFTONGUES	= "Curse of Tongues"; -- This translation is for reference only the one used is from the library BabbleSpell
 LOC.SONICBURST	= "Sonic Burst";
-LOC.THUNDERCLAP	= "Thunderclap";
+LOC.THUNDERCLAP	= "Thunderclap"; -- unused
 LOC.DELUSIONOFJINDO = "Delusions of Jin'do";
 
 LOC.MUTATINGINJECTION = "Mutating Injection";
 
-DCR_LOC_SILENCE		= "Silence";  -- This translation is for reference only the one used is from the library BabbleSpell
-DCR_LOC_MINDVISION	= "Mind Vision";  -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.DCR_LOC_SILENCE		= "Silence";  -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.DCR_LOC_MINDVISION	= "Mind Vision";  -- This translation is for reference only the one used is from the library BabbleSpell
 
 -- NEW LOCALS FOR 2.0
 

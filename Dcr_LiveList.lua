@@ -32,9 +32,9 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L	    = D.L;
 local BC    = D.BC;
-local BS    = D.BS;
 local AceOO = D.AOO;
 local DC    = DcrC;
+local DS    = DC.DS;
 
 D.LiveList = AceOO.Class();
 

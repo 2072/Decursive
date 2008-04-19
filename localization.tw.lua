@@ -161,8 +161,8 @@ L:RegisterTranslations("zhTW", function() return {
 
     [LOC.MUTATINGINJECTION] = "突變注射",
 
---    [DCR_LOC_SILENCE]		= "沉默",   -- This translation is for reference only the one used is from the library BabbleSpell
---    [DCR_LOC_MINDVISION]	= "心靈幻象",   -- This translation is for reference only the one used is from the library BabbleSpell
+--    [LOC.DCR_LOC_SILENCE]		= "沉默",   -- This translation is for reference only the one used is from the library BabbleSpell
+--    [LOC.DCR_LOC_MINDVISION]	= "心靈幻象",   -- This translation is for reference only the one used is from the library BabbleSpell
 
     -- NEW LOCALS FOR 2.0
 

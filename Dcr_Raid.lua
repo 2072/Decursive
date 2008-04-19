@@ -33,8 +33,8 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L	    = D.L;
 local BC    = D.BC;
-local BS    = D.BS;
 local DC    = DcrC;
+local DS    = DC.DS;
 
 local RaidRosterCache		= { };
 local SortingTable		= { };
@@ -160,6 +160,7 @@ DC.ClassNameToNum = D:tReverse(DC.ClassNumToName);
 do
 
     local D = D;
+    local _ = false; -- a local dummy trash vrariable
 
     function IsInSkipList ( name, group, classNum ) -- {{{
 	if (D.Status.InternalSkipList[name] or D.Status.InternalSkipList[group] or D.Status.InternalSkipList[classNum]) then

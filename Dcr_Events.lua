@@ -32,8 +32,8 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L = D.L;
 local BC = D.BC;
-local BS = D.BS;
 local DC = DcrC;
+local DS = DC.DS;
 
 D.DebuffUpdateRequest = 0;
 

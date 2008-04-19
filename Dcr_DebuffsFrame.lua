@@ -33,9 +33,9 @@ D:SetDateAndRevision("$Date$", "$Revision$");
 
 local L	    = D.L;
 local BC    = D.BC;
-local BS    = D.BS;
 local AceOO = D.AOO;
 local DC    = DcrC;
+local DS    = DC.DS;
 
 
 -- initialize our MicroUnitF class
@@ -553,9 +553,9 @@ function MicroUnitF:OnEnter() -- {{{
 		    TooltipText = TooltipText .. "\n" .. string.format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and string.format(" (%d)", DebuffApps) or "");
 
 		    -- Create a warning if the Unstable Affliction is detected
-		    if Debuff.Name == BS["Unstable Affliction"] then
+		    if Debuff.Name == DS["Unstable Affliction"] then
 		    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
-			D:Println("|cFFFF0000 ==> %s !!|r (%s)", BS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(	  Unit, true    ))));
+			D:Println("|cFFFF0000 ==> %s !!|r (%s)", DS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(	  Unit, true    ))));
 			PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
 		    end
 
