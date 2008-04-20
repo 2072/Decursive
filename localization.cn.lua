@@ -178,13 +178,13 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_SHOWMFS_DESC] = "如果你要打地鼠就必須选择这项。",
     [LOC.OPT_GROWDIRECTION] = "反向显示 MUF",
  
-    [LOC.OPT_STICKTORIGHT]	= LOC.OPT_STICKTORIGHT,
-    [LOC.OPT_STICKTORIGHT_DESC]	= LOC.OPT_STICKTORIGHT_DESC,
+    [LOC.OPT_STICKTORIGHT]	= "将微单元面板(MUF)向右对齐",
+    [LOC.OPT_STICKTORIGHT_DESC]	= "这个选项将会使微单元面板(MUF)向右对齐",
     [LOC.OPT_MUFSCOLORS]	= "颜色",
     [LOC.OPT_MUFSCOLORS_DESC]	= "更改关于微单元面板(MUF)的颜色",
     [LOC.MISSINGUNIT]		= "丢失单位",
     [LOC.COLORALERT]		= "预警颜色",
-    [LOC.COLORSTATUS]		= LOC.COLORSTATUS,
+    [LOC.COLORSTATUS]		= "设定当玩家状态是'%s'时微单元面板(MUF)的颜色",
 
     [LOC.OPT_AUTOHIDEMFS]	    = "自动隐藏",
     [LOC.OPT_AUTOHIDEMFS_DESC]	    = "选择何时自动隐藏微单元面板(MUF)",
@@ -195,14 +195,14 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_HIDEMFS_NEVER]	    = "从不",
     [LOC.OPT_HIDEMFS_NEVER_DESC]    = "从不隐藏",
 
-    [LOC.OPT_ADDDEBUFFFHIST]		= LOC.OPT_ADDDEBUFFFHIST,
-    [LOC.OPT_ADDDEBUFFFHIST_DESC]	= LOC.OPT_ADDDEBUFFFHIST_DESC,
+    [LOC.OPT_ADDDEBUFFFHIST]		= "新增一个最近受到的负面效果",
+    [LOC.OPT_ADDDEBUFFFHIST_DESC]	= "从历史记录中新增一个负面效果",
 
     [LOC.OPT_GROWDIRECTION_DESC] = "MUF将从下向上显示。",
     [LOC.OPT_SHOWBORDER] = "显示职业彩色边框",
     [LOC.OPT_SHOWBORDER_DESC] = "MUF边框将会显示出代表该玩家职业的颜色。",
-    [LOC.OPT_SHOWCHRONO] = LOC.OPT_SHOWCHRONO,
-    [LOC.OPT_SHOWCHRONO_DESC] = LOC.OPT_SHOWCHRONO_DESC,
+    [LOC.OPT_SHOWCHRONO] = "显示计时",
+    [LOC.OPT_SHOWCHRONO_DESC] = "显示单位受到不良效果的时间",
     [LOC.OPT_MAXMFS]  = "最大MUF数",
     [LOC.OPT_MAXMFS_DESC] = "设置在屏幕上显示的MUF的个数。",
     [LOC.OPT_UNITPERLINES] = '每行MUF数',
@@ -323,8 +323,8 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_NOKEYWARN_DESC] = "没有映射按键",
     [LOC.NOSPELL] = "没有相关技能",
     
-    [LOC.FUBARMENU]  = LOC.FUBARMENU,
-    [LOC.FUBARMENU_DESC]  = LOC.FUBARMENU_DESC,
+    [LOC.FUBARMENU]  = "Fubar选项",
+    [LOC.FUBARMENU_DESC]  = "Fubar的相关设定",
 	
     [LOC.GLOR1] = "纪念 Glorfindal",
     [LOC.GLOR2] = "献给匆匆离我们而去的Bertrand；他将永远被我们所铭记。",
