@@ -181,10 +181,14 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	return false;
     end
 
+
     self:RegisterDB("DcrDB");
     self:RegisterDefaults('profile', D.defaults );
     self:RegisterDefaults('class', D.defaults.class );
     self:RegisterChatCommand({'/dcr', '/decursive'}, D.options )
+
+    -- Create some useful cache tables
+    D:CreateClassColorTables();
 
     -- add support for FuBar
     -- This will add Fubar relative options into a sub-menu
@@ -459,15 +463,16 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 end -- // }}}
 
 --Old_MacroFrame_SaveMacro = false;
-
+local FirstEnable = true;
 function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
     if DecursiveSelfDiagnostic() == 2 then
 	return false;
     end
 
+
     -- Register slashes command {{{
-    if (first) then
+    if (FirstEnable) then
 	SLASH_DECURSIVEDIAG1 = D.CONF.MACRO_DIAG;
 	SlashCmdList["DECURSIVEDIAG"] = function(msg)
 	    DecursiveSelfDiagnostic(true, true);
@@ -528,7 +533,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     end -- }}}
 
 
-    if (first) then
+    if (FirstEnable) then
 	-- configure the message frame for Decursive
 	DecursiveTextFrame:SetFading(true);
 	DecursiveTextFrame:SetFadeDuration(D.CONF.TEXT_LIFETIME / 3);
@@ -560,8 +565,6 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	end); -- }}}
 
 
-	-- Create some useful cache tables
-	D:CreateClassColorTables();
 
     end
 
@@ -614,10 +617,12 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     -- Configure specific profile dependent data
     D:OnProfileEnable();
 
-    if (first) then
+    if (FirstEnable) then
 	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.IS_HERE_MSG]);
 	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.SHOW_MSG]);
     end
+
+    FirstEnable = false;
 
 
 
@@ -712,6 +717,8 @@ end
 
 function D:OnDisable() -- When the addon is disabled by ACE
     D.Status.Enabled = false;
+    D.DcrFullyInitialized = false;
+    
     D:SetIcon("Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga");
     if ( D.profile.ShowDebuffsFrame) then
 	D.MFContainer:Hide();

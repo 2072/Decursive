@@ -72,6 +72,12 @@ end
 -- Dcr_ListFrameTemplate specific handlers {{{
 
 function D:PrioSkipListFrame_OnUpdate() --{{{
+
+
+    if not D.DcrFullyInitialized then
+	return;
+    end
+
     if (this.UpdateYourself) then
 	this.UpdateYourself = false;
 	local baseName = this:GetName();
@@ -212,6 +218,11 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
 end --}}}
 
 function D:PrioSkipList_ScrollFrame_Update (ScrollFrame) -- {{{
+
+    if not D.DcrFullyInitialized then
+	return;
+    end
+
     local maxentry;
     local UpdateListOnceDone = true;
     local DirectCall = false;
@@ -257,6 +268,10 @@ function D:AddTargetToPriorityList() --{{{
 end --}}}
 
 function D:AddUnitToPriorityList( unit, check ) --{{{
+
+    if not D.DcrFullyInitialized then
+	return false;
+    end
 
     if (#D.profile.PriorityList > 99) then
 	return false;

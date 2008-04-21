@@ -68,6 +68,11 @@ end --}}}
 -- Show Hide FUNCTIONS -- {{{
 
 function D:ShowHideLiveList(hide) --{{{
+
+    if not D.DcrFullyInitialized then
+	return;
+    end
+
     -- if hide is requested or if hide is not set and the live-list is shown
     if (hide==1 or (not hide and DcrLiveList:IsVisible())) then
 	D.profile.Hide_LiveList = true;
@@ -87,6 +92,10 @@ end --}}}
 -- This functions hides or shows the "Decursive" bar depending on its current
 -- state, it's also able hide/show the live-list if the "tie live-list" option is active
 function D:HideBar(hide) --{{{
+
+    if not D.DcrFullyInitialized then
+	return;
+    end
 
     if (hide==1 or (not hide and DecursiveMainBar:IsVisible())) then
 	if (D.profile.LiveListTied) then
@@ -111,6 +120,11 @@ function D:HideBar(hide) --{{{
 end --}}}
 
 function D:ShowHidePriorityListUI() --{{{
+
+    if not D.DcrFullyInitialized then
+	return;
+    end
+
     if (DecursivePriorityListFrame:IsVisible()) then
 	DecursivePriorityListFrame:Hide();
     else
@@ -119,6 +133,11 @@ function D:ShowHidePriorityListUI() --{{{
 end --}}}
 
 function D:ShowHideSkipListUI() --{{{
+    
+    if not D.DcrFullyInitialized then
+	return;
+    end
+
     if (DecursiveSkipListFrame:IsVisible()) then
 	DecursiveSkipListFrame:Hide();
     else
@@ -128,6 +147,10 @@ end --}}}
 
 -- This shows/hides the buttons near the "Decursive" bar
 function D:ShowHideButtons(UseCurrentValue) --{{{
+
+    if not D.DcrFullyInitialized then
+	return;
+    end
 
     if not D.profile then
 	return;
