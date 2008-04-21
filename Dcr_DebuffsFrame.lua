@@ -55,7 +55,7 @@ MicroUnitF.UnitToMUF		    = {};
 MicroUnitF.Number		    = 0;
 MicroUnitF.UnitShown		    = 0;
 MicroUnitF.UnitsDebuffedInRange	    = 0;
-D.ForLLDebuffedUnitsNum	    = 0;
+D.ForLLDebuffedUnitsNum		    = 0;
 
 
 -- using power 2 values just to OR them but only CHARMED_STATUS is ORed (it's a C style bitfield)
@@ -915,15 +915,14 @@ do
 
 	    --self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
 	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "macrotext"), string.format("%s/cast [target=mouseover] %s%s",
-	    (D.Status.FoundSpells[Spell][2] == BOOKTYPE_SPELL and "/stopcasting\n" or ""),
+	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
 	    Spell,
 	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 
-	    --D.Status.FoundSpells[Spell][3]
 	    
 	    --[[
 	    D:Debug("XX-> macro: ",string.format(AvailableButtons[Prio], "macrotext"), string.format("%s/cast [target=mouseover] %s%s",
-	    (D.Status.FoundSpells[Spell][2] == BOOKTYPE_SPELL and "/stopcasting\n" or ""),
+	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
 	    Spell,
 	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 	    --]]

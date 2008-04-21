@@ -374,18 +374,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = false,
 	    Pet = false,
 	}, --]]
-	[DS[D.LOC.SPELL_CURE_DISEASE]]	    = {
-	    Types = {DC.DISEASE},
-	    IsBest = false,
-	    Pet = false,
-	},
 	[DS[D.LOC.SPELL_ABOLISH_DISEASE]]	    = {
 	    Types = {DC.DISEASE},
 	    IsBest = true,
 	    Pet = false,
 	},
-	[DS[D.LOC.SPELL_PURIFY]]		    = {
-	    Types = {DC.DISEASE, DC.POISON},
+	[DS[D.LOC.SPELL_CURE_DISEASE]]	    = {
+	    Types = {DC.DISEASE},
 	    IsBest = false,
 	    Pet = false,
 	},
@@ -395,19 +390,26 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = true,
 	    Pet = false,
 	},
+	[DS[D.LOC.SPELL_PURIFY]]		    = {
+	    Types = {DC.DISEASE, DC.POISON},
+	    IsBest = false,
+	    Pet = false,
+	},
+	-- Priests
 	[DS[D.LOC.SPELL_DISPELL_MAGIC]]	    = {
 	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+	    IsBest = true,
+	    Pet = false,
+	},
+	-- Druids
+	[DS[D.LOC.SPELL_ABOLISH_POISON]]	    = {
+	    Types = {DC.POISON},
 	    IsBest = true,
 	    Pet = false,
 	},
 	[DS[D.LOC.SPELL_CURE_POISON]]	    = {
 	    Types = {DC.POISON},
 	    IsBest = false,
-	    Pet = false,
-	},
-	[DS[D.LOC.SPELL_ABOLISH_POISON]]	    = {
-	    Types = {DC.POISON},
-	    IsBest = true,
 	    Pet = false,
 	},
 	-- mages
@@ -798,18 +800,25 @@ function D:ReConfigure() --{{{
 
     D:Debug("|cFFFF0000D:ReConfigure was called!|r");
 
-    local DoNotReconfigure = true;
+    local Spell, spellName;
+    local GetSpellInfo = _G.GetSpellInfo;
 
-    for Spell, id_booktype in pairs(D.Status.FoundSpells) do
-
-	if ( GetSpellName(id_booktype[1], id_booktype[2]) ~= Spell) then
-	    DoNotReconfigure = false;
+    local Reconfigure = false;
+    for spellName, Spell in pairs(DC.SpellsToUse) do
+	-- Do we have that spell?
+	if GetSpellInfo(spellName) then -- yes
+	    -- is it new?
+	    if not D.Status.FoundSpells[spellName] then -- yes
+		Reconfigure = true;
+		break;
+	    end
+	elseif D.Status.FoundSpells[spellName] then -- we don't have it anymore...
+	    Reconfigure = true;
 	    break;
 	end
-
     end
 
-    if DoNotReconfigure == false then
+    if Reconfigure == true then
 	D:Debug("D:ReConfigure RECONFIGURATION!");
 	D:Configure();
 	return;
@@ -826,16 +835,40 @@ function D:Configure() --{{{
 
     local CuringSpells = D.Status.CuringSpells;
 
-    CuringSpells[DC.MAGIC]	  = false;
-    CuringSpells[DC.ENEMYMAGIC] = false;
-    CuringSpells[DC.CURSE]	  = false;
+    CuringSpells[DC.MAGIC]	= false;
+    CuringSpells[DC.ENEMYMAGIC]	= false;
+    CuringSpells[DC.CURSE]	= false;
     CuringSpells[DC.POISON]     = false;
     CuringSpells[DC.DISEASE]    = false;
     CuringSpells[DC.CHARMED]    = false;
 
-
+    local Spell, spellName, Type, _;
+    local GetSpellInfo = _G.GetSpellInfo;
 
     D:Debug("Configuring Decursive...");
+
+    for spellName, Spell in pairs(DC.SpellsToUse) do
+	-- Do we have that spell?
+	if GetSpellInfo(spellName) then -- yes
+	    -- register it
+	    for _, Type in pairs (DC.SpellsToUse[spellName].Types) do
+
+		if not CuringSpells[Type] or not DC.SpellsToUse[ CuringSpells[Type] ].IsBest then  -- we did not already registered this spell or it's not the best spell for this type
+
+		    D.Status.FoundSpells[spellName] = {DC.SpellsToUse[spellName].Pet, (select(2, GetSpellInfo(spellName)))};
+		    CuringSpells[Type] = spellName;
+
+		    D:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", spellName, D.Status.FoundSpells[spellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[spellName][1]);
+		    D.Status.HasSpell = true;
+		end
+	    end
+
+	end
+    end
+
+
+
+    --[[
     -- parse through the entire library...
     -- look for known cleaning spells...
 
@@ -843,7 +876,6 @@ function D:Configure() --{{{
 
     local BookType = BOOKTYPE_SPELL;
     local break_flag = false
-    local spellName, spellRank;
 
     -- This array will be used to test if a reconfiguration is required
     D.Status.FoundSpells = {};
@@ -865,25 +897,13 @@ function D:Configure() --{{{
 
 	    if (DC.SpellsToUse[spellName]) then
 
-		for _, Type in pairs (DC.SpellsToUse[spellName].Types) do
-
-		    if	    (CuringSpells[Type] and DC.SpellsToUse[ CuringSpells[Type] ].IsBest)  -- we already registered the best
-			or  (CuringSpells[Type] and CuringSpells[Type] == spellName) then	    -- this spell is already registered
-			break;
-		    end
-
-		    D.Status.FoundSpells[spellName] = {i, BookType, spellRank}; -- save the id of the spell to be able to check for changes later
-		    CuringSpells[Type] = spellName;
-
-		    D:Debug("Spell \"%s\" registered for type %d ( %s )", spellName, Type, DC.TypeNames[Type]);
-		end
-
-		 D.Status.HasSpell = true;
+		
 	    end
 
 	    i = i + 1
 	end
     end
+    --]]
 
 
     -- Verify the cure order list (if it was damaged)
