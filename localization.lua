@@ -82,18 +82,18 @@ LOC.PET_FEL_CAST  = "Devour Magic";
 LOC.PET_DOOM_CAST = "Dispel Magic";
 
 
-LOC.SPELL_POLYMORPH	      = 'Polymorph';  -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_CURE_DISEASE        = 'Cure Disease'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_ABOLISH_DISEASE     = 'Abolish Disease'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_PURIFY              = 'Purify'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_CLEANSE             = 'Cleanse'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_DISPELL_MAGIC       = 'Dispel Magic'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_CURE_POISON         = 'Cure Poison'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_ABOLISH_POISON      = 'Abolish Poison'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_REMOVE_LESSER_CURSE = 'Remove Lesser Curse'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_REMOVE_CURSE        = 'Remove Curse'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_PURGE               = 'Purge'; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SPELL_CYCLONE	      = 'Cyclone'; -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.SPELL_POLYMORPH	      = 'Polymorph'; -- NO NEED TO TRANSLATE
+LOC.SPELL_CURE_DISEASE        = 'Cure Disease'; -- NO NEED TO TRANSLATE
+LOC.SPELL_ABOLISH_DISEASE     = 'Abolish Disease'; -- NO NEED TO TRANSLATE
+LOC.SPELL_PURIFY              = 'Purify'; -- NO NEED TO TRANSLATE
+LOC.SPELL_CLEANSE             = 'Cleanse'; -- NO NEED TO TRANSLATE
+LOC.SPELL_DISPELL_MAGIC       = 'Dispel Magic'; -- NO NEED TO TRANSLATE
+LOC.SPELL_CURE_POISON         = 'Cure Poison'; -- NO NEED TO TRANSLATE
+LOC.SPELL_ABOLISH_POISON      = 'Abolish Poison';-- NO NEED TO TRANSLATE
+LOC.SPELL_REMOVE_LESSER_CURSE = 'Remove Lesser Curse'; -- NO NEED TO TRANSLATE
+LOC.SPELL_REMOVE_CURSE        = 'Remove Curse'; -- NO NEED TO TRANSLATE
+LOC.SPELL_PURGE               = 'Purge'; -- NO NEED TO TRANSLATE
+LOC.SPELL_CYCLONE	      = 'Cyclone'; -- NO NEED TO TRANSLATE
 
 BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar\n(live-list anchor)";
 
@@ -147,25 +147,23 @@ LOC.SPELL_FOUND      = "%s spell found!";
 
 
 -- spells and potions
-LOC.DREAMLESSSLEEP = "Dreamless Sleep";
-LOC.GDREAMLESSSLEEP = "Greater Dreamless Sleep";
-LOC.MDREAMLESSSLEEP = "Major Dreamless Sleep";
-LOC.ANCIENTHYSTERIA = "Ancient Hysteria";
-LOC.IGNITE		= "Ignite Mana";
-LOC.TAINTEDMIND	= "Tainted Mind";
-LOC.MAGMASHAKLES	= "Magma Shackles";
-LOC.CRIPLES		= "Cripple";
-LOC.DUSTCLOUD	= "Dust Cloud";
-LOC.WIDOWSEMBRACE	= "Widow's Embrace";
-LOC.CURSEOFTONGUES	= "Curse of Tongues"; -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.SONICBURST	= "Sonic Burst";
-LOC.THUNDERCLAP	= "Thunderclap"; -- unused
-LOC.DELUSIONOFJINDO = "Delusions of Jin'do";
-
-LOC.MUTATINGINJECTION = "Mutating Injection";
-
-LOC.DCR_LOC_SILENCE		= "Silence";  -- This translation is for reference only the one used is from the library BabbleSpell
-LOC.DCR_LOC_MINDVISION	= "Mind Vision";  -- This translation is for reference only the one used is from the library BabbleSpell
+LOC.DREAMLESSSLEEP	= "Dreamless Sleep";		-- NO NEED TO TRANSLATE 
+LOC.GDREAMLESSSLEEP	= "Greater Dreamless Sleep";	-- NO NEED TO TRANSLATE 
+LOC.MDREAMLESSSLEEP	= "Major Dreamless Sleep";	-- NO NEED TO TRANSLATE
+LOC.ANCIENTHYSTERIA	= "Ancient Hysteria";		-- NO NEED TO TRANSLATE
+LOC.IGNITE		= "Ignite Mana";		-- NO NEED TO TRANSLATE
+LOC.TAINTEDMIND		= "Tainted Mind";		-- NO NEED TO TRANSLATE
+LOC.MAGMASHAKLES	= "Magma Shackles";		-- NO NEED TO TRANSLATE
+LOC.CRIPLES		= "Cripple";			-- NO NEED TO TRANSLATE
+LOC.DUSTCLOUD		= "Dust Cloud";			-- NO NEED TO TRANSLATE
+LOC.WIDOWSEMBRACE	= "Widow's Embrace";		-- NO NEED TO TRANSLATE
+LOC.CURSEOFTONGUES	= "Curse of Tongues";		-- NO NEED TO TRANSLATE
+LOC.SONICBURST		= "Sonic Burst";		-- NO NEED TO TRANSLATE
+LOC.THUNDERCLAP		= "Thunderclap";		-- NO NEED TO TRANSLATE -- unused
+LOC.DELUSIONOFJINDO	= "Delusions of Jin'do";	-- NO NEED TO TRANSLATE
+LOC.MUTATINGINJECTION	= "Mutating Injection";		-- NO NEED TO TRANSLATE
+LOC.DCR_LOC_SILENCE	= "Silence";			-- NO NEED TO TRANSLATE
+LOC.DCR_LOC_MINDVISION	= "Mind Vision";		-- NO NEED TO TRANSLATE
 
 -- NEW LOCALS FOR 2.0
 

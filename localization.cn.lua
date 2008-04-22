@@ -71,19 +71,6 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.PET_FEL_CAST]	=	"吞噬魔法",
     [LOC.PET_DOOM_CAST]	=	"驱散魔法",
 
-    [LOC.SPELL_POLYMORPH]		=	"变形术", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CURE_DISEASE]	=	"祛病术", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_ABOLISH_DISEASE]	=	"驱除疾病", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_PURIFY]		=	"纯净术", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CLEANSE]		=	"清洁术", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_DISPELL_MAGIC]	=	"驱散魔法", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CURE_POISON]		=	"消毒术", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_ABOLISH_POISON]	=	"驱毒术", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	"解除次级诅咒", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_REMOVE_CURSE]	=	"解除诅咒", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_PURGE]		=	"净化术", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CYCLONE]             = '飓风术',  -- This translation is for reference only the one used is from the library BabbleSpell
-
     [BINDING_NAME_DCRSHOW]    = "显示或隐藏一键驱散状态条",
 
     [BINDING_NAME_DCRMUFSHOWHIDE] = "显示或隐藏微单元面板(MUF)",
@@ -131,24 +118,6 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.DONOT_BL_PRIO]   = "不将优先列表中的玩家加入黑名单",
 
     [LOC.SPELL_FOUND]      = "找到 %s 法术。",
-
-    -- spells and potions
-    [LOC.DREAMLESSSLEEP]	= "无梦睡眠",
-    [LOC.GDREAMLESSSLEEP]	= "强效昏睡",
-    [LOC.MDREAMLESSSLEEP]	= "特效无梦睡眠",
-    [LOC.ANCIENTHYSTERIA]	= "上古狂乱",
-    [LOC.IGNITE]		= "点燃法力",
-    [LOC.TAINTEDMIND]	= "污浊之魂",
-    [LOC.MAGMASHAKLES]	= "熔岩镣铐",
-    [LOC.CRIPLES]		= "残废术",
-    [LOC.DUSTCLOUD]		= "尘雾之云",
-    [LOC.WIDOWSEMBRACE]	= "黑女巫的拥抱",
-    [LOC.CURSEOFTONGUES]	= "语言诅咒",  -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SONICBURST]	= "音爆",
-    [LOC.THUNDERCLAP]	= "雷霆一击",
-    [LOC.DELUSIONOFJINDO]	= "金度的欺骗",
-    [LOC.MUTATINGINJECTION] = "变异注射",
-
 
 
     -- NEW LOCALS FOR 2.0

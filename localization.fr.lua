@@ -76,19 +76,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.PET_FEL_CAST]	=	"Dévorer la magie",
     [LOC.PET_DOOM_CAST]	=	"Dissipation de la magie",
 
-    [LOC.SPELL_POLYMORPH]		  = 'Métamorphose', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CURE_DISEASE]	=	'Guérison des maladies', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_ABOLISH_DISEASE]	=	'Abolir maladie', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_PURIFY]	=	'Purification', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CLEANSE]	=	'Epuration', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_DISPELL_MAGIC]	=	'Dissipation de la magie', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CURE_POISON]	=	'Guérison du poison', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_ABOLISH_POISON]	=	'Abolir le poison', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	'Délivrance de la malédiction mineure', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_REMOVE_CURSE]	=	'Délivrance de la malédiction', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_PURGE]	=	'Expiation', -- This translation is for reference only the one used is from the library BabbleSpell
-    --[LOC.SPELL_CYCLONE] =	'Cyclone', -- This translation is for reference only the one used is from the library BabbleSpell
-
+    
     [BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive\n(Ancre de la liste des affligés)",
     
     [BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
@@ -141,23 +129,6 @@ L:RegisterTranslations("frFR", function() return {
     -- $t is target name
     [LOC.SPELL_FOUND]	=	"%s trouvé !",
 
-    -- spells and potions
-    [LOC.DREAMLESSSLEEP]	= "Sommeil sans rêve",
-    [LOC.GDREAMLESSSLEEP]	= "Sommeil sans rêve supérieur",
-    [LOC.MDREAMLESSSLEEP]	= "Sommeil sans rêve majeur",
-    [LOC.ANCIENTHYSTERIA]	= "Hystérie ancienne",
-    [LOC.IGNITE]		= "Enflammer le mana",
-    [LOC.TAINTEDMIND]	= "Esprit corrompu",
-    [LOC.MAGMASHAKLES]	= "Entraves de magma",
-    [LOC.CRIPLES]		= "Faiblesse",
-    [LOC.DUSTCLOUD]		= "Nuage de poussière",
-    [LOC.WIDOWSEMBRACE]	= "Baiser de la veuve",
-    [LOC.CURSEOFTONGUES]	= "Malédiction des langages",  -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SONICBURST]	= "Explosion sonore",
-    [LOC.THUNDERCLAP]	= "Coup de tonnerre",
-    [LOC.DELUSIONOFJINDO]	= "Illusions de Jin'do",
-
-
 
     [LOC.DISEASE] = 'Maladie',
     [LOC.MAGIC]  = 'Magie',
@@ -167,7 +138,6 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.CHARMED] = 'Possession',
 
 
-    [LOC.MUTATINGINJECTION] = Dcr.LOC.MUTATINGINJECTION,
     [LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
     [LOC.OPT_LIVELIST] = "Liste des affligés",
     [LOC.OPT_LIVELIST_DESC] = "Options pour la liste des affligés",

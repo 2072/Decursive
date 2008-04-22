@@ -72,18 +72,7 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.PET_FEL_CAST]	=	"Magie verschlingen",
     [LOC.PET_DOOM_CAST]	=	"Magiebannung",
 
-    [LOC.SPELL_POLYMORPH]		  = "Verwandlung", -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CURE_DISEASE]	=	'Krankheit heilen', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_ABOLISH_DISEASE]	=	'Krankheit aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_PURIFY]	=	'Läutern', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CLEANSE]	=	'Reinigung des Glaubens', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_DISPELL_MAGIC]	=	'Magiebannung', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_CURE_POISON]	=	'Vergiftung heilen', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_ABOLISH_POISON]	=	'Vergiftung aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_REMOVE_LESSER_CURSE]	=	'Geringen Fluch aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_REMOVE_CURSE]	=	'Fluch aufheben', -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SPELL_PURGE]	=	'Reinigen', -- This translation is for reference only the one used is from the library BabbleSpell
-
+    
     [BINDING_NAME_DCRSHOW]	=	"Zeige/Verstecke Decursive Main Bar",
     
     [BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
@@ -135,23 +124,6 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.SPELL_FOUND]	=	"Zauber %s gefunden!",
 
 
-    -- spells and potions
-    [LOC.DREAMLESSSLEEP]	= "Traumloser Schlaf",
-    [LOC.GDREAMLESSSLEEP]	= "Großer Trank des traumlosen Schlafs",
-    [LOC.MDREAMLESSSLEEP]	= LOC.MDREAMLESSSLEEP,
-    [LOC.ANCIENTHYSTERIA]	= "Uralte Hysterie",
-    [LOC.IGNITE]		= "Mana entzünden",
-    [LOC.TAINTEDMIND]	= "Verdorbene Gedanken",
-    [LOC.MAGMASHAKLES]	= "Magma Fesseln",
-    [LOC.CRIPLES]		= "Verkrüppeln",
-    [LOC.DUSTCLOUD]		= "Staubwolke",
-    [LOC.WIDOWSEMBRACE]	= "Umarmung der Witwe",
-    [LOC.CURSEOFTONGUES]	= "Fluch der Sprachen",  -- This translation is for reference only the one used is from the library BabbleSpell
-    [LOC.SONICBURST]	= "Schallexplosion",
-    [LOC.THUNDERCLAP]	= "Donnerknall",
-    [LOC.DELUSIONOFJINDO]	= "Fluch der Schatten",
-
-
     [LOC.DISEASE] = 'Krankheit',
     [LOC.MAGIC]  = 'Magie',
     [LOC.POISON]  = 'Gift',
@@ -159,7 +131,6 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.MAGICCHARMED] = LOC.MAGICCHARMED,
     [LOC.CHARMED] = LOC.CHARMED,
 
-    [LOC.MUTATINGINJECTION] = LOC.MUTATINGINJECTION,
     [LOC.DEFAULT_MACROKEY] = "NONE", -- Ideally the key just beneath the "escape" key. Leave to "NONE" (do not translate) if you don't set a real key name.
     [LOC.OPT_LIVELIST] = LOC.OPT_LIVELIST,
     [LOC.OPT_LIVELIST_DESC] = LOC.OPT_LIVELIST_DESC,
