@@ -188,7 +188,7 @@ D.defaults = { -- {{{
     -- Display a warning if no key is mapped.
     NoKeyWarn = true,
 
-    -- Those are the different colors used for the MUFs main texture
+    -- Those are the different colors used for the MUFs main textures
     MF_colors = {
 		[1]		=   {  .8 , 0   , 0    ,  1	}, -- red
 		[2]		=   { 0   , 0   , 0.8  ,  1	}, -- blue
@@ -201,7 +201,8 @@ D.defaults = { -- {{{
 	[DC.ABSENT]		=   {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
 	[DC.FAR]		=   {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
 	[DC.STEALTHED]		=   {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
-	[DC.CHARMED_STATUS]	=   {  0  , 1   , 0    ,  1	}, -- full green
+	[DC.CHARMED_STATUS]	=   { 0   , 1   , 0    ,  1	}, -- full green
+	[D.LOC.COLORCHRONOS]	=   { 0.6 , 0.1 , 0.2  ,  0.7	}, -- medium red
     },
     -- Curring order (1 is the most important, 6 the lesser...)
     --[[
@@ -2008,6 +2009,13 @@ do
 	    name = ("%s %s"):format(L[D.LOC.UNITSTATUS], D:ColorText(Text, D:NumToHexColor(L_MF_colors[ColorReason])) );
 	    desc = (L[D.LOC.COLORSTATUS]):format(Text);
 
+	elseif (type(ColorReason) == "string") then
+
+	    name = L[ColorReason];
+
+	    if ColorReason == D.LOC.COLORCHRONOS then
+		desc = D.LOC.COLORCHRONOS_DESC;
+	    end
 	end
 
 	return {name, desc};
@@ -2052,10 +2060,10 @@ do
 	    end
 
 
-	    if type(ColorReason) == "number" and (ColorReason - 2) == 6 then
-		MUFsColorsSubMenu["Spece"] = {
+	    if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == D.LOC.COLORCHRONOS) then
+		MUFsColorsSubMenu["Spece" .. num] = {
 		    type = "header",
-		    order = 100 + num;
+		    order = 100 + num + (type(ColorReason) == "number" and ColorReason or 2048),
 		}
 		num = num + 1;
 	    end
@@ -2067,7 +2075,7 @@ do
 		name = NameAndDesc[1],
 		desc = NameAndDesc[2],
 		hasAlpha = true,
-		order = 100 + num,
+		order = 100 + num + (type(ColorReason) == "number" and ColorReason or 2048),
 
 		handler = {
 		    ["ColorReason"]  = ColorReason,

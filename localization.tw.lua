@@ -168,6 +168,8 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.MISSINGUNIT]		= "找不到的單位",
     [LOC.COLORALERT]		= "設定按鍵警示'%s'的顏色",
     [LOC.COLORSTATUS]		= "設定當玩家狀態是 '%s' 時的 MUF 顏色.",
+    [LOC.COLORCHRONOS]		= LOC.COLORCHRONOS,
+    [LOC.COLORCHRONOS_DESC]	= LOC.COLORCHRONOS_DESC,
 
     [LOC.OPT_AUTOHIDEMFS]	    = "自動隱藏",
     [LOC.OPT_AUTOHIDEMFS_DESC]	    = "選擇什麼時候隱藏 MUF 視窗",

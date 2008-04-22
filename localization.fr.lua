@@ -173,6 +173,8 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.MISSINGUNIT]		= "Unité absente",
     [LOC.COLORALERT]		= "Règle la couleur d'alerte quand un '%s' est requis.",
     [LOC.COLORSTATUS]		= "Règle la couleur du statut '%s'.",
+    [LOC.COLORCHRONOS]		= "Chronomètres",
+    [LOC.COLORCHRONOS_DESC]	= "Règle la couleur des chrnomètres",
 
     [LOC.OPT_AUTOHIDEMFS]	    = "Masquer automatiquement",
     [LOC.OPT_AUTOHIDEMFS_DESC]	    = "Choisissez quand la fenêtre des micro-portraits doit être masquée automatiquement.",

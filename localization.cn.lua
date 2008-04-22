@@ -154,6 +154,8 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.MISSINGUNIT]		= "丢失单位",
     [LOC.COLORALERT]		= "预警颜色",
     [LOC.COLORSTATUS]		= "设定当玩家状态是'%s'时微单元面板(MUF)的颜色",
+    [LOC.COLORCHRONOS]		= LOC.COLORCHRONOS,
+    [LOC.COLORCHRONOS_DESC]	= LOC.COLORCHRONOS_DESC,
 
     [LOC.OPT_AUTOHIDEMFS]	    = "自动隐藏",
     [LOC.OPT_AUTOHIDEMFS_DESC]	    = "选择何时自动隐藏微单元面板(MUF)",

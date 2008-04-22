@@ -178,6 +178,8 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.MISSINGUNIT]		= "잘못된 대상",
 	[LOC.COLORALERT]		= "'%s'이 필요할때의 알림 색상을 설정합니다.",
 	[LOC.COLORSTATUS]		= "MUF 상태가 '%s'일때 색상을 설정합니다.",
+	[LOC.COLORCHRONOS]		= LOC.COLORCHRONOS,
+	[LOC.COLORCHRONOS_DESC]		= LOC.COLORCHRONOS_DESC,
 
     [LOC.OPT_AUTOHIDEMFS]	    = LOC.OPT_AUTOHIDEMFS,
     [LOC.OPT_AUTOHIDEMFS_DESC]	    = LOC.OPT_AUTOHIDEMFS_DESC,

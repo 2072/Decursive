@@ -353,6 +353,8 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 	    MF.TooltipUpdate = 0; -- force help tooltip to update
 	    --MF_f = MF.Frame;
 
+	    MF.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
+
 	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false);
 	end
     end
@@ -765,6 +767,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 
 	-- Chrono Font string
 	self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..ID.."Chrono", "OVERLAY", "DcrMicroUnitChronoFont");
+	self.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
 
 	-- a reference to this object
 	self.Frame.Object = self;
@@ -1093,6 +1096,7 @@ do
 			end
 		    else
 			self.LitTime = GetTime();
+			
 		    end
 		end
 

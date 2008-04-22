@@ -216,6 +216,8 @@ LOC.OPT_MUFSCOLORS_DESC = "Change the colors of the Micro Unit Frames.";
 LOC.MISSINGUNIT = "Missing unit";
 LOC.COLORALERT = "Set the color alert when a '%s' is required.";
 LOC.COLORSTATUS = "Set the color for the '%s' MUF status.";
+LOC.COLORCHRONOS = "Chronometers";
+LOC.COLORCHRONOS_DESC = "Set the chronometers' color";
 
 LOC.OPT_SHOWBORDER = "Show the class-colored borders";
 LOC.OPT_SHOWBORDER_DESC = "A colored border will be displayed around the MUFs representing the unit's class";
@@ -540,6 +542,8 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.MISSINGUNIT]		= true,
     [LOC.COLORALERT]		= true,
     [LOC.COLORSTATUS]		= true,
+    [LOC.COLORCHRONOS]		= true,
+    [LOC.COLORCHRONOS_DESC]	= true,
 
     [LOC.OPT_MUFSCOLORS] = true,
     [LOC.OPT_SHOWBORDER] = true,
