@@ -1,9 +1,12 @@
-Decursive 2.1.0 RC1 by Archarodim  (2008-03-26)
+Decursive 2.1.0 Final by Archarodim  (2008-03-27)
 
 
-Changes from Decursive 2.0.4 to Decursive 2.1.0 RC1
+Changes from Decursive 2.0.4 to Decursive 2.1.0 Final
 
 * Important changes:
+
+- When a player is afflicted, a new chronometer appears on its MUF giving the
+  time elapsed (enabled by default)
 
 - Added an automatic self-diagnostic feature also available through the
   /DCRDIAG command. This diagnostic is run when the add-on is loaded and check
@@ -28,6 +31,10 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0 RC1
 - The cure order priorities are now saved per class
   (This change resets your cure order priorities to default values)
 
+- Decursive no longer uses the Babble-Spell library that is deprecated since
+  WoW 2.4, all spells are now dynamically translated at load time ensuring
+  compatibility with current and futur localized versions of World of Warcraft.
+
 * Minor changes:
 
 - When moving the cursor quickly over friendly and hostile units, sometimes a
@@ -47,6 +54,10 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0 RC1
 
 - Clarification in the different localization files.
 
+- Fix an initialization issue some users were experiencing.
+
+- Added a new FAQ entry about a rumour according to which Decursive would be
+  banned by Blizzard. (take a look at the end of the Readme.txt file) 
 
 
 Changes from Decursive 2.0.3 to Decursive 2.0.4

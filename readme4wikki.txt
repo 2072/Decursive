@@ -2,10 +2,11 @@
 {{Addon Infobox|{{PAGENAME}}}}
 
 
-== Decursive 2.0 ==
+== Decursive 2.1 ==
 
-Main download: [http://www.2072productions.com/?to=decursive.php official web site]  --- [http://www.2072productions.com/outpages/?to=Decursive-2.0.3.Archa.exe&download=1 Autoinstalling version for windows] --- [http://www.2072productions.com/?to=decursive-newsletter.php Decursive Newsletter] 
+Main download: [http://www.2072productions.com/?to=decursive.php official web site]  --- [http://www.2072productions.com/outpages/?to=Decursive-2.1.Archa.exe&download=1 Autoinstalling version for windows] --- [http://www.2072productions.com/?to=decursive-newsletter.php Decursive Newsletter] 
 
+Questions, bug reports, etc... --> [http://www.wowace.com/forums/index.php?topic=4328 Ace forum discussion thread]
 
 ----
 
@@ -256,3 +257,10 @@ Note that each options has an explanation tool-tip. Just explore the menus.
 *; If by clicking on a specific MUF can cast spells on the specific target, wouldn't it stand to reason that if you code one button to change to the name of the priority target you would then only need one MUF instead of multiple MUFs?
 : No it's impossible, unit-frame cannot be modified while the player is	in combat... Blizzard wants players to take actions and think to play. So single-button-casting add-ons are impossible since WoW 2.0. Player have to choose manually their target and the spells they want to use.
 : Decursive uses new Blizzard's "click casting" solution, it's the only way for add-ons to use spells and target players.
+
+*; Since 2.X a lot of people in my raid group have heard that Decursive has been banned by Blizzard and using it might result in penalties on ones account. 
+
+: This is not true. The only add-ons that could put a player in troubles are add-ons that don't respect the rules set by Blizzard, such as add-ons that	allows communication between different factions. Decursive breaks no rule of that kind. When Blizzard disapproves an add-on they simply disable the API it uses to work. This is what happened when WoW 2.0 came out, a lot of add-ons where completely unusable (Decursive was part of them).
+: With Decursive, players still have to choose their target and the spells they	want to use on that specific target, this is what Blizzard wants. They disapproved Decursive 1.x because players had only one button to press to remove all afflictions	without even thinking...
+: You can ask to a Game Master in game if you still have some doubts about Decursive status.
+

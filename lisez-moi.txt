@@ -1,6 +1,6 @@
-Decursive 2.0 ( Téléchargement principal: http://www.2072productions.com/?to=decursive.php )
+Decursive 2.1 ( Téléchargement principal: http://www.2072productions.com/?to=decursive.php )
 
-C'est un addon de purification/épuration. Il aide les classes ayant la 
+Decursive est un add-on de purification/épuration. Il aide les classes ayant la 
 capacité de supprimer des afflictions de le faire avec facilité dans 
 toutes les conditions possibles (solo, groupe ou raid).
 
@@ -332,3 +332,30 @@ manuellement leur cible et le sort qu'ils veulent lancer.
     Decursive utilise la nouvelle solution de Blizzard "click casting", 
 c'est la seule façon pour les add-ons d'utiliser des sorts et cibler des 
 joueurs.
+
+*** QUESTION :
+
+    ** Depuis WoW 2.X pleins de personnes on entendu que Decursive est interdit
+       par Blizzard et que l'utiliser pourrait donner suites à des sanctions de leur part.
+
+*** RÉPONSE :
+
+    ** Ce n'est pas vrai. Les seuls add-ons qui pourraient mettre un joueur
+       dans l'illégalité sont les add-ons qui ne respectent pas les règles établies par
+       Blizzard ; comme les add-ons permettant la communication entre les différentes
+       factions par exemple.
+
+       Decursive n'enfreins aucune règle de ce genre. Quand Blizzard n'approuve
+       pas un add-on ils désactivent simplement les API que l'add-on en question
+       utilise pour fonctionner. C'est ce qui est arrivé quand WoW 2.0 est sortie,
+       pleins d'add-ons étaient devenus complètement inutilisables (Decursive en
+       faisait parti).
+
+       Avec Decursive, les joueurs doivent toujours choisir leur cible et le sort
+       qu'ils veulent utiliser sur cette cible, c'est ce que Blizzard veut. Ils
+       désapprouvaient l'ancien Decursive car les joueurs n'avaient qu'un seul bouton à
+       presser frénétiquement pour enlever toutes les afflictions sans réfléchir...
+
+       Vous pouvez demander à un maître des jeux en ligne si vous avez encore
+       des doutes à ce sujet.
+

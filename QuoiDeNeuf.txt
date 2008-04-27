@@ -1,9 +1,12 @@
-Decursive 2.1.0 RC1 par Archarodim  (2008-03-26)
+Decursive 2.1.0 Final par Archarodim  (2008-04-27)
 
 
-Changements entre Decursive 2.0.4 et Decursive 2.1.0 RC1
+Changements entre Decursive 2.0.4 et Decursive 2.1.0 Final
 
 * Changements importants :
+
+- Quand un joueur est affligé, un nouveau chronomètre apparaît sur son
+  micro-portrait indiquant le temps écoulé (activé par défaut)
 
 - Ajout d'un système d'auto-diagnostique également disponible en utilisant la
   commande /DCRDIAG. Ce diagnostique est exécuté lorsque l'add-on est chargé et
@@ -29,6 +32,10 @@ Changements entre Decursive 2.0.4 et Decursive 2.1.0 RC1
 - Les priorités de guérison sont désormais sauvegardées par classe.
   (Ce changement remet aux valeurs par défaut vos priorités de guérison)
 
+- Decursive n'utilise plus la librairie Babble-Spell, tous les sorts sont
+  désormais traduits dynamiquement à chaque chargement assurant la compatibilité
+  avec les versions localisées courantes et futures de World of Warcraft.
+
 * Changements mineurs :
 
 - Quand on déplaçait le curseur rapidement sur des unités amies et hostiles,
@@ -48,6 +55,10 @@ Changements entre Decursive 2.0.4 et Decursive 2.1.0 RC1
 
 - Clarification dans les différents fichiers de localisation.
 
+- Correction d'un problème d'initialisation arrivant à certaines personnes.
+
+- Ajout d'une nouvelle entrée de FAQ à propos d'une rumeur selon laquelle
+  Decursive serait banni par Blizzard. (voir à la fin du fichier lisez-moi.txt)
 
 Changements entre Decursive 2.0.3 et Decursive 2.0.4
 

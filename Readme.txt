@@ -1,4 +1,4 @@
- Decursive 2.0 ( Main download: http://www.2072productions.com/?to=decursive.php )
+ Decursive 2.1 ( Main download: http://www.2072productions.com/?to=decursive.php )
  
  This is a cleaning mod. Its job is to help a class that can remove afflictions
  to do it with ease in every conditions (playing solo, in small groups or in big
@@ -320,22 +320,22 @@
 
  *** QUESTION :
 
-     ** Since 2.X a lot of people in my raidgroup have heard that it has been
+     ** Since 2.X a lot of people in my raidgroup have heard that Decursive has been
 	banned by Blizzard and using it might result in penalties on ones account. 
 
  *** ANSWER :
 
-     ** This is not true. The only add-on that could put a player in trouble are
-	add-ons that doesn't respect the rules set by Blizzard, such as add-ons that
+     ** This is not true. The only add-ons that could put a player in troubles are
+	add-ons that don't respect the rules set by Blizzard, such as add-ons that
 	allows communication between different factions. Decursive breaks no rule of
-	that kind.  When Blizzard doesn't like an add-on they simply disable the API it
-	uses to work.  This is what happened when WoW 2.0 came out, a lot of add-ons
+	that kind. When Blizzard disapproves an add-on they simply disable the API it
+	uses to work. This is what happened when WoW 2.0 came out, a lot of add-ons
 	where completely unusable (Decursive was part of them).
 
-	With Decursive, Players still have to choose their target and the spell they
-	want to use on that specific target, this is what Blizzard wants.  They didn't
-	like the old Decursive because player had only one button to press to remove
-	all debuffs without even thinking...
+	With Decursive, players still have to choose their target and the spells they
+	want to use on that specific target, this is what Blizzard wants. They disapproved
+        Decursive 1.x because players had only one button to press to remove all afflictions
+	without even thinking...
 
-	You can ask to a Game Master in game if you want to be sure.
+	You can ask to a Game Master in game if you still have some doubts about Decursive status.
 
