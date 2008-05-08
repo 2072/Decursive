@@ -945,7 +945,7 @@ function D:GetSpellsTranslations(FromDIAG)
 	[D.LOC.SPELL_REMOVE_LESSER_CURSE]={	475,					 },
 	[D.LOC.SPELL_REMOVE_CURSE]	= {	2782,					 },
 	[D.LOC.SPELL_PURGE]		= {	370, 8012,				 },
-	[D.LOC.PET_FEL_CAST]		= {	19505, 19731, 19734, 19736, 27276, 27276,},
+	[D.LOC.PET_FEL_CAST]		= {	19505, 19731, 19734, 19736, 27276, 27277,},
 	[D.LOC.PET_DOOM_CAST]		= {	527, 988,				 },
 	[D.LOC.CURSEOFTONGUES]		= {	1714, 11719,                             },
 	[D.LOC.DCR_LOC_SILENCE]		= {	15487,					 },
