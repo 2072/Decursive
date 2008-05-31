@@ -458,14 +458,10 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	};
     end
 
-    -- Thanks to CHINESE localization team of WoW we have to make anOTHER exception.... ://///
-    -- They found the way to call two different spells the same (PET_FEL_CAST and Consume Magic... (both are called "&#21534;&#22124;&#39764;&#27861;" )
+    -- Thanks to Chinese localization team of WoW we have to make anOTHER exception.... ://///
+    -- They found the way to call two different spells the same (Devour Magic and Consume Magic... (both are called "&#21534;&#22124;&#39764;&#27861;" )
     if (select(2, UnitClass("player")) == "PRIEST") then
-	DC.SpellsToUse[DS[D.LOC.SPELL_DISPELL_MAGIC]]	    = {
-	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
-	    IsBest = true,
-	    Pet = false,
-	};
+	DC.SpellsToUse[DS[D.LOC.PET_FEL_CAST]] = nil; -- so we remove PET_FEL_CAST.
     end
 
     -- // }}}
