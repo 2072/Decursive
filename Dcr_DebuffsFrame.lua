@@ -472,6 +472,8 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
 
 	    return true; -- return value used to aknowledge that the function actually did something
 	end
+    else
+	D:Debug("No MUF found for ", unit);
     end
 end
 
@@ -1038,8 +1040,8 @@ do
 		end
 	    end
 
-	    -- If the Unit is invisible
 	else
+	    -- If the Unit is invisible
 	    if D.profile.Ingore_Stealthed and D.Stealthed_Units[Unit] then
 		if PreviousStatus ~= STEALTHED then
 		    self.Color = MF_colors[STEALTHED];
@@ -1158,6 +1160,7 @@ do
 	    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange - 1;
 
 	    if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.LV_OnlyInRange) then
+		Dcr:Debug("SetColor(): No more unit, sound re-enabled");
 		D.Status.SoundPlayed = false;
 	    end
 	end

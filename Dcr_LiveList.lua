@@ -419,7 +419,8 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- reset the sound if no units were displayed
-    if Index == 0 then
+    if Index == 0 and D.Status.SoundPlayed then
+	Dcr:Debug("No more unit displayed, sound re-enabled");
 	D.Status.SoundPlayed = false; -- re-enable the sound if no more debuff
     end
 
