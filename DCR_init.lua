@@ -719,6 +719,7 @@ function D:OnProfileEnable()
 	self:ScheduleRepeatingEvent("MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
     end
     D.DcrFullyInitialized = true;
+    D:ShowHideButtons(true);
 end
 
 function D:OnDisable() -- When the addon is disabled by ACE
@@ -795,7 +796,6 @@ function D:Init() --{{{
 	D.profile.MacroBind = false;
     end
 
-    D:ShowHideButtons(true);
 
     D:ChangeTextFrameDirection(D.profile.CustomeFrameInsertBottom);
 
