@@ -277,6 +277,18 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	elseif (i > NumToShow and MF.Shown) then
 	    D:Debug("Hidding %d", i);
 
+	    -- clear debuff before hiding to avoid leaving 'ghosts' behind...
+	    if D.UnitDebuffed[MF.CurrUnit] then
+		D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+	    end
+
+	    MF.Debuffs			  = false;
+	    MF.IsDebuffed		  = false;
+	    MF.Debuff1Prio		  = false;
+	    MF.PrevDebuff1Prio		  = false;
+	    D.UnitDebuffed[MF.CurrUnit]	  = false; -- used by the live-list only
+
+
 	    MF.Shown = false;
 	    self.UnitShown = self.UnitShown - 1;
 	    D:Debug("Hiding %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * (i - NumToShow));
@@ -1141,7 +1153,7 @@ do
 		    --]]
 
 		    if (not D.Status.SoundPlayed) then
-			D:PlaySound (self.CurrUnit);
+			D:PlaySound (self.CurrUnit, "SetColor()" );
 		    end
 		end
 	    elseif PreviousStatus ~= NORMAL then

@@ -282,7 +282,7 @@ end --}}}
 
 function D:UPDATE_MOUSEOVER_UNIT ()
     if not self.profile.Hide_LiveList and not self.Status.MouseOveringMUF and UnitIsFriend("mouseover", "player") then
-	D:Debug("will check MouseOver");
+	--D:Debug("will check MouseOver");
 	self.LiveList:DelayedGetDebuff("mouseover");
     end
 end

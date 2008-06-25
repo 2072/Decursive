@@ -218,7 +218,7 @@ end --}}}
 
 
 
-function D:PlaySound (UnitID) --{{{
+function D:PlaySound (UnitID, Caller) --{{{
     if (self.profile.PlaySound and not self.Status.SoundPlayed) then
 	local Debuffs = self:UnitCurableDebuffs(UnitID, true);
 	if (Debuffs and Debuffs[1] and Debuffs[1].Type) then
@@ -227,7 +227,7 @@ function D:PlaySound (UnitID) --{{{
 	    --		Sound\\interface\\AuctionWindowOpen.wav
 	    PlaySoundFile(self.profile.SoundFile);
 	    --self:ScheduleEvent("Playsound", PlaySoundFile, 0, self.profile.SoundFile);
-	    D:Debug("Sound Played!");
+	    D:Debug("Sound Played! by %s", Caller);
 	    self.Status.SoundPlayed = true;
 	end
     end
@@ -369,10 +369,12 @@ do
     -- This function only returns interesting values of UnitDebuff()
     local function GetUnitDebuff  (Unit, i) --{{{
 
-	if D.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" then
-	    D:Debug("|cFFFF0000Setting test debuff for |r", Unit);
+	if D.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" and UnitExists(Unit) then
+	    D:Debug("|cFFFF0000Setting test debuff for %s (debuff %d)|r", Unit, i);
 	    return "Name of the afflication (Test)", DC.TypeNames[D.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga", 70;
 	end
+
+	--D:Debug("|cFFFF0000Getting debuffs for %s , id = %d|r", Unit, i);
 
 
 	-- local Name, rank, Texture, Applications, TypeName, Duration, TimeLeft = UnitDebuff(Unit, i);
@@ -423,7 +425,6 @@ do
 
 	-- iterate all available debuffs
 	while (true) do
-	    -- Name, TypeName, Applications, Texture, TimeLeft = GetUnitDebuff(Unit, i);
 	    Name, TypeName, Applications, Texture = GetUnitDebuff(Unit, i);
 
 	    if (not Name) then
@@ -525,7 +526,6 @@ do
 	local AllUnitDebuffs, IsCharmed = self:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
 
 	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no debuff
-	    --D:Debug("UnitCurableDebuffs(): GetUnitDebuffAll returned no debuff");
 	    return false, IsCharmed;
 	end
 
