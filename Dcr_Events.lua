@@ -348,4 +348,81 @@ function D:SPELLS_CHANGED()
     self:ScheduleEvent("SpellsChanged", self.ReConfigure, 15, self);
 end
 
+do
+    local bit = _G.bit;
+    local band = bit.band;
+    local bor = bit.bor;
+
+    local INSIDER =  bit.bor (COMBATLOG_OBJECT_AFFILIATION_MINE, COMBATLOG_OBJECT_AFFILIATION_PARTY, COMBATLOG_OBJECT_AFFILIATION_RAID);
+
+    -- a friendly player character controled directly by the player that is not an outsider
+    local PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY , INSIDER);
+    local PLAYER_MASK	= bit.bor (COMBATLOG_OBJECT_CONTROL_MASK     , COMBATLOG_OBJECT_TYPE_MASK    , COMBATLOG_OBJECT_REACTION_MASK	  , COMBATLOG_OBJECT_AFFILIATION_MASK);
+
+    -- a hostile player character contol as a pet and that is not an outsider
+    local MIND_CONTROLED_PLAYER		= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE , INSIDER);
+    local MIND_CONTROLED_PLAYER_MASK	= bit.bor (COMBATLOG_OBJECT_CONTROL_MASK   , COMBATLOG_OBJECT_TYPE_MASK  , COMBATLOG_OBJECT_REACTION_MASK    , COMBATLOG_OBJECT_AFFILIATION_MASK);
+
+    -- a pet controled by a friendly player that is not an outsider
+    local PET	    = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER	, COMBATLOG_OBJECT_TYPE_PET	, COMBATLOG_OBJECT_REACTION_FRIENDLY , INSIDER);
+    local PET_MASK  = bit.bor (COMBATLOG_OBJECT_CONTROL_MASK	, COMBATLOG_OBJECT_TYPE_MASK	, COMBATLOG_OBJECT_REACTION_MASK     , COMBATLOG_OBJECT_AFFILIATION_MASK);
+
+    -- An outsider friendly focused NPC
+    local FOCUSED_NPC	    = bit.bor (COMBATLOG_OBJECT_CONTROL_NPC  , COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_FOCUS , COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
+    local FOCUSED_NPC_MASK  = bit.bor (COMBATLOG_OBJECT_CONTROL_MASK , COMBATLOG_OBJECT_REACTION_MASK	    , COMBATLOG_OBJECT_FOCUS , COMBATLOG_OBJECT_AFFILIATION_MASK);
+
+    local DEST_GLOBAL_MASK =  bit.bor (PLAYER_MASK, MIND_CONTROLED_PLAYER_MASK, PET_MASK, FOCUSED_NPC_MASK);
+
+
+    local t;
+    local function match (value, mask, Verify_exclude)
+
+	t = band(value, mask);
+
+	if  t ~= 0 then
+	    if t == band(value, Verify_exclude) then
+		return true;
+	    end
+	end
+
+	return false;
+
+    end
+
+
+    local substr = _G.string.sub;
+
+    function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags)
+
+
+	if (destName and band (destFlags, DEST_GLOBAL_MASK) ~= 0 and substr(event, 1, 10) == "SPELL_AURA") then
+
+	    D:Print("? (source=%s) (dest=%s -- %X): |cffff0000%s|c, glob = %X, PET=%X", sourceName, destName, destFlags, event, DEST_GLOBAL_MASK, PET);
+
+	    if	(match(destFlags, PLAYER, PLAYER_MASK)) then
+
+		D:Print("A player got something (source=%s -- %X) (dest=%s -- %x): %s, glob = %x", sourceName, sourceFlags, destName, destFlags, event, DEST_GLOBAL_MASK);
+		D:Print(arg10, arg11, arg12);
+
+	    elseif	(match(destFlags, PET, PET_MASK)) then
+		D:Print("A pet got something (source=%s) (dest=%s -- %x): %s", sourceName, destName, destFlags, event);
+		D:Print(arg10, arg11, arg12);
+
+	    elseif	(match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)) then
+		D:Print("Mind controled player got something (source=%s) (dest=%s -- %x): %s", sourceName, destName, destFlags, event);
+		D:Print(arg10, arg11, arg12);
+	    elseif	(match(destFlags, FOCUSED_NPC, FOCUSED_NPC_MASK)) then
+		D:Print("focused NPC got something (source=%s) (dest=%s -- %x): %s", sourceName, destName, destFlags, event);
+		D:Print(arg10, arg11, arg12);
+	    end
+
+	end
+
+
+    end
+
+    
+
+end
+
 DcrLoadedFiles["Dcr_Events.lua"] = true;

@@ -617,6 +617,8 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     --self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
 
 
+    -- XXX    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    
 
     self:ScheduleRepeatingEvent("SheduledTasks", self.SheduledTasks, 0.2, self);
 
