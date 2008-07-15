@@ -353,34 +353,31 @@ do
     local band = bit.band;
     local bor = bit.bor;
 
-    local INSIDER =  bit.bor (COMBATLOG_OBJECT_AFFILIATION_MINE, COMBATLOG_OBJECT_AFFILIATION_PARTY, COMBATLOG_OBJECT_AFFILIATION_RAID);
 
     -- a friendly player character controled directly by the player that is not an outsider
-    local PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY , INSIDER);
-    local PLAYER_MASK	= bit.bor (COMBATLOG_OBJECT_CONTROL_MASK     , COMBATLOG_OBJECT_TYPE_MASK    , COMBATLOG_OBJECT_REACTION_MASK	  , COMBATLOG_OBJECT_AFFILIATION_MASK);
+    local PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  );
+    local PLAYER_MASK	= bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
-    -- a hostile player character contol as a pet and that is not an outsider
-    local MIND_CONTROLED_PLAYER		= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE , INSIDER);
-    local MIND_CONTROLED_PLAYER_MASK	= bit.bor (COMBATLOG_OBJECT_CONTROL_MASK   , COMBATLOG_OBJECT_TYPE_MASK  , COMBATLOG_OBJECT_REACTION_MASK    , COMBATLOG_OBJECT_AFFILIATION_MASK);
+    -- a hostile player character contoled as a pet and that is not an outsider
+    local MIND_CONTROLED_PLAYER		= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE  );
+    local MIND_CONTROLED_PLAYER_MASK	= bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- a pet controled by a friendly player that is not an outsider
-    local PET	    = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER	, COMBATLOG_OBJECT_TYPE_PET	, COMBATLOG_OBJECT_REACTION_FRIENDLY , INSIDER);
-    local PET_MASK  = bit.bor (COMBATLOG_OBJECT_CONTROL_MASK	, COMBATLOG_OBJECT_TYPE_MASK	, COMBATLOG_OBJECT_REACTION_MASK     , COMBATLOG_OBJECT_AFFILIATION_MASK);
+    local PET	    = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER	, COMBATLOG_OBJECT_TYPE_PET	, COMBATLOG_OBJECT_REACTION_FRIENDLY  );
+    local PET_MASK  = bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- An outsider friendly focused NPC
-    local FOCUSED_NPC	    = bit.bor (COMBATLOG_OBJECT_CONTROL_NPC  , COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_FOCUS , COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
-    local FOCUSED_NPC_MASK  = bit.bor (COMBATLOG_OBJECT_CONTROL_MASK , COMBATLOG_OBJECT_REACTION_MASK	    , COMBATLOG_OBJECT_FOCUS , COMBATLOG_OBJECT_AFFILIATION_MASK);
+    local FOCUSED_NPC	    = bit.bor (COMBATLOG_OBJECT_CONTROL_NPC  , COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_FOCUS	    , COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
+    local FOCUSED_NPC_MASK  = bit.bnot (0);
 
-    local DEST_GLOBAL_MASK =  bit.bor (PLAYER_MASK, MIND_CONTROLED_PLAYER_MASK, PET_MASK, FOCUSED_NPC_MASK);
+    local DEST_GLOBAL =  bit.bor (PLAYER, MIND_CONTROLED_PLAYER, PET, FOCUSED_NPC);
 
 
     local t;
     local function match (value, mask, Verify_exclude)
 
-	t = band(value, mask);
-
-	if  t ~= 0 then
-	    if t == band(value, Verify_exclude) then
+	if   band(value, mask) == mask then
+	    if value == band(value, Verify_exclude) then
 		return true;
 	    end
 	end
@@ -395,13 +392,13 @@ do
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags)
 
 
-	if (destName and band (destFlags, DEST_GLOBAL_MASK) ~= 0 and substr(event, 1, 10) == "SPELL_AURA") then
+	if (destName and band (destFlags, DEST_GLOBAL) ~= 0 and substr(event, 1, 10) == "SPELL_AURA") then
 
-	    D:Print("? (source=%s) (dest=%s -- %X): |cffff0000%s|c, glob = %X, PET=%X", sourceName, destName, destFlags, event, DEST_GLOBAL_MASK, PET);
+	    D:Print("? (source=%s) (dest=%s -- %X): |cffff0000%s|c, glob = %X, PLAYER=%X PlayerVM=%X", sourceName, destName, destFlags, event, DEST_GLOBAL, PLAYER, PLAYER_MASK);
 
 	    if	(match(destFlags, PLAYER, PLAYER_MASK)) then
 
-		D:Print("A player got something (source=%s -- %X) (dest=%s -- %x): %s, glob = %x", sourceName, sourceFlags, destName, destFlags, event, DEST_GLOBAL_MASK);
+		D:Print("A player got something (source=%s -- %X) (dest=%s -- %x): %s, glob = %x", sourceName, sourceFlags, destName, destFlags, event, DEST_GLOBAL);
 		D:Print(arg10, arg11, arg12);
 
 	    elseif	(match(destFlags, PET, PET_MASK)) then
