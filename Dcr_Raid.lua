@@ -444,6 +444,8 @@ do
 		    self.Status.Unit_ArrayByName[raidMember.rName] = "raid"..raidMember.rIndex;
 		end
 
+		-- XXX treat PETS here
+
 	    end
 
 	end -- END if we are in a raid
@@ -483,7 +485,7 @@ do
 
 		    pet = "raidpet"..i;
 
-		    if ( UnitExists(pet) ) then
+		    if ( RaidRosterCache[i] and UnitExists(pet) ) then
 
 			pname = (D:PetUnitName(pet));
 

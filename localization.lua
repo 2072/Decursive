@@ -78,8 +78,8 @@ LOC.CLEAR_SKIP	    = 'C';
 
 
 
-LOC.PET_FEL_CAST  = "Devour Magic";
-LOC.PET_DOOM_CAST = "Dispel Magic";
+LOC.PET_FEL_CAST  = "Devour Magic"; -- NO NEED TO TRANSLATE
+LOC.PET_DOOM_CAST = "Dispel Magic"; -- NO NEED TO TRANSLATE
 
 
 LOC.SPELL_POLYMORPH	      = 'Polymorph'; -- NO NEED TO TRANSLATE
@@ -529,8 +529,8 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_HIDEMFS_NEVER] = true,
     [LOC.OPT_HIDEMFS_NEVER_DESC] = true,
 
-    [LOC.OPT_ADDDEBUFFFHIST]		= true;
-    [LOC.OPT_ADDDEBUFFFHIST_DESC]	= true;
+    [LOC.OPT_ADDDEBUFFFHIST]		= true,
+    [LOC.OPT_ADDDEBUFFFHIST_DESC]	= true,
 
     [LOC.OPT_GROWDIRECTION] = true,
     [LOC.OPT_GROWDIRECTION_DESC] = true,
@@ -633,7 +633,7 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_YSPACING_DESC]		 = true,
 
 
-    [LOC.HLP_LL_ONCLICK_TEXT] = true;
+    [LOC.HLP_LL_ONCLICK_TEXT] = true,
     [LOC.HLP_LEFTCLICK] = true,
     [LOC.HLP_RIGHTCLICK] = true,
     [LOC.HLP_MIDDLECLICK] = true,
