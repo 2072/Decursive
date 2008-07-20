@@ -2,6 +2,7 @@
 
 ## Title: Decursive |cff7fff7f -Ace2-|r
 ## Notes: Affliction display and cleaning for solo, group and raids with advanced filtering and priority system.
+## Notes-ruRU: Отображение и лечение недугов с расширенной фильтрацией и системой приоритетов.
 ## Notes-zhTW: 提供驅魔輔助功能，包含進階的顯示及過濾功能
 ## Notes-frFR: Affichage et guérison des afflictions avec un système évolué de filtrage et de priorité.
 
@@ -37,6 +38,7 @@ DCR_init.lua
 Dcr_utils.lua
 
 localization.lua
+localization.ru.lua
 localization.fr.lua
 localization.de.lua
 localization.tw.lua
