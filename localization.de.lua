@@ -289,6 +289,7 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.AFFLICTEDBY] = LOC.AFFLICTEDBY,
     
     [LOC.SUCCESSCAST] = LOC.SUCCESSCAST,
+    [LOC.FAILEDCAST] = LOC.FAILEDCAST,
     
     [LOC.HANDLEHELP] = LOC.HANDLEHELP,
 

@@ -305,6 +305,7 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.AFFLICTEDBY] 	= "%s에 걸림",
 
 	[LOC.SUCCESSCAST] 	= "|cFF22FFFF%s %s|r|1으로;로; %s |cFF00AA00치료 성공!|r",
+	[LOC.FAILEDCAST]	= LOC.FAILEDCAST,
 	[LOC.HANDLEHELP] 	= "작은 유닛 프레임(MUFs) 모두 이동",
 
 	[LOC.MACROKEYALREADYMAPPED] = "경고: Decursive 매크로에 지정한 [%s]키는 '%s'를 위해 지정되어 있었습니다.\n당신이 매크로에 다른 키를 지정하면 Decursive는 이전 설정을 복원할 것입니다.",

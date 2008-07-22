@@ -116,7 +116,7 @@ do
 	if LibStub then
 	    for k,v in pairs(UseLibStub) do
 		if LibStub:GetLibrary(k, true) then
-		    if select(2, LibStub:GetLibrary(k)) < v then
+		    if (select(2, LibStub:GetLibrary(k))) < v then
 			table.insert(Errors, ("The shared library |cFF00FF00%s|r is out-dated, revision |cFF0077FF%s|r at least is required.\n"):format(k, tostring(v)));
 		    end
 		else

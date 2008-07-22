@@ -36,7 +36,7 @@ D.L	    = AceLibrary("AceLocale-2.2"):new("Dcr");
 D.BC	    = LibStub("LibBabble-Class-3.0"):GetLookupTable();
 D.BCR	    = LibStub("LibBabble-Class-3.0"):GetReverseLookupTable();
 D.DewDrop   = AceLibrary("Dewdrop-2.0");
-D.A	    = AceLibrary("SpecialEvents-Aura-2.0");
+--D.A	    = AceLibrary("SpecialEvents-Aura-2.0");
 D.Waterfall = AceLibrary("Waterfall-1.0");
 D.T	    = AceLibrary("Tablet-2.0");
 
@@ -94,8 +94,15 @@ DC.DS = {};
 
 local DS = DC.DS;
 
+DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.wav";
+--DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
+DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.wav";
+
 DC.IconON = "Interface\\AddOns\\" .. D.folderName .. "\\iconON.tga";
 DC.IconOFF = "Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga";
+
+DC.MyClass = "NOCLASS";
+DC.MyName = "NONAME";
 
 DC.MAGIC	= 1;
 DC.ENEMYMAGIC	= 2;
@@ -352,6 +359,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DC.SpellsToUse = {
 
+
 	    [DS[D.LOC.SPELL_POLYMORPH]]	    = { --Mages
 	    Types = {DC.CHARMED},
 	    IsBest = false,
@@ -450,7 +458,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     -- Thanks to Korean localization team of WoW we have to make an exception....
     -- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
-    if (select(2, UnitClass("player")) == "SHAMAN") then
+    if ((select(2, UnitClass("player"))) == "SHAMAN") then
 	DC.SpellsToUse[DS[D.LOC.SPELL_PURGE]]		    = {
 	    Types = {DC.ENEMYMAGIC},
 	    IsBest = true,
@@ -460,7 +468,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     -- Thanks to Chinese localization team of WoW we have to make anOTHER exception.... ://///
     -- They found the way to call two different spells the same (Devour Magic and Consume Magic... (both are called "&#21534;&#22124;&#39764;&#27861;" )
-    if (select(2, UnitClass("player")) == "PRIEST") then
+    if ((select(2, UnitClass("player"))) == "PRIEST") then
 	DC.SpellsToUse[DS[D.LOC.PET_FEL_CAST]] = nil; -- so we remove PET_FEL_CAST.
     end
 
@@ -587,8 +595,8 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
     -- Cast status events
     -- self:RegisterEvent("UNIT_SPELLCAST_STOP","UNIT_SPELLCAST_STOP"); -- Unused
-    self:RegisterEvent("UNIT_SPELLCAST_SENT","UNIT_SPELLCAST_SENT");
-    self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED","UNIT_SPELLCAST_SUCCEEDED");
+    --self:RegisterEvent("UNIT_SPELLCAST_SENT","UNIT_SPELLCAST_SENT");
+    --self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED","UNIT_SPELLCAST_SUCCEEDED");
 
     -- Raid/Group changes events
     self:RegisterEvent("PARTY_MEMBERS_CHANGED","GroupChanged");
@@ -600,15 +608,17 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("UNIT_PET","UNIT_PET");
 
     -- used to find when a unit is not in line of sight
-    self:RegisterEvent("UI_ERROR_MESSAGE","UI_ERROR_MESSAGE");
+    -- XXX self:RegisterEvent("UI_ERROR_MESSAGE","UI_ERROR_MESSAGE");
 
 
     -- Buff and Debuff Events thses trigger a debuff scan, ther arguments are not used
-    self:RegisterEvent("SpecialEvents_UnitDebuffGained")
-    self:RegisterEvent("SpecialEvents_UnitDebuffLost")
-    self:RegisterEvent("SpecialEvents_UnitBuffGained")
-    self:RegisterEvent("SpecialEvents_UnitBuffLost")
+    --self:RegisterEvent("SpecialEvents_UnitDebuffGained")
+    --self:RegisterEvent("SpecialEvents_UnitDebuffLost")
+    --self:RegisterEvent("SpecialEvents_UnitBuffGained")
+    --self:RegisterEvent("SpecialEvents_UnitBuffLost")
 
+    self:RegisterEvent("PLAYER_TARGET_CHANGED");
+    
 
     self:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
@@ -617,7 +627,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     --self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
 
 
-    -- XXX    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     
 
     self:ScheduleRepeatingEvent("SheduledTasks", self.SheduledTasks, 0.2, self);
@@ -710,6 +720,10 @@ function D:OnProfileEnable()
 
     -- initialize the unit array to get all the variable existing
     -- even if the Live-list and the MUFs are disabled... (some people are strange)
+    
+    DC.MyClass = (select(2, UnitClass("player")));
+    DC.MyName = (self:UnitName("player"));
+    
     D:GetUnitArray();
 
     -- put the updater events at the end of the init so there is no chance they could be called before everything is ready
@@ -1008,7 +1022,7 @@ function D:GetSpellsTranslations(FromDIAG)
     -- get a 'Rank #' string exemple (workaround due to the way the
     -- polymorph spell variants are handled in WoW 2.3)
 
-    DC.RANKNUMTRANS = select(2, GetSpellInfo(118));
+    DC.RANKNUMTRANS = (select(2, GetSpellInfo(118)));
 
     return ok;
 

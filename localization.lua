@@ -306,7 +306,7 @@ LOC.OPT_YSPACING_DESC = "Set the Vertical space between MUFs";
 
 
 
-LOC.HLP_LL_ONCLICK_TEXT = "Clicking on the live-list is useless since WoW 2.0. You should read the file \"Readme.txt\" located in Decursive folder...\n(To move this list move the Decursive bar, /dcrshow and left-alt-click to move)";
+LOC.HLP_LL_ONCLICK_TEXT = "Clicking on the live-list is useless since WoW 2.0. You should read the FAQ in the \"Readme.txt\" file located in Decursive folder...\n(To move this list move the Decursive bar, /dcrshow and left-alt-click to move)";
 LOC.HLP_LEFTCLICK = "Left-Click";
 LOC.HLP_RIGHTCLICK = "Right-Click";
 LOC.HLP_MIDDLECLICK = "Middle-Click";
@@ -331,6 +331,7 @@ LOC.UNITSTATUS = "Unit Status: ";
 LOC.AFFLICTEDBY = "%s Afflicted";
 
 LOC.SUCCESSCAST = "|cFF22FFFF%s %s|r |cFF00AA00succeeded on|r %s";
+LOC.FAILEDCAST = "|cFF22FFFF%s %s|r |cFFAA0000failed on|r %s\n|cFF00AAAA%s|r";
 
 LOC.HANDLEHELP = "Drag all the Micro-UnitFrames (MUFs)";
 
@@ -380,17 +381,6 @@ L:RegisterTranslations("enUS", function() return {
     -- English localization (Default)
     -------------------------------------------------------------------------------
 
-    --start added in Rc4
-
-    [LOC.CLASS_DRUID]	=	true,
-    [LOC.CLASS_HUNTER]	=	true,
-    [LOC.CLASS_MAGE]	=	true,
-    [LOC.CLASS_PALADIN]	=	true,
-    [LOC.CLASS_PRIEST]	=	true,
-    [LOC.CLASS_ROGUE]	=	true,
-    [LOC.CLASS_SHAMAN]	=	true,
-    [LOC.CLASS_WARLOCK]	=	true,
-    [LOC.CLASS_WARRIOR]	=	true,
 
     [LOC.STR_OTHER]		=	true,
     [LOC.STR_OPTIONS]	=	true,
@@ -658,6 +648,7 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.AFFLICTEDBY] = true,
     
     [LOC.SUCCESSCAST] = true,
+    [LOC.FAILEDCAST] = true,
     [LOC.HANDLEHELP] = true,
 
     [LOC.MACROKEYALREADYMAPPED] = true,

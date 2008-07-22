@@ -58,7 +58,7 @@ local _= false;
 function D:Show_Cure_Order() --{{{
     self:Println("printing cure order:");
     for index, unit in ipairs(self.Status.Unit_Array) do
-	self:Println( unit, " - ", self:MakePlayerName((UnitName(unit))) , " Index: ", index);
+	self:Println( unit, " - ", self:MakePlayerName((self:UnitName(unit))) , " Index: ", index);
     end
 end --}}}
 
@@ -225,6 +225,7 @@ function D:PlaySound (UnitID, Caller) --{{{
 
 	    -- good sounds: Sound\\Doodad\\BellTollTribal.wav
 	    --		Sound\\interface\\AuctionWindowOpen.wav
+	    --		Sound\\interface\\AlarmClockWarning3.wav
 	    PlaySoundFile(self.profile.SoundFile);
 	    --self:ScheduleEvent("Playsound", PlaySoundFile, 0, self.profile.SoundFile);
 	    D:Debug("Sound Played! by %s", Caller);
@@ -515,7 +516,7 @@ do
     function D:UnitCurableDebuffs (Unit, JustOne) -- {{{
 
 	if not Unit then
-	    D:Debug("No unit supplied to UnitCurableDebuffs()");
+	    self:Debug("No unit supplied to UnitCurableDebuffs()");
 	    return false;
 	end
 
@@ -574,7 +575,7 @@ do
 			-- solution to the above problem:
 
 			if not self.profile.DebuffAlwaysSkipList[Debuff.Name] then
-			    D:AddDelayedFunctionCall("ReScan"..Unit, D.MicroUnitF.UpdateMUFUnit, D.MicroUnitF, Unit);
+			    self:AddDelayedFunctionCall("ReScan"..Unit, D.MicroUnitF.UpdateMUFUnit, D.MicroUnitF, Unit);
 			end
 			
 			D:Debug("UnitCurableDebuffs(): %s is configured to be skipped", Debuff.Name);
@@ -608,7 +609,7 @@ do
 			-- The user doesn't want to cure a unit afllicted by poison or disease if the unit
 			-- is beeing cured by an abolish spell
 
-			if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self.A:UnitHasBuff(Unit, DS[self.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DC.DISEASE and self.A:UnitHasBuff(Unit, DS[self.LOC.SPELL_ABOLISH_DISEASE]))) then
+			if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self:CheckUnitForBuffs(Unit, DS[self.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DC.DISEASE and self:CheckUnitForBuffs(Unit, DS[self.LOC.SPELL_ABOLISH_DISEASE]))) then
 			    self:Debug("Abolish buff found, skipping");
 			else
 			    -- self:Debug("It's managed");
@@ -671,26 +672,29 @@ do
 end
 
 local UnitBuffsCache	= {};
+
 -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
 function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
-    --[=[
+    -- --[=[
     if (not UnitBuffsCache[Unit]) then
 	UnitBuffsCache[Unit] = {};
     end
 
     local UnitBuffs	= UnitBuffsCache[Unit];
     local i		= 1;
+    local buff_name	= "";
 
-    -- Gett all the unit's buffs
-    while (true) do
-	local buff_name = UnitBuff(Unit, i);
-	if (buff_name) then
-	    UnitBuffs[i] = buff_name;
-	else
+    -- Get all the unit's buffs
+    while true do
+
+	buff_name = UnitBuff(Unit, i)
+
+	if not buff_name then
 	    break;
 	end
 
+	UnitBuffs[i] = buff_name;
 	i = i + 1;
     end
 
@@ -702,8 +706,8 @@ function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
     if type(BuffNamesToCheck) ~= "table" then
 
-	if ( self.A:UnitHasBuff(Unit, BuffNamesToCheck) ) then
-	--if self:tcheckforval(UnitBuffs, BuffNamesToCheck) then
+	--if ( self.A:UnitHasBuff(Unit, BuffNamesToCheck) ) then
+	if self:tcheckforval(UnitBuffs, BuffNamesToCheck) then
 	    return true;
 	else
 	    return false;
@@ -712,8 +716,8 @@ function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 	local Buff;
 	for _, Buff in pairs(BuffNamesToCheck) do
 
-	    if ( self.A:UnitHasBuff(Unit, Buff) ) then
-	    --if self:tcheckforval(UnitBuffs, Buff) then
+	    --if ( self.A:UnitHasBuff(Unit, Buff) ) then
+	    if self:tcheckforval(UnitBuffs, Buff) then
 		return true;
 	    end
 
@@ -724,23 +728,24 @@ function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
 end --}}}
 
-local Stealthed = {DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"]}; --, DS["Ice Armor"],};
-
-
-
-DC.IsStealthBuff = D:tReverse(Stealthed);
 
 D.Stealthed_Units = {};
 
-function D:CheckUnitStealth(Unit) --{{{
-    if (self.profile.Ingore_Stealthed) then
-	if self:CheckUnitForBuffs(Unit, Stealthed) then
---	    self:Debug("Sealth found !");
-	    return true;
+do
+    local Stealthed = {DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"]}; --, DS["Ice Armor"],};
+
+    DC.IsStealthBuff = D:tReverse(Stealthed);
+
+    function D:CheckUnitStealth(Unit)
+	if (self.profile.Ingore_Stealthed) then
+	    if self:CheckUnitForBuffs(Unit, Stealthed) then
+		--	    self:Debug("Sealth found !");
+		return true;
+	    end
 	end
+	return false;
     end
-    return false;
-end --}}}
+end
 -- }}}
 
 

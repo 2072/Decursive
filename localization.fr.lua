@@ -151,7 +151,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.OPT_CREATE_VIRTUAL_DEBUFF] = "Créer une affliction virtuelle de test",
     [LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC] = "Permet de voir ce qu'il se passe lorsqu'une affliction est détectée",
     [LOC.OPT_TIE_LIVELIST_DESC] = "L'affichage de la liste des affligés est lié à celui de la barre \"Decursive\"",
-[LOC.HLP_LL_ONCLICK_TEXT] = "Cliquer sur la liste est inutile depuis WoW 2.0. Vous devriez lire le fichier \"lisez-moi.txt\" qui se trouve dans le répertoire de Decursive.\n(Pour bouger cette liste, bougez la barre de Decursive, /dcrshow et alt-clique-gauche)",
+[LOC.HLP_LL_ONCLICK_TEXT] = "Cliquer sur la liste est inutile depuis WoW 2.0. Vous devriez lire la FAQ se trouvant dans le fichier \"lisez-moi.txt\" qui se trouve dans le répertoire de Decursive.\n(Pour bouger cette liste, bougez la barre de Decursive, /dcrshow et alt-clique-gauche)",
     [LOC.OPT_MESSAGES] = "Messages",
     [LOC.OPT_MESSAGES_DESC] = "Options sur les messages affichés",
     [LOC.OPT_CHATFRAME_DESC] = "Les messages de Decursive seront affichés dans la fenêtre de discussion par défaut",
@@ -298,6 +298,7 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.AFFLICTEDBY] = "Affligée par %s",
     
     [LOC.SUCCESSCAST] = "|cFF22FFFF%s %s|r sur %s |cFF00AA00réussi !|r",
+    [LOC.FAILEDCAST] = "|cFF22FFFF%s %s|r sur %s |cFFAA0000échoué !|r\n|cFF00AAAA%s|r",
 
     [LOC.HANDLEHELP] = "Déplacer tous les micro-portraits",
 

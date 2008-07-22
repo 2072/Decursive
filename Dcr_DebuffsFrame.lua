@@ -249,7 +249,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	start = NumToShow;
     end
 
-    D:Debug("Update required: NumToShow = %d, starting at: %d", NumToShow, start);
+    --D:Debug("Update required: NumToShow = %d, starting at: %d", NumToShow, start);
 
     for i=start, self.Number do
 
@@ -271,11 +271,11 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    self.UnitShown = self.UnitShown + 1;
 
 	    -- Schedule an update for the MUF we just shown
-	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF, false, false);
+	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF, false, false, true);
 	    --D:Debug("Showing %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i));
 
 	elseif (i > NumToShow and MF.Shown) then
-	    D:Debug("Hidding %d", i);
+	    --D:Debug("Hidding %d", i);
 
 	    -- clear debuff before hiding to avoid leaving 'ghosts' behind...
 	    if D.UnitDebuffed[MF.CurrUnit] then
@@ -287,6 +287,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    MF.Debuff1Prio		  = false;
 	    MF.PrevDebuff1Prio		  = false;
 	    D.UnitDebuffed[MF.CurrUnit]	  = false; -- used by the live-list only
+	    D.Stealthed_Units["MF.CurrUnit"] = false;
 
 
 	    MF.Shown = false;
@@ -367,7 +368,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
 	    MF.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
 
-	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false);
+	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
 	end
     end
 end -- }}}
@@ -447,7 +448,7 @@ end -- }}}
 -- }}}
 
 -- Update the MUF of a given unitid
-function MicroUnitF:UpdateMUFUnit(Unitid)
+function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     if not D.profile.ShowDebuffsFrame then
 	return;
     end
@@ -461,10 +462,10 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
 
     local unit = false;
 
-    if (Unitid == "focus") then
-	unit = "focus";
-    elseif (D.Status.Unit_Array_UnitToName[Unitid]) then
+    if (D.Status.Unit_Array_UnitToName[Unitid]) then
 	unit = Unitid;
+    elseif (Unitid == "focus") then
+	unit = "focus";
     else
 	D:Debug("Unit %s, not in raid or party!", Unitid);
 	return;
@@ -478,7 +479,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid)
 	-- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
 	if (not D:IsEventScheduled("Update"..unit)) then
 	    D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-	    D:ScheduleEvent("Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false);
+	    D:ScheduleEvent("Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false, CheckStealth);
 	    D:Debug("Update scheduled for, ", unit, MF.ID);
 
 
@@ -509,7 +510,7 @@ function MicroUnitF:OnEnter() -- {{{
 	D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
     end
 
-    MF:Update(); -- will reset the color early and set the current status of the MUF
+    MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
     if not Unit then
@@ -610,7 +611,7 @@ function MicroUnitF:OnLeave() -- {{{
 end -- }}}
 
 function MicroUnitF:OnCornerClick (arg1, CallingObject) -- {{{
-    D:Debug("clicked");
+    --D:Debug("clicked");
 
     if (not CallingObject) then
 	CallingObject = "noframe";
@@ -673,7 +674,12 @@ end
 
 function MicroUnitF:OnPreClick(Button) -- {{{
 	-- D:Debug("Micro unit Preclicked: ", Button);
-	D.Status.ClickedMF = this.Object; -- used to update the MUF on cast success
+
+	--[=[
+	if D.Status.HasSpell then
+	    D.Status.ClickedMF = this.Object; -- used to update the MUF on cast success and to know which unit is being cured XXX del this line
+	end
+	--]=]
 
 	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 
@@ -700,6 +706,11 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
 		D:errln(L[D.LOC.HLP_WRONGMBUTTON]);
 		D:Println(L[D.LOC.HLP_USEXBUTTONTOCURE], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
+
+	    elseif RequestedPrio and D.Status.HasSpell then
+--		D:Print("XXX ClickedMF SET");
+		D.Status.ClickedMF = this.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
+		D:Debuff_History_Add(this.Object.Debuffs[1].Name, this.Object.Debuffs[1].TypeName);
 	    end
 	end
 end -- }}}
@@ -798,7 +809,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 end -- }}}
 
 
-function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs)
+function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 
     local MF = self;
     -- get the unit this MUF should show
@@ -806,10 +817,10 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs)
     local ActionsDone = 0;
 
     if not Unit then -- if this MUF is being hidden (waiting for the end of the fight)
-	D:Debug("No Unit for MUF #", MF.ID);
+	--D:Debug("No Unit for MUF #", MF.ID);
 	if MF.CurrUnit ~= "" then -- There is a unit attached to this MUF
 	    Unit = MF.CurrUnit; -- we will update the MUF according to its current unit.
-	    D:Debug(" Using previous unit: ", MF.CurrUnit);
+	    --D:Debug(" Using previous unit: ", MF.CurrUnit);
 	else
 	    return 0 -- This MUF has no purpose at all then...
 	end
@@ -824,7 +835,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs)
 
     -- Update the frame attribute if necessary (Spells priority or unit id changes)
     if (D.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
-	D:Debug("Attributes update required: ", MF.ID);
+	--D:Debug("Attributes update required: ", MF.ID);
 	if (MF:UpdateAttributes(Unit, true)) then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
 	    SkipSetColor = false; SkipDebuffs = false; -- if some attributes were updated then update the rest
@@ -836,6 +847,10 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs)
 	    -- get the manageable debuffs of this unit
 	    MF:SetDebuffs();
 	    --D:Debug("Debuff set for ", MF.ID);
+	    if CheckStealth then
+		D.Stealthed_Units[Unit] = D:CheckUnitStealth(Unit); -- update stealth status
+--		D:Debug("MF:Update(): Stealth status checked as requested.");
+	    end
 	end
 
 	if (MF:SetColor()) then
@@ -894,7 +909,7 @@ do
 	    return ReturnValue;
 	end
 
-	D:Debug("UpdateAttributes() executed");
+--	D:Debug("UpdateAttributes() executed");
 	-- set the mouse middle-button action
 	self.Frame:SetAttribute("type3", "target"); --never changes
 
@@ -1163,15 +1178,25 @@ do
 		if self.LitTime then
 		    self.LitTime = false;
 		    self.ChronoFontString:SetText(" ");
-
 		end
+
+		-- if the previous status was FAR, trigger a full rescan of the unit XXX
+		if PreviousStatus == FAR then
+		    D.MicroUnitF:UpdateMUFUnit(self.CurrUnit, true); -- this is able to deal when a lot of update queries
+		    
+		    --D:ScheduleEvent("Update"..self.CurrUnit, self.Update, profile.DebuffsFrameRefreshRate, self, false, false);
+--		    D:Print("SetColor() |cffff00ff(FAR)|r update scheduled for ", self.CurrUnit);
+		end
+		
+
 	    end
 	end
 
 	if PreviousStatus == AFFLICTED or PreviousStatus == AFFLICTED_AND_CHARMED  then
 	    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange - 1;
 
-	    if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.LV_OnlyInRange) then
+	    --if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.LV_OnlyInRange) then
+	    if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.Hide_LiveList) then
 		Dcr:Debug("SetColor(): No more unit, sound re-enabled");
 		D.Status.SoundPlayed = false;
 	    end
@@ -1196,7 +1221,7 @@ do
 
 	    -- set this to true because we just did something expensive...
 	    ReturnValue = true;
-	    D:Debug("border alpha set");
+	    --D:Debug("border alpha set");
 	end
 
 
@@ -1231,7 +1256,7 @@ do
 		self.InnerTexture:Hide();
 	    end
 
-	    D:Debug("Color Applied, MUF Status:", self.UnitStatus);
+	    --D:Debug("Color Applied, MUF Status:", self.UnitStatus);
 
 
 	    -- save the current global status
@@ -1256,7 +1281,7 @@ do
 
 	    if self.UnitName then -- can be nil because of focus...
 		-- Get its class
-		Class = select(2, UnitClass(self.CurrUnit));
+		Class = (select(2, UnitClass(self.CurrUnit)));
 	    else
 		Class = false;
 	    end
@@ -1276,7 +1301,7 @@ do
 		-- set this to true because we just did something expensive...
 		ReturnValue = true;
 
-		D:Debug("Class '%s' set for '%s'", Class, self.CurrUnit);
+		--D:Debug("Class '%s' set for '%s'", Class, self.CurrUnit);
 	    elseif not Class and self.UnitClass then
 		-- if the class is not available, set it to false so this test will be done again and again until a class is found
 		self.UnitClass = false;
@@ -1352,7 +1377,7 @@ do
 		if not MF.IsDebuffed and MF.UpdateCountDown ~= 0 then
 		    MF.UpdateCountDown = MF.UpdateCountDown - 1;
 		else -- if MF.IsDebuffed or MF.UpdateCountDown == 0
-		    ActionsDone = ActionsDone + MF:Update(false, true);--not MF.IsDebuffed and true or false, true);
+		    ActionsDone = ActionsDone + MF:Update(false, not (MF.IsDebuffed and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range
 		    MF.UpdateCountDown = 3;
 		end
 	    end

@@ -110,7 +110,7 @@ function LiveList:DisplayItem (ID, UnitID, Debuff) -- {{{
     --D:Debug("XXXX => Updating ll item %d for %s", ID, UnitID);
 
     if not LVItem.IsShown then
-	D:Debug("(LiveList) Showing LVItem %d", ID);
+	--D:Debug("(LiveList) Showing LVItem %d", ID);
 	LVItem.Frame:Show();
 	self.NumberShown = self.NumberShown + 1;
 	LVItem.IsShown = true;
@@ -249,13 +249,13 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
 
     -- Unit Name
     if self.PrevUnitName ~= self.UnitName then
-	self.UnitClass = select(2, UnitClass(UnitID));
+	self.UnitClass = (select(2, UnitClass(UnitID)));
 	self.UnitNameFontString:SetText(self.UnitName);
 	if self.UnitClass then
 	    self.UnitNameFontString:SetTextColor(unpack(DC.ClassesColors[self.UnitClass]));
 	end
 	self.PrevUnitName =  self.UnitName;
-	D:Debug("(LiveList) Updating %d with %s", self.ID, UnitID);
+	--D:Debug("(LiveList) Updating %d with %s", self.ID, UnitID);
     end
 
     -- Unit ID
@@ -287,14 +287,14 @@ end -- }}}
 function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
-    D:Debug("(LiveList) Getting Debuff for ", UnitID);
+    --D:Debug("(LiveList) Getting Debuff for ", UnitID);
     if (UnitID == "target" or UnitID == "mouseover") and not UnitIsFriend(UnitID, "player") then
 	if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] and D.ManagedDebuffUnitCache[UnitID][1].Type then
 	    D.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target/mouseover debuff
 	    D.UnitDebuffed["target"] = false;
 	end
-	D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile or gone.", UnitID);
-	return;
+	--D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile or gone.", UnitID);
+	return false;
     end
 
     -- decrease the total debuff number if the MUFs system isn't already doing it and if it's not the mouseover or target unit
@@ -304,7 +304,8 @@ function LiveList:GetDebuff(UnitID) -- {{{
 
     -- Get the unit Debuffs
     if not D.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target" then
-	Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID, true);
+	Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID);
+	--Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID, true);
     else -- The MUFs are active and Unit is not mouseover and is not target
 	MF = MicroUnitF.UnitToMUF[UnitID];
 	Debuffs = MF.Debuffs;
@@ -323,6 +324,8 @@ function LiveList:GetDebuff(UnitID) -- {{{
     else
 	D.UnitDebuffed[UnitID] = false; -- unregister this unit
     end
+
+    return D.UnitDebuffed[UnitID];
 end -- }}}
 
 function LiveList:DelayedGetDebuff(UnitID) -- {{{
@@ -352,22 +355,37 @@ function LiveList:Update_Display() -- {{{
     -- Check the units in order of importance:
 
     -- First the Target
-    if D.UnitDebuffed["target"] and UnitExists("target") and UnitIsFriend("player", "target") then
+    if D.Status.TargetExists and self:GetDebuff("target") then -- TargetExists implies that the unit is a friend
 	Index = Index + 1;
 	self:DisplayItem(Index, "target");
+	--D:Debug("frenetic target update");
+
+	DebuffedUnitsNumber = DebuffedUnitsNumber + 1;
+
 	if not D.Status.SoundPlayed then
-	    D:PlaySound ("target", "LV tg" );
+	    D:PlaySound ("target", "LV target" );
 	end
     end
 
     -- Then the MouseOver
-    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and UnitExists("mouseover") and UnitIsFriend("player", "mouseover") then
+    --if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and UnitExists("mouseover") and UnitIsFriend("player", "mouseover") then
+    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
 	Index = Index + 1;
 	self:DisplayItem(Index, "mouseover");
+	--D:Debug("frenetic mouseover update");
+
+	DebuffedUnitsNumber = DebuffedUnitsNumber + 1;
+
 	if not D.Status.SoundPlayed then
-	    D:PlaySound ("mouseover", "LV mo" );
+	    D:PlaySound ("mouseover", "LV mouseover" );
 	end
     end
+
+    -- the sound played status is rest here because the live list is able to display target and mouseover units and far away ones...
+    if DebuffedUnitsNumber == 0 then
+	D.Status.SoundPlayed = false;
+    end
+
     IndexOffset = Index;
 
     -- Then continue with all the remaining units if at least one of them is debuffed
@@ -428,7 +446,7 @@ function LiveList:Update_Display() -- {{{
     if self.NumberShown > Index then -- if there are more unit shown than the actual number of debuffed units
 	for i = Index + 1, self.NumberShown do
 	    if self.ExistingPerID[i] and self.ExistingPerID[i].IsShown then
-		D:Debug("(LiveList) Hidding LVItem %d", i);
+		--D:Debug("(LiveList) Hidding LVItem %d", i);
 		self.ExistingPerID[i].Frame:Hide();
 		self.ExistingPerID[i].IsShown = false;
 		self.NumberShown = self.NumberShown - 1;
@@ -446,7 +464,7 @@ end -- }}}
 function LiveList:DisplayTestItem() -- {{{
     if not self.TestItemDisplayed then
 	self.TestItemDisplayed = true;
-	D:SpecialEvents_UnitDebuffLost(D:NameToUnit((UnitName("player"))), "Test item");
+	D:DummyDebuff(D:NameToUnit((D:UnitName("player"))), "Test item");
     end
 end -- }}}
 
@@ -456,7 +474,7 @@ function LiveList:HideTestItem() -- {{{
 
      for UnitID, Debuffed in pairs(D.UnitDebuffed) do
 	 if Debuffed then
-	     D:ScheduleEvent("rmt"..i, D.SpecialEvents_UnitDebuffLost, i * (D.profile.ScanTime / 2), D, UnitID, "Test item");
+	     D:ScheduleEvent("rmt"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, UnitID, "Test item");
 	     i = i + 1;
 	 end
      end

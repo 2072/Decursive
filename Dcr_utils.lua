@@ -61,20 +61,29 @@ function D:MakePlayerName (name) --{{{
 end --}}}
 
 function D:PetUnitName (Unit, Check) -- {{{
-    local Name = (UnitName(Unit));
+    local Name = (self:UnitName(Unit));
 
     if not Name or Name == DC.UNKNOWN  then
-	Name = DC.UNKNOWN .. "_" .. Unit;
+	Name = DC.UNKNOWN .. "-" .. Unit;
 	D:Debug("Name of %s is unknown", Unit);
     end
 
     if not Check or (not UnitIsPlayer(Unit) and Unit ~= "focus") then
-	Name =  DC.PET .. " - " .. Name;
+	Name =  DC.PET .. "-" .. Name;
     end
     
     return Name;
 
 end -- }}}
+
+function D:UnitName(Unit)
+    local name, server = UnitName(Unit);
+	if ( server and server ~= "" ) then
+	    return name.."-"..server;
+	else
+	    return name;
+	end 
+end
 
 function D:MakeAfflictionName (name) --{{{
     if (name) then

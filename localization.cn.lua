@@ -282,6 +282,7 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.AFFLICTEDBY] = "受 %s 影响",
 
     [LOC.SUCCESSCAST] = "%s %s|cFF00AA00成功施放于|r|cFF22FFFF %s|r。",
+    [LOC.FAILEDCAST] = LOC.FAILEDCAST,
 
     [LOC.HANDLEHELP] = "拖拽移动 MUF",
 
