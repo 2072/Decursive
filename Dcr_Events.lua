@@ -290,7 +290,7 @@ do
     -- An outsider friendly focused unit
     local FOCUSED_FRIEND       = bit.bor (COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_FOCUS	    , COMBATLOG_OBJECT_AFFILIATION_OUTSIDER); -- XXX should be also applied on the MUFS (No need to include an insider...)
 
-    -- An friendly targeted unit
+    -- A friendly targeted unit
     local TARGETED_FRIEND       = bit.bor (COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_TARGET);
 
     -- local DEST_GLOBAL =  bit.bor (PLAYER, MIND_CONTROLED_PLAYER, PET, FOCUSED_FRIEND, TARGETED_FRIEND); -- unused
@@ -317,7 +317,6 @@ do
 
     end --}}}
 
-    local substr = _G.string.sub;
     local AuraEvents = {
 	["SPELL_AURA_APPLIED"]	    = 1,
 	["SPELL_AURA_REMOVED"]	    = 0,
@@ -355,11 +354,16 @@ do
 	    if	match(destFlags, PLAYER, PLAYER_MASK)
 		or match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)
 		or band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND
-		or (self.profile.Scan_Pets and (match(destFlags, PET, PET_MASK))) then -- Players ans pets
+		or (self.profile.Scan_Pets and (match(destFlags, PET, PET_MASK))) then -- Players and pets
 
 		-- D:Print("A managed unit got something (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cffff0000%s|r, |cFF00AAAA%s|r, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg12);
 
 		UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID];
+
+		if not UnitID then
+		    self:Debug("|cFFFF0000XXXXX:|r No unit matched for %s", destGUID);
+		    return;
+		end
 
 
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
@@ -424,9 +428,6 @@ do
 			    end
 			end
 		    end
-		    -- TODO: 
-		    -- fix target and mouseover updating in live-list (maybe schedule a repeating event that is disable when the target or mouseover stop to exists
-
 		end
 	    end
 
