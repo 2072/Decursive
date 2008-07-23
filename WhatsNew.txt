@@ -184,7 +184,6 @@ Changes:
 - It is possible to hear Decursive's debuff alert sound when the live-list is
   disabled.
 
-- Decursive uses SpecialEvent-Aura events to monitor debuffs.
 - You can create a virtual debuff to test the display (see in live-list
   options)
 - The MiniMap and FuBar Decursive Icon is now clickable and an information

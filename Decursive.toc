@@ -1,4 +1,4 @@
-﻿## Interface: 20400
+## Interface: 20400
 
 ## Title: Decursive |cff7fff7f -Ace2-|r
 ## Notes: Affliction display and cleaning for solo, group and raids with advanced filtering and priority system.
@@ -14,8 +14,8 @@
 
 ## X-License: GNU GPL
 
-## OptionalDeps: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0, SpecialEventsEmbed
-## X-Embeds: Ace2, LibBabble-Class-3.0, LibStub, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0, SpecialEventsEmbed
+## OptionalDeps: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0
+## X-Embeds: Ace2, LibBabble-Class-3.0, LibStub, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0
 
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat

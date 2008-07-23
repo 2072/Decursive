@@ -185,8 +185,6 @@ Changements :
 - Un message est affiché si l'utilisateur clique sur la liste des affligés.
 - Il est maintenant possible d'entendre le son d'alerte même si la liste des
   affligés n'est pas affichée.
-- Decursive utilise la librairie SpecialEvent-Aura pour surveiller les
-  afflictions.
 - On peut créer une affliction virtuelle pour tester l'affichage (voir dans les
   options de la liste des affligés)
 - L'icône de Decursive de la Minimap et de FuBar répond désormais aux cliques
