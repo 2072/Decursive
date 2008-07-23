@@ -332,7 +332,7 @@ do
 	["SPELL_CAST_START"]	= true,
 	["SPELL_CAST_FAILED"]	= true,
 	["SPELL_CAST_SUCCESS"]	= true,
-	["DISPEL_FAILED"]	= true,
+	["SPELL_DISPEL_FAILED"]	= true,
     };
 
     local UnitID;
@@ -467,7 +467,7 @@ do
 		    PlaySoundFile(DC.FailedSound);
 		end
 
-	    elseif event == "SPELL_MISSED" or event == "DISPEL_FAILED" then -- XXX to test
+	    elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then -- XXX to test
 		destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
 		D:Println(L[self.LOC.FAILEDCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
