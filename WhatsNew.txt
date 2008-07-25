@@ -1,4 +1,35 @@
-Decursive 2.1.0 Final by Archarodim  (2008-04-27)
+Decursive 2.2.0 Beta 1 by Archarodim  (2008-07-28)
+
+
+Changes from Decursive 2.1.0 Final to Decursive 2.2.0 beta 1
+
+* Important changes:
+
+- Decursive no longer uses SpecialEvent-Aura-2.0 to detect afflictions, it uses
+  the new combat log system introduced in WoW 2.4. This simplifies the code a
+  lot and prevent far away units to be scanned uselessly.
+
+- As a result Decursive is now able to detect missed dispels and missed or
+  failed spells with complete accuracy.
+- A new sound alerts you if one of your spell launched using the MUFs fails.
+
+- New debuff alert sound more audible for people without a good bass system.
+
+- The focused unit is no longer added to the MUFs if it's already a member of your group.
+
+- When the live-list tool tips are disabled, the Live-List won't catch mouse
+  event, you can click right through it.
+
+- Debuff history is populated only when you click on a MUF to dispel something
+
+- Complete Russian translation by StingerSoft
+
+* Fixed bugs:
+
+- Fix a nil error when players with pets were excluded using the skip list.
+- fix a lot of insidious bugs related to 'gendered' class names...
+- fix problems in battlefields with players from other realms (group ordering failures)
+- Units not in line of sight are now always properly blacklisted.
 
 
 Changes from Decursive 2.0.4 to Decursive 2.1.0 Final
@@ -184,6 +215,7 @@ Changes:
 - It is possible to hear Decursive's debuff alert sound when the live-list is
   disabled.
 
+- Decursive uses SpecialEvent-Aura events to monitor debuffs.
 - You can create a virtual debuff to test the display (see in live-list
   options)
 - The MiniMap and FuBar Decursive Icon is now clickable and an information

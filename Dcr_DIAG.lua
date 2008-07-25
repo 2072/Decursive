@@ -93,7 +93,6 @@ do
 	    ["AceConsole-2.0"]		= 67789,
 	    ["AceLocale-2.2"]		= 40629,
 	    ["AceAddon-2.0"]	        = 57245,
---	    ["SpecialEvents-Aura-2.0"]  = 59749,  --not anymore!
 	    ["Dewdrop-2.0"]		= 56529,
 	    ["Waterfall-1.0"]		= 67025,
 	    ["Tablet-2.0"]		= 64130,

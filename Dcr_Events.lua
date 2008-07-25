@@ -121,7 +121,7 @@ local last_focus_GUID = false;
 function D:PLAYER_FOCUS_CHANGED ()
     self.Status.Unit_Array_UnitToName["focus"] = (self:PetUnitName("focus", true));
 
-    if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and not UnitExists("focus")) then
+    if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and not UnitExists("focus")) then -- the previously recorded focus is gone
 
 	table.remove(self.Status.Unit_Array, #self.Status.Unit_Array);
 	self.Status.UnitNum = #self.Status.Unit_Array;
@@ -133,7 +133,7 @@ function D:PLAYER_FOCUS_CHANGED ()
 	self:Debug("Focus removed");
 	return;
 
-    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" and UnitExists("focus") and UnitIsFriend("focus", "player")
+    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" and UnitExists("focus") and UnitIsFriend("focus", "player") -- a new focus is there
 	and not self:NameToUnit((self:UnitName("focus"))) then
 
 	table.insert(self.Status.Unit_Array, "focus");
@@ -144,19 +144,20 @@ function D:PLAYER_FOCUS_CHANGED ()
 	self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
 
 
+	last_focus_GUID = UnitGUID("focus");
 
 	self.MicroUnitF:Delayed_MFsDisplay_Update();
 	self:Debug("Focus Added");
-    elseif UnitExists("focus") then
+    elseif UnitExists("focus") then -- the focus changed
 	self.MicroUnitF:UpdateMUFUnit("focus", true);
 
 	self.Status.Unit_Array_GUIDToUnit[last_focus_GUID] = nil;
 	self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
 
+	last_focus_GUID = UnitGUID("focus");
 	self:Debug("Focus changed");
     end
 
-    last_focus_GUID = UnitGUID("focus");
 
 end
 

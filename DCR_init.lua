@@ -724,7 +724,6 @@ function D:OnProfileEnable()
     DC.MyClass = (select(2, UnitClass("player")));
     DC.MyName = (self:UnitName("player"));
     
-    D:GetUnitArray();
 
     -- put the updater events at the end of the init so there is no chance they could be called before everything is ready
     if not D.profile.Hide_LiveList then
@@ -736,6 +735,8 @@ function D:OnProfileEnable()
     end
     D.DcrFullyInitialized = true;
     D:ShowHideButtons(true);
+
+    D:GetUnitArray();
 end
 
 function D:OnDisable() -- When the addon is disabled by ACE
