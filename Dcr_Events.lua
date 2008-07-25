@@ -433,7 +433,7 @@ do
 	    end
 
 	    -- SPELL EVENTS {{{
-	elseif SpellEvents[event] and self.Status.CuringSpellsPrio[arg10] and self.Status.ClickedMF and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  DISPEL_FAILED
+	elseif self.Status.ClickedMF and SpellEvents[event] and self.Status.CuringSpellsPrio[arg10] and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  DISPEL_FAILED
 
 	    if event == "SPELL_CAST_START" then -- useless
 
@@ -446,6 +446,8 @@ do
 
 		--self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
 		self:ScheduleEvent("UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
+		--self.Status.ClickedMF = false;
+		self:ScheduleEvent("clickedMFreset", function() D.Status.ClickedMF = false; D:Debug("ClickedMF to false (sched)"); end, 0.1 );
 
 	    end
 
@@ -468,15 +470,16 @@ do
 
 		    PlaySoundFile(DC.FailedSound);
 		end
+		self.Status.ClickedMF = false;
 
 	    elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then -- XXX to test
 		destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
 		D:Println(L[self.LOC.FAILEDCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
 		PlaySoundFile(DC.FailedSound);
+		self.Status.ClickedMF = false;
 	    end
 
-	    self.Status.ClickedMF = false;
 
 	    --D:Print("SPELL EVENT: (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cFFBB0000%s|r for spell |cFF00FF00%s|r", sourceName, sourceFlags, destName, destFlags, event, arg10);
 	    ----  }}}

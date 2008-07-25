@@ -355,6 +355,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     }
 
     -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
+    -- /script DcrC.SpellsToUse[DcrC.DS[Dcr.LOC.SPELL_POLYMORPH]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; Dcr:Configure();
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DC.SpellsToUse = {
