@@ -121,12 +121,16 @@ function D:NameToUnit( Name ) --{{{
 	local i;
 	local RaidName;
 	for i=1, numRaidMembers do
-	    RaidName = GetRaidRosterInfo(i);
+	    RaidName = (GetRaidRosterInfo(i));
 	    if ( Name == RaidName) then
 		FoundUnit =  "raid"..i;
+		break;
+	    elseif not Name or Name == DC.UNKNOWN then -- XXX temp
+		Dcr:Print("Dcr:NameToUnit(): wrong raid name:","raid"..i, RaidName, (self:UnitName("raid"..i)) );
 	    end
 	    if ( self.profile.Scan_Pets and Name == (self:UnitName("raidpet"..i))) then
 		FoundUnit =  "raidpet"..i;
+		break;
 	    end
 	end
     end
@@ -487,7 +491,7 @@ do
 		    self.Status.Unit_ArrayByName[MyName] = PlayerRID;
 		else
 		    if not MyName then MyName = "nil" end
-		    message(string.format("Decursive-UAB: PlayerRID is false for %s-%s\nReport this to archarodim@teaser.fr", MyName,  Dcr:UnitName("player")));
+		    message(string.format("Decursive-UAB: PlayerRID is false for %s-%s (cg:%d)\nReport this to archarodim@teaser.fr", MyName,  Dcr:UnitName("player"), currentGroup));
 
 		    AddToSort( "player", 900);
 		    self.Status.Unit_ArrayByName[MyName] =  "player";
