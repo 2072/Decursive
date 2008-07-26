@@ -74,6 +74,8 @@ local function AddToSort (unit, index) -- // {{{
     --D:Debug("Adding to sort: ", unit, index);
 end --}}}
 
+Dcr.xxxtemp = 0;
+
 -- Raid/Party Name Check Function (a terrible function, need optimising)
 -- this returns the UnitID that the Name points to
 -- this does not check "target" or "mouseover"
@@ -126,7 +128,8 @@ function D:NameToUnit( Name ) --{{{
 		FoundUnit =  "raid"..i;
 		break;
 	    elseif not Name or Name == DC.UNKNOWN then -- XXX temp
-		Dcr:Print("Dcr:NameToUnit(): wrong raid name:","raid"..i, RaidName, (self:UnitName("raid"..i)) );
+		Dcr.xxxtemp = Dcr.xxxtemp + 1;
+	--	Dcr:Print("Dcr:NameToUnit(): wrong raid name:","raid"..i, RaidName, (self:UnitName("raid"..i)) );
 	    end
 	    if ( self.profile.Scan_Pets and Name == (self:UnitName("raidpet"..i))) then
 		FoundUnit =  "raidpet"..i;
@@ -303,7 +306,6 @@ do
     end -- }}}
 
 
-    Dcr.xxxtemp = 0;
 
     local pet;
     function D:GetUnitArray() --{{{
@@ -311,9 +313,9 @@ do
 	-- if the groups composition did not changed
 	if (not self.Groups_datas_are_invalid or not self.DcrFullyInitialized) then
 
-	    if not self.DcrFullyInitialized then -- XXX to remove
-		self.xxxtemp = self.xxxtemp + 1;
-	    end
+	    --if not self.DcrFullyInitialized then -- XXX to remove
+	--	self.xxxtemp = self.xxxtemp + 1;
+	  --  end
 
 	    return;
 	end
@@ -491,13 +493,14 @@ do
 		    self.Status.Unit_ArrayByName[MyName] = PlayerRID;
 		else
 		    if not MyName then MyName = "nil" end
-		    message(string.format("Decursive-UAB: PlayerRID is false for %s-%s (cg:%d)\nReport this to archarodim@teaser.fr", MyName,  Dcr:UnitName("player"), currentGroup));
+		    message(string.format("Decursive-UAB: PlayerRID is false for %s (cg:%d), UT=%d, RNN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
+			MyName, currentGroup, (GetTime() - DC.StartTime), Dcr.xxxtemp));
 
 		    AddToSort( "player", 900);
 		    self.Status.Unit_ArrayByName[MyName] =  "player";
 
-		    MyName = self:UnitName("player");
-		    DC.MyName = MyName;
+		    --MyName = self:UnitName("player");
+		    --DC.MyName = MyName;
 		    self.Status.Unit_Array_NameToUnit[MyName] = "player";
 		end
 	    end
@@ -550,11 +553,11 @@ do
 	    self.Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
 
 	    -- another -very- usefull table ;-)
-	    if unit ~= true and unit then -- XXX temp to fix
+	    --if unit ~= true and unit then -- XXX temp to fix
 		self.Status.Unit_Array_GUIDToUnit[UnitGUID(unit)] = unit;
-	    else
-		message(string.format("Decursive-UAB: invalid unit supplied to UnitGUID for %s-%s\nReport this to archarodim@teaser.fr", name, UnitName("player")));
-	    end
+	    --else
+		--message(string.format("Decursive-UAB: invalid unit supplied to UnitGUID for %s-%s\nReport this to archarodim@teaser.fr", name, UnitName("player")));
+	    --end
 	end
 
 	table.sort(self.Status.Unit_Array, function (a,b)

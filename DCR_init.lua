@@ -137,6 +137,8 @@ DC.RANKNUMTRANS = false;
 DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage creation
 
 
+DC.StartTime = GetTime();
+
 D.DebuffHistory = {};
 
 D.MFContainer = false;
