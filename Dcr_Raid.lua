@@ -493,8 +493,8 @@ do
 		    self.Status.Unit_ArrayByName[MyName] = PlayerRID;
 		else
 		    if not MyName then MyName = "nil" end
-		    message(string.format("Decursive-UAB: PlayerRID is false for %s (cg:%d), UT=%d, RNN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
-			MyName, currentGroup, (GetTime() - DC.StartTime), Dcr.xxxtemp));
+		    message(string.format("Decursive-UAB: PlayerRID is false for %s (cg:%d), UT=%d, RNN=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
+			MyName, currentGroup, (GetTime() - DC.StartTime), Dcr.xxxtemp, raidnum));
 
 		    AddToSort( "player", 900);
 		    self.Status.Unit_ArrayByName[MyName] =  "player";
