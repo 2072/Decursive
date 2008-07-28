@@ -75,7 +75,6 @@ local function AddToSort (unit, index) -- // {{{
     --D:Debug("Adding to sort: ", unit, index);
 end --}}}
 
-Dcr.xxxtemp = 0;
 
 -- Raid/Party Name Check Function (a terrible function, need optimising)
 -- this returns the UnitID that the Name points to
@@ -97,8 +96,6 @@ function D:NameToUnit( Name ) --{{{
     if (numRaidMembers == 0) then
 	if (Name == (self:UnitName("player"))) then
 	    FoundUnit =  "player";
-	--elseif (Name == (self:UnitName("focus"))) then
-	--  return  "focus"; -- we won't store this value
 	elseif (Name == (self:UnitName("pet"))) then
 	    FoundUnit =  "pet";
 	elseif GetNumPartyMembers() > 0 then
@@ -326,11 +323,6 @@ do
 
 	-- if the groups composition did not changed
 	if (not self.Groups_datas_are_invalid or not self.DcrFullyInitialized) then
-
-	    --if not self.DcrFullyInitialized then -- XXX to remove
-	--	self.xxxtemp = self.xxxtemp + 1;
-	  --  end
-
 	    return;
 	end
 
@@ -499,7 +491,6 @@ do
 
 		
 		if CaheID > raidnum then -- we found all the units
-		    --self:Print(format("escape works, RaidRosterCache counts %d, CaheID=%d, i=%d",#RaidRosterCache, CaheID, i));
 		    break;
 		end
 
@@ -507,20 +498,17 @@ do
 
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyName, currentGroup, DC.ClassUNameToNum[DC.MyClass])) then
-		local PlayerRID = self:NameToUnit(MyName); -- XXX might return false
+		local PlayerRID = self:NameToUnit(MyName); -- might return false at logon if raid data changed
 		if PlayerRID then
 		    AddToSort( PlayerRID, 900);
 		    self.Status.Unit_ArrayByName[MyName] = PlayerRID;
 		else
-		    if not MyName then MyName = "nil" end
-		    message(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RNN=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
-			MyName, currentGroup, (GetTime() - DC.StartTime), Dcr.xxxtemp, raidnum));
+		    --message(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
+			--MyName, currentGroup, (GetTime() - DC.StartTime), raidnum));
 
 		    AddToSort( "player", 900);
 		    self.Status.Unit_ArrayByName[MyName] =  "player";
 
-		    --MyName = self:UnitName("player");
-		    --DC.MyName = MyName;
 		    self.Status.Unit_Array_NameToUnit[MyName] = "player";
 		end
 	    end
@@ -572,12 +560,7 @@ do
 	    table.insert(self.Status.Unit_Array, unit);
 	    self.Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
 
-	    -- another -very- usefull table ;-)
-	    --if unit ~= true and unit then -- XXX temp to fix
-		self.Status.Unit_Array_GUIDToUnit[UnitGUID(unit)] = unit;
-	    --else
-		--message(string.format("Decursive-UAB: invalid unit supplied to UnitGUID for %s-%s\nReport this to archarodim@teaser.fr", name, UnitName("player")));
-	    --end
+	    self.Status.Unit_Array_GUIDToUnit[UnitGUID(unit)] = unit;
 	end
 
 	table.sort(self.Status.Unit_Array, function (a,b)
