@@ -60,6 +60,7 @@ local UnitExists	= _G.UnitExists;
 local table	= _G.table;
 local UnitGUID  = _G.UnitGUID;
 
+local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
 -------------------------------------------------------------------------------
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
 -------------------------------------------------------------------------------
@@ -83,6 +84,7 @@ function D:NameToUnit( Name ) --{{{
 
     local numRaidMembers = GetNumRaidMembers();
     local FoundUnit = false;
+
 
     if (not Name) then
 	return false;
@@ -121,19 +123,28 @@ function D:NameToUnit( Name ) --{{{
     else
 	-- we are in a raid
 	local i;
+	local foundmembers = 0;
 	local RaidName;
-	for i=1, numRaidMembers do
+	for i=1, MAX_RAID_MEMBERS do
 	    RaidName = (GetRaidRosterInfo(i));
-	    if ( Name == RaidName) then
-		FoundUnit =  "raid"..i;
-		break;
-	    elseif not Name or Name == DC.UNKNOWN then -- XXX temp
-		Dcr.xxxtemp = Dcr.xxxtemp + 1;
-	--	Dcr:Print("Dcr:NameToUnit(): wrong raid name:","raid"..i, RaidName, (self:UnitName("raid"..i)) );
-	    end
-	    if ( self.profile.Scan_Pets and Name == (self:UnitName("raidpet"..i))) then
-		FoundUnit =  "raidpet"..i;
-		break;
+
+	    if RaidName then
+
+		foundmembers = foundmembers + 1;
+
+		if ( Name == RaidName) then
+		    FoundUnit =  "raid"..i;
+		    break;
+		end
+		if ( self.profile.Scan_Pets and Name == (self:UnitName("raidpet"..i))) then
+		    FoundUnit =  "raidpet"..i;
+		    break;
+		end
+
+		if foundmembers == numRaidMembers then
+		    break;
+		end
+
 	    end
 	end
     end
@@ -181,8 +192,11 @@ DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
 
 do
 
+    local i = 1;
     local D = D;
     local _ = false; -- a local dummy trash variable
+
+    local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
 
     function IsInSkipList ( name, group, classNum ) -- {{{
 	if (D.Status.InternalSkipList[name] or D.Status.InternalSkipList[group] or D.Status.InternalSkipList[classNum]) then
@@ -458,7 +472,7 @@ do
 	    local CaheID = 1; -- make an ordered table
 
 	    -- Cache the raid roster info eliminating useless info and already listed members
-	    for i = 1, raidnum do
+	    for i = 1, MAX_RAID_MEMBERS do
 		rName, _, rGroup, _, _, rClass = GetRaidRosterInfo(i);
 
 		-- find our group (a whole iteration is required, raid info are not ordered)
@@ -483,6 +497,12 @@ do
 		    CaheID = CaheID + 1;
 		end
 
+		
+		if CaheID > raidnum then -- we found all the units
+		    --self:Print(format("escape works, RaidRosterCache counts %d, CaheID=%d, i=%d",#RaidRosterCache, CaheID, i));
+		    break;
+		end
+
 	    end
 
 	    -- Add the player to the main list if needed
@@ -493,7 +513,7 @@ do
 		    self.Status.Unit_ArrayByName[MyName] = PlayerRID;
 		else
 		    if not MyName then MyName = "nil" end
-		    message(string.format("Decursive-UAB: PlayerRID is false for %s (cg:%d), UT=%d, RNN=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
+		    message(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RNN=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
 			MyName, currentGroup, (GetTime() - DC.StartTime), Dcr.xxxtemp, raidnum));
 
 		    AddToSort( "player", 900);
