@@ -465,6 +465,7 @@ do
 	    currentGroup = 0;
 	    local rName, rGroup;
 	    local CaheID = 1; -- make an ordered table
+	    local excluded = 0;
 
 	    -- Cache the raid roster info eliminating useless info and already listed members
 	    for i = 1, MAX_RAID_MEMBERS do
@@ -476,32 +477,32 @@ do
 		end
 
 		-- add all except member to skip
-		if (not IsInSkipList(rName, rGroup, DC.ClassUNameToNum[rClass]) ) then
+		if not IsInSkipList(rName, rGroup, DC.ClassUNameToNum[rClass]) then
 
-		    if (not RaidRosterCache[CaheID]) then
-			RaidRosterCache[CaheID] = {};
-		    end
+		    if (rName) then -- (at log-in GetRaidRosterInfo() returns garbage)
 
-		    if (not rName) then -- at logon sometimes rName is nil...
-			rName = rGroup.."unknown"..i;
+			if (not RaidRosterCache[CaheID]) then
+			    RaidRosterCache[CaheID] = {};
+			end
+
+			RaidRosterCache[CaheID].rName    = rName;
+			RaidRosterCache[CaheID].rGroup   = rGroup;
+			RaidRosterCache[CaheID].rClass   = rClass;
+			RaidRosterCache[CaheID].rIndex   = i;
+			CaheID = CaheID + 1;
 		    end
-		    RaidRosterCache[CaheID].rName    = rName;
-		    RaidRosterCache[CaheID].rGroup   = rGroup;
-		    RaidRosterCache[CaheID].rClass   = rClass;
-		    RaidRosterCache[CaheID].rIndex   = i;
-		    CaheID = CaheID + 1;
+		else
+		    excluded = excluded + 1;
 		end
 
-		
-		if CaheID > raidnum then -- we found all the units
+		if CaheID + excluded > raidnum then -- we found all the units
 		    break;
 		end
-
 	    end
 
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyName, currentGroup, DC.ClassUNameToNum[DC.MyClass])) then
-		local PlayerRID = self:NameToUnit(MyName); -- might return false at logon if raid data changed
+		local PlayerRID = self:NameToUnit(MyName); -- might return false at log-in
 		if PlayerRID then
 		    AddToSort( PlayerRID, 900);
 		    self.Status.Unit_ArrayByName[MyName] = PlayerRID;

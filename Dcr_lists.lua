@@ -119,7 +119,6 @@ function D:PrioSkipListFrame_OnUpdate() --{{{
 	    end
 	end
 	this:ScrollUpdateFunc(getglobal(baseName.."ScrollFrame"));
-	-- D.Groups_datas_are_invalid = true;
     end
 
 end --}}}
@@ -385,6 +384,7 @@ function D:AddUnitToSkipList( unit) --{{{
 	    D:Debug("Unit %s added to the skip list", name);
 	    DecursiveSkipListFrame.UpdateYourself = true;
 	    D.Groups_datas_are_invalid = true;
+	    D.MicroUnitF:Delayed_MFsDisplay_Update ();
 	    return true;
 	else
 	    D:Debug("Unit is not a player:", unit);
@@ -402,6 +402,7 @@ function D:RemoveIDFromSkipList(id) --{{{
     table.remove( D.profile.SkipList, id );
 
     D.Groups_datas_are_invalid = true;
+    D.MicroUnitF:Delayed_MFsDisplay_Update ();
     DecursiveSkipListFrame.UpdateYourself = true;
 end --}}}
 
@@ -413,6 +414,7 @@ function D:ClearSkipList() --{{{
     
     D.Groups_datas_are_invalid = true;
     DecursiveSkipListFrame.UpdateYourself = true;
+    D.MicroUnitF:Delayed_MFsDisplay_Update ();
 end --}}}
 
 

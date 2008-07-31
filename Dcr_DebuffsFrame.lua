@@ -257,7 +257,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	start = NumToShow;
     end
 
-    --D:Debug("Update required: NumToShow = %d, starting at: %d", NumToShow, start);
+    D:Debug("Update required: NumToShow = %d, starting at: %d", NumToShow, start);
 
     for i=start, self.Number do
 
