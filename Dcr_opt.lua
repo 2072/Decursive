@@ -38,8 +38,12 @@ local DS = DC.DS;
 local pairs		= _G.pairs;
 local ipairs		= _G.ipairs;
 local table		= _G.table;
+local str_format	= _G.string.format;
+local str_sub		= _G.string.gsub;
+local abs		= _G.math.abs;
 local GetNumRaidMembers		= _G.GetNumRaidMembers;
 local GetNumPartyMembers	= _G.GetNumPartyMembers;
+local _;
 -- Default values for the option
 
 D:GetSpellsTranslations(false); -- Register spell translations
@@ -1500,10 +1504,10 @@ function D:SetCureOrder (ToChange)
 
 	-- if we have a spell or if we did not unchecked the checkbox (note the difference between "checked" and "not unchecked")
 	if (D.Status.CuringSpells[Type] and CureOrder[Type]) then
-	    tmpTable[math.abs(CureOrder[Type])] = Type; -- CureOrder[Type] can have a <0 value if the spell was lost
+	    tmpTable[abs(CureOrder[Type])] = Type; -- CureOrder[Type] can have a <0 value if the spell was lost
 	    FoundSpell = FoundSpell + 1;
 	elseif (CureOrder[Type]) then -- if we don't have a spell for this type
-	    LostSpells[math.abs(CureOrder[Type])] = Type;  -- save the position
+	    LostSpells[abs(CureOrder[Type])] = Type;  -- save the position
 	end
     end
 
@@ -1736,7 +1740,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    type = "toggle",
 	    name = D:ColorText( BC[FormattedClass], "FF"..DC.HexClassColor[Class]) ..
 	    (CheckedByDefault and D:ColorText("  *", "FFFFAA00") or ""),
-	    desc = string.format(L[D.LOC.OPT_AFFLICTEDBYSKIPPED], BC[FormattedClass], DebuffName) ..
+	    desc = str_format(L[D.LOC.OPT_AFFLICTEDBYSKIPPED], BC[FormattedClass], DebuffName) ..
 	    (CheckedByDefault and D:ColorText(L[D.LOC.OPT_DEBCHECKEDBYDEF], "FFFFAA00") or "");
 	    handler = {
 		["Debuff"]=DebuffName,
@@ -1771,7 +1775,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	classes["PermIgnore"] = {
 	    type = "toggle",
 	    name = D:ColorText(L[D.LOC.OPT_ALWAYSIGNORE], "FFFF9900"),
-	    desc = string.format(L[D.LOC.OPT_ALWAYSIGNORE_DESC], DebuffName),
+	    desc = str_format(L[D.LOC.OPT_ALWAYSIGNORE_DESC], DebuffName),
 	    handler = {
 		["Debuff"] = DebuffName,
 		["get"] = function (args)
@@ -1794,7 +1798,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	classes["remove"] = {
 	    type = "execute",
 	    name = D:ColorText(L[D.LOC.OPT_REMOVETHISDEBUFF], "FFFF0000"),
-	    desc = string.format(L[D.LOC.OPT_REMOVETHISDEBUFF_DESC], DebuffName),
+	    desc = str_format(L[D.LOC.OPT_REMOVETHISDEBUFF_DESC], DebuffName),
 	    handler = {
 		["Debuff"] = DebuffName,
 		["remove"] = RemoveFunc,
@@ -1820,7 +1824,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    type = "execute",
 	    -- the two statements below are like (()?:) in C
 	    name = not resetDisabled and D:ColorText(L[D.LOC.OPT_RESETDEBUFF], "FF11FF00") or L[D.LOC.OPT_RESETDEBUFF],
-	    desc = not resetDisabled and string.format(L[D.LOC.OPT_RESETDTDCRDEFAULT], DebuffName) or L[D.LOC.OPT_USERDEBUFF],
+	    desc = not resetDisabled and str_format(L[D.LOC.OPT_RESETDTDCRDEFAULT], DebuffName) or L[D.LOC.OPT_USERDEBUFF],
 	    handler = {
 		["Debuff"] = DebuffName,
 		["reset"] = ResetFunc,
@@ -1923,7 +1927,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	local num = 1;
 
 	for _, Debuff in ipairs(DebuffsSkipList) do
-	    DebuffsSubMenu[string.gsub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
+	    DebuffsSubMenu[str_sub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
 	    num = num + 1;
 	end
 

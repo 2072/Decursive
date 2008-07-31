@@ -51,6 +51,7 @@ local BOOKTYPE_SPELL	= BOOKTYPE_SPELL;
 
 
 
+local select	= _G.select;
 
 -------------------------------------------------------------------------------
 -- variables {{{
@@ -1063,11 +1064,9 @@ function D:UpdateMacro ()
     -- Get an ordered spell table
     local Spells = {};
     for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
-	--table.insert (Spells, Prio, Spell);
 	Spells[Prio] = Spell;
     end
 
-    --D:PrintLiteral(Spells);
     if (next (Spells)) then
 	for i=1,4 do
 	    if (not Spells[i]) then
@@ -1076,7 +1075,6 @@ function D:UpdateMacro ()
 	end
     end
 
-    --D:PrintLiteral(D.Status.CuringSpellsPrio);
     local MacroParameters = {
 	D.CONF.MACRONAME,
 	1,

@@ -73,14 +73,22 @@ local AFFLICTED_AND_CHARMED = DC.AFFLICTED_AND_CHARMED;
 -- Those are the different colors used for the MUFs main texture
 local MF_colors = { };
 
-local unpack =_G.unpack;
-local select =_G.select;
-local pairs =_G.pairs;
-local ipairs =_G.ipairs;
-local table =_G.table;
-local string =_G.string;
-local UnitExists =_G.UnitExists;
-local UnitClass =_G.UnitClass;
+local unpack		= _G.unpack;
+local select		= _G.select;
+local pairs		= _G.pairs;
+local ipairs		= _G.ipairs;
+local PlaySoundFile	= _G.PlaySoundFile;
+local IsControlKeyDown	= _G.IsControlKeyDown;
+local floor		= _G.math.floor;
+local table		= _G.table;
+local t_insert		= _G.table.insert;
+local str_format	= _G.string.format;
+local str_sub		= _G.string.gsub;
+local table		= _G.table;
+local string		= _G.string;
+local UnitExists	= _G.UnitExists;
+local UnitClass		= _G.UnitClass;
+local fmod		= _G.math.fmod;
 
 -- Those are lookups table to set the frame attributes
 local AvailableButtons = { -- {{{
@@ -181,8 +189,8 @@ end -- }}}
 
 -- return the anchor of a given MUF depending on its creation ID
 function MicroUnitF:GiveMFAnchor (ID) -- {{{
-    local LineNum = math.floor( (ID - 1) / D.profile.DebuffsFramePerline);
-    local NumOnLine = math.fmod( (ID - 1), D.profile.DebuffsFramePerline);
+    local LineNum = floor( (ID - 1) / D.profile.DebuffsFramePerline);
+    local NumOnLine = fmod( (ID - 1), D.profile.DebuffsFramePerline);
 
     local x = (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0) + NumOnLine * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing);
     local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
@@ -543,7 +551,7 @@ function MicroUnitF:OnEnter() -- {{{
 	    StatusText = L[D.LOC.NORMAL];
 
 	elseif (Status == ABSENT) then
-	    StatusText = string.format(L[D.LOC.ABSENT], Unit);
+	    StatusText = str_format(L[D.LOC.ABSENT], Unit);
 
 	elseif (Status == FAR) then
 	    StatusText = L[D.LOC.TOOFAR];
@@ -556,7 +564,7 @@ function MicroUnitF:OnEnter() -- {{{
 
 	elseif (MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR)) then
 	    local DebuffType = MF.Debuffs[1].Type;
-	    StatusText = string.format(L[D.LOC.AFFLICTEDBY], D:ColorText( L[DC.TypeNames[DebuffType]], "FF" .. DC.TypeColors[DebuffType]) );
+	    StatusText = str_format(L[D.LOC.AFFLICTEDBY], D:ColorText( L[DC.TypeNames[DebuffType]], "FF" .. DC.TypeColors[DebuffType]) );
 	end
 
 	-- Unit Status
@@ -567,7 +575,7 @@ function MicroUnitF:OnEnter() -- {{{
 	    for i, Debuff in ipairs(MF.Debuffs) do
 		if (Debuff.Type) then
 		    local DebuffApps = Debuff.Applications;
-		    TooltipText = TooltipText .. "\n" .. string.format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and string.format(" (%d)", DebuffApps) or "");
+		    TooltipText = TooltipText .. "\n" .. str_format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and str_format(" (%d)", DebuffApps) or "");
 
 		    -- Create a warning if the Unstable Affliction is detected
 		    if Debuff.Name == DS["Unstable Affliction"] then
@@ -644,7 +652,7 @@ end -- }}}
 function D.MicroUnitF:OnCornerEnter()
     if (D.profile.DebuffsFrameShowHelp) then
 	D:DisplayGameTooltip(
-	string.format(
+	str_format(
 	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
 	"|cFF11FF11%s|r: %s\n"..
 	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
@@ -945,31 +953,31 @@ do
 	-- set the spells attributes using the lookup tables above
 	for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
-	    --self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "spell"), Spell);
-	    self.Frame:SetAttribute(string.format(AvailableButtons[Prio], "macrotext"), string.format("%s/cast [target=mouseover] %s%s",
+	    --self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "spell"), Spell);
+	    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=mouseover] %s%s",
 	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
 	    Spell,
-	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+	    (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 
 	    
 	    --[[
-	    D:Debug("XX-> macro: ",string.format(AvailableButtons[Prio], "macrotext"), string.format("%s/cast [target=mouseover] %s%s",
+	    D:Debug("XX-> macro: ",str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=mouseover] %s%s",
 	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
 	    Spell,
-	    (DC.SpellsToUse[Spell].Rank and "(" .. (string.gsub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+	    (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 	    --]]
 
 	    -- set the tooltip text for the current prio if necessary
 	    if (D.Status.SpellsChanged ~= self.TooltipUpdate) then
 		self.TooltipButtonsInfo[Prio] =
-		string.format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[Prio], D:NumToHexColor(MF_colors[Prio])), Spell);
+		str_format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[Prio], D:NumToHexColor(MF_colors[Prio])), Spell);
 	    end
 	end
 
 	-- concatenate the tooltip text if necessary
 	if (D.Status.SpellsChanged ~= self.TooltipUpdate) then
-	    table.insert(self.TooltipButtonsInfo, string.format("%s: %s", L[D.LOC.HLP_MIDDLECLICK], L[D.LOC.TARGETUNIT]));
-	    table.insert(self.TooltipButtonsInfo, string.format("%s: %s", L[D.LOC.CTRL] .. "-" .. L[D.LOC.HLP_MIDDLECLICK], L[D.LOC.FOCUSUNIT]));
+	    t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L[D.LOC.HLP_MIDDLECLICK], L[D.LOC.TARGETUNIT]));
+	    t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L[D.LOC.CTRL] .. "-" .. L[D.LOC.HLP_MIDDLECLICK], L[D.LOC.FOCUSUNIT]));
 	    self.TooltipButtonsInfo = table.concat(self.TooltipButtonsInfo, "\n");
 	    self.TooltipUpdate = D.Status.SpellsChanged;
 	end
@@ -1026,7 +1034,8 @@ do
     local unpack	    = _G.unpack;
     local select	    = _G.select;
     local GetTime	    = _G.GetTime;
-    local floor		    = _G.floor;
+    local floor		    = _G.math.floor;
+    local fmod		    = _G.math.fmod;
 
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -1145,28 +1154,6 @@ do
 
 		    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange + 1;
 
-
-		    --[[
-		    -- update the countdown
-		    --TimeLeft = self.Debuffs[1].TimeLeft;
-		    SpottedTime = self.Debuffs[1].TimeStamp;
-		    if SpottedTime then
-
-			Time = GetTime();
-			-- T 10 spt 6 TL 7 --> 3 ==> TL - (T - SpT)
-			PrevCountDown = self.CountDown;
-			self.CountDown = floor((Time - SpottedTime) + 0.5);
-
-			if self.CountDown >= 0 and self.CountDown ~= PrevCountDown then
-				self.CountDownFontString:SetText( ((self.CountDown < 60) and self.CountDown or (floor(self.CountDown / 60) .. "\'") ));
-			end
-
-		    elseif self.CountDown then
-			self.CountDown = false;
-			self.CountDownFontString:SetText(" ");
-		    end
-		    --]]
-
 		    if (not D.Status.SoundPlayed) then
 			D:PlaySound (self.CurrUnit, "SetColor()" );
 		    end
@@ -1183,9 +1170,6 @@ do
 		-- if the previous status was FAR, trigger a full rescan of the unit XXX
 		if PreviousStatus == FAR then
 		    D.MicroUnitF:UpdateMUFUnit(self.CurrUnit, true); -- this is able to deal when a lot of update queries
-		    
-		    --D:ScheduleEvent("Update"..self.CurrUnit, self.Update, profile.DebuffsFrameRefreshRate, self, false, false);
---		    D:Print("SetColor() |cffff00ff(FAR)|r update scheduled for ", self.CurrUnit);
 		end
 		
 

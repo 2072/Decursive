@@ -37,17 +37,18 @@ local DS = DC.DS;
 
 D.DebuffUpdateRequest = 0;
 
-local _G	= _G;
 local pairs	= _G.pairs;
 local next	= _G.next;
 local pairs	= _G.pairs;
 local ipairs	= _G.ipairs;
 local unpack	= _G.unpack;
+local select	= _G.select;
 local table		= _G.table;
 local UnitCreatureFamily	= _G.UnitCreatureFamily;
 local InCombatLockdown	= _G.InCombatLockdown;
+local PlaySoundFile	= _G.PlaySoundFile;
 local UnitExists	= _G.UnitExists;
-local UnitIsFriend	= _G.UnitIsFriend;
+local UnitCanAttack	= _G.UnitCanAttack;
 local UnitName		= _G.UnitName;
 local UnitGUID		= _G.UnitGUID;
 
@@ -121,7 +122,7 @@ local last_focus_GUID = false;
 function D:PLAYER_FOCUS_CHANGED ()
     self.Status.Unit_Array_UnitToName["focus"] = (self:PetUnitName("focus", true));
 
-    if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and not UnitExists("focus")) then -- the previously recorded focus is gone
+    if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and (not UnitExists("focus") or UnitCanAttack("focus", "player"))) then -- the previously recorded focus is gone or evil
 
 	table.remove(self.Status.Unit_Array, #self.Status.Unit_Array);
 	self.Status.UnitNum = #self.Status.Unit_Array;
@@ -133,7 +134,7 @@ function D:PLAYER_FOCUS_CHANGED ()
 	self:Debug("Focus removed");
 	return;
 
-    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" and UnitExists("focus") and UnitIsFriend("focus", "player") -- a new focus is there
+    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" and UnitExists("focus") and not UnitCanAttack("focus", "player") -- a new friendly/neutral focus is there
 	and not self:NameToUnit((self:UnitName("focus"))) then
 
 	table.insert(self.Status.Unit_Array, "focus");
@@ -233,7 +234,7 @@ end -- }}}
 
 
 function D:UPDATE_MOUSEOVER_UNIT ()
-    if not self.profile.Hide_LiveList and not self.Status.MouseOveringMUF and UnitIsFriend("mouseover", "player") then
+    if not self.profile.Hide_LiveList and not self.Status.MouseOveringMUF and not UnitCanAttack("mouseover", "player") then
 	--	D:Debug("will check MouseOver");
 	self.LiveList:DelayedGetDebuff("mouseover");
     end
@@ -243,7 +244,7 @@ end
 
 function D:PLAYER_TARGET_CHANGED()
 
-    if UnitExists("target") and UnitIsFriend("player", "target") then
+    if UnitExists("target") and not UnitCanAttack("player", "target") then
 
 	D.Status.TargetExists = true;
 
@@ -275,37 +276,35 @@ do
     local band = bit.band;
     local bor = bit.bor;
 
-    -- AURA bitfields {{{
+    -- AURA bitfields -- now useless {{{
     -- a friendly player character controled directly by the player that is not an outsider
     local PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  );
     local PLAYER_MASK	= bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- a hostile player character contoled as a pet and that is not an outsider
-    local MIND_CONTROLED_PLAYER		= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE  );
-    local MIND_CONTROLED_PLAYER_MASK	= bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
+    --local MIND_CONTROLED_PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE  );
+    --local MIND_CONTROLED_PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER  );
+    local REACTION_HOSTILE		= COMBATLOG_OBJECT_REACTION_HOSTILE;
+    --local MIND_CONTROLED_PLAYER_MASK	= bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- a pet controled by a friendly player that is not an outsider
     local PET	    = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER	, COMBATLOG_OBJECT_TYPE_PET	, COMBATLOG_OBJECT_REACTION_FRIENDLY  );
     local PET_MASK  = bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- An outsider friendly focused unit
-    local FOCUSED_FRIEND       = bit.bor (COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_FOCUS	    , COMBATLOG_OBJECT_AFFILIATION_OUTSIDER); -- XXX should be also applied on the MUFS (No need to include an insider...)
+    local FOCUSED_FRIEND       = bit.bor (COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_FOCUS	    , COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- A friendly targeted unit
-    local TARGETED_FRIEND       = bit.bor (COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_TARGET);
 
-    -- local DEST_GLOBAL =  bit.bor (PLAYER, MIND_CONTROLED_PLAYER, PET, FOCUSED_FRIEND, TARGETED_FRIEND); -- unused
-
-    -- local EXCLUDED = bit.bor (COMBATLOG_OBJECT_TYPE_OBJECT, COMBATLOG_OBJECT_TYPE_GUARDIAN); -- unused
 
     -- }}}
 
     local OUTSIDER		= COMBATLOG_OBJECT_AFFILIATION_OUTSIDER;
     local HOSTILE_OUTSIDER	= bit.bor (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER, COMBATLOG_OBJECT_REACTION_HOSTILE);
-    local FOCUS_OR_TARGET	= bit.bor (COMBATLOG_OBJECT_FOCUS, COMBATLOG_OBJECT_TARGET);
+    local FRIENDLY_TARGET	= bit.bor (COMBATLOG_OBJECT_TARGET, COMBATLOG_OBJECT_REACTION_FRIENDLY);
     local ME			= COMBATLOG_OBJECT_AFFILIATION_MINE;
 
-    -- {{{
+    -- match (value, mask, Verify_exclude)  {{{
     local function match (value, mask, Verify_exclude) 
 
 	if band(value, mask) == mask then
@@ -343,29 +342,16 @@ do
 
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags)
 
-
 	if destName and AuraEvents[event] then
 
-	    if band (destFlags, HOSTILE_OUTSIDER) == HOSTILE_OUTSIDER or (band (destFlags, OUTSIDER) ~= 0 and band(destFlags, FOCUS_OR_TARGET) == 0) then
-		return; -- This won't work for neutral units currently hostile...
-	    end
+	    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
 
 	    --D:Print("? (source=%s) (dest=|cFF00AA00%s|r -- %X): |cffff0000%s|r", sourceName, destName, destFlags, event);
 
-	    if	match(destFlags, PLAYER, PLAYER_MASK)
-		or match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)
-		or band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND
-		or (self.profile.Scan_Pets and (match(destFlags, PET, PET_MASK))) then -- Players and pets
+	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
-		-- D:Print("A managed unit got something (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cffff0000%s|r, |cFF00AAAA%s|r, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg12);
 
-		UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID];
-
-		if not UnitID then
-		    self:Debug("|cFFFF0000XXXXX:|r No unit matched for %s", destGUID);
-		    return;
-		end
-
+	    
 
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
 		    if DC.IsStealthBuff[arg10] then
@@ -411,22 +397,19 @@ do
 	    --  end
 	    --  }}}
 
-	    if self.Status.TargetExists then -- TARGET
+	    if self.Status.TargetExists and band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then -- TARGET
 
-		if	band (destFlags, TARGETED_FRIEND) == TARGETED_FRIEND  then
+		D:Debug("A Target got something (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cffff0000%s|r, |cFF00AAAA%s|r, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg12);
 
-		    D:Debug("A Target got something (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cffff0000%s|r, |cFF00AAAA%s|r, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg12);
+		self.LiveList:DelayedGetDebuff("target");
 
-		    self.LiveList:DelayedGetDebuff("target");
-
-		    if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
-			if DC.IsStealthBuff[arg10] then
-			    if AuraEvents[event] == 1 then
-				self.Stealthed_Units[UnitID] = true;
-			    else
-				D:Debug("TARGET STEALTH LOST: ", UnitID, buffName);
-				self.Stealthed_Units[UnitID] = false;
-			    end
+		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
+		    if DC.IsStealthBuff[arg10] then
+			if AuraEvents[event] == 1 then
+			    self.Stealthed_Units[UnitID] = true;
+			else
+			    D:Debug("TARGET STEALTH LOST: ", UnitID, buffName);
+			    self.Stealthed_Units[UnitID] = false;
 			end
 		    end
 		end
@@ -442,7 +425,7 @@ do
 	    end
 
 	    if event == "SPELL_CAST_SUCCESS" then
-		D:Println(L[self.LOC.SUCCESSCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
+		--D:Println(L[self.LOC.SUCCESSCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
 
 		--self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
 		self:ScheduleEvent("UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
@@ -483,7 +466,7 @@ do
 
 	    --D:Print("SPELL EVENT: (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cFFBB0000%s|r for spell |cFF00FF00%s|r", sourceName, sourceFlags, destName, destFlags, event, arg10);
 	    ----  }}}
---	elseif 	band (destFlags, TARGETED_FRIEND) == TARGETED_FRIEND then
+--	elseif 	band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then
 --	   D:Print("UNKNOWN EVENT: (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cFFBB0000%s|r for spell |cFF00FF00%s|r, %s, %s, %s, %s, %s, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
 	    --  }}}
 	end
@@ -498,6 +481,15 @@ end
 
 -- unused deprecated event handlers {{{
 --[=[
+
+--[[if	match(destFlags, PLAYER, PLAYER_MASK)
+		-- or match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)
+		or (UnitID and band (destFlags, REACTION_HOSTILE) == REACTION_HOSTILE) -- an hostile unit in our group is a mind controlled unit
+		or band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND
+		or (self.profile.Scan_Pets and (match(destFlags, PET, PET_MASK))) then -- Players and pets XXX to test
+		--]]
+		-- D:Print("A managed unit got something (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cffff0000%s|r, |cFF00AAAA%s|r, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg12);
+
 
 function D:SpellCastFailed() -- the blacklisting function {{{
     D:Debug("Not in line of sight or bad target!");

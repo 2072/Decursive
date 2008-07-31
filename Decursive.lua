@@ -40,12 +40,16 @@ local pairs		= _G.pairs;
 local ipairs		= _G.ipairs;
 local type		= _G.type;
 local table		= _G.table;
+local t_sort		= _G.table.sort;
+local PlaySoundFile	= _G.PlaySoundFile;
 local UnitName		= _G.UnitName;
 local UnitDebuff	= _G.UnitDebuff;
+local UnitBuff		= _G.UnitBuff;
 local UnitIsCharmed	= _G.UnitIsCharmed;
 local UnitCanAttack	= _G.UnitCanAttack;
 local UnitClass		= _G.UnitClass;
-local _= false;
+local UnitExists	= _G.UnitExists;
+local _;
 
 -------------------------------------------------------------------------------
 -- The UI functions {{{
@@ -157,14 +161,14 @@ function D:ShowHideButtons(UseCurrentValue) --{{{
     end
 
 
-    local DecrFrame = "DecursiveMainBar";
+    local DcrFrame = "DecursiveMainBar";
     local buttons = {
-	DecrFrame .. "Priority",
-	DecrFrame .. "Skip",
-	DecrFrame .. "Hide",
+	DcrFrame .. "Priority",
+	DcrFrame .. "Skip",
+	DcrFrame .. "Hide",
     }
 
-    DCRframeObject = getglobal(DecrFrame);
+    DCRframeObject = getglobal(DcrFrame);
 
     if (not UseCurrentValue) then
 	D.profile.HideButtons = (not D.profile.HideButtons);
@@ -622,18 +626,6 @@ do
 			    -- copy the debuff information to this table.
 			    self:tcopy(ManagedDebuffs[DebuffNum], Debuff);
 
-			    --[[
-			    if Debuff.TimeLeft then
-				ManagedDebuffs[DebuffNum].TimeStamp = GetTime();
-			    else
-				ManagedDebuffs[DebuffNum].TimeLeft = false;
-				if not ManagedDebuffs[DebuffNum].TimeStamp then
-				    ManagedDebuffs[DebuffNum].TimeStamp = GetTime();
-				end
-			    end
-			    --]]
-
-
 			    DebuffNum = DebuffNum + 1;
 
 			    -- the live-list only reports the first debuf found and set JustOne to true
@@ -660,7 +652,7 @@ do
 
 	    -- order Debuffs according to type priority order
 	    if (not JustOne and ManagedDebuffs[2] and ManagedDebuffs[2].Type) then
-		table.sort(ManagedDebuffs, sorting); -- uses memory..
+		t_sort(ManagedDebuffs, sorting); -- uses memory..
 	    end
 	    return ManagedDebuffs, IsCharmed;
 	else
@@ -706,7 +698,6 @@ function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 
     if type(BuffNamesToCheck) ~= "table" then
 
-	--if ( self.A:UnitHasBuff(Unit, BuffNamesToCheck) ) then
 	if self:tcheckforval(UnitBuffs, BuffNamesToCheck) then
 	    return true;
 	else
@@ -716,7 +707,6 @@ function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
 	local Buff;
 	for _, Buff in pairs(BuffNamesToCheck) do
 
-	    --if ( self.A:UnitHasBuff(Unit, Buff) ) then
 	    if self:tcheckforval(UnitBuffs, Buff) then
 		return true;
 	    end

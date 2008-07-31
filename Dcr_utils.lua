@@ -40,10 +40,15 @@ local ipairs		= _G.ipairs;
 local type		= _G.type;
 local unpack		= _G.unpack;
 local select		= _G.select;
+local str_sub		= _G.string.sub;
+local str_upper		= _G.string.upper;
+local str_lower		= _G.string.lower;
+local str_format	= _G.string.format;
 local table		= _G.table;
+local t_remove		= _G.table.remove;
+local t_insert		= _G.table.insert;
 local UnitName		= _G.UnitName;
 local UnitIsPlayer	= _G.UnitIsPlayer;
-local strsub		= _G.strsub;
 local string		= _G.string;
 
 
@@ -52,12 +57,12 @@ function D:ColorText (text, color) --{{{
 end --}}}
 
 function D:RemoveColor (text)
-    return string.sub(text, 11, -3);
+    return str_sub(text, 11, -3);
 end
 
 function D:MakePlayerName (name) --{{{
     if not name then name = "NONAME" end
-    return "|cFFFFAA22|Hplayer:" .. name .. "|h" .. string.upper(name) .. "|h|r";
+    return "|cFFFFAA22|Hplayer:" .. name .. "|h" .. str_upper(name) .. "|h|r";
 end --}}}
 
 function D:PetUnitName (Unit, Check) -- {{{
@@ -118,7 +123,7 @@ function D:tremovebyval(tab, val) -- {{{
     local v;
     for k,v in pairs(tab) do
 	if(v==val) then
-	    table.remove(tab, k);
+	    t_remove(tab, k);
 	    return true;
 	end
     end
@@ -175,7 +180,7 @@ function D:tSortUsingKeys(tab)
 
     -- store all the keys in a table
     for k,v in pairs(tab) do
-	table.insert(Keys, k);
+	t_insert(Keys, k);
     end
 
     -- sort the table
@@ -184,7 +189,7 @@ function D:tSortUsingKeys(tab)
     -- we now have a sorted table containing the keys
     for pos, k in pairs(Keys) do
 	-- insert the values in a new table using the position of each key
-	table.insert(SortedTable, pos, tab[k]);
+	t_insert(SortedTable, pos, tab[k]);
     end
 
     -- we return a new sorted table with new keys but with the same values
@@ -210,7 +215,7 @@ function D:Pack(...)
 end
 
 function D:MakeProperEnglishClassName (Name)
-    local newname = strsub(Name,1,1) .. string.lower(strsub(Name, 2));
+    local newname = str_sub(Name,1,1) .. str_lower(str_sub(Name, 2));
     return newname;
 end
 
@@ -255,7 +260,7 @@ end --}}}
 
 
 function D:NumToHexColor(ColorTable)
-	return string.format("%02x%02x%02x%02x", ColorTable[4] * 255, ColorTable[1] * 255, ColorTable[2] * 255, ColorTable[3] * 255)
+	return str_format("%02x%02x%02x%02x", ColorTable[4] * 255, ColorTable[1] * 255, ColorTable[2] * 255, ColorTable[3] * 255)
 end
 
 -- function taken from http://www.wowwiki.com/SetTexCoord_Transformations
@@ -276,7 +281,7 @@ do
     DC.ClassesColors = { };
 
     function D:GetClassColor (EnglishClass)
-	EnglishClass = string.upper(EnglishClass);
+	EnglishClass = str_upper(EnglishClass);
 	if not DC.ClassesColors[EnglishClass] then
 	    if RAID_CLASS_COLORS and RAID_CLASS_COLORS[EnglishClass] then
 		DC.ClassesColors[EnglishClass] = { RAID_CLASS_COLORS[EnglishClass].r, RAID_CLASS_COLORS[EnglishClass].g, RAID_CLASS_COLORS[EnglishClass].b };
@@ -293,7 +298,7 @@ do
     function D:GetClassHexColor(EnglishClass)
 	if not DC.HexClassColor[EnglishClass] then
 	    local r, g, b = self:GetClassColor(EnglishClass)
-	    DC.HexClassColor[EnglishClass] = string.format("%02x%02x%02x", r * 255, g * 255, b * 255);
+	    DC.HexClassColor[EnglishClass] = str_format("%02x%02x%02x", r * 255, g * 255, b * 255);
 	    DC.HexClassColor[BC[D:MakeProperEnglishClassName(EnglishClass)]] = DC.HexClassColor[EnglishClass];
 
 	end

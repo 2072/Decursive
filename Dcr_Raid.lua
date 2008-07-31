@@ -50,15 +50,19 @@ D.Status.Unit_Array		= { };
 local pairs		= _G.pairs;
 local ipairs		= _G.ipairs;
 local type		= _G.type;
+local select		= _G.select;
+local UnitCanAttack	= _G.UnitCanAttack;
 local GetNumRaidMembers		= _G.GetNumRaidMembers;
 local GetNumPartyMembers	= _G.GetNumPartyMembers;
+local GetRaidRosterInfo	= _G.GetRaidRosterInfo;
 local random	= _G.random;
 local UnitIsUnit	= _G.UnitIsUnit;
-local GetRaidRosterInfo	= _G.GetRaidRosterInfo;
 local UnitClass	= _G.UnitClass;
 local UnitExists	= _G.UnitExists;
-local table	= _G.table;
 local UnitGUID  = _G.UnitGUID;
+local table	= _G.table;
+local t_insert =    _G.table.insert;
+local str_upper = _G.string.upper;
 
 local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
 -------------------------------------------------------------------------------
@@ -169,17 +173,16 @@ DC.ClassNumToLName = {
 
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
 
-local strupper = _G.string.upper;
 DC.ClassNumToUName = {
-    [11]	= strupper(D.LOC.CLASS_DRUID),
-    [12]	= strupper(D.LOC.CLASS_HUNTER),
-    [13]	= strupper(D.LOC.CLASS_MAGE),
-    [14]	= strupper(D.LOC.CLASS_PALADIN),
-    [15]	= strupper(D.LOC.CLASS_PRIEST),
-    [16]	= strupper(D.LOC.CLASS_ROGUE),
-    [17]	= strupper(D.LOC.CLASS_SHAMAN),
-    [18]	= strupper(D.LOC.CLASS_WARLOCK),
-    [19]	= strupper(D.LOC.CLASS_WARRIOR),
+    [11]	= str_upper(D.LOC.CLASS_DRUID),
+    [12]	= str_upper(D.LOC.CLASS_HUNTER),
+    [13]	= str_upper(D.LOC.CLASS_MAGE),
+    [14]	= str_upper(D.LOC.CLASS_PALADIN),
+    [15]	= str_upper(D.LOC.CLASS_PRIEST),
+    [16]	= str_upper(D.LOC.CLASS_ROGUE),
+    [17]	= str_upper(D.LOC.CLASS_SHAMAN),
+    [18]	= str_upper(D.LOC.CLASS_WARLOCK),
+    [19]	= str_upper(D.LOC.CLASS_WARRIOR),
 }
 
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
@@ -366,9 +369,9 @@ do
 		self.Status.InternalPrioList[ListEntry] = i;
 
 		if (ListEntry < 10) then
-		    table.insert(GroupsPrio, ListEntry);
+		    t_insert(GroupsPrio, ListEntry);
 		else
-		    table.insert(ClassPrio, ListEntry);
+		    t_insert(ClassPrio, ListEntry);
 		end
 	    end
 	end
@@ -557,7 +560,7 @@ do
 	-- but we cannot use sort unless indexes are integer so:
 	self.Status.Unit_Array = {}
 	for name, unit in pairs(self.Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
-	    table.insert(self.Status.Unit_Array, unit);
+	    t_insert(self.Status.Unit_Array, unit);
 	    self.Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
 
 	    self.Status.Unit_Array_GUIDToUnit[UnitGUID(unit)] = unit;
@@ -571,8 +574,8 @@ do
 	    end
 	end);
 
-	if UnitExists("focus") and not self.Status.Unit_ArrayByName[(self:UnitName("focus"))] and UnitIsFriend("focus", "player") then
-	    table.insert(self.Status.Unit_Array, "focus");
+	if UnitExists("focus") and not self.Status.Unit_ArrayByName[(self:UnitName("focus"))] and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player")) then
+	    t_insert(self.Status.Unit_Array, "focus");
 	    self.Status.UnitNum = #self.Status.Unit_Array;
 	    self.Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
 	end

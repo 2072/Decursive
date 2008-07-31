@@ -50,16 +50,17 @@ D.ForLLDebuffedUnitsNum   = 0;
 local Debuff, Debuffs, IsCharmed, MF, i, Index, RangeStatus;
 
 -- local shortcuts to often called global functions
-local _G		= _G;
 local pairs		= _G.pairs;
 local ipairs		= _G.ipairs;
 local next		= _G.next;
 local select		= _G.select;
+local unpack		= _G.unpack;
 local table		= _G.table;
 local UnitExists	= _G.UnitExists;
 local IsSpellInRange	= _G.IsSpellInRange;
-local UnitClass	= _G.UnitClass;
+local UnitClass		= _G.UnitClass;
 local UnitIsFriend	= _G.UnitIsFriend;
+local floor		= _G.math.floor;
 
 
 -- defines what is printed when the object is read as a string
@@ -337,6 +338,7 @@ end -- }}}
 
 local IndexOffset = 0; -- used when target and/or mouseover are found
 local DebuffedUnitsNumber = 0;
+local _;
 function LiveList:Update_Display() -- {{{
 
     -- Update the unit array
@@ -368,7 +370,6 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- Then the MouseOver
-    --if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and UnitExists("mouseover") and UnitIsFriend("player", "mouseover") then
     if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
 	Index = Index + 1;
 	self:DisplayItem(Index, "mouseover");

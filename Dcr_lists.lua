@@ -41,6 +41,8 @@ local _;
 local pairs		= _G.pairs;
 local ipairs		= _G.ipairs;
 local table		= _G.table;
+local str_format	= _G.string.format;
+local str_sub		= _G.string.gsub;
 
 -- Dcr_ListFrameTemplate specific internal functions {{{
 function D:ListFrameTemplate_OnLoad()
@@ -203,9 +205,9 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
 	    if (name) then
 		if (type(name) == "number") then
 		    if (name < 10) then
-			name = string.format("[ %s %s ]", L[D.LOC.STR_GROUP], name);
+			name = str_format("[ %s %s ]", L[D.LOC.STR_GROUP], name);
 		    else
-			name = string.format("[ %s ]", DC.ClassNumToLName[name]);
+			name = str_format("[ %s ]", DC.ClassNumToLName[name]);
 		    end
 		end
 		Entry:SetText(id.." - "..D:ColorText(name, "FF"..DC.HexClassColor[classname]));
@@ -304,7 +306,6 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
 		_, D.profile.PriorityListClass[name] = UnitClass(unit);
 	    elseif unit > 10 then
 		D.profile.PriorityListClass[unit] = DC.ClassNumToUName[unit];
-		--D.profile.PriorityListClass[unit] = string.upper(BCR[DC.ClassNumToLName[unit]]);
 	    end
 
 	    DecursivePriorityListFrame.UpdateYourself = true;
@@ -379,7 +380,6 @@ function D:AddUnitToSkipList( unit) --{{{
 		_, D.profile.SkipListClass[name] = UnitClass(unit);
 	    elseif unit > 10 then
 		D.profile.SkipListClass[unit] = DC.ClassNumToUName[unit];
-		--D.profile.SkipListClass[unit] = string.upper(BCR[DC.ClassNumToLName[unit]]);
 	    end
 
 	    D:Debug("Unit %s added to the skip list", name);
