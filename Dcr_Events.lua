@@ -119,7 +119,7 @@ end -- }}}
 
 
 local last_focus_GUID = false;
-function D:PLAYER_FOCUS_CHANGED ()
+function D:PLAYER_FOCUS_CHANGED () -- {{{
     self.Status.Unit_Array_UnitToName["focus"] = (self:PetUnitName("focus", true));
 
     if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and (not UnitExists("focus") or UnitCanAttack("focus", "player"))) then -- the previously recorded focus is gone or evil
@@ -160,7 +160,7 @@ function D:PLAYER_FOCUS_CHANGED ()
     end
 
 
-end
+end -- }}}
 
 function D:OnDebugEnable ()
     self.profile.debugging = true;
@@ -176,7 +176,6 @@ end
 D.Status.MaxConcurentUpdateDebuff = 0;
 function D:SheduledTasks() -- {{{
 
-    --D:Debug("Schedul called");
     -- clean up the blacklist
     for unit in pairs(self.Status.Blacklisted_Array) do
 	self.Status.Blacklisted_Array[unit] = self.Status.Blacklisted_Array[unit] - 0.1;
@@ -278,14 +277,11 @@ do
 
     -- AURA bitfields -- now useless {{{
     -- a friendly player character controled directly by the player that is not an outsider
-    local PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  );
+    local PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  ); -- still used
     local PLAYER_MASK	= bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- a hostile player character contoled as a pet and that is not an outsider
-    --local MIND_CONTROLED_PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE  );
-    --local MIND_CONTROLED_PLAYER	= bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER , COMBATLOG_OBJECT_TYPE_PET	 , COMBATLOG_OBJECT_REACTION_HOSTILE, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER  );
     local REACTION_HOSTILE		= COMBATLOG_OBJECT_REACTION_HOSTILE;
-    --local MIND_CONTROLED_PLAYER_MASK	= bit.bnot (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
 
     -- a pet controled by a friendly player that is not an outsider
     local PET	    = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER	, COMBATLOG_OBJECT_TYPE_PET	, COMBATLOG_OBJECT_REACTION_FRIENDLY  );
@@ -293,10 +289,6 @@ do
 
     -- An outsider friendly focused unit
     local FOCUSED_FRIEND       = bit.bor (COMBATLOG_OBJECT_REACTION_FRIENDLY   , COMBATLOG_OBJECT_FOCUS	    , COMBATLOG_OBJECT_AFFILIATION_OUTSIDER);
-
-    -- A friendly targeted unit
-
-
     -- }}}
 
     local OUTSIDER		= COMBATLOG_OBJECT_AFFILIATION_OUTSIDER;
@@ -304,18 +296,6 @@ do
     local FRIENDLY_TARGET	= bit.bor (COMBATLOG_OBJECT_TARGET, COMBATLOG_OBJECT_REACTION_FRIENDLY);
     local ME			= COMBATLOG_OBJECT_AFFILIATION_MINE;
 
-    -- match (value, mask, Verify_exclude)  {{{
-    local function match (value, mask, Verify_exclude) 
-
-	if band(value, mask) == mask then
-	    if not Verify_exclude or value == band(value, Verify_exclude) then
-		return true;
-	    end
-	end
-
-	return false;
-
-    end --}}}
 
     local AuraEvents = {
 	["SPELL_AURA_APPLIED"]	    = 1,
@@ -350,9 +330,6 @@ do
 
 	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
-
-	    
-
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
 		    if DC.IsStealthBuff[arg10] then
 			if AuraEvents[event] == 1 then
@@ -378,24 +355,6 @@ do
 
 		end
 	    end
-
-
-	    -- unused specific tests {{{
-	    --elseif	(match(destFlags, PET, PET_MASK)) and self.profile.Scan_Pets then -- PET
-	    --	D:Print("A pet got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
-	    --	D:Print(destName, arg10, arg12);
-
-
-	    --   elseif	(match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)) then -- MIND CONTROLLED
-	    --	D:Print("Mind controled player got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
-	    --	D:Print("%s ", destName, arg10, arg12);
-	    --  end
-
-	    -- if		band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND  then -- FOCUSED FRIEND
-	    --	D:Print("focused NPC got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
-	    --	D:Print(destName, arg10, arg12);
-	    --  end
-	    --  }}}
 
 	    if self.Status.TargetExists and band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then -- TARGET
 
@@ -429,7 +388,6 @@ do
 
 		--self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
 		self:ScheduleEvent("UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
-		--self.Status.ClickedMF = false;
 		self:ScheduleEvent("clickedMFreset", function() D.Status.ClickedMF = false; D:Debug("ClickedMF to false (sched)"); end, 0.1 );
 
 	    end
@@ -438,9 +396,6 @@ do
 		destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
 		D:Println(L[self.LOC.FAILEDCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
-
-		--self:Println("|cFFFF0000Failed SPELL: ", arg12, destName, arg10, (select(2, GetSpellInfo(arg9))), "|r"); -- write it well
-		--PlaySoundFile(DC.FailedSound);
 
 		if (arg12 == SPELL_FAILED_LINE_OF_SIGHT or arg12 == SPELL_FAILED_BAD_TARGETS) then
 
@@ -464,7 +419,6 @@ do
 	    end
 
 
-	    --D:Print("SPELL EVENT: (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cFFBB0000%s|r for spell |cFF00FF00%s|r", sourceName, sourceFlags, destName, destFlags, event, arg10);
 	    ----  }}}
 --	elseif 	band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then
 --	   D:Print("UNKNOWN EVENT: (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cFFBB0000%s|r for spell |cFF00FF00%s|r, %s, %s, %s, %s, %s, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
@@ -481,8 +435,38 @@ end
 
 -- unused deprecated event handlers {{{
 --[=[
+    -- match (value, mask, Verify_exclude)  {{{
+    local function match (value, mask, Verify_exclude) 
 
---[[if	match(destFlags, PLAYER, PLAYER_MASK)
+	if band(value, mask) == mask then
+	    if not Verify_exclude or value == band(value, Verify_exclude) then
+		return true;
+	    end
+	end
+
+	return false;
+
+    end --}}}
+
+	    -- unused specific tests {{{
+	    --elseif	(match(destFlags, PET, PET_MASK)) and self.profile.Scan_Pets then -- PET
+	    --	D:Print("A pet got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
+	    --	D:Print(destName, arg10, arg12);
+
+
+	    --   elseif	(match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)) then -- MIND CONTROLLED
+	    --	D:Print("Mind controled player got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
+	    --	D:Print("%s ", destName, arg10, arg12);
+	    --  end
+
+	    -- if		band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND  then -- FOCUSED FRIEND
+	    --	D:Print("focused NPC got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
+	    --	D:Print(destName, arg10, arg12);
+	    --  end
+	    --  }}}
+
+	    
+	    --[[if	match(destFlags, PLAYER, PLAYER_MASK)
 		-- or match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)
 		or (UnitID and band (destFlags, REACTION_HOSTILE) == REACTION_HOSTILE) -- an hostile unit in our group is a mind controlled unit
 		or band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND
