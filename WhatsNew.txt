@@ -1,7 +1,7 @@
-Decursive 2.2.0 Beta 1 by Archarodim  (2008-07-28)
+Decursive 2.2.0 RC1 by Archarodim  (2008-08-06)
 
 
-Changes from Decursive 2.1.0 Final to Decursive 2.2.0 beta 1
+Changes from Decursive 2.1.0 Final to Decursive 2.2.0 RC1
 
 * Important changes:
 
@@ -11,25 +11,42 @@ Changes from Decursive 2.1.0 Final to Decursive 2.2.0 beta 1
 
 - As a result Decursive is now able to detect missed dispels and missed or
   failed spells with complete accuracy.
-- A new sound alerts you if one of your spell launched using the MUFs fails.
 
-- New debuff alert sound more audible for people without a good bass system.
+- A new sound alerts you if one of your spell launched using the MUFs fails or is resisted.
 
-- The focused unit is no longer added to the MUFs if it's already a member of your group.
+- The success spell message has been removed and replaced by a failure message when appropriate.
+
+- New affliction alert sound more audible for people without a good bass system.
+
+- The 'focus' unit will only be shown if not hostile and if not already part of the displayed MUF.
 
 - When the live-list tool tips are disabled, the Live-List won't catch mouse
-  event, you can click right through it.
+  events, you can click right through it.
 
-- Debuff history is populated only when you click on a MUF to dispel something
+- Affliction history is populated only when you click on a MUF to dispel something.
 
 - Complete Russian translation by StingerSoft
 
 * Fixed bugs:
 
 - Fix a nil error when players with pets were excluded using the skip list.
-- fix a lot of insidious bugs related to 'gendered' class names...
+
+- fix a lot of insidious bugs related to 'gendered' class names.
+
 - fix problems in battlefields with players from other realms (group ordering failures)
-- Units not in line of sight are now always properly blacklisted.
+
+- Units not in line of sight are now always properly blacklisted (except when
+  using pets, no failure events are sent).
+
+- When adding or removing a player/group/class to the exclusion list, the MUFs
+  display was not updated immediately.
+
+- Fix for Chinese priests (two different spells named the same in this localisation...)
+
+- Better sound alert management, alert loops are no longer possible.
+
+- The lock and buttons display/hide status of the "Decursive" bar (the
+  live-list anchor) were not applied correctly on startup.
 
 
 Changes from Decursive 2.0.4 to Decursive 2.1.0 Final

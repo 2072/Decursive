@@ -1,4 +1,60 @@
-Decursive 2.2.0 Beta 1 par Archarodim  (2008-07-24)
+Decursive 2.2.0 RC1 par Archarodim  (2008-08-06)
+
+
+
+Changements entre Decursive 2.1.0 Final et Decursive 2.2.0 RC1
+
+* Changements importants :
+
+- Decursive n'utilise plus SpecialEvent-Aura-2.0 pour détécter les afflictions,
+  il utilise le nouveau système de journal de combat de WoW 2.4. Cela simplifie
+  beaucoup les choses et évite de scanner inutilement les unités éloignées.
+
+- Grâce à ce changement Decursive est capable de parfaitement détecter les
+  sorts et dissipations ratées lorsque les micro-portraits sont utilisés pour
+  les lancer.
+
+- Une nouvelle alerte sonore est déclenchée lorsqu'un des sorts lancés par les
+  micro-portrait est résisté.
+
+- Le message annonçant le succès des sorts a été retiré et remplacé par un
+  message d'erreur lorsque c'est approprié.
+
+- Nouveau son pour l'alerte sonore d'affliction, plus audible pour les gens
+  sans système de basse correcte.
+
+- L'unité 'focus' ne fera parti des micro-portraits que si elle n'est pas
+  hostile est n'est déjà pas comprise dans les micro-portraits affichés.
+
+- Lorsque les infos-bulle de la liste des affligés sont désactivés, cette
+  dernière n'intercepte plus les cliques de souris, on peut cliquer à travers.
+
+- L'historique des afflictions n'est rempli que lorsqu'un micro-portrait est
+  cliqué.
+
+- Traduction russe complète par StingerSoft.
+
+* Bugs corrigés :
+
+- Correction d'une erreur LUA lorsque des joueurs ayant des familiers étaient
+  exclus par la liste des exceptions.
+
+- Correction de beaucoup de bugs insidieux lié à la féminisation des noms de classes.
+
+- Correction de problèmes dans les champs de batailles avec les gens venant de
+  royaumes extérieurs (la liste des priorités ne fonctionnait pas comme prévu)
+
+- Les unités hors du champs de vision n'étaient pas toujours ajouté à la liste
+  noire (ne fonctionne pas avec les sorts lancés par les familiers).
+
+- Lorsque la liste des exceptions était modifiée, les micro-portraits n'étaient pas mis à jour immédiatement.
+
+- Correction d'un problèmes pour les prêtres chinois (deux sorts différent on le même nom dans cette localisation).
+
+- Correction d'un problème avec le son d'alerte qui pouvait être joué en boucle dans certaines conditions.
+
+- Le verrou et la position de la barre "Decursive" (l'ancre de la liste des
+  affligés) n'étaient pas appliqués correctement au démarrage.
 
 
 Changements entre Decursive 2.0.4 et Decursive 2.1.0 Final

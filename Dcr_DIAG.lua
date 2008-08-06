@@ -35,6 +35,7 @@ DcrLoadedFiles = {
     ["localization.es.lua"]	= false,
     ["localization.kr.lua"]	= false,
     ["localization.cn.lua"]	= false,
+    ["localization.ru.lua"]	= false,
     
     ["Dcr_opt.lua"]		= false,
     ["Dcr_Events.lua"]		= false,
