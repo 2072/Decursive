@@ -89,6 +89,7 @@ local string		= _G.string;
 local UnitExists	= _G.UnitExists;
 local UnitClass		= _G.UnitClass;
 local fmod		= _G.math.fmod;
+local UnitIsUnit	= _G.UnitIsUnit;
 
 -- Those are lookups table to set the frame attributes
 local AvailableButtons = { -- {{{
@@ -512,6 +513,10 @@ function MicroUnitF:OnEnter() -- {{{
 
     local Unit = MF.CurrUnit; -- shortcut
     local TooltipText = "";
+
+    if not UnitIsUnit("mouseover", Unit) then
+	D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF!, report this to archarodim@teaser.fr|r", (UnitName("mouseover")), (UnitName(Unit)));
+    end
 
     -- Compare the current unit name to the one storred when the group data were collected
     if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then
