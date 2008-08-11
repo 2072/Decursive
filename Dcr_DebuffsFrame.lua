@@ -501,7 +501,6 @@ end
 
 -- Event management functions
 -- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnCornerClick, OnLoad, OnPreClick) {{{
-
 -- It's outside the function to avoid creating and discarding this table at each call
 local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
 -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
@@ -514,9 +513,12 @@ function MicroUnitF:OnEnter() -- {{{
     local Unit = MF.CurrUnit; -- shortcut
     local TooltipText = "";
 
-    if not UnitIsUnit("mouseover", Unit) then
-	D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF!, report this to archarodim@teaser.fr|r", (UnitName("mouseover")), (UnitName(Unit)));
-    end
+    D:ScheduleEvent("testOnEnter", function(Unit)
+	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
+	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF!, report this to archarodim@teaser.fr|r", (UnitName("mouseover")), (UnitName(Unit)));
+	end
+    end, 0, Unit );
+
 
     -- Compare the current unit name to the one storred when the group data were collected
     if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then
