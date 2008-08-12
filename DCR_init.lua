@@ -140,6 +140,8 @@ DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage crea
 
 DC.StartTime = GetTime();
 
+DC.WotLK = select(4,GetBuildInfo()) >= 30000;
+
 D.DebuffHistory = {};
 
 D.MFContainer = false;

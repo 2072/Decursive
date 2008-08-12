@@ -513,11 +513,13 @@ function MicroUnitF:OnEnter() -- {{{
     local Unit = MF.CurrUnit; -- shortcut
     local TooltipText = "";
 
+    --[=[
     D:ScheduleEvent("testOnEnter", function(Unit)
 	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
 	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF!, report this to archarodim@teaser.fr|r", (UnitName("mouseover")), (UnitName(Unit)));
 	end
     end, 0, Unit );
+    --]=]
 
 
     -- Compare the current unit name to the one storred when the group data were collected
@@ -690,11 +692,14 @@ end
 function MicroUnitF:OnPreClick(Button) -- {{{
 	-- D:Debug("Micro unit Preclicked: ", Button);
 
-	--[=[
-	if D.Status.HasSpell then
-	    D.Status.ClickedMF = this.Object; -- used to update the MUF on cast success and to know which unit is being cured XXX del this line
+	local Unit = this.Object.CurrUnit; -- shortcut
+
+	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
+	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF(%s)! MOn='%s', Un='%s', UpT=%d\n report this to archarodim@teaser.fr|r",Unit, (UnitName("mouseover")), (UnitName(Unit)), (GetTime() - DC.StartTime));
+
+	    --	     this.Object:UpdateAttributes(Unit);
+
 	end
-	--]=]
 
 	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 

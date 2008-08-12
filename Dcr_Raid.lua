@@ -169,6 +169,7 @@ DC.ClassNumToLName = {
     [17]	= BC[D.LOC.CLASS_SHAMAN],
     [18]	= BC[D.LOC.CLASS_WARLOCK],
     [19]	= BC[D.LOC.CLASS_WARRIOR],
+    [20]	= BC[D.LOC.CLASS_DEATHKNIGHT],
 }
 
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
@@ -183,6 +184,7 @@ DC.ClassNumToUName = {
     [17]	= str_upper(D.LOC.CLASS_SHAMAN),
     [18]	= str_upper(D.LOC.CLASS_WARLOCK),
     [19]	= str_upper(D.LOC.CLASS_WARRIOR),
+    [20]	= str_upper(D.LOC.CLASS_DEATHKNIGHT),
 }
 
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
@@ -253,12 +255,12 @@ do
 	  4 --> Pets
 
 	  - 8 groups with 5 persons maximum per group
-	  - 9 classes with 80 persons max for each class (Pets may be counted)
+	  - 10 classes with 80 persons max for each class (Pets may be counted)
 	  - 80 persons for default (including possible pets)
 
 	  Priority list:    1,000,000 till 100,000,000
 	  Group indexes:    10,000, 20,000, 30,000, till 80,000
-	  class indexes:    1,000, 2,000, 3,000, till 9,000
+	  class indexes:    1,000, 2,000, 3,000, till 10,000
 	  default indexes:  100 to 800 (palyer's index will be 900)
 	  pet indexes:	    Same as above but * -1
 
@@ -279,7 +281,7 @@ do
 
 	-- Get the class priority if available
 	if ( UNClass and ClassPrio[ DC.ClassUNameToNum [UNClass] ] ) then
-	    UnitPriority = UnitPriority + ( 9 + 1 - ClassPrio[DC.ClassUNameToNum [UNClass]]) * 1000;
+	    UnitPriority = UnitPriority + ( 10 + 1 - ClassPrio[DC.ClassUNameToNum [UNClass]]) * 1000; -- XXX 10 (Deathknight) is no good
 	end
 
 	-- Get the group priority if available

@@ -32,10 +32,13 @@
     </Script>
 
     <Button name="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
+
 	<ButtonText name="$parentText" justifyH="LEFT" />
-	<NormalFont inherits="GameFontNormal" justifyH="LEFT" />
-	<HighlightFont inherits="GameFontHighlight" justifyH="LEFT" />
-	<DisabledFont inherits="GameFontDisable" justifyH="LEFT" />
+
+	<NormalFont inherits="GameFontNormal" style="GameFontNormal" justifyH="LEFT" />
+	<HighlightFont inherits="GameFontHighlight" style="GameFontHighlight" justifyH="LEFT" />
+	<DisabledFont inherits="GameFontDisable" style="GameFontDisable" justifyH="LEFT" />
+
     </Button>
 
     <!--  Dcr_ListEntryTemplate {{{ -->
@@ -95,7 +98,7 @@
 		DcrDisplay_Tooltip:Hide();
 	    </OnLeave>
 	    <OnLoad>
-		Dcr:ListFrameTemplate_OnLoad();
+		Dcr.ListFrameTemplate_OnLoad();
 	    </OnLoad>
 	    <OnShow>
 		this.UpdateYourself = true;
@@ -248,7 +251,11 @@
 		</Anchors>
 		<Scripts>
 		    <OnVerticalScroll>
+			if not DcrC.WotLK then
 			FauxScrollFrame_OnVerticalScroll(16, this:GetParent().ScrollUpdateFunc);
+			else
+			FauxScrollFrame_OnVerticalScroll(self, offset, 16, self:GetParent().ScrollUpdateFunc);
+			end
 		    </OnVerticalScroll>
 		    <OnShow>
 			this.UpdateYourself = true;
@@ -326,7 +333,7 @@
 
 	<Scripts>
 	    <OnLoad>
-		Dcr:ListFrameTemplate_OnLoad();
+		Dcr.ListFrameTemplate_OnLoad();
 
 		this.ScrollUpdateFunc = Dcr.PrioSkipList_ScrollFrame_Update;
 
@@ -359,7 +366,7 @@
 
 	<Scripts>
 	    <OnLoad>
-		Dcr:ListFrameTemplate_OnLoad();
+		Dcr.ListFrameTemplate_OnLoad();
 
 		this.ScrollUpdateFunc = Dcr.PrioSkipList_ScrollFrame_Update;
 
@@ -799,9 +806,9 @@
 		    <AbsDimension x="80" y="20" />
 		</Size>
 		<Anchors>
-		    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentShaman">
+		    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentDruid">
 			<Offset>
-			    <AbsDimension x="-40" y="0" />
+			    <AbsDimension x="0" y="0" />
 			</Offset>
 		    </Anchor>
 		</Anchors>
@@ -812,6 +819,31 @@
 		    <OnLoad>
 			this.ClassType = Dcr.LOC.CLASS_PALADIN;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
+		    </OnLoad>
+		</Scripts>
+	    </Button>
+	    <Button name="$parentDeathknight" inherits="GameMenuButtonTemplate" text="Deathknight">
+		<Size>
+		    <AbsDimension x="80" y="20" />
+		</Size>
+		<Anchors>
+		    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentShaman">
+			<Offset>
+			    <AbsDimension x="0" y="0" />
+			</Offset>
+		    </Anchor>
+		</Anchors>
+		<Scripts>
+		    <OnClick>
+			Dcr:PopulateButtonPress();
+		    </OnClick>
+		    <OnLoad>
+			if DcrC.WotLK then
+			this.ClassType = Dcr.LOC.CLASS_DEATHKNIGHT;
+			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
+			else
+			this:Hide();
+			end
 		    </OnLoad>
 		</Scripts>
 	    </Button>

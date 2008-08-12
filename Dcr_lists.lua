@@ -45,7 +45,7 @@ local str_format	= _G.string.format;
 local str_sub		= _G.string.gsub;
 
 -- Dcr_ListFrameTemplate specific internal functions {{{
-function D:ListFrameTemplate_OnLoad()
+function D.ListFrameTemplate_OnLoad()
     this.ScrollFrame = getglobal(this:GetName().."ScrollFrame");
     this.ScrollBar = getglobal(this.ScrollFrame:GetName().."ScrollBar");
     this.ScrollFrame.offset = 0;
@@ -73,7 +73,7 @@ end
 
 -- Dcr_ListFrameTemplate specific handlers {{{
 
-function D:PrioSkipListFrame_OnUpdate() --{{{
+function D.PrioSkipListFrame_OnUpdate() --{{{
 
 
     if not D.DcrFullyInitialized then
@@ -90,14 +90,17 @@ function D:PrioSkipListFrame_OnUpdate() --{{{
 	else
 	    size = table.getn(D.profile.SkipList);
 	end
+--	D:Debug("PrioSkipListFrame_OnUpdate executed", size, this.ScrollFrame.offset);
 
-	if (size < 11 ) then
-	    this.ScrollFrame.offset = 0;
-	else
-	    if (this.ScrollFrame.offset <= 0) then
+	if not DC.WotLK then
+	    if (size < 11 ) then
 		this.ScrollFrame.offset = 0;
-	    elseif (this.ScrollFrame.offset >= (size - 10)) then
-		this.ScrollFrame.offset = (size - 10);
+	    else
+		if (this.ScrollFrame.offset <= 0) then
+		    this.ScrollFrame.offset = 0;
+		elseif (this.ScrollFrame.offset >= (size - 10)) then
+		    this.ScrollFrame.offset = (size - 10);
+		end
 	    end
 	end
 
@@ -118,7 +121,7 @@ function D:PrioSkipListFrame_OnUpdate() --{{{
 		btn:Hide();
 	    end
 	end
-	this:ScrollUpdateFunc(getglobal(baseName.."ScrollFrame"));
+	this.ScrollUpdateFunc(getglobal(baseName.."ScrollFrame"), true);
     end
 
 end --}}}
@@ -190,6 +193,7 @@ end --}}}
 function D:PrioSkipListEntry_Update(Entry) --{{{
 	local id = Entry:GetID();
 	if (id) then
+	D:Debug("PrioSkipListEntry_Update executed");
 	    local name, classname;
 	    if (Entry:GetParent().Priority) then
 		name = D.profile.PriorityList[id];
@@ -218,7 +222,7 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
 	end
 end --}}}
 
-function D:PrioSkipList_ScrollFrame_Update (ScrollFrame) -- {{{
+function D.PrioSkipList_ScrollFrame_Update (ScrollFrame) -- {{{
 
     if not D.DcrFullyInitialized then
 	return;
@@ -228,7 +232,7 @@ function D:PrioSkipList_ScrollFrame_Update (ScrollFrame) -- {{{
     local UpdateListOnceDone = true;
     local DirectCall = false;
 
-    --D:Debug("ScrollFrame is a %s", type(ScrollFrame));
+--    D:Debug("ScrollFrame is a %s", type(ScrollFrame));
     if (not ScrollFrame) then
 	ScrollFrame = this; -- Called from the scrollbar frame handler
     else
@@ -254,7 +258,7 @@ function D:PrioSkipList_ScrollFrame_Update (ScrollFrame) -- {{{
 	ScrollFrame.UpdateYourself = false; -- prevent this function to re-execute unecessarily
 	ScrollFrame:GetParent().UpdateYourself = true;
     end
-    --D:Debug("PrioSkipList_ScrollFrame_Update executed for %s", ScrollFrame:GetName());
+--    D:Debug("PrioSkipList_ScrollFrame_Update executed for %s", ScrollFrame:GetName());
 end -- }}}
 
 

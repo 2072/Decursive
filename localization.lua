@@ -55,6 +55,7 @@ LOC.CLASS_ROGUE   = 'Rogue';
 LOC.CLASS_SHAMAN  = 'Shaman';
 LOC.CLASS_WARLOCK = 'Warlock';
 LOC.CLASS_WARRIOR = 'Warrior';
+LOC.CLASS_DEATHKNIGHT = 'Deathknight';
 
 LOC.STR_OTHER	    = 'Other';
 LOC.STR_OPTIONS	    = "Decursive's Options";
@@ -369,6 +370,7 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.CLASS_SHAMAN]	=	true,
     [LOC.CLASS_WARLOCK]	=	true,
     [LOC.CLASS_WARRIOR]	=	true,
+    [LOC.CLASS_DEATHKNIGHT]=	true,
 
     [LOC.DISEASE]	    =	true,
     [LOC.MAGIC]	    =	true,
