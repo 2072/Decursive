@@ -34,6 +34,8 @@ Changements entre Decursive 2.1.0 Final et Decursive 2.2.0 RC1
 
 - Traduction russe complète par StingerSoft.
 
+- Compatible avec WotLK beta
+
 * Bugs corrigés :
 
 - Correction d'une erreur LUA lorsque des joueurs ayant des familiers étaient

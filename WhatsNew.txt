@@ -27,6 +27,8 @@ Changes from Decursive 2.1.0 Final to Decursive 2.2.0 RC1
 
 - Complete Russian translation by StingerSoft
 
+- Compatible with WotLK beta
+
 * Fixed bugs:
 
 - Fix a nil error when players with pets were excluded using the skip list.
