@@ -1,4 +1,4 @@
- Decursive 2.1 ( Main download: http://www.2072productions.com/?to=decursive.php )
+ Decursive 2.2 ( Main download: http://www.2072productions.com/?to=decursive.php )
  
  This is a cleaning mod. Its job is to help a class that can remove afflictions
  to do it with ease in every conditions (playing solo, in small groups or in big

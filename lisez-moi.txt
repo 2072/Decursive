@@ -1,4 +1,4 @@
-Decursive 2.1 ( Téléchargement principal: http://www.2072productions.com/?to=decursive.php )
+Decursive 2.2 ( Téléchargement principal: http://www.2072productions.com/?to=decursive.php )
 
 Decursive est un add-on de purification/épuration. Il aide les classes ayant la 
 capacité de supprimer des afflictions de le faire avec facilité dans 
@@ -15,8 +15,8 @@ Il était le raid leader de notre guilde ( http://www.wow-horizon.org )
     -	Support de tous les sorts de dissipations dans toutes les localisations
     -	Consommation mémoire et CPU minimale dans toutes les conditions
     -	Les utilisateurs peuvent choisir les types d'afflictions qu'ils veulent
-	guérir et les priotariser
-    -   Les Mages peuvent moutonner les unités sous contrôle mental (MC).
+	guérir par priorité.
+    -   Les Mages peuvent "moutonner" les unités sous contrôle mental (MC), les druides peuvent les "cycloner".
     -   2 solutions sont disponibles pour dissiper les afflictions : 
 	Une macro et les micro-portraits (MUFs)
     -	Auto-configuration de la macro de dissipation (dissipation en survolant/pointant
@@ -31,12 +31,12 @@ Il était le raid leader de notre guilde ( http://www.wow-horizon.org )
 	-   Tri intelligent des micro-portraits pour maximiser l'efficacité des dissipations
 	-   Montre les classes des joueurs et leur statut (à portée, affligé, contrôle mental)
         -   Très simple et intuitive.
-	-   Système de bulle d'aide pour les options et actions
+	-   Système de bulle d'aide pour les options et actions.
 
     -	Ace2 : Utilisation des librairies Ace2.
 	- Les options de Decursive sont accessibles à travers un menu défilant ou un
 	  panneau d'options statique.
-        - Les options peuvent être sauvegardées/chargées vers/d'un profil différent
+        - Les options peuvent être sauvegardées/chargées vers/d'un profil différent par personnage et royaume (au choix)
 	- Système optimisé de gestion des évènements
 
 
@@ -45,8 +45,8 @@ Pour avoir plus de détails sur toutes ces fonctions, lisez ce qui suit:
 Actuellement, Decursive est configuré pour sélectionner automatiquement 
 les sorts de dissipation des Druides, Prêtres, Mages, Paladins, 
 Shamans, Gangregardes et Gardes funestes.
-Les mages sont aussi capable de suivre les unités sous contrôle mental 
-et les moutonner si nécessaire.
+Les mages et les druides sont aussi capable de suivre les unités sous contrôle mental 
+et les moutonner/cycloner si nécessaire.
 
 
 		######################################
@@ -127,7 +127,7 @@ l'ensemble.
 		# *** MACRO de Decursive *** #
 		##############################
 
-Decursive crée et gère un macro qui vous permet de dissiper des unités 
+Decursive crée et gère une macro qui vous permet de dissiper des unités 
 (ou d'autres portraits d'unité) sur lesquels vous pointez la souris. Il vous
 suffit de choisir la touche dans les options de Decursive.
 En appuyant sur la touche seule, Decursive va lancer le premier sort, 

@@ -95,6 +95,7 @@ LOC.SPELL_REMOVE_LESSER_CURSE = 'Remove Lesser Curse'; -- NO NEED TO TRANSLATE
 LOC.SPELL_REMOVE_CURSE        = 'Remove Curse'; -- NO NEED TO TRANSLATE
 LOC.SPELL_PURGE               = 'Purge'; -- NO NEED TO TRANSLATE
 LOC.SPELL_CYCLONE	      = 'Cyclone'; -- NO NEED TO TRANSLATE
+LOC.CLEANSE_SPIRIT	      = "Cleanse Spirit"; -- NO NEED TO TRANSLATE
 
 BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar\n(live-list anchor)";
 
@@ -417,6 +418,7 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.SPELL_REMOVE_CURSE]	=	true,
     [LOC.SPELL_PURGE]	=	true,
     [LOC.SPELL_CYCLONE]	=	true,
+    [LOC.CLEANSE_SPIRIT]	=	true,
 
     [BINDING_NAME_DCRSHOW]	=	true,
     

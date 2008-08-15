@@ -462,6 +462,18 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     };
 
+    -- specific WotLK spells:
+    if DC.WotLK then
+
+	-- shamans
+	DC.SpellsToUse[DS[D.LOC.CLEANSE_SPIRIT]] = {
+	    Types = {DC.CURSE, DC.DISEASE, DC.POISON},
+	    IsBest = true,
+	    Pet = false,
+	};
+
+    end
+
     -- Thanks to Korean localization team of WoW we have to make an exception....
     -- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
     if ((select(2, UnitClass("player"))) == "SHAMAN") then
@@ -973,6 +985,7 @@ function D:GetSpellsTranslations(FromDIAG)
 	[D.LOC.SPELL_ABOLISH_POISON]	= {	2893,					 },
 	[D.LOC.SPELL_REMOVE_LESSER_CURSE]={	475,					 },
 	[D.LOC.SPELL_REMOVE_CURSE]	= {	2782,					 },
+	[D.LOC.CLEANSE_SPIRIT]		= {	51886,					 },
 	[D.LOC.SPELL_PURGE]		= {	370, 8012,				 },
 	[D.LOC.PET_FEL_CAST]		= {	19505, 19731, 19734, 19736, 27276, 27277,},
 	[D.LOC.PET_DOOM_CAST]		= {	527, 988,				 },
