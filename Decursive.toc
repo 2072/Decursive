@@ -9,13 +9,13 @@
 ## SavedVariablesPerCharacter: DcrCharDB
 ## SavedVariables: DcrDB
 
-## Version: 2.2.0 RC1
+## Version: 2.2.0 RC2
 ## Author: Archarodim
 
 ## X-License: GNU GPL
 
 ## OptionalDeps: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0
-## X-Embeds: Ace2, LibBabble-Class-3.0, LibStub, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0
+## X-Embeds: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0
 
 ## X-ReleaseDate: "$Date$"
 ## X-Category: Combat
