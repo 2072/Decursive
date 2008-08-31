@@ -1,7 +1,7 @@
-Decursive 2.2.0 RC1 by Archarodim  (2008-08-06)
+Decursive 2.2.0 by Archarodim  (2008-08-31)
 
 
-Changes from Decursive 2.1.0 Final to Decursive 2.2.0 RC1
+Changes from Decursive 2.1.0 Final to Decursive 2.2.0
 
 * Important changes:
 
