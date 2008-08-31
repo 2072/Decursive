@@ -1,0 +1,15 @@
+externals:
+  Libs/AceAddon-2.0 http://svn.wowace.com/wowace/trunk/Ace2/AceAddon-2.0
+  Libs/AceConsole-2.0 http://svn.wowace.com/wowace/trunk/Ace2/AceConsole-2.0
+  Libs/AceDB-2.0 http://svn.wowace.com/wowace/trunk/Ace2/AceDB-2.0
+  Libs/AceDebug-2.0 http://svn.wowace.com/wowace/trunk/Ace2/AceDebug-2.0
+  Libs/AceEvent-2.0 http://svn.wowace.com/wowace/trunk/Ace2/AceEvent-2.0
+  Libs/AceLibrary http://svn.wowace.com/wowace/trunk/Ace2/AceLibrary
+  Libs/AceLocale-2.2 http://svn.wowace.com/wowace/trunk/Ace2/AceLocale-2.2
+  Libs/AceOO-2.0 http://svn.wowace.com/wowace/trunk/Ace2/AceOO-2.0
+  Libs/LibBabble-Class-3.0 http://svn.wowace.com/wowace/trunk/LibBabble-Class-3.0
+  Libs/Dewdrop-2.0 http://svn.wowace.com/wowace/trunk/DewdropLib/Dewdrop-2.0
+  Libs/Waterfall-1.0 http://svn.wowace.com/wowace/trunk/Waterfall-1.0/Waterfall-1.0
+  Libs/Tablet-2.0 http://svn.wowace.com/wowace/trunk/TabletLib/Tablet-2.0
+  Libs/FuBarPlugin-2.0 http://svn.wowace.com/wowace/trunk/FuBarPlugin-2.0/FuBarPlugin-2.0
+
