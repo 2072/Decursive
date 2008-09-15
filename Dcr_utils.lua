@@ -89,7 +89,7 @@ function D:PetUnitName (Unit, Check) -- {{{
     end
 
     if not Check or (self:UnitIsPet(Unit)) then
-	Name =  ("%s-%s |c202020%s|r"):format (DC.PET,Name);
+	Name =  ("%s-%s"):format (DC.PET,Name);
     end
     
     return Name;
