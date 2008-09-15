@@ -62,7 +62,7 @@ function D:GroupChanged () -- {{{
 
     -- Test if we have to hide Decursive MUF window
     if D.profile.AutoHideDebuffsFrame ~= 0 then
-	D:ScheduleEvent("CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
+	D:ScheduleEvent("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
     end
 
     D:Debug("Groups changed");
@@ -83,7 +83,7 @@ function D:UNIT_PET (Unit) -- {{{
 
     -- If the player's pet changed then we should check it for interesting spells
     if ( Unit == "player" ) then
-	self:ScheduleEvent("CheckPet", self.UpdatePlayerPet, 2, self);
+	self:ScheduleEvent("Dcr_CheckPet", self.UpdatePlayerPet, 2, self);
 	OncePetRetry = false;
 	D:Debug ("PLAYER pet detected! Poll in 2 seconds...");
     end
@@ -101,7 +101,7 @@ function D:UpdatePlayerPet () -- {{{
 	OncePetRetry = true;
 
 	D:Debug("|cFF9900FFPet lost, retry in 10 seconds|r");
-	D:ScheduleEvent("ReCheckPetOnce", D.UpdatePlayerPet, 10, self);
+	D:ScheduleEvent("Dcr_ReCheckPetOnce", D.UpdatePlayerPet, 10, self);
 	return;
     end
 
@@ -120,9 +120,11 @@ end -- }}}
 
 local last_focus_GUID = false;
 function D:PLAYER_FOCUS_CHANGED () -- {{{
+
     self.Status.Unit_Array_UnitToName["focus"] = (self:PetUnitName("focus", true));
 
-    if (self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" and (not UnitExists("focus") or UnitCanAttack("focus", "player"))) then -- the previously recorded focus is gone or evil
+    if self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" -- focus has an entry in our unit array
+	and (not UnitExists("focus") or UnitCanAttack("focus", "player") or self:NameToUnit((self:UnitName("focus"))) ) then -- but it doesn't exist anymore or it has become nasty or it is already in our group...
 
 	table.remove(self.Status.Unit_Array, #self.Status.Unit_Array);
 	self.Status.UnitNum = #self.Status.Unit_Array;
@@ -134,13 +136,12 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 	self:Debug("Focus removed");
 	return;
 
-    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" and UnitExists("focus") and not UnitCanAttack("focus", "player") -- a new friendly/neutral focus is there
-	and not self:NameToUnit((self:UnitName("focus"))) then
+    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" -- focus is not in our unit array
+	and UnitExists("focus") and not UnitCanAttack("focus", "player") -- it exists and she is nice
+	and not self:NameToUnit((self:UnitName("focus"))) then -- and it's not part of our unit array already
 
 	table.insert(self.Status.Unit_Array, "focus");
 	self.Status.UnitNum = #self.Status.Unit_Array;
-
-	self.Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
 
 	self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
 
@@ -149,7 +150,7 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 
 	self.MicroUnitF:Delayed_MFsDisplay_Update();
 	self:Debug("Focus Added");
-    elseif UnitExists("focus") then -- the focus changed
+    elseif UnitExists("focus") and not self:NameToUnit((self:UnitName("focus"))) then -- the focus was changed but not to a unit in our unit array
 	self.MicroUnitF:UpdateMUFUnit("focus", true);
 
 	self.Status.Unit_Array_GUIDToUnit[last_focus_GUID] = nil;
@@ -262,12 +263,12 @@ end
 
 function D:LEARNED_SPELL_IN_TAB()
     --D:Debug("|cFFFF0000A new spell was learned, scheduling a reconfiguration|r");
-    self:ScheduleEvent("NewSpellLearned", self.Configure, 5, self);
+    self:ScheduleEvent("Dcr_NewSpellLearned", self.Configure, 5, self);
 end
 
 function D:SPELLS_CHANGED()
     --D:Debug("|cFFFF0000Spells were changed, scheduling a reconfiguration check|r");
-    self:ScheduleEvent("SpellsChanged", self.ReConfigure, 15, self);
+    self:ScheduleEvent("Dcr_SpellsChanged", self.ReConfigure, 15, self);
 end
 
 do
@@ -299,6 +300,7 @@ do
 
     local AuraEvents = {
 	["SPELL_AURA_APPLIED"]	    = 1,
+	["SPELL_AURA_APPLIED_DOSE"] = 1,
 	["SPELL_AURA_REMOVED"]	    = 0,
 	["SPELL_AURA_APPLIED_DOSE"] = 1,
 	["SPELL_AURA_REMOVED_DOSE"] = 0,
@@ -323,6 +325,10 @@ do
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags)
 
 	if destName and AuraEvents[event] then
+
+	    if (self.Groups_datas_are_invalid) then
+		self:GetUnitArray();
+	    end
 
 	    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
 
@@ -380,7 +386,7 @@ do
 	    if event == "SPELL_CAST_START" then -- useless
 
 		self:Print("|cFFFF0000Starting SPELL: ", arg10, "|r");
-		self:ScheduleEvent("UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1 + ((select(7, GetSpellInfo(arg9))) / 1000), self.Status.ClickedMF, false, false);
+		self:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1 + ((select(7, GetSpellInfo(arg9))) / 1000), self.Status.ClickedMF, false, false);
 	    end
 
 	    if event == "SPELL_CAST_SUCCESS" then
@@ -388,8 +394,8 @@ do
 		self:Debug(L[self.LOC.SUCCESSCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
 
 		--self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
-		self:ScheduleEvent("UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
-		self:ScheduleEvent("clickedMFreset", function() D.Status.ClickedMF = false; D:Debug("ClickedMF to false (sched)"); end, 0.1 );
+		self:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
+		self:ScheduleEvent("Dcr_clickedMFreset", function() D.Status.ClickedMF = false; D:Debug("ClickedMF to false (sched)"); end, 0.1 );
 
 	    end
 
@@ -404,7 +410,7 @@ do
 			self.Status.Blacklisted_Array[self.Status.ClickedMF.CurrUnit] = self.profile.CureBlacklist;
 
 			self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of blacklist frame|r");
-			self:ScheduleEvent("Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, self.profile.DebuffsFrameRefreshRate, self.Status.ClickedMF, false, true);
+			self:ScheduleEvent("Dcr_Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, self.profile.DebuffsFrameRefreshRate, self.Status.ClickedMF, false, true);
 		    end
 
 		    PlaySoundFile(DC.FailedSound);
@@ -550,7 +556,7 @@ end
 function D:UI_ERROR_MESSAGE (Error) -- {{{
     -- this is the only way to detect out of line of sight casting failures
     if (Error == SPELL_FAILED_LINE_OF_SIGHT or Error == SPELL_FAILED_BAD_TARGETS) then
-	D:ScheduleEvent("CastFailed", D.SpellCastFailed, 0.8, self);
+	D:ScheduleEvent("Dcr_CastFailed", D.SpellCastFailed, 0.8, self);
 
 	--[[ Throw an error if WE were casting something
 	if (D.Status.CastingSpellOn and Error == SPELL_FAILED_LINE_OF_SIGHT) then
@@ -585,7 +591,7 @@ function D:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
 
 	if (self.Status.ClickedMF) then
 	    D:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
-	    D:ScheduleEvent("UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
+	    D:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
 	    self.Status.ClickedMF = false;
 	end
     end

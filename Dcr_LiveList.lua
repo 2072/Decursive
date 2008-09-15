@@ -330,9 +330,9 @@ function LiveList:GetDebuff(UnitID) -- {{{
 end -- }}}
 
 function LiveList:DelayedGetDebuff(UnitID) -- {{{
-    if not D:IsEventScheduled("GetDebuff"..UnitID) then
+    if not D:IsEventScheduled("Dcr_GetDebuff"..UnitID) then
 	D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-	D:ScheduleEvent("GetDebuff"..UnitID, self.GetDebuff, (D.profile.ScanTime / 2) * (1 + floor(D.DebuffUpdateRequest / 7.5)), self, UnitID);
+	D:ScheduleEvent("Dcr_GetDebuff"..UnitID, self.GetDebuff, (D.profile.ScanTime / 2) * (1 + floor(D.DebuffUpdateRequest / 7.5)), self, UnitID);
     end
 end -- }}}
 
@@ -475,7 +475,7 @@ function LiveList:HideTestItem() -- {{{
 
      for UnitID, Debuffed in pairs(D.UnitDebuffed) do
 	 if Debuffed then
-	     D:ScheduleEvent("rmt"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, UnitID, "Test item");
+	     D:ScheduleEvent("Dcr_rmt"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, UnitID, "Test item");
 	     i = i + 1;
 	 end
      end

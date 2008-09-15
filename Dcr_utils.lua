@@ -50,6 +50,9 @@ local t_insert		= _G.table.insert;
 local UnitName		= _G.UnitName;
 local UnitIsPlayer	= _G.UnitIsPlayer;
 local string		= _G.string;
+local tonumber		= _G.tonumber;
+local UnitGUID		= _G.UnitGUID;
+local band		= _G.bit.band;
 
 
 function D:ColorText (text, color) --{{{
@@ -65,16 +68,28 @@ function D:MakePlayerName (name) --{{{
     return "|cFFFFAA22|Hplayer:" .. name .. "|h" .. str_upper(name) .. "|h|r";
 end --}}}
 
+function D:UnitIsPet (Unit)
+    local GUID = UnitGUID(Unit);
+
+    if not GUID then return end
+
+    if band(tonumber(GUID:sub(0,5), 16), 0x00f)==0x004 then
+	return true;
+    end
+    return false;
+
+end
+
 function D:PetUnitName (Unit, Check) -- {{{
     local Name = (self:UnitName(Unit));
 
     if not Name or Name == DC.UNKNOWN  then
 	Name = DC.UNKNOWN .. "-" .. Unit;
-	D:Debug("Name of %s is unknown", Unit);
+	D:Debug("PetUnitName(): Name of %s is unknown", Unit);
     end
 
-    if not Check or (not UnitIsPlayer(Unit) and Unit ~= "focus") then
-	Name =  DC.PET .. "-" .. Name;
+    if not Check or (self:UnitIsPet(Unit)) then
+	Name =  ("%s-%s |c202020%s|r"):format (DC.PET,Name);
     end
     
     return Name;

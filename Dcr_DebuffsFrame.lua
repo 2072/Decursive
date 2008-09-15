@@ -203,7 +203,7 @@ end -- }}}
 
 function MicroUnitF:Delayed_MFsDisplay_Update ()
     if (D.profile.ShowDebuffsFrame) then
-	D:ScheduleEvent("UpdateMUFsNUM", self.MFsDisplay_Update, 0.2, self);
+	D:ScheduleEvent("Dcr_UpdateMUFsNUM", self.MFsDisplay_Update, 0.2, self);
     end
 end
 
@@ -280,7 +280,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    self.UnitShown = self.UnitShown + 1;
 
 	    -- Schedule an update for the MUF we just shown
-	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF, false, false, true);
+	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF, false, false, true);
 	    --D:Debug("Showing %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i));
 
 	elseif (i > NumToShow and MF.Shown) then
@@ -302,7 +302,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    MF.Shown = false;
 	    self.UnitShown = self.UnitShown - 1;
 	    D:Debug("Hiding %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * (i - NumToShow));
-	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (i - NumToShow), MF, false, false);
+	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (i - NumToShow), MF, false, false);
 	    MF_f:Hide();
 	end
 
@@ -346,7 +346,7 @@ end -- }}}
 
 function MicroUnitF:Delayed_Force_FullUpdate ()
     if (D.profile.ShowDebuffsFrame) then
-	D:ScheduleEvent("Force_FullUpdate", self.Force_FullUpdate, 0.2, self);
+	D:ScheduleEvent("Dcr_Force_FullUpdate", self.Force_FullUpdate, 0.2, self);
     end
 end
 
@@ -377,7 +377,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
 	    MF.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
 
-	    D:ScheduleEvent("Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
+	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
 	end
     end
 end -- }}}
@@ -471,7 +471,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 
     local unit = false;
 
-    if (D.Status.Unit_Array_UnitToName[Unitid]) then
+    if (D.Status.Unit_Array_UnitToName[Unitid]) then -- XXX Unit_Array_UnitToName not reliable
 	unit = Unitid;
     elseif (Unitid == "focus") then
 	unit = "focus";
@@ -486,16 +486,16 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     if (MF and MF.Shown) then
 	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
 	-- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
-	if (not D:IsEventScheduled("Update"..unit)) then
+	if (not D:IsEventScheduled("Dcr_Update"..unit)) then
 	    D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-	    D:ScheduleEvent("Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false, CheckStealth);
+	    D:ScheduleEvent("Dcr_Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false, CheckStealth);
 	    D:Debug("Update scheduled for, ", unit, MF.ID);
 
 
 	    return true; -- return value used to aknowledge that the function actually did something
 	end
     else
-	D:Debug("No MUF found for ", unit);
+	D:Debug("No MUF found for ", unit, Unitid);
     end
 end
 
@@ -514,7 +514,7 @@ function MicroUnitF:OnEnter() -- {{{
     local TooltipText = "";
 
     --[=[
-    D:ScheduleEvent("testOnEnter", function(Unit)
+    D:ScheduleEvent("Dcr_testOnEnter", function(Unit)
 	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
 	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF!, report this to archarodim@teaser.fr|r", (UnitName("mouseover")), (UnitName(Unit)));
 	end
@@ -523,7 +523,7 @@ function MicroUnitF:OnEnter() -- {{{
 
 
     -- Compare the current unit name to the one storred when the group data were collected
-    if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then
+    if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then -- XXX Unit_Array_UnitToName not reliable
 	D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
     end
 
@@ -833,10 +833,10 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 
     local MF = self;
     -- get the unit this MUF should show
-    local Unit = D.Status.Unit_Array[MF.ID]; -- get the unit the MUF should be attached to.
+    local Unit = D.Status.Unit_Array[MF.ID]; -- get the unit the MUF _should_ be attached to.
     local ActionsDone = 0;
 
-    if not Unit then -- if this MUF is being hidden (waiting for the end of the fight)
+    if not Unit then -- This unit no longer exists (number of MUF higher than number of units)
 	--D:Debug("No Unit for MUF #", MF.ID);
 	if MF.CurrUnit ~= "" then -- There is a unit attached to this MUF
 	    Unit = MF.CurrUnit; -- we will update the MUF according to its current unit.
@@ -847,13 +847,13 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     end
 
     -- The unit is the same but the name isn't... (check for class change)
-    if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName then
+    if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName then -- XXX us the event UNIT_NAME, more reliable...
 	if MF:SetClassBorder() then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
 	end
     end
 
-    -- Update the frame attribute if necessary (Spells priority or unit id changes)
+    -- Update the frame attributes if necessary (Spells priority or unit id changes)
     if (D.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
 	--D:Debug("Attributes update required: ", MF.ID);
 	if (MF:UpdateAttributes(Unit, true)) then
@@ -1269,7 +1269,7 @@ do
 
     function MicroUnitF.prototype:SetClassBorder()
 	ReturnValue = false;
-
+-- XXX Unit_Array_UnitToName not reliable
 	if (D.profile.DebuffsFrameElemBorderShow and (D.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName or (not self.UnitClass and UnitExists(self.CurrUnit)))) then
 
 	    -- Get the name of this unit
@@ -1355,7 +1355,7 @@ do
 		return false;
 	    end
 
-	    -- get it's MUF
+	    -- get its MUF
 	    MF = MicroUnitF.ExistingPerID[MicroFrameUpdateIndex];
 	    --MF = MicroUnitF:Exists(MicroFrameUpdateIndex);
 

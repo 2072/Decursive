@@ -339,13 +339,14 @@ do
 
 
 	-- clear all the arrays
-	self.Status.InternalPrioList	    = {};
-	self.Status.InternalSkipList	    = {};
-	SortingTable			    = {};
-	self.Status.Unit_ArrayByName	    = {};
-	self.Status.Unit_Array_NameToUnit   = {};
-	self.Status.Unit_Array_GUIDToUnit   = {};
-	local RaidRosterCache		    = {};
+	local Status = self.Status;
+	Status.InternalPrioList	    = {};
+	Status.InternalSkipList	    = {};
+	SortingTable		    = {};
+	Status.Unit_ArrayByName	    = {};
+	Status.Unit_Array_NameToUnit= {};
+	Status.Unit_Array_GUIDToUnit= {};
+	local RaidRosterCache	    = {};
 
 	local unit;
 
@@ -362,13 +363,13 @@ do
 	    if (type(ListEntry) == "string") then
 		unit = self:NameToUnit( ListEntry );
 		if (unit) then
-		    self.Status.InternalPrioList[ListEntry] = i;
+		    Status.InternalPrioList[ListEntry] = i;
 		end
 
 	    else -- if ListEntry is a not a string, then it's a number
 		 -- representing the groups or the classes
 
-		self.Status.InternalPrioList[ListEntry] = i;
+		Status.InternalPrioList[ListEntry] = i;
 
 		if (ListEntry < 10) then
 		    t_insert(GroupsPrio, ListEntry);
@@ -387,10 +388,10 @@ do
 	    if (type(ListEntry) == "string") then
 		unit = self:NameToUnit( ListEntry );
 		if (unit) then
-		    self.Status.InternalSkipList[ListEntry] = i;
+		    Status.InternalSkipList[ListEntry] = i;
 		end
 	    else
-		self.Status.InternalSkipList[ListEntry] = i;
+		Status.InternalSkipList[ListEntry] = i;
 	    end
 	end
 
@@ -402,13 +403,13 @@ do
 	    if (not IsInSkipOrPriorList(MyName, false, DC.ClassUNameToNum[DC.MyClass])) then
 		-- the player is not in a priority state, add to default prio
 		AddToSort( "player", 900);
-		self.Status.Unit_ArrayByName[MyName] = "player";
+		Status.Unit_ArrayByName[MyName] = "player";
 
 
 	    elseif (not IsInSkipList(MyName, false, DC.ClassUNameToNum[DC.MyClass])) then
 		-- The player is contained within a priority rule
 		AddToSort("player",  GetUnitPriority ("player", 1, 1, DC.MyClass ) );
-		self.Status.Unit_ArrayByName[MyName] = "player";
+		Status.Unit_ArrayByName[MyName] = "player";
 
 	    end
 
@@ -429,7 +430,7 @@ do
 		    -- check the name to see if we skip
 		    if (not IsInSkipList(pname, nil, DC.ClassUNameToNum[(select(2, UnitClass(unit)))])) then
 
-			self.Status.Unit_ArrayByName[pname] = unit;
+			Status.Unit_ArrayByName[pname] = unit;
 
 
 			AddToSort(unit,  GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) ));
@@ -448,7 +449,7 @@ do
 			    end
 
 			    AddToSort(pet, GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true) );
-			    self.Status.Unit_ArrayByName[pname] = pet;
+			    Status.Unit_ArrayByName[pname] = pet;
 			end
 		    end
 		end
@@ -459,7 +460,7 @@ do
 	if ( self.profile.Scan_Pets ) then
 	    if (UnitExists("pet")) then
 		AddToSort("pet", -900);
-		self.Status.Unit_ArrayByName[(D:PetUnitName("pet"))] = "pet";
+		Status.Unit_ArrayByName[(D:PetUnitName("pet"))] = "pet";
 	    end
 	end
 
@@ -507,15 +508,15 @@ do
 		local PlayerRID = self:NameToUnit(MyName); -- might return false at log-in
 		if PlayerRID then
 		    AddToSort( PlayerRID, 900);
-		    self.Status.Unit_ArrayByName[MyName] = PlayerRID;
+		    Status.Unit_ArrayByName[MyName] = PlayerRID;
 		else
 		    --message(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
 			--MyName, currentGroup, (GetTime() - DC.StartTime), raidnum));
 
 		    AddToSort( "player", 900);
-		    self.Status.Unit_ArrayByName[MyName] =  "player";
+		    Status.Unit_ArrayByName[MyName] =  "player";
 
-		    self.Status.Unit_Array_NameToUnit[MyName] = "player";
+		    Status.Unit_Array_NameToUnit[MyName] = "player";
 		end
 	    end
 
@@ -523,12 +524,12 @@ do
 	    local TempID;
 	    for _, raidMember in ipairs(RaidRosterCache) do
 		-- put each raid member with the right priority in our sorting table
-		if not self.Status.Unit_ArrayByName[raidMember.rName] then
+		if not Status.Unit_ArrayByName[raidMember.rName] then
 
 		    TempID = "raid"..raidMember.rIndex;
 
 		    AddToSort(TempID, GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false) );
-		    self.Status.Unit_ArrayByName[raidMember.rName] = TempID;
+		    Status.Unit_ArrayByName[raidMember.rName] = TempID;
 		end
 
 		if ( self.profile.Scan_Pets ) then
@@ -544,9 +545,9 @@ do
 			end
 
 			-- add it only if not already in (could be the player pet...)
-			if (not self.Status.Unit_ArrayByName[pname]) then
+			if (not Status.Unit_ArrayByName[pname]) then
 			    AddToSort(pet, GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true) );
-			    self.Status.Unit_ArrayByName[pname] = pet;
+			    Status.Unit_ArrayByName[pname] = pet;
 			end
 		    end
 
@@ -558,18 +559,20 @@ do
 	end -- END if we are in a raid
 
 
-	-- we use a hash-key style table for self.Status.Unit_ArrayByName because it allows us
+	-- we use a hash-key style table for Status.Unit_ArrayByName because it allows us
 	-- to not care if we add a same unit several times (speed optimization)
 	-- but we cannot use sort unless indexes are integer so:
-	self.Status.Unit_Array = {}
-	for name, unit in pairs(self.Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
-	    t_insert(self.Status.Unit_Array, unit);
-	    self.Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
+	Status.Unit_Array = {}
+	local GUID;
+	for name, unit in pairs(Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
+	    t_insert(Status.Unit_Array, unit);
 
-	    self.Status.Unit_Array_GUIDToUnit[UnitGUID(unit)] = unit;
+	    GUID = UnitGUID(unit);
+	    Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
+	    Status.Unit_Array_GUIDToUnit[GUID] = unit;
 	end
 
-	table.sort(self.Status.Unit_Array, function (a,b)
+	table.sort(Status.Unit_Array, function (a,b)
 	    if (not (SortingTable[a] < 0 and SortingTable[b] < 0)) then
 		return SortingTable[b] < SortingTable[a];
 	    else
@@ -577,13 +580,13 @@ do
 	    end
 	end);
 
-	if UnitExists("focus") and not self.Status.Unit_ArrayByName[(self:UnitName("focus"))] and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player")) then
-	    t_insert(self.Status.Unit_Array, "focus");
-	    self.Status.UnitNum = #self.Status.Unit_Array;
-	    self.Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
+	if UnitExists("focus") and not Status.Unit_ArrayByName[(self:UnitName("focus"))] and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player")) then
+	    t_insert(Status.Unit_Array, "focus");
+	    Status.UnitNum = #Status.Unit_Array;
+	    Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
 	end
 
-	self.Status.UnitNum = #self.Status.Unit_Array;
+	Status.UnitNum = #Status.Unit_Array;
 
 	self.Groups_datas_are_invalid = false;
 

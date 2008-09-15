@@ -438,7 +438,7 @@ D.options = { -- {{{
 		    set = function(v)
 			if (v ~= D.profile.ScanTime) then
 			    D.profile.ScanTime = v;
-			    D:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+			    D:ScheduleRepeatingEvent("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
 			    D:Debug("LV scan delay changed:", D.profile.ScanTime, v);
 			end
 		    end,
@@ -955,7 +955,7 @@ D.options = { -- {{{
 			if (v ~= D.profile.DebuffsFrameRefreshRate) then
 			    D.profile.DebuffsFrameRefreshRate = v;
 
-			    D:ScheduleRepeatingEvent("MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
+			    D:ScheduleRepeatingEvent("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
 			    D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v);
 			end
 		    end,
@@ -1235,7 +1235,7 @@ D.options = { -- {{{
 			    -- I wanted to make the shadow to move over the marble very slowly as clouds
 			    -- I tried to make it rotate but the way I found would only make it rotate around its origin (which is rearely useful)
 			    -- so leaving it staedy for now... if someone got an idea, let me know.
-			    D:ScheduleRepeatingEvent("GlorMoveShadow",
+			    D:ScheduleRepeatingEvent("Dcr_GlorMoveShadow",
 				function (f)
 				    local cos, sin = math.cos, math.sin;
 				    f.Shadow.Angle = f.Shadow.Angle + 1;
@@ -1247,7 +1247,7 @@ D.options = { -- {{{
 			    , 1/50, f);
 			end);
 			--]]
-		    --f:SetScript("OnHide", function() D:CancelScheduledEvent("GlorMoveShadow"); end)			
+		    --f:SetScript("OnHide", function() D:CancelScheduledEvent("Dcr_GlorMoveShadow"); end)			
 		    f:SetWidth(w);
 		    f:SetHeight(h);
 		    f.tTL = f:CreateTexture("DcrMmTopLeft","BACKGROUND")
@@ -1603,16 +1603,16 @@ function D:ShowHideDebuffsFrame ()
 
 	for ID, MF in pairs(D.MicroUnitF.ExistingPerID) do
 	    if MF.IsDebuffed then
-		D:ScheduleEvent("updMUF"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, MF.CurrUnit, "Test item");
+		D:ScheduleEvent("Dcr_updMUF"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, MF.CurrUnit, "Test item");
 		i = i + 1;
 	    end
 	end
     end
 
     if (not D.profile.ShowDebuffsFrame) then
-	D:CancelScheduledEvent("MUFupdate");
+	D:CancelScheduledEvent("Dcr_MUFupdate");
     else
-	D:ScheduleRepeatingEvent("MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
+	D:ScheduleRepeatingEvent("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
     end
 
     -- set Fubar Icon

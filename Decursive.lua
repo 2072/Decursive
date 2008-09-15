@@ -81,14 +81,14 @@ function D:ShowHideLiveList(hide) --{{{
     if (hide==1 or (not hide and DcrLiveList:IsVisible())) then
 	D.profile.Hide_LiveList = true;
 	DcrLiveList:Hide();
-	D:CancelScheduledEvent("LLupdate");
+	D:CancelScheduledEvent("Dcr_LLupdate");
     else
 	D.profile.Hide_LiveList = false;
 	DcrLiveList:ClearAllPoints();
 	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
 	DcrLiveList:Show();
 
-	D:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+	D:ScheduleRepeatingEvent("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     end
 
 end --}}}
@@ -231,7 +231,7 @@ function D:PlaySound (UnitID, Caller) --{{{
 	    --		Sound\\interface\\AuctionWindowOpen.wav
 	    --		Sound\\interface\\AlarmClockWarning3.wav
 	    PlaySoundFile(self.profile.SoundFile);
-	    --self:ScheduleEvent("Playsound", PlaySoundFile, 0, self.profile.SoundFile);
+	    --self:ScheduleEvent("Dcr_Playsound", PlaySoundFile, 0, self.profile.SoundFile);
 	    D:Debug("Sound Played! by %s", Caller);
 	    self.Status.SoundPlayed = true;
 	end
@@ -432,7 +432,7 @@ do
 	while (true) do
 	    Name, TypeName, Applications, Texture = GetUnitDebuff(Unit, i);
 
-	    if (not Name) then
+	    if not Name then
 		break;
 	    end
 
@@ -534,7 +534,7 @@ do
 	    return false, IsCharmed;
 	end
 
-	local Spells	= self.Status.CuringSpells; -- shortcut to available spell by debuff type
+	local Spells	= self.Status.CuringSpells; -- shortcut to available spells by debuff type
 
 
 	local ManagedDebuffs = ManagedDebuffUnitCache[Unit]; -- shortcut for readability
