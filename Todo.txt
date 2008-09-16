@@ -10,13 +10,28 @@ Don't forget to update the wiki and the readme files:
 
 TODO:
 
+- change list: name ---> GUID
+	- add skipprioGUIDtoNAME in profile
+	- add cleanup function at startup if skipprioGUIDtoNAME is empty and not skip and prio
+- change raid: arraybyname --> arraybyGuid
+
+- use the new guid to unit table everywhere nametounit was used
+
+- use UNIT_NAME event to update the old table and trigger class border updates
+
+- add clever update trigger of the MUF
+    - class change (see above)
+    - Attributes (unitID or spells)
+    - Stealth
+    - Debuff
+
 - Add a user debuff warning mechanism where you could define debuff names you
   want to be aware of, then Decursive would add a special status, such as a
   little colored triangle in the middle of the MUFs and then you will have to
   create a mouseover macro (using default Blizzard macro interface) and use it on
   the MUF of your choice...
 
-- If the Unstable Affliction is detected on a player, add a warning status if the player can cure magic...
+- If the Unstable Affliction is detected on a player, add a warning status if the player can cure magic... (more or less done)
 
 - when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
   (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found)
@@ -25,8 +40,4 @@ TODO:
   (just change the table DcrC.SpellsToUse and call Dcr:Configure();)
 
 - Add an option to let the user choose the alert sound.
-
-- Clean up the code (for Archarodim)
-
-- Add comments (for Archarodim)
 

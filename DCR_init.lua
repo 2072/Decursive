@@ -648,7 +648,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     
 
-    self:ScheduleRepeatingEvent("SheduledTasks", self.SheduledTasks, 0.2, self);
+    self:ScheduleRepeatingEvent("Dcr_SheduledTasks", self.SheduledTasks, 0.2, self);
 
     -- Configure specific profile dependent data
     D:OnProfileEnable();
@@ -667,8 +667,8 @@ end -- // }}}
 function D:OnProfileEnable()
 
     D.DcrFullyInitialized = false;
-    D:CancelScheduledEvent("LLupdate");
-    D:CancelScheduledEvent("MUFupdate");
+    D:CancelScheduledEvent("Dcr_LLupdate");
+    D:CancelScheduledEvent("Dcr_MUFupdate");
 
     D.Groups_datas_are_invalid = true;
     D.Status = {};
@@ -745,11 +745,11 @@ function D:OnProfileEnable()
 
     -- put the updater events at the end of the init so there is no chance they could be called before everything is ready
     if not D.profile.Hide_LiveList then
-	self:ScheduleRepeatingEvent("LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+	self:ScheduleRepeatingEvent("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     end
 
     if D.profile.ShowDebuffsFrame then
-	self:ScheduleRepeatingEvent("MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
+	self:ScheduleRepeatingEvent("Dcr_MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
     end
     D.DcrFullyInitialized = true;
     D:ShowHideButtons(true);
