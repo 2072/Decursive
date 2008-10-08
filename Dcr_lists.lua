@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Decursive.xml"] or not DcrLoadedFil
 end
 
 local D = Dcr;
-D:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
+--D:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
 
 
 local L = D.L;
@@ -594,4 +594,4 @@ function D:PopulateButtonPress() --{{{
 
 end --}}}
 
-DcrLoadedFiles["Dcr_lists.lua"] = true;
+DcrLoadedFiles["Dcr_lists.lua"] = "@file-abbreviated-hash@";

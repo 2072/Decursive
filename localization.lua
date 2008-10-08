@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_utils.lua"] then
     return;
 end
 
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+--Dcr:SetDateAndRevision("$Date: 2008-08-15 07:21:36 +0200 (ven., 15 août 2008) $", "$Revision: 80467 $");
 
 Dcr.LOC = {};
 
@@ -679,4 +679,4 @@ L:RegisterTranslations("enUS", function() return {
 -- // }}}
 
 
-DcrLoadedFiles["localization.lua"] = true;
+DcrLoadedFiles["localization.lua"] = "@file-abbreviated-hash@";

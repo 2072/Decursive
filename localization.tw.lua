@@ -27,7 +27,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
     return;
 end
 
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+--Dcr:SetDateAndRevision("$Date: 2008-07-22 06:35:49 +0200 (mar., 22 juil. 2008) $", "$Revision: 78889 $");
 -------------------------------------------------------------------------------
 -- Chinese localization (Default)
 -------------------------------------------------------------------------------
@@ -320,4 +320,4 @@ L:RegisterTranslations("zhTW", function() return {
 
 } end);
 
-DcrLoadedFiles["localization.tw.lua"] = true;
+DcrLoadedFiles["localization.tw.lua"] = "@file-abbreviated-hash@";

@@ -28,7 +28,7 @@
 	    return;
 	end
 
-	Dcr:SetDateAndRevision("$Date$", "$Revision$");
+	-- Dcr:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
     </Script>
 
     <Button name="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
@@ -874,6 +874,6 @@
 
     
     <Script>
-	DcrLoadedFiles["Dcr_lists.xml"] = true;
+	DcrLoadedFiles["Dcr_lists.xml"] = "@file-abbreviated-hash@";
     </Script>
 </Ui>

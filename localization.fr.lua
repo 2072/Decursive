@@ -33,7 +33,7 @@ end
 -- Revised by the Grinch 08.24.06 (From Release 1.9.8 RC2)
 -- Traduit de l'anglais par Sylvin (Last translation 2007-JAN-31)
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+--Dcr:SetDateAndRevision("$Date: 2008-07-22 06:35:49 +0200 (mar., 22 juil. 2008) $", "$Revision: 78889 $");
 
 local L = Dcr.L;
 local LOC = Dcr.LOC;
@@ -323,4 +323,4 @@ L:RegisterTranslations("frFR", function() return {
 
 } end);
 
-DcrLoadedFiles["localization.fr.lua"] = true;
+DcrLoadedFiles["localization.fr.lua"] = "@file-abbreviated-hash@";

@@ -28,7 +28,7 @@
 	    return;
 	end
 
-	Dcr:SetDateAndRevision("$Date$", "$Revision$");
+	-- Dcr:SetDateAndRevision("$Date: 2007-12-02 22:31:14 +0100 (dim., 02 déc. 2007) $", "$Revision: 56465 $");
     </Script>
 
     <Frame name="DcrLiveList" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent"> <!-- {{{ -->
@@ -159,6 +159,6 @@
 
     
     <Script>
-	DcrLoadedFiles["Dcr_LiveList.xml"] = true;
+	DcrLoadedFiles["Dcr_LiveList.xml"] = "@file-abbreviated-hash@";
     </Script>
 </Ui>

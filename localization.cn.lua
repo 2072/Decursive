@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
     return;
 end
 
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+--Dcr:SetDateAndRevision("$Date: 2008-07-22 10:35:56 +0200 (mar., 22 juil. 2008) $", "$Revision: 78906 $");
 
 
 -- Acelocal register for zhCN // {{{
@@ -306,5 +306,5 @@ L:RegisterTranslations("zhCN", function() return {
 
 } end);
 
-DcrLoadedFiles["localization.cn.lua"] = true;
+DcrLoadedFiles["localization.cn.lua"] = "@file-abbreviated-hash@";
 

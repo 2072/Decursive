@@ -28,7 +28,7 @@
 	    return;
 	end
 
-	Dcr:SetDateAndRevision("$Date$", "$Revision$");
+	-- Dcr:SetDateAndRevision("$Date: 2008-04-10 00:53:55 +0200 (jeu., 10 avr. 2008) $", "$Revision: 68827 $");
     </Script>
 
     <Frame name="DcrMUFsContainer" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
@@ -140,6 +140,6 @@
 
 
     <Script>
-	DcrLoadedFiles["Dcr_DebuffsFrame.xml"] = true;
+	DcrLoadedFiles["Dcr_DebuffsFrame.xml"] = "@file-abbreviated-hash@";
     </Script>
 </Ui>

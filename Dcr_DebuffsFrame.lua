@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_lists.xml"] or not DcrLoadedFil
 end
 
 local D   = Dcr;
-D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
+--D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 
 local L	    = D.L;
@@ -1434,4 +1434,4 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "$Revision: 81755 $";
+DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "@file-abbreviated-hash@";

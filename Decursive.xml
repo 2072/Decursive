@@ -27,7 +27,7 @@
 	    DcrCorrupted = true;
 	end
 
-	Dcr:SetDateAndRevision("$Date$", "$Revision$");
+	-- Dcr:SetDateAndRevision("$Date: 2007-12-02 22:31:14 +0100 (dim., 02 déc. 2007) $", "$Revision: 56465 $");
     </Script>
 
 
@@ -307,6 +307,6 @@
     <Frame name="Decursive" />
 
     <Script>
-	DcrLoadedFiles["Decursive.xml"] = true;
+	DcrLoadedFiles["Decursive.xml"] = "@file-abbreviated-hash@";
     </Script>
 </Ui>

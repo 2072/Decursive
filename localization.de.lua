@@ -30,7 +30,7 @@ end
 -------------------------------------------------------------------------------
 -- German localization
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+--Dcr:SetDateAndRevision("$Date: 2008-07-22 06:35:49 +0200 (mar., 22 juil. 2008) $", "$Revision: 78889 $");
 
 local L = Dcr.L;
 local LOC = Dcr.LOC;
@@ -308,4 +308,4 @@ L:RegisterTranslations("deDE", function() return {
 
 } end);
 
-DcrLoadedFiles["localization.de.lua"] = true;
+DcrLoadedFiles["localization.de.lua"] = "@file-abbreviated-hash@";

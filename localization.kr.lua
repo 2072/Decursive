@@ -27,7 +27,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
     return;
 end
 
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+--Dcr:SetDateAndRevision("$Date: 2008-07-22 06:35:49 +0200 (mar., 22 juil. 2008) $", "$Revision: 78889 $");
 
 
 -- Acelocal register for koKR // {{{
@@ -326,4 +326,4 @@ L:RegisterTranslations("koKR", function() return {
 
 -- // }}}
 
-DcrLoadedFiles["localization.kr.lua"] = true;
+DcrLoadedFiles["localization.kr.lua"] = "@file-abbreviated-hash@";

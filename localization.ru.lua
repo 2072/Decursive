@@ -31,7 +31,7 @@ end
 -------------------------------------------------------------------------------
 -- Russian localization by StingerSoft (Eritnull aka Шептун)
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date: 2008-09-17 18:43:50 +0200 (mer., 17 sept. 2008) $", "$Revision: 81808 $");
+--Dcr:SetDateAndRevision("$Date: 2008-09-17 18:43:50 +0200 (mer., 17 sept. 2008) $", "$Revision: 81808 $");
 
 local L = Dcr.L;
 local LOC = Dcr.LOC;
@@ -331,4 +331,4 @@ L:RegisterTranslations("ruRU", function() return {
 } end);
 
 
-DcrLoadedFiles["localization.ru.lua"] = true;
+DcrLoadedFiles["localization.ru.lua"] = "@file-abbreviated-hash@";

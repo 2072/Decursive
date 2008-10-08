@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_Raid.lua"] then
 end
 
 local D = Dcr;
-D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
+--D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 local L = D.L;
 local BC = D.BC;
@@ -739,4 +739,4 @@ end
 -- }}}
 
 
-DcrLoadedFiles["Decursive.lua"] = true;
+DcrLoadedFiles["Decursive.lua"] = "@file-abbreviated-hash@";

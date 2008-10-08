@@ -172,9 +172,9 @@ do
 	end
 
 	-- if no fatal error let this file update the date and revision of Decursive
-	if DcrDiagStatus ~= 2 then
-	    Dcr:SetDateAndRevision("$Date: 2008-08-06 23:50:28 +0200 (mer., 06 août 2008) $", "$Revision: 79890 $");
-	end
+	--if DcrDiagStatus ~= 2 then
+	  --  Dcr:SetDateAndRevision("@file-date-iso@", "$Revision: 79890 $");
+	--end
 
 	-- if the diagnostic was requested by the user, we also test AceEvent functionalities {{{ -
 	if force and FromCommand and DcrDiagStatus == 0 then
@@ -240,4 +240,4 @@ do
 end
 
 
-DcrLoadedFiles["Dcr_DIAG.lua"] = true;
+DcrLoadedFiles["Dcr_DIAG.lua"] = "@file-abbreviated-hash@";

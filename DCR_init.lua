@@ -1148,8 +1148,12 @@ function D:SetDateAndRevision (Date, Revision)
     end
 end
 
-D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
+--D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
-DcrLoadedFiles["DCR_init.lua"] = true;
+D.Revision = "@project-abbreviated-hash@";
+D.date = "@project-date-iso@";
+D.version = "@project-version@";
+
+DcrLoadedFiles["DCR_init.lua"] = "@file-abbreviated-hash@";
 
 -------------------------------------------------------------------------------
