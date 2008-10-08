@@ -27,7 +27,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_opt.lua"] then
     return;
 end
 local D = Dcr;
-D:SetDateAndRevision("$Date$", "$Revision$");
+D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 
 local L = D.L;
@@ -75,7 +75,7 @@ function D:UNIT_PET (Unit) -- {{{
     -- when a pet changes somwhere, we update the unit array.
 
     D:Debug("Pet changed for: ", Unit);
-    if (D.Status.Unit_Array_UnitToName[Unit]) then
+    if (Unit ~= "focus" and self.Status.Unit_Array_UnitToGUID[Unit]) then
 	D.Groups_datas_are_invalid = true;
     end
 
@@ -118,45 +118,50 @@ end -- }}}
 
 
 
-local last_focus_GUID = false;
 function D:PLAYER_FOCUS_CHANGED () -- {{{
 
-    self.Status.Unit_Array_UnitToName["focus"] = (self:PetUnitName("focus", true));
+    local Status = self.Status;
 
-    if self.Status.Unit_Array[#self.Status.Unit_Array] == "focus" -- focus has an entry in our unit array
-	and (not UnitExists("focus") or UnitCanAttack("focus", "player") or self:NameToUnit((self:UnitName("focus"))) ) then -- but it doesn't exist anymore or it has become nasty or it is already in our group...
+    Status.Unit_Array_UnitToGUID["focus"] = UnitGUID("focus");
 
-	table.remove(self.Status.Unit_Array, #self.Status.Unit_Array);
-	self.Status.UnitNum = #self.Status.Unit_Array;
+    if Status.Unit_Array[#Status.Unit_Array] == "focus" -- focus has an entry in our unit array
+	and (not UnitExists("focus") -- but it doesn't exist anymore
+	or UnitCanAttack("focus", "player") -- or it has become nasty (focus was changed to an enemy target)
+	or Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] ~= "focus" ) then -- or it is already in our group under a different unit name...
+
+
+	table.remove(Status.Unit_Array, #Status.Unit_Array);
+	Status.UnitNum = #Status.Unit_Array;
 	
-	self.Status.Unit_Array_GUIDToUnit[last_focus_GUID] = nil;
+	Status.Unit_Array_GUIDToUnit[Status.last_focus_GUID] = nil;
 
 	self.MicroUnitF:Delayed_MFsDisplay_Update();
 
 	self:Debug("Focus removed");
 	return;
 
-    elseif self.Status.Unit_Array[#self.Status.Unit_Array] ~= "focus" -- focus is not in our unit array
+    elseif Status.Unit_Array[#Status.Unit_Array] ~= "focus" -- focus is not in our unit array
 	and UnitExists("focus") and not UnitCanAttack("focus", "player") -- it exists and she is nice
-	and not self:NameToUnit((self:UnitName("focus"))) then -- and it's not part of our unit array already
+	and not Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] then -- and it's not part of our unit array already
 
-	table.insert(self.Status.Unit_Array, "focus");
-	self.Status.UnitNum = #self.Status.Unit_Array;
+	table.insert(Status.Unit_Array, "focus");
+	Status.UnitNum = #Status.Unit_Array;
 
-	self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
+	Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
 
 
-	last_focus_GUID = UnitGUID("focus");
+	Status.last_focus_GUID = UnitGUID("focus");
 
 	self.MicroUnitF:Delayed_MFsDisplay_Update();
 	self:Debug("Focus Added");
-    elseif UnitExists("focus") and not self:NameToUnit((self:UnitName("focus"))) then -- the focus was changed but not to a unit in our unit array
+    elseif UnitExists("focus") and not Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] then -- the focus was changed but not to a unit in our unit array
+
+	Status.Unit_Array_GUIDToUnit[Status.last_focus_GUID] = nil;
+	Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
+
 	self.MicroUnitF:UpdateMUFUnit("focus", true);
 
-	self.Status.Unit_Array_GUIDToUnit[last_focus_GUID] = nil;
-	self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
-
-	last_focus_GUID = UnitGUID("focus");
+	Status.last_focus_GUID = UnitGUID("focus");
 	self:Debug("Focus changed");
     end
 
@@ -319,7 +324,7 @@ do
     local UnitID;
 
     function D:DummyDebuff (UnitID, DebuffName)
-	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), self.Status.Unit_Array_UnitToName[UnitID], PLAYER, 0, DebuffName, 0x32, "DEBUFF");
+	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, DebuffName, 0x32, "DEBUFF");
     end
 
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags)
@@ -406,7 +411,7 @@ do
 
 		if (arg12 == SPELL_FAILED_LINE_OF_SIGHT or arg12 == SPELL_FAILED_BAD_TARGETS) then
 
-		    if not self.profile.DoNot_Blacklist_Prio_List or not self:IsInPriorList(destName) then
+		    if not self.profile.DoNot_Blacklist_Prio_List or not self:IsInPriorList(self.Status.Unit_Array_UnitToGUID[self.Status.ClickedMF.CurrUnit]) then
 			self.Status.Blacklisted_Array[self.Status.ClickedMF.CurrUnit] = self.profile.CureBlacklist;
 
 			self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of blacklist frame|r");

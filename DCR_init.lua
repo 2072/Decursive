@@ -104,6 +104,7 @@ DC.IconOFF = "Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga";
 
 DC.MyClass = "NOCLASS";
 DC.MyName = "NONAME";
+DC.MyGUID = "";
 
 DC.MAGIC	= 1;
 DC.ENEMYMAGIC	= 2;
@@ -159,6 +160,10 @@ D.Status.DelayedFunctionCallsCount = 0;
 
 D.Status.Blacklisted_Array = {};
 D.Status.UnitNum = 0;
+
+D.Status.PrioChanged = true;
+
+D.Status.last_focus_GUID = false;
 
 -- An acces the debuff table
 D.ManagedDebuffUnitCache = {};
@@ -676,12 +681,12 @@ function D:OnProfileEnable()
     D.Status.CuringSpells = {};
     D.Status.CuringSpellsPrio = {};
     D.Status.Blacklisted_Array = {};
-    D.Status.Unit_Array_UnitToName = {};
-    --D.Status.Unit_Array_UnitToIndex = {};
     D.Status.UnitNum = 0;
     D.Status.DelayedFunctionCalls = {};
     D.Status.DelayedFunctionCallsCount = 0;
     D.Status.MaxConcurentUpdateDebuff = 0;
+    D.Status.PrioChanged = true;
+    D.Status.last_focus_GUID = false;
 
     -- if we log in and we are already fighting...
     if (InCombatLockdown()) then
@@ -707,6 +712,7 @@ function D:OnProfileEnable()
 	D.profile.skipByClass["WARRIOR"] = {};
 	D:tcopy(D.profile.skipByClass["WARRIOR"], D.defaults.skipByClass["WARRIOR"]);
     end
+
 
     D:Init();
 
@@ -741,6 +747,7 @@ function D:OnProfileEnable()
     
     DC.MyClass = (select(2, UnitClass("player")));
     DC.MyName = (self:UnitName("player"));
+    DC.MyGUID = (UnitGUID("player"));
     
 
     -- put the updater events at the end of the init so there is no chance they could be called before everything is ready
@@ -753,6 +760,13 @@ function D:OnProfileEnable()
     end
     D.DcrFullyInitialized = true;
     D:ShowHideButtons(true);
+
+    -- code for backward compatibility
+    if     ((not next(D.profile.PrioGUIDtoNAME)) and #D.profile.PriorityList ~= 0)
+	or ((not next(D.profile.SkipGUIDtoNAME)) and #D.profile.SkipList ~= 0) then
+	D:ClearPriorityList();
+	D:ClearSkipList();
+    end
 
     D:GetUnitArray();
 end
@@ -1134,7 +1148,7 @@ function D:SetDateAndRevision (Date, Revision)
     end
 end
 
-D:SetDateAndRevision("$Date$", "$Revision$");
+D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 DcrLoadedFiles["DCR_init.lua"] = true;
 

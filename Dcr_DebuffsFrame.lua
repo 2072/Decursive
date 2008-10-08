@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_lists.xml"] or not DcrLoadedFil
 end
 
 local D   = Dcr;
-D:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
+D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 
 local L	    = D.L;
@@ -471,10 +471,10 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 
     local unit = false;
 
-    if (D.Status.Unit_Array_UnitToName[Unitid]) then -- XXX Unit_Array_UnitToName not reliable
+    if (D.Status.Unit_Array_UnitToGUID[Unitid]) then
 	unit = Unitid;
-    elseif (Unitid == "focus") then
-	unit = "focus";
+--    elseif (Unitid == "focus") then
+--	unit = "focus";
     else
 	D:Debug("Unit %s, not in raid or party!", Unitid);
 	return;
@@ -513,19 +513,11 @@ function MicroUnitF:OnEnter() -- {{{
     local Unit = MF.CurrUnit; -- shortcut
     local TooltipText = "";
 
-    --[=[
-    D:ScheduleEvent("Dcr_testOnEnter", function(Unit)
-	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
-	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF!, report this to archarodim@teaser.fr|r", (UnitName("mouseover")), (UnitName(Unit)));
-	end
-    end, 0, Unit );
-    --]=]
-
-
+   
     -- Compare the current unit name to the one storred when the group data were collected
-    if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then -- XXX Unit_Array_UnitToName not reliable
-	D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
-    end
+    --if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then -- XXX Unit_Array_UnitToName not reliable
+--	D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
+  --  end
 
     MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
@@ -759,6 +751,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.IsDebuffed		= false;
 	self.CurrUnit		= "";
 	self.UnitName		= false;
+	self.UnitGUID		= false;
 	self.UnitClass		= false;
 	self.UnitStatus		= 0;
 	self.FirstDebuffType	= 0;
@@ -847,7 +840,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     end
 
     -- The unit is the same but the name isn't... (check for class change)
-    if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName then -- XXX us the event UNIT_NAME, more reliable...
+    if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID then
 	if MF:SetClassBorder() then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
 	end
@@ -966,7 +959,7 @@ do
 	for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
 	    --self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "spell"), Spell);
-	    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=mouseover] %s%s",
+	    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=mouseover, exists] %s%s",
 	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
 	    Spell,
 	    (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
@@ -1269,13 +1262,12 @@ do
 
     function MicroUnitF.prototype:SetClassBorder()
 	ReturnValue = false;
--- XXX Unit_Array_UnitToName not reliable
-	if (D.profile.DebuffsFrameElemBorderShow and (D.Status.Unit_Array_UnitToName[self.CurrUnit] ~= self.UnitName or (not self.UnitClass and UnitExists(self.CurrUnit)))) then
+	if (D.profile.DebuffsFrameElemBorderShow and (D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID or (not self.UnitClass and UnitExists(self.CurrUnit)))) then
 
 	    -- Get the name of this unit
-	    self.UnitName = D.Status.Unit_Array_UnitToName[self.CurrUnit];
+	    self.UnitGUID = D.Status.Unit_Array_UnitToGUID[self.CurrUnit];
 
-	    if self.UnitName then -- can be nil because of focus...
+	    if self.UnitGUID then -- can be nil because of focus...
 		-- Get its class
 		Class = (select(2, UnitClass(self.CurrUnit)));
 	    else
@@ -1442,4 +1434,4 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "$Revision: 80230 $";
+DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "$Revision: 81755 $";

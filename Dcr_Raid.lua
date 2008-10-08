@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_Events.lua"] then
 end
 
 local D = Dcr;
-D:SetDateAndRevision("$Date$", "$Revision$");
+D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 
 local L	    = D.L;
@@ -38,41 +38,40 @@ local DS    = DC.DS;
 
 local RaidRosterCache		= { };
 local SortingTable		= { };
-D.Status.Unit_ArrayByName	= { };
 D.Status.Unit_Array_GUIDToUnit	= { };
-D.Status.Unit_Array_UnitToName	= { };
-D.Status.Unit_Array_NameToUnit	= { };
+D.Status.Unit_Array_UnitToGUID	= { };
 
 D.Status.InternalPrioList	= { };
 D.Status.InternalSkipList	= { };
 D.Status.Unit_Array		= { };
 
-local pairs		= _G.pairs;
-local ipairs		= _G.ipairs;
-local type		= _G.type;
-local select		= _G.select;
-local UnitCanAttack	= _G.UnitCanAttack;
-local GetNumRaidMembers		= _G.GetNumRaidMembers;
-local GetNumPartyMembers	= _G.GetNumPartyMembers;
-local GetRaidRosterInfo	= _G.GetRaidRosterInfo;
-local random	= _G.random;
-local UnitIsUnit	= _G.UnitIsUnit;
-local UnitClass	= _G.UnitClass;
-local UnitExists	= _G.UnitExists;
-local UnitGUID  = _G.UnitGUID;
-local table	= _G.table;
-local t_insert =    _G.table.insert;
-local str_upper = _G.string.upper;
-
-local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
+local pairs		    = _G.pairs;
+local ipairs		    = _G.ipairs;
+local type		    = _G.type;
+local select		    = _G.select;
+local UnitCanAttack	    = _G.UnitCanAttack;
+local GetNumRaidMembers	    = _G.GetNumRaidMembers;
+local GetNumPartyMembers    = _G.GetNumPartyMembers;
+local GetRaidRosterInfo	    = _G.GetRaidRosterInfo;
+local random		    = _G.random;
+local UnitIsUnit	    = _G.UnitIsUnit;
+local UnitClass		    = _G.UnitClass;
+local UnitExists	    = _G.UnitExists;
+local UnitGUID		    = _G.UnitGUID;
+local table		    = _G.table;
+local t_insert		    = _G.table.insert;
+local str_upper		    = _G.string.upper;
+local MAX_RAID_MEMBERS	    = _G.MAX_RAID_MEMBERS;
+local rawget		    = _G.rawget;
 -------------------------------------------------------------------------------
+
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
 -------------------------------------------------------------------------------
 
 
-local function AddToSort (unit, index) -- // {{{
+local function AddToSort (unit, GUID, index) -- // {{{
     if (D.profile.Random_Order and
-	(not D.Status.InternalPrioList[(D:UnitName(unit))]) and not UnitIsUnit(unit,"player")) then
+	(not D.Status.InternalPrioList[GUID]) and not GUID~=MyGUID) then
 	index = random (1, 3000);
     end
     SortingTable[unit] = index;
@@ -83,6 +82,7 @@ end --}}}
 -- Raid/Party Name Check Function (a terrible function, need optimising)
 -- this returns the UnitID that the Name points to
 -- this does not check "target" or "mouseover"
+--[=[
 function D:NameToUnit( Name ) --{{{
 
     local numRaidMembers = GetNumRaidMembers();
@@ -155,6 +155,7 @@ function D:NameToUnit( Name ) --{{{
     return FoundUnit;
 
 end --}}}
+--]=]
 -- }}}
 
 
@@ -200,21 +201,109 @@ do
 
     local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
 
-    function IsInSkipList ( name, group, classNum ) -- {{{
-	if (D.Status.InternalSkipList[name] or D.Status.InternalSkipList[group] or D.Status.InternalSkipList[classNum]) then
+    local UnitToGUID = {};
+    local GUIDToUnit = {};
+
+    local UnitToGUID_mt = { __index = function(Table, unit)
+	local GUID = UnitGUID(unit) or false;
+
+	if not GUID then D:errln("UnitToGUID_mt: no GUID for: ", unit); end
+
+	Table[unit] = GUID;
+	GUIDToUnit[GUID] = unit;
+	return GUID;
+    end };
+
+
+    local GUIDToUnit_ScannedAll = false;
+    local GUIDToUnit_mt = { __index = function(Table, GUID)
+	-- {{{
+
+	if GUIDToUnit_ScannedAll then
+	    D:Debug("GUIDToUnit_mt: %s is not in our group!", GUID);
+	    return false;
+	end
+
+	if (not GUID) then
+	    return false;
+	end
+
+	local numRaidMembers = GetNumRaidMembers();
+
+	if (numRaidMembers == 0) then
+	    if GUID == UnitToGUID["player"] then
+		return "player";
+	    elseif GUID == UnitToGUID["pet"] then
+		return "pet";
+	    elseif GetNumPartyMembers() > 0 then
+		if GUID == UnitToGUID["party1"] then
+		    return "party1";
+		elseif GUID == UnitToGUID["party2"] then
+		    return "party2";
+		elseif GUID == UnitToGUID["party3"] then
+		    return "party3";
+		elseif GUID == UnitToGUID["party4"] then
+		    return "party4";
+		elseif Dcr.profile.Scan_Pets then
+		    if GUID == UnitToGUID["partypet1"] then
+			return "partypet1";
+		    elseif GUID == UnitToGUID["partypet2"] then
+			return "partypet2";
+		    elseif GUID == UnitToGUID["partypet3"] then
+			return "partypet3";
+		    elseif GUID == UnitToGUID["partypet4"] then
+			return "partypet4";
+		    end
+		end
+	    end
+	else
+	    -- we are in a raid
+	    local i;
+	    local foundmembers = 0;
+	    local RaidGUID;
+	    for i=1, MAX_RAID_MEMBERS do
+		RaidGUID = UnitToGUID[ "raid"..i];
+
+		if RaidGUID then
+
+		    foundmembers = foundmembers + 1;
+
+		    if GUID == RaidGUID then
+			return "raid"..i;
+		    end
+
+		    if Dcr.profile.Scan_Pets and GUID == UnitToGUID["raidpet"..i]  then
+			return "raidpet"..i;
+		    end
+
+		    if foundmembers == numRaidMembers then
+			break;
+		    end
+		end
+	    end
+	end 
+
+	GUIDToUnit_ScannedAll = true;
+	return false;
+    end };
+    --}}}
+
+
+    function IsInSkipList ( GUID, group, classNum ) -- {{{
+	if (D.Status.InternalSkipList[GUID] or D.Status.InternalSkipList[group] or D.Status.InternalSkipList[classNum]) then
 	    return true;
 	end
 
 	return false;
     end -- }}}
 
-    function IsInSkipOrPriorList( name, group, classNum )  --{{{
+    function IsInSkipOrPriorList( GUID, group, classNum )  --{{{
 
-	if (IsInSkipList ( name, group, classNum )) then
+	if (IsInSkipList ( GUID, group, classNum )) then
 	    return true;
 	end
 
-	if (D.Status.InternalPrioList[name] or D.Status.InternalPrioList[group] or D.Status.InternalPrioList[classNum]) then
+	if (D.Status.InternalPrioList[GUID] or D.Status.InternalPrioList[group] or D.Status.InternalPrioList[classNum]) then
 	    return true;
 	end
 
@@ -291,13 +380,13 @@ do
 
 	-- Get the priority list index if available
 	if not IsPet then
-	    local Unit_Name = (D:UnitName(Unit));
+	    local Unit_GUID = UnitToGUID[Unit];
 
 	    local PrioListIndex = 100;
 
 	    -- get the higher of the three...
-	    if (D.Status.InternalPrioList[Unit_Name] and D.Status.InternalPrioList[Unit_Name] < PrioListIndex) then
-		PrioListIndex = D.Status.InternalPrioList[Unit_Name];
+	    if (D.Status.InternalPrioList[Unit_GUID] and D.Status.InternalPrioList[Unit_GUID] < PrioListIndex) then
+		PrioListIndex = D.Status.InternalPrioList[Unit_GUID];
 	    end
 
 	    if (D.Status.InternalPrioList[UnitGroup] and D.Status.InternalPrioList[UnitGroup] < PrioListIndex) then
@@ -322,10 +411,10 @@ do
     end -- }}}
 
 
+    local RaidRosterCache = {};
 
     local pet;
     function D:GetUnitArray() --{{{
-
 	-- if the groups composition did not changed
 	if (not self.Groups_datas_are_invalid or not self.DcrFullyInitialized) then
 	    return;
@@ -333,60 +422,52 @@ do
 
 	self:Debug ("|cFFFF44FF-->|r Updating Units Array");
 
-	local pname;
+	local pGUID;
 	local raidnum = GetNumRaidMembers();
-	local MyName  = DC.MyName;
-
+--	local MyName  = DC.MyName;
+	local MyGUID  = DC.MyGUID;
 
 	-- clear all the arrays
 	local Status = self.Status;
-	Status.InternalPrioList	    = {};
-	Status.InternalSkipList	    = {};
-	SortingTable		    = {};
-	Status.Unit_ArrayByName	    = {};
-	Status.Unit_Array_NameToUnit= {};
-	Status.Unit_Array_GUIDToUnit= {};
-	local RaidRosterCache	    = {};
+	Status.InternalPrioList		= {}; -- these lists contains only units currently present
+	Status.InternalSkipList		= {};
+	SortingTable			= {};
+	Status.Unit_Array_GUIDToUnit	= {};
+	Status.Unit_Array_UnitToGUID	= {};
+
+	UnitToGUID = setmetatable({}, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
+	GUIDToUnit = setmetatable({}, GUIDToUnit_mt); -- this one cannot be erased (memory leak due to GUID...)
+	GUIDToUnit_ScannedAll = false;
+
 
 	local unit;
 
 
 	-- ############### PARSE PRIO AND SKIP LIST ###############
 
-	ClassPrio = { };
-	GroupsPrio = { };
+	GroupsPrio, ClassPrio = D:MakeGroupsAndClassPrio();
 
 	-- First clean and load the prioritylist (remove missing units)
 	for i, ListEntry in ipairs(self.profile.PriorityList) do
 
-	    -- first add names present in our raid group
+	    -- first add GUIDs present in our raid group
 	    if (type(ListEntry) == "string") then
-		unit = self:NameToUnit( ListEntry );
+		unit = GUIDToUnit[ListEntry];
 		if (unit) then
 		    Status.InternalPrioList[ListEntry] = i;
 		end
 
-	    else -- if ListEntry is a not a string, then it's a number
+	    else -- if ListEntry is not a string, then it's a number
 		 -- representing the groups or the classes
 
 		Status.InternalPrioList[ListEntry] = i;
-
-		if (ListEntry < 10) then
-		    t_insert(GroupsPrio, ListEntry);
-		else
-		    t_insert(ClassPrio, ListEntry);
-		end
 	    end
 	end
-
-	-- Reverse GroupsPrio and ClassPrio so we can have something useful...
-	GroupsPrio = self:tReverse(GroupsPrio);
-	ClassPrio  = self:tReverse(ClassPrio);
 
 	-- Get a cleaned skip list
 	for i, ListEntry in ipairs(self.profile.SkipList) do
 	    if (type(ListEntry) == "string") then
-		unit = self:NameToUnit( ListEntry );
+		unit = GUIDToUnit[ListEntry];
 		if (unit) then
 		    Status.InternalSkipList[ListEntry] = i;
 		end
@@ -400,16 +481,16 @@ do
 	if (raidnum == 0) then
 	    currentGroup = 1;
 	    -- Add the player to the main list if needed
-	    if (not IsInSkipOrPriorList(MyName, false, DC.ClassUNameToNum[DC.MyClass])) then
+	    if (not IsInSkipOrPriorList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass])) then
 		-- the player is not in a priority state, add to default prio
-		AddToSort( "player", 900);
-		Status.Unit_ArrayByName[MyName] = "player";
+		AddToSort( "player", MyGUID, 900);
+		Status.Unit_Array_GUIDToUnit[MyGUID] = "player";
 
 
-	    elseif (not IsInSkipList(MyName, false, DC.ClassUNameToNum[DC.MyClass])) then
+	    elseif (not IsInSkipList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass])) then
 		-- The player is contained within a priority rule
-		AddToSort("player",  GetUnitPriority ("player", 1, 1, DC.MyClass ) );
-		Status.Unit_ArrayByName[MyName] = "player";
+		AddToSort("player", MyGUI,  GetUnitPriority ("player", 1, 1, DC.MyClass ) );
+		Status.Unit_Array_GUIDToUnit[MyGUID] = "player";
 
 	    end
 
@@ -421,19 +502,18 @@ do
 
 		if (UnitExists(unit)) then
 
-		    pname = (self:UnitName(unit));
+		    pGUID = UnitToGUID[unit];
 
-		    if (not pname) then -- at logon sometimes pname is nil...
-			pname = unit;
+		    if (not pGUID) then -- at logon sometimes pGUID is nil...
+			pGUID = unit;
 		    end
 
-		    -- check the name to see if we skip
-		    if (not IsInSkipList(pname, nil, DC.ClassUNameToNum[(select(2, UnitClass(unit)))])) then
+		    -- check the GUID to see if we skip
+		    if (not IsInSkipList(pGUID, nil, DC.ClassUNameToNum[(select(2, UnitClass(unit)))])) then
 
-			Status.Unit_ArrayByName[pname] = unit;
+			Status.Unit_Array_GUIDToUnit[pGUID] = unit;
 
-
-			AddToSort(unit,  GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) ));
+			AddToSort(unit, pGUID,  GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) ));
 
 		    end
 
@@ -442,14 +522,14 @@ do
 			pet = "partypet"..i;
 
 			if (UnitExists(pet)) then
-			    pname = (D:PetUnitName(pet));
+			    pGUID = UnitToGUID[pet];
 
-			    if (not pname) then -- at logon sometimes pname is nil...
-				pname = pet;
+			    if (not pGUID) then -- at logon sometimes pGUID is nil...
+				pGUID = pet;
 			    end
 
-			    AddToSort(pet, GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true) );
-			    Status.Unit_ArrayByName[pname] = pet;
+			    AddToSort(pet, pGUID, GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true) );
+			    Status.Unit_Array_GUIDToUnit[pGUID] = pet;
 			end
 		    end
 		end
@@ -459,28 +539,29 @@ do
 	-- add our own pet
 	if ( self.profile.Scan_Pets ) then
 	    if (UnitExists("pet")) then
-		AddToSort("pet", -900);
-		Status.Unit_ArrayByName[(D:PetUnitName("pet"))] = "pet";
+		AddToSort("pet", UnitToGUID["pet"], -900);
+		Status.Unit_Array_GUIDToUnit[UnitToGUID["pet"]] = "pet";
 	    end
 	end
 
 	if ( raidnum > 0 ) then -- if we are in a raid
 	    currentGroup = 0;
-	    local rName, rGroup;
+	    local rName, rGroup, GUID;
 	    local CaheID = 1; -- make an ordered table
 	    local excluded = 0;
 
 	    -- Cache the raid roster info eliminating useless info and already listed members
 	    for i = 1, MAX_RAID_MEMBERS do
 		rName, _, rGroup, _, _, rClass = GetRaidRosterInfo(i);
+		GUID =  UnitToGUID["raid"..i];
 
-		-- find our group (a whole iteration is required, raid info are not ordered)
-		if ( currentGroup==0 and rName == MyName) then
+		-- find our group (a whole iteration is required, raid info are not ordered) -- wrong, the player is always the last now
+		if ( currentGroup==0 and GUID == MyGUID) then
 		    currentGroup = rGroup;
 		end
 
 		-- add all except member to skip
-		if not IsInSkipList(rName, rGroup, DC.ClassUNameToNum[rClass]) then
+		if not IsInSkipList(GUID, rGroup, DC.ClassUNameToNum[rClass]) then
 
 		    if (rName) then -- (at log-in GetRaidRosterInfo() returns garbage)
 
@@ -492,6 +573,7 @@ do
 			RaidRosterCache[CaheID].rGroup   = rGroup;
 			RaidRosterCache[CaheID].rClass   = rClass;
 			RaidRosterCache[CaheID].rIndex   = i;
+			RaidRosterCache[CaheID].rGUID    = GUID;
 			CaheID = CaheID + 1;
 		    end
 		else
@@ -499,37 +581,40 @@ do
 		end
 
 		if CaheID + excluded > raidnum then -- we found all the units
+		    RaidRosterCache[CaheID] = false;
 		    break;
 		end
 	    end
 
 	    -- Add the player to the main list if needed
-	    if (not IsInSkipOrPriorList(MyName, currentGroup, DC.ClassUNameToNum[DC.MyClass])) then
-		local PlayerRID = self:NameToUnit(MyName); -- might return false at log-in
+	    if (not IsInSkipOrPriorList(MyGUID, currentGroup, DC.ClassUNameToNum[DC.MyClass])) then
+		local PlayerRID = GUIDToUnit[MyGUID]; -- might return false at log-in
 		if PlayerRID then
-		    AddToSort( PlayerRID, 900);
-		    Status.Unit_ArrayByName[MyName] = PlayerRID;
+		    AddToSort( PlayerRID, MyGUID, 900);
+		    Status.Unit_Array_GUIDToUnit[MyGUID] = PlayerRID;
 		else
 		    --message(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
 			--MyName, currentGroup, (GetTime() - DC.StartTime), raidnum));
 
-		    AddToSort( "player", 900);
-		    Status.Unit_ArrayByName[MyName] =  "player";
+		    AddToSort( "player", MyGUID, 900);
+		    Status.Unit_Array_GUIDToUnit[MyGUID] =  "player";
 
-		    Status.Unit_Array_NameToUnit[MyName] = "player";
 		end
 	    end
 
 	    -- Now we have a cache without the units we want to skip
 	    local TempID;
 	    for _, raidMember in ipairs(RaidRosterCache) do
+
+		if not raidMember then break; end;
+
 		-- put each raid member with the right priority in our sorting table
-		if not Status.Unit_ArrayByName[raidMember.rName] then
+		if not Status.Unit_Array_GUIDToUnit[raidMember.rGUID] then
 
 		    TempID = "raid"..raidMember.rIndex;
 
-		    AddToSort(TempID, GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false) );
-		    Status.Unit_ArrayByName[raidMember.rName] = TempID;
+		    AddToSort(TempID, raidMember.rGUID, GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false) );
+		    Status.Unit_Array_GUIDToUnit[raidMember.rGUID] = TempID;
 		end
 
 		if ( self.profile.Scan_Pets ) then
@@ -538,16 +623,16 @@ do
 
 		    if ( UnitExists(pet) ) then
 
-			pname = (D:PetUnitName(pet));
+			pGUID = UnitToGUID[pet];
 
-			if (not pname) then -- at logon sometimes pname is nil...
-			    pname = pet;
+			if (not pGUID) then -- at logon sometimes pGUID is nil...
+			    pGUID = pet;
 			end
 
 			-- add it only if not already in (could be the player pet...)
-			if (not Status.Unit_ArrayByName[pname]) then
-			    AddToSort(pet, GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true) );
-			    Status.Unit_ArrayByName[pname] = pet;
+			if (not Status.Unit_Array_GUIDToUnit[pGUID]) then
+			    AddToSort(pet, pGUID, GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true) );
+			    Status.Unit_Array_GUIDToUnit[pGUID] = pet;
 			end
 		    end
 
@@ -559,17 +644,14 @@ do
 	end -- END if we are in a raid
 
 
-	-- we use a hash-key style table for Status.Unit_ArrayByName because it allows us
+	-- we use a hash-key style table for Status.Unit_Array_GUIDToUnit because it allows us
 	-- to not care if we add a same unit several times (speed optimization)
 	-- but we cannot use sort unless indexes are integer so:
 	Status.Unit_Array = {}
 	local GUID;
-	for name, unit in pairs(Status.Unit_ArrayByName) do -- /!\ PAIRS not iPAIRS
+	for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
 	    t_insert(Status.Unit_Array, unit);
-
-	    GUID = UnitGUID(unit);
-	    Status.Unit_Array_UnitToName[unit] = name; -- just a usefull table, not used here :)
-	    Status.Unit_Array_GUIDToUnit[GUID] = unit;
+	    Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a usefull table, not used here :)
 	end
 
 	table.sort(Status.Unit_Array, function (a,b)
@@ -580,13 +662,14 @@ do
 	    end
 	end);
 
-	if UnitExists("focus") and not Status.Unit_ArrayByName[(self:UnitName("focus"))] and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player")) then
-	    t_insert(Status.Unit_Array, "focus");
-	    Status.UnitNum = #Status.Unit_Array;
-	    Status.Unit_Array_UnitToName["focus"] = (D:PetUnitName("focus", true));
+
+	if UnitExists("focus") then
+	    self.Status.last_focus_GUID = false;
+	    D:PLAYER_FOCUS_CHANGED();
 	end
 
 	Status.UnitNum = #Status.Unit_Array;
+
 
 	self.Groups_datas_are_invalid = false;
 

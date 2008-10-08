@@ -31,7 +31,7 @@ end
 -------------------------------------------------------------------------------
 -- Russian localization by StingerSoft (Eritnull aka Шептун)
 -------------------------------------------------------------------------------
-Dcr:SetDateAndRevision("$Date$", "$Revision$");
+Dcr:SetDateAndRevision("$Date: 2008-09-17 18:43:50 +0200 (mer., 17 sept. 2008) $", "$Revision: 81808 $");
 
 local L = Dcr.L;
 local LOC = Dcr.LOC;
@@ -57,7 +57,7 @@ L:RegisterTranslations("ruRU", function() return {
 [LOC.CLASS_WARRIOR] = 'Воин',
 [LOC.CLASS_DEATHKNIGHT] = 'Deathknight';
 
-[LOC.STR_OTHER]     = 'Другой',
+[LOC.STR_OTHER]     = 'Другое',
 [LOC.STR_OPTIONS]     = "Настройки Decursive",
 [LOC.STR_CLOSE]     = 'Закрыть',
 [LOC.STR_DCR_PRIO]   = 'Приоритеты Decursive',
@@ -120,7 +120,7 @@ L:RegisterTranslations("ruRU", function() return {
 
 [LOC.AMOUNT_AFFLIC]   = "Значение показываемых заражений : ",
 [LOC.BLACK_LENGTH]    = "Секунд в чёрном-списке : ",
-[LOC.SCAN_LENGTH]     = "Секунд между активными скан : ",
+[LOC.SCAN_LENGTH]     = "Секунд между активными скан.: ",
 [LOC.ABOLISH_CHECK]   = "Проверка \"Снятие\" перед лечением",
 [LOC.RANDOM_ORDER]    = "Лечить в случайном порядке",
 [LOC.CURE_PETS]       = "Скан и лечение питомцев",
@@ -171,8 +171,8 @@ L:RegisterTranslations("ruRU", function() return {
 [LOC.OPT_HIDEMFS_GROUP]		= "Один/Группа",
 [LOC.OPT_HIDEMFS_GROUP_DESC]	= "Скрыть МФИ когда вы не-находитесь не в рейде",
 
-[LOC.OPT_HIDEMFS_NEVER]		= "Некогда",
-[LOC.OPT_HIDEMFS_NEVER_DESC]	= "Некогда не скрывать МФИ",
+[LOC.OPT_HIDEMFS_NEVER]		= "Никогда",
+[LOC.OPT_HIDEMFS_NEVER_DESC]	= "Никогда не скрывать МФИ",
 
 [LOC.OPT_ADDDEBUFFFHIST]		= "Добавить недавнее заражение",
 [LOC.OPT_ADDDEBUFFFHIST_DESC]	= "Добавить заражение используя историю",
@@ -293,7 +293,7 @@ L:RegisterTranslations("ruRU", function() return {
 [LOC.TARGETUNIT] = "Цель",
 [LOC.FOCUSUNIT] = "Фокус",
 
-[LOC.ABSENT] = "Потеря (%s)",
+[LOC.ABSENT] = "Отсутствует (%s)",
 [LOC.TOOFAR] = "Слишком далеко",
 [LOC.NORMAL] = "Нормальное",
 [LOC.STEALTHED] = "Скрывается",
@@ -320,7 +320,7 @@ L:RegisterTranslations("ruRU", function() return {
 [LOC.FUBARMENU_DESC] = "Настройка иконки FuBarа",
 
 
-[LOC.GLOR1] = "В паметь о Glorfindalе",
+[LOC.GLOR1] = "В память о Glorfindalе",
 [LOC.GLOR2] = "Decursive посвящён памяти Бертране который оставил нас слишком рано.\nЕго будут всегда помнить.",
 [LOC.GLOR3] = "В паметь о Бертрана Сана\n1969 - 2007",
 [LOC.GLOR4] = "Дружба и привязанность могут пустить свои корни где-угодно, те, кто встретился с Glorfindal в Мире Вокрафта знали его как человека с великими обязательствами, и харизматического лидера \n\nHe жил, когда он был в игре, самоотверженный, щедрый, преданный своим друзьям и больше всего, страстный человек\n\nОн оставил нас в возрасте 38 лет, не только анонимные игроки в действительном мире, но и, группа истинных друзей, которые будут тосковать без его навсегда.",
