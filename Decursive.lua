@@ -28,7 +28,7 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_Raid.lua"] then
 end
 
 local D = Dcr;
-D:SetDateAndRevision("$Date$", "$Revision$");
+D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 local L = D.L;
 local BC = D.BC;
@@ -543,7 +543,7 @@ do
 
 	local DebuffNum = 1; -- number of found debuff (used for indexing)
 
-	local continue; -- if we have to ignore a debuff, this will become false
+	local continue_ = true; -- if we have to ignore a debuff, this will become false
 
 
 
@@ -552,7 +552,7 @@ do
 	    if (not Debuff.Type) then
 		break;
 	    end
-	    continue = true;
+	    continue_ = true;
 
 	    -- test if we have to ignore this debuf  {{{ --
 	    if (self.profile.DebuffsToIgnore[Debuff.Name]) then
@@ -563,7 +563,7 @@ do
 
 	    if (self.profile.BuffDebuff[Debuff.Name]) then
 		-- these are just ones you don't care about
-		continue = false;
+		continue_ = false;
 		--D:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
 	    end
 
@@ -583,7 +583,7 @@ do
 			end
 			
 			D:Debug("UnitCurableDebuffs(): %s is configured to be skipped", Debuff.Name);
-			continue = false;
+			continue_ = false;
 		    end
 		end
 	    end
@@ -591,7 +591,7 @@ do
 	    -- }}}
 
 	    
-	    if continue then
+	    if continue_ then
 		--	self:Debug("Debuffs matters");
 		-- If we are still here it means that this Debuff is something not to be ignored...
 
