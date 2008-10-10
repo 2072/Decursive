@@ -1,13 +1,3 @@
-Always submit clean and fully commented code, if what you want to do requires big changes, ask to the author first.
-There is a Decursive thread on WoWAce.com forums where you can talk:
-
----->  http://www.wowace.com/forums/index.php?topic=4328.0
-
-Don't forget to update the wiki and the readme files:
-
----->  http://www.wowace.com/wiki/Decursive
-
-
 TODO:
 
 - use UNIT_NAME event to update the old table and trigger class border updates
