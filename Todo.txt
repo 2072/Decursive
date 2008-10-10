@@ -10,13 +10,6 @@ Don't forget to update the wiki and the readme files:
 
 TODO:
 
-- change list: name ---> GUID -- DONE
-	- add PrioGUIDtoNAME and SkipGUIDtoNAME in profile -- DONE
-	- add cleanup function at startup if skipprioGUIDtoNAME is empty and not skip and prio -- DONE
-- change raid: arraybyname --> arraybyGuid -- DONE
-
-- use the new guid to unit table everywhere nametounit was used -- DONE
-
 - use UNIT_NAME event to update the old table and trigger class border updates
 
 - add clever update trigger of the MUF

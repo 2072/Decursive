@@ -92,7 +92,7 @@ function D.PrioSkipListFrame_OnUpdate() --{{{
 	else
 	    size = table.getn(D.profile.SkipList);
 	end
-	D:Debug("PrioSkipListFrame_OnUpdate executed", size, this.ScrollFrame.offset);
+	-- D:Debug("PrioSkipListFrame_OnUpdate executed", size, this.ScrollFrame.offset);
 
 	if not DC.WotLK then
 	    if (size < 11 ) then
@@ -196,7 +196,7 @@ end --}}}
 function D:PrioSkipListEntry_Update(Entry) --{{{
 	local id = Entry:GetID();
 	if (id) then
-	D:Debug("PrioSkipListEntry_Update executed");
+	--D:Debug("PrioSkipListEntry_Update executed");
 	    local name, classname, GUIDorNum;
 	    if (Entry:GetParent().Priority) then
 		GUIDorNum = D.profile.PriorityList[id];
@@ -419,7 +419,7 @@ function D:AddUnitToSkipList( unit) --{{{
 		GUIDorNum = unit;
 	    else
 		--name = (D:UnitName( unit));
-		GUIDorNum = (D:UnitName( unit));
+		GUIDorNum = UnitGUID(unit);
 		--if name == DC.UNKNOWN then
 		if not GUIDorNum then
 		    return false;

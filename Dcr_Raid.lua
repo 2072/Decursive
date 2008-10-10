@@ -207,7 +207,9 @@ do
     local UnitToGUID_mt = { __index = function(Table, unit)
 	local GUID = UnitGUID(unit) or false;
 
-	if not GUID then D:errln("UnitToGUID_mt: no GUID for: ", unit); end
+	if (D.profile.debugging) then
+	    if not GUID then D:errln("UnitToGUID_mt: no GUID for: ", unit); end
+	end
 
 	Table[unit] = GUID;
 	GUIDToUnit[GUID] = unit;
@@ -216,6 +218,7 @@ do
 
 
     local GUIDToUnit_ScannedAll = false;
+    local lookforpets = true;
     local GUIDToUnit_mt = { __index = function(Table, GUID)
 	-- {{{
 
@@ -272,7 +275,7 @@ do
 			return "raid"..i;
 		    end
 
-		    if Dcr.profile.Scan_Pets and GUID == UnitToGUID["raidpet"..i]  then
+		    if lookforpets and D.profile.Scan_Pets and GUID == UnitToGUID["raidpet"..i]  then
 			return "raidpet"..i;
 		    end
 
@@ -284,6 +287,9 @@ do
 	end 
 
 	GUIDToUnit_ScannedAll = true;
+	if (D.profile.debugging) then
+	    D:errln("GUIDToUnit_mt: no unit for: ", GUID);
+	end
 	return false;
     end };
     --}}}
@@ -447,6 +453,8 @@ do
 
 	GroupsPrio, ClassPrio = D:MakeGroupsAndClassPrio();
 
+	lookforpets = false;
+
 	-- First clean and load the prioritylist (remove missing units)
 	for i, ListEntry in ipairs(self.profile.PriorityList) do
 
@@ -475,6 +483,7 @@ do
 		Status.InternalSkipList[ListEntry] = i;
 	    end
 	end
+	lookforpets = true;
 
 
 	-- if we are not in a raid but in a party
