@@ -3,7 +3,7 @@ Decursive 2.3 beta 2 by Archarodim  (2008-10-10)
 
 Changes from Decursive 2.2.0 Decursive 2.3 beta 2
 
-- Decursive now uses GUID internally instead of unit names.
+- Decursive now uses GUID internally instead of unit names (CPU and memory usage optimisation).
 - A change of pet in the group was still triggering a group rescan even if pet
   scanning was disabled.
 - CPU optimization when using the priority list.

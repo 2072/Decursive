@@ -62,6 +62,7 @@ local table		    = _G.table;
 local t_insert		    = _G.table.insert;
 local str_upper		    = _G.string.upper;
 local MAX_RAID_MEMBERS	    = _G.MAX_RAID_MEMBERS;
+local setmetatable	    = _G.setmetatable;
 local rawget		    = _G.rawget;
 -------------------------------------------------------------------------------
 
@@ -204,58 +205,65 @@ do
     local UnitToGUID = {};
     local GUIDToUnit = {};
 
-    local UnitToGUID_mt = { __index = function(Table, unit)
+    local UnitToGUID_mt = { __index = function(self, unit)
 	local GUID = UnitGUID(unit) or false;
 
+	self[unit] = GUID;
+	GUIDToUnit[GUID] = unit; -- XXX is this legal?
+
 	if (D.profile.debugging) then
-	    if not GUID then D:errln("UnitToGUID_mt: no GUID for: ", unit); end
+	    if not GUID then
+		D:errln("UnitToGUID_mt: no GUID for: ", unit);
+	    end
 	end
 
-	Table[unit] = GUID;
-	GUIDToUnit[GUID] = unit;
-	return GUID;
+
+	return self[unit];
     end };
 
 
     local GUIDToUnit_ScannedAll = false;
     local lookforpets = true;
-    local GUIDToUnit_mt = { __index = function(Table, GUID)
+    local GUIDToUnit_mt = { __index = function(self, GUID)
 	-- {{{
 
 	if GUIDToUnit_ScannedAll then
+	    self[GUID] = false;
 	    D:Debug("GUIDToUnit_mt: %s is not in our group!", GUID);
-	    return false;
+	    return self[GUID];
 	end
 
 	if (not GUID) then
+	    D:errln("GUIDToUnit_mt: no GUID! ", unit);
 	    return false;
 	end
 
 	local numRaidMembers = GetNumRaidMembers();
+	local unit = false;
 
 	if (numRaidMembers == 0) then
 	    if GUID == UnitToGUID["player"] then
-		return "player";
+		unit = "player";
 	    elseif GUID == UnitToGUID["pet"] then
-		return "pet";
+		unit = "pet";
 	    elseif GetNumPartyMembers() > 0 then
 		if GUID == UnitToGUID["party1"] then
-		    return "party1";
+		    unit = "party1";
 		elseif GUID == UnitToGUID["party2"] then
-		    return "party2";
+		    unit = "party2";
 		elseif GUID == UnitToGUID["party3"] then
-		    return "party3";
+		    unit = "party3";
 		elseif GUID == UnitToGUID["party4"] then
-		    return "party4";
+		    unit = "party4";
 		elseif Dcr.profile.Scan_Pets then
 		    if GUID == UnitToGUID["partypet1"] then
-			return "partypet1";
+			unit = "partypet1";
 		    elseif GUID == UnitToGUID["partypet2"] then
-			return "partypet2";
+			unit = "partypet2";
 		    elseif GUID == UnitToGUID["partypet3"] then
-			return "partypet3";
+			unit = "partypet3";
 		    elseif GUID == UnitToGUID["partypet4"] then
-			return "partypet4";
+			unit = "partypet4";
 		    end
 		end
 	    end
@@ -272,11 +280,13 @@ do
 		    foundmembers = foundmembers + 1;
 
 		    if GUID == RaidGUID then
-			return "raid"..i;
+			unit = "raid"..i;
+			break;
 		    end
 
 		    if lookforpets and D.profile.Scan_Pets and GUID == UnitToGUID["raidpet"..i]  then
-			return "raidpet"..i;
+			unit = "raidpet"..i;
+			break;
 		    end
 
 		    if foundmembers == numRaidMembers then
@@ -286,11 +296,19 @@ do
 	    end
 	end 
 
-	GUIDToUnit_ScannedAll = true;
-	if (D.profile.debugging) then
-	    D:errln("GUIDToUnit_mt: no unit for: ", GUID);
+	if not unit then
+	    GUIDToUnit_ScannedAll = true;
+
+	    if D.profile.debugging then
+		D:errln("GUIDToUnit_mt: no unit for: ", GUID);
+	    end
+	else
+	    D:Debug("GUIDToUnit_mt used for ", GUID, unit);
 	end
-	return false;
+
+	self[GUID] = unit;
+
+	return self[GUID];
     end };
     --}}}
 
@@ -425,6 +443,7 @@ do
 	if (not self.Groups_datas_are_invalid or not self.DcrFullyInitialized) then
 	    return;
 	end
+	self.Groups_datas_are_invalid = false;
 
 	self:Debug ("|cFFFF44FF-->|r Updating Units Array");
 
@@ -441,8 +460,8 @@ do
 	Status.Unit_Array_GUIDToUnit	= {};
 	Status.Unit_Array_UnitToGUID	= {};
 
-	UnitToGUID = setmetatable({}, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
-	GUIDToUnit = setmetatable({}, GUIDToUnit_mt); -- this one cannot be erased (memory leak due to GUID...)
+	UnitToGUID = setmetatable(UnitToGUID, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
+	GUIDToUnit = setmetatable(GUIDToUnit, GUIDToUnit_mt); -- this one cannot be erased (memory leak due to GUID...)
 	GUIDToUnit_ScannedAll = false;
 
 
@@ -679,8 +698,9 @@ do
 
 	Status.UnitNum = #Status.Unit_Array;
 
+	UnitToGUID = {};
+	GUIDToUnit = {};
 
-	self.Groups_datas_are_invalid = false;
 
 	self:Debug ("|cFFFF44FF-->|r Update complete!");
 	return;
