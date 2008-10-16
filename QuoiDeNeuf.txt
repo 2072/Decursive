@@ -1,5 +1,16 @@
-Decursive 2.2.0 par Archarodim  (2008-08-31)
+Decursive 2.3 beta 3 par Archarodim  (2008-10-14)
 
+
+Changements entre Decursive 2.2.0 et Decursive 2.3 beta 3
+
+- Decursive utilise désormais les GUID en interne au lieu des noms des unités
+  (optimisations des ressources)
+- Un changement de famillier dans le groupe déclanchait une mise à jour du
+  groupe même si la gestion des familiers était désativée.
+- Optimisations des ressources lorsque les listes de priorités et d'exceptions
+  sont utilisées.
+- ATTENTION: Après avoir installé cette version, les listes de priorités et
+  d'exceptions seront effacées.
 
 
 Changements entre Decursive 2.1.0 Final et Decursive 2.2.0
