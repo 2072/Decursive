@@ -86,27 +86,27 @@ do
 
 	-- Table with all the required libraries with their current revision at Decursive release time.
 	local LibrariesToCheck = { -- {{{
-	    ["AceLibrary"]		= 58127,
-	    ["AceOO-2.0"]		= 38641,
-	    ["AceDebug-2.0"]		= 34168,
-	    ["AceEvent-2.0"]		= 66043,
-	    ["AceDB-2.0"]		= 56534,
-	    ["AceConsole-2.0"]		= 67789,
-	    ["AceLocale-2.2"]		= 40629,
-	    ["AceAddon-2.0"]	        = 57245,
-	    ["Dewdrop-2.0"]		= 56529,
-	    ["Waterfall-1.0"]		= 67025,
-	    ["Tablet-2.0"]		= 64130,
-	    ["FuBarPlugin-2.0"]		= 63898,
+	    ["AceLibrary"]		= 90000 + 1091,
+	    ["AceOO-2.0"]		= 90000 + 1091,
+	    ["AceDebug-2.0"]		= 90000 + 1091,
+	    ["AceEvent-2.0"]		= 90000 + 1091,
+	    ["AceDB-2.0"]		= 90000 + 1091,
+	    ["AceConsole-2.0"]		= 90000 + 1091,
+	    ["AceLocale-2.2"]		= 90000 + 1091,
+	    ["AceAddon-2.0"]	        = 90000 + 1091,
+	    ["Dewdrop-2.0"]		= 90000 + 320,
+	    ["Waterfall-1.0"]		= 90000 + 125,
+	    ["Tablet-2.0"]		= 90000 + 216,
+	    ["FuBarPlugin-2.0"]		= 90000 + 3,
 	}; -- }}}
 
 	--LibStub:GetLibrary
 	local UseLibStub = {
-	    ["LibBabble-Class-3.0"] = 63957,
+	    ["LibBabble-Class-3.0"] = 90000 + 45,
 	};
 
 	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
-	local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use |cFF00FF00JWoWUpdater|r (Google it) to update |cFFFF0000ALL|r your Ace add-ons properly.";
+	local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your Ace add-ons properly.";
 
 	local ErrorFound = false;
 	local Errors = {};

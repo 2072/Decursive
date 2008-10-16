@@ -56,7 +56,7 @@ local select	= _G.select;
 -------------------------------------------------------------------------------
 -- variables {{{
 -------------------------------------------------------------------------------
-D.Groups_datas_are_invalid = false;
+D.Groups_datas_are_invalid = true;
 -------------------------------------------------------------------------------
 -- Internal HARD settings for decursive
 D.CONF = {};
@@ -1106,16 +1106,16 @@ function D:UpdateMacro ()
 
     local MacroParameters = {
 	D.CONF.MACRONAME,
-	1,
+	1, -- icon index
 	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L[D.LOC.NOSPELL].."')",
-	1
+	0, -- per account
     };
 
     --D:PrintLiteral(GetMacroIndexByName(D.CONF.MACRONAME));
     if (GetMacroIndexByName(D.CONF.MACRONAME) ~= 0) then
 	-- D:Debug("Macro found");
 	EditMacro(D.CONF.MACRONAME, unpack(MacroParameters));
-    elseif ((GetNumMacros()) < 18) then
+    elseif ((GetNumMacros()) < 36) then
 	CreateMacro(unpack(MacroParameters));
     else
 	D:errln("Too many macros exist, Decursive cannot create its macro");
