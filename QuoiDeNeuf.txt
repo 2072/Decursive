@@ -1,5 +1,16 @@
-Decursive 2.3 beta 3 par Archarodim  (2008-10-14)
+Decursive 2.3.0 RC2 par Archarodim  (2008-10-16)
 
+
+Changements entre Decursive 2.3 beta 3 et Decursive 2.3.0 RC2
+
+Corrige l'initialisation défectueuse due au changement de l'API CreateMacro()
+dans WoW 3.0 (lorsque l'utilisateur avait ses macros "par charactère" pleines)
+
+- Bugfix: CreateMacro() a changé dans WoW 2.3 par conséquent Decursive créait
+  sa macro "par personnage" au lieu de "par compte" et ne vérifiait pas la
+  bonne limite.
+
+- Mise à jour des versions minimum requises des librairies.
 
 Changements entre Decursive 2.2.0 et Decursive 2.3 beta 3
 

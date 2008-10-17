@@ -1,7 +1,19 @@
-Decursive 2.3 beta 3 by Archarodim  (2008-10-14)
+Decursive 2.3.0 RC2 by Archarodim  (2008-10-16)
 
 
-Changes from Decursive 2.2.0 Decursive 2.3 beta 3
+Changes from Decursive 2.3 beta 3 to Decursive 2.3.0 RC2
+
+Fixes faulty initialisation due to CreateMacro() API changes in WoW 3.0 (when
+the users per-character macro were full)
+
+- Bugfix: CreateMacro() was changed in WoW 2.3 as a result Decursive was
+  creating its macro "per character" instead of "per account" and was not
+  checking the right limit...
+
+- Updated minimum required revision of libraries to the latest at this date.
+
+
+Changes from Decursive 2.2.0 to Decursive 2.3 beta 3
 
 - Decursive now uses GUID internally instead of unit names (CPU and memory usage optimisation).
 - A change of pet in the group was still triggering a group rescan even if pet
