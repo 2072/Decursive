@@ -12,7 +12,10 @@ externals:
     Libs/Dewdrop-2.0: svn://svn.wowace.com/wow/dewdroplib/mainline/trunk/Dewdrop-2.0
     Libs/Waterfall-1.0: svn://svn.wowace.com/wow/waterfall-1-0/mainline/trunk/Waterfall-1.0
     Libs/Tablet-2.0: svn://svn.wowace.com/wow/tabletlib/mainline/trunk/Tablet-2.0
-    Libs/FuBarPlugin-2.0: svn://svn.wowace.com/wow/fubarplugin-2-0/mainline/trunk/FuBarPlugin-2.0
+
+    Libs/LibDBIcon-1.0: svn://svn.wowace.com/wow/libdbicon-1-0/mainline/trunk/LibDBIcon-1.0
+    Libs/LibDataBroker-1.1: git://github.com/tekkub/libdatabroker-1-1.git 
+    Libs/CallbackHandler-1.0: svn://svn.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0
 
 
 optional-dependencies:
@@ -21,5 +24,7 @@ optional-dependencies:
     - dewdroplib
     - waterfall-1-0
     - tabletlib
-    - fubarplugin-2-0
+    - libdatabroker-1-1
+    - libdbicon-1-0
+    - callbackhandler
 

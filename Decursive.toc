@@ -14,8 +14,8 @@
 
 ## X-License: GNU GPL
 
-## OptionalDeps: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0
-## X-Embeds: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, FuBarPlugin-2.0
+## OptionalDeps: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0
+## X-Embeds: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0
 
 ## X-ReleaseDate: "@project-date-iso@"
 ## X-Category: Combat
@@ -35,16 +35,10 @@ embeds.xml
 
 Dcr_DIAG.lua
 DCR_init.lua
+Dcr_LDB.lua
 Dcr_utils.lua
 
-localization.lua
-localization.ru.lua
-localization.fr.lua
-localization.de.lua
-localization.tw.lua
-localization.es.lua
-localization.kr.lua
-localization.cn.lua
+Localization\load.xml
 
 Dcr_opt.lua
 Dcr_Events.lua

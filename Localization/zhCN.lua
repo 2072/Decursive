@@ -22,8 +22,8 @@
 -------------------------------------------------------------------------------
 -- Simplified Chinese by CWDG 剜刀
 
-if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -254,6 +254,8 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.OPT_XSPACING_DESC] = "设置 MUF 间的水平距离。",
     [LOC.OPT_YSPACING] = "垂直距离",
     [LOC.OPT_YSPACING_DESC] = "设置 MUF 间的垂直距离。",
+    [LOC.OPT_SHOWMINIMAPICON] = LOC.OPT_SHOWMINIMAPICON,
+    [LOC.OPT_SHOWMINIMAPICON_DESC] = LOC.OPT_SHOWMINIMAPICON_DESC,
 
 
 
@@ -306,5 +308,5 @@ L:RegisterTranslations("zhCN", function() return {
 
 } end);
 
-DcrLoadedFiles["localization.cn.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["zhCN.lua"] = "@file-abbreviated-hash@";
 

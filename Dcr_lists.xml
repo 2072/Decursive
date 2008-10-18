@@ -251,11 +251,7 @@
 		</Anchors>
 		<Scripts>
 		    <OnVerticalScroll>
-			if not DcrC.WotLK then
-			FauxScrollFrame_OnVerticalScroll(16, this:GetParent().ScrollUpdateFunc);
-			else
 			FauxScrollFrame_OnVerticalScroll(self, offset, 16, self:GetParent().ScrollUpdateFunc);
-			end
 		    </OnVerticalScroll>
 		    <OnShow>
 			this.UpdateYourself = true;
@@ -838,12 +834,8 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			if DcrC.WotLK then
 			this.ClassType = Dcr.LOC.CLASS_DEATHKNIGHT;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
-			else
-			this:Hide();
-			end
 		    </OnLoad>
 		</Scripts>
 	    </Button>

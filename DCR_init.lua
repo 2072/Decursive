@@ -27,7 +27,8 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DIAG.lua"] then
     return;
 end
 
-Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0", "FuBarPlugin-2.0");
+Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0");
+--, "FuBarPlugin-2.0");
 
 local D = Dcr;
 
@@ -36,7 +37,6 @@ D.L	    = AceLibrary("AceLocale-2.2"):new("Dcr");
 D.BC	    = LibStub("LibBabble-Class-3.0"):GetLookupTable();
 D.BCR	    = LibStub("LibBabble-Class-3.0"):GetReverseLookupTable();
 D.DewDrop   = AceLibrary("Dewdrop-2.0");
---D.A	    = AceLibrary("SpecialEvents-Aura-2.0");
 D.Waterfall = AceLibrary("Waterfall-1.0");
 D.T	    = AceLibrary("Tablet-2.0");
 
@@ -52,6 +52,8 @@ local BOOKTYPE_SPELL	= BOOKTYPE_SPELL;
 
 
 local select	= _G.select;
+
+
 
 -------------------------------------------------------------------------------
 -- variables {{{
@@ -99,8 +101,8 @@ DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.wav"
 --DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
 DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.wav";
 
-DC.IconON = "Interface\\AddOns\\" .. D.folderName .. "\\iconON.tga";
-DC.IconOFF = "Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga";
+DC.IconON = "Interface\\AddOns\\Decursive\\iconON.tga";
+DC.IconOFF = "Interface\\AddOns\\Decursive\\iconOFF.tga";
 
 DC.MyClass = "NOCLASS";
 DC.MyName = "NONAME";
@@ -140,8 +142,6 @@ DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage crea
 
 
 DC.StartTime = GetTime();
-
-DC.WotLK = select(4,GetBuildInfo()) >= 30000;
 
 D.DebuffHistory = {};
 
@@ -209,7 +209,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     -- add support for FuBar
     -- This will add Fubar relative options into a sub-menu
-    ---[[
+    --[[
     do
 	local args = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(self)
 	local options = D.options
@@ -240,92 +240,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     D.OnMouseDown = D.MicroUnitF.OnCornerClick;
 
-    D.OnTooltipUpdate = function()
-	D:Debug("Updating FuBar tooltip");
-	local cat = D.T:AddCategory(
-	--'text', "Alpha",
-	'columns', 2,
-	'child_textR', 0,
-	'child_textG', 1,
-	'child_textB', 0,
-	'child_textR2', 1,
-	'child_textG2', 1,
-	'child_textB2', 1,
-	'child_justify2', 'LEFT'
-	);
-
-	cat:AddLine(
-	'text', ("%s: "):format(D.L[D.LOC.HLP_RIGHTCLICK]),
-	'text2',  D.L[D.LOC.STR_OPTIONS]
-	);
-
-	cat:AddLine(
-	'text', ("%s-%s: "):format(D.L[D.LOC.ALT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-	'text2', D.L[BINDING_NAME_DCRSHOWOPTION]
-	);
-	cat:AddLine(
-	'text', ("%s-%s: "):format(D.L[D.LOC.CTRL],		D.L[D.LOC.HLP_LEFTCLICK]),
-	'text2', D.L[BINDING_NAME_DCRPRSHOW]
-	);
-	cat:AddLine(
-	'text', ("%s-%s: "):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_LEFTCLICK]),
-	'text2', D.L[BINDING_NAME_DCRSKSHOW]
-	);
-	cat:AddLine(
-	'text', ("%s-%s: " ):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-	'text2', D.L[BINDING_NAME_DCRSHOW]
-	);
-
-	if (D.profile.debugging) then
-	    local HistoryIndex = 1;
-	    local cat2 = D.T:AddCategory(
-	    'text', "Debugging info",
-	    'columns', 2,
-	    'child_textR', 0.8,
-	    'child_textG', 1,
-	    'child_textB', 0.8,
-	    'child_textR2', 0.7,
-	    'child_textG2', 0.6,
-	    'child_textB2', 0.5,
-	    'child_justify1', 'LEFT',
-	    'child_justify2', 'LEFT'
-	    );
-
-	    cat2:AddLine(
-	    'text', "Afflicted units count:",
-	    'text2',  D.ForLLDebuffedUnitsNum
-	    );
-
-	    cat2:AddLine(
-	    'text', "Afflicted units count in range:",
-	    'text2',  D.MicroUnitF.UnitsDebuffedInRange
-	    );
-
-	    cat2:AddLine(
-	    'text', "Max Concurrent update events:",
-	    'text2',  D.Status.MaxConcurentUpdateDebuff
-	    );
-
-
-	    cat2:AddLine(
-	    'text', "Debuff seen history:",
-	    'text2',  " "
-	    );
-
-	    while HistoryIndex < 10 do
-		cat2:AddLine(
-		'text', HistoryIndex,
-		'text2',  (D:Debuff_History_Get (HistoryIndex, true))
-		);
-
-		HistoryIndex = HistoryIndex + 1;
-
-	    end
-
-	end
-
-
-    end
 
     D.MFContainer = DcrMUFsContainer;
     D.MicroUnitF.Frame = D.MFContainer;
@@ -464,20 +378,14 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = true,
 	    Pet = true,
 	},
-
-    };
-
-    -- specific WotLK spells:
-    if DC.WotLK then
-
-	-- shamans
-	DC.SpellsToUse[DS[D.LOC.CLEANSE_SPIRIT]] = {
+	[DS[D.LOC.CLEANSE_SPIRIT]]		    = {
 	    Types = {DC.CURSE, DC.DISEASE, DC.POISON},
 	    IsBest = true,
 	    Pet = false,
-	};
+	},
 
-    end
+    };
+
 
     -- Thanks to Korean localization team of WoW we have to make an exception....
     -- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
@@ -761,6 +669,9 @@ function D:OnProfileEnable()
     D.DcrFullyInitialized = true;
     D:ShowHideButtons(true);
 
+
+    D:SetMinimapIcon();
+
     -- code for backward compatibility
     if     ((not next(D.profile.PrioGUIDtoNAME)) and #D.profile.PriorityList ~= 0)
 	or ((not next(D.profile.SkipGUIDtoNAME)) and #D.profile.SkipList ~= 0) then
@@ -769,13 +680,14 @@ function D:OnProfileEnable()
     end
 
     D:GetUnitArray();
+
 end
 
 function D:OnDisable() -- When the addon is disabled by ACE
     D.Status.Enabled = false;
     D.DcrFullyInitialized = false;
     
-    D:SetIcon("Interface\\AddOns\\" .. D.folderName .. "\\iconOFF.tga");
+    D:SetIcon("Interface\\AddOns\\Decursive\\iconOFF.tga");
     if ( D.profile.ShowDebuffsFrame) then
 	D.MFContainer:Hide();
     end

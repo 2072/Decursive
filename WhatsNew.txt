@@ -1,4 +1,14 @@
-Decursive 2.3.0 RC2 by Archarodim  (2008-10-16)
+Decursive 2.3.0 RC3 by Archarodim  (2008-10-18)
+
+
+Changes from Decursive 2.3.0 RC2 to Decursive 2.3.0 RC3
+
+- Removed FubarPlugin-2.0 library (use "Broker2FuBar" to have Decursive in Fubar)
+- Added LibDataBroker-1.1 and LibDBIcon-1.0 libraries.
+- Removed compatibility code for WoW 2.4.
+- Moved and renamed localization files to a proper directory.
+- New option: "MiniMap Icon" to toggle the display of Decursive Icon around the MiniMap.
+- Fixes a NIL error when an outsider friendly target got stealth.
 
 
 Changes from Decursive 2.3 beta 3 to Decursive 2.3.0 RC2

@@ -21,8 +21,8 @@
 --]]
 -------------------------------------------------------------------------------
 
-if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -278,6 +278,8 @@ L:RegisterTranslations("koKR", function() return {
 	[LOC.OPT_XSPACING_DESC] = "MUF 사이의 수평 간격을 설정하니다.",
 	[LOC.OPT_YSPACING] = "수직 간격",
 	[LOC.OPT_YSPACING_DESC] = "MUF 사이의 수직 간격을 설정합니다.",
+    [LOC.OPT_SHOWMINIMAPICON] = LOC.OPT_SHOWMINIMAPICON,
+    [LOC.OPT_SHOWMINIMAPICON_DESC] = LOC.OPT_SHOWMINIMAPICON_DESC,
 
 
 	[LOC.HLP_LL_ONCLICK_TEXT] = "실시간 목록을 클릭하는 것은 WoW 2.0 이후 사용할 수 없습니다. Decursive 폴더에 위치한 \"Readme.txt\" 읽어 보세요...\n(해당 목록을 이동하려면 /dcrshow 혹은 ALT-좌-클릭하세요.)",
@@ -326,4 +328,4 @@ L:RegisterTranslations("koKR", function() return {
 
 -- // }}}
 
-DcrLoadedFiles["localization.kr.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["koKR.lua"] = "@file-abbreviated-hash@";

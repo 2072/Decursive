@@ -26,16 +26,17 @@ DcrCorrupted	 = false;
 DcrLoadedFiles = {
     ["Dcr_DIAG.lua"]		= false,
     ["DCR_init.lua"]		= false,
+    ["Dcr_LDB.lua"]		= false,
     ["Dcr_utils.lua"]		= false,
 
-    ["localization.lua"]	= false,
-    ["localization.fr.lua"]	= false,
-    ["localization.de.lua"]	= false,
-    ["localization.tw.lua"]	= false,
-    ["localization.es.lua"]	= false,
-    ["localization.kr.lua"]	= false,
-    ["localization.cn.lua"]	= false,
-    ["localization.ru.lua"]	= false,
+    ["enUS.lua"]	= false,
+    ["frFR.lua"]	= false,
+    ["deDE.lua"]	= false,
+    ["zhTW.lua"]	= false,
+    ["esES.lua"]	= false,
+    ["koKR.lua"]	= false,
+    ["zhCN.lua"]	= false,
+    ["ruRU.lua"]	= false,
     
     ["Dcr_opt.lua"]		= false,
     ["Dcr_Events.lua"]		= false,
@@ -97,12 +98,13 @@ do
 	    ["Dewdrop-2.0"]		= 90000 + 320,
 	    ["Waterfall-1.0"]		= 90000 + 125,
 	    ["Tablet-2.0"]		= 90000 + 216,
-	    ["FuBarPlugin-2.0"]		= 90000 + 3,
 	}; -- }}}
 
 	--LibStub:GetLibrary
 	local UseLibStub = {
 	    ["LibBabble-Class-3.0"] = 90000 + 45,
+	    ["LibDataBroker-1.1"] = 3,
+	    ["LibDBIcon-1.0"] = 3,
 	};
 
 	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";

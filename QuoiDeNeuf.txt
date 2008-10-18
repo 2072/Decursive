@@ -1,4 +1,15 @@
-Decursive 2.3.0 RC2 par Archarodim  (2008-10-16)
+Decursive 2.3.0 RC3 par Archarodim  (2008-10-18)
+
+
+Changements entre Decursive 2.3.0 RC2 et Decursive 2.3.0 RC3
+
+
+- Suppression de la librairie FubarPlugin-2.0 (utiliser "Broker2FuBar" pour retrouver Decursive dans Fubar)
+- Ajout des librairies LibDataBroker-1.1 et LibDBIcon-1.0
+- Suppression du code de compatibilité avec WoW 2.4
+- Déplacement et re-nommage des fichiers de localisation vers un dossier plus approprié.
+- Nouvelle option : "Icône Minicarte" pour activer ou activer l'icône de Decursive autour de la MiniCarte.
+- Corrige une erreur "NIL" si une cible amicale extérieure se camoufle.
 
 
 Changements entre Decursive 2.3 beta 3 et Decursive 2.3.0 RC2

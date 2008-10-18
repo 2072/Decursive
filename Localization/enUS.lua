@@ -306,6 +306,9 @@ LOC.OPT_XSPACING_DESC = "Set the Horizontal space between MUFs";
 LOC.OPT_YSPACING = "Vertical spacing";
 LOC.OPT_YSPACING_DESC = "Set the Vertical space between MUFs";
 
+LOC.OPT_SHOWMINIMAPICON = "Minimap Icon";
+LOC.OPT_SHOWMINIMAPICON_DESC = "Toggle the minimap icon.";
+
 
 
 LOC.HLP_LL_ONCLICK_TEXT = "Clicking on the live-list is useless since WoW 2.0. You should read the FAQ in the \"Readme.txt\" file located in Decursive folder...\n(To move this list move the Decursive bar, /dcrshow and left-alt-click to move)";
@@ -625,6 +628,8 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.OPT_XSPACING_DESC]		 = true,
     [LOC.OPT_YSPACING]		 = true,
     [LOC.OPT_YSPACING_DESC]		 = true,
+    [LOC.OPT_SHOWMINIMAPICON]		 = true,
+    [LOC.OPT_SHOWMINIMAPICON_DESC]	 = true,
 
 
     [LOC.HLP_LL_ONCLICK_TEXT] = true,
@@ -679,4 +684,4 @@ L:RegisterTranslations("enUS", function() return {
 -- // }}}
 
 
-DcrLoadedFiles["localization.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["enUS.lua"] = "@file-abbreviated-hash@";

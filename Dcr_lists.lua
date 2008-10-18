@@ -94,18 +94,6 @@ function D.PrioSkipListFrame_OnUpdate() --{{{
 	end
 	-- D:Debug("PrioSkipListFrame_OnUpdate executed", size, this.ScrollFrame.offset);
 
-	if not DC.WotLK then
-	    if (size < 11 ) then
-		this.ScrollFrame.offset = 0;
-	    else
-		if (this.ScrollFrame.offset <= 0) then
-		    this.ScrollFrame.offset = 0;
-		elseif (this.ScrollFrame.offset >= (size - 10)) then
-		    this.ScrollFrame.offset = (size - 10);
-		end
-	    end
-	end
-
 	local i;
 	for i = 1, 10 do
 	    local id = ""..i;

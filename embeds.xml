@@ -15,7 +15,9 @@
 <Script file="libs\Dewdrop-2.0\Dewdrop-2.0.lua" />
 <Script file="Libs\Waterfall-1.0\Waterfall-1.0.lua" />
 <Script file="libs\Tablet-2.0\Tablet-2.0.lua" />
-<Script file="libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua" />
+
+<Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua" />
+<Script file="libs\LibDBIcon-1.0\LibDBIcon-1.0.lua" />
 
 
 </Ui>

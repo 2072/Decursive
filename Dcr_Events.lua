@@ -380,10 +380,10 @@ do
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
 		    if DC.IsStealthBuff[arg10] then
 			if AuraEvents[event] == 1 then
-			    self.Stealthed_Units[UnitID] = true;
+			    self.Stealthed_Units["target"] = true;
 			else
-			    D:Debug("TARGET STEALTH LOST: ", UnitID, buffName);
-			    self.Stealthed_Units[UnitID] = false;
+			    D:Debug("TARGET STEALTH LOST: ", "target", buffName);
+			    self.Stealthed_Units["target"] = false;
 			end
 		    end
 		end

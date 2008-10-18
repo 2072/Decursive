@@ -21,8 +21,8 @@
 --]]
 -------------------------------------------------------------------------------
 
-if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -258,6 +258,8 @@ L:RegisterTranslations("esES", function() return {
     [LOC.OPT_XSPACING_DESC] = LOC.OPT_XSPACING_DESC,
     [LOC.OPT_YSPACING] = LOC.OPT_YSPACING,
     [LOC.OPT_YSPACING_DESC] = LOC.OPT_YSPACING_DESC,
+    [LOC.OPT_SHOWMINIMAPICON] = LOC.OPT_SHOWMINIMAPICON,
+    [LOC.OPT_SHOWMINIMAPICON_DESC] = LOC.OPT_SHOWMINIMAPICON_DESC,
 
 
     [LOC.HLP_LL_ONCLICK_TEXT] = LOC.HLP_LL_ONCLICK_TEXT,
@@ -305,4 +307,4 @@ L:RegisterTranslations("esES", function() return {
 
 -- // }}}
 
-DcrLoadedFiles["localization.es.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["esES.lua"] = "@file-abbreviated-hash@";

@@ -21,8 +21,8 @@
 --]]
 -------------------------------------------------------------------------------
 
-if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -34,6 +34,7 @@ local L  = D.L;
 local BC = D.BC;
 local DC = DcrC;
 local DS = DC.DS;
+local icon = LibStub("LibDBIcon-1.0", true)
 
 local pairs		= _G.pairs;
 local ipairs		= _G.ipairs;
@@ -185,6 +186,9 @@ D.defaults = { -- {{{
 
     -- allow to changes the default output window
     OutputWindow = "DEFAULT_CHAT_FRAME", -- ACEDB CRASHES if we set it directly
+
+
+    MiniMapIcon = {hide=true},
 
     -- Are we using the macro?
     UseMacro = true,
@@ -1378,13 +1382,32 @@ D.options = { -- {{{
 	    end,
 	    order = 154
 	},
-	--[[FuBarOptions = {
-	    type = "group",
-	    name = L[D.LOC.MENU],
-	    desc = L[D.LOC.MENU],
-	    order = 402,
-	    args = {}
-	},--]]
+	spacer9 = {
+	    type = "header",
+	    order = 155
+	},
+	spacer10 = {
+	    type = "header",
+	    order = 156
+	},
+	minimap = {
+	    type = "toggle",
+	    name = L[D.LOC.OPT_SHOWMINIMAPICON],
+	    desc = L[D.LOC.OPT_SHOWMINIMAPICON_DESC],
+	    get = function() return not D.profile.MiniMapIcon.hide end,
+	    set = function(v)
+		local hide = not v;
+		D.profile.MiniMapIcon.hide = hide;
+		if hide then
+		    icon:Hide("Decursive");
+		else
+		    icon:Show("Decursive");
+		end
+	    end,
+	    hidden = function() return not icon end,
+	    order = 157,
+	},
+	
     },
 } -- }}}
 

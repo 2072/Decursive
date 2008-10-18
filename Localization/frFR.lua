@@ -22,8 +22,8 @@
 -------------------------------------------------------------------------------
 
 
-if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     message("Decursive installation is corrupted!");
     return;
@@ -273,6 +273,9 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.OPT_XSPACING_DESC] = "Règle l'espacement horizontale entre les micro-portraits",
     [LOC.OPT_YSPACING] = "Espacement verticale",
     [LOC.OPT_YSPACING_DESC] = "Règle l'espacement verticale entre les micro-portraits",
+    
+    [LOC.OPT_SHOWMINIMAPICON] = "Icône Minicarte",
+    [LOC.OPT_SHOWMINIMAPICON_DESC] = "Active/Désactive l'icône de la minicarte",
 
     [LOC.HLP_LEFTCLICK] = "Clic Gauche",
     [LOC.HLP_RIGHTCLICK] = "Clic Droit",
@@ -323,4 +326,4 @@ L:RegisterTranslations("frFR", function() return {
 
 } end);
 
-DcrLoadedFiles["localization.fr.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["frFR.lua"] = "@file-abbreviated-hash@";

@@ -22,8 +22,8 @@
 -------------------------------------------------------------------------------
 
 
-if not DcrLoadedFiles or not DcrLoadedFiles["localization.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (localization.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
+    if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     message("Decursive installation is corrupted!");
     return;
@@ -274,6 +274,8 @@ L:RegisterTranslations("ruRU", function() return {
 [LOC.OPT_XSPACING_DESC] = "Установка расстояния по горизонтали между МФИ",
 [LOC.OPT_YSPACING] = "Расстояние по вертикале",
 [LOC.OPT_YSPACING_DESC] = "Установка расстояния по вертикале между МФИ",
+    [LOC.OPT_SHOWMINIMAPICON] = LOC.OPT_SHOWMINIMAPICON,
+    [LOC.OPT_SHOWMINIMAPICON_DESC] = LOC.OPT_SHOWMINIMAPICON_DESC,
 
 
 
@@ -331,4 +333,4 @@ L:RegisterTranslations("ruRU", function() return {
 } end);
 
 
-DcrLoadedFiles["localization.ru.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["ruRU.lua"] = "@file-abbreviated-hash@";
