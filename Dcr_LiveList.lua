@@ -341,6 +341,10 @@ local DebuffedUnitsNumber = 0;
 local _;
 function LiveList:Update_Display() -- {{{
 
+    if not D.DcrFullyInitialized  then
+	return;
+    end
+
     -- Update the unit array
     if (D.Groups_datas_are_invalid) then
 	D:GetUnitArray();
@@ -465,7 +469,7 @@ end -- }}}
 function LiveList:DisplayTestItem() -- {{{
     if not self.TestItemDisplayed then
 	self.TestItemDisplayed = true;
-	D:DummyDebuff(self.Status.Unit_Array_GUIDToUnit[UnitGUID("player")], "Test item");
+	D:DummyDebuff(D.Status.Unit_Array_GUIDToUnit[UnitGUID("player")], "Test item");
     end
 end -- }}}
 
