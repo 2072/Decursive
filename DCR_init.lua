@@ -485,20 +485,6 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	DecursiveTextFrame:SetTimeVisible(D.CONF.TEXT_LIFETIME);
 
 
-	-- add support Earth panel (need to be checked I don't even know what Earth Panel is...) {{{
-	if(EarthFeature_AddButton) then
-	    EarthFeature_AddButton(
-	    {
-		id = "Decursive";
-		name = BINDING_HEADER_DECURSIVE;
-		subtext = L[D.LOC.OPTION_MENU];
-		tooltip = L[BINDING_NAME_DCRSHOW];
-		icon = DC.IconON;
-		callback = D.ShowHidePriorityListUI;
-	    }
-	    );
-	end -- }}}
-
 	-- hook the load macro thing {{{
 	-- So Decursive will re-update its macro when the macro UI is closed
 	hooksecurefunc("ShowMacroFrame", function ()
@@ -601,8 +587,8 @@ function D:OnProfileEnable()
 	D.Status.Combat = true;
     end
 
-    D.profile = D.db.profile; -- D.db has a metatable for __index so to avoid the call of a function each time we access a config data we set this shortcut.
-    D.classprofile = D.db.class;
+    D.profile = D.db.profile; -- shortcut
+    D.classprofile = D.db.class; -- shortcut
 
     if type (D.profile.OutputWindow) == "string" then
 	D.Status.OutputWindow = getglobal(D.profile.OutputWindow);
@@ -621,44 +607,37 @@ function D:OnProfileEnable()
 	D:tcopy(D.profile.skipByClass["WARRIOR"], D.defaults.skipByClass["WARRIOR"]);
     end
 
+    -- some usefull constants
+    DC.MyClass = (select(2, UnitClass("player")));
+    DC.MyName = (self:UnitName("player"));
+    DC.MyGUID = (UnitGUID("player"));
 
-    D:Init();
+    D:Init(); -- initialize Dcr core (set frames display, scans available cleansing spells)
 
 
     D.MicroUnitF.MaxUnit = D.profile.DebuffsFrameMaxCount;
 
 
     D.Groups_datas_are_invalid = true;
-    D:CreateDropDownFiltersMenu();
+    D:CreateDropDownFiltersMenu(); -- create per class filters menus
 
-    D:CreateDropDownMUFcolorsMenu();
-    D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors);
+    D:CreateDropDownMUFcolorsMenu(); -- create MUF color configuration menus
+    D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors); -- set the colors as set in the profile
 
-    D.MicroUnitF:ResetAllPositions ();
+    D.MicroUnitF:ResetAllPositions (); -- reset all anchors
 
 
     D.Status.Enabled = true;
 
-    D.MicroUnitF:Delayed_Force_FullUpdate();
-    D.MicroUnitF:Delayed_MFsDisplay_Update();
-    D:AutoHideShowMUFs();
 
-    -- set Fubar Icon
+    -- set Icon
     if not D.Status.HasSpell or D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
 	D:SetIcon(DC.IconOFF);
     else
 	D:SetIcon(DC.IconON);
     end
 
-    -- initialize the unit array to get all the variable existing
-    -- even if the Live-list and the MUFs are disabled... (some people are strange)
-    
-    DC.MyClass = (select(2, UnitClass("player")));
-    DC.MyName = (self:UnitName("player"));
-    DC.MyGUID = (UnitGUID("player"));
-    
-
-    -- put the updater events at the end of the init so there is no chance they could be called before everything is ready
+    -- put the updater events at the end of the init so there is no chance they could be called before everything is ready (even if LUA is not multi-threaded... just to stay logical )
     if not D.profile.Hide_LiveList then
 	self:ScheduleRepeatingEvent("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     end
@@ -666,9 +645,14 @@ function D:OnProfileEnable()
     if D.profile.ShowDebuffsFrame then
 	self:ScheduleRepeatingEvent("Dcr_MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
     end
-    D.DcrFullyInitialized = true;
-    D:ShowHideButtons(true);
 
+    D.DcrFullyInitialized = true; -- everything should be OK
+    D:ShowHideButtons(true);
+    D:AutoHideShowMUFs();
+
+
+    D.MicroUnitF:Delayed_MFsDisplay_Update(); -- schedule an update of the MUFs display (number of MUF)
+    D.MicroUnitF:Delayed_Force_FullUpdate(); -- schedule all attributes of exixting MUF to update
 
     D:SetMinimapIcon();
 
@@ -679,7 +663,7 @@ function D:OnProfileEnable()
 	D:ClearSkipList();
     end
 
-    D:GetUnitArray();
+    D:GetUnitArray(); -- get the unit array
 
 end
 
@@ -750,7 +734,6 @@ function D:Init() --{{{
 
     -- set Alpha
     DecursiveMainBar:SetAlpha(D.profile.LiveListAlpha);
-    --DcrLiveList:SetAlpha(D.profile.LiveListAlpha);
     -- }}}
 
     if (D.profile.MacroBind == "NONE") then

@@ -74,16 +74,12 @@ function D:UNIT_PET (Unit) -- {{{
 
     -- when a pet changes somwhere, we update the unit array.
 
-    if not D.profile.Scan_Pets then
-	return;
-    end
-
     D:Debug("Pet changed for: ", Unit);
-    if (Unit ~= "focus" and self.Status.Unit_Array_UnitToGUID[Unit]) then
+    if (D.profile.Scan_Pets and Unit ~= "focus" and self.Status.Unit_Array_UnitToGUID[Unit]) then
 	D.Groups_datas_are_invalid = true;
+	self.MicroUnitF:Delayed_MFsDisplay_Update();
     end
 
-    self.MicroUnitF:Delayed_MFsDisplay_Update();
 
     -- If the player's pet changed then we should check it for interesting spells
     if ( Unit == "player" ) then

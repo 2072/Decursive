@@ -211,7 +211,7 @@ end
 function MicroUnitF:MFsDisplay_Update () -- {{{
 
     if (not D.profile.ShowDebuffsFrame) then
-	return false;
+	return false; -- XXX we will have to call this function again when we show the MUFs
     end
 
     -- This function cannot do anything if we are fighting
@@ -346,7 +346,7 @@ end -- }}}
 
 function MicroUnitF:Delayed_Force_FullUpdate ()
     if (D.profile.ShowDebuffsFrame) then
-	D:ScheduleEvent("Dcr_Force_FullUpdate", self.Force_FullUpdate, 0.2, self);
+	D:ScheduleEvent("Dcr_Force_FullUpdate", self.Force_FullUpdate, 0.3, self);
     end
 end
 

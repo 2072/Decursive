@@ -1624,6 +1624,7 @@ function D:ShowHideDebuffsFrame ()
 	D.MFContainer:SetScale(D.profile.DebuffsFrameElemScale);
 	D.MicroUnitF:Place ();
 	D.profile.ShowDebuffsFrame = true;
+	D.MicroUnitF:Delayed_MFsDisplay_Update ();
 
 	local i = 0;
 
@@ -1641,7 +1642,7 @@ function D:ShowHideDebuffsFrame ()
 	D:ScheduleRepeatingEvent("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
     end
 
-    -- set Fubar Icon
+    -- set Icon
     if not D.Status.HasSpell or D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
 	D:SetIcon(DC.IconOFF);
     else
