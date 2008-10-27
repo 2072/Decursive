@@ -481,7 +481,7 @@ end --}}}
 
 
 function D:IsInPriorList (GUID) --{{{
-    return Status.InternalPrioList[GUID] or false;
+    return self.Status.InternalPrioList[GUID] or false;
 
 --[=[
     for _, PriorName in pairs(D.profile.PrioGUIDtoNAME) do
@@ -494,7 +494,7 @@ function D:IsInPriorList (GUID) --{{{
 end --}}}
 
 function D:IsInSkipList (name) --{{{
-    return Status.InternalSkipList[GUID] or false;
+    return self.Status.InternalSkipList[GUID] or false;
 --[=[
     for _, SkipName in pairs(D.profile.SkipGUIDtoNAME) do
 	if (SkipName == name) then
