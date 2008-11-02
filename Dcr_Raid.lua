@@ -209,7 +209,7 @@ do
 	local GUID = UnitGUID(unit) or false;
 
 	self[unit] = GUID;
-	GUIDToUnit[GUID] = unit; -- XXX is this legal?
+	GUIDToUnit[GUID] = unit;
 
 	if (D.profile.debugging) then
 	    if not GUID then

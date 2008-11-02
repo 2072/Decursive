@@ -722,6 +722,7 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 	    elseif RequestedPrio and D.Status.HasSpell then
 --		D:Print("XXX ClickedMF SET");
 		D.Status.ClickedMF = this.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
+		D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
 		D:Debuff_History_Add(this.Object.Debuffs[1].Name, this.Object.Debuffs[1].TypeName);
 	    end
 	end
