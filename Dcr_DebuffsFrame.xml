@@ -140,6 +140,6 @@
 
 
     <Script>
-	DcrLoadedFiles["Dcr_DebuffsFrame.xml"] = "@file-abbreviated-hash@";
+	DcrLoadedFiles["Dcr_DebuffsFrame.xml"] = "@project-version@";
     </Script>
 </Ui>

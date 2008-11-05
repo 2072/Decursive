@@ -326,4 +326,4 @@ L:RegisterTranslations("frFR", function() return {
 
 } end);
 
-DcrLoadedFiles["frFR.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["frFR.lua"] = "@project-version@";

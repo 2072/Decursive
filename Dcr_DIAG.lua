@@ -109,7 +109,7 @@ do
 	};
 
 	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
-	local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your Ace add-ons properly.";
+	local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your add-ons properly.";
 
 	local ErrorFound = false;
 	local Errors = {};
@@ -152,13 +152,31 @@ do
 	end
 
 	-- check if all Decursive files are loaded
+	local mixedFileVersionsdetection = {};
+	local MixedVersionsCount = 0;
 	if not FatalOccured then
 	    for k,v in pairs (DcrLoadedFiles) do
+		if not mixedFileVersionsdetection[v] then
+		    mixedFileVersionsdetection[v] = k;
+		    MixedVersionsCount = MixedVersionsCount + 1;
+		end
+
 		if not v then
-		    table.insert(Errors, ("The Decursive file |cFF00FF00%s|r could not be loaded!!!\n"):format(k));
+		    table.insert(Errors, ("The Decursive file |cFF00FF00%s|r could not be loaded!\n"):format(k));
 		    FatalOccured = true;
 		end
 	    end
+	end
+
+	if MixedVersionsCount > 1 then
+	    -- some mixed files were detected
+	    local MixedDetails = "|cFFFF5599The versions of these files differ|r:\n\n";
+	    for k,v in pairs (mixedFileVersionsdetection) do
+		MixedDetails = ("%s%s --> %s\n"):format(MixedDetails, v, k);
+	    end
+
+	    table.insert(Errors, ("Decursive installation is corrupted, mixed versions detected!\n\n%s\n"):format(MixedDetails));
+	    FatalOccured = true;
 	end
 
 	if #Errors > 0 then
@@ -243,4 +261,4 @@ do
 end
 
 
-DcrLoadedFiles["Dcr_DIAG.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_DIAG.lua"] = "@project-version@";

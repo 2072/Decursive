@@ -2230,5 +2230,5 @@ function D:AutoHideShowMUFs ()
     end
 end
 
-DcrLoadedFiles["Dcr_opt.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_opt.lua"] = "@project-version@";
 

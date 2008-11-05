@@ -1,4 +1,26 @@
-Decursive 2.3.0 RC4 by Archarodim  (2008-10-22)
+Decursive 2.3.0 by Archarodim  (2008-11-05)
+
+Changes from Decursive 2.3.0 RC7 to Decursive 2.3.0
+
+- Added mixed file version check to the self-diagnostic.
+- Fix LUA error introduced in RC7.
+
+Changes from Decursive 2.3.0 RC4 to Decursive 2.3.0 RC7
+
+- Fix a LUA error when PrioList members where excluded from blacklisting and a
+  blacklisting event fired (target not in line of sight etc...)
+- Cleanse Spirit Shaman spell seems to be cast two times instead of once in
+  certain conditions (Blizzard issue), Decursive was displaying spell failure
+  error because of that. This is fixed.
+- Fixes pet spells detection when pet scanning was disabled (this issue was
+  introduced in 2.3 beta 2)
+- The MUF auto-hide option was not setting itself correctly at initialisation
+  (init order issue)
+- Showing the MUFs didn't trigger an update of its display this could result in
+  missing units when using the auto-hide option or if the MUF frame was hidden...
+- Removed "support" for Earth Panel because I don't know what it is and nor
+  does Google...
+- Added and fixed a few comments
 
 
 Changes from Decursive 2.3.0 RC2 to Decursive 2.3.0 RC4

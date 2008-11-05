@@ -400,7 +400,15 @@ do
 
 		--self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
 		self:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
-		self:ScheduleEvent("Dcr_clickedMFreset", function() D.Status.ClickedMF.SPELL_CAST_SUCCESS = false; D.Status.ClickedMF = false; D:Debug("ClickedMF to false (sched)"); end, 0.1 );
+		self:ScheduleEvent("Dcr_clickedMFreset",
+		function()
+		    if D.Status.ClickedMF then
+			D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
+			D.Status.ClickedMF = false;
+			D:Debug("ClickedMF to false (sched)");
+		    end
+		end, 0.1 );
+
 		self.Status.ClickedMF.SPELL_CAST_SUCCESS = true;
 
 	    end
@@ -614,7 +622,7 @@ end
 --]=]
 -- }}}
 
-DcrLoadedFiles["Dcr_Events.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_Events.lua"] = "@project-version@";
 
 
 

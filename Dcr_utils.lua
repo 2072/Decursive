@@ -336,4 +336,4 @@ do
 
 end
 
-DcrLoadedFiles["Dcr_utils.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_utils.lua"] = "@project-version@";

@@ -322,4 +322,4 @@ L:RegisterTranslations("zhTW", function() return {
 
 } end);
 
-DcrLoadedFiles["zhTW.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["zhTW.lua"] = "@project-version@";

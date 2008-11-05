@@ -307,4 +307,4 @@ L:RegisterTranslations("esES", function() return {
 
 -- // }}}
 
-DcrLoadedFiles["esES.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["esES.lua"] = "@project-version@";

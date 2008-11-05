@@ -310,4 +310,4 @@ L:RegisterTranslations("deDE", function() return {
 
 } end);
 
-DcrLoadedFiles["deDE.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["deDE.lua"] = "@project-version@";

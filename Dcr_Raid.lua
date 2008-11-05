@@ -711,4 +711,4 @@ end
 --}}}
 
 -------------------------------------------------------------------------------
-DcrLoadedFiles["Dcr_Raid.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_Raid.lua"] = "@project-version@";

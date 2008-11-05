@@ -159,6 +159,6 @@
 
     
     <Script>
-	DcrLoadedFiles["Dcr_LiveList.xml"] = "@file-abbreviated-hash@";
+	DcrLoadedFiles["Dcr_LiveList.xml"] = "@project-version@";
     </Script>
 </Ui>

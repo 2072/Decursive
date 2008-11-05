@@ -307,6 +307,6 @@
     <Frame name="Decursive" />
 
     <Script>
-	DcrLoadedFiles["Decursive.xml"] = "@file-abbreviated-hash@";
+	DcrLoadedFiles["Decursive.xml"] = "@project-version@";
     </Script>
 </Ui>

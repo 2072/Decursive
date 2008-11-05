@@ -1049,6 +1049,6 @@ D.Revision = "@project-abbreviated-hash@";
 D.date = "@project-date-iso@";
 D.version = "@project-version@";
 
-DcrLoadedFiles["DCR_init.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["DCR_init.lua"] = "@project-version@";
 
 -------------------------------------------------------------------------------

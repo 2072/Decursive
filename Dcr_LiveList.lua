@@ -501,4 +501,4 @@ function LiveList:Onclick() -- {{{
     D:Println(L[D.LOC.HLP_LL_ONCLICK_TEXT]);
 end -- }}}
 
-DcrLoadedFiles["Dcr_LiveList.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_LiveList.lua"] = "@project-version@";

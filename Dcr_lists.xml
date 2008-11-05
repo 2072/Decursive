@@ -866,6 +866,6 @@
 
     
     <Script>
-	DcrLoadedFiles["Dcr_lists.xml"] = "@file-abbreviated-hash@";
+	DcrLoadedFiles["Dcr_lists.xml"] = "@project-version@";
     </Script>
 </Ui>

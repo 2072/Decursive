@@ -333,4 +333,4 @@ L:RegisterTranslations("ruRU", function() return {
 } end);
 
 
-DcrLoadedFiles["ruRU.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["ruRU.lua"] = "@project-version@";

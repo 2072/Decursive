@@ -328,4 +328,4 @@ L:RegisterTranslations("koKR", function() return {
 
 -- // }}}
 
-DcrLoadedFiles["koKR.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["koKR.lua"] = "@project-version@";

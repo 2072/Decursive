@@ -308,5 +308,5 @@ L:RegisterTranslations("zhCN", function() return {
 
 } end);
 
-DcrLoadedFiles["zhCN.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["zhCN.lua"] = "@project-version@";
 

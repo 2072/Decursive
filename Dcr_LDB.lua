@@ -208,4 +208,4 @@ function D:SetMinimapIcon()
     icon:Register("Decursive", LDB, D.profile.MiniMapIcon);
 end
 
-DcrLoadedFiles["Dcr_LDB.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_LDB.lua"] = "@project-version@";

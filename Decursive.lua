@@ -739,4 +739,4 @@ end
 -- }}}
 
 
-DcrLoadedFiles["Decursive.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Decursive.lua"] = "@project-version@";

@@ -582,4 +582,4 @@ function D:PopulateButtonPress() --{{{
 
 end --}}}
 
-DcrLoadedFiles["Dcr_lists.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_lists.lua"] = "@project-version@";

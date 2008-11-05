@@ -1435,4 +1435,4 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "@file-abbreviated-hash@";
+DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "@project-version@";

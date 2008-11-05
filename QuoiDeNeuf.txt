@@ -1,4 +1,25 @@
-Decursive 2.3.0 RC4 par Archarodim  (2008-10-21)
+Decursive 2.3.0 par Archarodim  (2008-11-05)
+
+
+Changements entre Decursive 2.3.0 RC7 et Decursive 2.3.0
+
+- Ajout d'un test de mélange de versions à l'auto-diagnostique.
+- Correction d'une erreur LUA introduit dans la RC7
+
+
+Changements entre Decursive 2.3.0 RC4 et Decursive 2.3.0 RC7
+
+- Correction d'une erreur LUA quand les membres de la liste de priorité était
+  exclu du blacklistage et qu'un évènement de blaklistage se produisait.
+- Le nouveau sort des shaman "Purifier l'esprit" semble se lancer deux fois
+  dans certaines conditions (Prob`leme Blizzard). Decursive affichait des
+  messages d'echec à cause de ça. Cela a été corrigé.
+- Les sorts des familiers n'était pas correctement détectés si la estion de ces
+  derniers était désactivée. (bug introduit en 2.3b2)
+- La fonction 'masquer automatiquement' des micro-portraits ne se réglée pas
+  correctement à l'initialisation.
+- Lorsque les micro-portraits s'affichaient après avoir étaient masqués leur
+  nombres n'était pas mis à jour.
 
 
 Changements entre Decursive 2.3.0 RC2 et Decursive 2.3.0 RC3
