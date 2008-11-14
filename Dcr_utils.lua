@@ -326,8 +326,12 @@ do
 	if RAID_CLASS_COLORS then
 	    local class, colors;
 	    for class in pairs(RAID_CLASS_COLORS) do
-		D:GetClassHexColor(class);
-		D:GetClassColor(class);
+		if not class:find(" ") then -- thank to a wonderful add-on that adds the wrong translation "Death Knight" to the global RAID_CLASS_COLORS....
+		    D:GetClassHexColor(class);
+		    D:GetClassColor(class);
+		else
+		    RAID_CLASS_COLORS[class] = nil; -- Eat that!
+		end
 	    end
 	else
 	    D:Error("global RAID_CLASS_COLORS does not exist...");
