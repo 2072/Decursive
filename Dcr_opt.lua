@@ -314,6 +314,8 @@ D.defaults = { -- {{{
 	    [DS[D.LOC.CRIPLES]]            = true,
 	    [DS[D.LOC.DUSTCLOUD]]         = true,
 	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	},
+	["DEATHKNIGHT"] = {
 	}
     }
     -- }}}

@@ -323,15 +323,15 @@ do
 
 
     function D:CreateClassColorTables ()
-    if RAID_CLASS_COLORS then
-	local class, colors;
-	for class in pairs(RAID_CLASS_COLORS) do
-	    D:GetClassHexColor(class);
-	    D:GetClassColor(class);
+	if RAID_CLASS_COLORS then
+	    local class, colors;
+	    for class in pairs(RAID_CLASS_COLORS) do
+		D:GetClassHexColor(class);
+		D:GetClassColor(class);
+	    end
+	else
+	    D:Error("global RAID_CLASS_COLORS does not exist...");
 	end
-    else
-	D:Error("global RAID_CLASS_COLORS does not exist...");
-    end
     end
 
 end
