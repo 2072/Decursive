@@ -332,6 +332,10 @@ do
 	if destName and AuraEvents[event] then
 
 	    if (self.Groups_datas_are_invalid) then
+		if not self.DcrFullyInitialized then
+		    self:Println("|cFFFF0000Could not process event: init uncomplete!|r");
+		    return;
+		end
 		self:GetUnitArray();
 	    end
 

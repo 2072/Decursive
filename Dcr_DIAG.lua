@@ -102,7 +102,7 @@ do
 
 	--LibStub:GetLibrary
 	local UseLibStub = {
-	    ["LibBabble-Class-3.0"] = 90000 + 45,
+	    ["LibBabble-Class-3.0"] = 90000 + 48,
 	    ["LibDataBroker-1.1"] = 3,
 	    ["LibDBIcon-1.0"] = 3,
 	    ["CallbackHandler-1.0"] = 3,
