@@ -296,7 +296,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    MF.Debuff1Prio		  = false;
 	    MF.PrevDebuff1Prio		  = false;
 	    D.UnitDebuffed[MF.CurrUnit]	  = false; -- used by the live-list only
-	    D.Stealthed_Units["MF.CurrUnit"] = false;
+	    D.Stealthed_Units[MF.CurrUnit] = false; -- XXX there were Quotes: "MF.CurrUnit"
 
 
 	    MF.Shown = false;
@@ -466,6 +466,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 	D:Debug("XXXXX ==> UpdateMUFUnit: Unitid was nil!");
     end
 
+
     -- Update the unit array (GetUnitArray() will do something only if necessary)
     D:GetUnitArray();
 
@@ -473,8 +474,6 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 
     if (D.Status.Unit_Array_UnitToGUID[Unitid]) then
 	unit = Unitid;
---    elseif (Unitid == "focus") then
---	unit = "focus";
     else
 	D:Debug("Unit %s, not in raid or party!", Unitid);
 	return;
@@ -482,6 +481,16 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 
     -- get the MUF object
     local MF = self.UnitToMUF[unit];
+
+    -- sanity test: test if UnitToMUF[] == getattributeUnit
+    if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
+	D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit.\nReport this to ARCHARODIM@TEASER.fR");
+    end
+
+    -- sanity test: test if unit == CurrUnit
+    if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
+	D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit.\nReport this to ARCHARODIM@TEASER.fR");
+    end
 
     if (MF and MF.Shown) then
 	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
@@ -513,6 +522,10 @@ function MicroUnitF:OnEnter() -- {{{
     local Unit = MF.CurrUnit; -- shortcut
     local TooltipText = "";
 
+    -- sanity test: test if UnitToMUF[] == getattributeUnit
+    if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
+	D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:OnEnter() Cattrib ~= CurrUnit.\nReport this to ARCHARODIM@TEASER.fR");
+    end
    
     -- Compare the current unit name to the one storred when the group data were collected
     --if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then -- XXX Unit_Array_UnitToName not reliable
@@ -687,7 +700,7 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 	local Unit = this.Object.CurrUnit; -- shortcut
 
 	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
-	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF(%s)! MOn='%s', Un='%s', UpT=%d\n report this to archarodim@teaser.fr|r",Unit, (UnitName("mouseover")), (UnitName(Unit)), (GetTime() - DC.StartTime));
+	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF(%s)! MOn='%s', Un='%s', UpT=%d\nReport this to ARCHARODIM@TEASER.FR|r",Unit, (UnitName("mouseover")), (UnitName(Unit)), (GetTime() - DC.StartTime));
 
 	    --	     this.Object:UpdateAttributes(Unit);
 
@@ -862,7 +875,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 	    MF:SetDebuffs();
 	    --D:Debug("Debuff set for ", MF.ID);
 	    if CheckStealth then
-		D.Stealthed_Units[Unit] = D:CheckUnitStealth(Unit); -- update stealth status
+		D.Stealthed_Units[MF.CurrUnit] = D:CheckUnitStealth(MF.CurrUnit); -- update stealth status
 --		D:Debug("MF:Update(): Stealth status checked as requested.");
 	    end
 	end

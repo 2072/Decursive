@@ -345,6 +345,11 @@ do
 
 	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
+		if UnitGUID(UnitID) ~= destGUID then
+		    D:Println("|cFFFF0000ALERT:|rSanity check failed in combat event manager Unit_Array_GUIDToUnit[] is wrong.\nReport this to ARCHARODIM@TEASER.fR");
+		    return;
+		end
+
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
 		    if DC.IsStealthBuff[arg10] then
 			if AuraEvents[event] == 1 then
