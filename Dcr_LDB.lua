@@ -49,7 +49,7 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
 	end,
 	text = "Decursive",
 	
-	icon = DC.IconON,
+	icon = DC.IconOFF,
 });
 
 
@@ -205,7 +205,13 @@ function D:SetIcon (icon)
 end
 
 function D:SetMinimapIcon()
-    icon:Register("Decursive", LDB, D.profile.MiniMapIcon);
+    if not icon:IsRegistered("Decursive") then
+	icon:Register("Decursive", LDB, D.profile.MiniMapIcon);
+    end
+end
+
+function D:HideMiniMapIcon()
+    icon:Hide();
 end
 
 DcrLoadedFiles["Dcr_LDB.lua"] = "@project-version@";

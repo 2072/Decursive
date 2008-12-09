@@ -179,7 +179,7 @@ D.UnitDebuffed = {};
 
 -- add support for FuBar
 D.independentProfile	= true; -- for Fubar
-D.hasIcon	    	= DC.IconON;
+D.hasIcon	    	= DC.IconOFF;
 D.hasNoColor		= true;
 D.overrideMenu		= true;
 D.defaultMinimapPosition = 250;
@@ -672,6 +672,7 @@ function D:OnDisable() -- When the addon is disabled by ACE
     D.DcrFullyInitialized = false;
     
     D:SetIcon("Interface\\AddOns\\Decursive\\iconOFF.tga");
+
     if ( D.profile.ShowDebuffsFrame) then
 	D.MFContainer:Hide();
     end

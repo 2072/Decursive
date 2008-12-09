@@ -1396,7 +1396,7 @@ D.options = { -- {{{
 	    type = "toggle",
 	    name = L[D.LOC.OPT_SHOWMINIMAPICON],
 	    desc = L[D.LOC.OPT_SHOWMINIMAPICON_DESC],
-	    get = function() return not D.profile.MiniMapIcon.hide end,
+	    get = function() return not D.profile.MiniMapIcon or not D.profile.MiniMapIcon.hide end,
 	    set = function(v)
 		local hide = not v;
 		D.profile.MiniMapIcon.hide = hide;
@@ -1407,6 +1407,7 @@ D.options = { -- {{{
 		end
 	    end,
 	    hidden = function() return not icon end,
+	    disabled = function() return  not D.Status.Enabled end,
 	    order = 157,
 	},
 	
