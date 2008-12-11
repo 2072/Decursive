@@ -118,8 +118,31 @@ end -- }}}
 
 
 
+local FocusPrevious_ElligStatus = false;
 function D:PLAYER_FOCUS_CHANGED () -- {{{
 
+    -- we need to rescan if the focus is not in our group and it's nice or if we already have a focus unit registered
+ 
+    local FocusCurrent_ElligStatus = (
+	not self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")]    -- it's not already in the unit array
+	) and ( UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player"))) -- and it is (or used to) be nice
+
+
+    if not FocusCurrent_ElligStatus then FocusCurrent_ElligStatus = false; end -- avoid the difference between nil and false...
+
+    if FocusCurrent_ElligStatus~=FocusPrevious_ElligStatus or self.Status.Unit_Array_UnitToGUID["focus"] then
+	self.Groups_datas_are_invalid = true;
+	self:Debug("Groups set to invalid due to focus update", FocusPrevious_ElligStatus, FocusCurrent_ElligStatus);
+
+	if FocusCurrent_ElligStatus~=FocusPrevious_ElligStatus then -- if the focus is no longer valid, we need to update things
+	    self.MicroUnitF:Delayed_MFsDisplay_Update();
+	end
+
+	FocusPrevious_ElligStatus = FocusCurrent_ElligStatus;
+
+    end
+
+--[=[
     local Status = self.Status;
 
     Status.Unit_Array_UnitToGUID["focus"] = UnitGUID("focus");
@@ -164,7 +187,7 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 	Status.last_focus_GUID = UnitGUID("focus");
 	self:Debug("Focus changed");
     end
-
+--]=]
 
 end -- }}}
 
@@ -230,9 +253,21 @@ end --}}}
 -- This let us park command we can't execute while in combat to execute them later {{{
     -- the called function must return a non false value when it does something to prevent UI lagging
 function D:AddDelayedFunctionCall(CallID,functionLink, ...)
+
+--	D:Println("|cFFFF0000ALERT:|r XXX test %s (%s)",  select("#",...), CallID);
+    
     if (not self.Status.DelayedFunctionCalls[CallID]) then 
 	self.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};
 	self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount + 1;
+    elseif select("#",...) > 1 then -- if we had more than the function reference and its object
+--	D:Println("|cFFFF0000ALERT:|r XXX used (%s)", CallID);
+
+	local args = self.Status.DelayedFunctionCalls[CallID].args;
+
+	for i=1,select("#",...), 1 do
+	    args[i]=select(i, ...);
+	end
+
     end
 end -- }}}
 
@@ -346,7 +381,7 @@ do
 	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
 		if UnitGUID(UnitID) ~= destGUID then
-		    D:Println("|cFFFF0000ALERT:|rSanity check failed in combat event manager Unit_Array_GUIDToUnit[] is wrong.\nReport this to ARCHARODIM@TEASER.fR");
+		    D:Println("|cFFFF0000ALERT:|rSanity check failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s is not %s (flag=%s)).\nReport this to ARCHARODIM@TEASER.FR", UnitID, destGUID,destFlags);
 		    return;
 		end
 

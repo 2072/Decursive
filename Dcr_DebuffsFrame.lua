@@ -482,14 +482,16 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     -- get the MUF object
     local MF = self.UnitToMUF[unit];
 
-    -- sanity test: test if UnitToMUF[] == getattributeUnit
-    if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
-	D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit.\nReport this to ARCHARODIM@TEASER.fR");
-    end
+    if MF then
+	-- sanity test: test if UnitToMUF[] == getattributeUnit
+	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
+	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit (%s - %s).\nReport this to ARCHARODIM@TEASER.fR", MF.CurrUnit, MF.Shown);
+	end
 
-    -- sanity test: test if unit == CurrUnit
-    if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
-	D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit.\nReport this to ARCHARODIM@TEASER.fR");
+	-- sanity test: test if unit == CurrUnit -- XXX this is the one
+	if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
+	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).\nReport this to ARCHARODIM@TEASER.FR", unit, MF.CurrUnit, MF.Shown);
+	end
     end
 
     if (MF and MF.Shown) then
@@ -903,8 +905,8 @@ do
 	if (D.Status.Combat) then
 	    if not DoNotDelay then
 		D:AddDelayedFunctionCall (
-		"MicroUnit_" .. self.ID, self.UpdateAttributes,
-		self, Unit);
+		"MicroUnit_" .. self.ID,		-- UID
+		self.UpdateAttributes, self, Unit);	-- function call
 	    end
 	    return false;
 	end
@@ -922,7 +924,6 @@ do
 	    -- coherent with what is displayed when groups are changed during a
 	    -- fight
 	    MicroUnitF.UnitToMUF[Unit] = self;
-
 	    self.CurrUnit = Unit;
 
 	    self:SetClassBorder();
@@ -1275,6 +1276,7 @@ do
     end -- }}}
 
     function MicroUnitF.prototype:SetClassBorder()
+	--D:Debug("SetClassBorder called ", D.Status.Unit_Array_UnitToGUID[self.CurrUnit] , self.UnitGUID);
 	ReturnValue = false;
 	if (D.profile.DebuffsFrameElemBorderShow and (D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID or (not self.UnitClass and UnitExists(self.CurrUnit)))) then
 

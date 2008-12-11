@@ -49,6 +49,7 @@ local pairs		    = _G.pairs;
 local ipairs		    = _G.ipairs;
 local type		    = _G.type;
 local select		    = _G.select;
+local UnitIsFriend	    = _G.UnitIsFriend;
 local UnitCanAttack	    = _G.UnitCanAttack;
 local GetNumRaidMembers	    = _G.GetNumRaidMembers;
 local GetNumPartyMembers    = _G.GetNumPartyMembers;
@@ -374,7 +375,7 @@ do
 	  Priority list:    1,000,000 till 100,000,000
 	  Group indexes:    10,000, 20,000, 30,000, till 80,000
 	  class indexes:    1,000, 2,000, 3,000, till 10,000
-	  default indexes:  100 to 800 (palyer's index will be 900)
+	  default indexes:  100 to 800 (player's index will be 900)
 	  pet indexes:	    Same as above but * -1
 
 	  We make additions, exemple:
@@ -671,6 +672,16 @@ do
 
 	end -- END if we are in a raid
 
+	-- NEW focus management
+	-- there is a focus and its not hostile in the first place
+	if UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player")) then
+	    pGUID = UnitToGUID["focus"]
+	    -- the unit is not registered somewhere else yet
+	    if not Status.Unit_Array_GUIDToUnit[pGUID] then
+		AddToSort("focus", pGUID, -100000000); -- add it at the end...
+		Status.Unit_Array_GUIDToUnit[pGUID] = "focus";
+	    end
+	end
 
 	-- we use a hash-key style table for Status.Unit_Array_GUIDToUnit because it allows us
 	-- to not care if we add a same unit several times (speed optimization)
@@ -691,10 +702,12 @@ do
 	end);
 
 
+	--[=[
 	if UnitExists("focus") then
 	    self.Status.last_focus_GUID = false;
 	    D:PLAYER_FOCUS_CHANGED();
 	end
+	--]=]
 
 	Status.UnitNum = #Status.Unit_Array;
 
