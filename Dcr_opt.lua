@@ -1631,8 +1631,8 @@ function D:ShowHideDebuffsFrame ()
 
 	local i = 0;
 
-	for ID, MF in pairs(D.MicroUnitF.ExistingPerID) do
-	    if MF.IsDebuffed then
+	for Unit, MF in pairs(D.MicroUnitF.ExistingPerUNIT) do
+	    if MF.IsDebuffed and MF.Shown then
 		D:ScheduleEvent("Dcr_updMUF"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, MF.CurrUnit, "Test item");
 		i = i + 1;
 	    end

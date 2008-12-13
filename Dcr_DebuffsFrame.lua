@@ -49,7 +49,8 @@ local BOOKTYPE_PET	= BOOKTYPE_PET;
 local BOOKTYPE_SPELL	= BOOKTYPE_SPELL;
 
 -- Init object factory defaults
-MicroUnitF.ExistingPerID	    = {};
+--MicroUnitF.ExistingPerID	    = {};
+MicroUnitF.ExistingPerUNIT	    = {};
 MicroUnitF.ExistingPerNum	    = {};
 MicroUnitF.UnitToMUF		    = {};
 MicroUnitF.Number		    = 0;
@@ -135,38 +136,38 @@ function MicroUnitF:ToString() -- {{{
 end -- }}}
 
 -- The Factory for MicroUnitF objects
-function MicroUnitF:Create(ID, Unit) -- {{{
+function MicroUnitF:Create(Unit, ID) -- {{{
 
     if (D.Status.Combat) then
 	-- if we are fighting, postpone the call
 	D:AddDelayedFunctionCall (
-	"Create"..ID, self.Create,
-	ID, Unit);
+	"Create"..Unit, self.Create,
+	Unit, ID);
 	return false;
     end
 
     -- if we attempt to create a MUF that already exists, update it instead
-    if (self.ExistingPerID[ID]) then
-	self.ExistingPerID[ID]:UpdateAttributes(Unit);
-	-- D:errln("Cannot create %s: already exists", ID);
-	return self.ExistingPerID[ID];
+    if (self.ExistingPerUNIT[Unit]) then
+	return self.ExistingPerUNIT[Unit];
     end
 
     self.Number = self.Number + 1;
 
     -- create a new MUF object
-    self.ExistingPerID[ID] = self:new(D.MFContainer, ID, Unit, self.Number);
+    self.ExistingPerUNIT[Unit] = self:new(D.MFContainer, Unit, self.Number, ID);
 
-    -- (currently ID is the same than Number)
-    self.ExistingPerNum[self.Number] = self.ExistingPerID[ID];
+    self.ExistingPerNum[self.Number] = self.ExistingPerUNIT[Unit];
 
-    return self.ExistingPerID[ID];
+    return self.ExistingPerUNIT[Unit];
 end -- }}}
 
 -- return a MUF object if it exists, nil otherwise
+--[=[
 function MicroUnitF:Exists(IdOrNum) -- {{{
     return self.ExistingPerID[IdOrNum] or self.ExistingPerNum[IdOrNum];
-end -- }}}
+end
+--]=]
+-- }}}
 
 -- return the number MUFs we can use
 function MicroUnitF:MFUsableNumber () -- {{{
@@ -175,16 +176,28 @@ end -- }}}
 
 -- this is used when a setting influencing MUF's position is changed
 function MicroUnitF:ResetAllPositions () -- {{{
-    local MicroFrame = false;
+
+    if (D.Status.Combat) then
+	D:AddDelayedFunctionCall (
+	"ResetAllPositions", self.ResetAllPositions,
+	self);
+	return false;
+    end
+
+    local MF, i;
 
     D:Debug("Resetting all MF position");
 
-    for i=1, self.Number do
+    D:GetUnitArray();
 
-	MicroFrame = self.ExistingPerID[i].Frame;
+    local Unit_Array = D.Status.Unit_Array;
 
-	MicroFrame:SetPoint(unpack(self:GiveMFAnchor(i)));
+    for i=1, #Unit_Array do
+	MF = self.ExistingPerUNIT[ Unit_Array[i] ]
 
+	if MF then
+	    MF.Frame:SetPoint(unpack(self:GiveMFAnchor(i)));
+	end
     end
 end -- }}}
 
@@ -242,12 +255,12 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
     local MF_f = false;
     local MF = false;
-
-    --  D:Debug("self.Number = %d", self.Number);
-
-    local start;
+    local i = 1;
     local Old_UnitShown = self.UnitShown;
 
+
+    --[=[
+    local start;
     -- if there are more MUFs than the actual unit number
     if self.UnitShown > NumToShow then
 	start = NumToShow + 1;
@@ -257,34 +270,30 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     else
 	start = NumToShow;
     end
+    --]=]
 
-    D:Debug("Update required: NumToShow = %d, starting at: %d", NumToShow, start);
+    D:Debug("Update required: NumToShow = %d", NumToShow);
 
-    for i=start, self.Number do
+    local Unit_Array_UnitToGUID = D.Status.Unit_Array_UnitToGUID;
 
-	if self.ExistingPerID[i] then
-	    MF = self.ExistingPerID[i];
-	    MF_f = MF.Frame;
-	else
-	    -- this should not happen
-	    D:Debug("%s (positionned at %d) does not has a frame yet", D.Status.Unit_Array[i], i);
-	    break;
-	end
+    for Unit, MF in  pairs(self.ExistingPerUNIT) do -- see all the MUF we ever created and show or hide them if there corresponding unit exists
 
-	-- show/hide and update position if necessary
-	if (i <= NumToShow and not MF.Shown) then
+	MF_f = MF.Frame;
 
-	    MF_f:SetPoint(unpack(self:GiveMFAnchor(i)));
+	-- show/hide
+	if (Unit_Array_UnitToGUID[Unit] and not MF.Shown) then -- we got this unit in our group but its is hidden
+
+	    --MF_f:SetPoint(unpack(self:GiveMFAnchor(i)));
 	    MF_f:Show();
 	    MF.Shown = true;
 	    self.UnitShown = self.UnitShown + 1;
+	    MF.ID = 0; -- will force its position to be rset by the roaming updater
 
 	    -- Schedule an update for the MUF we just shown
-	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i), MF, false, false, true);
-	    --D:Debug("Showing %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * (NumToShow + 1 - i));
+	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
+	    i = i + 1;
 
-	elseif (i > NumToShow and MF.Shown) then
-	    --D:Debug("Hidding %d", i);
+	elseif (not Unit_Array_UnitToGUID[Unit] and MF.Shown) then -- we don't have this unit but its MUF is shown
 
 	    -- clear debuff before hiding to avoid leaving 'ghosts' behind...
 	    if D.UnitDebuffed[MF.CurrUnit] then
@@ -296,18 +305,20 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    MF.Debuff1Prio		  = false;
 	    MF.PrevDebuff1Prio		  = false;
 	    D.UnitDebuffed[MF.CurrUnit]	  = false; -- used by the live-list only
-	    D.Stealthed_Units[MF.CurrUnit] = false; -- XXX there were Quotes: "MF.CurrUnit"
+	    D.Stealthed_Units[MF.CurrUnit] = false;
 
 
 	    MF.Shown = false;
 	    self.UnitShown = self.UnitShown - 1;
-	    D:Debug("Hiding %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * (i - NumToShow));
-	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (i - NumToShow), MF, false, false);
+	    D:Debug("Hiding %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * i);
+	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false);
 	    MF_f:Hide();
+	    i = i + 1;
 	end
 
     end
 
+    -- manage to get what we show in the screen
     if self.UnitShown > 0 and Old_UnitShown ~= self.UnitShown then
 
 	local FirstLineNum = 0;
@@ -368,17 +379,16 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
     D.Status.SpellsChanged = GetTime(); -- will force an update of all MUFs attributes
 
-    for i=1, self.Number do
-	if self.ExistingPerID[i] then
-	    MF = self.ExistingPerID[i];
-	    MF.UnitStatus = 0; -- reset status to force SetColor to update
-	    MF.TooltipUpdate = 0; -- force help tooltip to update
-	    --MF_f = MF.Frame;
+    local i = 1;
+    for Unit, MF in  pairs(self.ExistingPerUNIT) do
+	MF.UnitStatus = 0; -- reset status to force SetColor to update
+	MF.TooltipUpdate = 0; -- force help tooltip to update
+	--MF_f = MF.Frame;
 
-	    MF.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
+	MF.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
 
-	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
-	end
+	D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
+	i = i + 1;
     end
 end -- }}}
 
@@ -484,7 +494,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 
     if MF then
 	-- sanity test: test if UnitToMUF[] == getattributeUnit
-	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
+	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true
 	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit (%s - %s).\nReport this to ARCHARODIM@TEASER.fR", MF.CurrUnit, MF.Shown);
 	end
 
@@ -607,7 +617,7 @@ function MicroUnitF:OnEnter() -- {{{
 	end
 
 	-- we use it to anchor the tooltip
-	local FirstMUF = self.ExistingPerNum[1].Frame;
+	local FirstMUF = self.ExistingPerUNIT[ D.Status.Unit_Array[1] ].Frame;
 
 	-- finally display the tooltip
 	D:DisplayTooltip( TooltipText , FirstMUF, DefaultTTAnchor);
@@ -751,10 +761,10 @@ end -- }}}
 
 -- MicroUnitF NON STATIC METHODS {{{
 -- init a new micro frame (Call internally by :new() only)
-function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
+function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 	MicroUnitF.super.prototype.init(self); -- needed
 
-	D:Debug("Initializing MicroUnit object '%s' with FrameNum=%d", ID, FrameNum);
+	D:Debug("Initializing MicroUnit object '%s' with FrameNum=%d", Unit, FrameNum);
 
 
 	-- set object default variables
@@ -765,7 +775,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.Debuff1Prio	= false;
 	self.PrevDebuff1Prio	= false;
 	self.IsDebuffed		= false;
-	self.CurrUnit		= "";
+	self.CurrUnit		= false;
 	self.UnitName		= false;
 	self.UnitGUID		= false;
 	self.UnitClass		= false;
@@ -782,45 +792,45 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self.PrevChrono		= false;
 
 	-- create the frame
-	self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..ID, self.Parent, "DcrMicroUnitTemplateSecure");
+	self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..Unit, self.Parent, "DcrMicroUnitTemplateSecure");
 
 	-- outer texture (the class border)
 	-- Bottom side
-	self.OuterTexture1 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Bottom", "BORDER");
+	self.OuterTexture1 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Bottom", "BORDER");
 	self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
 	self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
 
 	-- left side
-	self.OuterTexture2 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Left", "BORDER");
+	self.OuterTexture2 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Left", "BORDER");
 	self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
 	self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
 
 	-- top side
-	self.OuterTexture3 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Top", "BORDER");
+	self.OuterTexture3 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Top", "BORDER");
 	self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
 	self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 
 	-- right side
-	self.OuterTexture4 = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Right", "BORDER");
+	self.OuterTexture4 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Right", "BORDER");
 	self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 	self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
 
 
 	-- global texture
-	self.Texture = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Back", "ARTWORK");
+	self.Texture = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Back", "ARTWORK");
 	self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.Texture:SetHeight(16);
 	self.Texture:SetWidth(16);
 
 	-- inner Texture (Charmed special texture)
-	self.InnerTexture = self.Frame:CreateTexture("DcrMicroUnit"..ID.."Charmed", "OVERLAY");
+	self.InnerTexture = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Charmed", "OVERLAY");
 	self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
 	self.InnerTexture:SetHeight(7);
 	self.InnerTexture:SetWidth(7);
 	self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
 	-- Chrono Font string
-	self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..ID.."Chrono", "OVERLAY", "DcrMicroUnitChronoFont");
+	self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..Unit.."Chrono", "OVERLAY", "DcrMicroUnitChronoFont");
 	self.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
 
 	-- a reference to this object
@@ -834,6 +844,7 @@ function MicroUnitF.prototype:init(Container,ID, Unit, FrameNum) -- {{{
 	self:UpdateAttributes(Unit);
 
 	-- once the MF frame is set up, schedule an event to show and place it
+	self.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(ID)));
 	MicroUnitF:Delayed_MFsDisplay_Update();
 end -- }}}
 
@@ -842,9 +853,12 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 
     local MF = self;
     -- get the unit this MUF should show
-    local Unit = D.Status.Unit_Array[MF.ID]; -- get the unit the MUF _should_ be attached to.
+    -- local Unit = D.Status.Unit_Array[MF.ID]; -- get the unit the MUF _should_ be attached to.
     local ActionsDone = 0;
 
+	    Unit = MF.CurrUnit;
+
+    --[=[
     if not Unit then -- This unit no longer exists (number of MUF higher than number of units)
 	--D:Debug("No Unit for MUF #", MF.ID);
 	if MF.CurrUnit ~= "" then -- There is a unit attached to this MUF
@@ -854,6 +868,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 	    return 0 -- This MUF has no purpose at all then...
 	end
     end
+    --]=]
 
     -- The unit is the same but the name isn't... (check for class change)
     if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID then
@@ -863,13 +878,14 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     end
 
     -- Update the frame attributes if necessary (Spells priority or unit id changes)
-    if (D.Status.SpellsChanged ~= MF.LastAttribUpdate or MF.CurrUnit ~= Unit) then
+    if (D.Status.SpellsChanged ~= MF.LastAttribUpdate ) then --or MF.CurrUnit ~= Unit) then -- XXX
 	--D:Debug("Attributes update required: ", MF.ID);
 	if (MF:UpdateAttributes(Unit, true)) then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
 	    SkipSetColor = false; SkipDebuffs = false; -- if some attributes were updated then update the rest
 	end
     end
+
 
     if (not SkipSetColor) then
 	if (not SkipDebuffs) then
@@ -905,7 +921,7 @@ do
 	if (D.Status.Combat) then
 	    if not DoNotDelay then
 		D:AddDelayedFunctionCall (
-		"MicroUnit_" .. self.ID,		-- UID
+		"MicroUnit_" .. Unit,			-- UID
 		self.UpdateAttributes, self, Unit);	-- function call
 	    end
 	    return false;
@@ -915,14 +931,15 @@ do
 
 	ReturnValue = false;
 
-	-- if the unit changed
-	if (self.CurrUnit ~= Unit) then 
-	    --self.Frame:SetAttribute("unit", "player"); -- XXX test if the unit really changes without this line
+	-- if the unit is noy set
+	if (not self.CurrUnit) then
 	    self.Frame:SetAttribute("unit", Unit);
 
 	    -- UnitToMUF[] can only be set when out of fight so it remains
 	    -- coherent with what is displayed when groups are changed during a
 	    -- fight
+	    
+	
 	    MicroUnitF.UnitToMUF[Unit] = self;
 	    self.CurrUnit = Unit;
 
@@ -1339,8 +1356,10 @@ do
 	    self:GetUnitArray();
 	end
 
-	NumToShow = ((MicroUnitF.MaxUnit > self.Status.UnitNum) and self.Status.UnitNum or MicroUnitF.MaxUnit);
-	--NumToShow = MicroUnitF:MFUsableNumber();
+	local Unit_Array = self.Status.Unit_Array;
+
+	--NumToShow = ((MicroUnitF.MaxUnit > self.Status.UnitNum) and self.Status.UnitNum or MicroUnitF.MaxUnit);
+	NumToShow = self.Status.UnitNum;
 
 	ActionsDone = 0; -- used to limit the maximum number of consecutive UI actions
 
@@ -1355,7 +1374,7 @@ do
 	    end
 
 	    -- get a unit
-	    Unit = self.Status.Unit_Array[MicroFrameUpdateIndex];
+	    Unit = Unit_Array[MicroFrameUpdateIndex];
 
 	    -- should never fire unless the player choosed to ignore everything or something is wrong somewhere in the code
 	    if not Unit then
@@ -1364,15 +1383,21 @@ do
 	    end
 
 	    -- get its MUF
-	    MF = MicroUnitF.ExistingPerID[MicroFrameUpdateIndex];
-	    --MF = MicroUnitF:Exists(MicroFrameUpdateIndex);
+	    MF = MicroUnitF.ExistingPerUNIT[Unit];
 
 	    -- if no MUF then create it (All MUFs are created here)
 	    if (not MF) then
 		if (not self.Status.Combat) then
-		    MF = MicroUnitF:Create(MicroFrameUpdateIndex, Unit);
+		    MF = MicroUnitF:Create(Unit, MicroFrameUpdateIndex);
 		    ActionsDone = ActionsDone + 1;
 		end
+	    end
+
+	    -- place the MUF where it belongs
+	    if MF and MF.ID ~= MicroFrameUpdateIndex and not self.Status.Combat then
+		MF.ID = MicroFrameUpdateIndex;
+		MF.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(MicroFrameUpdateIndex)));
+		ActionsDone = ActionsDone + 1;
 	    end
 
 	    -- update the MUF attributes and its colors XXX -- this is done by an event handler now (buff/debuff received...)

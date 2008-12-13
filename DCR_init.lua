@@ -624,7 +624,6 @@ function D:OnProfileEnable()
     D:CreateDropDownMUFcolorsMenu(); -- create MUF color configuration menus
     D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors); -- set the colors as set in the profile
 
-    D.MicroUnitF:ResetAllPositions (); -- reset all anchors
 
 
     D.Status.Enabled = true;
@@ -664,6 +663,7 @@ function D:OnProfileEnable()
     end
 
     D:GetUnitArray(); -- get the unit array
+    D.MicroUnitF:ResetAllPositions (); -- reset all anchors
 
 end
 
