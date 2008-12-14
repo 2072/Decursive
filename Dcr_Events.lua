@@ -381,7 +381,7 @@ do
 	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
 		if UnitGUID(UnitID) ~= destGUID then
-		    D:Println("|cFFFF0000ALERT:|rSanity check failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s is not %s (flag=%s)).\nReport this to ARCHARODIM@TEASER.FR", UnitID, destGUID,destFlags);
+		    D:Println("|cFFFF0000ALERT:|rSanity check failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
 		    return;
 		end
 

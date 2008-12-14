@@ -65,6 +65,7 @@ local str_upper		    = _G.string.upper;
 local MAX_RAID_MEMBERS	    = _G.MAX_RAID_MEMBERS;
 local setmetatable	    = _G.setmetatable;
 local rawget		    = _G.rawget;
+local GetTime		    = _G.GetTime;
 -------------------------------------------------------------------------------
 
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
@@ -713,7 +714,7 @@ do
 
 	UnitToGUID = {};
 	GUIDToUnit = {};
-
+	D.Status.GroupUpdatedOn = GetTime();
 
 	self:Debug ("|cFFFF44FF-->|r Update complete!");
 	return;

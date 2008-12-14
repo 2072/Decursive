@@ -581,6 +581,7 @@ function D:OnProfileEnable()
     D.Status.MaxConcurentUpdateDebuff = 0;
     D.Status.PrioChanged = true;
     D.Status.last_focus_GUID = false;
+    D.Status.GroupUpdatedOn = 0;
 
     -- if we log in and we are already fighting...
     if (InCombatLockdown()) then
