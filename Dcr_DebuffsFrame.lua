@@ -616,11 +616,11 @@ function MicroUnitF:OnEnter() -- {{{
 	    end
 	end
 
-	-- we use it to anchor the tooltip
-	local FirstMUF = self.ExistingPerUNIT[ D.Status.Unit_Array[1] ].Frame;
+	-- The tooltip is anchored above the first MUF
+	local FirstMUFAnchor = self:GiveMFAnchor(1); DefaultTTAnchor[2] = FirstMUFAnchor[2]; DefaultTTAnchor[3] = FirstMUFAnchor[3];
 
 	-- finally display the tooltip
-	D:DisplayTooltip( TooltipText , FirstMUF, DefaultTTAnchor);
+	D:DisplayTooltip( TooltipText , self.Frame, DefaultTTAnchor);
     end
 
     -- show a help text in the Game default tooltip
@@ -790,6 +790,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 	self.LitTime		= false;
 	self.Chrono		= false;
 	self.PrevChrono		= false;
+	self.Shown		= true;
 
 	-- create the frame
 	self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..Unit, self.Parent, "DcrMicroUnitTemplateSecure");

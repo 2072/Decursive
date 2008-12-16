@@ -243,12 +243,13 @@ do
 	local numRaidMembers = GetNumRaidMembers();
 	local unit = false;
 
-	if (numRaidMembers == 0) then
-	    if GUID == UnitToGUID["player"] then
-		unit = "player";
-	    elseif GUID == UnitToGUID["pet"] then
-		unit = "pet";
-	    elseif GetNumPartyMembers() > 0 then
+
+	if GUID == UnitToGUID["player"] then
+	    unit = "player";
+	elseif GUID == UnitToGUID["pet"] then
+	    unit = "pet";
+	elseif (numRaidMembers == 0) then
+	    if GetNumPartyMembers() > 0 then
 		if GUID == UnitToGUID["party1"] then
 		    unit = "party1";
 		elseif GUID == UnitToGUID["party2"] then
@@ -304,8 +305,8 @@ do
 	    if D.profile.debugging then
 		D:errln("GUIDToUnit_mt: no unit for: ", GUID);
 	    end
-	else
-	    D:Debug("GUIDToUnit_mt used for ", GUID, unit);
+	--else
+	--    D:Debug("GUIDToUnit_mt used for ", GUID, unit);
 	end
 
 	self[GUID] = unit;
@@ -618,18 +619,18 @@ do
 
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyGUID, currentGroup, DC.ClassUNameToNum[DC.MyClass])) then
-		local PlayerRID = GUIDToUnit[MyGUID]; -- might return false at log-in
-		if PlayerRID then
-		    AddToSort( PlayerRID, MyGUID, 900);
-		    Status.Unit_Array_GUIDToUnit[MyGUID] = PlayerRID;
-		else
+		--local PlayerRID = GUIDToUnit[MyGUID]; -- might return false at log-in
+		--if PlayerRID then
+		--    AddToSort( PlayerRID, MyGUID, 900);
+		--    Status.Unit_Array_GUIDToUnit[MyGUID] = PlayerRID;
+		--else
 		    --message(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
 			--MyName, currentGroup, (GetTime() - DC.StartTime), raidnum));
 
 		    AddToSort( "player", MyGUID, 900);
 		    Status.Unit_Array_GUIDToUnit[MyGUID] =  "player";
 
-		end
+		--end
 	    end
 
 	    -- Now we have a cache without the units we want to skip

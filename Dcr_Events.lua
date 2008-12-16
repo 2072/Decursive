@@ -142,52 +142,6 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 
     end
 
---[=[
-    local Status = self.Status;
-
-    Status.Unit_Array_UnitToGUID["focus"] = UnitGUID("focus");
-
-    if Status.Unit_Array[#Status.Unit_Array] == "focus" -- focus has an entry in our unit array
-	and (not UnitExists("focus") -- but it doesn't exist anymore
-	or UnitCanAttack("focus", "player") -- or it has become nasty (focus was changed to an enemy target)
-	or Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] ~= "focus" ) then -- or it is already in our group under a different unit name...
-
-
-	table.remove(Status.Unit_Array, #Status.Unit_Array);
-	Status.UnitNum = #Status.Unit_Array;
-	
-	Status.Unit_Array_GUIDToUnit[Status.last_focus_GUID] = nil;
-
-	self.MicroUnitF:Delayed_MFsDisplay_Update();
-
-	self:Debug("Focus removed");
-	return;
-
-    elseif Status.Unit_Array[#Status.Unit_Array] ~= "focus" -- focus is not in our unit array
-	and UnitExists("focus") and not UnitCanAttack("focus", "player") -- it exists and she is nice
-	and not Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] then -- and it's not part of our unit array already
-
-	table.insert(Status.Unit_Array, "focus");
-	Status.UnitNum = #Status.Unit_Array;
-
-	Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
-
-
-	Status.last_focus_GUID = UnitGUID("focus");
-
-	self.MicroUnitF:Delayed_MFsDisplay_Update();
-	self:Debug("Focus Added");
-    elseif UnitExists("focus") and not Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] then -- the focus was changed but not to a unit in our unit array
-
-	Status.Unit_Array_GUIDToUnit[Status.last_focus_GUID] = nil;
-	Status.Unit_Array_GUIDToUnit[UnitGUID("focus")] = "focus";
-
-	self.MicroUnitF:UpdateMUFUnit("focus", true);
-
-	Status.last_focus_GUID = UnitGUID("focus");
-	self:Debug("Focus changed");
-    end
---]=]
 
 end -- }}}
 
@@ -378,11 +332,26 @@ do
 
 	    --D:Print("? (source=%s) (dest=|cFF00AA00%s|r -- %X): |cffff0000%s|r", sourceName, destName, destFlags, event);
 
+
+	    -- we don't use the following test because it's unecessary, if a unit is missing, it'll be scanned on addition anyway...
+	    --if not UnitID and band (destFlags, OUTSIDER) ~= OUTSIDER then -- we don't have a unit but the flags say it's in our group...
+	    --end
+
 	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
 		if UnitGUID(UnitID) ~= destGUID then
-		    D:Println("|cFFFF0000ALERT:|rSanity check failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
-		    return;
+
+		    self.Groups_datas_are_invalid = true;
+		    self:GetUnitArray();
+		    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID];
+
+		    if UnitGUID(UnitID) ~= destGUID then
+			D:Println("|cFFFF0000ALERT:|rSanity check(2nd) failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
+			return;
+		    --else
+			--D:Println("|cFFFF5500ALERT:|r Recovered sucessfully in combat event manager!");
+
+		    end
 		end
 
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
@@ -497,178 +466,5 @@ do
 
 end
 
-
--- unused deprecated event handlers {{{
---[=[
-    -- match (value, mask, Verify_exclude)  {{{
-    local function match (value, mask, Verify_exclude) 
-
-	if band(value, mask) == mask then
-	    if not Verify_exclude or value == band(value, Verify_exclude) then
-		return true;
-	    end
-	end
-
-	return false;
-
-    end --}}}
-
-	    -- unused specific tests {{{
-	    --elseif	(match(destFlags, PET, PET_MASK)) and self.profile.Scan_Pets then -- PET
-	    --	D:Print("A pet got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
-	    --	D:Print(destName, arg10, arg12);
-
-
-	    --   elseif	(match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)) then -- MIND CONTROLLED
-	    --	D:Print("Mind controled player got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
-	    --	D:Print("%s ", destName, arg10, arg12);
-	    --  end
-
-	    -- if		band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND  then -- FOCUSED FRIEND
-	    --	D:Print("focused NPC got something (source=%s) (dest=|cFF00AA00%s|r -- %x): %s", sourceName, destName, destFlags, event);
-	    --	D:Print(destName, arg10, arg12);
-	    --  end
-	    --  }}}
-
-	    
-	    --[[if	match(destFlags, PLAYER, PLAYER_MASK)
-		-- or match(destFlags, MIND_CONTROLED_PLAYER, MIND_CONTROLED_PLAYER_MASK)
-		or (UnitID and band (destFlags, REACTION_HOSTILE) == REACTION_HOSTILE) -- an hostile unit in our group is a mind controlled unit
-		or band (destFlags, FOCUSED_FRIEND) == FOCUSED_FRIEND
-		or (self.profile.Scan_Pets and (match(destFlags, PET, PET_MASK))) then -- Players and pets XXX to test
-		--]]
-		-- D:Print("A managed unit got something (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cffff0000%s|r, |cFF00AAAA%s|r, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg12);
-
-
-function D:SpellCastFailed() -- the blacklisting function {{{
-    D:Debug("Not in line of sight or bad target!");
-    if (
-	D.Status.CastingSpellOn	    -- a cast failed and we were casting on someone
-	and not (
-	D.Status.CastingSpellOn == "player"   -- we do not blacklist ourself
-	or
-	(
-	-- we do not blacklist people in the priority list
-	D.profile.DoNot_Blacklist_Prio_List and D:IsInPriorList(D.Status.CastingSpellOnName) 
-	)
-	)
-	) then
-	D.Status.Blacklisted_Array[D.Status.CastingSpellOn] = D.profile.CureBlacklist;
-	D:Debug("%s is blacklisted for %d seconds", D.Status.CastingSpellOnName, D.profile.CureBlacklist);
-	D.Status.CastingSpellOn = false;
-	D.Status.CastingSpellOnName = false;
-    end
-end --}}}
-
-function D:_SpecialEvents_UnitBuffGained(UnitID, buffName, index, applications, texture, rank)
-    --D:Debug("Buff gained, UnitId: ", UnitID, buffName);
-
-    if DC.IsStealthBuff[buffName] then
-	D:Debug("STEALTH GAINED: ", UnitID, buffName);
-
-	self.Stealthed_Units[UnitID] = true;
-
-	self.MicroUnitF:UpdateMUFUnit(UnitID);
-    end
-end
-
-function D:_SpecialEvents_UnitBuffLost(UnitID, buffName, applications, texture, rank)
-    --D:Debug("Buff LOST, UnitId: ", UnitID, buffName);
-
-    if DC.IsStealthBuff[buffName] then
-	D:Debug("STEALTH LOST: ", UnitID, buffName);
-
-	self.Stealthed_Units[UnitID] = false;
-
-	self.MicroUnitF:UpdateMUFUnit(UnitID);
-    end
-end
-
-function D:_SpecialEvents_UnitDebuffGained (UnitID, debuffName, applications, debuffType, texture, rank, index)
-    D:Debug("Debuff gained, UnitId: ", UnitID, debuffName);
-
-    if self.profile.ShowDebuffsFrame and UnitID ~= "target" then
-
-	if UnitID ~= "focus" then -- focus can be an enemy and get a lot of debuff...
-	    D:Debuff_History_Add( debuffName, debuffType );
-	end
-
-	self.MicroUnitF:UpdateMUFUnit(UnitID);
-    elseif not self.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
-	D:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
-	self.LiveList:DelayedGetDebuff(UnitID);
-    end
-end
-
-function D:_SpecialEvents_UnitDebuffLost (UnitID, debuffName, applications, debuffType, texture, rank)
-    D:Debug("Debuff LOST, UnitId: ", UnitID, debuffName);
-    if self.profile.ShowDebuffsFrame and UnitID ~= "target" then
-	self.MicroUnitF:UpdateMUFUnit(UnitID);
-    elseif not self.profile.Hide_LiveList then -- (not MUFs or unit is target) and LiveList
-	D:Debug("(LiveList) Registering delayed GetDebuff for ", UnitID);
-	self.LiveList:DelayedGetDebuff(UnitID);
-    end
-end
-
-
-function D:UI_ERROR_MESSAGE (Error) -- {{{
-    -- this is the only way to detect out of line of sight casting failures
-    if (Error == SPELL_FAILED_LINE_OF_SIGHT or Error == SPELL_FAILED_BAD_TARGETS) then
-	D:ScheduleEvent("Dcr_CastFailed", D.SpellCastFailed, 0.8, self);
-
-	--[[ Throw an error if WE were casting something
-	if (D.Status.CastingSpellOn and Error == SPELL_FAILED_LINE_OF_SIGHT) then
-	    D:errln("Out of sight!");
-	end
-	--]]
-
-    end
-end -- }}}
-
-function D:UNIT_SPELLCAST_STOP(UnitID) -- unused {{{
-    D:Debug("Spell cast stopped", UnitID);
-    D.Status.CastingSpellOn = false;
-    D.Status.CastingSpellOnName = false;
-end --}}}
-
-function D:UNIT_SPELLCAST_FAILED(unit) -- unused
-    D:Debug("Spell cast failed for unit: ", unit);
-end
-
-function D:UNIT_SPELLCAST_SENT( player, spell, rank, target) -- XXX
-    D:Debug("|cFFFF0000Sending SPELL: ", player, spell, rank, target, "|r");
-    if (self.Status.CuringSpellsPrio[spell]) then
-	self.Status.CastingSpellOn = D:NameToUnit(target);
-	self.Status.CastingSpellOnName = target;
-    end
-end
-
-function D:UNIT_SPELLCAST_SUCCEEDED( player, spell, rank )
-    if (self.Status.CuringSpellsPrio[spell]) then
-	D:Println(L[self.LOC.SUCCESSCAST], spell, rank, D:MakePlayerName((D.Status.CastingSpellOnName)));
-
-	if (self.Status.ClickedMF) then
-	    D:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
-	    D:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
-	    self.Status.ClickedMF = false;
-	end
-    end
-end
-
-function D:ADDON_ACTION_BLOCKED (Addon, protectedfunction)
-   D:errln("The add-on %s tried to use the protected function: %s", Addon, protectedfunction); 
-end
-
-function D:ADDON_ACTION_FORBIDDEN (Addon, protectedfunction)
-   D:errln("The add-on %s tried to use the forbidden function: %s", Addon, protectedfunction); 
-end
-
---]=]
--- }}}
-
 DcrLoadedFiles["Dcr_Events.lua"] = "@project-version@";
-
-
-
-
 
