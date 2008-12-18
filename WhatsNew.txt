@@ -1,4 +1,11 @@
-Decursive 2.3.0 by Archarodim  (2008-11-05)
+Decursive 2.3.1 by Archarodim  (2008-12-16)
+
+Changes from Decursive 2.3.0 to Decursive 2.3.1
+
+- Fixes the rare issue where Decursive would miss debuff events
+- Fixes focus unit management
+- Fixes minimap icon and main bar management when Decursive is "Ace-disabled"
+
 
 Changes from Decursive 2.3.0 RC7 to Decursive 2.3.0
 
