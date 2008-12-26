@@ -10,6 +10,10 @@ TODO:
     - Stealth
     - Debuff
 
+- Add an option to diable spell stopping when clicking on a MUF
+
+- Convert to Ace3.
+
 - Add a user debuff warning mechanism where you could define debuff names you
   want to be aware of, then Decursive would add a special status, such as a
   little colored triangle in the middle of the MUFs and then you will have to
