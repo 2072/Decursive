@@ -207,37 +207,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- Create some useful cache tables
     D:CreateClassColorTables();
 
-    -- add support for FuBar
-    -- This will add Fubar relative options into a sub-menu
-    --[[
-    do
-	local args = AceLibrary("FuBarPlugin-2.0"):GetAceOptionsDataTable(self)
-	local options = D.options
-
-	if not options.args[L[D.LOC.FUBARMENU] ] then
-	    options.args.menuSpacer = {
-		type = "header",
-		name = " ",
-		order = 401,
-	    }
-	    options.args[L[D.LOC.FUBARMENU] ] = {
-		type = "group",
-		name =L[D.LOC.FUBARMENU],
-		desc = L[D.LOC.FUBARMENU_DESC],
-		args = args,
-		order = 402,
-	    }
-
-	    -- Because FuBarPlugin is a mixin its options are merged with ours
-	    -- so remove them...
-	    for k,v in pairs(args) do
-		options.args[k] = nil;
-	    end
-
-	end
-    end
-    --]]
-
     D.OnMouseDown = D.MicroUnitF.OnCornerClick;
 
 
