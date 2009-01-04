@@ -282,12 +282,12 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	}, --]]
 	[DS[D.LOC.SPELL_ABOLISH_DISEASE]]	    = {
 	    Types = {DC.DISEASE},
-	    IsBest = false,
+	    IsBest = true,
 	    Pet = false,
 	},
 	[DS[D.LOC.SPELL_CURE_DISEASE]]	    = {
 	    Types = {DC.DISEASE},
-	    IsBest = true,
+	    IsBest = false,
 	    Pet = false,
 	},
 	-- paladins
@@ -310,12 +310,12 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	-- Druids
 	[DS[D.LOC.SPELL_ABOLISH_POISON]]	    = {
 	    Types = {DC.POISON},
-	    IsBest = false,
+	    IsBest = true,
 	    Pet = false,
 	},
 	[DS[D.LOC.SPELL_CURE_POISON]]	    = {
 	    Types = {DC.POISON},
-	    IsBest = true,
+	    IsBest = false,
 	    Pet = false,
 	},
 	-- mages

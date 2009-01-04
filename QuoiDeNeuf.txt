@@ -1,8 +1,8 @@
-Decursive 2.3.1 par Archarodim  (2008-12-16)
+Decursive 2.3.1 par Archarodim  (2009-01-04)
 
 Changements entre Decursive 2.3.0 et Decursive 2.3.1
 
-- Correction d'un problème rare où Decursive manquait des afflictions.
+- Correction d'un très vieux problème rare où Decursive manquait des afflictions.
 - Correction de la gestion des unités focalisées.
 - Correction de la gestion de l'icône de la minicarte et de la barre
   "Decursive" lorsque ce dernier était désactivé par Ace.
