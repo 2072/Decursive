@@ -680,7 +680,7 @@ do
 	    pGUID = UnitToGUID["focus"]
 	    -- the unit is not registered somewhere else yet
 	    if not Status.Unit_Array_GUIDToUnit[pGUID] then
-		AddToSort("focus", pGUID, -100000000); -- add it at the end...
+		AddToSort("focus", pGUID, -1); -- add it at the end...
 		Status.Unit_Array_GUIDToUnit[pGUID] = "focus";
 	    end
 	end
@@ -696,9 +696,9 @@ do
 	end
 
 	table.sort(Status.Unit_Array, function (a,b)
-	    if (not (SortingTable[a] < 0 and SortingTable[b] < 0)) then
+	    if (not (SortingTable[a] < 0 and SortingTable[b] < 0)) then -- one of the values is > 0
 		return SortingTable[b] < SortingTable[a];
-	    else
+	    else							-- both are < 0
 		return SortingTable[a] < SortingTable[b];
 	    end
 	end);
