@@ -287,7 +287,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	    MF_f:Show();
 	    MF.Shown = true;
 	    self.UnitShown = self.UnitShown + 1;
-	    MF.ID = 0; -- will force its position to be rset by the roaming updater
+	    MF.ID = 0; -- will force its position to be reset by the roaming updater
 
 	    -- Schedule an update for the MUF we just shown
 	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
@@ -494,7 +494,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 
     if MF then
 	-- sanity test: test if UnitToMUF[] == getattributeUnit
-	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true
+	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true :/ it does...
 	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit (%s - %s).\nReport this to ARCHARODIM@TEASER.fR", MF.CurrUnit, MF.Shown);
 	end
 
@@ -790,7 +790,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 	self.LitTime		= false;
 	self.Chrono		= false;
 	self.PrevChrono		= false;
-	self.Shown		= true;
+	self.Shown		= false; -- Setting this to true will broke the stick to right option
 
 	-- create the frame
 	self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..Unit, self.Parent, "DcrMicroUnitTemplateSecure");
@@ -857,7 +857,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     -- local Unit = D.Status.Unit_Array[MF.ID]; -- get the unit the MUF _should_ be attached to.
     local ActionsDone = 0;
 
-	    Unit = MF.CurrUnit;
+    Unit = MF.CurrUnit;
 
     --[=[
     if not Unit then -- This unit no longer exists (number of MUF higher than number of units)
@@ -929,6 +929,7 @@ do
 	end
 
 	--D:Debug("UpdateAttributes called for %s", Unit);
+	-- XXX mae an assert to detect when this is called with false as unit...
 
 	ReturnValue = false;
 
