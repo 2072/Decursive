@@ -102,7 +102,7 @@
     </Frame>
 
     <!-- Templates -->
-    <Button name="DcrMicroUnitTemplateSecure" inherits="SecureUnitButtonTemplate" virtual="true">
+    <Button name="DcrMicroUnitTemplateSecure" inherits="SecureUnitButtonTemplate" virtual="true" hidden="true">
 	<Size>
 	    <AbsDimension x="20" y="20"/>
 	</Size>

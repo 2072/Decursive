@@ -281,19 +281,19 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	MF_f = MF.Frame;
 
 	-- show/hide
-	if (Unit_Array_UnitToGUID[Unit] and not MF.Shown) then -- we got this unit in our group but its is hidden
+	if not MF.Shown and Unit_Array_UnitToGUID[Unit] and MF.ID <= NumToShow then -- we got this unit in our group but it's hidden
 
 	    --MF_f:SetPoint(unpack(self:GiveMFAnchor(i)));
 	    MF_f:Show();
 	    MF.Shown = true;
 	    self.UnitShown = self.UnitShown + 1;
-	    MF.ID = 0; -- will force its position to be reset by the roaming updater
+	    MF.ID = 0; -- will force its position to be reset by the roaming updater, it's necessary because when units are not present but used to, they have a MUF that keep its previous anchor.
 
 	    -- Schedule an update for the MUF we just shown
 	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
 	    i = i + 1;
 
-	elseif (not Unit_Array_UnitToGUID[Unit] and MF.Shown) then -- we don't have this unit but its MUF is shown
+	elseif MF.Shown and (not Unit_Array_UnitToGUID[Unit] or MF.ID > NumToShow ) then -- we don't have this unit but its MUF is shown
 
 	    -- clear debuff before hiding to avoid leaving 'ghosts' behind...
 	    if D.UnitDebuffed[MF.CurrUnit] then
@@ -769,7 +769,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
 	-- set object default variables
 	self.Parent		= Container;
-	self.ID			= ID;
+	self.ID			= 0; -- is set by te roaming updater
 	self.FrameNum		= FrameNum;
 	self.Debuffs		= false;
 	self.Debuff1Prio	= false;
@@ -844,8 +844,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 	-- set the frame attributes
 	self:UpdateAttributes(Unit);
 
-	-- once the MF frame is set up, schedule an event to show and place it
-	self.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(ID)));
+	-- once the MF frame is set up, schedule an event to show it
 	MicroUnitF:Delayed_MFsDisplay_Update();
 end -- }}}
 
@@ -1349,19 +1348,19 @@ end
 
 do
     local MicroFrameUpdateIndex = 1; -- MUFs are not updated all together
-    local NumToShow, ActionsDone, Unit, MF, pass;
+    local NumToShow, ActionsDone, Unit, MF, pass, UnitNum;
     -- updates the micro frames if needed (called regularly by ACE event, changed in the option menu)
     function D:DebuffsFrame_Update() -- {{{
 
 	-- Update the unit array (GetUnitArray() will do something only if necessary)
-	if (self.Groups_datas_are_invalid) then
+	if self.Groups_datas_are_invalid then
 	    self:GetUnitArray();
 	end
 
 	local Unit_Array = self.Status.Unit_Array;
 
-	--NumToShow = ((MicroUnitF.MaxUnit > self.Status.UnitNum) and self.Status.UnitNum or MicroUnitF.MaxUnit);
-	NumToShow = self.Status.UnitNum;
+	UnitNum = self.Status.UnitNum; -- we need to go through all the units to set MF.ID properly
+	NumToShow = ((MicroUnitF.MaxUnit > UnitNum) and UnitNum or MicroUnitF.MaxUnit);
 
 	ActionsDone = 0; -- used to limit the maximum number of consecutive UI actions
 
@@ -1370,7 +1369,7 @@ do
 	for pass = 1, self.profile.DebuffsFramePerUPdate do
 
 	    -- When all frames have been updated, go back to the first
-	    if (MicroFrameUpdateIndex > NumToShow) then
+	    if (MicroFrameUpdateIndex > UnitNum) then
 		MicroFrameUpdateIndex = 1;
 		-- self:Debug("last micro frame updated,,:: %d", #self.Status.Unit_Array);
 	    end
@@ -1403,8 +1402,7 @@ do
 	    end
 
 	    -- update the MUF attributes and its colors XXX -- this is done by an event handler now (buff/debuff received...)
-	    --ActionsDone = ActionsDone + MF:Update(not MF.IsDebuffed and true or false, true);
-	    if MF then
+	    if MF and MicroFrameUpdateIndex <= NumToShow then
 		if not MF.IsDebuffed and MF.UpdateCountDown ~= 0 then
 		    MF.UpdateCountDown = MF.UpdateCountDown - 1;
 		else -- if MF.IsDebuffed or MF.UpdateCountDown == 0
@@ -1418,7 +1416,7 @@ do
 
 	    -- don't update more than 5 MUF in a row
 	    -- don't loop when reaching the end, wait for the next call (useful when less MUFs than PerUpdate)
-	    if (ActionsDone > 5 or pass == NumToShow) then
+	    if (ActionsDone > 5 or pass == UnitNum) then
 		--self:Debug("Max actions count reached");
 		break;
 	    end
