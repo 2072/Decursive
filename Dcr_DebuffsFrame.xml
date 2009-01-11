@@ -50,7 +50,7 @@
 	    </OnLoad>
 	</Scripts>
 	<Frames>
-	    <Button name="DragButton">
+	    <Button name="$parentDragButton">
 		<Size>
 		    <AbsDimension x="20" y="20" />
 		</Size>
@@ -98,10 +98,24 @@
 		    </OnLeave>
 		</Scripts>
 	    </Button>
+	    
 	</Frames>
     </Frame>
 
     <!-- Templates -->
+    <Cooldown name="DcrMicroUnitCDTemplate" virtual="true" hidden="true" setAllPoints="false">
+	<Size>
+	    <AbsDimension x="16" y="16"/>
+	</Size>
+	<Anchors>
+	    <Anchor point="CENTER" relativePoint="CENTER">
+		<Offset>
+		    <AbsDimension x="0" y="0"/>
+		</Offset>
+	    </Anchor>
+	</Anchors>
+    </Cooldown>
+
     <Button name="DcrMicroUnitTemplateSecure" inherits="SecureUnitButtonTemplate" virtual="true" hidden="true">
 	<Size>
 	    <AbsDimension x="20" y="20"/>

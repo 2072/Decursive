@@ -1,4 +1,13 @@
-Decursive 2.3.1 by Archarodim  (2009-01-04)
+Decursive 2.4 beta1 by Archarodim  (2009-01-11)
+
+Changes from Decursive 2.3.1 to Decursive 2.4 beta1
+
+- New feature: The cool down of the curing spell to be used is displayed
+  (clock) on afflicted MUFs.
+
+- Re-implemented the max unit to show option.
+- bug fix: The focus MUF was not added at the end but just before pets.
+- bug fix: The stick to right option (concerning the MUFs positions) was broken.
 
 Changes from Decursive 2.3.0 to Decursive 2.3.1
 

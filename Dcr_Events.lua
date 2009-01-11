@@ -51,6 +51,7 @@ local UnitExists	= _G.UnitExists;
 local UnitCanAttack	= _G.UnitCanAttack;
 local UnitName		= _G.UnitName;
 local UnitGUID		= _G.UnitGUID;
+local GetTime		= _G.GetTime;
 
 
 function D:GroupChanged () -- {{{
@@ -316,7 +317,7 @@ do
 	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, DebuffName, 0x32, "DEBUFF");
     end
 
-    function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags)
+    function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
 
 	if destName and AuraEvents[event] then
 
@@ -464,6 +465,13 @@ do
 
 
 
+end
+
+function D:SPELL_UPDATE_COOLDOWN()
+    --if arg1 then
+    D.Status.UpdateCooldown = GetTime();
+    --end
+    --D:Debug("update cd:", arg1);
 end
 
 DcrLoadedFiles["Dcr_Events.lua"] = "@project-version@";

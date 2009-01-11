@@ -553,11 +553,8 @@ function MicroUnitF:OnEnter() -- {{{
 
     if (D.profile.AfflictionTooltips) then
 
-
 	-- removes the CHARMED_STATUS bit from Status, we don't need it
 	Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
-
-
 
 	-- First, write the name of the unit in its class color
 	if (UnitExists(MF.CurrUnit)) then
@@ -791,9 +788,11 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 	self.Chrono		= false;
 	self.PrevChrono		= false;
 	self.Shown		= false; -- Setting this to true will broke the stick to right option
+	self.UpdateCD		= 0;
 
 	-- create the frame
 	self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..Unit, self.Parent, "DcrMicroUnitTemplateSecure");
+	self.CooldownFrame = CreateFrame ("Cooldown", "DcrMicroUnitCD"..Unit, self.Frame, "DcrMicroUnitCDTemplate");
 
 	-- outer texture (the class border)
 	-- Bottom side
@@ -1060,7 +1059,7 @@ do
     --		- The Alpha of the center and borders
     --	    This function also set the Status of the MUF that will be used in the tooltip
     --]=]
-    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged, PrevChrono, Time;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged, PrevChrono, Time, Status;
     local profile = {};
 
     -- global access optimization
@@ -1074,10 +1073,13 @@ do
     local GetTime	    = _G.GetTime;
     local floor		    = _G.math.floor;
     local fmod		    = _G.math.fmod;
+    local CooldownFrame_SetTimer = _G.CooldownFrame_SetTimer;
+    local GetSpellCooldown = _G.GetSpellCooldown;
 
     function MicroUnitF.prototype:SetColor() -- {{{
 
 	profile = D.profile;
+	Status  = D.Status;
 
 	-- register default alpha of the border
 	BorderAlpha =  profile.DebuffsFrameElemBorderAlpha;
@@ -1128,7 +1130,7 @@ do
 		end
 
 		-- if unit is blacklisted
-	    elseif D.Status.Blacklisted_Array[Unit] then
+	    elseif Status.Blacklisted_Array[Unit] then
 		if PreviousStatus ~= BLACKLISTED then
 		    self.Color = MF_colors[BLACKLISTED];
 		    self.UnitStatus = BLACKLISTED;
@@ -1150,19 +1152,25 @@ do
 		end
 
 		-- Test if the spell we are going to use is in range
-		-- Some time can elapsed between the instant the debuff is detected and the instant it is shown.
+		-- Some time can elaps between the instant the debuff is detected and the instant it is shown.
 		-- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
 		-- So we test before calling this api that we can still cure this debuff type
-		if D.Status.CuringSpells[DebuffType] then
-		    RangeStatus = IsSpellInRange(D.Status.CuringSpells[DebuffType], Unit);
+		if Status.CuringSpells[DebuffType] then
+		    RangeStatus = IsSpellInRange(Status.CuringSpells[DebuffType], Unit);
 		else
 		    RangeStatus = false;
+		end
+
+		Time = GetTime();
+
+		if RangeStatus and self.UpdateCD < Status.UpdateCooldown then
+		    CooldownFrame_SetTimer (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]) );
+		    self.UpdateCD = Time;
 		end
 
 		-- update the chrono
 		if profile.DebuffsFrameChrono then
 		    if self.LitTime then
-			Time = GetTime();
 			PrevChrono = self.Chrono;
 
 			self.Chrono = floor(Time - self.LitTime + 0.5);
@@ -1171,7 +1179,7 @@ do
 			    self.ChronoFontString:SetText( ((self.Chrono < 60) and self.Chrono or (floor(self.Chrono / 60) .. "\'") ));
 			end
 		    else
-			self.LitTime = GetTime();
+			self.LitTime = Time;
 			
 		    end
 		end
@@ -1192,7 +1200,7 @@ do
 
 		    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange + 1;
 
-		    if (not D.Status.SoundPlayed) then
+		    if (not Status.SoundPlayed) then
 			D:PlaySound (self.CurrUnit, "SetColor()" );
 		    end
 		end
@@ -1220,7 +1228,7 @@ do
 	    --if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.LV_OnlyInRange) then
 	    if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.Hide_LiveList) then
 		Dcr:Debug("SetColor(): No more unit, sound re-enabled");
-		D.Status.SoundPlayed = false;
+		Status.SoundPlayed = false;
 	    end
 	end
 

@@ -164,6 +164,7 @@ D.Status.UnitNum = 0;
 D.Status.PrioChanged = true;
 
 D.Status.last_focus_GUID = false;
+D.Status.UpdateCooldown = 0;
 
 -- An acces the debuff table
 D.ManagedDebuffUnitCache = {};
@@ -514,6 +515,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
 
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
     
 
     self:ScheduleRepeatingEvent("Dcr_SheduledTasks", self.SheduledTasks, 0.2, self);
@@ -551,6 +553,7 @@ function D:OnProfileEnable()
     D.Status.PrioChanged = true;
     D.Status.last_focus_GUID = false;
     D.Status.GroupUpdatedOn = 0;
+    D.Status.UpdateCooldown = 0;
 
     -- if we log in and we are already fighting...
     if (InCombatLockdown()) then

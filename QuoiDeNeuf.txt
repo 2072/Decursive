@@ -1,4 +1,16 @@
-Decursive 2.3.1 par Archarodim  (2009-01-04)
+Decursive 2.4 beta1 par Archarodim  (2009-01-11)
+
+Changements entre Decursive 2.3.1 et Decursive 2.4 beta1
+
+- Nouveauté : Le temps de recharge du sort de guérison à utiliser est indiqué
+  (horloge) sur les micro-portraits des unités affligées.
+
+- L'option qui règle le nombre maximum d'unité à afficher a été réimplémenté.
+
+- L'unité focalisée n'était pas ajouté à la fin comme prévu mais juste avant
+  les familiers.
+
+- L'option "d'alignement à droite" des micro-portraits fonctionne de nouveau.
 
 Changements entre Decursive 2.3.0 et Decursive 2.3.1
 
