@@ -2139,7 +2139,7 @@ end
 
 function D:SetMacroKey ( key )
 
-    -- if the key is already correctly mapp, return here.
+    -- if the key is already correctly mapped, return here.
     --if (key and key == D.profile.MacroBind and GetBindingAction(key) == D.CONF.MACROCOMMAND) then
     if (key and key == D.profile.MacroBind and D:tcheckforval({GetBindingKey(D.CONF.MACROCOMMAND)}, key) ) then -- change for 2.3 where GetBindingAction() is no longer working
 	return;
@@ -2192,7 +2192,9 @@ function D:SetMacroKey ( key )
     end
 
     -- save the bindings to disk
-    SaveBindings(GetCurrentBindingSet());
+    if type(GetCurrentBindingSet()) == "number" then -- GetCurrentBindingSet() may return strange values when the game is loaded without WTF folder.
+	SaveBindings(GetCurrentBindingSet());
+    end
 
 end
 
