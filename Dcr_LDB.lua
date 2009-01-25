@@ -48,6 +48,7 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
 	    end);
 	end,
 	text = "Decursive",
+	label = "Decursive",
 	
 	icon = DC.IconOFF,
 });

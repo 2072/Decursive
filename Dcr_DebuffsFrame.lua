@@ -494,11 +494,11 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 
     if MF then
 	-- sanity test: test if UnitToMUF[] == getattributeUnit
-	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true :/ it does...
+	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true :/ it does... (reproduceable by mind-controlling something and releasing it)
 	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit (%s - %s - %s).\nReport this to ARCHARODIM@TEASER.fR", MF.CurrUnit, MF.Frame:GetAttribute("unit"), MF.Shown);
 	end
 
-	-- sanity test: test if unit == CurrUnit -- XXX this is the one
+	-- sanity test: test if unit == CurrUnit
 	if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
 	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).\nReport this to ARCHARODIM@TEASER.FR", unit, MF.CurrUnit, MF.Shown);
 	end
