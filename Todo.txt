@@ -27,7 +27,7 @@ TODO:
   the MUF of your choice...
 
 -/ when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
-  (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found)
+  (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found) ----> or focus it...
 
 - Add an option to let the user choose the alert sound.
 
