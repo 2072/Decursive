@@ -270,6 +270,7 @@ do
     local bit = _G.bit;
     local band = bit.band;
     local bor = bit.bor;
+    local UnitGUID = _G.UnitGUID;
 
     -- AURA bitfields -- now useless {{{
     -- a friendly player character controled directly by the player that is not an outsider
@@ -347,7 +348,7 @@ do
 		    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID];
 
 		    if UnitID and UnitGUID(UnitID) ~= destGUID then
-			D:Println("|cFFFF0000ALERT:|rSanity check(2nd) failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
+			D:Println("|cFFFF0000ALERT:|rSanity check(2nd-) failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
 			return;
 		    elseif not UnitID then
 			D:Debug("|cFFFF0000No unit for GUID %s|r, in skip list?", destGUID);
