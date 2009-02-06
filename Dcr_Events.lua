@@ -341,7 +341,7 @@ do
 
 	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
-		if UnitGUID(UnitID) ~= destGUID then
+		if UnitGUID(UnitID) ~= destGUID then --  sometimes UnitGUID("player") may returns nil... but it's not important since the player GUID is registered once and for all at init time
 
 		    self.Groups_datas_are_invalid = true;
 		    self:GetUnitArray();

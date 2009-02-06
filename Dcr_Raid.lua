@@ -452,7 +452,20 @@ do
 
 	local pGUID;
 	local raidnum = GetNumRaidMembers();
---	local MyName  = DC.MyName;
+
+	if DC.MyGUID == "NONE" then
+
+	    self:Debug("|cFFFF0000DC.MyGUID was nil!!|r");
+
+	    DC.MyGUID = (UnitGUID("player"));
+
+	    if not DC.MyGUID then
+		DC.MyGUID = "NONE";
+		self:Debug("|cFFFF0000DC.MyGUID is STILL nil!!|r");
+	    end
+
+	end
+
 	local MyGUID  = DC.MyGUID;
 
 	-- clear all the arrays

@@ -585,6 +585,10 @@ function D:OnProfileEnable()
     DC.MyName = (self:UnitName("player"));
     DC.MyGUID = (UnitGUID("player"));
 
+    if not DC.MyGUID then
+	DC.MyGUID = "NONE";
+    end
+
     D:Init(); -- initialize Dcr core (set frames display, scans available cleansing spells)
 
 
