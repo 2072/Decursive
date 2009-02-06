@@ -44,7 +44,7 @@ local MicroUnitF = D.MicroUnitF;
 LiveList.ExistingPerID	    = {};
 LiveList.Number		    = 0;
 LiveList.NumberShown	    = 0;
-D.ForLLDebuffedUnitsNum   = 0;
+D.ForLLDebuffedUnitsNum	    = 0;
 
 -- temporary variables often used in function
 local Debuff, Debuffs, IsCharmed, MF, i, Index, RangeStatus;
@@ -309,7 +309,11 @@ function LiveList:GetDebuff(UnitID) -- {{{
 	--Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID, true);
     else -- The MUFs are active and Unit is not mouseover and is not target
 	MF = MicroUnitF.UnitToMUF[UnitID];
-	Debuffs = MF.Debuffs;
+	if MF then
+	    Debuffs = MF.Debuffs;
+	else
+	    D:Println("|cFFFF0000ALERT:|rSanity check failed in LiveList:GetDebuff() no MUF for unit (%s) MUFs are %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, D.profile.ShowDebuffsFrame);
+	end
     end
 
     if (Debuffs and Debuffs[1] and Debuffs[1].Type) then -- there is a Debuff
