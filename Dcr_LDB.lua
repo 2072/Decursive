@@ -81,19 +81,19 @@ local function OnTooltipUpdate ()
 
     cat:AddLine(
     'text', ("%s-%s: "):format(D.L[D.LOC.ALT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-    'text2', D.L[BINDING_NAME_DCRSHOWOPTION]
+    'text2', D.L[D.LOC.BINDING_NAME_DCRSHOWOPTION]
     );
     cat:AddLine(
     'text', ("%s-%s: "):format(D.L[D.LOC.CTRL],		D.L[D.LOC.HLP_LEFTCLICK]),
-    'text2', D.L[BINDING_NAME_DCRPRSHOW]
+    'text2', D.L[D.LOC.BINDING_NAME_DCRPRSHOW]
     );
     cat:AddLine(
     'text', ("%s-%s: "):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_LEFTCLICK]),
-    'text2', D.L[BINDING_NAME_DCRSKSHOW]
+    'text2', D.L[D.LOC.BINDING_NAME_DCRSKSHOW]
     );
     cat:AddLine(
     'text', ("%s-%s: " ):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-    'text2', D.L[BINDING_NAME_DCRSHOW]
+    'text2', D.L[D.LOC.BINDING_NAME_DCRSHOW]
     );
 
     if (D.profile.debugging) then

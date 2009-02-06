@@ -97,20 +97,20 @@ LOC.SPELL_PURGE               = 'Purge'; -- NO NEED TO TRANSLATE
 LOC.SPELL_CYCLONE	      = 'Cyclone'; -- NO NEED TO TRANSLATE
 LOC.CLEANSE_SPIRIT	      = "Cleanse Spirit"; -- NO NEED TO TRANSLATE
 
-BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar\n(live-list anchor)";
+LOC.BINDING_NAME_DCRSHOW    = "Show or hide Decursive Main Bar\n(live-list anchor)";
 
-BINDING_NAME_DCRMUFSHOWHIDE = "Show or hide the micro-unit frames";
+LOC.BINDING_NAME_DCRMUFSHOWHIDE = "Show or hide the micro-unit frames";
 
-BINDING_NAME_DCRPRADD     = "Add target to priority list";
-BINDING_NAME_DCRPRCLEAR   = "Clear the priority list";
-BINDING_NAME_DCRPRLIST    = "Print the priority list";
-BINDING_NAME_DCRPRSHOW    = "Show or hide the priority list";
+LOC.BINDING_NAME_DCRPRADD     = "Add target to priority list";
+LOC.BINDING_NAME_DCRPRCLEAR   = "Clear the priority list";
+LOC.BINDING_NAME_DCRPRLIST    = "Print the priority list";
+LOC.BINDING_NAME_DCRPRSHOW    = "Show or hide the priority list";
 
-BINDING_NAME_DCRSKADD   = "Add target to skip list";
-BINDING_NAME_DCRSKCLEAR = "Clear the skip list";
-BINDING_NAME_DCRSKLIST  = "Print the skip list";
-BINDING_NAME_DCRSKSHOW  = "Show or hide the skip list";
-BINDING_NAME_DCRSHOWOPTION = "Display the option static panel";
+LOC.BINDING_NAME_DCRSKADD   = "Add target to skip list";
+LOC.BINDING_NAME_DCRSKCLEAR = "Clear the skip list";
+LOC.BINDING_NAME_DCRSKLIST  = "Print the skip list";
+LOC.BINDING_NAME_DCRSKSHOW  = "Show or hide the skip list";
+LOC.BINDING_NAME_DCRSHOWOPTION = "Display the option static panel";
 
 
 LOC.PRIORITY_LIST  = "Decursive Priority List";
@@ -423,21 +423,21 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.SPELL_CYCLONE]	=	true,
     [LOC.CLEANSE_SPIRIT]	=	true,
 
-    [BINDING_NAME_DCRSHOW]	=	true,
+    [LOC.BINDING_NAME_DCRSHOW]	=	true,
     
-    [BINDING_NAME_DCRMUFSHOWHIDE] =	true,
+    [LOC.BINDING_NAME_DCRMUFSHOWHIDE] =	true,
 
-    [BINDING_NAME_DCRPRADD]	=	true,
-    [BINDING_NAME_DCRPRCLEAR]	=	true,
-    [BINDING_NAME_DCRPRLIST]	=	true,
-    [BINDING_NAME_DCRPRSHOW]	=	true,
+    [LOC.BINDING_NAME_DCRPRADD]	=	true,
+    [LOC.BINDING_NAME_DCRPRCLEAR]	=	true,
+    [LOC.BINDING_NAME_DCRPRLIST]	=	true,
+    [LOC.BINDING_NAME_DCRPRSHOW]	=	true,
 
-    [BINDING_NAME_DCRSKADD]	=	true,
-    [BINDING_NAME_DCRSKCLEAR]	=	true,
-    [BINDING_NAME_DCRSKLIST]	=	true,
-    [BINDING_NAME_DCRSKSHOW]	=	true,
+    [LOC.BINDING_NAME_DCRSKADD]	=	true,
+    [LOC.BINDING_NAME_DCRSKCLEAR]	=	true,
+    [LOC.BINDING_NAME_DCRSKLIST]	=	true,
+    [LOC.BINDING_NAME_DCRSKSHOW]	=	true,
     
-    [BINDING_NAME_DCRSHOWOPTION]=	true,
+    [LOC.BINDING_NAME_DCRSHOWOPTION]=	true,
 
 
 

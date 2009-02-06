@@ -73,19 +73,19 @@ L:RegisterTranslations("deDE", function() return {
     [LOC.PET_DOOM_CAST]	=	"Magiebannung",
 
     
-    [BINDING_NAME_DCRSHOW]	=	"Zeige/Verstecke Decursive Main Bar",
+    [LOC.BINDING_NAME_DCRSHOW]	=	"Zeige/Verstecke Decursive Main Bar",
     
-    [BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
+    [LOC.BINDING_NAME_DCRMUFSHOWHIDE] =	LOC.BINDING_NAME_DCRMUFSHOWHIDE,
 
-    [BINDING_NAME_DCRPRADD]	=	"Ziel zur Prioritätenliste hinzufügen",
-    [BINDING_NAME_DCRPRCLEAR]	=	"Prioritätenliste leeren",
-    [BINDING_NAME_DCRPRLIST]	=	"Prioritätenliste ausgeben",
-    [BINDING_NAME_DCRPRSHOW]	=	"Zeige/Verstecke die Prioritätenliste UI",
+    [LOC.BINDING_NAME_DCRPRADD]	=	"Ziel zur Prioritätenliste hinzufügen",
+    [LOC.BINDING_NAME_DCRPRCLEAR]	=	"Prioritätenliste leeren",
+    [LOC.BINDING_NAME_DCRPRLIST]	=	"Prioritätenliste ausgeben",
+    [LOC.BINDING_NAME_DCRPRSHOW]	=	"Zeige/Verstecke die Prioritätenliste UI",
 
-    [BINDING_NAME_DCRSKADD]	=	"Ziel zur Ignorierliste hinzufügen",
-    [BINDING_NAME_DCRSKCLEAR]	=	"Ignorierliste leeren",
-    [BINDING_NAME_DCRSKLIST]	=	"Ignorierliste ausgeben",
-    [BINDING_NAME_DCRSKSHOW]	=	"Zeige/Verstecke die Ignorierliste UI",
+    [LOC.BINDING_NAME_DCRSKADD]	=	"Ziel zur Ignorierliste hinzufügen",
+    [LOC.BINDING_NAME_DCRSKCLEAR]	=	"Ignorierliste leeren",
+    [LOC.BINDING_NAME_DCRSKLIST]	=	"Ignorierliste ausgeben",
+    [LOC.BINDING_NAME_DCRSKSHOW]	=	"Zeige/Verstecke die Ignorierliste UI",
 
 
     [LOC.PRIORITY_LIST]	=	"Decursive Prioritätenliste",

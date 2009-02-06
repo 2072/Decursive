@@ -97,20 +97,20 @@ LOC.SPELL_PURGE               = 'Purge'; -- NO NEED TO TRANSLATE
 LOC.SPELL_CYCLONE	      = 'Cyclone'; -- NO NEED TO TRANSLATE
 LOC.CLEANSE_SPIRIT	      = "Cleanse Spirit"; -- NO NEED TO TRANSLATE
 --]]
-	[BINDING_NAME_DCRSHOW]    	= "Decursive 메인바 표시/숨김\n(실시간 목록 고정위치)",
+	[LOC.BINDING_NAME_DCRSHOW]    	= "Decursive 메인바 표시/숨김\n(실시간 목록 고정위치)",
 
-	[BINDING_NAME_DCRMUFSHOWHIDE] =	"작은 유닛 프레임 표시/숨김",
+	[LOC.BINDING_NAME_DCRMUFSHOWHIDE] =	"작은 유닛 프레임 표시/숨김",
 
-	[BINDING_NAME_DCRPRADD]     = "대상을 우선순위 목록에 추가",
-	[BINDING_NAME_DCRPRCLEAR]   = "우선순위 목록 초기화",
-	[BINDING_NAME_DCRPRLIST]    = "우선순위 목록 출력",
-	[BINDING_NAME_DCRPRSHOW]    = "우선순위 목록 표시/숨김",
+	[LOC.BINDING_NAME_DCRPRADD]     = "대상을 우선순위 목록에 추가",
+	[LOC.BINDING_NAME_DCRPRCLEAR]   = "우선순위 목록 초기화",
+	[LOC.BINDING_NAME_DCRPRLIST]    = "우선순위 목록 출력",
+	[LOC.BINDING_NAME_DCRPRSHOW]    = "우선순위 목록 표시/숨김",
 
-	[BINDING_NAME_DCRSKADD]   	= "대상을 제외 목록에 추가",
-	[BINDING_NAME_DCRSKCLEAR] 	= "제외 목록 초기화",
-	[BINDING_NAME_DCRSKLIST]  	= "제외 목록 출력",
-	[BINDING_NAME_DCRSKSHOW]  	= "제외 목록 표시/숨김",
-	[BINDING_NAME_DCRSHOWOPTION]=	"고정창 옵션 표시",
+	[LOC.BINDING_NAME_DCRSKADD]   	= "대상을 제외 목록에 추가",
+	[LOC.BINDING_NAME_DCRSKCLEAR] 	= "제외 목록 초기화",
+	[LOC.BINDING_NAME_DCRSKLIST]  	= "제외 목록 출력",
+	[LOC.BINDING_NAME_DCRSKSHOW]  	= "제외 목록 표시/숨김",
+	[LOC.BINDING_NAME_DCRSHOWOPTION]=	"고정창 옵션 표시",
 
 
 	[LOC.PRIORITY_LIST]  	= "Decursive 우선순위 목록",

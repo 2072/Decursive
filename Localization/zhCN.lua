@@ -71,20 +71,20 @@ L:RegisterTranslations("zhCN", function() return {
     [LOC.PET_FEL_CAST] = "吞噬魔法",
     [LOC.PET_DOOM_CAST] = "驱散魔法",
 
-    [BINDING_NAME_DCRSHOW] = "显示或隐藏一键驱散状态条",
+    [LOC.BINDING_NAME_DCRSHOW] = "显示或隐藏一键驱散状态条",
 
-    [BINDING_NAME_DCRMUFSHOWHIDE] = "显示或隐藏微单元面板(MUF)",
+    [LOC.BINDING_NAME_DCRMUFSHOWHIDE] = "显示或隐藏微单元面板(MUF)",
 
-    [BINDING_NAME_DCRPRADD] = "将目标加入优先列表",
-    [BINDING_NAME_DCRPRCLEAR] = "清空优先列表",
-    [BINDING_NAME_DCRPRLIST] = "显示优先列表明细条目",
-    [BINDING_NAME_DCRPRSHOW] = "显示/隐藏 优先列表",
+    [LOC.BINDING_NAME_DCRPRADD] = "将目标加入优先列表",
+    [LOC.BINDING_NAME_DCRPRCLEAR] = "清空优先列表",
+    [LOC.BINDING_NAME_DCRPRLIST] = "显示优先列表明细条目",
+    [LOC.BINDING_NAME_DCRPRSHOW] = "显示/隐藏 优先列表",
 
-    [BINDING_NAME_DCRSKADD] = "将目标加入忽略列表",
-    [BINDING_NAME_DCRSKCLEAR] = "清空忽略列表",
-    [BINDING_NAME_DCRSKLIST] = "显示忽略列表明细条目",
-    [BINDING_NAME_DCRSKSHOW] = "显示/隐藏 忽略列表",
-    [BINDING_NAME_DCRSHOWOPTION] = "显示选项设置窗口",
+    [LOC.BINDING_NAME_DCRSKADD] = "将目标加入忽略列表",
+    [LOC.BINDING_NAME_DCRSKCLEAR] = "清空忽略列表",
+    [LOC.BINDING_NAME_DCRSKLIST] = "显示忽略列表明细条目",
+    [LOC.BINDING_NAME_DCRSKSHOW] = "显示/隐藏 忽略列表",
+    [LOC.BINDING_NAME_DCRSHOWOPTION] = "显示选项设置窗口",
 
     [LOC.PRIORITY_LIST] = "设置 优先列表",
     [LOC.SKIP_LIST_STR] = "设置 忽略列表",

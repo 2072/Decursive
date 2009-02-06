@@ -81,20 +81,20 @@ L:RegisterTranslations("zhTW", function() return {
     [LOC.PET_DOOM_CAST] = "驅散魔法",
 
 
-    [BINDING_NAME_DCRSHOW]    = "顯示或隱藏 Decursive 工作條",
+    [LOC.BINDING_NAME_DCRSHOW]    = "顯示或隱藏 Decursive 工作條",
 
-    [BINDING_NAME_DCRMUFSHOWHIDE] = "顯示或隱藏 micro-unit frames",
+    [LOC.BINDING_NAME_DCRMUFSHOWHIDE] = "顯示或隱藏 micro-unit frames",
 
-    [BINDING_NAME_DCRPRADD]     = "添加目標至優先名單",
-    [BINDING_NAME_DCRPRCLEAR]   = "清空優先名單",
-    [BINDING_NAME_DCRPRLIST]    = "顯示優先名單至聊天視窗",
-    [BINDING_NAME_DCRPRSHOW]    = "開/關優先名單",
+    [LOC.BINDING_NAME_DCRPRADD]     = "添加目標至優先名單",
+    [LOC.BINDING_NAME_DCRPRCLEAR]   = "清空優先名單",
+    [LOC.BINDING_NAME_DCRPRLIST]    = "顯示優先名單至聊天視窗",
+    [LOC.BINDING_NAME_DCRPRSHOW]    = "開/關優先名單",
 
-    [BINDING_NAME_DCRSKADD]   = "添加目標至忽略名單",
-    [BINDING_NAME_DCRSKCLEAR] = "清空忽略名單",
-    [BINDING_NAME_DCRSKLIST]  = "顯示忽略名單至聊天視窗",
-    [BINDING_NAME_DCRSKSHOW]  = "開/關忽略名單",
-    [BINDING_NAME_DCRSHOWOPTION] = "顯示靜態設定選單",
+    [LOC.BINDING_NAME_DCRSKADD]   = "添加目標至忽略名單",
+    [LOC.BINDING_NAME_DCRSKCLEAR] = "清空忽略名單",
+    [LOC.BINDING_NAME_DCRSKLIST]  = "顯示忽略名單至聊天視窗",
+    [LOC.BINDING_NAME_DCRSKSHOW]  = "開/關忽略名單",
+    [LOC.BINDING_NAME_DCRSHOWOPTION] = "顯示靜態設定選單",
 
 
     [LOC.PRIORITY_LIST]  = "Decursive 優先名單",

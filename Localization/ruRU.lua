@@ -82,20 +82,20 @@ L:RegisterTranslations("ruRU", function() return {
 [LOC.PET_FEL_CAST]  = "Пожирание магии",
 [LOC.PET_DOOM_CAST] = "Рассеивание заклинаний",
 
-[BINDING_NAME_DCRSHOW]    = "Показать или скрыть главную панель Decursivа\n(активный-список | указатель)",
+[LOC.BINDING_NAME_DCRSHOW]    = "Показать или скрыть главную панель Decursivа\n(активный-список | указатель)",
 
-[BINDING_NAME_DCRMUFSHOWHIDE] = "Показать или скрыть микро-фреймы игроков",
+[LOC.BINDING_NAME_DCRMUFSHOWHIDE] = "Показать или скрыть микро-фреймы игроков",
 
-[BINDING_NAME_DCRPRADD]     = "Добавить цель в список приоритета",
-[BINDING_NAME_DCRPRCLEAR]   = "Очистить список приоритета",
-[BINDING_NAME_DCRPRLIST]    = "Распечатка списка приоритета",
-[BINDING_NAME_DCRPRSHOW]    = "Показать или скрыть список приоритета",
+[LOC.BINDING_NAME_DCRPRADD]     = "Добавить цель в список приоритета",
+[LOC.BINDING_NAME_DCRPRCLEAR]   = "Очистить список приоритета",
+[LOC.BINDING_NAME_DCRPRLIST]    = "Распечатка списка приоритета",
+[LOC.BINDING_NAME_DCRPRSHOW]    = "Показать или скрыть список приоритета",
 
-[BINDING_NAME_DCRSKADD]   = "Добавить Цель в список пропусков",
-[BINDING_NAME_DCRSKCLEAR] = "Очистить список пропусков",
-[BINDING_NAME_DCRSKLIST]  = "Распечатка списка пропусков",
-[BINDING_NAME_DCRSKSHOW]  = "Показать или скрыть список пропусков",
-[BINDING_NAME_DCRSHOWOPTION] = "Отображать опции панели",
+[LOC.BINDING_NAME_DCRSKADD]   = "Добавить Цель в список пропусков",
+[LOC.BINDING_NAME_DCRSKCLEAR] = "Очистить список пропусков",
+[LOC.BINDING_NAME_DCRSKLIST]  = "Распечатка списка пропусков",
+[LOC.BINDING_NAME_DCRSKSHOW]  = "Показать или скрыть список пропусков",
+[LOC.BINDING_NAME_DCRSHOWOPTION] = "Отображать опции панели",
 
 
 [LOC.PRIORITY_LIST]  = "Список приоритетов",

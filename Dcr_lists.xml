@@ -223,7 +223,7 @@
 
 		    </OnClick>
 		    <OnEnter>
-			Dcr:DisplayTooltip(Dcr.L[BINDING_NAME_DCRPRADD], this);
+			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.BINDING_NAME_DCRPRADD], this);
 		    </OnEnter>
 		    <OnLeave>
 			DcrDisplay_Tooltip:Hide();
@@ -340,10 +340,10 @@
 		this.OnUpdate = Dcr.PrioSkipListFrame_OnUpdate;
 
 		this.ClearButtonText = Dcr.L[Dcr.LOC.CLEAR_PRIO];
-		this.ClearButtonTip = Dcr.L[BINDING_NAME_DCRPRCLEAR];
+		this.ClearButtonTip = Dcr.L[Dcr.LOC.BINDING_NAME_DCRPRCLEAR];
 		this.ClearFunction = Dcr.ClearPriorityList;
 
-		this.CloseButtonTip = Dcr.L[BINDING_NAME_DCRPRSHOW];
+		this.CloseButtonTip = Dcr.L[Dcr.LOC.BINDING_NAME_DCRPRSHOW];
 
 		this.PopulateAddFunction = Dcr.AddUnitToPriorityList;
 		this.PopulateFrameTitle = Dcr.L[Dcr.LOC.PRIORITY_LIST];
@@ -374,10 +374,10 @@
 		this.OnUpdate = Dcr.PrioSkipListFrame_OnUpdate;
 
 		this.ClearButtonText = Dcr.L[Dcr.LOC.CLEAR_SKIP];
-		this.ClearButtonTip = Dcr.L[BINDING_NAME_DCRSKCLEAR];
+		this.ClearButtonTip = Dcr.L[Dcr.LOC.BINDING_NAME_DCRSKCLEAR];
 		this.ClearFunction = Dcr.ClearSkipList;
 
-		this.CloseButtonTip = Dcr.L[BINDING_NAME_DCRSKSHOW];
+		this.CloseButtonTip = Dcr.L[Dcr.LOC.BINDING_NAME_DCRSKSHOW];
 
 		this.PopulateAddFunction = Dcr.AddUnitToSkipList;
 		this.PopulateFrameTitle = Dcr.L[Dcr.LOC.SKIP_LIST_STR];

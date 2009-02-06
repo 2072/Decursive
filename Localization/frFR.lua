@@ -77,21 +77,21 @@ L:RegisterTranslations("frFR", function() return {
     [LOC.PET_DOOM_CAST]	=	"Dissipation de la magie",
 
     
-    [BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive\n(Ancre de la liste des affligés)",
+    [LOC.BINDING_NAME_DCRSHOW]	=	"Afficher ou Cacher la barre Decursive\n(Ancre de la liste des affligés)",
     
-    [BINDING_NAME_DCRMUFSHOWHIDE] =	BINDING_NAME_DCRMUFSHOWHIDE,
+    [LOC.BINDING_NAME_DCRMUFSHOWHIDE] =	LOC.BINDING_NAME_DCRMUFSHOWHIDE,
 
-    [BINDING_NAME_DCRPRADD]	=	"Ajouter la cible à la liste de priorités",
-    [BINDING_NAME_DCRPRCLEAR]	=	"Effacer la liste de priorités",
-    [BINDING_NAME_DCRPRLIST]	=	"Afficher la liste de priorités",
-    [BINDING_NAME_DCRPRSHOW]	=	"Afficher ou Cacher la liste de priorités",
+    [LOC.BINDING_NAME_DCRPRADD]	=	"Ajouter la cible à la liste de priorités",
+    [LOC.BINDING_NAME_DCRPRCLEAR]	=	"Effacer la liste de priorités",
+    [LOC.BINDING_NAME_DCRPRLIST]	=	"Afficher la liste de priorités",
+    [LOC.BINDING_NAME_DCRPRSHOW]	=	"Afficher ou Cacher la liste de priorités",
 
-    [BINDING_NAME_DCRSKADD]	=	"Ajouter la cible à la liste des exceptions",
-    [BINDING_NAME_DCRSKCLEAR]	=	"Effacer la liste des exceptions",
-    [BINDING_NAME_DCRSKLIST]	=	"Afficher la liste des exceptions",
-    [BINDING_NAME_DCRSKSHOW]	=	"Afficher ou Cacher la liste des exceptions",
+    [LOC.BINDING_NAME_DCRSKADD]	=	"Ajouter la cible à la liste des exceptions",
+    [LOC.BINDING_NAME_DCRSKCLEAR]	=	"Effacer la liste des exceptions",
+    [LOC.BINDING_NAME_DCRSKLIST]	=	"Afficher la liste des exceptions",
+    [LOC.BINDING_NAME_DCRSKSHOW]	=	"Afficher ou Cacher la liste des exceptions",
 
-    [BINDING_NAME_DCRSHOWOPTION]=	"Affiche le panneau des options",
+    [LOC.BINDING_NAME_DCRSHOWOPTION]=	"Affiche le panneau des options",
 
 
     [LOC.PRIORITY_LIST]	=	"Liste des priorités",

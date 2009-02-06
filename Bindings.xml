@@ -31,17 +31,20 @@
 	<Binding name="DCRSHOWOPTION">
 			Dcr.Waterfall:Open("Decursive");
 	</Binding>
+	<Binding name="DCRPRSHOW">
+			Dcr:ShowHidePriorityListUI();
+	</Binding>
 	<Binding name="DCRPRADD">
 			Dcr:AddTargetToPriorityList();
 	</Binding>
 	<Binding name="DCRPRCLEAR">
 			Dcr:ClearPriorityList();
 	</Binding>
-	<Binding name="DCRPRLIST">
+	<!--<Binding name="DCRPRLIST">
 			Dcr:PrintPriorityList();
-	</Binding>
-	<Binding name="DCRPRSHOW">
-			Dcr:ShowHidePriorityListUI();
+	</Binding>-->
+	<Binding name="DCRSKSHOW">
+	    Dcr:ShowHideSkipListUI();
 	</Binding>
 	<Binding name="DCRSKADD">
 			Dcr:AddTargetToSkipList();
@@ -49,10 +52,7 @@
 	<Binding name="DCRSKCLEAR">
 			Dcr:ClearSkipList();
 	</Binding>
-	<Binding name="DCRSKLIST">
-			Dcr:PrintSkipList();
-	</Binding>
-	<Binding name="DCRSKSHOW">
-			Dcr:ShowHideSkipListUI();
-	</Binding>
+	<!--<Binding name="DCRSKLIST">
+	    Dcr:PrintSkipList();
+	</Binding>-->
 </Bindings>

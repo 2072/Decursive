@@ -248,6 +248,8 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	[DC.NOTYPE]	= "AAAAAA";
     }
 
+
+
     -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
     -- /script DcrC.SpellsToUse[DcrC.DS[Dcr.LOC.SPELL_POLYMORPH]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; Dcr:Configure();
 
@@ -447,6 +449,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	end
     end -- }}}
 
+    D:LocalizeBindings ();
 
     if (FirstEnable) then
 	-- configure the message frame for Decursive
@@ -1022,6 +1025,22 @@ function D:SetDateAndRevision (Date, Revision)
 end
 
 --D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
+
+function D:LocalizeBindings ()
+
+    BINDING_NAME_DCRSHOW    = L[D.LOC.BINDING_NAME_DCRSHOW];
+    BINDING_NAME_DCRMUFSHOWHIDE = L[D.LOC.BINDING_NAME_DCRMUFSHOWHIDE];
+    BINDING_NAME_DCRPRADD     = L[D.LOC.BINDING_NAME_DCRPRADD];
+    BINDING_NAME_DCRPRCLEAR   = L[D.LOC.BINDING_NAME_DCRPRCLEAR];
+    BINDING_NAME_DCRPRLIST    = L[D.LOC.BINDING_NAME_DCRPRLIST];
+    BINDING_NAME_DCRPRSHOW    = L[D.LOC.BINDING_NAME_DCRPRSHOW];
+    BINDING_NAME_DCRSKADD   = L[D.LOC.BINDING_NAME_DCRSKADD];
+    BINDING_NAME_DCRSKCLEAR = L[D.LOC.BINDING_NAME_DCRSKCLEAR];
+    BINDING_NAME_DCRSKLIST  = L[D.LOC.BINDING_NAME_DCRSKLIST];
+    BINDING_NAME_DCRSKSHOW  = L[D.LOC.BINDING_NAME_DCRSKSHOW];
+    BINDING_NAME_DCRSHOWOPTION = L[D.LOC.BINDING_NAME_DCRSHOWOPTION];
+
+end
 
 D.Revision = "@project-abbreviated-hash@";
 D.date = "@project-date-iso@";
