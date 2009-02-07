@@ -656,6 +656,21 @@ function D:OnDisable() -- When the addon is disabled by ACE
     if ( D.profile.ShowDebuffsFrame) then
 	D.MFContainer:Hide();
     end
+
+    -- the disable warning popup : {{{ -
+    StaticPopupDialogs["Decursive_OnDisableWarning"] = {
+	text = L[D.LOC.DISABLEWARNING],
+	button1 = "OK",
+	OnAccept = function()
+	    return false;
+	end,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = false,
+	showAlert = 1,
+    }; -- }}}
+
+    StaticPopup_Show("Decursive_OnDisableWarning");
 end
 
 

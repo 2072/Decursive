@@ -360,6 +360,9 @@ LOC.GLOR3 = "In remembrance of Bertrand Sense\n1969 - 2007";
 LOC.GLOR4 =  "Friendship and affection can take their roots anywhere, those who met Glorfindal in World of Warcraft knew a man of great commitment and a charismatic leader.\n\nHe was in life as he was in game, selfless, generous, dedicated to his friends and most of all, a passionate man.\n\nHe left us at the age of 38 leaving behind him not just anonymous players in a virtual world but, a group of true friends who will miss him forever.";
 LOC.GLOR5 = "He will always be remembered...";
 
+LOC.DISABLEWARNING = "Decursive has been disabled!\n\nTo enable it again, type |cFFFFAA44/DCR STANDBY|r";
+
+
 -- Acelocal register for enUS // {{{
 local L = Dcr.L;
 L:RegisterTranslations("enUS", function() return {
@@ -678,6 +681,8 @@ L:RegisterTranslations("enUS", function() return {
     [LOC.GLOR4] = true,
     [LOC.GLOR5] = true,
     -- OPTIONS
+
+    [LOC.DISABLEWARNING] = true,
 
 } end);
 
