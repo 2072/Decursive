@@ -1,4 +1,19 @@
-Decursive 2.4 beta1 par Archarodim  (2009-01-11)
+Decursive 2.4 beta3 par Archarodim  (2009-02-08)
+
+Changements entre Decursive 2.4 beta1 et Decursive 2.4 beta3
+
+- Decursive utilise désormais AceLocal-3.0 et les traductions faîtes à partir de :
+  http://wow.curseforge.com/projects/decursive/localization/
+
+- Ajout d'un avertissement lorsque l'utilisateur désactive Decursive et d'une
+  explication sur comment le ré-activer (/dcr standby)
+
+- Les descriptions des raccourcis concernant Decursive dans la fenêtre des
+  raccourcis clavier de WoW sont désormais traduits.
+
+- Correction d'un problème lorsque WoW est lancé sans le dossier WTF où l'API
+  GetCurrentBindingSet() retourne une valeur incorrecte empêchant Decursive de
+  s'initialiser correctement.
 
 Changements entre Decursive 2.3.1 et Decursive 2.4 beta1
 

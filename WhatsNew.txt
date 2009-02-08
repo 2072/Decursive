@@ -1,4 +1,21 @@
-Decursive 2.4 beta1 by Archarodim  (2009-01-11)
+Decursive 2.4 beta3 by Archarodim  (2009-02-08)
+
+Changes from Decursive 2.4 beta1 to Decursive 2.4 beta3
+
+- Decursive uses AceLocal-3.0 translations made using:
+  http://wow.curseforge.com/projects/decursive/localization/
+
+- Miscellaneous localization updates.
+
+- Added a warning when the user disables Decusive and an explanation on how to
+  re-enable it (/dcr standby)
+
+- Translations for key bindings descriptions (wow key binding interface)
+
+- Fixes a problem if the game is loaded without any "saved variables" where the
+  API GetCurrentBindingSet() would return incorrect values unusable with the
+  API SaveBindings() preventing Decursive from initializing correctly.
+
 
 Changes from Decursive 2.3.1 to Decursive 2.4 beta1
 
