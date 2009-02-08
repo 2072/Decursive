@@ -55,7 +55,9 @@ if not L then return end;
 
 --@localization(locale="enUS", format="lua_additive_table")@
 
---[=[
+--[==[
+
+-- Used for testing the addon withour the packager
 
 L["ABOLISH_CHECK"] = "Check for \"Abolish\" before curing"
 L["ABSENT"] = "Missing (%s)"
@@ -314,7 +316,7 @@ L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
 
 
---]=]
+--]==]
 
 
 
