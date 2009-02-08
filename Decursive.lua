@@ -119,7 +119,7 @@ function D:HideBar(hide) --{{{
 	DcrLiveList:ClearAllPoints();
 	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
     else
-	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.SHOW_MSG]);
+	D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
     end
 end --}}}
 
@@ -613,7 +613,7 @@ do
 			-- The user doesn't want to cure a unit afllicted by poison or disease if the unit
 			-- is beeing cured by an abolish spell
 
-			if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self:CheckUnitForBuffs(Unit, DS[self.LOC.SPELL_ABOLISH_POISON]) or Debuff.Type == DC.DISEASE and self:CheckUnitForBuffs(Unit, DS[self.LOC.SPELL_ABOLISH_DISEASE]))) then
+			if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self:CheckUnitForBuffs(Unit, DS["SPELL_ABOLISH_POISON"]) or Debuff.Type == DC.DISEASE and self:CheckUnitForBuffs(Unit, DS["SPELL_ABOLISH_DISEASE"]))) then
 			    self:Debug("Abolish buff found, skipping");
 			else
 			    -- self:Debug("It's managed");

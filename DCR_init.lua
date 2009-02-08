@@ -224,19 +224,19 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	D.DewDrop:FeedAceOptionsTable( D.options )
     end
     )
-    D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L[D.LOC.STR_OPTIONS],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
+    D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L["STR_OPTIONS"],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
 
     DC.TypeNames = {
-	[DC.MAGIC]	= D.LOC.MAGIC;
-	[DC.ENEMYMAGIC]	= D.LOC.MAGIC;
-	[DC.CURSE]	= D.LOC.CURSE;
-	[DC.POISON]	= D.LOC.POISON;
-	[DC.DISEASE]	= D.LOC.DISEASE;
-	[DC.CHARMED]	= D.LOC.CHARMED;
+	[DC.MAGIC]	= "MAGIC";
+	[DC.ENEMYMAGIC]	= "MAGIC";
+	[DC.CURSE]	= "CURSE";
+	[DC.POISON]	= "POISON";
+	[DC.DISEASE]	= "DISEASE";
+	[DC.CHARMED]	= "CHARMED";
     }
 
     DC.NameToTypes = D:tReverse(DC.TypeNames);
-    DC.NameToTypes[D.LOC.MAGIC] = DC.MAGIC;
+    DC.NameToTypes["MAGIC"] = DC.MAGIC;
 
     DC.TypeColors = {
 	[DC.MAGIC]	= "2222DD";
@@ -251,20 +251,20 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
 
     -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
-    -- /script DcrC.SpellsToUse[DcrC.DS[Dcr.LOC.SPELL_POLYMORPH]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; Dcr:Configure();
+    -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; Dcr:Configure();
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
 	DC.SpellsToUse = {
 
 
-	    [DS[D.LOC.SPELL_POLYMORPH]]	    = { --Mages
+	    [DS["SPELL_POLYMORPH"]]	    = { --Mages
 	    Types = {DC.CHARMED},
 	    IsBest = false,
 	    Pet = false,
 	    Rank = 1,
 	},
 	-- Druids
-	[DS[D.LOC.SPELL_CYCLONE]]	    = {
+	[DS["SPELL_CYCLONE"]]	    = {
 	    Types = {DC.CHARMED},
 	    IsBest = false,
 	    Pet = false,
@@ -283,74 +283,74 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = false,
 	    Pet = false,
 	}, --]]
-	[DS[D.LOC.SPELL_ABOLISH_DISEASE]]	    = {
+	[DS["SPELL_ABOLISH_DISEASE"]]	    = {
 	    Types = {DC.DISEASE},
 	    IsBest = true,
 	    Pet = false,
 	},
-	[DS[D.LOC.SPELL_CURE_DISEASE]]	    = {
+	[DS["SPELL_CURE_DISEASE"]]	    = {
 	    Types = {DC.DISEASE},
 	    IsBest = false,
 	    Pet = false,
 	},
 	-- paladins
-	[DS[D.LOC.SPELL_CLEANSE]]		    = {
+	[DS["SPELL_CLEANSE"]]		    = {
 	    Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
 	    IsBest = true,
 	    Pet = false,
 	},
-	[DS[D.LOC.SPELL_PURIFY]]		    = {
+	[DS["SPELL_PURIFY"]]		    = {
 	    Types = {DC.DISEASE, DC.POISON},
 	    IsBest = false,
 	    Pet = false,
 	},
 	-- Priests
-	[DS[D.LOC.SPELL_DISPELL_MAGIC]]	    = {
+	[DS["SPELL_DISPELL_MAGIC"]]	    = {
 	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
 	    IsBest = true,
 	    Pet = false,
 	},
 	-- Druids
-	[DS[D.LOC.SPELL_ABOLISH_POISON]]	    = {
+	[DS["SPELL_ABOLISH_POISON"]]	    = {
 	    Types = {DC.POISON},
 	    IsBest = true,
 	    Pet = false,
 	},
-	[DS[D.LOC.SPELL_CURE_POISON]]	    = {
+	[DS["SPELL_CURE_POISON"]]	    = {
 	    Types = {DC.POISON},
 	    IsBest = false,
 	    Pet = false,
 	},
 	-- mages
-	[DS[D.LOC.SPELL_REMOVE_LESSER_CURSE]]   = {
+	[DS["SPELL_REMOVE_LESSER_CURSE"]]   = {
 	    Types = {DC.CURSE},
 	    IsBest = true,
 	    Pet = false,
 	},
 	-- druids
-	[DS[D.LOC.SPELL_REMOVE_CURSE]]	    = {
+	[DS["SPELL_REMOVE_CURSE"]]	    = {
 	    Types = {DC.CURSE},
 	    IsBest = true,
 	    Pet = false,
 	},
 	--[=[ -- disabled because of Korean locals... see below
-	[DS[D.LOC.SPELL_PURGE]]		    = {
+	[DS["SPELL_PURGE"]]		    = {
 	    Types = {DC.ENEMYMAGIC},
 	    IsBest = true,
 	    Pet = false,
 	},
 	--]=]
-	[DS[D.LOC.PET_FEL_CAST]]		    = {
+	[DS["PET_FEL_CAST"]]		    = {
 	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
 	    IsBest = true,
 	    Pet = true,
 	},
-	[DS[D.LOC.PET_DOOM_CAST]]		    = {
+	[DS["PET_DOOM_CAST"]]		    = {
 	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
 	    IsBest = true,
 	    Pet = true,
 	},
-	[DS[D.LOC.CLEANSE_SPIRIT]]		    = {
+	[DS["CLEANSE_SPIRIT"]]		    = {
 	    Types = {DC.CURSE, DC.DISEASE, DC.POISON},
 	    IsBest = true,
 	    Pet = false,
@@ -362,7 +362,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- Thanks to Korean localization team of WoW we have to make an exception....
     -- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
     if ((select(2, UnitClass("player"))) == "SHAMAN") then
-	DC.SpellsToUse[DS[D.LOC.SPELL_PURGE]]		    = {
+	DC.SpellsToUse[DS["SPELL_PURGE"]]		    = {
 	    Types = {DC.ENEMYMAGIC},
 	    IsBest = true,
 	    Pet = false,
@@ -372,7 +372,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- Thanks to Chinese localization team of WoW we have to make anOTHER exception.... ://///
     -- They found the way to call two different spells the same (Devour Magic and Consume Magic... (both are called "&#21534;&#22124;&#39764;&#27861;" )
     if ((select(2, UnitClass("player"))) == "PRIEST") then
-	DC.SpellsToUse[DS[D.LOC.PET_FEL_CAST]] = nil; -- so we remove PET_FEL_CAST.
+	DC.SpellsToUse[DS["PET_FEL_CAST"]] = nil; -- so we remove PET_FEL_CAST.
     end
 
     -- // }}}
@@ -527,8 +527,8 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     D:OnProfileEnable();
 
     if (FirstEnable) then
-	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.IS_HERE_MSG]);
-	D:ColorPrint(0.3, 0.5, 1, L[D.LOC.SHOW_MSG]);
+	D:ColorPrint(0.3, 0.5, 1, L["IS_HERE_MSG"]);
+	D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
     end
 
     FirstEnable = false;
@@ -659,7 +659,7 @@ function D:OnDisable() -- When the addon is disabled by ACE
 
     -- the disable warning popup : {{{ -
     StaticPopupDialogs["Decursive_OnDisableWarning"] = {
-	text = L[D.LOC.DISABLEWARNING],
+	text = L["DISABLEWARNING"],
 	button1 = "OK",
 	OnAccept = function()
 	    return false;
@@ -879,37 +879,37 @@ end --}}}
 function D:GetSpellsTranslations(FromDIAG)
     local GetSpellInfo = _G.GetSpellInfo;
     local Spells = {
-	[D.LOC.SPELL_POLYMORPH]		= {	118,					 },
-	[D.LOC.SPELL_CYCLONE]		= {	33786,					 },
-	[D.LOC.SPELL_CURE_DISEASE]	= {	528, 2870,				 },
-	[D.LOC.SPELL_ABOLISH_DISEASE]	= {	552,					 },
-	[D.LOC.SPELL_PURIFY]		= {	1152,					 },
-	[D.LOC.SPELL_CLEANSE]		= {	4987,					 },
-	[D.LOC.SPELL_DISPELL_MAGIC]	= {	527, 988,				 },
-	[D.LOC.SPELL_CURE_POISON]	= {	526, 8946,				 },
-	[D.LOC.SPELL_ABOLISH_POISON]	= {	2893,					 },
-	[D.LOC.SPELL_REMOVE_LESSER_CURSE]={	475,					 },
-	[D.LOC.SPELL_REMOVE_CURSE]	= {	2782,					 },
-	[D.LOC.CLEANSE_SPIRIT]		= {	51886,					 },
-	[D.LOC.SPELL_PURGE]		= {	370, 8012,				 },
-	[D.LOC.PET_FEL_CAST]		= {	19505, 19731, 19734, 19736, 27276, 27277,},
-	[D.LOC.PET_DOOM_CAST]		= {	527, 988,				 },
-	[D.LOC.CURSEOFTONGUES]		= {	1714, 11719,                             },
-	[D.LOC.DCR_LOC_SILENCE]		= {	15487,					 },
-	[D.LOC.DCR_LOC_MINDVISION]	= {	2096, 10909,				 },
-	[D.LOC.DREAMLESSSLEEP]		= {	15822,					 },
-	[D.LOC.GDREAMLESSSLEEP]		= {	24360,					 },
-	[D.LOC.MDREAMLESSSLEEP]		= {	28504,					 },
-	[D.LOC.ANCIENTHYSTERIA]		= {	19372,					 },
-	[D.LOC.IGNITE]			= {	19659,					 },
-	[D.LOC.TAINTEDMIND]		= {	16567,					 },
-	[D.LOC.MAGMASHAKLES]		= {	19496,					 },
-	[D.LOC.CRIPLES]			= {	33787,					 },
-	[D.LOC.DUSTCLOUD]		= {	26072,					 },
-	[D.LOC.WIDOWSEMBRACE]		= {	28732,					 },
-	[D.LOC.SONICBURST]		= {	39052,					 },
-	[D.LOC.DELUSIONOFJINDO]		= {	24306,					 },
-	[D.LOC.MUTATINGINJECTION]	= {	28169,					 },
+	["SPELL_POLYMORPH"]		= {	118,					 },
+	["SPELL_CYCLONE"]		= {	33786,					 },
+	["SPELL_CURE_DISEASE"]	= {	528, 2870,				 },
+	["SPELL_ABOLISH_DISEASE"]	= {	552,					 },
+	["SPELL_PURIFY"]		= {	1152,					 },
+	["SPELL_CLEANSE"]		= {	4987,					 },
+	["SPELL_DISPELL_MAGIC"]	= {	527, 988,				 },
+	["SPELL_CURE_POISON"]	= {	526, 8946,				 },
+	["SPELL_ABOLISH_POISON"]	= {	2893,					 },
+	["SPELL_REMOVE_LESSER_CURSE"]={	475,					 },
+	["SPELL_REMOVE_CURSE"]	= {	2782,					 },
+	["CLEANSE_SPIRIT"]		= {	51886,					 },
+	["SPELL_PURGE"]		= {	370, 8012,				 },
+	["PET_FEL_CAST"]		= {	19505, 19731, 19734, 19736, 27276, 27277,},
+	["PET_DOOM_CAST"]		= {	527, 988,				 },
+	["CURSEOFTONGUES"]		= {	1714, 11719,                             },
+	["DCR_LOC_SILENCE"]		= {	15487,					 },
+	["DCR_LOC_MINDVISION"]	= {	2096, 10909,				 },
+	["DREAMLESSSLEEP"]		= {	15822,					 },
+	["GDREAMLESSSLEEP"]		= {	24360,					 },
+	["MDREAMLESSSLEEP"]		= {	28504,					 },
+	["ANCIENTHYSTERIA"]		= {	19372,					 },
+	["IGNITE"]			= {	19659,					 },
+	["TAINTEDMIND"]		= {	16567,					 },
+	["MAGMASHAKLES"]		= {	19496,					 },
+	["CRIPLES"]			= {	33787,					 },
+	["DUSTCLOUD"]		= {	26072,					 },
+	["WIDOWSEMBRACE"]		= {	28732,					 },
+	["SONICBURST"]		= {	39052,					 },
+	["DELUSIONOFJINDO"]		= {	24306,					 },
+	["MUTATINGINJECTION"]	= {	28169,					 },
 	['Phase Shift']			= {	4511,					 },
 	['Banish']			= {	710, 18647,				 },
 	['Frost Trap Aura']		= {	13810,					 },
@@ -998,7 +998,7 @@ function D:UpdateMacro ()
     local MacroParameters = {
 	D.CONF.MACRONAME,
 	1, -- icon index
-	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L[D.LOC.NOSPELL].."')",
+	next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L["NOSPELL"].."')",
 	0, -- per account
     };
 
@@ -1043,17 +1043,17 @@ end
 
 function D:LocalizeBindings ()
 
-    BINDING_NAME_DCRSHOW    = L[D.LOC.BINDING_NAME_DCRSHOW];
-    BINDING_NAME_DCRMUFSHOWHIDE = L[D.LOC.BINDING_NAME_DCRMUFSHOWHIDE];
-    BINDING_NAME_DCRPRADD     = L[D.LOC.BINDING_NAME_DCRPRADD];
-    BINDING_NAME_DCRPRCLEAR   = L[D.LOC.BINDING_NAME_DCRPRCLEAR];
-    BINDING_NAME_DCRPRLIST    = L[D.LOC.BINDING_NAME_DCRPRLIST];
-    BINDING_NAME_DCRPRSHOW    = L[D.LOC.BINDING_NAME_DCRPRSHOW];
-    BINDING_NAME_DCRSKADD   = L[D.LOC.BINDING_NAME_DCRSKADD];
-    BINDING_NAME_DCRSKCLEAR = L[D.LOC.BINDING_NAME_DCRSKCLEAR];
-    BINDING_NAME_DCRSKLIST  = L[D.LOC.BINDING_NAME_DCRSKLIST];
-    BINDING_NAME_DCRSKSHOW  = L[D.LOC.BINDING_NAME_DCRSKSHOW];
-    BINDING_NAME_DCRSHOWOPTION = L[D.LOC.BINDING_NAME_DCRSHOWOPTION];
+    BINDING_NAME_DCRSHOW    = L["BINDING_NAME_DCRSHOW"];
+    BINDING_NAME_DCRMUFSHOWHIDE = L["BINDING_NAME_DCRMUFSHOWHIDE"];
+    BINDING_NAME_DCRPRADD     = L["BINDING_NAME_DCRPRADD"];
+    BINDING_NAME_DCRPRCLEAR   = L["BINDING_NAME_DCRPRCLEAR"];
+    BINDING_NAME_DCRPRLIST    = L["BINDING_NAME_DCRPRLIST"];
+    BINDING_NAME_DCRPRSHOW    = L["BINDING_NAME_DCRPRSHOW"];
+    BINDING_NAME_DCRSKADD   = L["BINDING_NAME_DCRSKADD"];
+    BINDING_NAME_DCRSKCLEAR = L["BINDING_NAME_DCRSKCLEAR"];
+    BINDING_NAME_DCRSKLIST  = L["BINDING_NAME_DCRSKLIST"];
+    BINDING_NAME_DCRSKSHOW  = L["BINDING_NAME_DCRSKSHOW"];
+    BINDING_NAME_DCRSHOWOPTION = L["BINDING_NAME_DCRSHOWOPTION"];
 
 end
 

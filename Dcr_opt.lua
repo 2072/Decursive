@@ -194,7 +194,7 @@ D.defaults = { -- {{{
     UseMacro = true,
 
     -- the key to bind the macro to
-    MacroBind = false, --L[D.LOC.DEFAULT_MACROKEY], -- there were too many unhappy people with this option
+    MacroBind = false, --L["DEFAULT_MACROKEY"], -- there were too many unhappy people with this option
 
     -- Display a warning if no key is mapped.
     NoKeyWarn = true,
@@ -213,7 +213,7 @@ D.defaults = { -- {{{
 	[DC.FAR]		=   {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
 	[DC.STEALTHED]		=   {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
 	[DC.CHARMED_STATUS]	=   { 0   , 1   , 0    ,  1	}, -- full green
-	[D.LOC.COLORCHRONOS]	=   { 0.6 , 0.1 , 0.2  ,  0.7	}, -- medium red
+	["COLORCHRONOS"]	=   { 0.6 , 0.1 , 0.2  ,  0.7	}, -- medium red
     },
     -- Curring order (1 is the most important, 6 the lesser...)
     --[[
@@ -237,11 +237,11 @@ D.defaults = { -- {{{
     },
 
     BuffDebuff = { -- thoses debuffs are in fact buffs...
-	[DS[D.LOC.DREAMLESSSLEEP]]	= true,
-	[DS[D.LOC.GDREAMLESSSLEEP]]	= true,
-	[DS[D.LOC.MDREAMLESSSLEEP]]	= true,
-	[DS[D.LOC.DCR_LOC_MINDVISION]]	= true,
-	[DS[D.LOC.MUTATINGINJECTION]]	= true,
+	[DS["DREAMLESSSLEEP"]]	= true,
+	[DS["GDREAMLESSSLEEP"]]	= true,
+	[DS["MDREAMLESSSLEEP"]]	= true,
+	[DS["DCR_LOC_MINDVISION"]]	= true,
+	[DS["MUTATINGINJECTION"]]	= true,
 	[DS["Arcane Blast"]]		= true,
     },
 
@@ -249,71 +249,71 @@ D.defaults = { -- {{{
     },
 
     DebuffsSkipList = {
-	DS[D.LOC.DCR_LOC_SILENCE],
-	DS[D.LOC.ANCIENTHYSTERIA],
-	DS[D.LOC.IGNITE],
-	DS[D.LOC.TAINTEDMIND],
-	DS[D.LOC.MAGMASHAKLES],
-	DS[D.LOC.CRIPLES],
-	DS[D.LOC.DUSTCLOUD],
-	DS[D.LOC.WIDOWSEMBRACE],
-	DS[D.LOC.CURSEOFTONGUES],
-	DS[D.LOC.SONICBURST],
-	DS[D.LOC.DELUSIONOFJINDO]
+	DS["DCR_LOC_SILENCE"],
+	DS["ANCIENTHYSTERIA"],
+	DS["IGNITE"],
+	DS["TAINTEDMIND"],
+	DS["MAGMASHAKLES"],
+	DS["CRIPLES"],
+	DS["DUSTCLOUD"],
+	DS["WIDOWSEMBRACE"],
+	DS["CURSEOFTONGUES"],
+	DS["SONICBURST"],
+	DS["DELUSIONOFJINDO"]
     },
     skipByClass = {
 	["WARRIOR"] = {
-	    [DS[D.LOC.ANCIENTHYSTERIA]]   = true,
-	    [DS[D.LOC.IGNITE]]        = true,
-	    [DS[D.LOC.TAINTEDMIND]]       = true,
-	    [DS[D.LOC.WIDOWSEMBRACE]]    = true,
-	    [DS[D.LOC.CURSEOFTONGUES]]   = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["ANCIENTHYSTERIA"]]   = true,
+	    [DS["IGNITE"]]        = true,
+	    [DS["TAINTEDMIND"]]       = true,
+	    [DS["WIDOWSEMBRACE"]]    = true,
+	    [DS["CURSEOFTONGUES"]]   = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["ROGUE"] = {
-	    [DS[D.LOC.DCR_LOC_SILENCE]]           = true,
-	    [DS[D.LOC.ANCIENTHYSTERIA]]   = true,
-	    [DS[D.LOC.IGNITE]]        = true,
-	    [DS[D.LOC.TAINTEDMIND]]       = true,
-	    [DS[D.LOC.WIDOWSEMBRACE]]    = true,
-	    [DS[D.LOC.CURSEOFTONGUES]]   = true,
-	    [DS[D.LOC.SONICBURST]]        = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["DCR_LOC_SILENCE"]]           = true,
+	    [DS["ANCIENTHYSTERIA"]]   = true,
+	    [DS["IGNITE"]]        = true,
+	    [DS["TAINTEDMIND"]]       = true,
+	    [DS["WIDOWSEMBRACE"]]    = true,
+	    [DS["CURSEOFTONGUES"]]   = true,
+	    [DS["SONICBURST"]]        = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["HUNTER"] = {
-	    [DS[D.LOC.MAGMASHAKLES]]     = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["MAGMASHAKLES"]]     = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["MAGE"] = {
-	    [DS[D.LOC.MAGMASHAKLES]]     = true,
-	    [DS[D.LOC.CRIPLES]]            = true,
-	    [DS[D.LOC.DUSTCLOUD]]         = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["MAGMASHAKLES"]]     = true,
+	    [DS["CRIPLES"]]            = true,
+	    [DS["DUSTCLOUD"]]         = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["WARLOCK"] = {
-	    [DS[D.LOC.CRIPLES]]            = true,
-	    [DS[D.LOC.DUSTCLOUD]]         = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["CRIPLES"]]            = true,
+	    [DS["DUSTCLOUD"]]         = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["DRUID"] = {
-	    [DS[D.LOC.CRIPLES]]            = true,
-	    [DS[D.LOC.DUSTCLOUD]]         = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["CRIPLES"]]            = true,
+	    [DS["DUSTCLOUD"]]         = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["PALADIN"] = {
-	    [DS[D.LOC.CRIPLES]]            = true,
-	    [DS[D.LOC.DUSTCLOUD]]         = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["CRIPLES"]]            = true,
+	    [DS["DUSTCLOUD"]]         = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["PRIEST"] = {
-	    [DS[D.LOC.CRIPLES]]            = true,
-	    [DS[D.LOC.DUSTCLOUD]]         = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["CRIPLES"]]            = true,
+	    [DS["DUSTCLOUD"]]         = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["SHAMAN"] = {
-	    [DS[D.LOC.CRIPLES]]            = true,
-	    [DS[D.LOC.DUSTCLOUD]]         = true,
-	    [DS[D.LOC.DELUSIONOFJINDO]]= true,
+	    [DS["CRIPLES"]]            = true,
+	    [DS["DUSTCLOUD"]]         = true,
+	    [DS["DELUSIONOFJINDO"]]= true,
 	},
 	["DEATHKNIGHT"] = {
 	}
@@ -341,7 +341,7 @@ D.options = { -- {{{
     args = {
 	title = {
 	    type = "header",
-	    name = L[D.LOC.STR_OPTIONS],
+	    name = L["STR_OPTIONS"],
 	    textHeight = 13,
 	    justifyH = "CENTER",
 	    order = 50,
@@ -351,16 +351,16 @@ D.options = { -- {{{
 	},
 	livelistoptions = { -- {{{
 	    type = "group",
-	    name = D:ColorText(L[D.LOC.OPT_LIVELIST], "FF22EE33"),
-	    desc = L[D.LOC.OPT_LIVELIST_DESC],
+	    name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
+	    desc = L["OPT_LIVELIST_DESC"],
 	    order = 100,
 	    disabled = function() return  not D.Status.Enabled end,
 
 	    args = {
 		show = {
 		    type = "toggle",
-		    name = L[D.LOC.HIDE_LIVELIST],
-		    desc = L[D.LOC.OPT_HIDELIVELIST_DESC],
+		    name = L["HIDE_LIVELIST"],
+		    desc = L["OPT_HIDELIVELIST_DESC"],
 		    get = function() return  D.profile.Hide_LiveList end,
 		    set = function()
 			D:ShowHideLiveList()
@@ -375,8 +375,8 @@ D.options = { -- {{{
 		},
 		OnlyInRange = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_LVONLYINRANGE],
-		    desc = L[D.LOC.OPT_LVONLYINRANGE_DESC],
+		    name = L["OPT_LVONLYINRANGE"],
+		    desc = L["OPT_LVONLYINRANGE_DESC"],
 		    get = function() return D.profile.LV_OnlyInRange end,
 		    set = function() D.profile.LV_OnlyInRange = not D.profile.LV_OnlyInRange end,
 		    disabled = function() return D.profile.Hide_LiveList end,
@@ -384,8 +384,8 @@ D.options = { -- {{{
 		},
 		ToolTips = {
 		    type = "toggle",
-		    name = L[D.LOC.SHOW_TOOLTIP],
-		    desc = L[D.LOC.OPT_SHOWTOOLTIP_DESC],
+		    name = L["SHOW_TOOLTIP"],
+		    desc = L["OPT_SHOWTOOLTIP_DESC"],
 		    get = function() return D.profile.AfflictionTooltips end,
 		    set = function()
 			D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
@@ -400,8 +400,8 @@ D.options = { -- {{{
 		},
 		Sound = {
 		    type = "toggle",
-		    name = L[D.LOC.PLAY_SOUND],
-		    desc = L[D.LOC.OPT_PLAYSOUND_DESC],
+		    name = L["PLAY_SOUND"],
+		    desc = L["OPT_PLAYSOUND_DESC"],
 		    get = function() return D.profile.PlaySound end,
 		    set = function()
 			D.profile.PlaySound = not D.profile.PlaySound
@@ -411,8 +411,8 @@ D.options = { -- {{{
 		},
 		livenum = {
 		    type = 'range',
-		    name = L[D.LOC.AMOUNT_AFFLIC],
-		    desc = L[D.LOC.OPT_AMOUNT_AFFLIC_DESC],
+		    name = L["AMOUNT_AFFLIC"],
+		    desc = L["OPT_AMOUNT_AFFLIC_DESC"],
 		    get = function() return D.profile.Amount_Of_Afflicted end,
 		    set = function(v) 
 			D.profile.Amount_Of_Afflicted = v;
@@ -427,8 +427,8 @@ D.options = { -- {{{
 		},
 		BlacklistedTime = {
 		    type = 'range',
-		    name = L[D.LOC.BLACK_LENGTH],
-		    desc = L[D.LOC.OPT_BLACKLENTGH_DESC],
+		    name = L["BLACK_LENGTH"],
+		    desc = L["OPT_BLACKLENTGH_DESC"],
 		    get = function() return D.profile.CureBlacklist end,
 		    set = function(v) 
 			D.profile.CureBlacklist = v
@@ -441,8 +441,8 @@ D.options = { -- {{{
 		},
 		ScanFreq = {
 		    type = 'range',
-		    name = L[D.LOC.SCAN_LENGTH],
-		    desc = L[D.LOC.OPT_SCANLENGTH_DESC],
+		    name = L["SCAN_LENGTH"],
+		    desc = L["OPT_SCANLENGTH_DESC"],
 		    get = function() return D.profile.ScanTime end,
 		    set = function(v)
 			if (v ~= D.profile.ScanTime) then
@@ -460,8 +460,8 @@ D.options = { -- {{{
 		},
 		ReverseLL = {
 		    type = "toggle",
-		    name = L[D.LOC.REVERSE_LIVELIST],
-		    desc = L[D.LOC.OPT_REVERSE_LIVELIST_DESC],
+		    name = L["REVERSE_LIVELIST"],
+		    desc = L["OPT_REVERSE_LIVELIST_DESC"],
 		    get = function() return D.profile.ReverseLiveDisplay end,
 		    set = function()
 			D.profile.ReverseLiveDisplay = not D.profile.ReverseLiveDisplay
@@ -472,8 +472,8 @@ D.options = { -- {{{
 		},
 		TieLLVisibility = {
 		    type = "toggle",
-		    name = L[D.LOC.TIE_LIVELIST],
-		    desc = L[D.LOC.OPT_TIE_LIVELIST_DESC],
+		    name = L["TIE_LIVELIST"],
+		    desc = L["OPT_TIE_LIVELIST_DESC"],
 		    get = function() return D.profile.LiveListTied end,
 		    set = function()
 			D.profile.LiveListTied = not D.profile.LiveListTied
@@ -487,8 +487,8 @@ D.options = { -- {{{
 		},
 		ShowTestItem = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_CREATE_VIRTUAL_DEBUFF],
-		    desc = L[D.LOC.OPT_CREATE_VIRTUAL_DEBUFF_DESC],
+		    name = L["OPT_CREATE_VIRTUAL_DEBUFF"],
+		    desc = L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"],
 		    get = function() return  D.LiveList.TestItemDisplayed end,
 		    set = function()
 			if not D.LiveList.TestItemDisplayed then
@@ -502,8 +502,8 @@ D.options = { -- {{{
 		},
 		FrameScaleLL = {
 		    type = 'range',
-		    name = L[D.LOC.OPT_LLSCALE],
-		    desc = L[D.LOC.OPT_LLSCALE_DESC],
+		    name = L["OPT_LLSCALE"],
+		    desc = L["OPT_LLSCALE_DESC"],
 		    get = function() return D.profile.LiveListScale end, -- D.profile.DebuffsFrameElemScale end,
 		    set = function(v) 
 			if (v ~= D.profile.LiveListScale) then
@@ -521,8 +521,8 @@ D.options = { -- {{{
 		},
 		AlphaLL = {
 		     type = 'range',
-		    name = L[D.LOC.OPT_LLALPHA],
-		    desc = L[D.LOC.OPT_LLALPHA_DESC],
+		    name = L["OPT_LLALPHA"],
+		    desc = L["OPT_LLALPHA_DESC"],
 		    get = function() return 1 - D.profile.LiveListAlpha end,
 		    set = function(v) 
 			if (v ~= D.profile.LiveListAlpha) then
@@ -543,15 +543,15 @@ D.options = { -- {{{
 
 	MessageOptions = { -- {{{
 	    type = "group",
-	    name = D:ColorText(L[D.LOC.OPT_MESSAGES], "FF229966"),
-	    desc = L[D.LOC.OPT_MESSAGES_DESC],
+	    name = D:ColorText(L["OPT_MESSAGES"], "FF229966"),
+	    desc = L["OPT_MESSAGES_DESC"],
 	    order = 110,
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {
 		PrintToDefaultChat = {
 		    type = "toggle",
-		    name =  L[D.LOC.PRINT_CHATFRAME],
-		    desc = L[D.LOC.OPT_CHATFRAME_DESC],
+		    name =  L["PRINT_CHATFRAME"],
+		    desc = L["OPT_CHATFRAME_DESC"],
 		    get = function() return D.profile.Print_ChatFrame end,
 		    set = function()
 			D.profile.Print_ChatFrame = not D.profile.Print_ChatFrame;
@@ -560,8 +560,8 @@ D.options = { -- {{{
 		},
 		PrintToCustomChat = {
 		    type = "toggle",
-		    name =  L[D.LOC.PRINT_CUSTOM],
-		    desc = L[D.LOC.OPT_PRINT_CUSTOM_DESC],
+		    name =  L["PRINT_CUSTOM"],
+		    desc = L["OPT_PRINT_CUSTOM_DESC"],
 		    get = function() return D.profile.Print_CustomFrame end,
 		    set = function()
 			D.profile.Print_CustomFrame = not D.profile.Print_CustomFrame;
@@ -570,8 +570,8 @@ D.options = { -- {{{
 		},
 		PrintErrors = {
 		    type = "toggle",
-		    name =  L[D.LOC.PRINT_ERRORS],
-		    desc =  L[D.LOC.OPT_PRINT_ERRORS_DESC],
+		    name =  L["PRINT_ERRORS"],
+		    desc =  L["OPT_PRINT_ERRORS_DESC"],
 		    get = function() return D.profile.Print_Error end,
 		    set = function()
 			D.profile.Print_Error = not D.profile.Print_Error;
@@ -580,8 +580,8 @@ D.options = { -- {{{
 		},
 		ShowCustomFAnchor = {
 		    type = "toggle",
-		    name =  L[D.LOC.ANCHOR],
-		    desc = L[D.LOC.OPT_ANCHOR_DESC],
+		    name =  L["ANCHOR"],
+		    desc = L["OPT_ANCHOR_DESC"],
 		    get = function() return DecursiveAnchor:IsVisible() end,
 		    set = function()
 			D:ShowHideTextAnchor();
@@ -594,22 +594,22 @@ D.options = { -- {{{
 
 	MicroFrameOpt = { -- {{{
 	    type = "group",
-	    name = D:ColorText(L[D.LOC.OPT_MFSETTINGS], "FFBBCC33"),
-	    desc =		 L[D.LOC.OPT_MFSETTINGS_DESC],
+	    name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
+	    desc =		 L["OPT_MFSETTINGS_DESC"],
 	    order = 130,
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {
 		title1 = {
 		    type = "header",
-		    name = L[D.LOC.OPT_DISPLAYOPTIONS],
+		    name = L["OPT_DISPLAYOPTIONS"],
 		    textHeight = 13,
 		    justifyH = "CENTER",
 		    order = 1100,
 		},
 		Show = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_SHOWMFS],
-		    desc = L[D.LOC.OPT_SHOWMFS_DESC],
+		    name = L["OPT_SHOWMFS"],
+		    desc = L["OPT_SHOWMFS_DESC"],
 		    get = function() return D.profile.ShowDebuffsFrame end,
 		    set = function()
 			D:ShowHideDebuffsFrame ();
@@ -619,34 +619,34 @@ D.options = { -- {{{
 		},
 		AutoHide = {
 		    type = "text",
-		    name = L[D.LOC.OPT_AUTOHIDEMFS],
-		    desc = L[D.LOC.OPT_AUTOHIDEMFS_DESC],
+		    name = L["OPT_AUTOHIDEMFS"],
+		    desc = L["OPT_AUTOHIDEMFS_DESC"],
 		    order = 1210,
-		    validate	    = {L[D.LOC.OPT_HIDEMFS_NEVER],	L[D.LOC.OPT_HIDEMFS_SOLO],	L[D.LOC.OPT_HIDEMFS_GROUP]},
+		    validate	    = {L["OPT_HIDEMFS_NEVER"],	L["OPT_HIDEMFS_SOLO"],	L["OPT_HIDEMFS_GROUP"]},
 		    validateDesc    = {
-			[L[D.LOC.OPT_HIDEMFS_NEVER]]	= L[D.LOC.OPT_HIDEMFS_NEVER_DESC],
-			[L[D.LOC.OPT_HIDEMFS_SOLO]]	= L[D.LOC.OPT_HIDEMFS_SOLO_DESC],
-			[L[D.LOC.OPT_HIDEMFS_GROUP]]	= L[D.LOC.OPT_HIDEMFS_GROUP_DESC]
+			[L["OPT_HIDEMFS_NEVER"]]	= L["OPT_HIDEMFS_NEVER_DESC"],
+			[L["OPT_HIDEMFS_SOLO"]]	= L["OPT_HIDEMFS_SOLO_DESC"],
+			[L["OPT_HIDEMFS_GROUP"]]	= L["OPT_HIDEMFS_GROUP_DESC"]
 		    },
 		    set = function(value)
 			--D:Debug(value);
 			local GetUseableValue = {
-			    [L[D.LOC.OPT_HIDEMFS_NEVER]]	= 0,
-			    [L[D.LOC.OPT_HIDEMFS_SOLO]]		= 1,
-			    [L[D.LOC.OPT_HIDEMFS_GROUP]]	= 2,
+			    [L["OPT_HIDEMFS_NEVER"]]	= 0,
+			    [L["OPT_HIDEMFS_SOLO"]]		= 1,
+			    [L["OPT_HIDEMFS_GROUP"]]	= 2,
 			};
 			D.profile.AutoHideDebuffsFrame = GetUseableValue[value];
 			D:AutoHideShowMUFs();
 		    end,
 		    get = function()
-			local GetUseableNames = {L[D.LOC.OPT_HIDEMFS_NEVER],	L[D.LOC.OPT_HIDEMFS_SOLO],	L[D.LOC.OPT_HIDEMFS_GROUP]};
+			local GetUseableNames = {L["OPT_HIDEMFS_NEVER"],	L["OPT_HIDEMFS_SOLO"],	L["OPT_HIDEMFS_GROUP"]};
 			return  GetUseableNames[D.profile.AutoHideDebuffsFrame + 1];
 		    end,
 		},
 		GrowToTop = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_GROWDIRECTION],
-		    desc = L[D.LOC.OPT_GROWDIRECTION_DESC],
+		    name = L["OPT_GROWDIRECTION"],
+		    desc = L["OPT_GROWDIRECTION_DESC"],
 		    get = function() return D.profile.DebuffsFrameGrowToTop end,
 		    set = function(v)
 			if (v ~= D.profile.DebuffsFrameGrowToTop) then
@@ -659,8 +659,8 @@ D.options = { -- {{{
 		},
 		StickToRight = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_STICKTORIGHT],
-		    desc = L[D.LOC.OPT_STICKTORIGHT_DESC],
+		    name = L["OPT_STICKTORIGHT"],
+		    desc = L["OPT_STICKTORIGHT_DESC"],
 		    get = function() return D.profile.DebuffsFrameStickToRight end,
 		    set = function(v)
 			if (v ~= D.profile.DebuffsFrameStickToRight) then
@@ -674,8 +674,8 @@ D.options = { -- {{{
 		},
 		ShowBorder = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_SHOWBORDER],
-		    desc = L[D.LOC.OPT_SHOWBORDER_DESC],
+		    name = L["OPT_SHOWBORDER"],
+		    desc = L["OPT_SHOWBORDER_DESC"],
 		    get = function() return D.profile.DebuffsFrameElemBorderShow end,
 		    set = function(v)
 			if (v ~= D.profile.DebuffsFrameElemBorderShow) then
@@ -687,8 +687,8 @@ D.options = { -- {{{
 		},
 		ShowChrono = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_SHOWCHRONO],
-		    desc = L[D.LOC.OPT_SHOWCHRONO_DESC],
+		    name = L["OPT_SHOWCHRONO"],
+		    desc = L["OPT_SHOWCHRONO_DESC"],
 		    get = function() return D.profile.DebuffsFrameChrono end,
 		    set = function(v)
 			if (v ~= D.profile.DebuffsFrameChrono) then
@@ -704,8 +704,8 @@ D.options = { -- {{{
 		},
 		MaxCount = {
 		    type = 'range',
-		    name = L[D.LOC.OPT_MAXMFS],
-		    desc = L[D.LOC.OPT_MAXMFS_DESC],
+		    name = L["OPT_MAXMFS"],
+		    desc = L["OPT_MAXMFS_DESC"],
 		    get = function() return D.profile.DebuffsFrameMaxCount end,
 		    set = function(v) 
 			if (v ~= D.profile.DebuffsFrameMaxCount) then
@@ -724,8 +724,8 @@ D.options = { -- {{{
 		},
 		MFPerline = {
 		    type = 'range',
-		    name = L[D.LOC.OPT_UNITPERLINES],
-		    desc = L[D.LOC.OPT_UNITPERLINES_DESC],
+		    name = L["OPT_UNITPERLINES"],
+		    desc = L["OPT_UNITPERLINES_DESC"],
 		    get = function() return D.profile.DebuffsFramePerline end,
 		    set = function(v) 
 			if (v ~= D.profile.DebuffsFramePerline) then
@@ -746,8 +746,8 @@ D.options = { -- {{{
 		},
 		MUFsColors = {
 		    type = "group",
-		    name = D:ColorText(L[D.LOC.OPT_MUFSCOLORS], "FFFF00CA"),
-		    desc = L[D.LOC.OPT_MUFSCOLORS_DESC],
+		    name = D:ColorText(L["OPT_MUFSCOLORS"], "FFFF00CA"),
+		    desc = L["OPT_MUFSCOLORS_DESC"],
 		    order = 1705,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    args = {}
@@ -758,8 +758,8 @@ D.options = { -- {{{
 		},
 		FrameScale = {
 		    type = 'range',
-		    name = L[D.LOC.OPT_MFSCALE],
-		    desc = L[D.LOC.OPT_MFSCALE_DESC],
+		    name = L["OPT_MFSCALE"],
+		    desc = L["OPT_MFSCALE_DESC"],
 		    get = function() return D.profile.DebuffsFrameElemScale end, -- D.profile.DebuffsFrameElemScale end,
 		    set = function(v) 
 			if (v ~= D.profile.DebuffsFrameElemScale) then
@@ -779,8 +779,8 @@ D.options = { -- {{{
 		},
 		Alpha = {
 		    type = 'range',
-		    name = L[D.LOC.OPT_MFALPHA],
-		    desc = L[D.LOC.OPT_MFALPHA_DESC],
+		    name = L["OPT_MFALPHA"],
+		    desc = L["OPT_MFALPHA_DESC"],
 		    get = function() return 1 - D.profile.DebuffsFrameElemAlpha end,
 		    set = function(v) 
 			if (v ~= D.profile.DebuffsFrameElemAlpha) then
@@ -797,15 +797,15 @@ D.options = { -- {{{
 		},
 		AdvDispOptions = {
 		    type = "group",
-		    name = L[D.LOC.OPT_ADVDISP],
-		    desc = L[D.LOC.OPT_ADVDISP_DESC],
+		    name = L["OPT_ADVDISP"],
+		    desc = L["OPT_ADVDISP_DESC"],
 		    order = 2000,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    args = {
 			TieTransparency = {
 			    type = "toggle",
-			    name = L[D.LOC.OPT_TIECENTERANDBORDER],
-			    desc = L[D.LOC.OPT_TIECENTERANDBORDER_OPT],
+			    name = L["OPT_TIECENTERANDBORDER"],
+			    desc = L["OPT_TIECENTERANDBORDER_OPT"],
 			    get = function() return D.profile.DebuffsFrameElemTieTransparency end,
 			    set = function(v)
 				if (v ~= D.profile.DebuffsFrameElemTieTransparency) then
@@ -820,8 +820,8 @@ D.options = { -- {{{
 			},
 			BorderAlpha = {
 			    type = 'range',
-			    name = L[D.LOC.OPT_BORDERTRANSP],
-			    desc = L[D.LOC.OPT_BORDERTRANSP_DESC],
+			    name = L["OPT_BORDERTRANSP"],
+			    desc = L["OPT_BORDERTRANSP_DESC"],
 			    get = function() return 1 - D.profile.DebuffsFrameElemBorderAlpha end,
 			    set = function(v) 
 				if (v ~= D.profile.DebuffsFrameElemBorderAlpha) then
@@ -837,8 +837,8 @@ D.options = { -- {{{
 			},
 			CenterAlpha = {
 			    type = 'range',
-			    name = L[D.LOC.OPT_CENTERTRANSP],
-			    desc = L[D.LOC.OPT_CENTERTRANSP_DESC],
+			    name = L["OPT_CENTERTRANSP"],
+			    desc = L["OPT_CENTERTRANSP_DESC"],
 			    get = function() return 1 - D.profile.DebuffsFrameElemAlpha end,
 			    set = function(v) 
 				if (v ~= D.profile.DebuffsFrameElemAlpha) then
@@ -861,8 +861,8 @@ D.options = { -- {{{
 			},
 			TieXY = {
 			    type = "toggle",
-			    name = L[D.LOC.OPT_TIEXYSPACING],
-			    desc = L[D.LOC.OPT_TIEXYSPACING_DESC],
+			    name = L["OPT_TIEXYSPACING"],
+			    desc = L["OPT_TIEXYSPACING_DESC"],
 			    get = function() return D.profile.DebuffsFrameTieSpacing end,
 			    set = function(v)
 				if (v ~= D.profile.DebuffsFrameTieSpacing) then
@@ -878,8 +878,8 @@ D.options = { -- {{{
 			},
 			XSpace = {
 			    type = 'range',
-			    name = L[D.LOC.OPT_XSPACING],
-			    desc = L[D.LOC.OPT_XSPACING_DESC],
+			    name = L["OPT_XSPACING"],
+			    desc = L["OPT_XSPACING_DESC"],
 			    get = function() return D.profile.DebuffsFrameXSpacing end,
 			    set = function(v) 
 				if (v ~= D.profile.DebuffsFrameXSpacing) then
@@ -899,8 +899,8 @@ D.options = { -- {{{
 			},
 			YSpace = {
 			    type = 'range',
-			    name = L[D.LOC.OPT_YSPACING],
-			    desc = L[D.LOC.OPT_YSPACING_DESC],
+			    name = L["OPT_YSPACING"],
+			    desc = L["OPT_YSPACING_DESC"],
 			    get = function() return D.profile.DebuffsFrameYSpacing end,
 			    set = function(v) 
 				if (v ~= D.profile.DebuffsFrameYSpacing) then
@@ -923,8 +923,8 @@ D.options = { -- {{{
 		},
 		ToolTips = {
 		    type = "toggle",
-		    name = L[D.LOC.SHOW_TOOLTIP],
-		    desc = L[D.LOC.OPT_SHOWTOOLTIP_DESC],
+		    name = L["SHOW_TOOLTIP"],
+		    desc = L["OPT_SHOWTOOLTIP_DESC"],
 		    get = function() return D.profile.AfflictionTooltips end,
 		    set = function()
 			D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
@@ -934,8 +934,8 @@ D.options = { -- {{{
 		},
 		ShowHelp = {
 		    type = "toggle",
-		    name = L[D.LOC.OPT_SHOWHELP],
-		    desc = L[D.LOC.OPT_SHOWHELP_DESC],
+		    name = L["OPT_SHOWHELP"],
+		    desc = L["OPT_SHOWHELP_DESC"],
 		    get = function() return D.profile.DebuffsFrameShowHelp end,
 		    set = function()
 			D.profile.DebuffsFrameShowHelp = not D.profile.DebuffsFrameShowHelp;
@@ -950,15 +950,15 @@ D.options = { -- {{{
 		},
 		title2 = {
 		    type = "header",
-		    name = L[D.LOC.OPT_MFPERFOPT],
+		    name = L["OPT_MFPERFOPT"],
 		    textHeight = 13,
 		    justifyH = "CENTER",
 		    order = 2500,
 		},
 		UpdateRate = {
 		    type = 'range',
-		    name = L[D.LOC.OPT_MFREFRESHRATE],
-		    desc = L[D.LOC.OPT_MFREFRESHRATE_DESC],
+		    name = L["OPT_MFREFRESHRATE"],
+		    desc = L["OPT_MFREFRESHRATE_DESC"],
 		    get = function() return D.profile.DebuffsFrameRefreshRate end,
 		    set = function(v) 
 			if (v ~= D.profile.DebuffsFrameRefreshRate) then
@@ -977,8 +977,8 @@ D.options = { -- {{{
 		},
 		PerUpdate = {
 		    type = 'range',
-		    name = L[D.LOC.OPT_MFREFRESHSPEED],
-		    desc = L[D.LOC.OPT_MFREFRESHSPEED_DESC],
+		    name = L["OPT_MFREFRESHSPEED"],
+		    desc = L["OPT_MFREFRESHSPEED_DESC"],
 		    get = function() return D.profile.DebuffsFramePerUPdate end,
 		    set = function(v) 
 			if (v ~= D.profile.DebuffsFramePerUPdate) then
@@ -1003,15 +1003,15 @@ D.options = { -- {{{
 
 	CureOptions = { -- {{{
 	    type = "group",
-	    name = D:ColorText(L[D.LOC.OPT_CURINGOPTIONS], "FFFF5533"),
-	    desc = L[D.LOC.OPT_CURINGOPTIONS_DESC],
+	    name = D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533"),
+	    desc = L["OPT_CURINGOPTIONS_DESC"],
 	    order = 120,
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {
 		AbolishCheck = {
 		    type = "toggle",
-		    name =  L[D.LOC.ABOLISH_CHECK],
-		    desc = L[D.LOC.OPT_ABOLISHCHECK_DESC],
+		    name =  L["ABOLISH_CHECK"],
+		    desc = L["OPT_ABOLISHCHECK_DESC"],
 		    get = function() return D.profile.Check_For_Abolish end,
 		    set = function()
 			D.profile.Check_For_Abolish = not D.profile.Check_For_Abolish;
@@ -1020,8 +1020,8 @@ D.options = { -- {{{
 		},
 		DoNotBlPrios = {
 		    type = "toggle",
-		    name =  L[D.LOC.DONOT_BL_PRIO],
-		    desc = L[D.LOC.OPT_DONOTBLPRIO_DESC],
+		    name =  L["DONOT_BL_PRIO"],
+		    desc = L["OPT_DONOTBLPRIO_DESC"],
 		    get = function() return D.profile.DoNot_Blacklist_Prio_List end,
 		    set = function()
 			D.profile.DoNot_Blacklist_Prio_List = not D.profile.DoNot_Blacklist_Prio_List;
@@ -1030,8 +1030,8 @@ D.options = { -- {{{
 		},
 		RandomCure = {
 		    type = "toggle",
-		    name =  L[D.LOC.RANDOM_ORDER],
-		    desc =  L[D.LOC.OPT_RANDOMORDER_DESC],
+		    name =  L["RANDOM_ORDER"],
+		    desc =  L["OPT_RANDOMORDER_DESC"],
 		    get = function() return D.profile.Random_Order end,
 		    set = function()
 			D.profile.Random_Order = not D.profile.Random_Order;
@@ -1041,8 +1041,8 @@ D.options = { -- {{{
 		},
 		CurePets = {
 		    type = "toggle",
-		    name =  L[D.LOC.CURE_PETS],
-		    desc = L[D.LOC.OPT_CUREPETS_DESC],
+		    name =  L["CURE_PETS"],
+		    desc = L["OPT_CUREPETS_DESC"],
 		    get = function() return D.profile.Scan_Pets end,
 		    set = function()
 			D.profile.Scan_Pets = not D.profile.Scan_Pets;
@@ -1053,8 +1053,8 @@ D.options = { -- {{{
 		},
 		SkipStealthed = {
 		    type = "toggle",
-		    name =  L[D.LOC.IGNORE_STEALTH],
-		    desc = L[D.LOC.OPT_IGNORESTEALTHED_DESC],
+		    name =  L["IGNORE_STEALTH"],
+		    desc = L["OPT_IGNORESTEALTHED_DESC"],
 		    get = function() return D.profile.Ingore_Stealthed end,
 		    set = function()
 			D.profile.Ingore_Stealthed = not D.profile.Ingore_Stealthed;
@@ -1067,15 +1067,15 @@ D.options = { -- {{{
 		{
 		    type = "header", order = 138,}, Title2 = {
 			type="header",  textHeight = 13,
-			name = L[D.LOC.OPT_CURINGORDEROPTIONS],
+			name = L["OPT_CURINGORDEROPTIONS"],
 		    order = 139,
 		},
 		{ type = "header", order = 140,   },
 
 		CureMagic = {
 		    type = "toggle",
-		    name = D.L[D.LOC.MAGIC],
-		    desc = L[D.LOC.OPT_MAGICCHECK_DESC],
+		    name = D.L["MAGIC"],
+		    desc = L["OPT_MAGICCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.MAGIC) end,
 		    set = function()
 			D:SetCureOrder (DC.MAGIC);
@@ -1086,8 +1086,8 @@ D.options = { -- {{{
 		},
 		CureEnemyMagic = {
 		    type = "toggle",
-		    name = D.L[D.LOC.MAGICCHARMED],
-		    desc = L[D.LOC.OPT_MAGICCHARMEDCHECK_DESC],
+		    name = D.L["MAGICCHARMED"],
+		    desc = L["OPT_MAGICCHARMEDCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.ENEMYMAGIC) end,
 		    set = function()
 			D:SetCureOrder (DC.ENEMYMAGIC);
@@ -1098,8 +1098,8 @@ D.options = { -- {{{
 		},
 		CurePoison = {
 		    type = "toggle",
-		    name = D.L[D.LOC.POISON],
-		    desc = L[D.LOC.OPT_POISONCHECK_DESC],
+		    name = D.L["POISON"],
+		    desc = L["OPT_POISONCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.POISON) end,
 		    set = function()
 			D:SetCureOrder (DC.POISON);
@@ -1110,8 +1110,8 @@ D.options = { -- {{{
 		},
 		CureDisease = {
 		    type = "toggle",
-		    name = D.L[D.LOC.DISEASE],
-		    desc = L[D.LOC.OPT_DISEASECHECK_DESC],
+		    name = D.L["DISEASE"],
+		    desc = L["OPT_DISEASECHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.DISEASE) end,
 		    set = function()
 			D:SetCureOrder (DC.DISEASE);
@@ -1122,8 +1122,8 @@ D.options = { -- {{{
 		},
 		CureCurse = {
 		    type = "toggle",
-		    name = D.L[D.LOC.CURSE],
-		    desc = L[D.LOC.OPT_CURSECHECK_DESC],
+		    name = D.L["CURSE"],
+		    desc = L["OPT_CURSECHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.CURSE) end,
 		    set = function()
 			D:SetCureOrder (DC.CURSE);
@@ -1134,8 +1134,8 @@ D.options = { -- {{{
 		},
 		CureCharmed = {
 		    type = "toggle",
-		    name = D.L[D.LOC.CHARMED],
-		    desc = L[D.LOC.OPT_CHARMEDCHECK_DESC],
+		    name = D.L["CHARMED"],
+		    desc = L["OPT_CHARMEDCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.CHARMED) end,
 		    set = function()
 			D:SetCureOrder (DC.CHARMED);
@@ -1149,8 +1149,8 @@ D.options = { -- {{{
 
 	DebuffSkip = {
 	    type = "group",
-	    name = D:ColorText(L[D.LOC.OPT_DEBUFFFILTER], "FF99CCAA"),
-	    desc = L[D.LOC.OPT_DEBUFFFILTER_DESC],
+	    name = D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"),
+	    desc = L["OPT_DEBUFFFILTER_DESC"],
 	    order = 145,
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {}
@@ -1161,15 +1161,15 @@ D.options = { -- {{{
 	},
 	Macro = {
 	    type = "group",
-	    name = D:ColorText(L[D.LOC.OPT_MACROOPTIONS], "FFCC99BB"),
-	    desc = L[D.LOC.OPT_MACROOPTIONS_DESC],
+	    name = D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"),
+	    desc = L["OPT_MACROOPTIONS_DESC"],
 	    order = 147,
 	    disabled = function() return  not D.Status.Enabled or D.Status.Combat end,
 	    args = {
 		SetKey = {
 		    type = "text",
-		    name = L[D.LOC.OPT_MACROBIND],
-		    desc = L[D.LOC.OPT_MACROBIND_DESC],
+		    name = L["OPT_MACROBIND"],
+		    desc = L["OPT_MACROBIND_DESC"],
 		    validate = "keybinding",
 		    get = function ()
 			local key = (GetBindingKey(D.CONF.MACROCOMMAND));
@@ -1183,8 +1183,8 @@ D.options = { -- {{{
 		},
 		NoKeyWarn = {
 		    type = "toggle",
-		    name = D.L[D.LOC.OPT_NOKEYWARN],
-		    desc = L[D.LOC.OPT_NOKEYWARN_DESC],
+		    name = D.L["OPT_NOKEYWARN"],
+		    desc = L["OPT_NOKEYWARN_DESC"],
 		    get = function() return D.profile.NoKeyWarn end,
 		    set = function(v)
 			D.profile.NoKeyWarn = v;
@@ -1199,8 +1199,8 @@ D.options = { -- {{{
 	},
 	reset = {
 	    type = "execute",
-	    name = D:ColorText(L[D.LOC.OPT_RESETOPTIONS], "FF00AAAA"),
-	    desc = L[D.LOC.OPT_RESETOPTIONS_DESC],
+	    name = D:ColorText(L["OPT_RESETOPTIONS"], "FF00AAAA"),
+	    desc = L["OPT_RESETOPTIONS_DESC"],
 	    func = function ()
 		D.Tmp.Profile = D:GetProfile();
 		StaticPopup_Show ("DCR_CONFIRM_RESET", D:GetProfile());
@@ -1224,8 +1224,8 @@ D.options = { -- {{{
 	},
 	GlorfindalMemorium = { -- {{{
 	    type = "execute",
-	    name = D:ColorText(L[D.LOC.GLOR1], "FF" .. D:GetClassHexColor( "WARRIOR" )),
-	    desc = L[D.LOC.GLOR2],
+	    name = D:ColorText(L["GLOR1"], "FF" .. D:GetClassHexColor( "WARRIOR" )),
+	    desc = L["GLOR2"],
 	    func = function ()
 
 		if not D.MemoriumFrame then
@@ -1309,7 +1309,7 @@ D.options = { -- {{{
 		    f.FSt:SetPoint("TOPLEFT", f.tTL, "TOPLEFT", 5, -20);
 		    f.FSt:SetPoint("TOPRIGHT", f.tTR, "TOPRIGHT", -5, -20);
 		    f.FSt:SetJustifyH("CENTER");
-		    f.FSt:SetText(L[D.LOC.GLOR3]);
+		    f.FSt:SetText(L["GLOR3"]);
 		    f.FSt:SetAlpha(0.80);
 
 		    f.FSc = f:CreateFontString("DcrMmCntFont","OVERLAY", "MailTextFontNormal");
@@ -1323,7 +1323,7 @@ D.options = { -- {{{
 		    f.FSc:SetJustifyV("TOP");
 		    f.FSc:SetSpacing(5);
 
-		    f.FSc:SetText(L[D.LOC.GLOR4]);
+		    f.FSc:SetText(L["GLOR4"]);
 
 
 		    f.FSc:SetAlpha(0.80);
@@ -1335,7 +1335,7 @@ D.options = { -- {{{
 		    f.FSl:SetJustifyV("BOTTOM");
 		    f.FSl:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 30, 33);
 		    f.FSl:SetAlpha(0.80);
-		    f.FSl:SetText(L[D.LOC.GLOR5]);
+		    f.FSl:SetText(L["GLOR5"]);
 
 		    f:SetPoint("CENTER",0,0);
 
@@ -1394,8 +1394,8 @@ D.options = { -- {{{
 	},
 	minimap = {
 	    type = "toggle",
-	    name = L[D.LOC.OPT_SHOWMINIMAPICON],
-	    desc = L[D.LOC.OPT_SHOWMINIMAPICON_DESC],
+	    name = L["OPT_SHOWMINIMAPICON"],
+	    desc = L["OPT_SHOWMINIMAPICON_DESC"],
 	    get = function() return not D.profile.MiniMapIcon or not D.profile.MiniMapIcon.hide end,
 	    set = function(v)
 		local hide = not v;
@@ -1675,7 +1675,7 @@ end --}}}
 
 -- Popups definition {{{
 StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
-    text = L[D.LOC.OPT_REMOVESKDEBCONF],
+    text = L["OPT_REMOVESKDEBCONF"],
     button1 = TEXT(ACCEPT),
     button2 = TEXT(CANCEL),
     OnAccept = function()
@@ -1705,12 +1705,12 @@ StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
 };
 
 StaticPopupDialogs["DCR_CONFIRM_RESET"] = {
-    text = L[D.LOC.OPT_RESTPROFILECONF],
+    text = L["OPT_RESTPROFILECONF"],
     button1 = TEXT(ACCEPT),
     button2 = TEXT(CANCEL),
     OnAccept = function()
 
-	D:Println(L[D.LOC.OPT_PROFILERESET]);
+	D:Println(L["OPT_PROFILERESET"]);
 	D:ResetDB("profile");
 
     end,
@@ -1770,8 +1770,8 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    type = "toggle",
 	    name = D:ColorText( BC[FormattedClass], "FF"..DC.HexClassColor[Class]) ..
 	    (CheckedByDefault and D:ColorText("  *", "FFFFAA00") or ""),
-	    desc = str_format(L[D.LOC.OPT_AFFLICTEDBYSKIPPED], BC[FormattedClass], DebuffName) ..
-	    (CheckedByDefault and D:ColorText(L[D.LOC.OPT_DEBCHECKEDBYDEF], "FFFFAA00") or "");
+	    desc = str_format(L["OPT_AFFLICTEDBYSKIPPED"], BC[FormattedClass], DebuffName) ..
+	    (CheckedByDefault and D:ColorText(L["OPT_DEBCHECKEDBYDEF"], "FFFFAA00") or "");
 	    handler = {
 		["Debuff"]=DebuffName,
 		["Class"]=Class,
@@ -1804,8 +1804,8 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	classes["PermIgnore"] = {
 	    type = "toggle",
-	    name = D:ColorText(L[D.LOC.OPT_ALWAYSIGNORE], "FFFF9900"),
-	    desc = str_format(L[D.LOC.OPT_ALWAYSIGNORE_DESC], DebuffName),
+	    name = D:ColorText(L["OPT_ALWAYSIGNORE"], "FFFF9900"),
+	    desc = str_format(L["OPT_ALWAYSIGNORE_DESC"], DebuffName),
 	    handler = {
 		["Debuff"] = DebuffName,
 		["get"] = function (args)
@@ -1827,8 +1827,8 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	classes["remove"] = {
 	    type = "execute",
-	    name = D:ColorText(L[D.LOC.OPT_REMOVETHISDEBUFF], "FFFF0000"),
-	    desc = str_format(L[D.LOC.OPT_REMOVETHISDEBUFF_DESC], DebuffName),
+	    name = D:ColorText(L["OPT_REMOVETHISDEBUFF"], "FFFF0000"),
+	    desc = str_format(L["OPT_REMOVETHISDEBUFF_DESC"], DebuffName),
 	    handler = {
 		["Debuff"] = DebuffName,
 		["remove"] = RemoveFunc,
@@ -1853,8 +1853,8 @@ do -- this is a closure, it's a bit like {} blocks in C
 	classes["reset"] = {
 	    type = "execute",
 	    -- the two statements below are like (()?:) in C
-	    name = not resetDisabled and D:ColorText(L[D.LOC.OPT_RESETDEBUFF], "FF11FF00") or L[D.LOC.OPT_RESETDEBUFF],
-	    desc = not resetDisabled and str_format(L[D.LOC.OPT_RESETDTDCRDEFAULT], DebuffName) or L[D.LOC.OPT_USERDEBUFF],
+	    name = not resetDisabled and D:ColorText(L["OPT_RESETDEBUFF"], "FF11FF00") or L["OPT_RESETDEBUFF"],
+	    desc = not resetDisabled and str_format(L["OPT_RESETDTDCRDEFAULT"], DebuffName) or L["OPT_USERDEBUFF"],
 	    handler = {
 		["Debuff"] = DebuffName,
 		["reset"] = ResetFunc,
@@ -1880,7 +1880,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	return {
 	    type = "group",
 	    name = IsADefault and D:ColorText(DebuffName, "FFFFFFFF") or D:ColorText(DebuffName, "FF99FFFF"),
-	    desc = L[D.LOC.OPT_DEBUFFENTRY_DESC],
+	    desc = L["OPT_DEBUFFENTRY_DESC"],
 	    order = 100 + num,
 	    args = DebuffSubmenu(DebuffName, num),
 	}
@@ -1966,9 +1966,9 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	DebuffsSubMenu["add"] = {
 	    type = "text",
-	    name = D:ColorText(L[D.LOC.OPT_ADDDEBUFF], "FFFF3300"),
-	    desc = L[D.LOC.OPT_ADDDEBUFF_DESC],
-	    usage = L[D.LOC.OPT_ADDDEBUFF_USAGE],
+	    name = D:ColorText(L["OPT_ADDDEBUFF"], "FFFF3300"),
+	    desc = L["OPT_ADDDEBUFF_DESC"],
+	    usage = L["OPT_ADDDEBUFF_USAGE"],
 	    get = false,
 	    set = AddFunc,
 	    order = 100 + num,
@@ -1978,8 +1978,8 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	DebuffsSubMenu["addFromHist"] = {
 	    type = "text",
-	    name = L[D.LOC.OPT_ADDDEBUFFFHIST], --"Add from Debuff history",
-	    desc = L[D.LOC.OPT_ADDDEBUFFFHIST_DESC], --"Add a recently seen debuff",
+	    name = L["OPT_ADDDEBUFFFHIST"], --"Add from Debuff history",
+	    desc = L["OPT_ADDDEBUFFFHIST_DESC"], --"Add a recently seen debuff",
 	    disabled = function () GetHistoryDebuff(); return (#DebuffHistTable == 0) end,
 	    get = function() GetHistoryDebuff(); return false; end,
 	    set = function(value)
@@ -1993,9 +1993,9 @@ do -- this is a closure, it's a bit like {} blocks in C
 	num = num + 1;
 	DebuffsSubMenu["ReAddDefaults"] = {
 	    type = "execute",
-	    name = not ReaddIsDisabled and D:ColorText(L[D.LOC.OPT_READDDEFAULTSD], "FFA75728") or L[D.LOC.OPT_READDDEFAULTSD],
-	    desc = not ReaddIsDisabled and L[D.LOC.OPT_READDDEFAULTSD_DESC1]
-	    or L[D.LOC.OPT_READDDEFAULTSD_DESC2],
+	    name = not ReaddIsDisabled and D:ColorText(L["OPT_READDDEFAULTSD"], "FFA75728") or L["OPT_READDDEFAULTSD"],
+	    desc = not ReaddIsDisabled and L["OPT_READDDEFAULTSD_DESC1"]
+	    or L["OPT_READDDEFAULTSD_DESC2"],
 	    func = ReAddDefaultsDebuffs,
 	    disabled = CheckDefaultsPresence;
 	    order = 100 + num,
@@ -2021,39 +2021,39 @@ do
 	if (type(ColorReason) == "number" and ColorReason <= 6) then
 
 	    name = D:ColorText(DC.AvailableButtonsReadable[ColorReason], D:NumToHexColor(L_MF_colors[ColorReason]));
-	    desc = (L[D.LOC.COLORALERT]):format(DC.AvailableButtonsReadable[ColorReason]);
+	    desc = (L["COLORALERT"]):format(DC.AvailableButtonsReadable[ColorReason]);
 
 	elseif (type(ColorReason) == "number")	    then
 	    local Text = "";
 
 	    if (ColorReason == DC.NORMAL)	    then
-		Text =  L[D.LOC.NORMAL];
+		Text =  L["NORMAL"];
 
 	    elseif (ColorReason == DC.ABSENT)	    then
-		Text =  L[D.LOC.MISSINGUNIT];
+		Text =  L["MISSINGUNIT"];
 
 	    elseif (ColorReason == DC.FAR)	    then
-		Text =  L[D.LOC.TOOFAR];
+		Text =  L["TOOFAR"];
 
 	    elseif (ColorReason == DC.STEALTHED)    then
-		Text =  L[D.LOC.STEALTHED];
+		Text =  L["STEALTHED"];
 
 	    elseif (ColorReason == DC.BLACKLISTED)  then
-		Text =  L[D.LOC.BLACKLISTED];
+		Text =  L["BLACKLISTED"];
 
 	    elseif (ColorReason == DC.CHARMED_STATUS) then
-		Text =  L[D.LOC.CHARMED];
+		Text =  L["CHARMED"];
 	    end
 
-	    name = ("%s %s"):format(L[D.LOC.UNITSTATUS], D:ColorText(Text, D:NumToHexColor(L_MF_colors[ColorReason])) );
-	    desc = (L[D.LOC.COLORSTATUS]):format(Text);
+	    name = ("%s %s"):format(L["UNITSTATUS"], D:ColorText(Text, D:NumToHexColor(L_MF_colors[ColorReason])) );
+	    desc = (L["COLORSTATUS"]):format(Text);
 
 	elseif (type(ColorReason) == "string") then
 
 	    name = L[ColorReason];
 
-	    if ColorReason == D.LOC.COLORCHRONOS then
-		desc = D.LOC.COLORCHRONOS_DESC;
+	    if ColorReason == "COLORCHRONOS" then
+		desc = "COLORCHRONOS_DESC";
 	    end
 	end
 
@@ -2099,7 +2099,7 @@ do
 	    end
 
 
-	    if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == D.LOC.COLORCHRONOS) then
+	    if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
 		MUFsColorsSubMenu["Spece" .. num] = {
 		    type = "header",
 		    order = 100 + num + (type(ColorReason) == "number" and ColorReason or 2048),
@@ -2171,7 +2171,7 @@ function D:SetMacroKey ( key )
 	    -- save current key assignement
 	    D.profile.PreviousMacroKeyAction = GetBindingAction(key)
 	    D:Debug("Old key action saved:", D.profile.PreviousMacroKeyAction);
-	    D:errln(L[D.LOC.MACROKEYALREADYMAPPED], key, D.profile.PreviousMacroKeyAction);
+	    D:errln(L["MACROKEYALREADYMAPPED"], key, D.profile.PreviousMacroKeyAction);
 	else
 	    D.profile.PreviousMacroKeyAction = false;
 	    D:Debug("Old key action not saved because it was mapped to nothing");
@@ -2180,14 +2180,14 @@ function D:SetMacroKey ( key )
 	-- set
 	if (SetBindingMacro(key, D.CONF.MACRONAME)) then
 	    D.profile.MacroBind = key;
-	    D:Println(L[D.LOC.MACROKEYMAPPINGSUCCESS], key);
+	    D:Println(L["MACROKEYMAPPINGSUCCESS"], key);
 	else
-	    D:errln(L[D.LOC.MACROKEYMAPPINGFAILED], key);
+	    D:errln(L["MACROKEYMAPPINGFAILED"], key);
 	end
     else
 	D.profile.MacroBind = false;
 	if D.profile.NoKeyWarn and not GetBindingKey(D.CONF.MACROCOMMAND) then
-	    D:errln(L[D.LOC.MACROKEYNOTMAPPED]);
+	    D:errln(L["MACROKEYNOTMAPPED"]);
 	end
     end
 

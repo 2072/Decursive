@@ -311,7 +311,7 @@ function LiveList:GetDebuff(UnitID) -- {{{
 	MF = MicroUnitF.UnitToMUF[UnitID];
 	if MF then
 	    Debuffs = MF.Debuffs;
-	else
+	else -- (ticket #6)
 	    D:Println("|cFFFF0000ALERT:|rSanity check failed in LiveList:GetDebuff() no MUF for unit (%s) MUFs are %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, D.profile.ShowDebuffsFrame);
 	end
     end
@@ -502,7 +502,7 @@ function LiveList:DebuffTemplate_OnEnter() --{{{
 end --}}}
 
 function LiveList:Onclick() -- {{{
-    D:Println(L[D.LOC.HLP_LL_ONCLICK_TEXT]);
+    D:Println(L["HLP_LL_ONCLICK_TEXT"]);
 end -- }}}
 
 DcrLoadedFiles["Dcr_LiveList.lua"] = "@project-version@";

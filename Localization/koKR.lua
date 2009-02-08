@@ -21,6 +21,21 @@
 --]]
 -------------------------------------------------------------------------------
 
+--[=[
+--			YOUR ATTENTION PLEASE
+--
+--	   !!!!!!! TRANSLATORS TRANSLATORS TRANSLATORS !!!!!!!
+--
+--    Thank you very much for your interest in translating Decursive.
+--    Do not edit those files. Use the localization interface available at the following address:
+--
+--	################################################################
+--	#  http://wow.curseforge.com/projects/decursive/localization/  #
+--	################################################################
+--
+--    Your translations made using this interface will be automatically included in the next release.
+--
+--]=]
 
 if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
     if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;

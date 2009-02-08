@@ -1,6 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
+<!--@no-lib-strip@-->
+
 <Script file="libs\AceLibrary\AceLibrary.lua" />
 <Script file="libs\AceOO-2.0\AceOO-2.0.lua" />
 <Script file="Libs\AceDebug-2.0\AceDebug-2.0.lua" />
@@ -20,5 +22,6 @@
 <Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua" />
 <Script file="libs\LibDBIcon-1.0\LibDBIcon-1.0.lua" />
 
+<!--@end-no-lib-strip@-->
 
 </Ui>

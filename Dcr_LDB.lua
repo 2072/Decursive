@@ -75,25 +75,25 @@ local function OnTooltipUpdate ()
     );
 
     cat:AddLine(
-    'text', ("%s: "):format(D.L[D.LOC.HLP_RIGHTCLICK]),
-    'text2',  D.L[D.LOC.STR_OPTIONS]
+    'text', ("%s: "):format(D.L["HLP_RIGHTCLICK"]),
+    'text2',  D.L["STR_OPTIONS"]
     );
 
     cat:AddLine(
-    'text', ("%s-%s: "):format(D.L[D.LOC.ALT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-    'text2', D.L[D.LOC.BINDING_NAME_DCRSHOWOPTION]
+    'text', ("%s-%s: "):format(D.L["ALT"],		D.L["HLP_RIGHTCLICK"]),
+    'text2', D.L["BINDING_NAME_DCRSHOWOPTION"]
     );
     cat:AddLine(
-    'text', ("%s-%s: "):format(D.L[D.LOC.CTRL],		D.L[D.LOC.HLP_LEFTCLICK]),
-    'text2', D.L[D.LOC.BINDING_NAME_DCRPRSHOW]
+    'text', ("%s-%s: "):format(D.L["CTRL"],		D.L["HLP_LEFTCLICK"]),
+    'text2', D.L["BINDING_NAME_DCRPRSHOW"]
     );
     cat:AddLine(
-    'text', ("%s-%s: "):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_LEFTCLICK]),
-    'text2', D.L[D.LOC.BINDING_NAME_DCRSKSHOW]
+    'text', ("%s-%s: "):format(D.L["SHIFT"],		D.L["HLP_LEFTCLICK"]),
+    'text2', D.L["BINDING_NAME_DCRSKSHOW"]
     );
     cat:AddLine(
-    'text', ("%s-%s: " ):format(D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_RIGHTCLICK]),
-    'text2', D.L[D.LOC.BINDING_NAME_DCRSHOW]
+    'text', ("%s-%s: " ):format(D.L["SHIFT"],		D.L["HLP_RIGHTCLICK"]),
+    'text2', D.L["BINDING_NAME_DCRSHOW"]
     );
 
     if (D.profile.debugging) then

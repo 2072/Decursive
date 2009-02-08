@@ -414,8 +414,8 @@ do
 	    end
 
 	    if event == "SPELL_CAST_SUCCESS" then
-		--D:Println(L[self.LOC.SUCCESSCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
-		self:Debug(L[self.LOC.SUCCESSCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
+		--D:Println(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
+		self:Debug(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
 
 		--self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
 		self:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
@@ -435,7 +435,7 @@ do
 	    if event == "SPELL_CAST_FAILED" and not D.Status.ClickedMF.SPELL_CAST_SUCCESS then
 		destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-		D:Println(L[self.LOC.FAILEDCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
+		D:Println(L["FAILEDCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
 
 		if (arg12 == SPELL_FAILED_LINE_OF_SIGHT or arg12 == SPELL_FAILED_BAD_TARGETS) then
 
@@ -453,7 +453,7 @@ do
 	    elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then -- XXX to test
 		destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-		D:Println(L[self.LOC.FAILEDCAST], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
+		D:Println(L["FAILEDCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
 		PlaySoundFile(DC.FailedSound);
 		self.Status.ClickedMF = false;
 	    end

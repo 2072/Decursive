@@ -106,14 +106,14 @@ local AvailableButtons = { -- {{{
 }; -- }}}
 
 DC.AvailableButtonsReadable = { -- {{{
-    L[D.LOC.HLP_LEFTCLICK], -- left mouse button
-    L[D.LOC.HLP_RIGHTCLICK], -- right mouse button
-    L[D.LOC.CTRL] .. "-" .. L[D.LOC.HLP_LEFTCLICK],
-    L[D.LOC.CTRL] .. "-" .. L[D.LOC.HLP_RIGHTCLICK],
-    L[D.LOC.SHIFT] .. "-" .. L[D.LOC.HLP_LEFTCLICK],
-    L[D.LOC.SHIFT] .. "-" .. L[D.LOC.HLP_RIGHTCLICK],
-    L[D.LOC.ALT] .. "-" .. L[D.LOC.HLP_LEFTCLICK],
-    L[D.LOC.ALT] .. "-" .. L[D.LOC.HLP_RIGHTCLICK],
+    L["HLP_LEFTCLICK"], -- left mouse button
+    L["HLP_RIGHTCLICK"], -- right mouse button
+    L["CTRL"] .. "-" .. L["HLP_LEFTCLICK"],
+    L["CTRL"] .. "-" .. L["HLP_RIGHTCLICK"],
+    L["SHIFT"] .. "-" .. L["HLP_LEFTCLICK"],
+    L["SHIFT"] .. "-" .. L["HLP_RIGHTCLICK"],
+    L["ALT"] .. "-" .. L["HLP_LEFTCLICK"],
+    L["ALT"] .. "-" .. L["HLP_RIGHTCLICK"],
     -- 3, -- middle mouse button || RESERVED FOR TARGETTING
 }; -- }}}
 
@@ -385,7 +385,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 	MF.TooltipUpdate = 0; -- force help tooltip to update
 	--MF_f = MF.Frame;
 
-	MF.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
+	MF.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
 	D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
 	i = i + 1;
@@ -571,27 +571,27 @@ function MicroUnitF:OnEnter() -- {{{
 
 	-- set the status text, just translate the bitfield to readable text
 	if (Status == NORMAL) then
-	    StatusText = L[D.LOC.NORMAL];
+	    StatusText = L["NORMAL"];
 
 	elseif (Status == ABSENT) then
-	    StatusText = str_format(L[D.LOC.ABSENT], Unit);
+	    StatusText = str_format(L["ABSENT"], Unit);
 
 	elseif (Status == FAR) then
-	    StatusText = L[D.LOC.TOOFAR];
+	    StatusText = L["TOOFAR"];
 
 	elseif (Status == STEALTHED) then
-	    StatusText = L[D.LOC.STEALTHED];
+	    StatusText = L["STEALTHED"];
 
 	elseif (Status == BLACKLISTED) then
-	    StatusText = L[D.LOC.BLACKLISTED];
+	    StatusText = L["BLACKLISTED"];
 
 	elseif (MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR)) then
 	    local DebuffType = MF.Debuffs[1].Type;
-	    StatusText = str_format(L[D.LOC.AFFLICTEDBY], D:ColorText( L[DC.TypeNames[DebuffType]], "FF" .. DC.TypeColors[DebuffType]) );
+	    StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[DC.TypeNames[DebuffType]], "FF" .. DC.TypeColors[DebuffType]) );
 	end
 
 	-- Unit Status
-	TooltipText = TooltipText .. "\n" .. L[D.LOC.UNITSTATUS] .. StatusText .. "\n";
+	TooltipText = TooltipText .. "\n" .. L["UNITSTATUS"] .. StatusText .. "\n";
 
 	-- list the debuff(s) names
 	if (MF.Debuffs) then
@@ -683,15 +683,15 @@ function D.MicroUnitF:OnCornerEnter()
 	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
 	"|cFF11FF11%s|r-|cFF11FF11%s|r: %s",
 
-	D.L[D.LOC.ALT],		D.L[D.LOC.HLP_LEFTCLICK],	D.L[D.LOC.HANDLEHELP],
+	D.L["ALT"],		D.L["HLP_LEFTCLICK"],	D.L["HANDLEHELP"],
 
-	D.L[D.LOC.HLP_RIGHTCLICK],	D.L[D.LOC.STR_OPTIONS],
-	D.L[D.LOC.ALT],		D.L[D.LOC.HLP_RIGHTCLICK],	D.L[D.LOC.BINDING_NAME_DCRSHOWOPTION],
+	D.L["HLP_RIGHTCLICK"],	D.L["STR_OPTIONS"],
+	D.L["ALT"],		D.L["HLP_RIGHTCLICK"],	D.L["BINDING_NAME_DCRSHOWOPTION"],
 
-	D.L[D.LOC.CTRL],		D.L[D.LOC.HLP_LEFTCLICK],	D.L[D.LOC.BINDING_NAME_DCRPRSHOW], 
-	D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_LEFTCLICK],	D.L[D.LOC.BINDING_NAME_DCRSKSHOW],
+	D.L["CTRL"],		D.L["HLP_LEFTCLICK"],	D.L["BINDING_NAME_DCRPRSHOW"], 
+	D.L["SHIFT"],		D.L["HLP_LEFTCLICK"],	D.L["BINDING_NAME_DCRSKSHOW"],
 
-	D.L[D.LOC.SHIFT],		D.L[D.LOC.HLP_RIGHTCLICK],	D.L[D.LOC.BINDING_NAME_DCRSHOW]
+	D.L["SHIFT"],		D.L["HLP_RIGHTCLICK"],	D.L["BINDING_NAME_DCRSHOW"]
 	));
     end;
 end
@@ -717,7 +717,7 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 
 	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 
-	    D:Println(L[D.LOC.HLP_NOTHINGTOCURE]);
+	    D:Println(L["HLP_NOTHINGTOCURE"]);
 
 	elseif (this.Object.UnitStatus == AFFLICTED) then
 	    local NeededPrio = D:GiveSpellPrioNum(this.Object.Debuffs[1].Type);
@@ -738,8 +738,8 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 	    end
 
 	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
-		D:errln(L[D.LOC.HLP_WRONGMBUTTON]);
-		D:Println(L[D.LOC.HLP_USEXBUTTONTOCURE], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
+		D:errln(L["HLP_WRONGMBUTTON"]);
+		D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
 
 	    elseif RequestedPrio and D.Status.HasSpell then
 --		D:Print("XXX ClickedMF SET");
@@ -831,7 +831,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
 	-- Chrono Font string
 	self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..Unit.."Chrono", "OVERLAY", "DcrMicroUnitChronoFont");
-	self.ChronoFontString:SetTextColor(unpack(MF_colors[D.LOC.COLORCHRONOS]));
+	self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
 	-- a reference to this object
 	self.Frame.Object = self;
@@ -1013,8 +1013,8 @@ do
 
 	-- concatenate the tooltip text if necessary
 	if (D.Status.SpellsChanged ~= self.TooltipUpdate) then
-	    t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L[D.LOC.HLP_MIDDLECLICK], L[D.LOC.TARGETUNIT]));
-	    t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L[D.LOC.CTRL] .. "-" .. L[D.LOC.HLP_MIDDLECLICK], L[D.LOC.FOCUSUNIT]));
+	    t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L["HLP_MIDDLECLICK"], L["TARGETUNIT"]));
+	    t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L["CTRL"] .. "-" .. L["HLP_MIDDLECLICK"], L["FOCUSUNIT"]));
 	    self.TooltipButtonsInfo = table.concat(self.TooltipButtonsInfo, "\n");
 	    self.TooltipUpdate = D.Status.SpellsChanged;
 	end

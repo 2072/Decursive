@@ -201,7 +201,7 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
 	    if (GUIDorNum) then
 		if (type(GUIDorNum) == "number") then
 		    if (GUIDorNum < 10) then
-			name = str_format("[ %s %s ]", L[D.LOC.STR_GROUP], GUIDorNum);
+			name = str_format("[ %s %s ]", L["STR_GROUP"], GUIDorNum);
 		    else
 			name = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
 		    end
@@ -342,7 +342,7 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
 		D.profile.PriorityListClass[unit] = DC.ClassNumToUName[unit];
 		D.profile.PrioGUIDtoNAME[GUIDorNum] = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
 	    else
-		D.profile.PrioGUIDtoNAME[GUIDorNum] = str_format("[ %s %s ]", L[D.LOC.STR_GROUP], GUIDorNum);
+		D.profile.PrioGUIDtoNAME[GUIDorNum] = str_format("[ %s %s ]", L["STR_GROUP"], GUIDorNum);
 	    end
 
 	    DecursivePriorityListFrame.UpdateYourself = true;
@@ -434,7 +434,7 @@ function D:AddUnitToSkipList( unit) --{{{
 		D.profile.SkipListClass[unit] = DC.ClassNumToUName[unit];
 		D.profile.SkipGUIDtoNAME[GUIDorNum] = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
 	    else
-		D.profile.SkipGUIDtoNAME[GUIDorNum] = str_format("[ %s %s ]", L[D.LOC.STR_GROUP], GUIDorNum);
+		D.profile.SkipGUIDtoNAME[GUIDorNum] = str_format("[ %s %s ]", L["STR_GROUP"], GUIDorNum);
 	    end
 
 	    DecursiveSkipListFrame.UpdateYourself = true;
