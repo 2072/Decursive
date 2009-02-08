@@ -61,6 +61,7 @@ local IsSpellInRange	= _G.IsSpellInRange;
 local UnitClass		= _G.UnitClass;
 local UnitIsFriend	= _G.UnitIsFriend;
 local floor		= _G.math.floor;
+local str_upper		= _G.string.upper;
 
 
 -- defines what is printed when the object is read as a string
@@ -268,7 +269,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     -- Debuff Type Name
     if self.PrevDebuffTypeName ~= Debuff.TypeName then
 	if Debuff.Type then
-	    self.DebuffTypeFontString:SetText(D:ColorText(L[Debuff.TypeName], "FF" .. DC.TypeColors[Debuff.Type] ));
+	    self.DebuffTypeFontString:SetText(D:ColorText(L[str_upper(Debuff.TypeName)], "FF" .. DC.TypeColors[Debuff.Type] ));
 	    --self.DebuffTypeFontString:SetTextColor(DC.TypeColors[Debuff.Type]);
 	else
 	    self.DebuffTypeFontString:SetText("Unknown");

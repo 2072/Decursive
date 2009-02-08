@@ -91,6 +91,7 @@ local UnitExists	= _G.UnitExists;
 local UnitClass		= _G.UnitClass;
 local fmod		= _G.math.fmod;
 local UnitIsUnit	= _G.UnitIsUnit;
+local str_upper		= _G.string.upper;
 
 -- Those are lookups table to set the frame attributes
 local AvailableButtons = { -- {{{
@@ -587,7 +588,7 @@ function MicroUnitF:OnEnter() -- {{{
 
 	elseif (MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR)) then
 	    local DebuffType = MF.Debuffs[1].Type;
-	    StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[DC.TypeNames[DebuffType]], "FF" .. DC.TypeColors[DebuffType]) );
+	    StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[str_upper(DC.TypeNames[DebuffType])], "FF" .. DC.TypeColors[DebuffType]) );
 	end
 
 	-- Unit Status

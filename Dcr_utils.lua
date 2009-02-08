@@ -105,6 +105,7 @@ function D:UnitName(Unit)
 	end 
 end
 
+--[=[
 function D:MakeAfflictionName (name) --{{{
     if (name) then
 	return "|cFFFF6622" .. L[name] .. "|r";
@@ -112,6 +113,7 @@ function D:MakeAfflictionName (name) --{{{
 	return "";
     end
 end --}}}
+--]=]
 
 function D:Println( ... ) --{{{
 

@@ -239,16 +239,16 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L["STR_OPTIONS"],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
 
     DC.TypeNames = {
-	[DC.MAGIC]	= "MAGIC";
-	[DC.ENEMYMAGIC]	= "MAGIC";
-	[DC.CURSE]	= "CURSE";
-	[DC.POISON]	= "POISON";
-	[DC.DISEASE]	= "DISEASE";
-	[DC.CHARMED]	= "CHARMED";
+	[DC.MAGIC]	= "Magic";
+	[DC.ENEMYMAGIC]	= "Magic";
+	[DC.CURSE]	= "Curse";
+	[DC.POISON]	= "Poison";
+	[DC.DISEASE]	= "Disease";
+	[DC.CHARMED]	= "Charm";
     }
 
     DC.NameToTypes = D:tReverse(DC.TypeNames);
-    DC.NameToTypes["MAGIC"] = DC.MAGIC;
+    DC.NameToTypes["Magic"] = DC.MAGIC; -- make sure 'Magic' is set to DC.MAGIC and not to DC.ENEMYMAGIC
 
     DC.TypeColors = {
 	[DC.MAGIC]	= "2222DD";
