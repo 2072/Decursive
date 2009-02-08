@@ -33,7 +33,8 @@ Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConso
 local D = Dcr;
 
 D.AOO	    = AceLibrary("AceOO-2.0");
-D.L	    = AceLibrary("AceLocale-2.2"):new("Dcr");
+--D.L	    = AceLibrary("AceLocale-2.2"):new("Dcr");
+D.L	    = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 D.BC	    = LibStub("LibBabble-Class-3.0"):GetLookupTable();
 D.BCR	    = LibStub("LibBabble-Class-3.0"):GetReverseLookupTable();
 D.DewDrop   = AceLibrary("Dewdrop-2.0");
@@ -103,6 +104,17 @@ DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.wav";
 
 DC.IconON = "Interface\\AddOns\\Decursive\\iconON.tga";
 DC.IconOFF = "Interface\\AddOns\\Decursive\\iconOFF.tga";
+
+DC.CLASS_DRUID	     = 'Druid';
+DC.CLASS_HUNTER	     = 'Hunter';
+DC.CLASS_MAGE	     = 'Mage';
+DC.CLASS_PALADIN     = 'Paladin';
+DC.CLASS_PRIEST	     = 'Priest';
+DC.CLASS_ROGUE	     = 'Rogue';
+DC.CLASS_SHAMAN	     = 'Shaman';
+DC.CLASS_WARLOCK     = 'Warlock';
+DC.CLASS_WARRIOR     = 'Warrior';
+DC.CLASS_DEATHKNIGHT = 'Deathknight';
 
 DC.MyClass = "NOCLASS";
 DC.MyName = "NONAME";

@@ -164,31 +164,31 @@ end --}}}
 
 
 DC.ClassNumToLName = {
-    [11]	= BC["CLASS_DRUID"],
-    [12]	= BC["CLASS_HUNTER"],
-    [13]	= BC["CLASS_MAGE"],
-    [14]	= BC["CLASS_PALADIN"],
-    [15]	= BC["CLASS_PRIEST"],
-    [16]	= BC["CLASS_ROGUE"],
-    [17]	= BC["CLASS_SHAMAN"],
-    [18]	= BC["CLASS_WARLOCK"],
-    [19]	= BC["CLASS_WARRIOR"],
-    [20]	= BC["CLASS_DEATHKNIGHT"],
+    [11]	= BC[DC.CLASS_DRUID],
+    [12]	= BC[DC.CLASS_HUNTER],
+    [13]	= BC[DC.CLASS_MAGE],
+    [14]	= BC[DC.CLASS_PALADIN],
+    [15]	= BC[DC.CLASS_PRIEST],
+    [16]	= BC[DC.CLASS_ROGUE],
+    [17]	= BC[DC.CLASS_SHAMAN],
+    [18]	= BC[DC.CLASS_WARLOCK],
+    [19]	= BC[DC.CLASS_WARRIOR],
+    [20]	= BC[DC.CLASS_DEATHKNIGHT],
 }
 
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
 
 DC.ClassNumToUName = {
-    [11]	= str_upper("CLASS_DRUID"),
-    [12]	= str_upper("CLASS_HUNTER"),
-    [13]	= str_upper("CLASS_MAGE"),
-    [14]	= str_upper("CLASS_PALADIN"),
-    [15]	= str_upper("CLASS_PRIEST"),
-    [16]	= str_upper("CLASS_ROGUE"),
-    [17]	= str_upper("CLASS_SHAMAN"),
-    [18]	= str_upper("CLASS_WARLOCK"),
-    [19]	= str_upper("CLASS_WARRIOR"),
-    [20]	= str_upper("CLASS_DEATHKNIGHT"),
+    [11]	= str_upper(DC.CLASS_DRUID),
+    [12]	= str_upper(DC.CLASS_HUNTER),
+    [13]	= str_upper(DC.CLASS_MAGE),
+    [14]	= str_upper(DC.CLASS_PALADIN),
+    [15]	= str_upper(DC.CLASS_PRIEST),
+    [16]	= str_upper(DC.CLASS_ROGUE),
+    [17]	= str_upper(DC.CLASS_SHAMAN),
+    [18]	= str_upper(DC.CLASS_WARLOCK),
+    [19]	= str_upper(DC.CLASS_WARRIOR),
+    [20]	= str_upper(DC.CLASS_DEATHKNIGHT),
 }
 
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);

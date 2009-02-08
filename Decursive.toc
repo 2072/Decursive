@@ -30,15 +30,18 @@
 ## X-eMail: archarodim@teaser.fr
 ## X-Donate: PayPal:archarodim@teaser.fr
 
+LibStub\LibStub.lua
 
 embeds.xml
 
 Dcr_DIAG.lua
+
+Localization\load.xml
+
 DCR_init.lua
 Dcr_LDB.lua
 Dcr_utils.lua
 
-Localization\load.xml
 
 Dcr_opt.lua
 Dcr_Events.lua

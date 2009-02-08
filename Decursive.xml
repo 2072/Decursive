@@ -80,8 +80,8 @@
 		"|cFF11FF11%s|r: %s\n" ..
 		"|cFF11FF11%s|r / |cFF11FF11%s|r-|cFF11FF11%s|r"
 		, Dcr.name, Dcr.version, Dcr.author,
-		Dcr.L[Dcr.LOC.HLP_RIGHTCLICK], Dcr.L[Dcr.LOC.STR_OPTIONS],
-		Dcr.L[Dcr.LOC.HLP_MIDDLECLICK], Dcr.L[Dcr.LOC.SHIFT], Dcr.L[Dcr.LOC.HLP_LEFTCLICK]
+		Dcr.L["HLP_RIGHTCLICK"], Dcr.L["STR_OPTIONS"],
+		Dcr.L["HLP_MIDDLECLICK"], Dcr.L["SHIFT"], Dcr.L["HLP_LEFTCLICK"]
 		)
 		, this);
 		end
@@ -136,7 +136,7 @@
 		</Anchors>
 		<Scripts>
 		    <OnLoad>
-			this:SetText(Dcr.L[Dcr.LOC.PRIORITY_SHOW]);
+			this:SetText(Dcr.L["PRIORITY_SHOW"]);
 		    </OnLoad>
 		    <OnClick>
 			if DecursiveSelfDiagnostic(true) ~= 2 then
@@ -145,7 +145,7 @@
 		    </OnClick>
 		    <OnEnter>
 			if DecursiveSelfDiagnostic() ~= 2 then
-			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.PRIORITY_LIST], this);
+			Dcr:DisplayTooltip(Dcr.L["PRIORITY_LIST"], this);
 			end
 		    </OnEnter>
 		    <OnLeave>
@@ -167,7 +167,7 @@
 		</Anchors>
 		<Scripts>
 		    <OnLoad>
-			this:SetText(Dcr.L[Dcr.LOC.SKIP_SHOW]);
+			this:SetText(Dcr.L["SKIP_SHOW"]);
 		    </OnLoad>
 		    <OnClick>
 			if DecursiveSelfDiagnostic(true) ~= 2 then
@@ -176,7 +176,7 @@
 		    </OnClick>
 		    <OnEnter>
 			if DecursiveSelfDiagnostic() ~= 2 then
-			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.SKIP_LIST_STR], this);
+			Dcr:DisplayTooltip(Dcr.L["SKIP_LIST_STR"], this);
 			end
 		    </OnEnter>
 		    <OnLeave>
@@ -204,7 +204,7 @@
 		    </OnClick>
 		    <OnEnter>
 			if DecursiveSelfDiagnostic() ~= 2 then
-			Dcr:DisplayTooltip(Dcr.L[Dcr.LOC.HIDE_MAIN], this);
+			Dcr:DisplayTooltip(Dcr.L["HIDE_MAIN"], this);
 			end
 		    </OnEnter>
 		    <OnLeave>
@@ -247,7 +247,7 @@
 
 	<Layers>
 	    <Layer level="BACKGROUND">
-		<FontString name="$parentText" inherits="GameFontNormal" text="Dcr.LOC.ANCHOR">
+		<FontString name="$parentText" inherits="GameFontNormal" text="ANCHOR">
 		    <Anchors>
 			<Anchor point="TOP">
 			    <Offset>
@@ -280,7 +280,7 @@
 
 		    </OnClick>
 		    <OnShow>
-			Dcr:ThisSetParentText(Dcr.L[Dcr.LOC.ANCHOR]);
+			Dcr:ThisSetParentText(Dcr.L["ANCHOR"]);
 		    </OnShow>
 		</Scripts>
 	    </Button>

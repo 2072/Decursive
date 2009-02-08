@@ -637,7 +637,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_WARRIOR";
+			this.ClassType = DcrC.CLASS_WARRIOR;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -659,7 +659,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_PRIEST";
+			this.ClassType = DcrC.CLASS_PRIEST;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -681,7 +681,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_MAGE";
+			this.ClassType = DcrC.CLASS_MAGE;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -703,7 +703,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_WARLOCK";
+			this.ClassType = DcrC.CLASS_WARLOCK;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -725,7 +725,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_HUNTER";
+			this.ClassType = DcrC.CLASS_HUNTER;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -747,7 +747,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_ROGUE";
+			this.ClassType = DcrC.CLASS_ROGUE;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -769,7 +769,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_DRUID";
+			this.ClassType = DcrC.CLASS_DRUID;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -791,7 +791,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_SHAMAN";
+			this.ClassType = DcrC.CLASS_SHAMAN;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -813,7 +813,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_PALADIN";
+			this.ClassType = DcrC.CLASS_PALADIN;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
@@ -834,7 +834,7 @@
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
-			this.ClassType = "CLASS_DEATHKNIGHT";
+			this.ClassType = DcrC.CLASS_DEATHKNIGHT;
 			this:SetText(Dcr:ColorText(Dcr.BC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
 		</Scripts>
