@@ -54,7 +54,7 @@ if not L then
     return;
 end;
 
---@localization(locale="zhCN", format="lua_additive_table")@
+--@localization(locale="zhCN", format="lua_additive_table", handle-unlocalized="ignore")@
 
 
 DcrLoadedFiles["zhCN.lua"] = "@project-version@";
