@@ -391,7 +391,7 @@ function LiveList:Update_Display() -- {{{
 	end
     end
 
-    -- the sound played status is rest here because the live list is able to display target and mouseover units and far away ones...
+    -- the sound played status is reset here because the live list is able to display target and mouseover units and far away ones...
     if DebuffedUnitsNumber == 0 then
 	D.Status.SoundPlayed = false;
     end

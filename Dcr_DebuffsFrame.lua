@@ -382,7 +382,11 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
     local i = 1;
     for Unit, MF in  pairs(self.ExistingPerUNIT) do
-	MF.UnitStatus = 0; -- reset status to force SetColor to update
+
+	if not MF.IsDebuffed then
+	    MF.UnitStatus = 0; -- reset status to force SetColor to update
+	end
+
 	MF.TooltipUpdate = 0; -- force help tooltip to update
 	--MF_f = MF.Frame;
 
