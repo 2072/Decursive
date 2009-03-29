@@ -422,7 +422,7 @@ do
 
 
 	-- test if the unit is mind controlled once
-	if (UnitIsCharmed(Unit) and UnitCanAttack(Unit, "player")) then
+	if (UnitIsCharmed(Unit) and (UnitCanAttack(Unit, "player")  or UnitIsCharmed( "player"))) then
 	    IsCharmed = true;
 	else
 	    IsCharmed = false;
