@@ -2192,7 +2192,7 @@ function D:SetMacroKey ( key )
     end
 
     -- save the bindings to disk
-    if type(GetCurrentBindingSet()) == "number" then -- GetCurrentBindingSet() may return strange values when the game is loaded without WTF folder.
+    if GetCurrentBindingSet()==1 or GetCurrentBindingSet()==2 then -- GetCurrentBindingSet() may return strange values when the game is loaded without WTF folder.
 	SaveBindings(GetCurrentBindingSet());
     end
 
