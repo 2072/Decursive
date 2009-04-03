@@ -1,6 +1,7 @@
 --[[
     Decursive (v 2.0) add-on for World of Warcraft UI
-    Copyright (C) 2006-2007 John Wellesz (Archarodim) ( http://www.2072productions.com/?to=decursive.php )
+    Copyright (C) 2006-2009 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/?to=decursive.php )
+    
     This is the continued work of the original Decursive (v1.9.4) by Quu
     Decursive 1.9.4 is in public domain ( www.quutar.com )
 
@@ -2161,6 +2162,7 @@ function D:SetMacroKey ( key )
 	if (D.profile.PreviousMacroKeyAction) then
 	    D:Debug("Previous key action restored:", D.profile.PreviousMacroKeyAction);
 	    if not SetBinding(D.profile.MacroBind, D.profile.PreviousMacroKeyAction) then
+		--  /script SetBinding ("BUTTON1", "CAMERAORSELECTORMOVE"); to communicate to people who accidently set BUUTON1 to our macro.
 		D:Debug("Restoration failed");
 	    end
 	end
