@@ -1171,13 +1171,14 @@ D.options = { -- {{{
 		    name = L["OPT_MACROBIND"],
 		    desc = L["OPT_MACROBIND_DESC"],
 		    validate = "keybinding",
+		    keybindingExcept = {BUTTON1=true, BUTTON2=true}, -- BUTTON1 is always affected to CAMERAORSELECTORMOVE
 		    get = function ()
 			local key = (GetBindingKey(D.CONF.MACROCOMMAND));
 			D.profile.MacroBind = key;
 			return key;
 		    end,
 		    set = function (key)
-			 D:SetMacroKey ( key );
+			D:SetMacroKey ( key );
 		    end,
 		    order = 200,
 		},
