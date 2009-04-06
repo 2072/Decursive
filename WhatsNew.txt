@@ -1,35 +1,44 @@
-Decursive 2.4 beta3 by Archarodim  (2009-02-08)
+Decursive 2.4 by Archarodim  (2009-04-06)
 
 Changes from Decursive 2.4 beta1 to Decursive 2.4 beta3
 
-- Decursive uses AceLocal-3.0 translations made using:
+- New feature: The cool down of the curing spell to be used is displayed
+  (clock) on afflicted MUFs.
+
+- Decursive uses AceLocal-3.0 ; localization is now made using this interface:
   http://wow.curseforge.com/projects/decursive/localization/
 
-- Miscellaneous localization updates.
+- Miscellaneous localization updates in various languages.
+
+- Re-implemented the max unit to show option.
 
 - Added a warning when the user disables Decusive and an explanation on how to
   re-enable it (/dcr standby)
 
-- Translations for key bindings descriptions (wow key binding interface)
+- Translations for key bindings descriptions (WoW key binding interface)
+
+- It's no longer possible to map the button 1 and 2 of the mouse to Decursive's
+  macro by accident.
 
 - Fixes a problem if the game is loaded without any "saved variables" where the
   API GetCurrentBindingSet() would return incorrect values unusable with the
   API SaveBindings() preventing Decursive from initializing correctly.
 
+- Bug fix: Charmed unit detection wasn't working if the player himself was charmed.
 
-Changes from Decursive 2.3.1 to Decursive 2.4 beta1
+- Bug fix: The focus MUF was not added at the end but just before pets.
 
-- New feature: The cool down of the curing spell to be used is displayed
-  (clock) on afflicted MUFs.
+- Bug fix: The stick to right option (concerning the MUFs positions) was broken.
 
-- Re-implemented the max unit to show option.
-- bug fix: The focus MUF was not added at the end but just before pets.
-- bug fix: The stick to right option (concerning the MUFs positions) was broken.
+- Some other minor bug fixes.
+
 
 Changes from Decursive 2.3.0 to Decursive 2.3.1
 
 - Fixes a very old rare issue where Decursive would miss debuff events.
+
 - Fixes focus unit management.
+
 - Fixes minimap icon and main bar management when Decursive is "Ace-disabled".
 
 
@@ -842,4 +851,5 @@ localisation is not correct in Decursive 1.9.4)
 - Fixed French localization for Priests and Druids.
 - Improved Event handling (faster when zoning)
 - Fixed initialization, 1.9.4 was sometime unable to find a spell to use
+
 

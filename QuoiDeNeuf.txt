@@ -1,9 +1,14 @@
-Decursive 2.4 beta3 par Archarodim  (2009-02-08)
+Decursive 2.4 par Archarodim  (2009-04-06)
 
-Changements entre Decursive 2.4 beta1 et Decursive 2.4 beta3
+Changements entre Decursive 2.3.1 et Decursive 2.4
+
+- Nouveauté : Le temps de recharge du sort de guérison à utiliser est indiqué
+  (horloge) sur les micro-portraits des unités affligées.
 
 - Decursive utilise désormais AceLocal-3.0 et les traductions faîtes à partir de :
   http://wow.curseforge.com/projects/decursive/localization/
+
+- L'option qui règle le nombre maximum d'unité à afficher a été réimplémenté.
 
 - Ajout d'un avertissement lorsque l'utilisateur désactive Decursive et d'une
   explication sur comment le ré-activer (/dcr standby)
@@ -15,17 +20,18 @@ Changements entre Decursive 2.4 beta1 et Decursive 2.4 beta3
   GetCurrentBindingSet() retourne une valeur incorrecte empêchant Decursive de
   s'initialiser correctement.
 
-Changements entre Decursive 2.3.1 et Decursive 2.4 beta1
-
-- Nouveauté : Le temps de recharge du sort de guérison à utiliser est indiqué
-  (horloge) sur les micro-portraits des unités affligées.
-
-- L'option qui règle le nombre maximum d'unité à afficher a été réimplémenté.
-
 - L'unité focalisée n'était pas ajouté à la fin comme prévu mais juste avant
   les familiers.
 
 - L'option "d'alignement à droite" des micro-portraits fonctionne de nouveau.
+
+- La détection des unités contrôlées par l'ennemi ne fonctionnait pas si le
+  joueur lui-même était contrôlé.
+
+- Il n'est plus possible d'attribuer par accident les boutons 1 et 2 de la souris
+  à la macro créée par Decursive.
+
+- Quelques autres correction de bug mineurs.
 
 Changements entre Decursive 2.3.0 et Decursive 2.3.1
 
@@ -783,4 +789,5 @@ Changements dans la version 1.9.5b (Changement depuis la dernière version 1.9.4 
 - Correction de la localisation pour les Prêtres et les druides,
 - Amélioration de la gestion des évènements, zonnage plus rapide.
 - Initialisation corrigée, la version 1.9.4 était parfois incapable de trouver un sort à utiliser.
+
 
