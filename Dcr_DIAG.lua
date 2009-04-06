@@ -91,9 +91,9 @@ do
 	    ["AceOO-2.0"]		= 90000 + 1091,
 	    ["AceDebug-2.0"]		= 90000 + 1091,
 	    ["AceEvent-2.0"]		= 90000 + 1091,
-	    ["AceDB-2.0"]		= 90000 + 1091,
-	    ["AceConsole-2.0"]		= 90000 + 1091,
-	    ["AceAddon-2.0"]	        = 90000 + 1091,
+	    ["AceDB-2.0"]		= 90000 + 1094,
+	    ["AceConsole-2.0"]		= 90000 + 1094,
+	    ["AceAddon-2.0"]	        = 90000 + 1096,
 	    ["Dewdrop-2.0"]		= 90000 + 320,
 	    ["Waterfall-1.0"]		= 90000 + 125,
 	    ["Tablet-2.0"]		= 90000 + 216,
@@ -102,9 +102,9 @@ do
 	--LibStub:GetLibrary
 	local UseLibStub = {
 	    ["AceLocale-3.0"] = 2,
-	    ["LibBabble-Class-3.0"] = 90000 + 48,
+	    ["LibBabble-Class-3.0"] = 90000 + 50,
 	    ["LibDataBroker-1.1"] = 3,
-	    ["LibDBIcon-1.0"] = 3,
+	    ["LibDBIcon-1.0"] = 8,
 	    ["CallbackHandler-1.0"] = 3,
 	};
 

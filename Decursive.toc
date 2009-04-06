@@ -28,7 +28,6 @@
 ## X-AceForum: 4195
 
 ## X-eMail: archarodim@teaser.fr
-## X-Donate: PayPal:archarodim@teaser.fr
 
 LibStub\LibStub.lua
 
