@@ -1,6 +1,6 @@
 Decursive 2.4 by Archarodim  (2009-04-06)
 
-Changes from Decursive 2.4 beta1 to Decursive 2.4 beta3
+Changes from Decursive 2.3.1 to Decursive 2.4
 
 - New feature: The cool down of the curing spell to be used is displayed
   (clock) on afflicted MUFs.
