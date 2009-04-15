@@ -31,3 +31,8 @@ optional-dependencies:
     - libdbicon-1-0
     - callbackhandler
 
+#license-output: GPL.txt
+
+manual-changelog: changelog.txt
+
+

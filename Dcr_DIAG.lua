@@ -1,23 +1,24 @@
 --[[
-    Decursive (v 2.0) add-on for World of Warcraft UI
-    Copyright (C) 2006-2009 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/?to=decursive.php )
+    This file is part of Decursive.
+    
+    Decursive (v @project-version@) add-on for World of Warcraft UI
+    Copyright (C) 2006-2007-2008-2009 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/?to=decursive.php )
+
     This is the continued work of the original Decursive (v1.9.4) by Quu
-    Decursive 1.9.4 is in public domain ( www.quutar.com )
+    "Decursive 1.9.4" is in public domain ( www.quutar.com )
 
-    License:
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
+    Decursive is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
+    Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+    along with Decursive.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 -------------------------------------------------------------------------------
 
