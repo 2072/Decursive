@@ -556,6 +556,11 @@ do
 	    continue_ = true;
 
 	    -- test if we have to ignore this debuf  {{{ --
+	    
+	    if self.Status.PlayerOnlyTypes[Debuff.Type] and Unit ~= "player" then -- if this type is curable on the player only
+		continue_ = false;
+	    end
+	    
 	    if (self.profile.DebuffsToIgnore[Debuff.Name]) then
 		-- these are the BAD ones... the ones that make the target immune... abort this unit
 		--D:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);

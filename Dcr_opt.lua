@@ -929,6 +929,10 @@ D.options = { -- {{{
 		    get = function() return D.profile.AfflictionTooltips end,
 		    set = function()
 			D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
+			local k, v;
+			for k,v in ipairs(D.LiveList.ExistingPerID) do
+			    v.Frame:EnableMouse(D.profile.AfflictionTooltips);
+			end
 		    end,
 		    disabled = function() return  D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame end,
 		    order = 2200

@@ -267,10 +267,10 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; Dcr:Configure();
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
-	DC.SpellsToUse = {
+    DC.SpellsToUse = {
 
-
-	    [DS["SPELL_POLYMORPH"]]	    = { --Mages
+	--Mages
+	[DS["SPELL_POLYMORPH"]]	    = {
 	    Types = {DC.CHARMED},
 	    IsBest = false,
 	    Pet = false,
@@ -285,9 +285,9 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	--[[
 	-- used for testing only
 	[DS["Dampen Magic"] ]	    = {
-	    Types = {DC.MAGIC},--, DC.DISEASE, DC.POISON},
-	    IsBest = false,
-	    Pet = false,
+	Types = {DC.MAGIC},--, DC.DISEASE, DC.POISON},
+	IsBest = false,
+	Pet = false,
 	}, --]]
 	--[[
 	-- used for testing only
@@ -300,6 +300,15 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    Types = {DC.DISEASE},
 	    IsBest = true,
 	    Pet = false,
+
+	    EnhancedBy = DS["TALENT_BODY_AND_SOUL"], 
+	    Enhancements = {
+		Types = {DC.DISEASE, DC.POISON},
+		OnPlayerOnly = {
+		    [DC.DISEASE] = false,
+		    [DC.POISON]  = true,
+		},
+	    }
 	},
 	[DS["SPELL_CURE_DISEASE"]]	    = {
 	    Types = {DC.DISEASE},
@@ -340,11 +349,23 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = true,
 	    Pet = false,
 	},
-	-- druids
+	-- druids and mages
 	[DS["SPELL_REMOVE_CURSE"]]	    = {
 	    Types = {DC.CURSE},
 	    IsBest = true,
 	    Pet = false,
+
+	    --[===[ for testing purpose only
+	     EnhancedBy = DS["TALENT_ARCANE_POWER"], 
+	    Enhancements = {
+		Types = {DC.CURSE, DC.MAGIC},
+		OnPlayerOnly = {
+		    [DC.CURSE] = false,
+		    [DC.MAGIC]  = true,
+		},
+	    }
+	    --]===]
+
 	},
 	--[=[ -- disabled because of Korean locals... see below
 	[DS["SPELL_PURGE"]]		    = {
@@ -559,6 +580,7 @@ function D:OnProfileEnable()
     D.Groups_datas_are_invalid = true;
     D.Status = {};
     D.Status.FoundSpells = {};
+    D.Status.PlayerOnlyTypes = {};
     D.Status.CuringSpells = {};
     D.Status.CuringSpellsPrio = {};
     D.Status.Blacklisted_Array = {};
@@ -777,7 +799,21 @@ function D:ReConfigure() --{{{
 	    if not D.Status.FoundSpells[spellName] then -- yes
 		Reconfigure = true;
 		break;
+	    elseif DC.SpellsToUse[spellName].EnhancedBy then -- it's not new but there is an enhancement available...
+
+		if  GetSpellInfo (DC.SpellsToUse[spellName].EnhancedBy) then -- we have it now
+		    if not D.Status.FoundSpells[spellName][3] then -- but not then :)
+			Reconfigure = true;
+			break;
+		    end
+		else -- we do no not
+		    if D.Status.FoundSpells[spellName][3] then -- but we used to :'(
+			Reconfigure = true;
+			break;
+		    end
+		end
 	    end
+
 	elseif D.Status.FoundSpells[spellName] then -- we don't have it anymore...
 	    Reconfigure = true;
 	    break;
@@ -796,10 +832,10 @@ end --}}}
 function D:Configure() --{{{
 
     -- first empty out the old "spellbook"
-     D.Status.HasSpell = false;
+    self.Status.HasSpell = false;
 
 
-    local CuringSpells = D.Status.CuringSpells;
+    local CuringSpells = self.Status.CuringSpells;
 
     CuringSpells[DC.MAGIC]	= false;
     CuringSpells[DC.ENEMYMAGIC]	= false;
@@ -810,22 +846,59 @@ function D:Configure() --{{{
 
     local Spell, spellName, Type, _;
     local GetSpellInfo = _G.GetSpellInfo;
+    local Types = {};
+    local OnPlayerOnly = false;
+    local IsEnhanced = false;
 
-    D:Debug("Configuring Decursive...");
+    self:Debug("Configuring Decursive...");
 
     for spellName, Spell in pairs(DC.SpellsToUse) do
 	-- Do we have that spell?
 	if GetSpellInfo(spellName) then -- yes
+	    Types = DC.SpellsToUse[spellName].Types;
+	    OnPlayerOnly = false;
+	    IsEnhanced = false;
+
+	    -- Could it be enhanced by something (a talent for example)?
+	    if DC.SpellsToUse[spellName].EnhancedBy then
+		--@alpha@
+		self:Debug("Enhancement for ", spellName);
+		--@end-alpha@
+		
+
+		if GetSpellInfo (DC.SpellsToUse[spellName].EnhancedBy) then -- we have the enhancement
+		    IsEnhanced = true;
+
+		    Types = DC.SpellsToUse[spellName].Enhancements.Types; -- set the type to scan to the new ones
+
+		    if DC.SpellsToUse[spellName].Enhancements.OnPlayerOnly then -- On the 'player' unit only?
+			--@alpha@
+			self:Debug("Enhancement for %s is for player only", spellName);
+			--@end-alpha@
+			OnPlayerOnly = DC.SpellsToUse[spellName].Enhancements.OnPlayerOnly;
+		    end
+		end
+	    end
+
 	    -- register it
-	    for _, Type in pairs (DC.SpellsToUse[spellName].Types) do
+	    for _, Type in pairs (Types) do
 
 		if not CuringSpells[Type] or not DC.SpellsToUse[ CuringSpells[Type] ].IsBest then  -- we did not already registered this spell or it's not the best spell for this type
 
-		    D.Status.FoundSpells[spellName] = {DC.SpellsToUse[spellName].Pet, (select(2, GetSpellInfo(spellName)))};
+		    self.Status.FoundSpells[spellName] = {DC.SpellsToUse[spellName].Pet, (select(2, GetSpellInfo(spellName))), IsEnhanced};
 		    CuringSpells[Type] = spellName;
 
-		    D:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", spellName, D.Status.FoundSpells[spellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[spellName][1]);
-		    D.Status.HasSpell = true;
+		    if OnPlayerOnly and OnPlayerOnly[Type] then
+			--@alpha@
+			self:Debug("Enhancement for player only for type added",Type);
+			--@end-alpha@
+			self.Status.PlayerOnlyTypes[Type] = true;
+		    else
+			self.Status.PlayerOnlyTypes[Type] = false;
+		    end
+
+		    self:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", spellName, D.Status.FoundSpells[spellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[spellName][1]);
+		    self.Status.HasSpell = true;
 		end
 	    end
 
@@ -873,11 +946,11 @@ function D:Configure() --{{{
 
 
     -- Verify the cure order list (if it was damaged)
-    D:CheckCureOrder ();
+    self:CheckCureOrder ();
     -- Set the appropriate priorities according to debuffs types
-    D:SetCureOrder ();
+    self:SetCureOrder ();
 
-    if (not D.Status.HasSpell) then
+    if (not self.Status.HasSpell) then
 	return;
     end
 
@@ -894,35 +967,35 @@ function D:GetSpellsTranslations(FromDIAG)
     local Spells = {
 	["SPELL_POLYMORPH"]		= {	118,					 },
 	["SPELL_CYCLONE"]		= {	33786,					 },
-	["SPELL_CURE_DISEASE"]	= {	528, 2870,				 },
+	["SPELL_CURE_DISEASE"]		= {	528, 2870,				 },
 	["SPELL_ABOLISH_DISEASE"]	= {	552,					 },
 	["SPELL_PURIFY"]		= {	1152,					 },
 	["SPELL_CLEANSE"]		= {	4987,					 },
-	["SPELL_DISPELL_MAGIC"]	= {	527, 988,				 },
-	["SPELL_CURE_POISON"]	= {	526, 8946,				 },
+	["SPELL_DISPELL_MAGIC"]		= {	527, 988,				 },
+	["SPELL_CURE_POISON"]		= {	526, 8946,				 },
 	["SPELL_ABOLISH_POISON"]	= {	2893,					 },
-	["SPELL_REMOVE_LESSER_CURSE"]={	475,					 },
-	["SPELL_REMOVE_CURSE"]	= {	2782,					 },
+	["SPELL_REMOVE_LESSER_CURSE"]	= {	475,					 },
+	["SPELL_REMOVE_CURSE"]		= {	2782,					 },
 	["CLEANSE_SPIRIT"]		= {	51886,					 },
-	["SPELL_PURGE"]		= {	370, 8012,				 },
+	["SPELL_PURGE"]			= {	370, 8012,				 },
 	["PET_FEL_CAST"]		= {	19505, 19731, 19734, 19736, 27276, 27277,},
 	["PET_DOOM_CAST"]		= {	527, 988,				 },
 	["CURSEOFTONGUES"]		= {	1714, 11719,                             },
 	["DCR_LOC_SILENCE"]		= {	15487,					 },
-	["DCR_LOC_MINDVISION"]	= {	2096, 10909,				 },
+	["DCR_LOC_MINDVISION"]		= {	2096, 10909,				 },
 	["DREAMLESSSLEEP"]		= {	15822,					 },
 	["GDREAMLESSSLEEP"]		= {	24360,					 },
 	["MDREAMLESSSLEEP"]		= {	28504,					 },
 	["ANCIENTHYSTERIA"]		= {	19372,					 },
 	["IGNITE"]			= {	19659,					 },
-	["TAINTEDMIND"]		= {	16567,					 },
+	["TAINTEDMIND"]			= {	16567,					 },
 	["MAGMASHAKLES"]		= {	19496,					 },
 	["CRIPLES"]			= {	33787,					 },
-	["DUSTCLOUD"]		= {	26072,					 },
+	["DUSTCLOUD"]			= {	26072,					 },
 	["WIDOWSEMBRACE"]		= {	28732,					 },
-	["SONICBURST"]		= {	39052,					 },
+	["SONICBURST"]			= {	39052,					 },
 	["DELUSIONOFJINDO"]		= {	24306,					 },
-	["MUTATINGINJECTION"]	= {	28169,					 },
+	["MUTATINGINJECTION"]		= {	28169,					 },
 	['Phase Shift']			= {	4511,					 },
 	['Banish']			= {	710, 18647,				 },
 	['Frost Trap Aura']		= {	13810,					 },
@@ -936,6 +1009,8 @@ function D:GetSpellsTranslations(FromDIAG)
 	['Unstable Affliction']		= {	30108, 30404, 30405,			 },
 	['Dampen Magic']		= {	604,					 },
 	['Amplify Magic']		= {	1008,					 },
+	['TALENT_BODY_AND_SOUL']	= {	64129, 65081				 },
+	['TALENT_ARCANE_POWER']	= {	12042,					 }, --temp to test
     };
 
 

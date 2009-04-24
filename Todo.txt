@@ -3,6 +3,8 @@ TODO:
 
 - Add a menu option to choose between available spells. (will also allow to choose other polymorph spells)
 
+- Add Cleansing Totem for shaman when the above point is done
+
 - use UNIT_NAME event to update the old table and trigger class border updates
 
 - see table.wipe() to limit garbage
