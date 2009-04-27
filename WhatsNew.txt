@@ -1,4 +1,10 @@
-Decursive 2.4 by Archarodim  (2009-04-06)
+Decursive 2.4.1 beta 1 by Archarodim  (2009-04-28)
+
+Changes from Decursive 2.4 to Decursive 2.4.1 beta 1
+
+- Added support for the new priest talent 'Body and soul' to be able to cleanse
+  a poison effect on self when using abolish disease.
+
 
 Changes from Decursive 2.3.1 to Decursive 2.4
 
