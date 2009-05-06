@@ -999,13 +999,14 @@ do
 	for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
 	    --self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "spell"), Spell);
-	    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, exists] %s%s",
+	    --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
+	    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
 	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
-	    Unit,
+	    Unit,Unit,
 	    Spell,
 	    (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 
-	    
+
 	    --[[
 	    D:Debug("XX-> macro: ",str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, exists] %s%s",
 	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
