@@ -714,12 +714,14 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 
 	local Unit = this.Object.CurrUnit; -- shortcut
 
+	--[=[
 	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
 	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF(%s)! MOn='%s', Un='%s', UpT=%d\nReport this to ARCHARODIM@TEASER.FR|r",Unit, (UnitName("mouseover")), (UnitName(Unit)), (GetTime() - DC.StartTime));
 
 	    --	     this.Object:UpdateAttributes(Unit);
 
 	end
+	--]=]
 
 	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 
@@ -997,15 +999,17 @@ do
 	for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
 	    --self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "spell"), Spell);
-	    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=mouseover, exists] %s%s",
+	    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, exists] %s%s",
 	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
+	    Unit,
 	    Spell,
 	    (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 
 	    
 	    --[[
-	    D:Debug("XX-> macro: ",str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=mouseover] %s%s",
+	    D:Debug("XX-> macro: ",str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, exists] %s%s",
 	    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
+	    Unit,
 	    Spell,
 	    (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
 	    --]]
