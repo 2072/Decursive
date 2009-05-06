@@ -33,6 +33,6 @@ optional-dependencies:
 
 #license-output: GPL.txt
 
-manual-changelog: changelog.txt
+#manual-changelog: changelog.txt
 
 

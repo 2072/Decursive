@@ -1139,7 +1139,7 @@ D.options = { -- {{{
 		},
 		CureCharmed = {
 		    type = "toggle",
-		    name = D.L["CHARMED"],
+		    name = D.L["CHARM"],
 		    desc = L["OPT_CHARMEDCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.CHARMED) end,
 		    set = function()
@@ -2048,7 +2048,7 @@ do
 		Text =  L["BLACKLISTED"];
 
 	    elseif (ColorReason == DC.CHARMED_STATUS) then
-		Text =  L["CHARMED"];
+		Text =  L["CHARM"];
 	    end
 
 	    name = ("%s %s"):format(L["UNITSTATUS"], D:ColorText(Text, D:NumToHexColor(L_MF_colors[ColorReason])) );
