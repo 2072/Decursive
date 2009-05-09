@@ -647,36 +647,6 @@ function MicroUnitF:OnLeave() -- {{{
     end
 end -- }}}
 
-function MicroUnitF:OnCornerClick (arg1, CallingObject) -- {{{
-    --D:Debug("clicked");
-
-    if (not CallingObject) then
-	CallingObject = "noframe";
-    end
-
-    if (arg1 == "RightButton" and not IsShiftKeyDown()) then
-
-	if (not IsAltKeyDown()) then
-	   ---[[
-	   D.DewDrop:Open(CallingObject,
-	    'children', function()
-		D.DewDrop:FeedAceOptionsTable( D.options )
-	    end
-	    );
-	    --]]
-	else
-	    D.Waterfall:Open("Decursive");
-	end
-
-    elseif (arg1 == "RightButton" and IsShiftKeyDown()) then
-	D:HideBar();
-    elseif (arg1 == "LeftButton" and IsControlKeyDown()) then
-	D:ShowHidePriorityListUI();
-    elseif (arg1 == "LeftButton" and IsShiftKeyDown()) then
-	D:ShowHideSkipListUI();
-    end
-
-end -- }}}
 
 function D.MicroUnitF:OnCornerEnter()
     if (D.profile.DebuffsFrameShowHelp) then

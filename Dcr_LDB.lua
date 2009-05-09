@@ -43,12 +43,10 @@ local icon = LibStub("LibDBIcon-1.0")
 
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
 	type = "launcher",
-	OnClick = function(Frame)
-	    D.DewDrop:Open(Frame,"children",
-	    function()
-		D.DewDrop:FeedAceOptionsTable( D.options )
-	    end);
+	OnClick = function(Frame, button)
+	    D:QuickAccess(Frame, button);
 	end,
+	
 	text = "Decursive",
 	label = "Decursive",
 	

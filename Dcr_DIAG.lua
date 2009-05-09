@@ -157,7 +157,7 @@ do
 	local MixedVersionsCount = 0;
 	if not FatalOccured then
 	    for k,v in pairs (DcrLoadedFiles) do
-		if not mixedFileVersionsdetection[v] then
+		if v and not mixedFileVersionsdetection[v] then
 		    mixedFileVersionsdetection[v] = k;
 		    MixedVersionsCount = MixedVersionsCount + 1;
 		end

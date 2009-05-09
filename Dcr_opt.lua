@@ -2242,5 +2242,38 @@ function D:AutoHideShowMUFs ()
     end
 end
 
+function D:QuickAccess (CallingObject, button) -- {{{
+    --D:Debug("clicked");
+
+    if (not CallingObject) then
+	CallingObject = "noframe";
+    end
+
+    if (button == "RightButton" and not IsShiftKeyDown()) then
+
+	if (not IsAltKeyDown()) then
+	   ---[[
+	   D.DewDrop:Open(CallingObject,
+	    'children', function()
+		D.DewDrop:FeedAceOptionsTable( D.options )
+	    end
+	    );
+	    --]]
+	else
+	    D.Waterfall:Open("Decursive");
+	end
+
+    elseif (button == "RightButton" and IsShiftKeyDown()) then
+	D:HideBar();
+    elseif (button == "LeftButton" and IsControlKeyDown()) then
+	D:ShowHidePriorityListUI();
+    elseif (button == "LeftButton" and IsShiftKeyDown()) then
+	D:ShowHideSkipListUI();
+    end
+
+end -- }}}
+
+
+
 DcrLoadedFiles["Dcr_opt.lua"] = "@project-version@";
 

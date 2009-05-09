@@ -221,8 +221,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- Create some useful cache tables
     D:CreateClassColorTables();
 
-    D.OnMouseDown = D.MicroUnitF.OnCornerClick;
-
 
     D.MFContainer = DcrMUFsContainer;
     D.MicroUnitF.Frame = D.MFContainer;

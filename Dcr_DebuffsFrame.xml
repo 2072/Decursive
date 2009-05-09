@@ -79,7 +79,7 @@
 			this:GetParent():StartMoving();
 			this.isMoving = true;
 			else
-			Dcr.MicroUnitF:OnCornerClick(arg1, this);
+			Dcr:QuickAccess(this, arg1);
 			end
 
 		    </OnMouseDown>
