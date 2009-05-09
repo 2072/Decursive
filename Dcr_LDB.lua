@@ -198,7 +198,9 @@ LDB.OnEnter = function(frame)
 end
 
 LDB.OnLeave = function(frame)
-    Tablet:Close(frame);
+    if Tablet:IsRegistered(frame) then
+	Tablet:Close(frame);
+    end
 end
 
 
