@@ -370,8 +370,10 @@ end
 
 do
 
-    local Name, rank, Texture, Applications, TypeName, Duration;
+    local Name, rank, Texture, Applications, TypeName; --, Duration;
     local D = _G.Dcr;
+    local UnitAura = _G.UnitAura;
+
     -- This function only returns interesting values of UnitDebuff()
     local function GetUnitDebuff  (Unit, i) --{{{
 
@@ -383,8 +385,12 @@ do
 	--D:Debug("|cFFFF0000Getting debuffs for %s , id = %d|r", Unit, i);
 
 
-	-- local Name, rank, Texture, Applications, TypeName, Duration, TimeLeft = UnitDebuff(Unit, i);
-	local Name, rank, Texture, Applications, TypeName, Duration = UnitDebuff(Unit, i);
+	-- name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
+
+	local Name, rank, Texture, Applications, TypeName = UnitAura(Unit, i, "HARMFUL");
+
+	--local Name, rank, Texture, Applications, TypeName, Duration = UnitDebuff(Unit, i);
+
 	if (Name) then
 	    return Name, TypeName, Applications, Texture;
 	else
