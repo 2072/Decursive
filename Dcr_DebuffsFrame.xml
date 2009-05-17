@@ -56,7 +56,7 @@
 		    <AbsDimension x="20" y="20" />
 		</Size>
 		<Anchors>
-		    <Anchor point="TOPLEFT">
+		    <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 			<Offset>
 			    <AbsDimension x="0" y="0"/>
 			</Offset>
@@ -68,25 +68,30 @@
 
 		<Scripts>
 		    <OnMouseUp>
-			Dcr.MicroUnitF:SavePos();
 			if ( this.isMoving ) then
-			this:GetParent():StopMovingOrSizing();
-			this.isMoving = false;
+			    this:GetParent():StopMovingOrSizing();
+			    this.isMoving = false;
+			    Dcr.MicroUnitF.DraggingHandle = false;
+			    Dcr.MicroUnitF:SavePos();
+			    Dcr.MicroUnitF:Place();
+			    Dcr.MicroUnitF:SavePos();
 			end
 		    </OnMouseUp>
 		    <OnMouseDown>
 			if (   arg1 == "LeftButton" and IsAltKeyDown() ) then
-			this:GetParent():StartMoving();
-			this.isMoving = true;
+			    this.isMoving = true;
+			    Dcr.MicroUnitF.DraggingHandle = true;
+			    this:GetParent():StartMoving();
 			else
-			Dcr:QuickAccess(this, arg1);
+			    Dcr:QuickAccess(this, arg1);
 			end
 
 		    </OnMouseDown>
 		    <OnHide>
 			if ( this.isMoving ) then
-			this:GetParent():StopMovingOrSizing();
-			this.isMoving = false;
+			    this:GetParent():StopMovingOrSizing();
+			    this.isMoving = false;
+			    Dcr.MicroUnitF.DraggingHandle = false;
 			end
 		    </OnHide>
 		    <OnEnter>

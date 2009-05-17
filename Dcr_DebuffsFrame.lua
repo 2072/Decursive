@@ -57,6 +57,7 @@ MicroUnitF.UnitToMUF		    = {};
 MicroUnitF.Number		    = 0;
 MicroUnitF.UnitShown		    = 0;
 MicroUnitF.UnitsDebuffedInRange	    = 0;
+MicroUnitF.DraggingHandle	    = false;
 D.ForLLDebuffedUnitsNum		    = 0;
 
 
@@ -212,7 +213,7 @@ function MicroUnitF:GiveMFAnchor (ID) -- {{{
     local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
 
 
-    return { "TOPLEFT", x, y - 20, "TOPLEFT" };
+    return { "TOPLEFT", x, y, "TOPLEFT" };
 end -- }}}
 
 
@@ -322,35 +323,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
     -- manage to get what we show in the screen
     if self.UnitShown > 0 and Old_UnitShown ~= self.UnitShown then
-
-	local FirstLineNum = 0;
-	local RightEdge = 0;
-	local Handle_x = 0;
-
-	if self.UnitShown >= D.profile.DebuffsFramePerline then
-	    FirstLineNum = D.profile.DebuffsFramePerline;
-	else
-	    FirstLineNum = self.UnitShown;
-	end
-
-	if D.profile.DebuffsFrameStickToRight then
-	    Handle_x = -1 * (FirstLineNum - 1) * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) * self.Frame:GetEffectiveScale();
-	end
-
-	RightEdge = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing) + Handle_x;
-
-	if (RightEdge > UIParent:GetWidth() * UIParent:GetEffectiveScale()) then
-	    Handle_x = Handle_x - (RightEdge - UIParent:GetWidth() * UIParent:GetEffectiveScale());
-	    D:Debug("put the MUF on the screen!!!");
-	end
-
-	-- if the handle needs to be moved
-	if (Handle_x ~= 0 or D.profile.DebuffsFrameStickToRight) and self.UnitShown > 0 then
-	    D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + Handle_x;
-	    MicroUnitF:Place();
-	    MicroUnitF:SavePos();
-	end
-
+	MicroUnitF:Place();
     end
 
     return true;
@@ -403,15 +376,21 @@ end -- }}}
 -- SACALING FUNCTIONS (MicroUnitF Children) {{{
 -- Place the MUFs container according to its scale
 function MicroUnitF:Place () -- {{{
+
+    if self.UnitShown == 0 or self.DraggingHandle then return end
+
+    if (D.Status.Combat) then
+	-- if we are fighting, postpone the call
+	D:AddDelayedFunctionCall (
+	"MicroUnitFPlace", self.Place,
+	self);
+	return;
+    end
+
+
     local UIScale	= UIParent:GetEffectiveScale()
     local FrameScale	= self.Frame:GetEffectiveScale();
     local x, y = D.profile.DebuffsFrame_x, D.profile.DebuffsFrame_y;
-
-    -- check if the coordinates are correct
-    if x and y and (x + 10 > UIParent:GetWidth() * UIScale or x < 0 or (-1 * y + 10) > UIParent:GetHeight() * UIScale or y > 0) then
-	x = false; -- reset to default position
-	message("MUFs position reset to default");
-    end
 
     -- If executed for the very first time, then put it in the top right corner of the screen
     if (not x or not y) then
@@ -422,13 +401,73 @@ function MicroUnitF:Place () -- {{{
 	D.profile.DebuffsFrame_y = y;
     end
 
+
+    local FirstLineNum	  = 0;
+    local Handle_x_offset = 0;
+    local Handle_y_offset = 0;
+
+    -- get the number of max unit per line
+    if self.UnitShown >= D.profile.DebuffsFramePerline then FirstLineNum = D.profile.DebuffsFramePerline; else FirstLineNum = self.UnitShown; end
+
+    -- get the offset of the handle we need to apply in order to align the MUFs on the right
+    if D.profile.DebuffsFrameStickToRight then
+	Handle_x_offset = -1 * FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing );
+    end
+
+    Handle_x_offset = Handle_x_offset - FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+    Handle_y_offset = Handle_y_offset + FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+
+    -- check the right edge so it can't be out of the screen
+    local RightEdge = x + FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing + (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0)) + Handle_x_offset ;
+
+    if (RightEdge > UIParent:GetWidth() * UIScale) then
+	Handle_x_offset = Handle_x_offset - (RightEdge - UIParent:GetWidth() * UIScale);
+	D:Debug("put the MUFs on the screen!!! (Right edge out)");
+    end
+
+    -- check the left edge so it can't be out of the screen
+    local LeftEdge = x + Handle_x_offset;
+    if (LeftEdge < 0) then
+	Handle_x_offset = Handle_x_offset - LeftEdge;
+	D:Debug("put the MUFs on the screen!!! (Left edge out)");
+    end
+
+    -- check the bottom edge
+    local NumberOfLines = floor( (self.UnitShown - 1) / D.profile.DebuffsFramePerline) + 1;
+    D:Debug(NumberOfLines);
+    
+    local BottomEdge = y - FrameScale * ((D.profile.DebuffsFrameGrowToTop and 1 or NumberOfLines) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
+    
+    if -BottomEdge > UIParent:GetHeight() * UIScale then
+	Handle_y_offset = Handle_y_offset - (BottomEdge + UIParent:GetHeight() * UIScale);
+	D:Debug("put the MUFs on the screen!!! (Bottom edge out)");
+    end
+
+    -- check the top edge
+    local TopEdge = y + FrameScale * (((D.profile.DebuffsFrameGrowToTop and NumberOfLines > 1) and NumberOfLines - 1 or 1) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - ((not D.profile.DebuffsFrameGrowToTop) and 1 or 0) * D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
+     if (TopEdge > 0) then
+	Handle_y_offset = Handle_y_offset - TopEdge;
+	D:Debug("put the MUFs on the screen!!! (Top edge out)");
+    end
+
+    x = x + Handle_x_offset;
+    y = y + Handle_y_offset;
+
+   
+
     -- set to the scaled position
     self.Frame:ClearAllPoints();
     self.Frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
+    D:Debug("MUF Window position set");
 end -- }}}
 
 -- Save the position of the frame without its scale
 function MicroUnitF:SavePos () -- {{{
+
+    if self.UnitShown == 0 then return end
+
+    local FirstLineNum;
+
     if self.Frame:IsVisible() then
 	-- We save the unscalled position (no problem if the sacale is changed behind our back)
 	D.profile.DebuffsFrame_x = self.Frame:GetEffectiveScale() * self.Frame:GetLeft();
@@ -436,23 +475,21 @@ function MicroUnitF:SavePos () -- {{{
 
 
 	-- if we choosed to align the MUF to the right then we have to add the
-	-- width of the first line
-	if D.profile.DebuffsFrameStickToRight and self.UnitShown > 1 then
+	-- width of the first line to get the original position of the handle
+	
+	if D.profile.DebuffsFrameStickToRight then
+
 	    if self.UnitShown >= D.profile.DebuffsFramePerline then
-		D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + (D.profile.DebuffsFramePerline - 1)   * (DC.MFSIZE  + D.profile.DebuffsFrameXSpacing) * self.Frame:GetEffectiveScale();
+		FirstLineNum = D.profile.DebuffsFramePerline;
 	    else
-		D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + (self.UnitShown - 1)		    * (DC.MFSIZE  + D.profile.DebuffsFrameXSpacing) * self.Frame:GetEffectiveScale();
+		FirstLineNum = self.UnitShown;
 	    end
-	end
 
-
-	if D.profile.DebuffsFrame_x < 0 then
-	    D.profile.DebuffsFrame_x = 0;
+	    D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing);
 	end
-
-	if D.profile.DebuffsFrame_y > 0 then
-	    D.profile.DebuffsFrame_y = 0;
-	end
+	
+	D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+	D.profile.DebuffsFrame_y = D.profile.DebuffsFrame_y - self.Frame:GetEffectiveScale() * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
 
 	--	D:Debug("Frame position saved");
     end
@@ -463,7 +500,7 @@ end -- }}}
 function MicroUnitF:SetScale (NewScale) -- {{{
     
     -- save the current position without any scaling
-    self:SavePos ();
+--    self:SavePos ();
     -- Setting the new scale
     self.Frame:SetScale(NewScale);
     -- Place the frame adapting its position to the news cale

@@ -652,7 +652,9 @@ D.options = { -- {{{
 		    set = function(v)
 			if (v ~= D.profile.DebuffsFrameGrowToTop) then
 			    D.profile.DebuffsFrameGrowToTop = v;
+			    D.MicroUnitF:SavePos();
 			    D.MicroUnitF:ResetAllPositions ();
+			    D.MicroUnitF:Place ();
 			end
 		    end,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
@@ -732,6 +734,7 @@ D.options = { -- {{{
 			if (v ~= D.profile.DebuffsFramePerline) then
 			    D.profile.DebuffsFramePerline = v;
 			    D.MicroUnitF:ResetAllPositions ();
+			    D.MicroUnitF:Place ();
 			end
 		    end,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
@@ -889,6 +892,7 @@ D.options = { -- {{{
 					D.profile.DebuffsFrameYSpacing = v;
 				    end
 				    D.MicroUnitF:ResetAllPositions ();
+				    D.MicroUnitF:Place ();
 				end
 			    end,
 			    disabled = function() return D.Status.Combat end,
@@ -907,6 +911,7 @@ D.options = { -- {{{
 				if (v ~= D.profile.DebuffsFrameYSpacing) then
 				    D.profile.DebuffsFrameYSpacing = v;
 				    D.MicroUnitF:ResetAllPositions ();
+				    D.MicroUnitF:Place ();
 				end
 			    end,
 			    disabled = function() return D.Status.Combat or D.profile.DebuffsFrameTieSpacing end,
