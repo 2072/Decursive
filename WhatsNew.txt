@@ -1,9 +1,29 @@
-Decursive 2.4.1 beta 1 by Archarodim  (2009-04-28)
+Decursive 2.4.1 beta 3 by Archarodim  (2009-05-18)
 
-Changes from Decursive 2.4 to Decursive 2.4.1 beta 1
+Changes from Decursive 2.4 to Decursive 2.4.1 beta 3
 
 - Added support for the new priest talent 'Body and soul' to be able to cleanse
   a poison effect on self when using abolish disease.
+
+- Important enhancemants and fixes to the MUF positionning/scaling system:
+    - Changing their scale will no longer affect their position in an unlogical
+      way.
+    - MUFs are maintained on screen whatever happens ; their position will
+      no longer be reset to default.
+
+- Fixes to charm detection when the livelist was used (A LUA error could be
+  thrown)
+
+- Fixes to Decursive icon: now it does what the tooltip says and it doesn't
+  throw a LUA error if tooltips are disabled in the LDB client.
+
+- The MUFs no longer depend on the 'mouseover' unit (internal simplification,
+  more reliability).
+
+- Decursive now uses UnitAura() instead of UnitDebuff() (may fix Yogg Saron
+  guardians' MC debuff detection issues)
+
+
 
 
 Changes from Decursive 2.3.1 to Decursive 2.4
