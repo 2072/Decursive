@@ -1008,7 +1008,9 @@ function D:GetSpellsTranslations(FromDIAG)
 	['Dampen Magic']		= {	604,					 },
 	['Amplify Magic']		= {	1008,					 },
 	['TALENT_BODY_AND_SOUL']	= {	64129, 65081				 },
-	['TALENT_ARCANE_POWER']	= {	12042,					 }, --temp to test
+	--['TALENT_ARCANE_POWER']		= {	12042,					 }, --temp to test
+	['YOGGG_DOMINATE_MIND']		= {	63042,					 }, --temp to test
+	--['STALVAN_CURSE']		= {	3105,					 }, --temp to test
     };
 
 

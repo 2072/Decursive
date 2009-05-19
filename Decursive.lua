@@ -443,6 +443,11 @@ do
 		break;
 	    end
 
+	    -- implement the test for DominateMind
+	    if Name == DS["YOGGG_DOMINATE_MIND"] then
+		D:Println("|cFFFF9955Decursive Yoggy Debug (try 1):|r", UnitIsCharmed( "player"), UnitIsCharmed(Unit), UnitCanAttack(Unit, "player"), UnitCanAttack("player", Unit));
+	    end
+
 	    -- test for a type (Magic Curse Disease or Poison)
 	    if (TypeName and TypeName ~= "") then
 		Type = DC.NameToTypes[TypeName];
