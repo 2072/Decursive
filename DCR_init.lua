@@ -299,7 +299,10 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = true,
 	    Pet = false,
 
-	    EnhancedBy = DS["TALENT_BODY_AND_SOUL"], 
+	    EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
+	    EnhancedByCheck = function ()
+		return (select(5, GetTalentInfo(2,20))) > 0;
+	    end,
 	    Enhancements = {
 		Types = {DC.DISEASE, DC.POISON},
 		OnPlayerOnly = {
@@ -354,7 +357,10 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    Pet = false,
 
 	    --[===[ for testing purpose only
-	     EnhancedBy = DS["TALENT_ARCANE_POWER"], 
+	    EnhancedBy = DS["TALENT_ARCANE_POWER"], 
+	    EnhancedByCheck = function ()
+		return (select(5, GetTalentInfo(1,1))) > 0;
+	    end,
 	    Enhancements = {
 		Types = {DC.CURSE, DC.MAGIC},
 		OnPlayerOnly = {
@@ -799,7 +805,7 @@ function D:ReConfigure() --{{{
 		break;
 	    elseif DC.SpellsToUse[spellName].EnhancedBy then -- it's not new but there is an enhancement available...
 
-		if  GetSpellInfo (DC.SpellsToUse[spellName].EnhancedBy) then -- we have it now
+		if  DC.SpellsToUse[spellName].EnhancedByCheck() then -- we have it now
 		    if not D.Status.FoundSpells[spellName][3] then -- but not then :)
 			Reconfigure = true;
 			break;
@@ -864,7 +870,7 @@ function D:Configure() --{{{
 		--@end-alpha@
 		
 
-		if GetSpellInfo (DC.SpellsToUse[spellName].EnhancedBy) then -- we have the enhancement
+		if DC.SpellsToUse[spellName].EnhancedByCheck() then -- we have the enhancement
 		    IsEnhanced = true;
 
 		    Types = DC.SpellsToUse[spellName].Enhancements.Types; -- set the type to scan to the new ones
@@ -1008,7 +1014,7 @@ function D:GetSpellsTranslations(FromDIAG)
 	['Dampen Magic']		= {	604,					 },
 	['Amplify Magic']		= {	1008,					 },
 	['TALENT_BODY_AND_SOUL']	= {	64129, 65081				 },
-	--['TALENT_ARCANE_POWER']		= {	12042,					 }, --temp to test
+	['TALENT_ARCANE_POWER']		= {	12042,					 }, --temp to test
 	['YOGGG_DOMINATE_MIND']		= {	63042,					 }, --temp to test
 	--['STALVAN_CURSE']		= {	3105,					 }, --temp to test
     };
