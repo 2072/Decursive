@@ -378,6 +378,14 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    Pet = false,
 	},
 	--]=]
+
+	-- HUNTERS http://www.wowhead.com/?spell=19801
+	[DS["SPELL_TRANQUILIZING_SHOT"]]    = {
+	    Types = {DC.ENEMYMAGIC},
+	    IsBest = true,
+	    Pet = false,
+	},
+
 	[DS["PET_FEL_CAST"]]		    = {
 	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
 	    IsBest = true,
@@ -407,11 +415,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	};
     end
 
+    --[=[ this exception is no longer required since Consume magic no longer exists: http://www.wowwiki.com/Consume_Magic
     -- Thanks to Chinese localization team of WoW we have to make anOTHER exception.... ://///
     -- They found the way to call two different spells the same (Devour Magic and Consume Magic... (both are called "&#21534;&#22124;&#39764;&#27861;" )
     if ((select(2, UnitClass("player"))) == "PRIEST") then
 	DC.SpellsToUse[DS["PET_FEL_CAST"]] = nil; -- so we remove PET_FEL_CAST.
     end
+    --]=]
 
     -- // }}}
 
@@ -980,6 +990,7 @@ function D:GetSpellsTranslations(FromDIAG)
 	["SPELL_ABOLISH_POISON"]	= {	2893,					 },
 	["SPELL_REMOVE_LESSER_CURSE"]	= {	475,					 },
 	["SPELL_REMOVE_CURSE"]		= {	2782,					 },
+	['SPELL_TRANQUILIZING_SHOT']	= {	19801,					 },
 	["CLEANSE_SPIRIT"]		= {	51886,					 },
 	["SPELL_PURGE"]			= {	370, 8012,				 },
 	["PET_FEL_CAST"]		= {	19505, 19731, 19734, 19736, 27276, 27277,},
