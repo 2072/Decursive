@@ -429,7 +429,7 @@ do
 
 
 	-- test if the unit is mind controlled once
-	if (UnitIsCharmed(Unit) and (UnitCanAttack(Unit, "player")  or UnitIsCharmed( "player"))) then
+	if (UnitIsCharmed(Unit) and (UnitCanAttack("player", Unit)  or UnitIsCharmed("player"))) then
 	    IsCharmed = true;
 	else
 	    IsCharmed = false;
@@ -445,7 +445,7 @@ do
 
 	    -- implement the test for DominateMind
 	    if Name == DS["YOGGG_DOMINATE_MIND"] then
-		D:Println("|cFFFF9955Decursive Yoggy Debug (try 1):|r", UnitIsCharmed( "player"), UnitIsCharmed(Unit), UnitCanAttack(Unit, "player"), UnitCanAttack("player", Unit));
+		D:Println("|cFFFF9955Decursive Yoggy Debug (try 2):|r", Unit, TypeName, Applications, UnitIsCharmed( "player"), UnitIsCharmed(Unit), UnitCanAttack(Unit, "player"), UnitCanAttack("player", Unit));
 	    end
 
 	    -- test for a type (Magic Curse Disease or Poison)
