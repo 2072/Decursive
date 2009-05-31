@@ -184,6 +184,8 @@ D.ManagedDebuffUnitCache = {};
 -- A table UnitID=>IsDebuffed (boolean)
 D.UnitDebuffed = {};
 
+D.DebugText = "";
+
 -- // }}}
 -------------------------------------------------------------------------------
 
@@ -491,7 +493,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	    D.Waterfall:Open("Decursive");
 	end
 
-	SLASH_DECURSIVESHOWORDER1 = D.CONF.MACRO_SHOW_ORDER
+	SLASH_DECURSIVESHOWORDER1 = D.CONF.MACRO_SHOW_ORDER;
 	SlashCmdList["DECURSIVESHOWORDER"] = function(msg)
 	    D:Show_Cure_Order();
 	end

@@ -445,7 +445,12 @@ do
 
 	    -- implement the test for DominateMind
 	    if Name == DS["YOGGG_DOMINATE_MIND"] then
-		D:Println("|cFFFF9955Decursive Yoggy Debug (try 2):|r", Unit, TypeName, Applications, UnitIsCharmed( "player"), UnitIsCharmed(Unit), UnitCanAttack(Unit, "player"), UnitCanAttack("player", Unit));
+		D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 3):|r", Unit, TypeName, Applications,
+		"UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
+		"UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit),
+		"UIFpu:",UnitIsFriend( "player", Unit),
+		"UIEpu:",UnitIsEnemy( "player", Unit)
+		);
 	    end
 
 	    -- test for a type (Magic Curse Disease or Poison)
@@ -755,5 +760,54 @@ do
 end
 -- }}}
 
+-- taken from BugSack
+function D:DebugFrameOnTextChanged()
+	if this:GetText() ~= D.DebugText then
+		this:SetText(D.DebugText)
+	end
+	this:GetParent():UpdateScrollChildRect()
+	local _, m = DecursiveDebuggingFrameScrollScrollBar:GetMinMaxValues()
+	if m > 0 and this.max ~= m then
+		this.max = m
+		DecursiveDebuggingFrameScrollScrollBar:SetValue(0)
+	end
+end
+
+-- taken from AceConsole-2.0
+local function tostring_args(a1, ...)
+	if select('#', ...) < 1 then
+		return tostring(a1)
+	end
+	return tostring(a1), tostring_args(...)
+end
+
+local Reported = {};
+-- /script Dcr:AddDebugText(jg,"sdsassss", nil , 42)
+function D:AddDebugText(a1, ...)
+
+    local text = "";
+
+    if select('#', ...) > 0 then
+	text = strjoin(", ", tostring_args(a1, ...))
+    else
+	text = tostring(a1);
+    end
+
+    if not Reported[text] then
+	Reported[text] = true;
+
+	if D.DebugText == "" then
+	    D.DebugText = L["DEBUG_REPORT_HEADER"];
+	end
+
+	D.DebugText = D.DebugText .. "\n------\n" .. text;
+	_G.DecursiveDebuggingFrameText:SetText(D.DebugText);
+    end
+end
+
+function D:ShowDebugReport()
+    _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
+    _G.DecursiveDebuggingFrame:Show();
+end
 
 DcrLoadedFiles["Decursive.lua"] = "@project-version@";

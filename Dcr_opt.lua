@@ -1219,19 +1219,29 @@ D.options = { -- {{{
 
 	    end,
 	    disabled = function() return  not D.Status.Enabled end,
-	    order = 150
+	    order = 1500
 	},
 	spacer6 = {
 	    type = "header",
-	    order = 151
+	    order = 1510
+	},
+	report = {
+	    type = "execute",
+	    name = D:ColorText(L["DECURSIVE_DEBUG_REPORT_SHOW"], "FFFF0000"),
+	    desc = L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"],
+	    func = function ()
+		D:ShowDebugReport();
+	    end,
+	    hidden = function() return  (D.DebugText == "") end,
+	    order = 1515
 	},
 	spacer7 = {
 	    type = "header",
-	    order = 152
+	    order = 1520
 	},
 	spacer8 = {
 	    type = "header",
-	    order = 153
+	    order = 1530
 	},
 	GlorfindalMemorium = { -- {{{
 	    type = "execute",
@@ -1393,15 +1403,15 @@ D.options = { -- {{{
 		--]]
 		-- }}}
 	    end,
-	    order = 154
+	    order = 1540
 	},
 	spacer9 = {
 	    type = "header",
-	    order = 155
+	    order = 1550
 	},
 	spacer10 = {
 	    type = "header",
-	    order = 156
+	    order = 1560
 	},
 	minimap = {
 	    type = "toggle",
@@ -1419,7 +1429,7 @@ D.options = { -- {{{
 	    end,
 	    hidden = function() return not icon end,
 	    disabled = function() return  not D.Status.Enabled end,
-	    order = 157,
+	    order = 1570,
 	},
 	
     },

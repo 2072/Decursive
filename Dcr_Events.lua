@@ -200,9 +200,19 @@ function D:EnterCombat() -- called on PLAYER_REGEN_DISABLED {{{
     self.Status.Combat = true;
 end --}}}
 
+local LastDebugReportNotification = 0;
 function D:LeaveCombat() --{{{
     --D:Debug("Leaving combat");
     self.Status.Combat = false;
+
+    -- test for debug report
+    if self.DebugText ~= "" and GetTime() - LastDebugReportNotification > 300 then
+	if LastDebugReportNotification == 0 then
+	    message(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
+	end
+	self:Println(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
+	LastDebugReportNotification = GetTime();
+    end
 end --}}}
 -- }}}
 

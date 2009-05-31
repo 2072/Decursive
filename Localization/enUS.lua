@@ -60,6 +60,12 @@ if not L then return end;
 
 -- Used for testing the addon withour the packager
 
+L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = "A debug report is available! Type |cFFFF0000/dcr report|r to see it"
+L["DECURSIVE_DEBUG_REPORT_SHOW"] = "Debug report available!"
+L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"] = "Show a debug report the author needs to see..."
+L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
+L["DEBUG_REPORT_HEADER"] = "|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n"
+
 L["ABOLISH_CHECK"] = "Check for \"Abolish\" before curing"
 L["ABSENT"] = "Missing (%s)"
 L["AFFLICTEDBY"] = "%s Afflicted"
