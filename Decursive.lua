@@ -443,16 +443,6 @@ do
 		break;
 	    end
 
-	    -- implement the test for DominateMind
-	    if Name == DS["YOGGG_DOMINATE_MIND"] then
-		D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 3):|r", Unit, TypeName, Applications,
-		"UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
-		"UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit),
-		"UIFpu:",UnitIsFriend( "player", Unit),
-		"UIEpu:",UnitIsEnemy( "player", Unit)
-		);
-	    end
-
 	    -- test for a type (Magic Curse Disease or Poison)
 	    if (TypeName and TypeName ~= "") then
 		Type = DC.NameToTypes[TypeName];
@@ -460,8 +450,26 @@ do
 		Type = false;
 	    end
 
+	    -- implement the test for DominateMind I HATE stupid exceptions like this one... so many hours lost because of this :/
+	    if Name == DS["YOGGG_DOMINATE_MIND"] and Type == DC.MAGIC then
+		D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 4):|r", Unit, TypeName, Applications,
+		"UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
+		"UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit),
+		"UIFpu:",UnitIsFriend( "player", Unit),
+		"UIEpu:",UnitIsEnemy( "player", Unit)
+		);
+
+		if DC.MyClass == "PALADIN" then
+		    IsCharmed = false;
+		    CharmFound = false;
+		else
+		    IsCharmed = true;
+		end
+
+	    end
+
 	    -- if the unit is charmed and we didn't took care of this information yet
-	    if (not CharmFound and IsCharmed) then
+	    if IsCharmed and not CharmFound then
 
 		-- If the unit has a magical debuff and we can cure it
 		-- (note that the target is not friendly in that case)
