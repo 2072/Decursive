@@ -608,6 +608,8 @@ function D:OnProfileEnable()
     D.Status.last_focus_GUID = false;
     D.Status.GroupUpdatedOn = 0;
     D.Status.UpdateCooldown = 0;
+    D.Status.MouseOveringMUF = false;
+    
 
     -- if we log in and we are already fighting...
     if (InCombatLockdown()) then

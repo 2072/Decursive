@@ -435,6 +435,10 @@ do
 	    IsCharmed = false;
 	end
 
+	--temp XXX
+	local YoggReport = false;
+	--local FDebuffsrep = {};
+
 	-- iterate all available debuffs
 	while (true) do
 	    Name, TypeName, Applications, Texture = GetUnitDebuff(Unit, i);
@@ -443,6 +447,8 @@ do
 		break;
 	    end
 
+	    --temp XXX
+	
 	    -- test for a type (Magic Curse Disease or Poison)
 	    if (TypeName and TypeName ~= "") then
 		Type = DC.NameToTypes[TypeName];
@@ -451,13 +457,8 @@ do
 	    end
 
 	    -- implement the test for DominateMind I HATE stupid exceptions like this one... so many hours lost because of this :/
-	    if Name == DS["YOGGG_DOMINATE_MIND"] and Type == DC.MAGIC then
-		D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 4):|r", Unit, TypeName, Applications,
-		"UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
-		"UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit),
-		"UIFpu:",UnitIsFriend( "player", Unit),
-		"UIEpu:",UnitIsEnemy( "player", Unit)
-		);
+	    if Name == DS["YOGGG_DOMINATE_MIND"] then -- and Type == DC.MAGIC then
+		YoggReport = true;
 
 		if DC.MyClass == "PALADIN" then
 		    IsCharmed = false;
@@ -465,6 +466,13 @@ do
 		else
 		    IsCharmed = true;
 		end
+
+		D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 5):|r", Unit, TypeName, Applications,
+		"PC:",DC.MyClass,"IsOvering:", D.Status.MouseOveringMUF, "DN",i, "SDi",StoredDebuffIndex,
+		"UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
+		"UCApu:",UnitCanAttack("player", Unit), "IsCharmed:", IsCharmed
+		-- "UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit), "UIFpu:",UnitIsFriend( "player", Unit), "UIEpu:",UnitIsEnemy( "player", Unit)
+		);
 
 	    end
 
@@ -484,6 +492,9 @@ do
 		    TypeName = DC.TypeNames[DC.CHARMED];
 		end
 		CharmFound = true;
+	    end
+	    if YoggReport then
+		D:AddDebugText("CharmFound:", CharmFound, "TN:", DC.TypeNames[Type]);
 	    end
 
 
@@ -516,6 +527,10 @@ do
 	    StoredDebuffIndex = StoredDebuffIndex + 1;
 	end
 
+	-- if no debuff on the unit then it can't be charmed... FUCKING LAG!!
+	if i == 1 then
+	    IsCharmed = false;
+	end
 
 	return ThisUnitDebuffs, IsCharmed;
     end --}}}
@@ -805,10 +820,10 @@ function D:AddDebugText(a1, ...)
 	Reported[text] = true;
 
 	if D.DebugText == "" then
-	    D.DebugText = L["DEBUG_REPORT_HEADER"];
+	    D.DebugText = L["DEBUG_REPORT_HEADER"] .. "\n@project-version@";
 	end
 
-	D.DebugText = D.DebugText .. "\n------\n" .. text;
+	D.DebugText = D.DebugText .. "\n------\n"  .. GetTime() .. " - ".. text;
 	_G.DecursiveDebuggingFrameText:SetText(D.DebugText);
     end
 end
