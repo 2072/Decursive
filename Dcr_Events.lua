@@ -206,7 +206,7 @@ function D:LeaveCombat() --{{{
     self.Status.Combat = false;
 
     -- test for debug report
-    if self.DebugText ~= "" and GetTime() - LastDebugReportNotification > 300 then
+    if #D.DebugTextTable > 0 and GetTime() - LastDebugReportNotification > 300 then
 	if LastDebugReportNotification == 0 then
 	    message(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
 	end
@@ -276,6 +276,15 @@ function D:SPELLS_CHANGED()
     --D:Debug("|cFFFF0000Spells were changed, scheduling a reconfiguration check|r");
     self:ScheduleEvent("Dcr_SpellsChanged", self.ReConfigure, 15, self);
 end
+
+--[=[
+local SeenUnitEventsUNITAURA = {};
+local SeenUnitEventsCOMBAT = {};
+function D:UNIT_AURA(...)
+    self:AddDebugText("UNIT_AURA ", GetTime(), ...);
+end
+--]=]
+
 
 do
     local bit = _G.bit;
@@ -360,7 +369,7 @@ do
 
 		    --[=[
 		    if UnitID and UnitGUID(UnitID) ~= destGUID then
-			D:Println("|cFFFF0000ALERT:|rSanity check(2nd-) failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.\nReport this to ARCHARODIM@TEASER.FR", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
+			D:AddDebugText("|cFFFF0000ALERT:|rSanity check(2nd-) failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
 			return;
 		    else
 		    --]=]
@@ -372,6 +381,9 @@ do
 		end
 
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
+
+		    --self:AddDebugText("CombatLog BUFF on", GetTime(), UnitID);
+
 		    if DC.IsStealthBuff[arg10] then
 			if AuraEvents[event] == 1 then
 			    self.Stealthed_Units[UnitID] = true;
@@ -382,6 +394,8 @@ do
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
 		    end
 		else
+		    --self:AddDebugText("CombatLog BUFF on", GetTime(), UnitID);
+
 		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event);
 		    if self.profile.ShowDebuffsFrame then
 			self.MicroUnitF:UpdateMUFUnit(UnitID);

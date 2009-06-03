@@ -185,6 +185,7 @@ D.ManagedDebuffUnitCache = {};
 D.UnitDebuffed = {};
 
 D.DebugText = "";
+D.DebugTextTable = {};
 
 -- // }}}
 -------------------------------------------------------------------------------
@@ -569,6 +570,9 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+
+    -- for testing
+    --self:RegisterEvent("UNIT_AURA");
     
 
     self:ScheduleRepeatingEvent("Dcr_SheduledTasks", self.SheduledTasks, 0.2, self);

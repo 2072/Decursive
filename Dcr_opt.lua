@@ -1232,7 +1232,7 @@ D.options = { -- {{{
 	    func = function ()
 		D:ShowDebugReport();
 	    end,
-	    hidden = function() return  (D.DebugText == "") end,
+	    hidden = function() return  #D.DebugTextTable < 1 end,
 	    order = 1515
 	},
 	spacer7 = {

@@ -818,16 +818,18 @@ function D:AddDebugText(a1, ...)
     if not Reported[text] then
 	Reported[text] = true;
 
-	if D.DebugText == "" then
-	    D.DebugText = L["DEBUG_REPORT_HEADER"] .. "\n@project-version@";
+	if #D.DebugTextTable < 1 then
+	    table.insert (D.DebugTextTable, L["DEBUG_REPORT_HEADER"] .. "\n@project-version@");
 	end
 
-	D.DebugText = D.DebugText .. "\n------\n"  .. GetTime() .. " - ".. text;
-	_G.DecursiveDebuggingFrameText:SetText(D.DebugText);
+	table.insert (D.DebugTextTable,  "\n------\n"  .. GetTime() .. " - ".. text );
     end
 end
 
 function D:ShowDebugReport()
+    D.DebugText = table.concat(D.DebugTextTable, "");
+    _G.DecursiveDebuggingFrameText:SetText(D.DebugText);
+
     _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
     _G.DecursiveDebuggingFrame:Show();
 end

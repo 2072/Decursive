@@ -538,12 +538,12 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     if MF then
 	-- sanity test: test if UnitToMUF[] == getattributeUnit
 	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true :/ it does... (reproduceable by mind-controlling something and releasing it)
-	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit (%s - %s - %s).\nReport this to ARCHARODIM@TEASER.fR", MF.CurrUnit, MF.Frame:GetAttribute("unit"), MF.Shown);
+	    D:AddDebugText("|cFFFF0000ALERT:|rSaSanitynity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit (%s - %s - %s).", MF.CurrUnit, MF.Frame:GetAttribute("unit"), MF.Shown);
 	end
 
 	-- sanity test: test if unit == CurrUnit
 	if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
-	    D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).\nReport this to ARCHARODIM@TEASER.FR", unit, MF.CurrUnit, MF.Shown);
+	    D:AddDebugText("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).", unit, MF.CurrUnit, MF.Shown);
 	end
     end
 
@@ -579,7 +579,7 @@ function MicroUnitF:OnEnter() -- {{{
 
     -- sanity test: test if UnitToMUF[] == getattributeUnit
     if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
-	D:Println("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:OnEnter() Cattrib ~= CurrUnit.\nReport this to ARCHARODIM@TEASER.fR");
+	D:AddDebugText("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:OnEnter() Cattrib ~= CurrUnit.");
     end
    
     -- Compare the current unit name to the one storred when the group data were collected
@@ -723,7 +723,7 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 
 	--[=[
 	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
-	    D:Println("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF(%s)! MOn='%s', Un='%s', UpT=%d\nReport this to ARCHARODIM@TEASER.FR|r",Unit, (UnitName("mouseover")), (UnitName(Unit)), (GetTime() - DC.StartTime));
+	    D:AddDebugText("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF(%s)! MOn='%s', Un='%s', UpT=%d|r",Unit, (UnitName("mouseover")), (UnitName(Unit)), (GetTime() - DC.StartTime));
 
 	    --	     this.Object:UpdateAttributes(Unit);
 
