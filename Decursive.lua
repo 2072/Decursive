@@ -477,8 +477,7 @@ do
 	    end
 
 	    -- if the unit is charmed and we didn't took care of this information yet
-	    if IsCharmed and not CharmFound then
-
+	    if IsCharmed and (not CharmFound or Type == DC.MAGIC) then
 		-- If the unit has a magical debuff and we can cure it
 		-- (note that the target is not friendly in that case)
 		if (Type == DC.MAGIC and self.Status.CuringSpells[DC.ENEMYMAGIC]) then
@@ -486,13 +485,13 @@ do
 
 		    -- NOTE: if a unit is charmed and has another magical debuff
 		    -- this block will be executed...
-
 		else -- the unit doesn't have a magical debuff or we can't remove magical debuffs
-		    Type = DC.CHARMED;
+		    Type = DC.CHARMED; -- The player can't remove it anyway so just say the unit is afflicted by a charming effect
 		    TypeName = DC.TypeNames[DC.CHARMED];
 		end
 		CharmFound = true;
 	    end
+
 	    if YoggReport then
 		D:AddDebugText("CharmFound:", CharmFound, "TN:", DC.TypeNames[Type]);
 	    end
@@ -570,7 +569,7 @@ do
 
 	local AllUnitDebuffs, IsCharmed = self:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
 
-	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no debuff
+	if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no curable debuff (a debuff with a type)
 	    return false, IsCharmed;
 	end
 
@@ -589,7 +588,7 @@ do
 
 	for _, Debuff in ipairs(AllUnitDebuffs) do
 
-	    if (not Debuff.Type) then
+	    if (not Debuff.Type) then -- useless test, only debuffs with a type are returned...
 		break;
 	    end
 	    continue_ = true;
@@ -607,7 +606,7 @@ do
 	    end
 
 	    if (self.profile.BuffDebuff[Debuff.Name]) then
-		-- these are just ones you don't care about
+		-- these are just ones you don't care about (sleepless deam etc...)
 		continue_ = false;
 		--D:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
 	    end
