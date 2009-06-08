@@ -409,6 +409,7 @@ do
     local UnitIsCharmed	= _G.UnitIsCharmed;
     local UnitCanAttack	= _G.UnitCanAttack;
     local GetTime	= _G.GetTime;
+    local IsSpellInRange    = _G.IsSpellInRange;
 
     -- This is the core debuff scanning function of Decursive
     -- This function does more than just reporting Debuffs. it also detects charmed units
@@ -457,8 +458,7 @@ do
 	    end
 
 	    -- implement the test for DominateMind I HATE stupid exceptions like this one... so many hours lost because of this :/
-	    if Name == DS["YOGGG_DOMINATE_MIND"] then -- and Type == DC.MAGIC then
-		YoggReport = true;
+	    if Name == DS["YOGGG_DOMINATE_MIND"] and Type == DC.MAGIC then
 
 		if DC.MyClass == "PALADIN" then
 		    IsCharmed = false;
@@ -467,12 +467,17 @@ do
 		    IsCharmed = true;
 		end
 
-		D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 5):|r", Unit, TypeName, Applications,
-		"PC:",DC.MyClass,"IsOvering:", D.Status.MouseOveringMUF, "DN",i, "SDi",StoredDebuffIndex,
-		"UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
-		"UCApu:",UnitCanAttack("player", Unit), "IsCharmed:", IsCharmed
-		-- "UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit), "UIFpu:",UnitIsFriend( "player", Unit), "UIEpu:",UnitIsEnemy( "player", Unit)
-		);
+		if DC.MyClass == "PALADIN" or DC.MyClass == "SHAMAN" then
+
+		    YoggReport = true;
+
+		    D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 6):|r", Unit, TypeName, Applications,
+		    "PC:",DC.MyClass,"IsOvering:", self.Status.MouseOveringMUF, "DN",i, "SDi",StoredDebuffIndex,
+		    "UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
+		    "UCApu:",UnitCanAttack("player", Unit), "IsCharmed:", IsCharmed
+		    -- "UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit), "UIFpu:",UnitIsFriend( "player", Unit), "UIEpu:",UnitIsEnemy( "player", Unit)
+		    );
+		end
 
 	    end
 
@@ -493,7 +498,11 @@ do
 	    end
 
 	    if YoggReport then
-		D:AddDebugText("CharmFound:", CharmFound, "TN:", DC.TypeNames[Type]);
+		local IsInRange;
+		if self.Status.CuringSpells[Type] then
+		    IsInRange = IsSpellInRange(self.Status.CuringSpells[Type], Unit)
+		end
+		D:AddDebugText("CharmFound:", CharmFound, "TN:", DC.TypeNames[Type], "ISIR", IsInRange);
 	    end
 
 

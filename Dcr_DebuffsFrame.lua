@@ -1429,10 +1429,10 @@ do
 
 	    -- update the MUF attributes and its colors XXX -- this is done by an event handler now (buff/debuff received...)
 	    if MF and MicroFrameUpdateIndex <= NumToShow then
-		if not MF.IsDebuffed and MF.UpdateCountDown ~= 0 then
+		if not (MF.IsDebuffed or MF.IsCharmed) and MF.UpdateCountDown ~= 0 then
 		    MF.UpdateCountDown = MF.UpdateCountDown - 1;
-		else -- if MF.IsDebuffed or MF.UpdateCountDown == 0
-		    ActionsDone = ActionsDone + MF:Update(false, not (MF.IsDebuffed and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range
+		else -- if MF.IsDebuffed or MF.IsCharmed or MF.UpdateCountDown == 0
+		    ActionsDone = ActionsDone + MF:Update(false, not ((MF.IsDebuffed or MF.IsCharmed) and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range
 		    MF.UpdateCountDown = 3;
 		end
 	    end
