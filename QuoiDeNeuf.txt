@@ -1,4 +1,28 @@
-Decursive 2.4 par Archarodim  (2009-04-06)
+Decursive 2.4.1 par Archarodim  (2009-06-13)
+
+Changements entre Decursive 2.4 et Decursive 2.4.1
+
+- Support du nouveau talent 'Corps et âme' des prêtres qui permet
+  d'enlever un effet de poison sur soi-même en utilisant 'Abolir le poison'.
+
+- Support du sort "Tir tranquillisant" des chasseurs qui permet
+  d'enlever un effet magique sur les joueurs sous contrôle mental.
+
+- Améliorations importantes du système de positionnement et de mise à l'échelle
+  des micro-portraits :
+    - Changer leur échelle ne change plus leur position de manière incohérente.
+    - Les Micro-portraits sont maintenus à l'écran quoi qu'il arrive. Leur
+      position ne peut plus être réinitialisée.
+
+- Améliorations et corrections multiples concernant la détection des contrôles mentaux.
+
+- L'icône de Decursive (Mini-carte ou ailleurs) fait enfin ce que son info-bulle
+  indique. Une erreur LUA lié à l'icône a également était corrigée.
+
+- Les micro-portrait n'utilisent plus l'unité 'mouseover' (simplification interne et plus de fiabilité)
+
+- Ajout d'un nouveau système avancé de rapport de debugging.
+
 
 Changements entre Decursive 2.3.1 et Decursive 2.4
 
