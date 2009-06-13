@@ -437,7 +437,7 @@ do
 	end
 
 	--temp XXX
-	local YoggReport = false;
+	--local YoggReport = false;
 	--local FDebuffsrep = {};
 
 	-- iterate all available debuffs
@@ -448,7 +448,6 @@ do
 		break;
 	    end
 
-	    --temp XXX
 	
 	    -- test for a type (Magic Curse Disease or Poison)
 	    if (TypeName and TypeName ~= "") then
@@ -458,6 +457,7 @@ do
 	    end
 
 	    -- implement the test for DominateMind I HATE stupid exceptions like this one... so many hours lost because of this :/
+	    --[=[
 	    if Name == DS["YOGGG_DOMINATE_MIND"] and Type == DC.MAGIC then
 
 		if DC.MyClass == "PALADIN" then
@@ -480,6 +480,7 @@ do
 		end
 
 	    end
+	    --]=]
 
 	    -- if the unit is charmed and we didn't took care of this information yet
 	    if IsCharmed and (not CharmFound or Type == DC.MAGIC) then
@@ -497,6 +498,7 @@ do
 		CharmFound = true;
 	    end
 
+	    --[=[
 	    if YoggReport then
 		local IsInRange;
 		if self.Status.CuringSpells[Type] then
@@ -504,6 +506,7 @@ do
 		end
 		D:AddDebugText("CharmFound:", CharmFound, "TN:", DC.TypeNames[Type], "ISIR", IsInRange);
 	    end
+	    --]=]
 
 
 	    -- If we found a type, register the Debuff
@@ -656,7 +659,7 @@ do
 		-- (it happens for warlocks or when using the same profile with
 		-- several characters)
 		--if (self.classprofile.CureOrder[Debuff.Type] and self.classprofile.CureOrder[Debuff.Type] > 0) then
-		if (self:GetCureCheckBoxStatus(Debuff.Type)) then -- XXX can be the source of a problem
+		if (self:GetCureCheckBoxStatus(Debuff.Type)) then
 
 
 		    -- self:Debug("we can cure it");
