@@ -15,6 +15,11 @@
 ## X-License: GNU GPL
 
 ## OptionalDeps: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Class: Mage, Priest, Paladin, Druid, Hunter, Warlock, Shaman
+
+
 ## X-Embeds: Ace2, LibBabble-Class-3.0, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0
 
 ## X-ReleaseDate: "@project-date-iso@"
