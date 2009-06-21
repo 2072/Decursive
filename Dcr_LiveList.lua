@@ -314,7 +314,7 @@ function LiveList:GetDebuff(UnitID) -- {{{
 	if MF then
 	    Debuffs = MF.Debuffs;
 	else -- (ticket #6)
-	    D:AddDebugText("|cFFFF0000ALERT:|rSanity check failed in LiveList:GetDebuff() no MUF for unit (%s) MUFs are %s.", UnitID, D.profile.ShowDebuffsFrame);
+	    D:AddDebugText("Sanity check failed in LiveList:GetDebuff() no MUF for unit", UnitID, "MUFs are", D.profile.ShowDebuffsFrame, "MUFnum:", MicroUnitF.Number, "MUFshown:", MicroUnitF.UnitShown, "UnitNum:", D.Status.UnitNum, "UnitExists:", UnitExists(UnitID));
 	end
     end
 

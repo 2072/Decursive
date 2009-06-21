@@ -831,10 +831,10 @@ function D:AddDebugText(a1, ...)
 	Reported[text] = true;
 
 	if #D.DebugTextTable < 1 then
-	    table.insert (D.DebugTextTable, L["DEBUG_REPORT_HEADER"] .. "\n@project-version@");
+	    table.insert (D.DebugTextTable, L["DEBUG_REPORT_HEADER"] .. "\n@project-version@  " .. DC.MyClass);
 	end
 
-	table.insert (D.DebugTextTable,  "\n------\n"  .. GetTime() .. " - ".. text );
+	table.insert (D.DebugTextTable,  "\n------\n"  .. (GetTime() - DC.StartTime) .. " - ".. text );
     end
 end
 
