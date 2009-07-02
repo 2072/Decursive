@@ -1080,6 +1080,11 @@ end
 
 function D:UpdateMacro ()
 
+
+    if D.profile.DisableMacroCreation then
+	return false;
+    end
+
     if (D.Status.Combat) then
 	D:AddDelayedFunctionCall (
 	"UpdateMacro", self.UpdateMacro,

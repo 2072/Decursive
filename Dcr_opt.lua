@@ -1204,7 +1204,7 @@ D.options = { -- {{{
 			D.profile.NoKeyWarn = v;
 		    end,
 		    order = 300
-		}
+		},
 		DisableMacroCreation = {
 		    type = "toggle",
 		    name = D.L["OPT_DISABLEMACROCREATION"],
