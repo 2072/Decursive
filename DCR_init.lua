@@ -512,9 +512,10 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	-- hook the load macro thing {{{
 	-- So Decursive will re-update its macro when the macro UI is closed
 	hooksecurefunc("ShowMacroFrame", function ()
-	    if (not D.MacroSaveHooked) then
-		D:Debug("Hooking MacroFrame_OnHide");
-		hooksecurefunc("MacroFrame_OnHide", function () D:UpdateMacro(); end);
+	    if not D.MacroSaveHooked then
+		D:Debug("Hooking MacroPopupFrame:Hide()");
+		hooksecurefunc(MacroPopupFrame, "Hide", function () D:UpdateMacro(); end);
+    
 		D.MacroSaveHooked = true;
 	    end
 	end); -- }}}
