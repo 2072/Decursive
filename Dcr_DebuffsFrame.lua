@@ -94,6 +94,7 @@ local UnitClass		= _G.UnitClass;
 local fmod		= _G.math.fmod;
 local UnitIsUnit	= _G.UnitIsUnit;
 local str_upper		= _G.string.upper;
+local InCombatLockdown  = _G.InCombatLockdown;
 
 -- Those are lookups table to set the frame attributes
 local AvailableButtons = { -- {{{
@@ -538,12 +539,12 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     if MF then
 	-- sanity test: test if UnitToMUF[] == getattributeUnit
 	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true :/ it does... (reproduceable by mind-controlling something and releasing it)
-	    D:AddDebugText("|cFFFF0000ALERT:|rSaSanitynity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit (%s - %s - %s).", MF.CurrUnit, MF.Frame:GetAttribute("unit"), MF.Shown);
+	    D:AddDebugText("Sanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit", MF.CurrUnit, MF.Frame:GetAttribute("unit"), MF.Shown);
 	end
 
 	-- sanity test: test if unit == CurrUnit
 	if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
-	    D:AddDebugText("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).", unit, MF.CurrUnit, MF.Shown);
+	    D:AddDebugText("Sanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).", unit, MF.CurrUnit, MF.Shown);
 	end
     end
 
@@ -564,7 +565,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 end
 
 -- Event management functions
--- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnCornerClick, OnLoad, OnPreClick) {{{
+-- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnLoad, OnPreClick) {{{
 -- It's outside the function to avoid creating and discarding this table at each call
 local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
 -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
@@ -956,7 +957,11 @@ do
 	    
 	
 	    MicroUnitF.UnitToMUF[Unit] = self;
-	    self.CurrUnit = Unit;
+	    if self.Frame:GetAttribute("unit") == Unit then
+		self.CurrUnit = Unit;
+	    else
+		D:AddDebugText("Unit attribution failed for unit", Unit, "CurrUnit not set", "DSC:", D.Status.Combat, "InCombatLockdown:", InCombatLockdown());
+	    end
 
 	    self:SetClassBorder();
 
@@ -1415,6 +1420,11 @@ do
 	    -- if no MUF then create it (All MUFs are created here)
 	    if (not MF) then
 		if (not self.Status.Combat) then
+
+		    if InCombatLockdown() then
+			D:AddDebugText("self.Status.Combat is false while InCombatLockdown() retuns 1, creating MUF for", Unit);
+		    end
+
 		    MF = MicroUnitF:Create(Unit, MicroFrameUpdateIndex);
 		    ActionsDone = ActionsDone + 1;
 		end

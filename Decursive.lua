@@ -828,13 +828,18 @@ function D:AddDebugText(a1, ...)
     end
 
     if not Reported[text] then
-	Reported[text] = true;
+	Reported[text] = 1;
 
 	if #D.DebugTextTable < 1 then
 	    table.insert (D.DebugTextTable, L["DEBUG_REPORT_HEADER"] .. "\n@project-version@  " .. DC.MyClass);
 	end
 
-	table.insert (D.DebugTextTable,  "\n------\n"  .. (GetTime() - DC.StartTime) .. " - ".. text );
+	--	table.insert (D.DebugTextTable,  "\n------\n"  .. (GetTime() - DC.StartTime) .. "" .. " - ".. text );
+	table.insert (D.DebugTextTable,  ("\n------\n%.4f: %s -|count: "):format((GetTime() - DC.StartTime), text) );
+	table.insert (D.DebugTextTable, 1);
+	Reported[text] = #D.DebugTextTable;
+    else
+	D.DebugTextTable[Reported[text]] = D.DebugTextTable[Reported[text]] + 1;
     end
 end
 

@@ -76,17 +76,18 @@
 			    Dcr.MicroUnitF:Place();
 			    Dcr.MicroUnitF:SavePos();
 			end
+			if not IsAltKeyDown() and Dcr.Status.MouseOveringCorner then
+			    Dcr:QuickAccess(this, arg1);
+			end
 		    </OnMouseUp>
 		    <OnMouseDown>
 			if (   arg1 == "LeftButton" and IsAltKeyDown() ) then
 			    this.isMoving = true;
 			    Dcr.MicroUnitF.DraggingHandle = true;
 			    this:GetParent():StartMoving();
-			else
-			    Dcr:QuickAccess(this, arg1);
 			end
-
 		    </OnMouseDown>
+
 		    <OnHide>
 			if ( this.isMoving ) then
 			    this:GetParent():StopMovingOrSizing();
@@ -95,9 +96,12 @@
 			end
 		    </OnHide>
 		    <OnEnter>
+			Dcr.Status.MouseOveringCorner = true;
 			Dcr.MicroUnitF:OnCornerEnter();
 		    </OnEnter>
 		    <OnLeave>
+			Dcr.Status.MouseOveringCorner = false;
+
 			if (Dcr.profile.DebuffsFrameShowHelp) then
 			GameTooltip:Hide();
 			end;
