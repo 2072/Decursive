@@ -388,6 +388,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = true,
 	    Pet = false,
 	},
+	
+	-- SHAMAN http://www.wowhead.com/?spell=51514
+	[DS["SPELL_HEX"]]    = {
+	    Types = {DC.CHARMED},
+	    IsBest = true,
+	    Pet = false,
+	},
 
 	[DS["PET_FEL_CAST"]]		    = {
 	    Types = {DC.MAGIC, DC.ENEMYMAGIC},
@@ -1000,6 +1007,7 @@ function D:GetSpellsTranslations(FromDIAG)
 	["SPELL_REMOVE_LESSER_CURSE"]	= {	475,					 },
 	["SPELL_REMOVE_CURSE"]		= {	2782,					 },
 	['SPELL_TRANQUILIZING_SHOT']	= {	19801,					 },
+	['SPELL_HEX']			= {	51514,					 }, -- shamans
 	["CLEANSE_SPIRIT"]		= {	51886,					 },
 	["SPELL_PURGE"]			= {	370, 8012,				 },
 	["PET_FEL_CAST"]		= {	19505, 19731, 19734, 19736, 27276, 27277,},
