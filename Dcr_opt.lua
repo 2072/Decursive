@@ -200,6 +200,9 @@ D.defaults = { -- {{{
     -- Display a warning if no key is mapped.
     NoKeyWarn = true,
 
+    -- Disable macro creation
+    DisableMacroCreation = false;
+
     -- Those are the different colors used for the MUFs main textures
     MF_colors = {
 		[1]		=   {  .8 , 0   , 0    ,  1	}, -- red
@@ -1202,6 +1205,16 @@ D.options = { -- {{{
 		    end,
 		    order = 300
 		}
+		DisableMacroCreation = {
+		    type = "toggle",
+		    name = D.L["OPT_DISABLEMACROCREATION"],
+		    desc = L["OPT_DISABLEMACROCREATION_DESC"],
+		    get = function() return D.profile.DisableMacroCreation end,
+		    set = function(v)
+			D.profile.DisableMacroCreation = v;
+		    end,
+		    order = 400
+		}
 	    }
 	},
 	spacer4 = {
@@ -2162,7 +2175,7 @@ function D:SetMacroKey ( key )
 
     -- if the key is already correctly mapped, return here.
     --if (key and key == D.profile.MacroBind and GetBindingAction(key) == D.CONF.MACROCOMMAND) then
-    if (key and key == D.profile.MacroBind and D:tcheckforval({GetBindingKey(D.CONF.MACROCOMMAND)}, key) ) then -- change for 2.3 where GetBindingAction() is no longer working
+    if D.profile.DisableMacroCreation or key and key == D.profile.MacroBind and D:tcheckforval({GetBindingKey(D.CONF.MACROCOMMAND)}, key) then -- change for 2.3 where GetBindingAction() is no longer working
 	return;
     end
 
