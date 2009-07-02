@@ -23,9 +23,9 @@ Decursive key benefits
 
 - Manage Mind controlled units:
 
-    -   If you are a Mage or a Druid you can Polymorph/Cyclone mind-controlled players.
+    -   If you are a Mage, a Druid or a Shaman you can Polymorph/Cyclone/Hex mind-controlled players.
     -	In any case Decursive will allow you to target mind controlled units easily.
-    -	Decursive supports magic charming affect removal for Shamans (*Purge*), Priests (*Dispel Magic*),
+    -	Decursive supports magic charming affect removal for Shamans (*Purge* and *Hex*), Priests (*Dispel Magic*),
 	Hunters (*Tranquilizing Shot*), and Warlocks (*Fellhunter and Doomguards spells*).
 
 - Don't waste time:
