@@ -1,0 +1,15 @@
+# vim:syntax=YAML:expandtab
+-
+    type: markdown
+    input-file: "doc/Description.txt"
+    output-page: "Main"
+
+-
+    type: markdown
+    input-file: "doc/faq.txt"
+    output-page: "Main/faq"
+
+-
+    type: markdown
+    input-file: "doc/MUFs.txt"
+    output-page: "Main/MUFs"
