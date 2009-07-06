@@ -445,6 +445,7 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	return false;
     end
 
+    D:HookErrorHandler();
 
     -- Register slashes command {{{
     if (FirstEnable) then

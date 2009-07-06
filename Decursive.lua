@@ -851,4 +851,28 @@ function D:ShowDebugReport()
     _G.DecursiveDebuggingFrame:Show();
 end
 
+
+local ProperErrorHandler = false;
+local function DecursiveErrorHandler(err, ...)
+
+    if (err:lower()):find("decursive") then
+	D:AddDebugText(err, debugstack(2), ...);
+    end
+
+    if ProperErrorHandler then
+	ProperErrorHandler(err, ...);
+    end
+end
+
+function D:HookErrorHandler()
+    if not ProperErrorHandler then
+	ProperErrorHandler = geterrorhandler();
+	seterrorhandler(DecursiveErrorHandler)
+    end
+end
+
+function D:MakeError()
+    return 1 + 6545 + dsafsdf;
+end
+
 DcrLoadedFiles["Decursive.lua"] = "@project-version@";
