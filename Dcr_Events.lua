@@ -472,6 +472,8 @@ do
 		    end
 
 		    PlaySoundFile(DC.FailedSound);
+		elseif arg12 == ERR_GENERIC_NO_TARGET then
+		    self:AddDebugText(ERR_GENERIC_NO_TARGET, "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend(self.Status.ClickedMF.CurrUnit));
 		end
 		self.Status.ClickedMF = false;
 
