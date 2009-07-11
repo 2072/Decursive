@@ -855,7 +855,7 @@ end
 local ProperErrorHandler = false;
 local function DecursiveErrorHandler(err, ...)
 
-    if (err:lower()):find("decursive") then
+    if (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\") then
 	D:AddDebugText(err, debugstack(2), ...);
     end
 
