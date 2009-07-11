@@ -2088,6 +2088,8 @@ do
 
 	    if ColorReason == "COLORCHRONOS" then
 		desc = "COLORCHRONOS_DESC";
+	    else
+		desc = "This is abnormal!";
 	    end
 	end
 

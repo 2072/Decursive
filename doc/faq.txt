@@ -37,6 +37,15 @@ Players have to choose manually their target and the spells they want to use.
 Decursive uses new Blizzard's "click casting" solution,  
 it's the only way for add-ons to use spells and 'target' players.
 
+
+I have set my hot key. When I push it though I don't cure anything.
+-------------------------------------------------------------------
+
+The macro key works only if you hover a unit or a unit-frame with your mouse
+pointer, the easier way is to use the MUFs (micro-unit-frames - 'the little
+squares')
+
+
 Is Decursive banned by Blizzard?
 --------------------------------
 

@@ -667,6 +667,12 @@ function D:OnProfileEnable()
     D.Groups_datas_are_invalid = true;
     D:CreateDropDownFiltersMenu(); -- create per class filters menus
 
+
+    if D.profile.MF_colors['Chronometers'] then
+	D.profile.MF_colors[ "COLORCHRONOS"] = D.profile.MF_colors['Chronometers'];
+	D.profile.MF_colors['Chronometers'] = nil;
+    end
+
     D:CreateDropDownMUFcolorsMenu(); -- create MUF color configuration menus
     D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors); -- set the colors as set in the profile
 
