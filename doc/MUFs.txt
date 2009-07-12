@@ -57,3 +57,27 @@ Decursive manages the button mapping automatically.
  using the command /focus 'name' or by ctrl-middle-clicking on a MUF).
  You can completely change this order by using the priority and skip list, a
  very manageable list of players.
+
+**IMPORTANT:**
+ 
+TO MOVE THE MUFS, ALT-CLICK AND HOLD THE HANDLE JUST ABOVE THE FIRST MUF (IT
+HAS THE SAME SIZE AS A MUF AND HIGHLIGHTS WHEN YOUR MOUSE POINTER IS OVER IT).
+
+*This handle has several uses, a tooltip explains them all.*
+
+*See also these pages:*
+
+- [Decursive usage][user-actions]
+- [Decursive Macro documentation][mouse-over macro]
+- [Frequently Ask Questions][FAQ] *try this before asking any question*
+- [commands][]
+
+
+
+
+[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
+[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
+[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
+[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
+[commands]: http://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
+[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"

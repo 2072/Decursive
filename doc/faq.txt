@@ -64,6 +64,16 @@ without even thinking...
 
 You can ask to a Game Master in game if you still have some doubts about Decursive status.
 
+*See also:*
 
-[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "MUFs"
-[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "MUF"
+- [Decursive usage][user-actions]
+- [Micro Unit Frames documentation][MUFs]
+- [Decursive Macro documentation][mouse-over macro]
+- [commands][]
+
+[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
+[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
+[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
+[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
+[commands]: http://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
+[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"

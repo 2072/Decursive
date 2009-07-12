@@ -1,3 +1,17 @@
+*****
+
+Ce document n'est plus à jour, préférez la version anglaise, beaucoup plus lisible:
+
+http://www.wowace.com/addons/decursive/
+
+*****
+
+
+
+
+
+
+
 Decursive 2.2 ( Téléchargement principal: http://www.2072productions.com/?to=decursive.php )
 
 Decursive est un add-on de purification/épuration. Il aide les classes ayant la 
