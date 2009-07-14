@@ -65,7 +65,7 @@ HAS THE SAME SIZE AS A MUF AND HIGHLIGHTS WHEN YOUR MOUSE POINTER IS OVER IT).
 
 *This handle has several uses, a tooltip explains them all.*
 
-*See also these pages:*
+*See also:*
 
 - [Decursive usage][user-actions]
 - [Decursive Macro documentation][mouse-over macro]

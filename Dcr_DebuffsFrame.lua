@@ -142,7 +142,7 @@ end -- }}}
 -- The Factory for MicroUnitF objects
 function MicroUnitF:Create(Unit, ID) -- {{{
 
-    if (D.Status.Combat) then
+    if InCombatLockdown() then
 	-- if we are fighting, postpone the call
 	D:AddDelayedFunctionCall (
 	"Create"..Unit, self.Create,
@@ -181,7 +181,7 @@ end -- }}}
 -- this is used when a setting influencing MUF's position is changed
 function MicroUnitF:ResetAllPositions () -- {{{
 
-    if (D.Status.Combat) then
+    if InCombatLockdown() then
 	D:AddDelayedFunctionCall (
 	"ResetAllPositions", self.ResetAllPositions,
 	self);
@@ -232,7 +232,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     end
 
     -- This function cannot do anything if we are fighting
-    if (D.Status.Combat) then
+    if InCombatLockdown() then
 	-- if we are fighting, postpone the call
 	D:AddDelayedFunctionCall (
 	"UpdateMicroUnitFrameDisplay", self.MFsDisplay_Update,
@@ -263,19 +263,6 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     local Old_UnitShown = self.UnitShown;
 
 
-    --[=[
-    local start;
-    -- if there are more MUFs than the actual unit number
-    if self.UnitShown > NumToShow then
-	start = NumToShow + 1;
-    -- if there is not enough MUFs
-    elseif self.UnitShown < NumToShow then
-	start = self.UnitShown + 1;
-    else
-	start = NumToShow;
-    end
-    --]=]
-
     D:Debug("Update required: NumToShow = %d", NumToShow);
 
     local Unit_Array_UnitToGUID = D.Status.Unit_Array_UnitToGUID;
@@ -287,7 +274,6 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	-- show/hide
 	if not MF.Shown and Unit_Array_UnitToGUID[Unit] and MF.ID <= NumToShow then -- we got this unit in our group but it's hidden
 
-	    --MF_f:SetPoint(unpack(self:GiveMFAnchor(i)));
 	    MF_f:Show();
 	    MF.Shown = true;
 	    self.UnitShown = self.UnitShown + 1;
@@ -343,7 +329,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
     end
 
     -- This function cannot do anything if we are fighting
-    if (D.Status.Combat) then
+    if InCombatLockdown() then
 	-- if we are fighting, postpone the call
 	D:AddDelayedFunctionCall (
 	"Force_FullUpdate", self.Force_FullUpdate,
@@ -380,7 +366,7 @@ function MicroUnitF:Place () -- {{{
 
     if self.UnitShown == 0 or self.DraggingHandle then return end
 
-    if (D.Status.Combat) then
+    if InCombatLockdown() then
 	-- if we are fighting, postpone the call
 	D:AddDelayedFunctionCall (
 	"MicroUnitFPlace", self.Place,
@@ -933,7 +919,7 @@ do
     function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
 
 	-- Delay the call if we are fighting
-	if (D.Status.Combat) then
+	if InCombatLockdown() then
 	    if not DoNotDelay then
 		D:AddDelayedFunctionCall (
 		"MicroUnit_" .. Unit,			-- UID
@@ -942,26 +928,18 @@ do
 	    return false;
 	end
 
-	--D:Debug("UpdateAttributes called for %s", Unit);
-	-- XXX mae an assert to detect when this is called with false as unit...
-
 	ReturnValue = false;
 
-	-- if the unit is noy set
-	if (not self.CurrUnit) then
+	-- if the unit is not set
+	if not self.CurrUnit then
 	    self.Frame:SetAttribute("unit", Unit);
 
 	    -- UnitToMUF[] can only be set when out of fight so it remains
 	    -- coherent with what is displayed when groups are changed during a
 	    -- fight
 	    
-	
 	    MicroUnitF.UnitToMUF[Unit] = self;
-	    if self.Frame:GetAttribute("unit") == Unit then
-		self.CurrUnit = Unit;
-	    else
-		D:AddDebugText("Unit attribution failed for unit", Unit, "CurrUnit not set", "DSC:", D.Status.Combat, "InCombatLockdown:", InCombatLockdown());
-	    end
+	    self.CurrUnit = Unit;
 
 	    self:SetClassBorder();
 
@@ -1419,19 +1397,14 @@ do
 
 	    -- if no MUF then create it (All MUFs are created here)
 	    if (not MF) then
-		if (not self.Status.Combat) then
-
-		    if InCombatLockdown() then
-			D:AddDebugText("self.Status.Combat is false while InCombatLockdown() retuns 1, creating MUF for", Unit);
-		    end
-
+		if not InCombatLockdown() then
 		    MF = MicroUnitF:Create(Unit, MicroFrameUpdateIndex);
 		    ActionsDone = ActionsDone + 1;
 		end
 	    end
 
 	    -- place the MUF where it belongs
-	    if MF and MF.ID ~= MicroFrameUpdateIndex and not self.Status.Combat then
+	    if MF and MF.ID ~= MicroFrameUpdateIndex and not InCombatLockdown() then
 		MF.ID = MicroFrameUpdateIndex;
 		MF.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(MicroFrameUpdateIndex)));
 		ActionsDone = ActionsDone + 1;

@@ -108,7 +108,7 @@ Decursive, user possible actions
       and create custom option profiles.
 
 
-*See also these pages:*
+*See also:*
 
 - [Micro Unit Frames documentation][MUFs]
 - [Decursive Macro documentation][mouse-over macro]

@@ -169,7 +169,11 @@ function D:SheduledTasks() -- {{{
 	end
     end
 
-    if (not self.Status.Combat and self.Status.DelayedFunctionCallsCount > 0) then
+    if (self.Status.Combat and not InCombatLockdown()) then -- just in case...
+	D:LeaveCombat();
+    end
+
+    if (not InCombatLockdown() and self.Status.DelayedFunctionCallsCount > 0) then
 	for Id, FuncAndArgs in pairs (self.Status.DelayedFunctionCalls) do
 	    D:Debug("Running post combat command %s", Id);
 	    local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
@@ -181,9 +185,6 @@ function D:SheduledTasks() -- {{{
 	end
     end
 
-    if (self.Status.Combat and not InCombatLockdown()) then -- just in case...
-	D:LeaveCombat();
-    end
 
     if D.DebuffUpdateRequest > D.Status.MaxConcurentUpdateDebuff then
 	D.Status.MaxConcurentUpdateDebuff = D.DebuffUpdateRequest;
@@ -196,7 +197,8 @@ end --}}}
 -- the combat functions and events. // {{{
 -------------------------------------------------------------------------------
 function D:EnterCombat() -- called on PLAYER_REGEN_DISABLED {{{
-    --D:Debug("Entering combat");
+    -- this is not reliable for testing unitframe modifications authorisation,
+    -- this event fires after the player enters in combat, only InCombatLockdown() may be used for critical checks
     self.Status.Combat = true;
 end --}}}
 

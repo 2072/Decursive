@@ -45,6 +45,7 @@ local str_sub		= _G.string.gsub;
 local abs		= _G.math.abs;
 local GetNumRaidMembers		= _G.GetNumRaidMembers;
 local GetNumPartyMembers	= _G.GetNumPartyMembers;
+local InCombatLockdown  = _G.InCombatLockdown;
 local _;
 -- Default values for the option
 
@@ -1647,7 +1648,7 @@ end
 
 function D:ShowHideDebuffsFrame ()
 
-    if D.Status.Combat or not D.DcrFullyInitialized then
+    if InCombatLockdown() or not D.DcrFullyInitialized then
 	return
     end
 

@@ -5,14 +5,14 @@ Decursive also creates and maintains (for all your characters) a macro that
 allows you to cure units (or other unit-frames) you mouse-over, *you choose the
 key in Decursive's options*.
 
-Hitting the key alone will try to cast the first spell, *ctrl-hitting*, the
+Hitting the key alone will try to cast the first spell, *Ctrl-hitting*, the
 second and *shift-hitting* will try to cast the third. Decursive will show you
 if the unit beneath your cursor is afflicted by something through its
 *live-list* and a sound.
  
 **NOTE:** To change the key, use the drop-down option menu, it is accessed
 by right-clicking the handle or the "Decursive" bar. You can also use the
-command line for exemple, "/dcr macro SetKey V" wlll set the new key to [V].
+command line for example, "/dcr macro SetKey V" will set the new key to [V].
  
 
 *See also:*

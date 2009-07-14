@@ -54,6 +54,7 @@ local BOOKTYPE_SPELL	= BOOKTYPE_SPELL;
 
 
 local select	= _G.select;
+local InCombatLockdown  = _G.InCombatLockdown;
 
 
 
@@ -625,7 +626,7 @@ function D:OnProfileEnable()
     
 
     -- if we log in and we are already fighting...
-    if (InCombatLockdown()) then
+    if InCombatLockdown() then
 	D.Status.Combat = true;
     end
 
@@ -1101,7 +1102,7 @@ function D:UpdateMacro ()
 	return false;
     end
 
-    if (D.Status.Combat) then
+    if InCombatLockdown() then
 	D:AddDelayedFunctionCall (
 	"UpdateMacro", self.UpdateMacro,
 	self);
