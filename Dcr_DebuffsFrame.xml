@@ -75,8 +75,7 @@
 			    Dcr.MicroUnitF:SavePos();
 			    Dcr.MicroUnitF:Place();
 			    Dcr.MicroUnitF:SavePos();
-			end
-			if not IsAltKeyDown() and Dcr.Status.MouseOveringCorner then
+			elseif Dcr.Status.MouseOveringCorner then
 			    Dcr:QuickAccess(this, arg1);
 			end
 		    </OnMouseUp>
