@@ -2240,7 +2240,7 @@ end
 function D:AutoHideShowMUFs ()
 
    -- This function cannot do anything if we are fighting
-    if (D.Status.Combat) then
+    if (InCombatLockdown()) then
 	-- if we are fighting, postpone the call
 	D:AddDelayedFunctionCall (
 	"CheckIfHideShow", self.AutoHideShowMUFs,
