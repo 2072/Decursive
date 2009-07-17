@@ -474,9 +474,9 @@ end -- }}}
 
 
 function LiveList:DisplayTestItem() -- {{{
-    if not self.TestItemDisplayed then
+    if not self.TestItemDisplayed and D.Status.Unit_Array[1] then
 	self.TestItemDisplayed = true;
-	D:DummyDebuff(D.Status.Unit_Array_GUIDToUnit[UnitGUID("player")], "Test item");
+	D:DummyDebuff(D.Status.Unit_Array[1], "Test item");
     end
 end -- }}}
 
