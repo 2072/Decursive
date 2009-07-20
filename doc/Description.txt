@@ -3,6 +3,7 @@ Decursive for World of Warcraft
 
 *Decursive is a cleansing mod intended to render affliction removal easy, effective and fun for all the classes having this ability.*
 
+[Decursive usage][user-actions] - [Micro Unit Frames documentation][MUFs] - [Decursive Macro documentation][mouse-over macro] - [Frequently Ask Questions][FAQ] - [commands][]
 
 Decursive key benefits
 ----------------------

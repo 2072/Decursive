@@ -59,7 +59,7 @@ Decursive, user possible actions
     - **The** [MUFs][] **window**:
 
 	    You can change almost *every aspects* of this window **(Size, Shape,
-	    Colors, Behavior, opacity, etc...)**, just look in the options.
+	    Colors, Behavior, opacity, spacing, etc...)**, just look in the options.
 
 	    **Move the MUF window** by *Alt-Left-clicking* above the first MUF, there is a
 	    hidden **handle** to move the frame.
