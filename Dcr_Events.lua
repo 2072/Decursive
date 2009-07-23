@@ -38,6 +38,8 @@ local DS = DC.DS;
 
 D.DebuffUpdateRequest = 0;
 
+D.DetectHistory = {};
+
 local pairs	= _G.pairs;
 local next	= _G.next;
 local pairs	= _G.pairs;
@@ -293,6 +295,9 @@ do
     local band = bit.band;
     local bor = bit.bor;
     local UnitGUID = _G.UnitGUID;
+    local GetTime = _G.GetTime;
+
+    local DetectHistoryIndex = 1;
 
     -- AURA bitfields -- now useless {{{
     -- a friendly player character controled directly by the player that is not an outsider
@@ -396,7 +401,16 @@ do
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
 		    end
 		else
-		    --self:AddDebugText("CombatLog BUFF on", GetTime(), UnitID);
+		    if DetectHistoryIndex == 51 then DetectHistoryIndex = 1 end
+
+		    if not  D.DetectHistory[DetectHistoryIndex] then
+			D.DetectHistory[DetectHistoryIndex] = {D:NiceTime(), UnitID, arg10};
+		    else
+			D.DetectHistory[DetectHistoryIndex][1] = D:NiceTime();
+			D.DetectHistory[DetectHistoryIndex][2] = UnitID;
+			D.DetectHistory[DetectHistoryIndex][3] = arg10;
+		    end
+		    DetectHistoryIndex = DetectHistoryIndex + 1;
 
 		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event);
 		    if self.profile.ShowDebuffsFrame then

@@ -54,6 +54,7 @@ local string		= _G.string;
 local tonumber		= _G.tonumber;
 local UnitGUID		= _G.UnitGUID;
 local band		= _G.bit.band;
+local GetTime		= _G.GetTime;
 
 
 function D:ColorText (text, color) --{{{
@@ -341,6 +342,10 @@ do
 	end
     end
 
+end
+
+function D:NiceTime()
+    return ("%.4f"):format(GetTime() - DC.StartTime);
 end
 
 DcrLoadedFiles["Dcr_utils.lua"] = "@project-version@";

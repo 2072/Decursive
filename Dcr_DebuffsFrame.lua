@@ -563,6 +563,8 @@ function MicroUnitF:OnEnter() -- {{{
 
     local Unit = MF.CurrUnit; -- shortcut
     local TooltipText = "";
+    local LateDetectTest = false;
+
 
     -- sanity test: test if UnitToMUF[] == getattributeUnit
     if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
@@ -574,8 +576,43 @@ function MicroUnitF:OnEnter() -- {{{
 --	D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
   --  end
 
+    if MF.Debuffs and MF.Debuffs[1].Type then
+	LateDetectTest = 0;
+    end
+
     MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
+
+
+    -- if there was no debuff just before the above update (it's wrong)
+    if not LateDetectTest and MF.Debuffs and MF.Debuffs[1].Type then
+	LateDetectTest = true;
+    else
+	LateDetectTest = false;
+    end
+
+    if LateDetectTest then
+	D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "DT:", D:NiceTime());
+	-- search for detection by combat event manager
+	local DetectHistoryIndex = 1;
+	local debuffname = MF.Debuffs[1].Name;
+	local founddebufftimes = {};
+
+	while D.DetectHistory[DetectHistoryIndex] do
+	    if D.DetectHistory[DetectHistoryIndex][2] == Unit and  D.DetectHistory[DetectHistoryIndex][3] == debuffname then
+		t_insert(founddebufftimes, D.DetectHistory[DetectHistoryIndex][1]);
+	    end
+
+	    DetectHistoryIndex = DetectHistoryIndex + 1;
+	end
+
+	if #founddebufftimes == 0 then
+	    D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
+	else
+	    D:AddDebugText(#founddebufftimes, "history match for", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "detect times:", unpack(founddebufftimes));
+	end
+    end
+
 
     if not Unit then
 	return; -- If the user overs the MUF befor it's completely initialized
