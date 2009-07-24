@@ -603,6 +603,10 @@ end -- // }}}
 
 function D:OnProfileEnable()
 
+    if DecursiveSelfDiagnostic() == 2 then
+	return false;
+    end
+
     D.DcrFullyInitialized = false;
     D:CancelScheduledEvent("Dcr_LLupdate");
     D:CancelScheduledEvent("Dcr_MUFupdate");
