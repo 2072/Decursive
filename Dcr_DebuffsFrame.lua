@@ -584,15 +584,19 @@ function MicroUnitF:OnEnter() -- {{{
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
 
+    -- removes the CHARMED_STATUS bit from Status, we don't need it
+    Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
+
     -- if there was no debuff just before the above update (it's wrong)
-    if not LateDetectTest and MF.Debuffs and MF.Debuffs[1].Type then
+    if not LateDetectTest and Status ~= FAR and MF.Debuffs and MF.Debuffs[1].Type then
 	LateDetectTest = true;
     else
 	LateDetectTest = false;
     end
 
     if LateDetectTest then
-	D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "DT:", D:NiceTime());
+
+	D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime());
 	-- search for detection by combat event manager
 	local DetectHistoryIndex = 1;
 	local debuffname = MF.Debuffs[1].Name;
@@ -609,7 +613,7 @@ function MicroUnitF:OnEnter() -- {{{
 	if #founddebufftimes == 0 then
 	    D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
 	else
-	    D:AddDebugText(#founddebufftimes, "history match for", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "detect times:", unpack(founddebufftimes));
+	    D:AddDebugText(#founddebufftimes, "history match for", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "Status:", Status, "detect times:", unpack(founddebufftimes));
 	end
     end
 
