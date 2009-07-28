@@ -580,12 +580,11 @@ function MicroUnitF:OnEnter() -- {{{
 	LateDetectTest = 0;
     end
 
+    -- removes the CHARMED_STATUS bit from Status, we don't need it
+    Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS)); -- XXX do not use this value other than for debugging (not up to date, use the later below)
+
     MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
-
-
-    -- removes the CHARMED_STATUS bit from Status, we don't need it
-    Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
 
     -- if there was no debuff just before the above update (it's wrong)
     if not LateDetectTest and Status ~= FAR and MF.Debuffs and MF.Debuffs[1].Type then
@@ -596,24 +595,39 @@ function MicroUnitF:OnEnter() -- {{{
 
     if LateDetectTest then
 
-	D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime());
 	-- search for detection by combat event manager
 	local DetectHistoryIndex = 1;
 	local debuffname = MF.Debuffs[1].Name;
 	local founddebufftimes = {};
+	local highest = 0;
 
+	-- look in the history of reported debuffs from the combat log event handler
 	while D.DetectHistory[DetectHistoryIndex] do
+	    -- if we find the same debuff on the same unit in the history
 	    if D.DetectHistory[DetectHistoryIndex][2] == Unit and  D.DetectHistory[DetectHistoryIndex][3] == debuffname then
+
+		-- add the time it was seen to founddebufftimes
 		t_insert(founddebufftimes, D.DetectHistory[DetectHistoryIndex][1]);
+
+		-- keep track of the most recent one
+		if D.DetectHistory[DetectHistoryIndex][1] > highest then
+		    highest = D.DetectHistory[DetectHistoryIndex][1];
+		end
 	    end
 
 	    DetectHistoryIndex = DetectHistoryIndex + 1;
 	end
 
-	if #founddebufftimes == 0 then
-	    D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
-	else
-	    D:AddDebugText(#founddebufftimes, "history match for", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "Status:", Status, "detect times:", unpack(founddebufftimes));
+	-- if the delta between the history and now is higher than D.profile.DebuffsFrameRefreshRate * 1.5 (1.5 is for lags) then log the issue else this is normal behavior
+	if (D:NiceTime() - highest) > (D.profile.DebuffsFrameRefreshRate * 1.5) then
+
+	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime());
+
+	    if #founddebufftimes == 0 then
+		D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
+	    else
+		D:AddDebugText(#founddebufftimes, "history match for", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "Status:", Status, "detect times:", unpack(founddebufftimes));
+	    end
 	end
     end
 

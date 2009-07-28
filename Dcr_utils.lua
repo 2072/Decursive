@@ -345,7 +345,7 @@ do
 end
 
 function D:NiceTime()
-    return ("%.4f"):format(GetTime() - DC.StartTime);
+    return tonumber(("%.4f"):format(GetTime() - DC.StartTime));
 end
 
 DcrLoadedFiles["Dcr_utils.lua"] = "@project-version@";
