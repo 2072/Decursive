@@ -502,9 +502,11 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 	return;
     end
 
+    --[[
     if (not Unitid) then
 	D:Debug("XXXXX ==> UpdateMUFUnit: Unitid was nil!");
     end
+    --]]
 
 
     -- Update the unit array (GetUnitArray() will do something only if necessary)
@@ -522,17 +524,19 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     -- get the MUF object
     local MF = self.UnitToMUF[unit];
 
+    --[=[
     if MF then
-	-- sanity test: test if UnitToMUF[] == getattributeUnit
+	-- sanity test: test if UnitToMUF[] == getattributeUnit -- XXX probably fixed (99.99% sure) was due to misuse of player regen event instead of incombatlockdown
 	if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true :/ it does... (reproduceable by mind-controlling something and releasing it)
 	    D:AddDebugText("Sanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit", MF.CurrUnit, MF.Frame:GetAttribute("unit"), MF.Shown);
 	end
 
-	-- sanity test: test if unit == CurrUnit
+	-- sanity test: test if unit == CurrUnit -- XXX is completely impossible
 	if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
 	    D:AddDebugText("Sanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).", unit, MF.CurrUnit, MF.Shown);
 	end
     end
+    --]=]
 
     if (MF and MF.Shown) then
 	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
@@ -541,7 +545,6 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 	    D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
 	    D:ScheduleEvent("Dcr_Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false, CheckStealth);
 	    D:Debug("Update scheduled for, ", unit, MF.ID);
-
 
 	    return true; -- return value used to aknowledge that the function actually did something
 	end
@@ -567,9 +570,11 @@ function MicroUnitF:OnEnter() -- {{{
 
 
     -- sanity test: test if UnitToMUF[] == getattributeUnit
+    --[=[
     if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
 	D:AddDebugText("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:OnEnter() Cattrib ~= CurrUnit.");
     end
+    --]=]
    
     -- Compare the current unit name to the one storred when the group data were collected
     --if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then -- XXX Unit_Array_UnitToName not reliable
