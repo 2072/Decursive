@@ -381,6 +381,11 @@ do
     local UnitID;
 
     function D:DummyDebuff (UnitID, DebuffName)
+	if self.profile.ShowDebuffsFrame then
+	    self.MicroUnitF:UpdateMUFUnit(UnitID);
+	elseif not self.profile.Hide_LiveList then
+	    self.LiveList:DelayedGetDebuff(UnitID);
+	end
 	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, DebuffName, 0x32, "DEBUFF");
     end
 
