@@ -533,7 +533,6 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
     end
 
-
     -- these events are automatically stopped when the addon is disabled by Ace
 
     -- Spell changes events
@@ -544,11 +543,6 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
 
-    -- Cast status events
-    -- self:RegisterEvent("UNIT_SPELLCAST_STOP","UNIT_SPELLCAST_STOP"); -- Unused
-    --self:RegisterEvent("UNIT_SPELLCAST_SENT","UNIT_SPELLCAST_SENT");
-    --self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED","UNIT_SPELLCAST_SUCCEEDED");
-
     -- Raid/Group changes events
     self:RegisterEvent("PARTY_MEMBERS_CHANGED","GroupChanged");
     self:RegisterEvent("PARTY_LEADER_CHANGED","GroupChanged");
@@ -557,33 +551,18 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
     -- Player pet detection event (used to find pet spells)
     self:RegisterEvent("UNIT_PET","UNIT_PET");
-
-    -- used to find when a unit is not in line of sight
-    -- XXX self:RegisterEvent("UI_ERROR_MESSAGE","UI_ERROR_MESSAGE");
-
-
-    -- Buff and Debuff Events thses trigger a debuff scan, ther arguments are not used
-    --self:RegisterEvent("SpecialEvents_UnitDebuffGained")
-    --self:RegisterEvent("SpecialEvents_UnitDebuffLost")
-    --self:RegisterEvent("SpecialEvents_UnitBuffGained")
-    --self:RegisterEvent("SpecialEvents_UnitBuffLost")
+    self:RegisterEvent("UNIT_AURA","UNIT_AURA");
 
     self:RegisterEvent("PLAYER_TARGET_CHANGED");
     
-
     self:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
     -- used for Debugging purpose
     --self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
     --self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
 
-
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
-
-    -- for testing
-    --self:RegisterEvent("UNIT_AURA");
-    
 
     self:ScheduleRepeatingEvent("Dcr_SheduledTasks", self.SheduledTasks, 0.2, self);
 

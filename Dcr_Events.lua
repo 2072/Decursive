@@ -281,12 +281,51 @@ function D:SPELLS_CHANGED()
     self:ScheduleEvent("Dcr_SpellsChanged", self.ReConfigure, 15, self);
 end
 
---[=[
+---[=[
 local SeenUnitEventsUNITAURA = {};
 local SeenUnitEventsCOMBAT = {};
-function D:UNIT_AURA(...)
-    self:AddDebugText("UNIT_AURA ", GetTime(), ...);
+
+do
+    local FAR = DC.FAR;
+    local UnitAura = _G.UnitAura;
+    function D:UNIT_AURA(UnitID)
+
+	if (self.Groups_datas_are_invalid) then
+	    if not self.DcrFullyInitialized then
+		self:Println("|cFFFF0000Could not process event(UNIT_AURA): init uncomplete!|r");
+		return;
+	    end
+	    self:GetUnitArray();
+	end
+
+	if not self.Status.Unit_Array_UnitToGUID[UnitID] then
+	    --self:Debug(UnitID, " is not in raid");
+	    return;
+	end
+
+	--self:Debug(UnitID, " |cFF77FF11is in raid|r (UNIT_AURA)");
+
+
+	if self.profile.ShowDebuffsFrame then
+
+	    if self.MicroUnitF.UnitToMUF[UnitID] and self.MicroUnitF.UnitToMUF[UnitID].UnitStatus == FAR then
+		--self:Debug(UnitID, " |cFFFF7711is too far|r (UNIT_AURA)");
+		return
+	    end
+
+	    -- get out of here if this is just about a fucking buff, combat log event manager handles those...
+	    if not UnitAura(UnitID, 1, "HARMFUL") then
+		--self:Debug(UnitID, " |cFFFF7711has no debuff|r (UNIT_AURA)");
+		return;
+	    end
+
+	    self.MicroUnitF:UpdateMUFUnit(UnitID);
+	elseif not self.profile.Hide_LiveList then
+	    self.LiveList:DelayedGetDebuff(UnitID);
+	end
+    end
 end
+
 --]=]
 
 
@@ -321,7 +360,7 @@ do
     local ME			= COMBATLOG_OBJECT_AFFILIATION_MINE;
 
 
-    local AuraEvents = {
+    local AuraEvents = { -- check if there are some other rare events...
 	["SPELL_AURA_APPLIED"]	    = 1,
 	["SPELL_AURA_APPLIED_DOSE"] = 1,
 	["SPELL_AURA_REMOVED"]	    = 0,
@@ -389,8 +428,6 @@ do
 
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
 
-		    --self:AddDebugText("CombatLog BUFF on", GetTime(), UnitID);
-
 		    if DC.IsStealthBuff[arg10] then
 			if AuraEvents[event] == 1 then
 			    self.Stealthed_Units[UnitID] = true;
@@ -412,6 +449,7 @@ do
 		    end
 		    DetectHistoryIndex = DetectHistoryIndex + 1;
 
+		    --[=[ now managed by UNIT_AURA
 		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event);
 		    if self.profile.ShowDebuffsFrame then
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
@@ -419,6 +457,7 @@ do
 			D:Debug("(LiveList) Registering delayed GetDebuff for ", destName);
 			self.LiveList:DelayedGetDebuff(UnitID);
 		    end
+		    --]=]
 
 		    if event == "UNIT_DIED" then
 			self.Stealthed_Units[UnitID] = false;
