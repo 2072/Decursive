@@ -299,8 +299,14 @@ do
 	end
 
 	if not self.Status.Unit_Array_UnitToGUID[UnitID] then
-	    --self:Debug(UnitID, " is not in raid");
+	    -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
 	    return;
+	end
+
+	-- XXX Sanity check
+	if self.Status.Unit_Array_UnitToGUID[UnitID] == UnitID or UnitGUID(UnitID) ~= self.Status.Unit_Array_UnitToGUID[UnitID] then
+	    -- idea: keep this test and if UnitGUID() did not return nil then rescan the group right now
+	    D:AddDebugText("AURA event received after UnitGUID() returned garbage, SG:", self.Status.Unit_Array_UnitToGUID[UnitID], "FG:", UnitGUID(UnitID), "Unit ID:", UnitID);
 	end
 
 	--self:Debug(UnitID, " |cFF77FF11is in raid|r (UNIT_AURA)");
