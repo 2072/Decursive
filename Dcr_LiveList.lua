@@ -306,7 +306,7 @@ function LiveList:GetDebuff(UnitID) -- {{{
     end
 
     -- Get the unit Debuffs
-    if not D.profile.ShowDebuffsFrame or UnitID == "mouseover" or UnitID == "target" then
+    if not D.profile.ShowDebuffsFrame or not MicroUnitF.UnitToMUF[UnitID] or UnitID == "mouseover" or UnitID == "target" then
 	Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID);
 	--Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID, true);
     else -- The MUFs are active and Unit is not mouseover and is not target
