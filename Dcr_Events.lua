@@ -298,15 +298,22 @@ do
 	    self:GetUnitArray();
 	end
 
+	--[[
+	if D.XXXSanityGUIDcheck then
+	    D:AddDebugText("UNIT_AURA while groups data are wrong. XXXSanityGUIDcheck:", D.XXXSanityGUIDcheck, "XXXSanityGUIDcheckGUID:", self.Status.Unit_Array_UnitToGUID[D.XXXSanityGUIDcheck], "Unit(event)", UnitID, "l GU at:", D.Status.GroupUpdatedOn);
+	end
+	--]]
+
 	if not self.Status.Unit_Array_UnitToGUID[UnitID] then
 	    -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
 	    return;
 	end
 
 	-- XXX Sanity check
-	if self.Status.Unit_Array_UnitToGUID[UnitID] == UnitID or UnitGUID(UnitID) ~= self.Status.Unit_Array_UnitToGUID[UnitID] then
+	if UnitGUID(UnitID) ~= self.Status.Unit_Array_UnitToGUID[UnitID] then
 	    -- idea: keep this test and if UnitGUID() did not return nil then rescan the group right now
-	    D:AddDebugText("AURA event received after UnitGUID() returned garbage, SG:", self.Status.Unit_Array_UnitToGUID[UnitID], "FG:", UnitGUID(UnitID), "Unit ID:", UnitID);
+	    D:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() , SG:", self.Status.Unit_Array_UnitToGUID[UnitID], "FG:", UnitGUID(UnitID), "Unit ID:", UnitID, "ScanPets:", D.profile.Scan_Pets, "l GU at:", D.Status.GroupUpdatedOn, "foundUnit:", #D.Status.Unit_Array, "RealRaidNum:", GetNumRaidMembers());
+	    self.Groups_datas_are_invalid = true;
 	end
 
 	--self:Debug(UnitID, " |cFF77FF11is in raid|r (UNIT_AURA)");

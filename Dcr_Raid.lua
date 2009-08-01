@@ -216,7 +216,8 @@ do
 
 	if (D.profile.debugging) then
 	    if not GUID then
-		D:errln("UnitToGUID_mt: no GUID for: ", unit);
+		D:errln("UnitToGUID_mt: no GUID for: ", unit); -- this is not an error, it's to see when raid# ids are not contiguous...
+		--D.XXXSanityGUIDcheck = unit;
 	    end
 	end
 
@@ -476,6 +477,7 @@ do
 	SortingTable			= {};
 	Status.Unit_Array_GUIDToUnit	= {};
 	Status.Unit_Array_UnitToGUID	= {};
+	--D.XXXSanityGUIDcheck = false;
 
 	UnitToGUID = setmetatable(UnitToGUID, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
 	GUIDToUnit = setmetatable(GUIDToUnit, GUIDToUnit_mt); -- this one cannot be erased (memory leak due to GUID...)
@@ -729,9 +731,9 @@ do
 
 	UnitToGUID = {};
 	GUIDToUnit = {};
-	D.Status.GroupUpdatedOn = GetTime();
+	D.Status.GroupUpdatedOn = D:NiceTime(); -- XXX for debugging
 
-	self:Debug ("|cFFFF44FF-->|r Update complete!");
+	self:Debug ("|cFFFF44FF-->|r Update complete!", Status.UnitNum);
 	return;
     end
 
