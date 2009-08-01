@@ -1001,7 +1001,7 @@ D.options = { -- {{{
 		    end,
 		    disabled = function() return not D.profile.ShowDebuffsFrame end,
 		    min = 1,
-		    max = 20,
+		    max = 82,
 		    step = 1,
 		    isPercent = false,
 		    order = 2700,

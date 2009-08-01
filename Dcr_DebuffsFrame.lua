@@ -274,7 +274,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 	-- show/hide
 	if not MF.Shown and Unit_Array_UnitToGUID[Unit] and MF.ID <= NumToShow then -- we got this unit in our group but it's hidden
 
-	    MF_f:Show();
+	    --MF_f:Show();
 	    MF.Shown = true;
 	    self.UnitShown = self.UnitShown + 1;
 	    MF.ID = 0; -- will force its position to be reset by the roaming updater, it's necessary because when units are not present but used to, they have a MUF that keep its previous anchor.
@@ -1467,6 +1467,9 @@ do
 	    if MF and MF.ID ~= MicroFrameUpdateIndex and not InCombatLockdown() then
 		MF.ID = MicroFrameUpdateIndex;
 		MF.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(MicroFrameUpdateIndex)));
+		if MF.Shown then
+		    MF.Frame:Show();
+		end
 		ActionsDone = ActionsDone + 1;
 	    end
 
