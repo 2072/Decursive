@@ -319,15 +319,15 @@ do
 	--self:Debug(UnitID, " |cFF77FF11is in raid|r (UNIT_AURA)");
 
 
-	if self.profile.ShowDebuffsFrame then
+	if self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
 
-	    if self.MicroUnitF.UnitToMUF[UnitID] and self.MicroUnitF.UnitToMUF[UnitID].UnitStatus == FAR then
+	    if self.MicroUnitF.UnitToMUF[UnitID].UnitStatus == FAR then
 		--self:Debug(UnitID, " |cFFFF7711is too far|r (UNIT_AURA)");
 		return
 	    end
 
-	    -- get out of here if this is just about a fucking buff, combat log event manager handles those...
-	    if not UnitAura(UnitID, 1, "HARMFUL") then
+	    -- get out of here if this is just about a fucking buff, combat log event manager handles those... unless there is no debuff because the last was removed
+	    if not UnitAura(UnitID, 1, "HARMFUL") and not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed then
 		--self:Debug(UnitID, " |cFFFF7711has no debuff|r (UNIT_AURA)");
 		return;
 	    end
