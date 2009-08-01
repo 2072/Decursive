@@ -50,6 +50,7 @@ local UnitIsCharmed	= _G.UnitIsCharmed;
 local UnitCanAttack	= _G.UnitCanAttack;
 local UnitClass		= _G.UnitClass;
 local UnitExists	= _G.UnitExists;
+local GetNetStats	= _G.GetNetStats;
 local _;
 
 -------------------------------------------------------------------------------
@@ -835,7 +836,7 @@ function D:AddDebugText(a1, ...)
 	end
 
 	--	table.insert (D.DebugTextTable,  "\n------\n"  .. (GetTime() - DC.StartTime) .. "" .. " - ".. text );
-	table.insert (D.DebugTextTable,  ("\n------\n%.4f: %s -|count: "):format((GetTime() - DC.StartTime), text) );
+	table.insert (D.DebugTextTable,  ("\n------\n%.4f (latency:%d): %s -|count: "):format((GetTime() - DC.StartTime), select(3, GetNetStats()), text) );
 	table.insert (D.DebugTextTable, 1);
 	Reported[text] = #D.DebugTextTable;
     else
