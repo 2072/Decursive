@@ -311,9 +311,30 @@ do
 
 	-- XXX Sanity check
 	if UnitGUID(UnitID) ~= self.Status.Unit_Array_UnitToGUID[UnitID] then
-	    -- idea: keep this test and if UnitGUID() did not return nil then rescan the group right now
-	    D:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() , SG:", self.Status.Unit_Array_UnitToGUID[UnitID], "FG:", UnitGUID(UnitID), "Unit ID:", UnitID, "ScanPets:", D.profile.Scan_Pets, "l GU at:", D.Status.GroupUpdatedOn, "foundUnit:", #D.Status.Unit_Array, "RealRaidNum:", GetNumRaidMembers());
-	    self.Groups_datas_are_invalid = true;
+
+	    local unitguid = UnitGUID(UnitID);
+	    local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
+
+	    -- idea: keep this test and if UnitGUID() did not return nil then fix the shit
+	    D:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() , SG:", self.Status.Unit_Array_UnitToGUID[UnitID],
+	    "FG:", unitguid,
+	    "Unit ID:", UnitID,
+	    "GUIDToUnit[UnitGUID()]:",  self.Status.Unit_Array_GUIDToUnit[unitguid],
+	    "GUIDToUnit[UnitToGUID[]]:", unitToguid and self.Status.Unit_Array_GUIDToUnit[unitToguid] or "Xnone",
+	    "ScanPets:", D.profile.Scan_Pets,
+	    "LGU:", D.Status.GroupUpdatedOn,
+	    "foundUnits:", #D.Status.Unit_Array,
+	    "RealRaidNum:", GetNumRaidMembers(),
+	    "Zone:", GetZoneText(),
+	    "FUnitsList:", unpack(D.Status.Unit_Array));
+
+	    self:Debug("|cFF5555 Groups datas invalid sanity error|r");
+
+
+	    self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
+	    self.Status.Unit_Array_GUIDToUnit[unitguid] = UnitID;
+
+	    --self.Groups_datas_are_invalid = true;
 	end
 
 	--self:Debug(UnitID, " |cFF77FF11is in raid|r (UNIT_AURA)");

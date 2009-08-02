@@ -242,11 +242,11 @@ do
 	    return false;
 	end
 
-	local numRaidMembers = GetNumRaidMembers();
+	local numRaidMembers = GetNumRaidMembers(); -- this will not change during the scan so we could use raidnum... XXX
 	local unit = false;
 
 
-	if GUID == UnitToGUID["player"] then
+	if GUID == DC.MyGUID then
 	    unit = "player";
 	elseif GUID == UnitToGUID["pet"] then
 	    unit = "pet";
@@ -708,7 +708,7 @@ do
 	local GUID;
 	for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
 	    t_insert(Status.Unit_Array, unit);
-	    Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a usefull table, not used here :)
+	    Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a useful table, not used here :)
 	end
 
 	table.sort(Status.Unit_Array, function (a,b)
