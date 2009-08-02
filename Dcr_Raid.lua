@@ -208,6 +208,8 @@ do
     local UnitToGUID = {};
     local GUIDToUnit = {};
 
+    local raidnum = 0;
+
     local UnitToGUID_mt = { __index = function(self, unit)
 	local GUID = UnitGUID(unit) or false;
 
@@ -242,7 +244,7 @@ do
 	    return false;
 	end
 
-	local numRaidMembers = GetNumRaidMembers(); -- this will not change during the scan so we could use raidnum... XXX
+	--local numRaidMembers = GetNumRaidMembers(); -- this will not change during the scan so we could use raidnum... XXX
 	local unit = false;
 
 
@@ -250,7 +252,7 @@ do
 	    unit = "player";
 	elseif GUID == UnitToGUID["pet"] then
 	    unit = "pet";
-	elseif (numRaidMembers == 0) then
+	elseif (raidnum == 0) then
 	    if GetNumPartyMembers() > 0 then
 		if GUID == UnitToGUID["party1"] then
 		    unit = "party1";
@@ -294,7 +296,7 @@ do
 			break;
 		    end
 
-		    if foundmembers == numRaidMembers then
+		    if foundmembers == raidnum then
 			break;
 		    end
 		end
@@ -453,7 +455,7 @@ do
 	self:Debug ("|cFFFF44FF-->|r Updating Units Array");
 
 	local pGUID;
-	local raidnum = GetNumRaidMembers();
+	raidnum = GetNumRaidMembers();
 
 	if DC.MyGUID == "NONE" then
 
