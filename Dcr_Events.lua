@@ -319,7 +319,7 @@ do
 	    D:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() , SG:", self.Status.Unit_Array_UnitToGUID[UnitID],
 	    "FG:", unitguid,
 	    "Unit ID:", UnitID,
-	    "GUIDToUnit[UnitGUID()]:",  self.Status.Unit_Array_GUIDToUnit[unitguid],
+	    "GUIDToUnit[UnitGUID()]:",  unitguid and self.Status.Unit_Array_GUIDToUnit[unitguid] or "Xnoguid",
 	    "GUIDToUnit[UnitToGUID[]]:", unitToguid and self.Status.Unit_Array_GUIDToUnit[unitToguid] or "Xnone",
 	    "ScanPets:", D.profile.Scan_Pets,
 	    "LGU:", D.Status.GroupUpdatedOn,

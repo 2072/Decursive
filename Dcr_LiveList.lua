@@ -422,8 +422,8 @@ function LiveList:Update_Display() -- {{{
 
 		else -- we care about range
 
-		    if D.profile.ShowDebuffsFrame then
-			RangeStatus = MicroUnitF.UnitToMUF[UnitID].UnitStatus;
+		    if D.profile.ShowDebuffsFrame and MicroUnitF.UnitToMUF[UnitID] then
+			RangeStatus = MicroUnitF.UnitToMUF[UnitID].UnitStatus; -- MicroUnitF.UnitToMUF[UnitID] is nil sometimes XXX
 			RangeStatus = (RangeStatus == DC.AFFLICTED or RangeStatus == DC.AFFLICTED_AND_CHARMED) and true or false;
 		    else
 			RangeStatus = IsSpellInRange(D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
