@@ -710,6 +710,11 @@ do
 	local GUID;
 	for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
 	    t_insert(Status.Unit_Array, unit);
+
+	    if Status.Unit_Array_UnitToGUID[unit] then
+		D:AddDebugText("multi-unit bug for ", unit, GUID, "previous found GUID", Status.Unit_Array_UnitToGUID[unit]);
+	    end
+
 	    Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a useful table, not used here :)
 	end
 

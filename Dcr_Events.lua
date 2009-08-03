@@ -57,7 +57,7 @@ local UnitGUID		= _G.UnitGUID;
 local GetTime		= _G.GetTime;
 
 
-function D:GroupChanged () -- {{{
+function D:GroupChanged (reason) -- {{{
     -- this will trigger an update of the unit array
     D.Groups_datas_are_invalid = true;
     -- Update the MUFs display in a short moment
@@ -69,7 +69,7 @@ function D:GroupChanged () -- {{{
 	D:ScheduleEvent("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
     end
 
-    D:Debug("Groups changed");
+    D:Debug("Groups changed", reason, arg1);
 end -- }}}
 
 local OncePetRetry = false;
@@ -330,9 +330,13 @@ do
 
 	    self:Debug("|cFF5555 Groups datas invalid sanity error|r");
 
+	    self.Groups_datas_are_invalid = true;
+	    self:GetUnitArray();
+	    D:AddDebugText("found units after rescan: ", #D.Status.Unit_Array);
 
-	    self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
-	    self.Status.Unit_Array_GUIDToUnit[unitguid] = UnitID;
+
+	    --self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
+	    --self.Status.Unit_Array_GUIDToUnit[unitguid] = UnitID;
 
 	    --self.Groups_datas_are_invalid = true;
 	end
