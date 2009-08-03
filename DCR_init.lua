@@ -544,13 +544,20 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
 
     -- Raid/Group changes events
-    self:RegisterEvent("PARTY_MEMBERS_CHANGED","GroupChanged");
-    self:RegisterEvent("PARTY_LEADER_CHANGED","GroupChanged");
-    self:RegisterEvent("RAID_ROSTER_UPDATE","GroupChanged");
+    --self:RegisterEvent("PARTY_MEMBERS_CHANGED","GroupChanged");
+    self:RegisterEvent("PARTY_MEMBERS_CHANGED", function() D:GroupChanged("PARTY_MEMBERS_CHANGED", arg1) end);
+    --self:RegisterEvent("PARTY_LEADER_CHANGED","GroupChanged");
+    self:RegisterEvent("PARTY_LEADER_CHANGED", function() D:GroupChanged("PARTY_LEADER_CHANGED", arg1) end);
+    --self:RegisterEvent("RAID_ROSTER_UPDATE","GroupChanged");
+    self:RegisterEvent("RAID_ROSTER_UPDATE", function() D:GroupChanged("RAID_ROSTER_UPDATE", arg1) end);
+    --self:RegisterEvent("UNIT_NAME_UPDATE","GroupChanged");
+    --self:RegisterEvent("UNIT_NAME_UPDATE", function() D:GroupChanged("UNIT_NAME_UPDATE", arg1) end);
+    --self:RegisterEvent("UNIT_PORTRAIT_UPDATE", function() D:GroupChanged("UNIT_PORTRAIT_UPDATE", arg1) end);
     self:RegisterEvent("PLAYER_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
 
     -- Player pet detection event (used to find pet spells)
     self:RegisterEvent("UNIT_PET","UNIT_PET");
+
     self:RegisterEvent("UNIT_AURA","UNIT_AURA");
 
     self:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -700,6 +707,8 @@ function D:OnProfileEnable()
 
     D:GetUnitArray(); -- get the unit array
     D.MicroUnitF:ResetAllPositions (); -- reset all anchors
+
+    D:BetaWarning();
 
 end
 

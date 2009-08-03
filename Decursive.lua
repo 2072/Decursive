@@ -876,4 +876,35 @@ function D:MakeError()
     return 1 + 6545 + dsafsdf;
 end
 
+-- the beautiful beta notice popup popup : {{{ -
+StaticPopupDialogs["Decursive_Notice_Frame"] = {
+    text = "|cFFFF0000Decursive Notice:|r\n%s",
+    button1 = "OK",
+    OnAccept = function()
+	return false;
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = false,
+    showAlert = 1,
+}; -- }}}
+
+function D:BetaWarning()
+
+    local alpha = false;
+    --@alpha@
+    alpha = true;
+    --@end-alpha@
+
+    if (("@project-version@"):lower()):find("beta") or alpha then
+
+	if self.profile.NonRealease ~= "@project-version@" then
+	    self.profile.NonRealease = "@project-version@";
+	    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+	end
+
+    end
+
+end
+
 DcrLoadedFiles["Decursive.lua"] = "@project-version@";

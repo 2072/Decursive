@@ -80,7 +80,7 @@ D.defaults = { -- {{{
 
     DebuffsFrameElemBorderAlpha = .2,
 
-    DebuffsFrameElemTieTransparency = true;
+    DebuffsFrameElemTieTransparency = true,
 
     DebuffsFramePerline = 10,
 
@@ -90,7 +90,7 @@ D.defaults = { -- {{{
 
     DebuffsFrameYSpacing = 3,
 
-    DebuffsFrameStickToRight = false;
+    DebuffsFrameStickToRight = false,
 
     -- The time between each MUF update
     DebuffsFrameRefreshRate = 0.10,
@@ -115,14 +115,14 @@ D.defaults = { -- {{{
     -- this is wether or not to show the live-list	
     Hide_LiveList = false,
 
-    LiveListAlpha = 0.7;
+    LiveListAlpha = 0.7,
 
-    LiveListScale = 1.0;
+    LiveListScale = 1.0,
 
     -- position of the "Decursive" main bar, the live-list is anchored to this bar.
-    MainBarX = false;
+    MainBarX = false,
 
-    MainBarY = false;
+    MainBarY = false,
 
     -- This will turn on and off the sending of messages to the default chat frame
     Print_ChatFrame = true,
@@ -164,7 +164,7 @@ D.defaults = { -- {{{
     PlaySound = true,
 
     -- The sound file to use
-    SoundFile = DC.AfflictionSound;
+    SoundFile = DC.AfflictionSound,
 
     -- Example to change the sound : /run Dcr.profile.SoundFile = "Sound\\interface\\AuctionWindowOpen.wav"
 
@@ -202,7 +202,7 @@ D.defaults = { -- {{{
     NoKeyWarn = true,
 
     -- Disable macro creation
-    DisableMacroCreation = false;
+    DisableMacroCreation = false,
 
     -- Those are the different colors used for the MUFs main textures
     MF_colors = {
@@ -220,6 +220,8 @@ D.defaults = { -- {{{
 	[DC.CHARMED_STATUS]	=   { 0   , 1   , 0    ,  1	}, -- full green
 	["COLORCHRONOS"]	=   { 0.6 , 0.1 , 0.2  ,  0.7	}, -- medium red
     },
+
+    NonRealease = false,
     -- Curring order (1 is the most important, 6 the lesser...)
     --[[
     CureOrder = {
