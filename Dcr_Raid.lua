@@ -22,8 +22,25 @@
 --]]
 -------------------------------------------------------------------------------
 
+-- big ugly scary fatal error message display function {{{
+if not DcrFatalError then
+-- the beautiful error popup : {{{ -
+StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+    text = "|cFFFF0000Decursive Error:|r\n%s",
+    button1 = "OK",
+    OnAccept = function()
+	return false;
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1,
+    showAlert = 1,
+    }; -- }}}
+DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+end
+-- }}}
 if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_Events.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_Events.lua not loaded)"); end;
+    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_Events.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -262,7 +279,7 @@ do
 		    unit = "party3";
 		elseif GUID == UnitToGUID["party4"] then
 		    unit = "party4";
-		elseif Dcr.profile.Scan_Pets then
+		elseif D.profile.Scan_Pets then
 		    if GUID == UnitToGUID["partypet1"] then
 			unit = "partypet1";
 		    elseif GUID == UnitToGUID["partypet2"] then
@@ -312,6 +329,12 @@ do
 	--else
 	--    D:Debug("GUIDToUnit_mt used for ", GUID, unit);
 	end
+
+
+	if rawget (self, GUID) then
+	    D:AddDebugText("multi-GUID (metatable) bug for ", unit, GUID, "previous found unit", self[GUID]);
+	end
+
 
 	self[GUID] = unit;
 
@@ -642,7 +665,7 @@ do
 		--    AddToSort( PlayerRID, MyGUID, 900);
 		--    Status.Unit_Array_GUIDToUnit[MyGUID] = PlayerRID;
 		--else
-		    --message(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
+		    --DcrFatalError(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
 			--MyName, currentGroup, (GetTime() - DC.StartTime), raidnum));
 
 		    AddToSort( "player", MyGUID, 900);

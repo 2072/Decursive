@@ -57,25 +57,26 @@ DcrLoadedFiles = {
 -- This self diagnostic functionality is here to give clear instructions to the
 -- user when something goes wrong with the Ace shared libraries or when a
 -- Decursive file could not be loaded.
+    
+-- the beautiful error popup : {{{ -
+StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+    text = "|cFFFF0000Decursive Error:|r\n%s",
+    button1 = "OK",
+    OnAccept = function()
+	return false;
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1,
+    showAlert = 1,
+    }; -- }}}
+DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+
 do
     DcrDiagStatus = false;
 
-    local FatalError = function (TheError) StaticPopup_Show ("Decursive_Error_Frame", TheError); end
-
     local PrintMessage = function (message, ...) if DcrDiagStatus ~= 2 then Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
-    -- the beautiful error popup : {{{ -
-    StaticPopupDialogs["Decursive_Error_Frame"] = {
-	text = "|cFFFF0000Decursive Error:|r\n%s",
-	button1 = "OK",
-	OnAccept = function()
-	    return false;
-	end,
-	timeout = 0,
-	whileDead = 1,
-	hideOnEscape = 1,
-	showAlert = 1,
-    }; -- }}}
 
     function DecursiveSelfDiagnostic (force, FromCommand) -- {{{
 
