@@ -25,6 +25,7 @@
 DcrCorrupted	 = false;
 
 DcrLoadedFiles = {
+    ["Dcr_DIAG.xml"]		= false,
     ["Dcr_DIAG.lua"]		= false,
     ["DCR_init.lua"]		= false,
     ["Dcr_LDB.lua"]		= false,
@@ -71,6 +72,124 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     showAlert = 1,
     }; -- }}}
 DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+
+-- Decursive LUA error manager and debug reporting functions {{{
+-- taken from AceConsole-2.0
+local function tostring_args(a1, ...)
+	if select('#', ...) < 1 then
+		return tostring(a1)
+	end
+	return tostring(a1), tostring_args(...)
+end
+
+-- taken from BugSack
+function D:DebugFrameOnTextChanged()
+    if this:GetText() ~= D.DebugText then
+	this:SetText(D.DebugText)
+    end
+    this:GetParent():UpdateScrollChildRect()
+    local _, m = DecursiveDebuggingFrameScrollScrollBar:GetMinMaxValues()
+    if m > 0 and this.max ~= m then
+	this.max = m
+	DecursiveDebuggingFrameScrollScrollBar:SetValue(0)
+    end
+end
+
+local Reported = {};
+function D:AddDebugText(a1, ...)
+
+    local text = "";
+
+    if select('#', ...) > 0 then
+	text = strjoin(", ", tostring_args(a1, ...))
+    else
+	text = tostring(a1);
+    end
+
+    if not Reported[text] then
+	Reported[text] = 1;
+
+	if #D.DebugTextTable < 1 then
+	    table.insert (D.DebugTextTable, L["DEBUG_REPORT_HEADER"] .. "\n@project-version@  " .. DC.MyClass .. "  CT:" .. D:NiceTime());
+	end
+
+	--	table.insert (D.DebugTextTable,  "\n------\n"  .. (GetTime() - DC.StartTime) .. "" .. " - ".. text );
+	table.insert (D.DebugTextTable,  ("\n------\n%.4f (latency:%d): %s -|count: "):format((GetTime() - DC.StartTime), select(3, GetNetStats()), text) );
+	table.insert (D.DebugTextTable, 1);
+	Reported[text] = #D.DebugTextTable;
+    else
+	D.DebugTextTable[Reported[text]] = D.DebugTextTable[Reported[text]] + 1;
+    end
+end
+
+function D:ShowDebugReport()
+    D.DebugText = table.concat(D.DebugTextTable, "");
+    _G.DecursiveDebuggingFrameText:SetText(D.DebugText);
+
+    _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
+    _G.DecursiveDebuggingFrame:Show();
+end
+
+local ProperErrorHandler = false;
+local function DecursiveErrorHandler(err, ...)
+
+    if (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\") then
+	D:AddDebugText(err, debugstack(2), ...);
+    end
+
+    if ProperErrorHandler then
+	ProperErrorHandler(err, ...);
+    end
+end
+
+function D:HookErrorHandler()
+    if not ProperErrorHandler then
+	ProperErrorHandler = geterrorhandler();
+	seterrorhandler(DecursiveErrorHandler)
+    end
+end
+
+function D:MakeError()
+    return 1 + dsafsdf;
+end
+--}}}
+
+D:HookErrorHandler();
+
+-- Dev version usage warning {{{
+-- the beautiful beta notice popup : {{{ -
+StaticPopupDialogs["Decursive_Notice_Frame"] = {
+    text = "|cFFFF0000Decursive Notice:|r\n%s",
+    button1 = "OK",
+    OnAccept = function()
+	return false;
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = false,
+    showAlert = 1,
+}; -- }}}
+
+function D:BetaWarning()
+
+    local alpha = false;
+    --@alpha@
+    alpha = true;
+    --@end-alpha@
+
+    if (("@project-version@"):lower()):find("beta") or alpha then
+
+	if self.profile.NonRealease ~= "@project-version@" then
+	    self.profile.NonRealease = "@project-version@";
+	    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+	end
+
+    end
+
+end
+
+-- }}}
+
 
 do
     DcrDiagStatus = false;

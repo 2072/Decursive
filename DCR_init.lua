@@ -39,8 +39,8 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
 DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DIAG.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_DIAG.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DIAG.xml"] then
+    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_DIAG.xml not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -463,7 +463,6 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 	return false;
     end
 
-    D:HookErrorHandler();
 
     -- Register slashes command {{{
     if (FirstEnable) then
