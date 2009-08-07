@@ -383,6 +383,11 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	    IsBest = false,
 	    Pet = false,
 	},
+	[DS["SPELL_CURE_TOXINS"]]	    = {
+	    Types = {DC.POISON, DC.DISEASE},
+	    IsBest = true,
+	    Pet = false,
+	},
 	-- mages
 	[DS["SPELL_REMOVE_LESSER_CURSE"]]   = {
 	    Types = {DC.CURSE},
@@ -1031,12 +1036,13 @@ function D:GetSpellsTranslations(FromDIAG)
     local Spells = {
 	["SPELL_POLYMORPH"]		= {	118,					 },
 	["SPELL_CYCLONE"]		= {	33786,					 },
-	["SPELL_CURE_DISEASE"]		= {	528, 2870,				 },
+	["SPELL_CURE_DISEASE"]		= {	528,	 				 },
 	["SPELL_ABOLISH_DISEASE"]	= {	552,					 },
-	["SPELL_PURIFY"]		= {	1152,					 },
+	["SPELL_PURIFY"]		= {	1152,					 }, -- paladins
 	["SPELL_CLEANSE"]		= {	4987,					 },
 	["SPELL_DISPELL_MAGIC"]		= {	527, 988,				 },
-	["SPELL_CURE_POISON"]		= {	526, 8946,				 },
+	["SPELL_CURE_TOXINS"]		= {	526,					 }, -- shamans
+	["SPELL_CURE_POISON"]		= {	8946,					 },
 	["SPELL_ABOLISH_POISON"]	= {	2893,					 },
 	["SPELL_REMOVE_LESSER_CURSE"]	= {	475,					 },
 	["SPELL_REMOVE_CURSE"]		= {	2782,					 },
@@ -1091,6 +1097,7 @@ function D:GetSpellsTranslations(FromDIAG)
 		DS[Sname] = (GetSpellInfo(Sid));
 	    elseif FromDIAG then
 		if DS[Sname] ~= (GetSpellInfo(Sid)) then
+		    D:AddDebugText("Spell IDs %s and %s have different translations: %s and %s", Sids[1], Sid, DS[Sname], (GetSpellInfo(Sid)) );
 		    D:errln("Spell IDs %s and %s have different translations: %s and %s", Sids[1], Sid, DS[Sname], (GetSpellInfo(Sid)) );
 		    D:errln("Please report this to ARCHARODIM@teaser.fr");
 		    ok = false;

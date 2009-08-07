@@ -1,5 +1,6 @@
 TODO:
 
+- change raid# of player to 'player' when using priolist
 
 - Add a menu option to choose between available spells. (will also allow to choose other polymorph spells)
 

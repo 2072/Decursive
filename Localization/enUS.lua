@@ -73,7 +73,7 @@ if not L then return end;
 
 --@localization(locale="enUS", format="lua_additive_table")@
 
----[==[
+--[==[
 
 -- Used for testing the addon withour the packager
 
