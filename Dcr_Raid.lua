@@ -324,20 +324,14 @@ do
 
 	if not unit then
 	    GUIDToUnit_ScannedAll = true;
-
-	    --[=[
-	    if D.profile.debugging then
-		D:errln("GUIDToUnit_mt: no unit for: ", GUID);
-	    end
-	    --]=]
-	--else
-	--    D:Debug("GUIDToUnit_mt used for ", GUID, unit);
 	end
 
 
+	--[=[
 	if rawget (self, GUID) then --XXX to remove at final release
-	    D:AddDebugText("multi-GUID (metatable) bug for ", unit, GUID, "previous found unit", self[GUID]);
+	    D:AddDebugText("multi-GUID (metatable) bug for ", unit, GUID, "previous found unit", rawget (self, GUID));
 	end
+	--]=]
 
 
 	self[GUID] = unit;

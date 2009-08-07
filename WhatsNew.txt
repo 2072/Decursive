@@ -1,4 +1,31 @@
-Decursive 2.4.1 by Archarodim  (2009-06-13)
+Decursive 2.4.2 beta 7 by Archarodim  (2009-08-07)
+
+
+Changes from Decursive 2.4 to Decursive 2.4.2
+
+- IMPORTANT STABILITY AND RELIABILITY FIXES: The problem fixed in this release
+  could prevent Decursive from reporting debuffs in race conditions (all
+  previous versions are affected).
+
+- Added Shaman's "Hex" spell to crowd control charmed players.
+
+- Added new Shaman spell "Cure Toxins".
+
+- Documention completely rewritten and reorganised using .docmeta and markdown
+  formatting. Users don't have any excuse left to not read it now ;) The
+  documentation is accessible there: <http://www.wowace.com/addons/decursive/>
+
+- Decursive is now able to report LUA errors related to itself using the
+  wonderful "non-annoying after combat auto report feature" introduced in 2.4.1 :)
+
+- Added support for AddonLoader http://www.wowwiki.com/AddonLoader (auto-load
+  if your class is any of Mage, Priest, Paladin, Druid, Hunter, Warlock,
+  Shaman).
+
+- Added an option to disable the macro creation.
+
+- Miscellaneous enhancements and minor bug fixes.
+
 
 Changes from Decursive 2.4 to Decursive 2.4.1
 
