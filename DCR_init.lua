@@ -109,7 +109,6 @@ D.CONF.MACRO_DEBUG	   = "/dcrdebug";
 D.CONF.MACRO_SHOW_ORDER   = "/dcrshoworder";
 
 -- CONSTANTS
-DcrC = {};
 
 local DC = DcrC;
 
@@ -172,8 +171,6 @@ DC.RANKNUMTRANS = false;
 DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage creation
 
 
-DC.StartTime = GetTime();
-
 D.DebuffHistory = {};
 
 D.MFContainer = false;
@@ -202,8 +199,7 @@ D.ManagedDebuffUnitCache = {};
 -- A table UnitID=>IsDebuffed (boolean)
 D.UnitDebuffed = {};
 
-D.DebugText = "";
-D.DebugTextTable = {};
+D.DebugTextTable    = Dcr_DebugTextTable;
 
 -- // }}}
 -------------------------------------------------------------------------------
@@ -222,6 +218,28 @@ D.hideWithoutStandby	= true;
 D.defaultPosition	= "LEFT";
 D.hideMenuTitle 	= true;
 --D.clickableTooltip	= true;
+
+local AddDebugText = Dcr_AddDebugText;
+function D:AddDebugText(a1, ...)
+    AddDebugText(a1, ...);
+end
+
+function D:BetaWarning()
+
+    local alpha = false;
+    --@alpha@
+    alpha = true;
+    --@end-alpha@
+
+    if (("@project-version@"):lower()):find("beta") or alpha then
+
+	if self.profile.NonRealease ~= "@project-version@" then
+	    self.profile.NonRealease = "@project-version@";
+	    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+	end
+
+    end
+end
 
 function D:OnMenuRequest (level, value, inTooltip, v1, v2, v3)
    D.DewDrop:FeedAceOptionsTable( D.options );

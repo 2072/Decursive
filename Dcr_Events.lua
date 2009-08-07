@@ -77,17 +77,23 @@ local GetTime		= _G.GetTime;
 
 function D:GroupChanged (reason) -- {{{
     -- this will trigger an update of the unit array
-    D.Groups_datas_are_invalid = true;
-    -- Update the MUFs display in a short moment
-    D.MicroUnitF:Delayed_MFsDisplay_Update ();
+    self.Groups_datas_are_invalid = true;
+    self.Status.GroupUpdateEvent = self:NiceTime();
+
+    if self.profile.ShowDebuffsFrame then
+	-- Update the MUFs display in a short moment
+	self.MicroUnitF:Delayed_MFsDisplay_Update ();
+    elseif not self.profile.Hide_LiveList then
+	D:ScheduleEvent("Dcr_GetUnitArray", self.GetUnitArray, 1.5, self);
+    end
 
 
     -- Test if we have to hide Decursive MUF window
-    if D.profile.AutoHideDebuffsFrame ~= 0 then
-	D:ScheduleEvent("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
+    if self.profile.AutoHideDebuffsFrame ~= 0 then
+	self:ScheduleEvent("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
     end
 
-    D:Debug("Groups changed", reason, arg1);
+    self:Debug("Groups changed", reason, arg1);
 end -- }}}
 
 local OncePetRetry = false;
@@ -98,8 +104,7 @@ function D:UNIT_PET (Unit) -- {{{
 
     D:Debug("Pet changed for: ", Unit);
     if (D.profile.Scan_Pets and Unit ~= "focus" and self.Status.Unit_Array_UnitToGUID[Unit]) then
-	D.Groups_datas_are_invalid = true;
-	self.MicroUnitF:Delayed_MFsDisplay_Update();
+	D:GroupChanged ("UNIT_PET");
     end
 
 
@@ -153,8 +158,10 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
     if not FocusCurrent_ElligStatus then FocusCurrent_ElligStatus = false; end -- avoid the difference between nil and false...
 
     if FocusCurrent_ElligStatus~=FocusPrevious_ElligStatus or self.Status.Unit_Array_UnitToGUID["focus"] then
-	self.Groups_datas_are_invalid = true;
+	self:GroupChanged ("FOCUS changed");
 	self:Debug("Groups set to invalid due to focus update", FocusPrevious_ElligStatus, FocusCurrent_ElligStatus);
+
+	self.MicroUnitF:UpdateMUFUnit("focus", true); -- update the focus unit
 
 	if FocusCurrent_ElligStatus~=FocusPrevious_ElligStatus then -- if the focus is no longer valid, we need to update things
 	    self.MicroUnitF:Delayed_MFsDisplay_Update();
@@ -308,20 +315,6 @@ do
     local UnitAura = _G.UnitAura;
     function D:UNIT_AURA(UnitID)
 
-	if (self.Groups_datas_are_invalid) then
-	    if not self.DcrFullyInitialized then
-		self:Println("|cFFFF0000Could not process event(UNIT_AURA): init uncomplete!|r");
-		return;
-	    end
-	    self:GetUnitArray();
-	end
-
-	--[[
-	if D.XXXSanityGUIDcheck then
-	    D:AddDebugText("UNIT_AURA while groups data are wrong. XXXSanityGUIDcheck:", D.XXXSanityGUIDcheck, "XXXSanityGUIDcheckGUID:", self.Status.Unit_Array_UnitToGUID[D.XXXSanityGUIDcheck], "Unit(event)", UnitID, "l GU at:", D.Status.GroupUpdatedOn);
-	end
-	--]]
-
 	if not self.Status.Unit_Array_UnitToGUID[UnitID] then
 	    -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
 	    return;
@@ -331,6 +324,9 @@ do
 	if UnitGUID(UnitID) ~= self.Status.Unit_Array_UnitToGUID[UnitID] then
 
 	    local unitguid = UnitGUID(UnitID);
+
+	    if not unitToguid then return end
+
 	    local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
 
 	    -- idea: keep this test and if UnitGUID() did not return nil then fix the shit
@@ -339,45 +335,40 @@ do
 	    "Unit ID:", UnitID,
 	    "GUIDToUnit[UnitGUID()]:",  unitguid and self.Status.Unit_Array_GUIDToUnit[unitguid] or "Xnoguid",
 	    "GUIDToUnit[UnitToGUID[]]:", unitToguid and self.Status.Unit_Array_GUIDToUnit[unitToguid] or "Xnone",
-	    "ScanPets:", D.profile.Scan_Pets,
+	    --"ScanPets:", D.profile.Scan_Pets,
 	    "LGU:", D.Status.GroupUpdatedOn,
+	    "LGuEr", self.Status.GroupUpdateEvent,
 	    "foundUnits:", #D.Status.Unit_Array,
-	    "RealRaidNum:", GetNumRaidMembers(),
-	    "Zone:", GetZoneText(),
-	    "FUnitsList:", unpack(D.Status.Unit_Array));
+	    "RealRaidNum:", GetNumRaidMembers()
+	    --"Zone:", GetZoneText()
+	    --"FUnitsList:", unpack(D.Status.Unit_Array)
+	    );
 
 	    self:Debug("|cFF5555 Groups datas invalid sanity error|r");
 
-	    self.Groups_datas_are_invalid = true;
-	    self:GetUnitArray();
-	    D:AddDebugText("found units after rescan: ", #D.Status.Unit_Array);
+	    self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
+	    self.Status.Unit_Array_GUIDToUnit[unitguid] = UnitID;
 
+	    if self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
 
-	    --self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
-	    --self.Status.Unit_Array_GUIDToUnit[unitguid] = UnitID;
+		if self.MicroUnitF.UnitToMUF[UnitID].UnitStatus == FAR then
+		    --self:Debug(UnitID, " |cFFFF7711is too far|r (UNIT_AURA)");
+		    return
+		end
 
-	    --self.Groups_datas_are_invalid = true;
-	end
+		-- get out of here if this is just about a fucking buff, combat log event manager handles those... unless there is no debuff because the last was removed
+		if not UnitAura(UnitID, 1, "HARMFUL") and not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed then
+		    --self:Debug(UnitID, " |cFFFF7711has no debuff|r (UNIT_AURA)");
+		    return;
+		end
 
-	--self:Debug(UnitID, " |cFF77FF11is in raid|r (UNIT_AURA)");
-
-
-	if self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
-
-	    if self.MicroUnitF.UnitToMUF[UnitID].UnitStatus == FAR then
-		--self:Debug(UnitID, " |cFFFF7711is too far|r (UNIT_AURA)");
-		return
-	    end
-
-	    -- get out of here if this is just about a fucking buff, combat log event manager handles those... unless there is no debuff because the last was removed
-	    if not UnitAura(UnitID, 1, "HARMFUL") and not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed then
-		--self:Debug(UnitID, " |cFFFF7711has no debuff|r (UNIT_AURA)");
+		self.MicroUnitF:UpdateMUFUnit(UnitID);
 		return;
 	    end
 
-	    self.MicroUnitF:UpdateMUFUnit(UnitID);
-	elseif not self.profile.Hide_LiveList then
-	    self.LiveList:DelayedGetDebuff(UnitID);
+	    if not self.profile.Hide_LiveList then
+		self.LiveList:DelayedGetDebuff(UnitID);
+	    end
 	end
     end
 end
@@ -449,12 +440,9 @@ do
 
 	if destName and AuraEvents[event] then
 
-	    if (self.Groups_datas_are_invalid) then
-		if not self.DcrFullyInitialized then
-		    self:Println("|cFFFF0000Could not process event: init uncomplete!|r");
-		    return;
-		end
-		self:GetUnitArray();
+	    if not self.DcrFullyInitialized then
+		self:Println("|cFFFF0000Could not process event: init uncomplete!|r");
+		return;
 	    end
 
 	    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
@@ -468,24 +456,19 @@ do
 
 	    if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
 
+		--[=[
 		if UnitGUID(UnitID) ~= destGUID then --  sometimes UnitGUID("player") may returns nil... but it's not important since the player GUID is registered once and for all at init time
 
 		    self.Groups_datas_are_invalid = true;
 		    self:GetUnitArray();
 		    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID];
 
-		    --[=[
-		    if UnitID and UnitGUID(UnitID) ~= destGUID then
-			D:AddDebugText("|cFFFF0000ALERT:|rSanity check(2nd-) failed in combat event manager Unit_Array_GUIDToUnit[] is wrong (%s (%s) is not %s (%s) (flag=%s)) (tslgu=%s) %s.", UnitID, UnitGUID(UnitID), destGUID,destName,destFlags, GetTime() - D.Status.GroupUpdatedOn, event);
-			return;
-		    else
-		    --]=]
-
 		    if not UnitID then
 			D:Debug("|cFFFF0000No unit for GUID %s|r, in skip list?", destGUID);
 			return;
 		    end
 		end
+		--]=]
 
 		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
 
@@ -510,7 +493,6 @@ do
 		    end
 		    DetectHistoryIndex = DetectHistoryIndex + 1;
 
-		    --[=[ now managed by UNIT_AURA
 		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event);
 		    if self.profile.ShowDebuffsFrame then
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
@@ -518,7 +500,6 @@ do
 			D:Debug("(LiveList) Registering delayed GetDebuff for ", destName);
 			self.LiveList:DelayedGetDebuff(UnitID);
 		    end
-		    --]=]
 
 		    if event == "UNIT_DIED" then
 			self.Stealthed_Units[UnitID] = false;

@@ -210,7 +210,7 @@ function MicroUnitF:ResetAllPositions () -- {{{
 
     D:Debug("Resetting all MF position");
 
-    D:GetUnitArray();
+    self:Delayed_MFsDisplay_Update ();
 
     local Unit_Array = D.Status.Unit_Array;
 
@@ -237,8 +237,8 @@ end -- }}}
 
 
 function MicroUnitF:Delayed_MFsDisplay_Update ()
-    if (D.profile.ShowDebuffsFrame) then
-	D:ScheduleEvent("Dcr_UpdateMUFsNUM", self.MFsDisplay_Update, 0.2, self);
+    if D.profile.ShowDebuffsFrame then
+	D:ScheduleEvent("Dcr_UpdateMUFsNUM", self.MFsDisplay_Update, 1.5, self);
     end
 end
 
@@ -259,7 +259,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     end
 
     -- Get an up to date unit array if necessary
-    D:GetUnitArray();
+    D:GetUnitArray(); -- this is the only place where GetUnitArray() is called directly
 
     -- =======
     --  Begin
@@ -271,11 +271,11 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
     -- if we don't have all the MUFs needed then return, we are not ready
     if (self.Number < NumToShow) then
+	self:Delayed_MFsDisplay_Update ();
 	return false;
     end
 
 
-    local MF_f = false;
     local MF = false;
     local i = 1;
     local Old_UnitShown = self.UnitShown;
@@ -284,46 +284,65 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     D:Debug("Update required: NumToShow = %d", NumToShow);
 
     local Unit_Array_UnitToGUID = D.Status.Unit_Array_UnitToGUID;
+    local Unit_Array		= D.Status.Unit_Array;
 
-    for Unit, MF in  pairs(self.ExistingPerUNIT) do -- see all the MUF we ever created and show or hide them if there corresponding unit exists
 
-	MF_f = MF.Frame;
+    -- Scan unit array in display order and show the maximum until NumToShow is reached
+    -- The ID is set for all MUFs present in our unit array
+    local Updated = 0;
+    for i, Unit in ipairs(Unit_Array) do
 
-	-- show/hide
-	if not MF.Shown and Unit_Array_UnitToGUID[Unit] and MF.ID <= NumToShow then -- we got this unit in our group but it's hidden
+	MF = self.ExistingPerUNIT[Unit];
+	if MF then
+	    MF.ID = i;
 
-	    --MF_f:Show();
-	    MF.Shown = true;
-	    self.UnitShown = self.UnitShown + 1;
-	    MF.ID = 0; -- will force its position to be reset by the roaming updater, it's necessary because when units are not present but used to, they have a MUF that keep its previous anchor.
+	    if not MF.Shown and i <= NumToShow then -- we got this unit in our group but it's hidden
 
-	    -- Schedule an update for the MUF we just shown
-	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
-	    i = i + 1;
+		MF.Shown = true;
+		self.UnitShown = self.UnitShown + 1;
+		MF.ToPlace = true;
+		Updated = Updated + 1;
 
-	elseif MF.Shown and (not Unit_Array_UnitToGUID[Unit] or MF.ID > NumToShow ) then -- we don't have this unit but its MUF is shown
-
-	    -- clear debuff before hiding to avoid leaving 'ghosts' behind...
-	    if D.UnitDebuffed[MF.CurrUnit] then
-		D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+		D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * Updated, MF, false, false, true);
+		--D:Debug("|cFF88AA00Show schedule for MUF", Unit, "UnitShown:", self.UnitShown);
 	    end
-
-	    MF.Debuffs			  = false;
-	    MF.IsDebuffed		  = false;
-	    MF.Debuff1Prio		  = false;
-	    MF.PrevDebuff1Prio		  = false;
-	    D.UnitDebuffed[MF.CurrUnit]	  = false; -- used by the live-list only
-	    D.Stealthed_Units[MF.CurrUnit] = false;
-
-
-	    MF.Shown = false;
-	    self.UnitShown = self.UnitShown - 1;
-	    D:Debug("Hiding %d, scheduling update in %f", i, D.profile.DebuffsFrameRefreshRate * i);
-	    D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false);
-	    MF_f:Hide();
-	    i = i + 1;
+	else
+	    --D:errln("showhide: no muf for", Unit); -- call delay display up 
+	    self:Delayed_MFsDisplay_Update ();
 	end
 
+    end
+
+    -- hide remaining units
+    if self.UnitShown > NumToShow then
+
+	for Unit, MF in  pairs(self.ExistingPerUNIT) do -- see all the MUF we ever created and show or hide them if there corresponding unit exists
+
+	    -- show/hide
+	    if MF.Shown and (not Unit_Array_UnitToGUID[Unit] or MF.ID > NumToShow ) then -- we don't have this unit but its MUF is shown
+
+		-- clear debuff before hiding to avoid leaving 'ghosts' behind...
+		if D.UnitDebuffed[MF.CurrUnit] then
+		    D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+		end
+
+		MF.Debuffs			= false;
+		MF.IsDebuffed			= false;
+		MF.Debuff1Prio			= false;
+		MF.PrevDebuff1Prio		= false;
+		D.UnitDebuffed[MF.CurrUnit]	= false; -- used by the live-list only
+		D.Stealthed_Units[MF.CurrUnit]	= false;
+
+
+		MF.Shown = false;
+		self.UnitShown = self.UnitShown - 1;
+		--D:Debug("|cFF88AA00Hiding %d (%s), scheduling update in %f|r", i, MF.CurrUnit, D.profile.DebuffsFrameRefreshRate * i);
+		Updated = Updated + 1;
+		D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * Updated, MF, false, false);
+		MF.Frame:Hide();
+	    end
+
+	end
     end
 
     -- manage to get what we show in the screen
@@ -439,7 +458,7 @@ function MicroUnitF:Place () -- {{{
 
     -- check the bottom edge
     local NumberOfLines = floor( (self.UnitShown - 1) / D.profile.DebuffsFramePerline) + 1;
-    D:Debug(NumberOfLines);
+    --D:Debug(NumberOfLines);
     
     local BottomEdge = y - FrameScale * ((D.profile.DebuffsFrameGrowToTop and 1 or NumberOfLines) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
     
@@ -527,8 +546,6 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     --]]
 
 
-    -- Update the unit array (GetUnitArray() will do something only if necessary)
-    D:GetUnitArray();
 
     local unit = false;
 
@@ -587,18 +604,17 @@ function MicroUnitF:OnEnter() -- {{{
     local LateDetectTest = false;
 
 
-    -- sanity test: test if UnitToMUF[] == getattributeUnit
-    --[=[
-    if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then
-	D:AddDebugText("|cFFFF0000ALERT:|rSanity check failed in MicroUnitF:OnEnter() Cattrib ~= CurrUnit.");
-    end
-    --]=]
-   
-    -- Compare the current unit name to the one storred when the group data were collected
-    --if (D:PetUnitName(  Unit, true   )) ~= D.Status.Unit_Array_UnitToName[Unit] then -- XXX Unit_Array_UnitToName not reliable
---	D.Status.Unit_Array_UnitToName[Unit] = D:PetUnitName(  Unit, true    );
-  --  end
+    if UnitGUID(Unit) ~= D.Status.Unit_Array_UnitToGUID[Unit] then
+	local unitguid = UnitGUID(Unit);
 
+	if unitguid then
+	    D.Status.Unit_Array_UnitToGUID[Unit] = unitguid;
+	    D.Status.Unit_Array_GUIDToUnit[unitguid] = Unit;
+	    --D:AddDebugText("Wrong stored GUID detected (MicroUnitF:OnEnter()) ", "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent); -- XXX to remove for release
+	end
+
+    end
+   
     if MF.Debuffs and MF.Debuffs[1].Type then
 	LateDetectTest = 0;
     end
@@ -786,14 +802,6 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 
 	local Unit = this.Object.CurrUnit; -- shortcut
 
-	--[=[
-	if UnitIsVisible(Unit) and not UnitIsUnit("mouseover", Unit) then
-	    D:AddDebugText("|cFFFF0000ALERT:|r |cFFFFFF60Something strange is happening, mouseover is not MUF(%s)! MOn='%s', Un='%s', UpT=%d|r",Unit, (UnitName("mouseover")), (UnitName(Unit)), (GetTime() - DC.StartTime));
-
-	    --	     this.Object:UpdateAttributes(Unit);
-
-	end
-	--]=]
 
 	if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 
@@ -841,13 +849,14 @@ end -- }}}
 function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 	MicroUnitF.super.prototype.init(self); -- needed
 
-	D:Debug("Initializing MicroUnit object '%s' with FrameNum=%d", Unit, FrameNum);
+	D:Debug("Initializing MicroUnit object '%s' with FrameNum=%d and ID %d", Unit, FrameNum, ID);
 
 
 	-- set object default variables
 	self.Parent		= Container;
-	self.ID			= 0; -- is set by te roaming updater
+	self.ID			= ID; -- is set by te roaming updater
 	self.FrameNum		= FrameNum;
+	self.ToPlace		= true;
 	self.Debuffs		= false;
 	self.Debuff1Prio	= false;
 	self.PrevDebuff1Prio	= false;
@@ -931,23 +940,9 @@ end -- }}}
 function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 
     local MF = self;
-    -- get the unit this MUF should show
-    -- local Unit = D.Status.Unit_Array[MF.ID]; -- get the unit the MUF _should_ be attached to.
     local ActionsDone = 0;
 
     Unit = MF.CurrUnit;
-
-    --[=[
-    if not Unit then -- This unit no longer exists (number of MUF higher than number of units)
-	--D:Debug("No Unit for MUF #", MF.ID);
-	if MF.CurrUnit ~= "" then -- There is a unit attached to this MUF
-	    Unit = MF.CurrUnit; -- we will update the MUF according to its current unit.
-	    --D:Debug(" Using previous unit: ", MF.CurrUnit);
-	else
-	    return 0 -- This MUF has no purpose at all then...
-	end
-    end
-    --]=]
 
     -- The unit is the same but the name isn't... (check for class change)
     if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID then
@@ -970,7 +965,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 	if (not SkipDebuffs) then
 	    -- get the manageable debuffs of this unit
 	    MF:SetDebuffs();
-	    --D:Debug("Debuff set for ", MF.ID);
+	    D:Debug("Debuff set for ", MF.ID);
 	    if CheckStealth then
 		D.Stealthed_Units[MF.CurrUnit] = D:CheckUnitStealth(MF.CurrUnit); -- update stealth status
 --		D:Debug("MF:Update(): Stealth status checked as requested.");
@@ -1440,9 +1435,9 @@ do
     function D:DebuffsFrame_Update() -- {{{
 
 	-- Update the unit array (GetUnitArray() will do something only if necessary)
-	if self.Groups_datas_are_invalid then
-	    self:GetUnitArray();
-	end
+	--if self.Groups_datas_are_invalid then
+	--    self:GetUnitArray();
+	--end
 
 	local Unit_Array = self.Status.Unit_Array;
 
@@ -1481,13 +1476,23 @@ do
 		end
 	    end
 
-	    -- place the MUF where it belongs
-	    if MF and MF.ID ~= MicroFrameUpdateIndex and not InCombatLockdown() then
-		MF.ID = MicroFrameUpdateIndex;
+	    -- place the MUF ~right where it belongs~
+	    if MF and MF.ToPlace ~= MicroFrameUpdateIndex and not InCombatLockdown() then
+
+		--sanity check
+		--[[
+		if MicroFrameUpdateIndex ~= MF.ID then  -- XXX to remove for release
+		    D:AddDebugText("DebuffsFrame_Update(): MicroFrameUpdateIndex ~= MF.ID", MicroFrameUpdateIndex, MF.ID, Unit, MF.CurrUnit, "ToPlace:", MF.ToPlace);
+		end
+		--]]
+		
+		MF.ToPlace = MicroFrameUpdateIndex;
+
 		MF.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(MicroFrameUpdateIndex)));
 		if MF.Shown then
 		    MF.Frame:Show();
 		end
+
 		ActionsDone = ActionsDone + 1;
 	    end
 

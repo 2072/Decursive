@@ -154,7 +154,7 @@ D.defaults = { -- {{{
     Check_For_Abolish = true,
 
     -- Will randomize the order of the live-list and of the MUFs
-    Random_Order = false,
+    --Random_Order = false,
 
     -- should we scan pets
     Scan_Pets = true,
@@ -1061,6 +1061,7 @@ D.options = { -- {{{
 		    end,
 		    order = 131
 		},
+		--[=[
 		RandomCure = {
 		    type = "toggle",
 		    name =  L["RANDOM_ORDER"],
@@ -1068,10 +1069,11 @@ D.options = { -- {{{
 		    get = function() return D.profile.Random_Order end,
 		    set = function()
 			D.profile.Random_Order = not D.profile.Random_Order;
-			D.Groups_datas_are_invalid = true;
+			D:GroupChanged ("opt RANDOM_ORDER");
 		    end,
 		    order = 132
 		},
+		--]=]
 		CurePets = {
 		    type = "toggle",
 		    name =  L["CURE_PETS"],
@@ -1079,8 +1081,7 @@ D.options = { -- {{{
 		    get = function() return D.profile.Scan_Pets end,
 		    set = function()
 			D.profile.Scan_Pets = not D.profile.Scan_Pets;
-			D.Groups_datas_are_invalid = true;
-			D.MicroUnitF:Delayed_MFsDisplay_Update();
+			D:GroupChanged ("opt CURE_PETS");
 		    end,
 		    order = 133
 		},
@@ -2324,6 +2325,20 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
+local DebugHeader = false;
+function D:ShowDebugReport()
+
+
+    if not DebugHeader then
+	DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f"):format((Dcr and Dcr.L) and Dcr.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", DC.MyClass, D:NiceTime());
+    end
+
+    Dcr_DebugText = DebugHeader .. table.concat(D.DebugTextTable, "");
+    _G.DecursiveDebuggingFrameText:SetText(Dcr_DebugText);
+
+    _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
+    _G.DecursiveDebuggingFrame:Show();
+end
 
 DcrLoadedFiles["Dcr_opt.lua"] = "@project-version@";
 

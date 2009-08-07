@@ -114,7 +114,7 @@
 				this:SetFocus()
 			    </OnShow>
 			    <OnTextChanged>
-				Dcr:DebugFrameOnTextChanged()
+				Dcr_DebugFrameOnTextChanged()
 			    </OnTextChanged>
 			    <OnEscapePressed>
 				this:ClearFocus()

@@ -41,8 +41,25 @@
 --
 --]=]
 
+-- big ugly scary fatal error message display function {{{
+if not DcrFatalError then
+-- the beautiful error popup : {{{ -
+StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+    text = "|cFFFF0000Decursive Error:|r\n%s",
+    button1 = "OK",
+    OnAccept = function()
+	return false;
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1,
+    showAlert = 1,
+    }; -- }}}
+DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+end
+-- }}}
 if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
+    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end

@@ -361,6 +361,10 @@ do
 
 end
 
+function D:MakeError()
+    return 1 + dsafsdf;
+end
+
 function D:NiceTime()
     return tonumber(("%.4f"):format(GetTime() - DC.StartTime));
 end

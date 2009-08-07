@@ -43,8 +43,25 @@
 --]=]
 
 
+-- big ugly scary fatal error message display function {{{
+if not DcrFatalError then
+-- the beautiful error popup : {{{ -
+StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+    text = "|cFFFF0000Decursive Error:|r\n%s",
+    button1 = "OK",
+    OnAccept = function()
+	return false;
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1,
+    showAlert = 1,
+    }; -- }}}
+DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+end
+-- }}}
 if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DIAG.lua"] then
-    if not DcrCorrupted then message("Decursive installation is corrupted! (Dcr_DIAG.lua not loaded)"); end;
+    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_DIAG.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -56,7 +73,7 @@ if not L then return end;
 
 --@localization(locale="enUS", format="lua_additive_table")@
 
---[==[
+---[==[
 
 -- Used for testing the addon withour the packager
 
@@ -323,6 +340,9 @@ L["TARGETUNIT"] = "Target Unit"
 L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
+L["DEV_VERSION_ALERT"] = "DEV_VERSION_ALERT"
+
+L["UNRELATED_TO_DECURSIVE_ERROR"] = "(This error is not related to Decursive - look below the Dcr_DIAG.lua stack lines)"
 
 
 --]==]

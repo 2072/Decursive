@@ -89,7 +89,7 @@ local GetTime		    = _G.GetTime;
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
 -------------------------------------------------------------------------------
 
-
+--[=[
 local function AddToSort (unit, GUID, index) -- // {{{
     if (D.profile.Random_Order and
 	(not D.Status.InternalPrioList[GUID]) and not GUID~=MyGUID) then
@@ -98,6 +98,7 @@ local function AddToSort (unit, GUID, index) -- // {{{
     SortingTable[unit] = index;
     --D:Debug("Adding to sort: ", unit, index);
 end --}}}
+--]=]
 
 
 -- Raid/Party Name Check Function (a terrible function, need optimising)
@@ -233,12 +234,13 @@ do
 	self[unit] = GUID;
 	GUIDToUnit[GUID] = unit;
 
+	--[=[
 	if (D.profile.debugging) then
 	    if not GUID then
 		D:errln("UnitToGUID_mt: no GUID for: ", unit); -- this is not an error, it's to see when raid# ids are not contiguous...
-		--D.XXXSanityGUIDcheck = unit;
 	    end
 	end
+	--]=]
 
 
 	return self[unit];
@@ -323,15 +325,17 @@ do
 	if not unit then
 	    GUIDToUnit_ScannedAll = true;
 
+	    --[=[
 	    if D.profile.debugging then
 		D:errln("GUIDToUnit_mt: no unit for: ", GUID);
 	    end
+	    --]=]
 	--else
 	--    D:Debug("GUIDToUnit_mt used for ", GUID, unit);
 	end
 
 
-	if rawget (self, GUID) then
+	if rawget (self, GUID) then --XXX to remove at final release
 	    D:AddDebugText("multi-GUID (metatable) bug for ", unit, GUID, "previous found unit", self[GUID]);
 	end
 
@@ -502,7 +506,6 @@ do
 	SortingTable			= {};
 	Status.Unit_Array_GUIDToUnit	= {};
 	Status.Unit_Array_UnitToGUID	= {};
-	--D.XXXSanityGUIDcheck = false;
 
 	UnitToGUID = setmetatable(UnitToGUID, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
 	GUIDToUnit = setmetatable(GUIDToUnit, GUIDToUnit_mt); -- this one cannot be erased (memory leak due to GUID...)
@@ -555,13 +558,15 @@ do
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass])) then
 		-- the player is not in a priority state, add to default prio
-		AddToSort( "player", MyGUID, 900);
+		--AddToSort( "player", MyGUID, 900);
+		SortingTable["player"] = 900;
 		Status.Unit_Array_GUIDToUnit[MyGUID] = "player";
 
 
 	    elseif (not IsInSkipList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass])) then
 		-- The player is contained within a priority rule
-		AddToSort("player", MyGUI,  GetUnitPriority ("player", 1, 1, DC.MyClass ) );
+		--AddToSort("player", MyGUI,  GetUnitPriority ("player", 1, 1, DC.MyClass ) );
+		SortingTable["player"] =      GetUnitPriority ("player", 1, 1, DC.MyClass );
 		Status.Unit_Array_GUIDToUnit[MyGUID] = "player";
 
 	    end
@@ -585,7 +590,8 @@ do
 
 			Status.Unit_Array_GUIDToUnit[pGUID] = unit;
 
-			AddToSort(unit, pGUID,  GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) ));
+			-- AddToSort(unit, pGUID, GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) ));
+			SortingTable[unit] =      GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) );
 
 		    end
 
@@ -600,7 +606,8 @@ do
 				pGUID = pet;
 			    end
 
-			    AddToSort(pet, pGUID, GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true) );
+			    --AddToSort( pet, pGUID, GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true) );
+			    SortingTable[pet] =      GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true);
 			    Status.Unit_Array_GUIDToUnit[pGUID] = pet;
 			end
 		    end
@@ -611,7 +618,8 @@ do
 	-- add our own pet
 	if ( self.profile.Scan_Pets ) then
 	    if (UnitExists("pet")) then
-		AddToSort("pet", UnitToGUID["pet"], -900);
+		--AddToSort( "pet", UnitToGUID["pet"], -900);
+		SortingTable["pet"] =		       -900;
 		Status.Unit_Array_GUIDToUnit[UnitToGUID["pet"]] = "pet";
 	    end
 	end
@@ -668,7 +676,8 @@ do
 		    --DcrFatalError(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
 			--MyName, currentGroup, (GetTime() - DC.StartTime), raidnum));
 
-		    AddToSort( "player", MyGUID, 900);
+		    --AddToSort( "player", MyGUID, 900);
+		    SortingTable["player"] =	   900;
 		    Status.Unit_Array_GUIDToUnit[MyGUID] =  "player";
 
 		--end
@@ -685,7 +694,8 @@ do
 
 		    TempID = "raid"..raidMember.rIndex;
 
-		    AddToSort(TempID, raidMember.rGUID, GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false) );
+		    --AddToSort( TempID, raidMember.rGUID, GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false) );
+		    SortingTable[TempID] =		   GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false);
 		    Status.Unit_Array_GUIDToUnit[raidMember.rGUID] = TempID;
 		end
 
@@ -703,7 +713,8 @@ do
 
 			-- add it only if not already in (could be the player pet...)
 			if (not Status.Unit_Array_GUIDToUnit[pGUID]) then
-			    AddToSort(pet, pGUID, GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true) );
+			    --AddToSort( pet, pGUID, GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true) );
+			    SortingTable[pet] =	     GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true);
 			    Status.Unit_Array_GUIDToUnit[pGUID] = pet;
 			end
 		    end
@@ -721,7 +732,8 @@ do
 	    pGUID = UnitToGUID["focus"]
 	    -- the unit is not registered somewhere else yet
 	    if not Status.Unit_Array_GUIDToUnit[pGUID] then
-		AddToSort("focus", pGUID, -1); -- add it at the end...
+		--AddToSort( "focus", pGUID, -1);
+		SortingTable["focus"] =      -1; -- add it at the end...
 		Status.Unit_Array_GUIDToUnit[pGUID] = "focus";
 	    end
 	end
@@ -734,7 +746,7 @@ do
 	for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
 	    t_insert(Status.Unit_Array, unit);
 
-	    if Status.Unit_Array_UnitToGUID[unit] then
+	    if Status.Unit_Array_UnitToGUID[unit] then -- XXX to remove for release
 		D:AddDebugText("multi-unit bug for ", unit, GUID, "previous found GUID", Status.Unit_Array_UnitToGUID[unit]);
 	    end
 

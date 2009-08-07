@@ -192,7 +192,7 @@ function D:PrioSkipListEntryTemplate_OnClick() --{{{
 	    this:GetParent().UpdateYourself = true;
 	end
 	D.Status.PrioChanged       = true;
-	D.Groups_datas_are_invalid = true;
+	D:GroupChanged ("PrioSkipListEntryTemplate_OnClick");
     else
 	    D:Debug("No ID");
     end
@@ -366,7 +366,7 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
 	    DecursivePriorityListFrame.UpdateYourself = true;
 	    D:Debug("Unit %s added to the prio list", GUIDorNum);
 	    D.Status.PrioChanged       = true;
-	    D.Groups_datas_are_invalid = true;
+	    D:GroupChanged ("AddUnitToPriorityList");
 	    return true;
 	else
 	    D:Debug("Unit is not a player:", unit, check, UnitExists(unit));
@@ -388,7 +388,7 @@ function D:RemoveIDFromPriorityList(id) --{{{
     table.remove( D.profile.PriorityList, id );
 
     D.Status.PrioChanged       = true;
-    D.Groups_datas_are_invalid = true;
+    D:GroupChanged ("RemoveIDFromPriorityList");
     DecursivePriorityListFrame.UpdateYourself = true;
 end --}}}
 
@@ -398,7 +398,7 @@ function D:ClearPriorityList() --{{{
     D.profile.PrioGUIDtoNAME = {};
     
     D.Status.PrioChanged       = true;
-    D.Groups_datas_are_invalid = true;
+    D:GroupChanged ("ClearPriorityList");
     DecursivePriorityListFrame.UpdateYourself = true;
 end --}}}
 
@@ -458,8 +458,7 @@ function D:AddUnitToSkipList( unit) --{{{
 	    DecursiveSkipListFrame.UpdateYourself = true;
 	    D:Debug("Unit %s added to the skip list", GUIDorNum);
 	    D.Status.PrioChanged       = true;
-	    D.Groups_datas_are_invalid = true;
-	    D.MicroUnitF:Delayed_MFsDisplay_Update ();
+	    D:GroupChanged ("AddUnitToSkipList");
 	    return true;
 	else
 	    D:Debug("Unit is not a player:", unit);
@@ -479,8 +478,7 @@ function D:RemoveIDFromSkipList(id) --{{{
     table.remove( D.profile.SkipList, id );
 
     D.Status.PrioChanged       = true;
-    D.Groups_datas_are_invalid = true;
-    D.MicroUnitF:Delayed_MFsDisplay_Update (); -- some units where maybe hidden...
+    D:GroupChanged ("RemoveIDFromSkipList");
     DecursiveSkipListFrame.UpdateYourself = true;
 end --}}}
 
@@ -493,8 +491,8 @@ function D:ClearSkipList() --{{{
     
     D.Status.PrioChanged       = true;
     D.Groups_datas_are_invalid = true;
+    D:GroupChanged ("ClearSkipList");
     DecursiveSkipListFrame.UpdateYourself = true;
-    D.MicroUnitF:Delayed_MFsDisplay_Update (); -- some units where maybe hidden...
 end --}}}
 
 

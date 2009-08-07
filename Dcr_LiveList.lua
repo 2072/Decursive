@@ -356,6 +356,7 @@ end -- }}}
 function LiveList:DelayedGetDebuff(UnitID) -- {{{
     if not D:IsEventScheduled("Dcr_GetDebuff"..UnitID) then
 	D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
+	D:Debug("LiveList: GetDebuff scheduled for, ", UnitID);
 	D:ScheduleEvent("Dcr_GetDebuff"..UnitID, self.GetDebuff, (D.profile.ScanTime / 2) * (1 + floor(D.DebuffUpdateRequest / 7.5)), self, UnitID);
     end
 end -- }}}
@@ -370,9 +371,11 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- Update the unit array
+    --[[
     if (D.Groups_datas_are_invalid) then
 	D:GetUnitArray();
     end
+    --]]
 
     Index = 0;
 

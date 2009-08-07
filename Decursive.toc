@@ -1,4 +1,4 @@
-## Interface: 30100
+## Interface: 30200
 
 ## Title: Decursive |cff7fff7f -Ace2-|r
 ## Notes: Affliction display and cleaning for solo, group and raids with advanced filtering and priority system.
@@ -39,6 +39,7 @@ LibStub\LibStub.lua
 embeds.xml
 
 Dcr_DIAG.lua
+Dcr_DIAG.xml
 
 Localization\load.xml
 
