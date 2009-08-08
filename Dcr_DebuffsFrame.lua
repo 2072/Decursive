@@ -592,6 +592,7 @@ end
 -- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnLoad, OnPreClick) {{{
 -- It's outside the function to avoid creating and discarding this table at each call
 local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
+local UnitGUID = _G.UnitGUID;
 -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
 function MicroUnitF:OnEnter() -- {{{
     D.Status.MouseOveringMUF = true;
@@ -604,12 +605,15 @@ function MicroUnitF:OnEnter() -- {{{
     local LateDetectTest = false;
 
 
-    if UnitGUID(Unit) ~= D.Status.Unit_Array_UnitToGUID[Unit] then
-	local unitguid = UnitGUID(Unit);
+    local GUIDwasFixed = false;
+    local unitguid = UnitGUID(Unit);
+
+    if unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid] then
 
 	if unitguid then
 	    D.Status.Unit_Array_UnitToGUID[Unit] = unitguid;
 	    D.Status.Unit_Array_GUIDToUnit[unitguid] = Unit;
+	    GUIDwasFixed = true;
 	    --D:AddDebugText("Wrong stored GUID detected (MicroUnitF:OnEnter()) ", "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent); -- XXX to remove for release
 	end
 
@@ -660,7 +664,7 @@ function MicroUnitF:OnEnter() -- {{{
 	-- if the delta between the history and now is higher than D.profile.DebuffsFrameRefreshRate * 1.5 (1.5 is for lags) then log the issue else this is normal behavior
 	if (D:NiceTime() - highest) > (D.profile.DebuffsFrameRefreshRate * 1.5) then
 
-	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime());
+	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed);
 
 	    if #founddebufftimes == 0 then
 		D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
@@ -1380,7 +1384,7 @@ do
 	ReturnValue = false;
 	if (D.profile.DebuffsFrameElemBorderShow and (D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID or (not self.UnitClass and UnitExists(self.CurrUnit)))) then
 
-	    -- Get the name of this unit
+	    -- Get the GUID of this unit
 	    self.UnitGUID = D.Status.Unit_Array_UnitToGUID[self.CurrUnit];
 
 	    if self.UnitGUID then -- can be nil because of focus...

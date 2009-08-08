@@ -1,7 +1,12 @@
-Decursive 2.4.2 beta 7 by Archarodim  (2009-08-07)
+Decursive 2.4.2 beta 8 by Archarodim  (2009-08-08)
 
 
-Changes from Decursive 2.4 to Decursive 2.4.2
+Changes from Decursive 2.4.1 to Decursive 2.4.2 beta 8
+
+- Actually enabled the IMPORTANT reliability fix of beta 7.
+
+
+Changes from Decursive 2.4.1 to Decursive 2.4.2 beta 7
 
 - IMPORTANT STABILITY AND RELIABILITY FIXES: The problem fixed in this release
   could prevent Decursive from reporting debuffs in race conditions (all
@@ -11,7 +16,7 @@ Changes from Decursive 2.4 to Decursive 2.4.2
 
 - Added new Shaman spell "Cure Toxins".
 
-- Documention completely rewritten and reorganised using .docmeta and markdown
+- Documentation completely rewritten and reorganised using .docmeta and markdown
   formatting. Users don't have any excuse left to not read it now ;) The
   documentation is accessible there: <http://www.wowace.com/addons/decursive/>
 

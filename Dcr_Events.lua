@@ -313,6 +313,7 @@ local SeenUnitEventsCOMBAT = {};
 do
     local FAR = DC.FAR;
     local UnitAura = _G.UnitAura;
+    local UnitGUID = _G.UnitGUID;
     function D:UNIT_AURA(UnitID)
 
 	if not self.Status.Unit_Array_UnitToGUID[UnitID] then
@@ -320,34 +321,38 @@ do
 	    return;
 	end
 
+	local unitguid = UnitGUID(UnitID);
+
 	-- XXX Sanity check
-	if UnitGUID(UnitID) ~= self.Status.Unit_Array_UnitToGUID[UnitID] then
+	if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] then
 
-	    local unitguid = UnitGUID(UnitID);
-
-	    if not unitToguid then return end
 
 	    local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
 
-	    -- idea: keep this test and if UnitGUID() did not return nil then fix the shit
-	    D:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() , SG:", self.Status.Unit_Array_UnitToGUID[UnitID],
-	    "FG:", unitguid,
-	    "Unit ID:", UnitID,
-	    "GUIDToUnit[UnitGUID()]:",  unitguid and self.Status.Unit_Array_GUIDToUnit[unitguid] or "Xnoguid",
-	    "GUIDToUnit[UnitToGUID[]]:", unitToguid and self.Status.Unit_Array_GUIDToUnit[unitToguid] or "Xnone",
-	    --"ScanPets:", D.profile.Scan_Pets,
-	    "LGU:", D.Status.GroupUpdatedOn,
-	    "LGuEr", self.Status.GroupUpdateEvent,
-	    "foundUnits:", #D.Status.Unit_Array,
-	    "RealRaidNum:", GetNumRaidMembers()
-	    --"Zone:", GetZoneText()
-	    --"FUnitsList:", unpack(D.Status.Unit_Array)
-	    );
+	    --if not unitToguid then return end
 
-	    self:Debug("|cFF5555 Groups datas invalid sanity error|r");
+	    if self.Status.GroupUpdatedOn >= self.Status.GroupUpdateEvent then
+		self:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() and groups up to date, SG:", self.Status.Unit_Array_UnitToGUID[UnitID],
+		"FG:", unitguid,
+		"Unit ID:|cFFFF0000", UnitID,
+		"|rGUIDToUnit[UnitGUID()]:",  unitguid and self.Status.Unit_Array_GUIDToUnit[unitguid] or "Xnoguid",
+		"GUIDToUnit[UnitToGUID[]]:|cFFFF0000", unitToguid and self.Status.Unit_Array_GUIDToUnit[unitToguid] or "Xnone",
+		"|rScP:", self.profile.Scan_Pets,
+		"LGU:", self.Status.GroupUpdatedOn,
+		"LGuEr", self.Status.GroupUpdateEvent,
+		"foundUnits:", #self.Status.Unit_Array,
+		"RealRaidNum:", GetNumRaidMembers()
+		--"Zone:", GetZoneText()
+		--"FUnitsList:", unpack(D.Status.Unit_Array)
+		);
+	    end
 
-	    self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
-	    self.Status.Unit_Array_GUIDToUnit[unitguid] = UnitID;
+	    self:Debug("|cFF5555 Groups datas invalid|r");
+
+	    if unitguid then
+		self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
+		self.Status.Unit_Array_GUIDToUnit[unitguid] = UnitID;
+	    end
 
 	    if self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
 
@@ -362,6 +367,7 @@ do
 		    return;
 		end
 
+		--self:errln("update schedule for MUF", UnitID);
 		self.MicroUnitF:UpdateMUFUnit(UnitID);
 		return;
 	    end
