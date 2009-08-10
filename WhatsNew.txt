@@ -1,12 +1,12 @@
 **Decursive 2.4.2 RC 1 by Archarodim (2009-08-10)**
 
-***Changes from Decursive 2.4.1 to Decursive 2.4.2 RC1***
+***Changes from Decursive 2.4.2 beta 8 to Decursive 2.4.2 RC1***
 
 - Removed the "AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() and groups up to date" report, decursive will just triggers a delayed group rescan instead.
 - "Debuff late detection" reports will still be generated when Decursive fails to detect an affliction on its own. This is normal and you should send me those reports :)
 
 
-***Changes from Decursive 2.4.1 to Decursive 2.4.2 beta 8***
+***Changes from Decursive 2.4.2 beta 7 to Decursive 2.4.2 beta 8***
 
 - Actually enabled the IMPORTANT reliability fix of beta 7.
 - Removed a 'debug' report that would trigger if you add a unit by name to your

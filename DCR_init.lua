@@ -194,6 +194,9 @@ D.Status.PrioChanged = true;
 D.Status.last_focus_GUID = false;
 D.Status.UpdateCooldown = 0;
 
+D.Status.GroupUpdatedOn = 0;
+D.Status.GroupUpdateEvent = 0;
+
 -- An acces the debuff table
 D.ManagedDebuffUnitCache = {};
 -- A table UnitID=>IsDebuffed (boolean)
@@ -650,6 +653,7 @@ function D:OnProfileEnable()
     D.Status.PrioChanged = true;
     D.Status.last_focus_GUID = false;
     D.Status.GroupUpdatedOn = 0;
+    D.Status.GroupUpdateEvent = 0;
     D.Status.UpdateCooldown = 0;
     D.Status.MouseOveringMUF = false;
     
