@@ -737,7 +737,6 @@ D.options = { -- {{{
 			if (v ~= D.profile.DebuffsFrameMaxCount) then
 			    D.profile.DebuffsFrameMaxCount = v;
 			    D.MicroUnitF.MaxUnit = v;
-			    -- D.Status.SpellsChanged = GetTime(); -- to force old previously unshown unit frames to update XXX useful??
 			    D.MicroUnitF:Delayed_MFsDisplay_Update();
 			end
 		    end,
@@ -1743,7 +1742,7 @@ StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
 	D:tremovebyval(DebuffsSkipList, D.Tmp.DebuffToRemove)
 
 	for class, debuffs in pairs (skipByClass) do
-	    skipByClass[class][D.Tmp.DebuffToRemove] = nil; -- XXX changed from false to nil on 20070415
+	    skipByClass[class][D.Tmp.DebuffToRemove] = nil; -- changed from false to nil on 20070415
 	end
 
 	AlwaysSkipList[D.Tmp.DebuffToRemove] = nil; -- remove it from the table
@@ -1807,7 +1806,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    if (DefaultSkipByClass[Classe][DebuffName]) then
 		skipByClass[Classe][DebuffName] = true;
 	    else
-		skipByClass[Classe][DebuffName] = nil; -- Removes it XXX
+		skipByClass[Classe][DebuffName] = nil; -- Removes it
 	    end
 	end
     end

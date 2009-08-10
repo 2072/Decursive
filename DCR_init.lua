@@ -231,7 +231,7 @@ function D:BetaWarning()
     alpha = true;
     --@end-alpha@
 
-    if (("@project-version@"):lower()):find("beta") or alpha then
+    if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or alpha then
 
 	if self.profile.NonRealease ~= "@project-version@" then
 	    self.profile.NonRealease = "@project-version@";

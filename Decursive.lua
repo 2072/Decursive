@@ -454,10 +454,6 @@ do
 	    IsCharmed = false;
 	end
 
-	--temp XXX
-	--local YoggReport = false;
-	--local FDebuffsrep = {};
-
 	-- iterate all available debuffs
 	while (true) do
 	    Name, TypeName, Applications, Texture = GetUnitDebuff(Unit, i);

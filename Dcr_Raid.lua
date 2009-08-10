@@ -263,7 +263,6 @@ do
 	    return false;
 	end
 
-	--local numRaidMembers = GetNumRaidMembers(); -- this will not change during the scan so we could use raidnum... XXX
 	local unit = false;
 
 
@@ -325,14 +324,6 @@ do
 	if not unit then
 	    GUIDToUnit_ScannedAll = true;
 	end
-
-
-	--[=[
-	if rawget (self, GUID) then --XXX to remove at final release
-	    D:AddDebugText("multi-GUID (metatable) bug for ", unit, GUID, "previous found unit", rawget (self, GUID));
-	end
-	--]=]
-
 
 	self[GUID] = unit;
 
@@ -740,9 +731,11 @@ do
 	for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
 	    t_insert(Status.Unit_Array, unit);
 
+	    --[=[
 	    if Status.Unit_Array_UnitToGUID[unit] then -- XXX to remove for release
 		D:AddDebugText("multi-unit bug for ", unit, GUID, "previous found GUID", Status.Unit_Array_UnitToGUID[unit]);
 	    end
+	    --]=]
 
 	    Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a useful table, not used here :)
 	end
@@ -767,7 +760,7 @@ do
 
 	UnitToGUID = {};
 	GUIDToUnit = {};
-	D.Status.GroupUpdatedOn = D:NiceTime(); -- XXX for debugging
+	D.Status.GroupUpdatedOn = D:NiceTime(); -- It's used in UNIT_AURA event handler to trigger a rescan if the array is found inacurate
 
 	self:Debug ("|cFFFF44FF-->|r Update complete!", Status.UnitNum);
 	return;

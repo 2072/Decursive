@@ -576,6 +576,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     if (MF and MF.Shown) then
 	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
 	-- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
+	-- We need to find another way, this hammers AceEvent and won't be authorized with Ace3
 	if (not D:IsEventScheduled("Dcr_Update"..unit)) then
 	    D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
 	    D:ScheduleEvent("Dcr_Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false, CheckStealth);
@@ -667,6 +668,8 @@ function MicroUnitF:OnEnter() -- {{{
 	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed);
 
 	    if #founddebufftimes == 0 then
+		D.WaitingToBeFound[debuffname] = NiceTime();
+		D.WaitingToBeFound[Unit] = D.WaitingToBeFound[debuffname];
 		D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
 	    else
 		D:AddDebugText(#founddebufftimes, "history match for", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "Status:", Status, "detect times:", unpack(founddebufftimes));
@@ -956,7 +959,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     end
 
     -- Update the frame attributes if necessary (Spells priority or unit id changes)
-    if (D.Status.SpellsChanged ~= MF.LastAttribUpdate ) then --or MF.CurrUnit ~= Unit) then -- XXX
+    if (D.Status.SpellsChanged ~= MF.LastAttribUpdate ) then
 	--D:Debug("Attributes update required: ", MF.ID);
 	if (MF:UpdateAttributes(Unit, true)) then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
@@ -1291,7 +1294,7 @@ do
 		    self.ChronoFontString:SetText(" ");
 		end
 
-		-- if the previous status was FAR, trigger a full rescan of the unit XXX
+		-- if the previous status was FAR, trigger a full rescan of the unit (combat log event does not report events for far away units)
 		if PreviousStatus == FAR then
 		    D.MicroUnitF:UpdateMUFUnit(self.CurrUnit, true); -- this is able to deal when a lot of update queries
 		end
@@ -1500,7 +1503,7 @@ do
 		ActionsDone = ActionsDone + 1;
 	    end
 
-	    -- update the MUF attributes and its colors XXX -- this is done by an event handler now (buff/debuff received...)
+	    -- update the MUF attributes and its colors -- this is done by an event handler now (buff/debuff received...) except when the unit has a debuff and is in range
 	    if MF and MicroFrameUpdateIndex <= NumToShow then
 		if not (MF.IsDebuffed or MF.IsCharmed) and MF.UpdateCountDown ~= 0 then
 		    MF.UpdateCountDown = MF.UpdateCountDown - 1;

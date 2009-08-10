@@ -57,6 +57,7 @@ local DS = DC.DS;
 D.DebuffUpdateRequest = 0;
 
 D.DetectHistory = {};
+D.WaitingToBeFound = {};
 
 local pairs	= _G.pairs;
 local next	= _G.next;
@@ -249,13 +250,13 @@ end --}}}
     -- the called function must return a non false value when it does something to prevent UI lagging
 function D:AddDelayedFunctionCall(CallID,functionLink, ...)
 
---	D:Println("|cFFFF0000ALERT:|r XXX test %s (%s)",  select("#",...), CallID);
+--	D:Println("|cFFFF0000ALERT:|r  test %s (%s)",  select("#",...), CallID);
     
     if (not self.Status.DelayedFunctionCalls[CallID]) then 
 	self.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};
 	self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount + 1;
     elseif select("#",...) > 1 then -- if we had more than the function reference and its object
---	D:Println("|cFFFF0000ALERT:|r XXX used (%s)", CallID);
+--	D:Println("|cFFFF0000ALERT:|r  used (%s)", CallID);
 
 	local args = self.Status.DelayedFunctionCalls[CallID].args;
 
@@ -311,9 +312,12 @@ local SeenUnitEventsUNITAURA = {};
 local SeenUnitEventsCOMBAT = {};
 
 do
-    local FAR = DC.FAR;
-    local UnitAura = _G.UnitAura;
-    local UnitGUID = _G.UnitGUID;
+    local FAR		= DC.FAR;
+    local UnitAura	= _G.UnitAura;
+    local UnitGUID	= _G.UnitGUID;
+    local UnitIsCharmed	= _G.UnitIsCharmed;
+    -- This event manager is only here to catch events when the GUID unit array is not reliable.
+    -- For everything else the combat log event manager does the job since it's a lot more resource friendly. (UNIT_AURA fires way too often and provides no data)
     function D:UNIT_AURA(UnitID)
 
 	if not self.Status.Unit_Array_UnitToGUID[UnitID] then
@@ -323,15 +327,18 @@ do
 
 	local unitguid = UnitGUID(UnitID);
 
-	-- XXX Sanity check
-	if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] then
-
+	-- Here we test if the GUID->Unit array is ok if it isn't we need to scan the unit for debuffs
+	-- We also scan the unit if it's charmed. The combatLog event manager tends to not detect those properly, the charm effect is a bitch to manage.
+	if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] or UnitIsCharmed(UnitID) then
 
 	    local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
 
-	    --if not unitToguid then return end
-
+	    -- if we updated the unit array but we are here then rebuild the unit array.
 	    if self.Status.GroupUpdatedOn >= self.Status.GroupUpdateEvent then
+
+		D:GroupChanged("UNIT_AURA-|cFFFF0000bad group detection|r");
+
+		--[=[
 		self:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() and groups up to date, SG:", self.Status.Unit_Array_UnitToGUID[UnitID],
 		"FG:", unitguid,
 		"Unit ID:|cFFFF0000", UnitID,
@@ -345,9 +352,10 @@ do
 		--"Zone:", GetZoneText()
 		--"FUnitsList:", unpack(D.Status.Unit_Array)
 		);
+		--]=]
 	    end
 
-	    self:Debug("|cFF5555 Groups datas invalid|r");
+	    self:Debug("|cFF5555UNIT_AURA triggers a rescan|r");
 
 	    if unitguid then
 		self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
@@ -388,6 +396,7 @@ do
     local bor = bit.bor;
     local UnitGUID = _G.UnitGUID;
     local GetTime = _G.GetTime;
+    local time	= 0;
 
     local DetectHistoryIndex = 1;
 
@@ -488,12 +497,22 @@ do
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
 		    end
 		else
+
+		    time = D:NiceTime();
+
+		    if D.WaitingToBeFound[UnitID] then
+			if time - D.WaitingToBeFound[arg10] < 2 then
+			    D:AddDebugText("Delayed match found for ", arg10, "on unit:", UnitID, "that was late-found on ", D.WaitingToBeFound[UnitID]);
+			    D.WaitingToBeFound[UnitID] = false;
+			end
+		    end
+
 		    if DetectHistoryIndex == 51 then DetectHistoryIndex = 1 end
 
-		    if not  D.DetectHistory[DetectHistoryIndex] then
-			D.DetectHistory[DetectHistoryIndex] = {D:NiceTime(), UnitID, arg10};
+		    if not D.DetectHistory[DetectHistoryIndex] then
+			D.DetectHistory[DetectHistoryIndex] = {time, UnitID, arg10};
 		    else
-			D.DetectHistory[DetectHistoryIndex][1] = D:NiceTime();
+			D.DetectHistory[DetectHistoryIndex][1] = time;
 			D.DetectHistory[DetectHistoryIndex][2] = UnitID;
 			D.DetectHistory[DetectHistoryIndex][3] = arg10;
 		    end
