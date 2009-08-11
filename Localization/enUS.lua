@@ -73,6 +73,7 @@ if not L then return end;
 
 --@localization(locale="enUS", format="lua_additive_table")@
 
+--@do-not-package@
 --[==[
 
 -- Used for testing the addon withour the packager
@@ -346,7 +347,7 @@ L["UNRELATED_TO_DECURSIVE_ERROR"] = "(This error is not related to Decursive - l
 
 
 --]==]
-
+--@end-do-not-package@
 
 
 DcrLoadedFiles["enUS.lua"] = "@project-version@";

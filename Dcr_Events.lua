@@ -56,8 +56,10 @@ local DS = DC.DS;
 
 D.DebuffUpdateRequest = 0;
 
+--@alpha@  
 D.DetectHistory = {};
 D.WaitingToBeFound = {};
+--@end-alpha@
 
 local pairs	= _G.pairs;
 local next	= _G.next;
@@ -398,7 +400,9 @@ do
     local GetTime = _G.GetTime;
     local time	= 0;
 
+    --@alpha@  
     local DetectHistoryIndex = 1;
+    --@end-alpha@
 
     -- AURA bitfields -- now useless {{{
     -- a friendly player character controled directly by the player that is not an outsider
@@ -498,6 +502,7 @@ do
 		    end
 		else
 
+		    --@alpha@
 		    time = D:NiceTime();
 
 		    if D.WaitingToBeFound[UnitID] then
@@ -517,6 +522,7 @@ do
 			D.DetectHistory[DetectHistoryIndex][3] = arg10;
 		    end
 		    DetectHistoryIndex = DetectHistoryIndex + 1;
+		    --@end-alpha@
 
 		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event);
 		    if self.profile.ShowDebuffsFrame then

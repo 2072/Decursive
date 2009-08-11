@@ -603,7 +603,6 @@ function MicroUnitF:OnEnter() -- {{{
 
     local Unit = MF.CurrUnit; -- shortcut
     local TooltipText = "";
-    local LateDetectTest = false;
 
 
     local GUIDwasFixed = false;
@@ -619,17 +618,21 @@ function MicroUnitF:OnEnter() -- {{{
 	end
 
     end
-   
+
+    --@alpha@  
+    local LateDetectTest = false;
     if MF.Debuffs and MF.Debuffs[1].Type then
 	LateDetectTest = 0;
     end
 
     -- removes the CHARMED_STATUS bit from Status, we don't need it
     Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS)); -- XXX do not use this value other than for debugging (not up to date, use the later below)
+    --@end-alpha@
 
     MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
+    --@alpha@  
     -- if there was no debuff just before the above update (it's wrong)
     if not LateDetectTest and Status ~= FAR and MF.Debuffs and MF.Debuffs[1].Type then
 	LateDetectTest = true;
@@ -668,7 +671,7 @@ function MicroUnitF:OnEnter() -- {{{
 	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed);
 
 	    if #founddebufftimes == 0 then
-		D.WaitingToBeFound[debuffname] = NiceTime();
+		D.WaitingToBeFound[debuffname] = D:NiceTime();
 		D.WaitingToBeFound[Unit] = D.WaitingToBeFound[debuffname];
 		D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
 	    else
@@ -676,7 +679,7 @@ function MicroUnitF:OnEnter() -- {{{
 	    end
 	end
     end
-
+    --@end-alpha@
 
     if not Unit then
 	return; -- If the user overs the MUF befor it's completely initialized

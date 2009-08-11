@@ -1,22 +1,10 @@
-**Decursive 2.4.2 RC 1 by Archarodim (2009-08-10)**
-
-***Changes from Decursive 2.4.2 beta 8 to Decursive 2.4.2 RC1***
-
-- Removed the "AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() and groups up to date" report, decursive will just triggers a delayed group rescan instead.
-- "Debuff late detection" reports will still be generated when Decursive fails to detect an affliction on its own. This is normal and you should send me those reports :)
+**Decursive 2.4.2 by Archarodim (2009-08-11)**
 
 
-***Changes from Decursive 2.4.2 beta 7 to Decursive 2.4.2 beta 8***
+***Changes from Decursive 2.4.1 to Decursive 2.4.2***
 
-- Actually enabled the IMPORTANT reliability fix of beta 7.
-- Removed a 'debug' report that would trigger if you add a unit by name to your
-  priority list.
-
-
-***Changes from Decursive 2.4.1 to Decursive 2.4.2 beta 7***
-
-- IMPORTANT STABILITY AND RELIABILITY FIXES: The problem fixed in this release
-  could prevent Decursive from reporting debuffs in race conditions (all
+- IMPORTANT STABILITY AND RELIABILITY FIXES: Problems fixed in this release
+  could prevent Decursive from reporting afflictions in race conditions (all
   previous versions are affected).
 
 - Added Shaman's "Hex" spell to crowd control charmed players.

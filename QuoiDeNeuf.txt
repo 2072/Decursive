@@ -1,4 +1,25 @@
-Decursive 2.4.1 par Archarodim  (2009-06-13)
+Decursive 2.4.2 par Archarodim  (2009-08-11)
+
+
+Changements entre Decursive 2.4.1 et Decursive 2.4.2
+
+- CORRECTION IMPORTANTE: Des problèmes corrigés dans cette versions pouvaient
+  empêcher Decursive de détecter les afflictions dans certaines situations
+  critiques (toutes les versions précédentes sont affectées).
+
+- Ajout du sort 'Maléfice' des chamans pour rendre inoffensifs les joueurs sous
+  contrôle mental.
+
+- Ajout du sort 'Guérison des toxines' (Chamans)
+
+- Ajout d'une option pour désactiver la création de la macro.
+
+- Documentation entièrement refaite (en anglais) : <http://www.wowace.com/addons/decursive/>
+
+- Améliorations du système de rapport d'erreur intégré.
+
+- Divers petites améliorations et corrections.
+
 
 Changements entre Decursive 2.4 et Decursive 2.4.1
 

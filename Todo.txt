@@ -18,7 +18,6 @@ TODO:
 
 - Add an option to disable spell stopping when clicking on a MUF
 
-
 - Add an option to automatically focus sheeped/cycloned units (if no other focus)
 
 - Convert to Ace3. (but this means the loss of drop down config menus :/ ---> it will wait then... )

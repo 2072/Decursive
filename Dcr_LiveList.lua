@@ -330,9 +330,11 @@ function LiveList:GetDebuff(UnitID) -- {{{
 	MF = MicroUnitF.UnitToMUF[UnitID];
 	if MF then
 	    Debuffs = MF.Debuffs;
+	    --[=[
 	else -- (ticket #6)
 	    D:AddDebugText("Sanity check failed in LiveList:GetDebuff() no MUF for unit", UnitID, "MUFs are", D.profile.ShowDebuffsFrame, "MUFnum:", MicroUnitF.Number, "MUFshown:", MicroUnitF.UnitShown, "UnitNum:", D.Status.UnitNum, "UnitExists:", UnitExists(UnitID), "Auto MUF show/hide:", D.profile.AutoHideDebuffsFrame, "InCombatLockdown():", InCombatLockdown());
 	    D:AddDebugText("Stack:\n", debugstack(2));
+	    --]=]
 	end
     end
 
