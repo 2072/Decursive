@@ -668,7 +668,7 @@ function MicroUnitF:OnEnter() -- {{{
 	-- if the delta between the history and now is higher than D.profile.DebuffsFrameRefreshRate * 1.5 (1.5 is for lags) then log the issue else this is normal behavior
 	if (D:NiceTime() - highest) > (D.profile.DebuffsFrameRefreshRate * 1.5) then
 
-	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed);
+	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest);
 
 	    if #founddebufftimes == 0 then
 		D.WaitingToBeFound[debuffname] = D:NiceTime();

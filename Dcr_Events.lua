@@ -457,6 +457,14 @@ do
 
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
 
+
+	--@alpha@
+	if arg10 == DS['DARK_MATTER'] then
+	    self:AddDebugText("CbEvent with DM:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12);
+	end
+	--@end-alpha@
+
+
 	if destName and AuraEvents[event] then
 
 	    if not self.DcrFullyInitialized then
