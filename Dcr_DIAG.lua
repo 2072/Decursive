@@ -134,6 +134,7 @@ local AddDebugText = Dcr_AddDebugText;
 
 -- the error handler
 local ProperErrorHandler = false;
+local IsLoadingBlizzard_debug_thingy = false;
 local function DecursiveErrorHandler(err, ...)
 
     local DcrError = false;
@@ -144,7 +145,12 @@ local function DecursiveErrorHandler(err, ...)
     end
 
     -- if we have a bug at add-on loading time, we need to preload Blizzard_DebugTools else the UNRELATED_TO_DECURSIVE_ERROR will sound stupid...
-    LoadAddOn("Blizzard_DebugTools");
+    if not IsLoadingBlizzard_debug_thingy then
+	IsLoadingBlizzard_debug_thingy = true;
+	LoadAddOn("Blizzard_DebugTools");
+	IsLoadingBlizzard_debug_thingy = false;
+    end
+
     local loaded = IsAddOnLoaded("Blizzard_DebugTools");
 
     local premessage = "";
@@ -152,12 +158,12 @@ local function DecursiveErrorHandler(err, ...)
 	if Dcr.L then
 	    premessage = Dcr.L["UNRELATED_TO_DECURSIVE_ERROR"];
 	else
-	    premessage = "(This error is not related to Decursive - look below the Dcr_DIAG.lua stack lines)";
+	    premessage = "(This error _IS NOT_ I REPEAT:_IS NOT_ related to Decursive - just ignore the Dcr_DIAG.lua lines.)";
 	end
     end
 
     if ProperErrorHandler then
-	ProperErrorHandler( ("|cFF00FF00%s|r\n%s"):format(premessage, err), ...);
+	ProperErrorHandler( ("\n%s\n%s"):format(premessage, err), ...);
     end
 end
 
@@ -170,7 +176,7 @@ end
 
 --}}}
 
-HookErrorHandler();
+--HookErrorHandler();
 
 -- Dev version usage warning {{{
 -- the beautiful beta notice popup : {{{ -
