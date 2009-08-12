@@ -361,8 +361,10 @@ do
 
 end
 
-function D:MakeError()
-    return 1 + dsafsdf;
+function D:MakeError(something)
+    local testlocal = "test local";
+   
+    testErrorCapturing();
 end
 
 function D:NiceTime()

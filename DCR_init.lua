@@ -254,6 +254,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 	return false;
     end
 
+    DcrHookErrorHandler();
 
     self:RegisterDB("DcrDB");
     self:RegisterDefaults('profile', D.defaults );

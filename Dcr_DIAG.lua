@@ -85,6 +85,12 @@ local function NiceTime()
     return tonumber(("%.4f"):format(GetTime() - DC.StartTime));
 end
 
+local function print(t)
+    if DEFAULT_CHAT_FRAME then
+	DEFAULT_CHAT_FRAME:AddMessage(t);
+    end
+end
+
 -- taken from AceConsole-2.0
 local function tostring_args(a1, ...)
 	if select('#', ...) < 1 then
@@ -112,7 +118,7 @@ local DebugTextTable = Dcr_DebugTextTable;
 local Reported = {};
 function Dcr_AddDebugText(a1, ...)
 
-	Dcr:Debug("Error processed");
+    Dcr:Debug("Error processed");
     local text = "";
 
     if select('#', ...) > 0 then
@@ -132,51 +138,67 @@ end
 
 local AddDebugText = Dcr_AddDebugText;
 
--- the error handler
+-- The error handler
 local ProperErrorHandler = false;
-local IsLoadingBlizzard_debug_thingy = false;
-local function DecursiveErrorHandler(err, ...)
+local IsReporting = false;
 
-    local DcrError = false;
-    if (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\") then
-	AddDebugText(err, debugstack(2), ...);
-	Dcr:Debug("Error recorded");
-	DcrError = true;
+_G.original_debuglocals = _G.debuglocals;
+_G.debuglocals = function (level)
+    local ADDLEVEL = 2; -- 2 is for this function and DecursiveErrorHandler
+
+    -- test for other add-on that hooks the error handler and increment ADDLEVEL
+    if QuestHelper_Errors then
+	ADDLEVEL = ADDLEVEL + 1;
     end
 
-    -- if we have a bug at add-on loading time, we need to preload Blizzard_DebugTools else the UNRELATED_TO_DECURSIVE_ERROR will sound stupid...
-    if not IsLoadingBlizzard_debug_thingy then
-	IsLoadingBlizzard_debug_thingy = true;
-	LoadAddOn("Blizzard_DebugTools");
-	IsLoadingBlizzard_debug_thingy = false;
+    if Swatter and Swatter.OnError then
+	ADDLEVEL = ADDLEVEL + 1;
     end
 
-    local loaded = IsAddOnLoaded("Blizzard_DebugTools");
+    return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This message is a HotFix from Decursive to prevent a C stack overflow)";
+end; 
 
-    local premessage = "";
-    if loaded and not DcrError then
-	if Dcr.L then
-	    premessage = Dcr.L["UNRELATED_TO_DECURSIVE_ERROR"];
-	else
-	    premessage = "(This error _IS NOT_ I REPEAT:_IS NOT_ related to Decursive - just ignore the Dcr_DIAG.lua lines.)";
+function DecursiveErrorHandler(err, ...)
+
+    -- second blizzard bug HotFix
+    if ScriptErrorsFrameScrollFrameText then
+	if not ScriptErrorsFrameScrollFrameText.cursorOffset then
+	    ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
+	    print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil|r");
 	end
     end
 
+    --Add a check to see if the error is happening inside the Blizzard debug tool himself...
+    if (err:lower()):find("blizzard_debugtools") then
+	if ( GetCVarBool("scriptErrors") ) then
+	    print (("|cFFFF0000%s|r"):format(err));
+	end
+	return;
+    end
+
+    if (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\") and not IsReporting then
+	IsReporting = true;
+	AddDebugText(err, debugstack(2), ...);
+	if Dcr then
+	    Dcr:Debug("Error recorded", ...);
+	end
+	IsReporting = false;
+    end
+
     if ProperErrorHandler then
-	ProperErrorHandler( ("\n%s\n%s"):format(premessage, err), ...);
+	return ProperErrorHandler( err, ... ); -- returning this way prevents this function from appearing in the stack
     end
 end
 
-local function HookErrorHandler()
+function DcrHookErrorHandler()
     if not ProperErrorHandler then
 	ProperErrorHandler = geterrorhandler();
-	seterrorhandler(DecursiveErrorHandler)
+	seterrorhandler(DecursiveErrorHandler);
     end
 end
 
 --}}}
 
---HookErrorHandler();
 
 -- Dev version usage warning {{{
 -- the beautiful beta notice popup : {{{ -
