@@ -308,7 +308,7 @@ do
 
 	    ErrorString = ErrorString .. "\n\n" .. GenericErrorMessage2;
 
-	    FatalError(ErrorString);
+	    DcrFatalError(ErrorString);
 	    DcrDiagStatus = FatalOccured and 2 or 1;
 	end
 
