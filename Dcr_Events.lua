@@ -455,15 +455,25 @@ do
 	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, DebuffName, 0x32, "DEBUFF");
     end
 
+    local SpecialDebuffs = {
+	[59868] = "SPELL_DAMAGE",
+    };
+
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
 
 
-	--@alpha@
-	if arg10 == DS['DARK_MATTER'] then
-	    self:AddDebugText("CbEvent with DM:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12);
-	end
-	--@end-alpha@
+	-- check for exceptions
+	if SpecialDebuffs[arg9] and event == SpecialDebuffs[arg9] then
 
+	    --@alpha@
+	    if self.Status.CuringSpells[DC.MAGIC] then
+		UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
+		self:AddDebugText("CbEvent with DM:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, "Z:", GetZoneText(), "Unit:", UnitID);
+	    end
+	    --@end-alpha@
+
+	    event = "SPELL_AURA_APPLIED";
+	end
 
 	if destName and AuraEvents[event] then
 
