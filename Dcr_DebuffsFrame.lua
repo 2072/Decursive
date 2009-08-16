@@ -665,8 +665,10 @@ function MicroUnitF:OnEnter() -- {{{
 	    DetectHistoryIndex = DetectHistoryIndex + 1;
 	end
 
+	-- if there is no scheduled event for this unit
+	if not D:IsEventScheduled("Dcr_Update"..Unit) then
 	-- if the delta between the history and now is higher than D.profile.DebuffsFrameRefreshRate * 1.5 (1.5 is for lags) then log the issue else this is normal behavior
-	if (D:NiceTime() - highest) > (D.profile.DebuffsFrameRefreshRate * 1.5) then
+	--if (D:NiceTime() - highest) > (D.profile.DebuffsFrameRefreshRate * 1.5) then
 
 	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest);
 
