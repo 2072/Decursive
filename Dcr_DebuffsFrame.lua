@@ -647,6 +647,7 @@ function MicroUnitF:OnEnter() -- {{{
 	local debuffname = MF.Debuffs[1].Name;
 	local founddebufftimes = {};
 	local highest = 0;
+	local highestever = 0;
 
 	-- look in the history of reported debuffs from the combat log event handler
 	while D.DetectHistory[DetectHistoryIndex] do
@@ -662,6 +663,11 @@ function MicroUnitF:OnEnter() -- {{{
 		end
 	    end
 
+	    -- keep track of the most recent one ever for debugging purposal...
+	    if D.DetectHistory[DetectHistoryIndex][1] > highestever then
+		highestever = D.DetectHistory[DetectHistoryIndex][1];
+	    end
+
 	    DetectHistoryIndex = DetectHistoryIndex + 1;
 	end
 
@@ -670,7 +676,7 @@ function MicroUnitF:OnEnter() -- {{{
 	-- if the delta between the history and now is higher than D.profile.DebuffsFrameRefreshRate * 1.5 (1.5 is for lags) then log the issue else this is normal behavior
 	--if (D:NiceTime() - highest) > (D.profile.DebuffsFrameRefreshRate * 1.5) then
 
-	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest);
+	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "latestCBEvRe:", highestever);
 
 	    if #founddebufftimes == 0 then
 		D.WaitingToBeFound[debuffname] = D:NiceTime();

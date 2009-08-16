@@ -240,7 +240,7 @@ function D:BetaWarning()
 
 	-- check for expiration of this dev version
 	local VersionTimeStamp = "@project-timestamp@";
-	local VersionLifeTime  = 3600 * 24 * 10; -- ten days
+	local VersionLifeTime  = 3600 * 24 * 5; -- 5 days
 
 	if VersionTimeStamp ~= "@project".."-timestamp@" then
 
