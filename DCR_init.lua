@@ -170,6 +170,8 @@ DC.RANKNUMTRANS = false;
 
 DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage creation
 
+DC.DevVersionExpired = false;
+
 
 D.DebuffHistory = {};
 
@@ -236,12 +238,27 @@ function D:BetaWarning()
 
     if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or alpha then
 
+	-- check for expiration of this dev version
+	local VersionTimeStamp = "@project-timestamp@";
+	local VersionLifeTime  = 3600 * 24 * 10; -- ten days
+
+	if VersionTimeStamp ~= "@project".."-timestamp@" then
+
+	    if time() > VersionTimeStamp + VersionLifeTime then
+		DC.DevVersionExpired = true;
+		StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+		return;
+	    end
+
+	end
+
 	if self.profile.NonRealease ~= "@project-version@" then
 	    self.profile.NonRealease = "@project-version@";
 	    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
 	end
-
     end
+
+
 end
 
 function D:OnMenuRequest (level, value, inTooltip, v1, v2, v3)

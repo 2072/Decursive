@@ -2327,6 +2327,10 @@ end -- }}}
 local DebugHeader = false;
 function D:ShowDebugReport()
 
+    if DC.DevVersionExpired then
+	D:BetaWarning();
+	return;
+    end
 
     if not DebugHeader then
 	DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f"):format((Dcr and Dcr.L) and Dcr.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", DC.MyClass, D:NiceTime());

@@ -74,7 +74,7 @@ if not L then return end;
 --@localization(locale="enUS", format="lua_additive_table")@
 
 --@do-not-package@
---[==[
+---[==[
 
 -- Used for testing the addon withour the packager
 
@@ -342,9 +342,7 @@ L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
 L["DEV_VERSION_ALERT"] = "DEV_VERSION_ALERT"
-
-L["UNRELATED_TO_DECURSIVE_ERROR"] = "(This error is not related to Decursive - look below the Dcr_DIAG.lua stack lines)"
-
+L["DEV_VERSION_EXPIRED"] = "DEV_VERSION_EXPIRED"
 
 --]==]
 --@end-do-not-package@
