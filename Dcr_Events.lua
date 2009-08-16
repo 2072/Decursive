@@ -447,11 +447,13 @@ do
     local UnitID;
 
     function D:DummyDebuff (UnitID, DebuffName)
+	--[=[
 	if self.profile.ShowDebuffsFrame then
 	    self.MicroUnitF:UpdateMUFUnit(UnitID);
 	elseif not self.profile.Hide_LiveList then
 	    self.LiveList:DelayedGetDebuff(UnitID);
 	end
+	--]=]
 	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, DebuffName, 0x32, "DEBUFF");
     end
 
@@ -523,7 +525,7 @@ do
 		    --@alpha@
 		    time = D:NiceTime();
 
-		    if D.WaitingToBeFound[UnitID] then
+		    if D.WaitingToBeFound[UnitID] and D.WaitingToBeFound[arg10] then
 			if time - D.WaitingToBeFound[arg10] < 2 then
 			    D:AddDebugText("Delayed match found for ", arg10, "on unit:", UnitID, "that was late-found on ", D.WaitingToBeFound[UnitID]);
 			    D.WaitingToBeFound[UnitID] = false;
