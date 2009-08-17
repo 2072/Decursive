@@ -49,7 +49,7 @@ local D = Dcr;
 --D:SetDateAndRevision("$Date: 2008-09-16 00:48:59 +0200 (mar., 16 sept. 2008) $", "$Revision: 81756 $");
 
 local L = D.L;
-local BC = D.BC;
+local LC = D.LC;
 local DC = DcrC;
 local DS = DC.DS;
 
@@ -250,10 +250,6 @@ function D:Pack(...)
     return args;
 end
 
-function D:MakeProperEnglishClassName (Name)
-    local newname = str_sub(Name,1,1) .. str_lower(str_sub(Name, 2));
-    return newname;
-end
 
 function D:ThisSetText(text) --{{{
     getglobal(this:GetName().."Text"):SetText(text);
@@ -317,14 +313,13 @@ do
     DC.ClassesColors = { };
 
     function D:GetClassColor (EnglishClass)
-	EnglishClass = str_upper(EnglishClass);
 	if not DC.ClassesColors[EnglishClass] then
 	    if RAID_CLASS_COLORS and RAID_CLASS_COLORS[EnglishClass] then
 		DC.ClassesColors[EnglishClass] = { RAID_CLASS_COLORS[EnglishClass].r, RAID_CLASS_COLORS[EnglishClass].g, RAID_CLASS_COLORS[EnglishClass].b };
 	    else
 		DC.ClassesColors[EnglishClass] = { 0.63, 0.63, 0.63 };
 	    end
-	    DC.ClassesColors[BC[D:MakeProperEnglishClassName(EnglishClass)]] = DC.ClassesColors[EnglishClass];
+	    DC.ClassesColors[LC[EnglishClass]] = DC.ClassesColors[EnglishClass];
 	end
 	return unpack(DC.ClassesColors[EnglishClass]);
     end
@@ -335,7 +330,7 @@ do
 	if not DC.HexClassColor[EnglishClass] then
 	    local r, g, b = self:GetClassColor(EnglishClass)
 	    DC.HexClassColor[EnglishClass] = str_format("%02x%02x%02x", r * 255, g * 255, b * 255);
-	    DC.HexClassColor[BC[D:MakeProperEnglishClassName(EnglishClass)]] = DC.HexClassColor[EnglishClass];
+	    DC.HexClassColor[LC[EnglishClass]] = DC.HexClassColor[EnglishClass];
 
 	end
 
@@ -355,6 +350,7 @@ do
 		end
 	    end
 	else
+	    D:AddDebugText("global RAID_CLASS_COLORS does not exist...");
 	    D:Error("global RAID_CLASS_COLORS does not exist...");
 	end
     end

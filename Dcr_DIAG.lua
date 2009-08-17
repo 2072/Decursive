@@ -250,7 +250,6 @@ do
 	--LibStub:GetLibrary
 	local UseLibStub = {
 	    ["AceLocale-3.0"] = 2,
-	    ["LibBabble-Class-3.0"] = 90000 + 50,
 	    ["LibDataBroker-1.1"] = 3,
 	    ["LibDBIcon-1.0"] = 8,
 	    ["CallbackHandler-1.0"] = 3,

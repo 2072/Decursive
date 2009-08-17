@@ -49,7 +49,7 @@ local D   = Dcr;
 --D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 local L	    = D.L;
-local BC    = D.BC;
+local LC    = D.LC;
 local AceOO = D.AOO;
 local DC    = DcrC;
 local DS    = DC.DS;

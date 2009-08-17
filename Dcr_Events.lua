@@ -50,7 +50,7 @@ local D = Dcr;
 
 
 local L = D.L;
-local BC = D.BC;
+local LC = D.LC;
 local DC = DcrC;
 local DS = DC.DS;
 

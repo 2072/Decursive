@@ -49,7 +49,7 @@ local D = Dcr;
 --D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 local L  = D.L;
-local BC = D.BC;
+local LC = D.LC;
 local DC = DcrC;
 local DS = DC.DS;
 local icon = LibStub("LibDBIcon-1.0", true)
@@ -1818,13 +1818,11 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    CheckedByDefault = true;
 	end
 
-	local FormattedClass = D:MakeProperEnglishClassName(Class);
-
 	return {
 	    type = "toggle",
-	    name = D:ColorText( BC[FormattedClass], "FF"..DC.HexClassColor[Class]) ..
+	    name = D:ColorText( LC[Class], "FF"..DC.HexClassColor[Class]) ..
 	    (CheckedByDefault and D:ColorText("  *", "FFFFAA00") or ""),
-	    desc = str_format(L["OPT_AFFLICTEDBYSKIPPED"], BC[FormattedClass], DebuffName) ..
+	    desc = str_format(L["OPT_AFFLICTEDBYSKIPPED"], LC[Class], DebuffName) ..
 	    (CheckedByDefault and D:ColorText(L["OPT_DEBCHECKEDBYDEF"], "FFFFAA00") or "");
 	    handler = {
 		["Debuff"]=DebuffName,
