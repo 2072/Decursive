@@ -216,7 +216,7 @@ D.defaults = { -- {{{
     MacroBind = false, --L["DEFAULT_MACROKEY"], -- there were too many unhappy people with this option
 
     -- Display a warning if no key is mapped.
-    NoKeyWarn = true,
+    NoKeyWarn = false,
 
     -- Disable macro creation
     DisableMacroCreation = false,
@@ -1213,6 +1213,7 @@ D.options = { -- {{{
 		    set = function (key)
 			D:SetMacroKey ( key );
 		    end,
+		    disabled = function () return D.profile.DisableMacroCreation end,
 		    order = 200,
 		},
 		NoKeyWarn = {
@@ -1223,6 +1224,7 @@ D.options = { -- {{{
 		    set = function(v)
 			D.profile.NoKeyWarn = v;
 		    end,
+		    disabled = function () return D.profile.DisableMacroCreation end,
 		    order = 300
 		},
 		DisableMacroCreation = {
@@ -1231,6 +1233,10 @@ D.options = { -- {{{
 		    desc = L["OPT_DISABLEMACROCREATION_DESC"],
 		    get = function() return D.profile.DisableMacroCreation end,
 		    set = function(v)
+			if v then
+			    D:SetMacroKey (nil); -- remove the macro key assignment.
+			    D:Debug("SetMacroKey (nil)");
+			end
 			D.profile.DisableMacroCreation = v;
 		    end,
 		    order = 400
@@ -1246,7 +1252,7 @@ D.options = { -- {{{
 	    name = D:ColorText(L["OPT_RESETOPTIONS"], "FF00AAAA"),
 	    desc = L["OPT_RESETOPTIONS_DESC"],
 	    func = function ()
-		D.Tmp.Profile = D:GetProfile();
+		-- D.Tmp.Profile = D:GetProfile();
 		StaticPopup_Show ("DCR_CONFIRM_RESET", D:GetProfile());
 		D.DewDrop:Close(1);
 
@@ -1764,8 +1770,9 @@ StaticPopupDialogs["DCR_CONFIRM_RESET"] = {
     button2 = TEXT(CANCEL),
     OnAccept = function()
 
-	D:Println(L["OPT_PROFILERESET"]);
+	D:SetMacroKey (nil); --remove the macro key.
 	D:ResetDB("profile");
+	D:Println(L["OPT_PROFILERESET"]);
 
     end,
     timeout = 0,
@@ -2343,3 +2350,4 @@ end
 
 DcrLoadedFiles["Dcr_opt.lua"] = "@project-version@";
 
+-- Closer
