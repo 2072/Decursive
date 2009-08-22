@@ -116,6 +116,8 @@ end
 Dcr_DebugTextTable = {};
 local DebugTextTable = Dcr_DebugTextTable;
 local Reported = {};
+local GetFramerate = _G.GetFramerate;
+local GetNetStats = _G.GetNetStats;
 function Dcr_AddDebugText(a1, ...)
 
     Dcr:Debug("Error processed");
@@ -128,7 +130,7 @@ function Dcr_AddDebugText(a1, ...)
     end
 
     if not Reported[text] then
-	table.insert (DebugTextTable,  ("\n------\n%.4f (latency:%d): %s -|count: "):format(NiceTime(), select(3, GetNetStats()), text) );
+	table.insert (DebugTextTable,  ("\n------\n%.4f (%d-%d): %s -|count: "):format(NiceTime(), select(3, GetNetStats()), GetFramerate(), text) );
 	table.insert (DebugTextTable, 1);
 	Reported[text] = #DebugTextTable;
     else
