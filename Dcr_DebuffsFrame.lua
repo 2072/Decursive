@@ -607,6 +607,7 @@ function MicroUnitF:OnEnter() -- {{{
 
     local GUIDwasFixed = false;
     local unitguid = UnitGUID(Unit);
+    local RegisteredUnitguid = MF.UnitGUID;
 
     if unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid] then
 
@@ -642,48 +643,62 @@ function MicroUnitF:OnEnter() -- {{{
 
     if LateDetectTest then
 
-	-- search for detection by combat event manager
-	local DetectHistoryIndex = 1;
-	local debuffname = MF.Debuffs[1].Name;
-	local founddebufftimes = {};
-	local highest = 0;
-	local highestever = 0;
-
-	-- look in the history of reported debuffs from the combat log event handler
-	while D.DetectHistory[DetectHistoryIndex] do
-	    -- if we find the same debuff on the same unit in the history
-	    if D.DetectHistory[DetectHistoryIndex][2] == Unit and  D.DetectHistory[DetectHistoryIndex][3] == debuffname then
-
-		-- add the time it was seen to founddebufftimes
-		t_insert(founddebufftimes, D.DetectHistory[DetectHistoryIndex][1]);
-
-		-- keep track of the most recent one
-		if D.DetectHistory[DetectHistoryIndex][1] > highest then
-		    highest = D.DetectHistory[DetectHistoryIndex][1];
-		end
-	    end
-
-	    -- keep track of the most recent one ever for debugging purposal...
-	    if D.DetectHistory[DetectHistoryIndex][1] > highestever then
-		highestever = D.DetectHistory[DetectHistoryIndex][1];
-	    end
-
-	    DetectHistoryIndex = DetectHistoryIndex + 1;
-	end
-
 	-- if there is no scheduled event for this unit
 	if not D:IsEventScheduled("Dcr_Update"..Unit) then
-	-- if the delta between the history and now is higher than D.profile.DebuffsFrameRefreshRate * 1.5 (1.5 is for lags) then log the issue else this is normal behavior
-	--if (D:NiceTime() - highest) > (D.profile.DebuffsFrameRefreshRate * 1.5) then
 
-	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "DebuffsFrameRefreshRate:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JustFixedGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "latestCBEvRe:", highestever);
+	    -- search for detection by combat event manager
+	    local debuffname = MF.Debuffs[1].Name;
+	    local foundcblevents = {};	    local highestever = 0;	    local _;	    local i=1;	    local dname;	    local DebuffApplyTime = false;
+	    -- find the debuff on the unit and find out when it was applyed
+	    while 1 do
+		dname = UnitAura(Unit, i, "HARMFUL");
+		if not dname then break end;
+		if dname == debuffname then
+		    local Dduration, DexpireTime;
+		    _, _, _, _, _, Dduration, DexpireTime = UnitAura(Unit, i, "HARMFUL");
+		    DebuffApplyTime = DexpireTime - Dduration;
+		    break;
+		end
+		i = i + 1;
+	    end
 
-	    if #founddebufftimes == 0 then
+
+	    if not DebuffApplyTime then
+		D:AddDebugText("DebuffApplyTime could not be found for ", debuffname, "on", Unit, "DebuffApplyTime set to now - 3s");
+		DebuffApplyTime = GetTime() - 3;
+	    end
+
+	    local DetectHistoryIndex = 1;
+	    local halfrange = 5; RangeMatch = false;
+	    local tconcat = _G.table.concat
+	    D:Debug("Looking for events on", Unit, "between", DebuffApplyTime - halfrange, "and", DebuffApplyTime + halfrange);
+	    -- look in the history of the combat log event handler
+	    while D.DetectHistory[DetectHistoryIndex] do
+		-- take all the events related to this unit around the time the missed debuff was applyed
+		if D.DetectHistory[DetectHistoryIndex][8] == unitguid then -- and  D.DetectHistory[DetectHistoryIndex][12] == debuffname then
+
+		    if D.DetectHistory[DetectHistoryIndex][1] > DebuffApplyTime - halfrange and D.DetectHistory[DetectHistoryIndex][1] < DebuffApplyTime + halfrange then
+			t_insert(foundcblevents, tconcat(D.DetectHistory[DetectHistoryIndex],", "));
+			t_insert(foundcblevents, "\n");
+			RangeMatch = true;
+		    elseif RangeMatch then -- if we found something we won't find it anymore...
+			break;
+		    end
+
+		end
+
+		DetectHistoryIndex = DetectHistoryIndex + 1;
+	    end
+
+
+	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "_AppT_:", DebuffApplyTime, "DFRR:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JFGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "MFGuid~:", RegisteredUnitguid ~= unitguid, "Z:", GetZoneText(), "DTI:", DetectHistoryIndex);
+
+	    if #foundcblevents == 0 then
 		D.WaitingToBeFound[debuffname] = D:NiceTime();
 		D.WaitingToBeFound[Unit] = D.WaitingToBeFound[debuffname];
-		D:AddDebugText("No debuff history was found for ", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit);
+		D:AddDebugText("No event at all for ", Unit);
 	    else
-		D:AddDebugText(#founddebufftimes, "history match for", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "Status:", Status, "detect times:", unpack(founddebufftimes));
+		D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "Status:", Status, "Events:\n", unpack(foundcblevents));
 	    end
 	end
     end
@@ -967,6 +982,8 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 	if MF:SetClassBorder() then
 	    ActionsDone = ActionsDone + 1; -- count expensive things done
 	end
+	-- if the guid changed we really need to rescan the unit!
+	SkipSetColor = false; SkipDebuffs = false; CheckStealth = true;
     end
 
     -- Update the frame attributes if necessary (Spells priority or unit id changes)
@@ -1452,12 +1469,8 @@ do
     -- updates the micro frames if needed (called regularly by ACE event, changed in the option menu)
     function D:DebuffsFrame_Update() -- {{{
 
-	-- Update the unit array (GetUnitArray() will do something only if necessary)
-	--if self.Groups_datas_are_invalid then
-	--    self:GetUnitArray();
-	--end
-
 	local Unit_Array = self.Status.Unit_Array;
+	local UnitToGUID = self.Status.Unit_Array_UnitToGUID;
 
 	UnitNum = self.Status.UnitNum; -- we need to go through all the units to set MF.ID properly
 	NumToShow = ((MicroUnitF.MaxUnit > UnitNum) and UnitNum or MicroUnitF.MaxUnit);
@@ -1509,6 +1522,14 @@ do
 		MF.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(MicroFrameUpdateIndex)));
 		if MF.Shown then
 		    MF.Frame:Show();
+		end
+
+		-- test for GUID change and force a debuff update in this case
+		if UnitToGUID[MF.CurrUnit] ~= MF.UnitGUID then
+		    MF.UpdateCountDown = 0; -- will force MF:Update() to be called
+		    --@debug@
+		    D:Println("|cFFFFAA55GUID change detected while placing for |r", MicroFrameUpdateIndex);
+		    --@end-debug@
 		end
 
 		ActionsDone = ActionsDone + 1;

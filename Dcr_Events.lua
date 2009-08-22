@@ -318,9 +318,11 @@ do
     local UnitAura	= _G.UnitAura;
     local UnitGUID	= _G.UnitGUID;
     local UnitIsCharmed	= _G.UnitIsCharmed;
+    local time		= _G.time;
+    local GetTime	= _G.GetTime;
     -- This event manager is only here to catch events when the GUID unit array is not reliable.
     -- For everything else the combat log event manager does the job since it's a lot more resource friendly. (UNIT_AURA fires way too often and provides no data)
-    function D:UNIT_AURA(UnitID)
+    function D:UNIT_AURA(UnitID, ...)
 
 	if not self.Status.Unit_Array_UnitToGUID[UnitID] then
 	    -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
@@ -328,6 +330,14 @@ do
 	end
 
 	local unitguid = UnitGUID(UnitID);
+
+	--@debug@
+	
+
+	--D:Debug("UNIT_AURA", ..., UnitID, GetTime() + (GetTime() % 1));
+
+	--@end-debug@
+
 
 	-- Here we test if the GUID->Unit array is ok if it isn't we need to scan the unit for debuffs
 	-- We also scan the unit if it's charmed. The combatLog event manager tends to not detect those properly, the charm effect is a bitch to manage.
@@ -398,7 +408,8 @@ do
     local bor = bit.bor;
     local UnitGUID = _G.UnitGUID;
     local GetTime = _G.GetTime;
-    local time	= 0;
+    local time = _G.time;
+    local timev	= 0;
 
     --@alpha@  
     local DetectHistoryIndex = 1;
@@ -461,7 +472,46 @@ do
 	[59868] = "SPELL_DAMAGE",
     };
 
+    local oldest = 0;
+
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
+	--@debug@
+	--@end-debug@
+
+	--@alpha@
+	if destGUID or destName then
+	    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
+	    timev = GetTime();
+
+	    if timev - oldest > 120  then DetectHistoryIndex = 1 end
+
+	    if DetectHistoryIndex == 1 then
+		oldest = timev;
+	    end
+
+	    if not D.DetectHistory[DetectHistoryIndex] then
+		D.DetectHistory[DetectHistoryIndex] = {timev, UnitID or "NIL", timestamp or "NIL", event or "NIL", sourceGUID or "NIL", sourceName or "NIL", sourceFlags or "NIL", destGUID or "NIL", destName or "NIL", destFlags or "NIL", arg9 or "NIL", arg10 or "NIL", arg11 or "NIL", arg12 or "NIL"};
+	    else
+		local temp = D.DetectHistory[DetectHistoryIndex];
+
+		temp[1]  = timev;
+		temp[2]  = UnitID or "NIL";
+		temp[3]  = timestamp or "NIL";
+		temp[4]  = event or "NIL";
+		temp[5]  = sourceGUID or "NIL";
+		temp[6]  = sourceName or "NIL";
+		temp[7]  = sourceFlags or "NIL";
+		temp[8]  = destGUID or "NIL";
+		temp[9]  = destName;
+		temp[10] = destFlags or "NIL";
+		temp[11] = arg9 or "NIL";
+		temp[12] = arg10 or "NIL";
+		temp[13] = arg11 or "NIL";
+		temp[14] = arg12 or "NIL";
+	    end
+	    DetectHistoryIndex = DetectHistoryIndex + 1;
+	end
+	--@end-alpha@
 
 
 	-- check for exceptions
@@ -470,7 +520,7 @@ do
 	    --@alpha@
 	    if self.Status.CuringSpells[DC.MAGIC] then
 		UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
-		self:AddDebugText("CbEvent with DM:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, "Z:", GetZoneText(), "Unit:", UnitID);
+		--self:AddDebugText("CbEvent with DM:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, "Z:", GetZoneText(), "Unit:", UnitID);
 	    end
 	    --@end-alpha@
 
@@ -521,30 +571,21 @@ do
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
 		    end
 		else
-
 		    --@alpha@
-		    time = D:NiceTime();
+		    timev = D:NiceTime();
 
 		    if D.WaitingToBeFound[UnitID] and D.WaitingToBeFound[arg10] then
-			if time - D.WaitingToBeFound[arg10] < 2 then
+			if timev - D.WaitingToBeFound[arg10] < 2 then
 			    D:AddDebugText("Delayed match found for ", arg10, "on unit:", UnitID, "that was late-found on ", D.WaitingToBeFound[UnitID]);
 			    D.WaitingToBeFound[UnitID] = false;
 			end
 		    end
-
-		    if DetectHistoryIndex == 51 then DetectHistoryIndex = 1 end
-
-		    if not D.DetectHistory[DetectHistoryIndex] then
-			D.DetectHistory[DetectHistoryIndex] = {time, UnitID, arg10};
-		    else
-			D.DetectHistory[DetectHistoryIndex][1] = time;
-			D.DetectHistory[DetectHistoryIndex][2] = UnitID;
-			D.DetectHistory[DetectHistoryIndex][3] = arg10;
-		    end
-		    DetectHistoryIndex = DetectHistoryIndex + 1;
 		    --@end-alpha@
 
-		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event);
+		    --@debug@
+		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event, time() + (GetTime() % 1), timestamp);
+		    --@end-debug@
+
 		    if self.profile.ShowDebuffsFrame then
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
 		    elseif not self.profile.Hide_LiveList then
@@ -656,3 +697,4 @@ end
 
 DcrLoadedFiles["Dcr_Events.lua"] = "@project-version@";
 
+-- The Great Below
