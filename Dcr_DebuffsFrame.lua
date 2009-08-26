@@ -669,20 +669,23 @@ function MicroUnitF:OnEnter() -- {{{
 	    end
 
 	    local DetectHistoryIndex = 1;
-	    local halfrange = 5; RangeMatch = false;
+	    local halfrange = 5; RangeMatch = false; latestever = "none"; latesttime = 0;
 	    local tconcat = _G.table.concat
 	    D:Debug("Looking for events on", Unit, "between", DebuffApplyTime - halfrange, "and", DebuffApplyTime + halfrange);
 	    -- look in the history of the combat log event handler
 	    while D.DetectHistory[DetectHistoryIndex] do
-		-- take all the events related to this unit around the time the missed debuff was applyed
-		if D.DetectHistory[DetectHistoryIndex][8] == unitguid then -- and  D.DetectHistory[DetectHistoryIndex][12] == debuffname then
+		-- take all the events related to this unit or debuffname around the time the missed debuff was applyed
+		if D.DetectHistory[DetectHistoryIndex][8] == unitguid or D.DetectHistory[DetectHistoryIndex][12] == debuffname then
 
 		    if D.DetectHistory[DetectHistoryIndex][1] > DebuffApplyTime - halfrange and D.DetectHistory[DetectHistoryIndex][1] < DebuffApplyTime + halfrange then
 			t_insert(foundcblevents, tconcat(D.DetectHistory[DetectHistoryIndex],", "));
 			t_insert(foundcblevents, "\n");
 			RangeMatch = true;
-		    elseif RangeMatch then -- if we found something we won't find it anymore...
-			break;
+		    --elseif RangeMatch then -- if we found something we won't find it anymore...
+		--	break;
+		    elseif D.DetectHistory[DetectHistoryIndex][1] > latesttime then-- find the latest event concerning this unit
+			latesttime = D.DetectHistory[DetectHistoryIndex][1];
+			latestever = DetectHistoryIndex;
 		    end
 
 		end
@@ -690,15 +693,18 @@ function MicroUnitF:OnEnter() -- {{{
 		DetectHistoryIndex = DetectHistoryIndex + 1;
 	    end
 
+	    if latestever ~= "none" then
+		latestever = tconcat(D.DetectHistory[latestever],", ");
+	    end
 
-	    D:AddDebugText("Debuff late detection:", MF.Debuffs[1].Name, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, "_AppT_:", DebuffApplyTime, "DFRR:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", D:NiceTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JFGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "MFGuid~:", RegisteredUnitguid ~= unitguid, "Z:", GetZoneText(), "DTI:", DetectHistoryIndex);
+	    D:AddDebugText("Debuff late detection:", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, unitguid, "_AppT_:", DebuffApplyTime, "DFRR:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", GetTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JFGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "MFGuid~:", RegisteredUnitguid ~= unitguid, "Z:", GetZoneText(), "DTI:", DetectHistoryIndex);
 
 	    if #foundcblevents == 0 then
 		D.WaitingToBeFound[debuffname] = D:NiceTime();
 		D.WaitingToBeFound[Unit] = D.WaitingToBeFound[debuffname];
-		D:AddDebugText("No event at all for ", Unit);
+		D:AddDebugText("No event in range at all for ", Unit, "or debuff", debuffname, "latest found:", latestever);
 	    else
-		D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "Status:", Status, "Events:\n", unpack(foundcblevents));
+		D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "or debuff", debuffname, "Status:", Status, "Events:\n", unpack(foundcblevents));
 	    end
 	end
     end

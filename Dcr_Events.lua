@@ -479,7 +479,7 @@ do
 	--@end-debug@
 
 	--@alpha@
-	if destGUID or destName then
+	if destGUID or destName or arg10 then
 	    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
 	    timev = GetTime();
 
