@@ -702,9 +702,9 @@ function MicroUnitF:OnEnter() -- {{{
 	    if #foundcblevents == 0 then
 		D.WaitingToBeFound[debuffname] = D:NiceTime();
 		D.WaitingToBeFound[Unit] = D.WaitingToBeFound[debuffname];
-		D:AddDebugText("No event in range at all for ", Unit, "or debuff", debuffname, "latest found:", latestever);
+		D:AddDebugText("No event in range at all for ", Unit, "or debuff:", debuffname, "latest found:", latestever);
 	    else
-		D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "or debuff", debuffname, "Status:", Status, "Events:\n", unpack(foundcblevents));
+		D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "or debuff:", debuffname, "Status:", Status, "Events:\n", unpack(foundcblevents));
 	    end
 	end
     end

@@ -240,12 +240,11 @@ function D:BetaWarning()
     if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or alpha then
 
 	-- check for expiration of this dev version
-	local VersionTimeStamp = "@project-timestamp@";
-	local VersionLifeTime  = 3600 * 24 * 7; -- 7 days
+	if D.VersionTimeStamp ~= 0 then
 
-	if VersionTimeStamp ~= "@project".."-timestamp@" then
+	    local VersionLifeTime  = 3600 * 24 * 7; -- 7 days
 
-	    if time() > VersionTimeStamp + VersionLifeTime then
+	    if time() > D.VersionTimeStamp + VersionLifeTime then
 		DC.DevVersionExpired = true;
 		StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
 		return;
@@ -1252,6 +1251,23 @@ end
 D.Revision = "@project-abbreviated-hash@";
 D.date = "@project-date-iso@";
 D.version = "@project-version@";
+do
+
+    if D.date ~= "@project".."-date-iso@" then
+
+	-- get a fucking table of D.date so we can get a fucking timestamp with time() because @project-timestamp@ doesn't fucking work :/ FUCK!!
+
+	--local example =  "2008-05-01T12:34:56Z";
+
+	local year, month, day, hour, min, sec = string.match( D.date, "(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)");
+	local projectDate = {["year"] = year, ["month"] = month, ["day"] = day, ["hour"] = hour, ["min"] = min, ["sec"] = sec};
+
+	D.VersionTimeStamp = time(projectDate);
+    else
+	D.VersionTimeStamp = 0;
+    end
+
+end
 
 DcrLoadedFiles["DCR_init.lua"] = "@project-version@";
 
@@ -1259,7 +1275,6 @@ DcrLoadedFiles["DCR_init.lua"] = "@project-version@";
 
 --[======[
 TEST to see what keyword substitutions are actually working.... DAMN!!!!
-
 
 Simple replacements
 
@@ -1301,6 +1316,5 @@ Simple replacements
     :SVN returns something like "r1234"
     :Git returns something like "v0.1-873fc1"
     :Mercurial returns something like "r1234". 
-
 
 --]======]
