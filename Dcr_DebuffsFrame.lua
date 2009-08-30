@@ -113,6 +113,7 @@ local fmod		= _G.math.fmod;
 local UnitIsUnit	= _G.UnitIsUnit;
 local str_upper		= _G.string.upper;
 local InCombatLockdown  = _G.InCombatLockdown;
+local UnitAura		= _G.UnitAura;
 
 -- Those are lookups table to set the frame attributes
 local AvailableButtons = { -- {{{
@@ -607,7 +608,6 @@ function MicroUnitF:OnEnter() -- {{{
 
     local GUIDwasFixed = false;
     local unitguid = UnitGUID(Unit);
-    local RegisteredUnitguid = MF.UnitGUID;
 
     if unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid] then
 
@@ -642,75 +642,9 @@ function MicroUnitF:OnEnter() -- {{{
     end
 
     if LateDetectTest then
-
 	-- if there is no scheduled event for this unit
 	if not D:IsEventScheduled("Dcr_Update"..Unit) then
-
-	    -- search for detection by combat event manager
-	    local debuffname = MF.Debuffs[1].Name;
-	    local foundcblevents = {};	    local highestever = 0;	    local _;	    local i=1;	    local dname;	    local DebuffApplyTime = false;
-	    -- find the debuff on the unit and find out when it was applyed
-	    while 1 do
-		dname = UnitAura(Unit, i, "HARMFUL");
-		if not dname then break end;
-		if dname == debuffname then
-		    local Dduration, DexpireTime;
-		    _, _, _, _, _, Dduration, DexpireTime = UnitAura(Unit, i, "HARMFUL");
-		    DebuffApplyTime = DexpireTime - Dduration;
-		    break;
-		end
-		i = i + 1;
-	    end
-
-
-	    if not DebuffApplyTime then
-		D:AddDebugText("DebuffApplyTime could not be found for ", debuffname, "on", Unit, "DebuffApplyTime set to now - 3s");
-		DebuffApplyTime = GetTime() - 3;
-	    end
-
-	    local DetectHistoryIndex = 1;
-	    local halfrange = 5; RangeMatch = false; latestever = "none"; latesttime = 0;
-	    local tconcat = _G.table.concat
-	    D:Debug("Looking for events on", Unit, "between", DebuffApplyTime - halfrange, "and", DebuffApplyTime + halfrange);
-	    -- look in the history of the combat log event handler
-	    while D.DetectHistory[DetectHistoryIndex] do
-		-- take all the events related to this unit or debuffname around the time the missed debuff was applyed
-		if D.DetectHistory[DetectHistoryIndex][8] == unitguid or D.DetectHistory[DetectHistoryIndex][12] == debuffname then
-
-		    if D.DetectHistory[DetectHistoryIndex][1] > DebuffApplyTime - halfrange and D.DetectHistory[DetectHistoryIndex][1] < DebuffApplyTime + halfrange then
-			t_insert(foundcblevents, tconcat(D.DetectHistory[DetectHistoryIndex],", "));
-			t_insert(foundcblevents, "\n");
-			RangeMatch = true;
-		    --elseif RangeMatch then -- if we found something we won't find it anymore...
-		--	break;
-		    elseif D.DetectHistory[DetectHistoryIndex][1] > latesttime then-- find the latest event concerning this unit
-			latesttime = D.DetectHistory[DetectHistoryIndex][1];
-			latestever = DetectHistoryIndex;
-		    end
-
-		end
-
-		DetectHistoryIndex = DetectHistoryIndex + 1;
-	    end
-
-	    if latestever ~= "none" then
-		latestever = tconcat(D.DetectHistory[latestever],", ");
-	    end
-
-	    D:AddDebugText("Debuff late detection:", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, unitguid, "_AppT_:", DebuffApplyTime, "DFRR:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", GetTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JFGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "MFGuid~:", RegisteredUnitguid ~= unitguid, "Z:", GetZoneText(), "DTI:", DetectHistoryIndex);
-
-	    -- trigger a dcr diag if DetectHistoryIndex is 1 :/
-	    if DetectHistoryIndex == 1 then
-		DecursiveSelfDiagnostic(true, true);
-	    end
-
-	    if #foundcblevents == 0 then
-		D.WaitingToBeFound[debuffname] = D:NiceTime();
-		D.WaitingToBeFound[Unit] = D.WaitingToBeFound[debuffname];
-		D:AddDebugText("No event in range at all for ", Unit, "or debuff:", debuffname, "latest found:", latestever);
-	    else
-		D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "or debuff:", debuffname, "Status:", Status, "Events:\n", unpack(foundcblevents));
-	    end
+	    MicroUnitF:LateAnalysis("OnEnter", MF.Debuffs, MF, Status, GUIDwasFixed);
 	end
     end
     --@end-alpha@
@@ -798,6 +732,77 @@ function MicroUnitF:OnEnter() -- {{{
     end
 
 end -- }}}
+
+function MicroUnitF:LateAnalysis(From, Debuffs, MF, Status, GUIDwasFixed)
+
+    local Unit = MF.CurrUnit; -- shortcut
+    local unitguid = UnitGUID(Unit);
+    local RegisteredUnitguid = MF.UnitGUID;
+    -- search for detection by combat event manager
+    local foundcblevents = {}; local highestever = 0; local _; local i=1; local dname; local DebuffApplyTime = false;
+    local debuffname = Debuffs and Debuffs[1].Name or "No debuff, charmed?";
+
+    -- find the debuff on the unit and find out when it was applyed
+    while 1 do
+	dname = UnitAura(Unit, i, "HARMFUL");
+
+	if not dname then break end;
+
+	if dname == debuffname then
+	    local Dduration, DexpireTime;
+	    dname, _, _, _, _, Dduration, DexpireTime = UnitAura(Unit, i, "HARMFUL");
+	    DebuffApplyTime = DexpireTime - Dduration;
+	    break;
+	end
+	i = i + 1;
+    end
+
+
+    if not DebuffApplyTime or DebuffApplyTime == 0 then
+	D:AddDebugText("DebuffApplyTime could not be found for ", dname, "on", Unit, "DebuffApplyTime set to now - 3s");
+	DebuffApplyTime = GetTime() - 3;
+    end
+
+    local DetectHistoryIndex = 1;
+    local halfrange = 5; RangeMatch = false; latestever = "none"; latesttime = 0;
+    local tconcat = _G.table.concat
+    D:Debug("Looking for events on", Unit, "between", DebuffApplyTime - halfrange, "and", DebuffApplyTime + halfrange);
+    -- look in the history of the combat log event handler
+    while D.DetectHistory[DetectHistoryIndex] do
+	-- take all the events related to this unit or debuffname around the time the missed debuff was applyed
+	if D.DetectHistory[DetectHistoryIndex][8] == unitguid or D.DetectHistory[DetectHistoryIndex][12] == debuffname then
+
+	    if D.DetectHistory[DetectHistoryIndex][1] > DebuffApplyTime - halfrange and D.DetectHistory[DetectHistoryIndex][1] < DebuffApplyTime + halfrange then
+		t_insert(foundcblevents, tconcat(D.DetectHistory[DetectHistoryIndex],", "));
+		t_insert(foundcblevents, "\n");
+		RangeMatch = true;
+	    elseif D.DetectHistory[DetectHistoryIndex][1] > latesttime then-- find the latest event concerning this unit
+		latesttime = D.DetectHistory[DetectHistoryIndex][1];
+		latestever = DetectHistoryIndex;
+	    end
+
+	end
+
+	DetectHistoryIndex = DetectHistoryIndex + 1;
+    end
+
+    if latestever ~= "none" then
+	latestever = tconcat(D.DetectHistory[latestever],", ");
+    end
+
+    D:AddDebugText("Debuff late detection:", From, debuffname, "Type:", Debuffs[1].TypeName, "on unit:", Unit, unitguid, "_AppT_:", DebuffApplyTime, "DFRR:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", GetTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JFGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "MFGuid~:", RegisteredUnitguid ~= unitguid, "Z:", GetZoneText(), "DTI:", DetectHistoryIndex);
+
+    -- trigger a dcr diag if DetectHistoryIndex is 1 :/
+    if DetectHistoryIndex == 1 then
+	DecursiveSelfDiagnostic(true, true);
+    end
+
+    if #foundcblevents == 0 then
+	D:AddDebugText("No event in range at all for ", Unit, "or debuff:", debuffname, "latest found:", latestever);
+    else
+	D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "or debuff:", debuffname, "Status:", Status, "Events:\n", unpack(foundcblevents));
+    end
+end
 
 function MicroUnitF:OnLeave() -- {{{
     D.Status.MouseOveringMUF = false;
@@ -995,6 +1000,9 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 	end
 	-- if the guid changed we really need to rescan the unit!
 	SkipSetColor = false; SkipDebuffs = false; CheckStealth = true;
+	--@debug@
+	D:Debug("|cFF00CC00MUF:Update(): Guid change rescanning", Unit, "|r");
+	--@end-debug@
     end
 
     -- Update the frame attributes if necessary (Spells priority or unit id changes)
@@ -1551,7 +1559,7 @@ do
 		if not (MF.IsDebuffed or MF.IsCharmed) and MF.UpdateCountDown ~= 0 then
 		    MF.UpdateCountDown = MF.UpdateCountDown - 1;
 		else -- if MF.IsDebuffed or MF.IsCharmed or MF.UpdateCountDown == 0
-		    ActionsDone = ActionsDone + MF:Update(false, not ((MF.IsDebuffed or MF.IsCharmed) and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range
+		    ActionsDone = ActionsDone + MF:Update(false, true);--, not ((MF.IsDebuffed or MF.IsCharmed) and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range XXX useless now since we rescan everyone every second
 		    MF.UpdateCountDown = 3;
 		end
 	    end
@@ -1621,3 +1629,5 @@ local MF_Textures = { -- unused
 -- }}}
 
 DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "@project-version@";
+
+-- Heresy

@@ -731,6 +731,80 @@ do
 
     end -- // }}}
 
+    local GetTime	= _G.GetTime;
+    local Debuffs	= {}; local IsCharmed = false; local Unit; local MUF; local IsDebuffed= false;
+    local NoScanStatuses	= false;
+    function D:ScanEveryBody()
+
+	if not NoScanStatuses then
+	    NoScanStatuses = {[DC.ABSENT] = true, [DC.FAR] = true, [DC.BLACKLISTED] = true};
+	end
+
+	local UnitArray = self.Status.Unit_Array; local i = 1;
+
+	--@debug@
+	local start = GetTime();
+	--@end-debug@
+
+	while UnitArray[i] do
+	    Unit = UnitArray[i];
+	    MUF = self.MicroUnitF.UnitToMUF[Unit];
+
+	    -- I want to fuck you like an animal
+	    -- I want to feel you from the inside
+
+	    if MUF and not NoScanStatuses[MUF.UnitStatus] then
+		Debuffs, IsCharmed = self:UnitCurableDebuffs(Unit, true);
+		IsDebuffed = (Debuffs and true) or IsCharmed;
+		-- If MUF disagrees
+		if IsDebuffed ~= MUF.IsDebuffed and not D:IsEventScheduled("Dcr_Update" .. Unit) then
+		    --@debug@
+		    if IsDebuffed then
+			self:AddDebugText("delayed debuff found by scaneveryone, scheduling analysis in 1s");
+			D:ScheduleEvent("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
+		    else
+			self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit);
+		    end
+		    --@end-debug@
+
+		    self.MicroUnitF:UpdateMUFUnit(Unit, true);
+
+		    --@debug@
+		    D:Println("HAAAAAAA!!!!!");
+		    --@end-debug@
+		end
+	    end
+
+	    i = i + 1;
+	end
+	--@debug@
+	D:Debug("|cFF777777Scanning everybody...", i - 1, "units scanned in ", GetTime() - start, "seconds|r");
+	--@end-debug@
+    end
+
+
+    -- a little test... the ".." way wins (6x faster than the format solution) when both sides are strings
+    function D:tests()
+
+	local test = "test1";
+	local start = GetTime();
+	local strings = {"string1", "string2", "strring3"};
+	local teststring = "unitraid5"
+	for i =1, 1000000 do
+	    teststring = strings[i%3 + 1];
+	    test = "test_"..teststring;
+	end
+	D:Debug("pass (\"\".. completed in:", GetTime() - start, test);
+
+	start = GetTime();
+	for i =1, 1000000 do
+	    t = strings[i%3 + 1];
+	    test = ("test_%s"):format(teststring);
+	end
+	D:Debug("pass format completed in:", GetTime() - start, test);
+
+    end
+
 end
 
 local UnitBuffsCache	= {};
@@ -811,3 +885,5 @@ end
 
 
 DcrLoadedFiles["Decursive.lua"] = "@project-version@";
+
+-- Sin

@@ -58,7 +58,6 @@ D.DebuffUpdateRequest = 0;
 
 --@alpha@  
 D.DetectHistory = {};
-D.WaitingToBeFound = {};
 --@end-alpha@
 
 local pairs	= _G.pairs;
@@ -188,6 +187,7 @@ end
 -- This function update Decursive states :
 --   - Clear the black list
 --   - Execute things we couldn't do when in combat
+local LastScanAllTime = 0;
 D.Status.MaxConcurentUpdateDebuff = 0;
 function D:SheduledTasks() -- {{{
 
@@ -218,6 +218,12 @@ function D:SheduledTasks() -- {{{
 
     if D.DebuffUpdateRequest > D.Status.MaxConcurentUpdateDebuff then
 	D.Status.MaxConcurentUpdateDebuff = D.DebuffUpdateRequest;
+    end
+
+    -- Rescan all only if the MUF are used else we don't care at all...
+    if self.profile.ShowDebuffsFrame and GetTime() - LastScanAllTime > 1 then
+	self:ScanEveryBody();
+	LastScanAllTime =  GetTime();
     end
 
     D.DebuffUpdateRequest = 0;
@@ -367,7 +373,9 @@ do
 		--]=]
 	    end
 
-	    self:Debug("|cFF5555UNIT_AURA triggers a rescan|r");
+	    --@debug@
+	    self:Debug("|cFF552255UNIT_AURA triggers a rescan|r because of", UnitID);
+	    --@end-debug@
 
 	    if unitguid then
 		self.Status.Unit_Array_UnitToGUID[UnitID] = unitguid;
@@ -388,7 +396,7 @@ do
 		end
 
 		--self:errln("update schedule for MUF", UnitID);
-		self.MicroUnitF:UpdateMUFUnit(UnitID);
+		self.MicroUnitF:UpdateMUFUnit(UnitID, true);
 		return;
 	    end
 
@@ -475,8 +483,6 @@ do
     local oldest = 0;
 
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
-	--@debug@
-	--@end-debug@
 
 	--@alpha@
 	if destGUID or destName or arg10 then
@@ -571,16 +577,6 @@ do
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
 		    end
 		else
-		    --@alpha@
-		    timev = D:NiceTime();
-
-		    if D.WaitingToBeFound[UnitID] and D.WaitingToBeFound[arg10] then
-			if timev - D.WaitingToBeFound[arg10] < 2 then
-			    D:AddDebugText("Delayed match found for ", arg10, "on unit:", UnitID, "that was late-found on ", D.WaitingToBeFound[UnitID]);
-			    D.WaitingToBeFound[UnitID] = false;
-			end
-		    end
-		    --@end-alpha@
 
 		    --@debug@
 		    D:Debug("Debuff, UnitId: ", UnitID, arg10, event, time() + (GetTime() % 1), timestamp);
@@ -588,6 +584,11 @@ do
 
 		    if self.profile.ShowDebuffsFrame then
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
+
+			--@alpha@
+			D.DetectHistory[DetectHistoryIndex - 1][4] = D.DetectHistory[DetectHistoryIndex - 1][4] .. "   DETECTED by cem " .. D.DebuffUpdateRequest;
+			--@end-alpha@
+
 		    elseif not self.profile.Hide_LiveList then
 			D:Debug("(LiveList) Registering delayed GetDebuff for ", destName);
 			self.LiveList:DelayedGetDebuff(UnitID);
