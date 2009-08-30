@@ -502,7 +502,7 @@ do
 		temp[6]  = sourceName or "NIL";
 		temp[7]  = sourceFlags or "NIL";
 		temp[8]  = destGUID or "NIL";
-		temp[9]  = destName;
+		temp[9]  = destName or "NIL";
 		temp[10] = destFlags or "NIL";
 		temp[11] = arg9 or "NIL";
 		temp[12] = arg10 or "NIL";
@@ -661,8 +661,8 @@ do
 		    end
 
 		    PlaySoundFile(DC.FailedSound);
-		elseif arg12 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then
-		    self:AddDebugText(ERR_GENERIC_NO_TARGET, "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit));
+		elseif arg12 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then -- XXX test this
+		    self:AddDebugText(ERR_GENERIC_NO_TARGET, "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12);
 		end
 		self.Status.ClickedMF = false;
 

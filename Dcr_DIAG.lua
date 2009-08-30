@@ -356,6 +356,7 @@ do
 		PrintMessage("|cFF00FF00No error found in spell translations!|r");
 	    end
 
+	    AddDebugText("Now checking the event management library...");
 	    PrintMessage("Now checking the event management library...");
 	    PrintMessage("If, in about 2 seconds, the message \"|cFF00FF00Event library functionning properly|r\" does not appear then there is a problem");
 
@@ -374,6 +375,7 @@ do
 	    function (argTest)
 		local argtestdone = false;
 		if not argtestdone and argTest ~= "test" then
+		    AddDebugText("Event lib management error: argument could not be read!");
 		    PrintMessage("|cFFFF0000Event lib management error: argument could not be read!|r");
 		    argtestdone = true;
 		end
@@ -383,6 +385,7 @@ do
 		    Dcr:UnregisterEvent(CustomEvent);
 		    PrintMessage("|cFF00FF00Event library functionning properly!|r");
 		    PrintMessage("|cFF00FF00Everything seems to be OK.|r");
+		    AddDebugText("Event library functionning properly, Everything seems to be OK");
 		    return;
 		end
 
@@ -390,6 +393,7 @@ do
 		Dcr:TriggerEvent(CustomEvent, ConfirmCustomEventMessage);
 
 		if ReapeatingEventCount == 4 then
+		    AddDebugText("A problem occured, OneTimeEvent:", OneTimeEvent, "CustomEventCaught:", CustomEventCaught);
 		    PrintMessage("|cFFFF0000A problem occured, OneTimeEvent='%s', CustomEventCaught='%s'|r", OneTimeEvent, CustomEventCaught);
 		    Dcr:CancelScheduledEvent("DcrDiagRepeat");
 		    Dcr:UnregisterEvent(CustomEvent);

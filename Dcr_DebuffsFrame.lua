@@ -699,6 +699,11 @@ function MicroUnitF:OnEnter() -- {{{
 
 	    D:AddDebugText("Debuff late detection:", debuffname, "Type:", MF.Debuffs[1].TypeName, "on unit:", Unit, unitguid, "_AppT_:", DebuffApplyTime, "DFRR:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", GetTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JFGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "MFGuid~:", RegisteredUnitguid ~= unitguid, "Z:", GetZoneText(), "DTI:", DetectHistoryIndex);
 
+	    -- trigger a dcr diag if DetectHistoryIndex is 1 :/
+	    if DetectHistoryIndex == 1 then
+		DecursiveSelfDiagnostic(true, true);
+	    end
+
 	    if #foundcblevents == 0 then
 		D.WaitingToBeFound[debuffname] = D:NiceTime();
 		D.WaitingToBeFound[Unit] = D.WaitingToBeFound[debuffname];
