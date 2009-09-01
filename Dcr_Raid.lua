@@ -539,18 +539,16 @@ do
 
 	-- if we are not in a raid but in a party
 	if (raidnum == 0) then
-	    currentGroup = 1;
+	    currentGroup = 1; -- this is used to compute the default priorities
 	    -- Add the player to the main list if needed
-	    if (not IsInSkipOrPriorList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass])) then
+	    if not IsInSkipOrPriorList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass]) then
 		-- the player is not in a priority state, add to default prio
-		--AddToSort( "player", MyGUID, 900);
 		SortingTable["player"] = 900;
 		Status.Unit_Array_GUIDToUnit[MyGUID] = "player";
 
 
-	    elseif (not IsInSkipList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass])) then
+	    elseif not IsInSkipList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass]) then
 		-- The player is contained within a priority rule
-		--AddToSort("player", MyGUI,  GetUnitPriority ("player", 1, 1, DC.MyClass ) );
 		SortingTable["player"] =      GetUnitPriority ("player", 1, 1, DC.MyClass );
 		Status.Unit_Array_GUIDToUnit[MyGUID] = "player";
 
@@ -575,7 +573,6 @@ do
 
 			Status.Unit_Array_GUIDToUnit[pGUID] = unit;
 
-			-- AddToSort(unit, pGUID, GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) ));
 			SortingTable[unit] =      GetUnitPriority (unit, i + 1, 1, (select(2, UnitClass(unit)) ) );
 
 		    end
@@ -591,7 +588,6 @@ do
 				pGUID = pet;
 			    end
 
-			    --AddToSort( pet, pGUID, GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true) );
 			    SortingTable[pet] =      GetUnitPriority (pet, i + 1, 1, (select(2, UnitClass(pet))), true);
 			    Status.Unit_Array_GUIDToUnit[pGUID] = pet;
 			end
@@ -603,7 +599,6 @@ do
 	-- add our own pet
 	if ( self.profile.Scan_Pets ) then
 	    if (UnitExists("pet")) then
-		--AddToSort( "pet", UnitToGUID["pet"], -900);
 		SortingTable["pet"] =		       -900;
 		Status.Unit_Array_GUIDToUnit[UnitToGUID["pet"]] = "pet";
 	    end
@@ -614,16 +609,12 @@ do
 	    local rName, rGroup, GUID;
 	    local CaheID = 1; -- make an ordered table
 	    local excluded = 0;
+	    local playerPrio = 900;
 
 	    -- Cache the raid roster info eliminating useless info and already listed members
 	    for i = 1, MAX_RAID_MEMBERS do
 		rName, _, rGroup, _, _, rClass = GetRaidRosterInfo(i);
 		GUID =  UnitToGUID["raid"..i];
-
-		-- find our group (a whole iteration is required, raid info are not ordered) -- wrong, the player is always the last now
-		if ( currentGroup==0 and GUID == MyGUID) then
-		    currentGroup = rGroup;
-		end
 
 		-- add all except member to skip
 		if not IsInSkipList(GUID, rGroup, DC.ClassUNameToNum[rClass]) then
@@ -645,6 +636,12 @@ do
 		    excluded = excluded + 1;
 		end
 
+		-- find our group (a whole iteration is required, raid info are not ordered) -- wrong, the player is always the last now but never trust Blizzard...
+		if currentGroup==0 and GUID == MyGUID then -- anyway they do the same thing in PlayerFrame.lua...
+		    currentGroup = rGroup;
+		    playerPrio = GetUnitPriority ("player", i, rGroup, rClass, false);
+		end
+
 		if CaheID + excluded > raidnum then -- we found all the units
 		    RaidRosterCache[CaheID] = false;
 		    break;
@@ -653,19 +650,11 @@ do
 
 	    -- Add the player to the main list if needed
 	    if (not IsInSkipOrPriorList(MyGUID, currentGroup, DC.ClassUNameToNum[DC.MyClass])) then
-		--local PlayerRID = GUIDToUnit[MyGUID]; -- might return false at log-in
-		--if PlayerRID then
-		--    AddToSort( PlayerRID, MyGUID, 900);
-		--    Status.Unit_Array_GUIDToUnit[MyGUID] = PlayerRID;
-		--else
-		    --DcrFatalError(string.format("Decursive-UAB: PlayerRID was not found for %s (cg:%d), UT=%d, RN=%d\nReport this to archarodim@teaser.fr\ndetailing the circumstances. Thanks.",
-			--MyName, currentGroup, (GetTime() - DC.StartTime), raidnum));
-
-		    --AddToSort( "player", MyGUID, 900);
-		    SortingTable["player"] =	   900;
-		    Status.Unit_Array_GUIDToUnit[MyGUID] =  "player";
-
-		--end
+		SortingTable["player"] =	   900;
+		Status.Unit_Array_GUIDToUnit[MyGUID] =  "player";
+	    else -- well let's see if people complains that they cannot exclude themself...
+		SortingTable["player"] =    playerPrio;
+		Status.Unit_Array_GUIDToUnit[MyGUID] =  "player";
 	    end
 
 	    -- Now we have a cache without the units we want to skip
@@ -679,7 +668,6 @@ do
 
 		    TempID = "raid"..raidMember.rIndex;
 
-		    --AddToSort( TempID, raidMember.rGUID, GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false) );
 		    SortingTable[TempID] =		   GetUnitPriority (TempID, raidMember.rIndex, raidMember.rGroup, raidMember.rClass, false);
 		    Status.Unit_Array_GUIDToUnit[raidMember.rGUID] = TempID;
 		end
@@ -698,12 +686,10 @@ do
 
 			-- add it only if not already in (could be the player pet...)
 			if (not Status.Unit_Array_GUIDToUnit[pGUID]) then
-			    --AddToSort( pet, pGUID, GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true) );
 			    SortingTable[pet] =	     GetUnitPriority (pet, raidMember.rIndex, raidMember.rGroup, (select(2,UnitClass(pet))), true);
 			    Status.Unit_Array_GUIDToUnit[pGUID] = pet;
 			end
 		    end
-
 
 		end
 
@@ -717,7 +703,6 @@ do
 	    pGUID = UnitToGUID["focus"]
 	    -- the unit is not registered somewhere else yet
 	    if not Status.Unit_Array_GUIDToUnit[pGUID] then
-		--AddToSort( "focus", pGUID, -1);
 		SortingTable["focus"] =      -1; -- add it at the end...
 		Status.Unit_Array_GUIDToUnit[pGUID] = "focus";
 	    end
@@ -772,3 +757,6 @@ end
 
 -------------------------------------------------------------------------------
 DcrLoadedFiles["Dcr_Raid.lua"] = "@project-version@";
+
+-- "Your God is dead and no one cares"
+-- "If there is a Hell I'll see you there"
