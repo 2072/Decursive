@@ -1,7 +1,41 @@
-Decursive 2.4.2 par Archarodim  (2009-08-11)
+Decursive 2.4.3 par Archarodim  (2009-09-07)
+============================================
+
+
+Changements entre Decursive 2.4.2 et Decursive 2.4.3
+----------------------------------------------------
+
+- Implémentation d'une solution permanente pour les debuffs non détectés par
+  manque d'évènements directs.
+
+- Les options de la macro sont désormais plus fiable et logique :
+    - Quand la création de la macro est désactivée, la touche actuellement attribuée est retirée.
+    - La touche attribuée est également retirée quand le profil est remis à zéro.
+    - L'assignation de touche est désormais impossible quand la création de la macro est désactivée.
+
+- L'alerte 'pas de touche assignée à la macro' est désormais désactivée par
+  défaut puisque cette macro n'est pas vraiment utile après tout.
+
+- La librairie LibBabble-Class-3.0 a été retirée (remplacée par _G.LOCALIZED_CLASS_NAMES_MALE)
+
+- Ajout d'une exception pour l'affliction "Matière noire" pour laquelle aucun
+  évènement SPELL_AURA_APPLIED n'est généré par le jeu.
+
+- Le gestionnaire d'erreur Lua est de nouveau activé mais des précautions ont
+  été prises et des "hotfixes" au Blizzard_DebugTools sont appliqués dynamiquement par Decursive.
+    - **IMPORTANT**: À cause (ou plutôt grâce) à ces corrections, l'installation de Decursive
+      peut donc révéler certaines erreurs Lua que vous ne pouviez pas voir avant.
+
+- Decursive utilise toujours "player" comme UnitID pour le joueur (auparavant
+  "raid#" était utilisé lorsque le joueur était inclut dans la liste de
+  priorité).
+    - Cela empêche la MUF du joueur de disparaître temporairement lorsque le
+      groupe de raid est mis à jour.
+
 
 
 Changements entre Decursive 2.4.1 et Decursive 2.4.2
+----------------------------------------------------
 
 - CORRECTION IMPORTANTE: Des problèmes corrigés dans cette versions pouvaient
   empêcher Decursive de détecter les afflictions dans certaines situations
@@ -22,6 +56,7 @@ Changements entre Decursive 2.4.1 et Decursive 2.4.2
 
 
 Changements entre Decursive 2.4 et Decursive 2.4.1
+----------------------------------------------------
 
 - Support du nouveau talent 'Corps et âme' des prêtres qui permet
   d'enlever un effet de poison sur soi-même en utilisant 'Abolir le poison'.
@@ -46,6 +81,7 @@ Changements entre Decursive 2.4 et Decursive 2.4.1
 
 
 Changements entre Decursive 2.3.1 et Decursive 2.4
+----------------------------------------------------
 
 - Nouveauté : Le temps de recharge du sort de guérison à utiliser est indiqué
   (horloge) sur les micro-portraits des unités affligées.
@@ -79,6 +115,7 @@ Changements entre Decursive 2.3.1 et Decursive 2.4
 - Quelques autres correction de bug mineurs.
 
 Changements entre Decursive 2.3.0 et Decursive 2.3.1
+----------------------------------------------------
 
 - Correction d'un très vieux problème rare où Decursive manquait des afflictions.
 - Correction de la gestion des unités focalisées.
@@ -87,12 +124,14 @@ Changements entre Decursive 2.3.0 et Decursive 2.3.1
 
 
 Changements entre Decursive 2.3.0 RC7 et Decursive 2.3.0
+----------------------------------------------------
 
 - Ajout d'un test de mélange de versions à l'auto-diagnostique.
 - Correction d'une erreur LUA introduit dans la RC7
 
 
 Changements entre Decursive 2.3.0 RC4 et Decursive 2.3.0 RC7
+----------------------------------------------------
 
 - Correction d'une erreur LUA quand les membres de la liste de priorité était
   exclu du blacklistage et qu'un évènement de blaklistage se produisait.
@@ -108,6 +147,7 @@ Changements entre Decursive 2.3.0 RC4 et Decursive 2.3.0 RC7
 
 
 Changements entre Decursive 2.3.0 RC2 et Decursive 2.3.0 RC3
+----------------------------------------------------
 
 - Suppression de la librairie FubarPlugin-2.0 (utiliser "Broker2FuBar" pour retrouver Decursive dans Fubar)
 - Ajout des librairies LibDataBroker-1.1 et LibDBIcon-1.0
@@ -119,6 +159,7 @@ Changements entre Decursive 2.3.0 RC2 et Decursive 2.3.0 RC3
 
 
 Changements entre Decursive 2.3 beta 3 et Decursive 2.3.0 RC2
+----------------------------------------------------
 
 Corrige l'initialisation défectueuse due au changement de l'API CreateMacro()
 dans WoW 3.0 (lorsque l'utilisateur avait ses macros "par charactère" pleines)
@@ -130,6 +171,7 @@ dans WoW 3.0 (lorsque l'utilisateur avait ses macros "par charactère" pleines)
 - Mise à jour des versions minimum requises des librairies.
 
 Changements entre Decursive 2.2.0 et Decursive 2.3 beta 3
+----------------------------------------------------
 
 - Decursive utilise désormais les GUID en interne au lieu des noms des unités
   (optimisations des ressources)
@@ -142,6 +184,7 @@ Changements entre Decursive 2.2.0 et Decursive 2.3 beta 3
 
 
 Changements entre Decursive 2.1.0 Final et Decursive 2.2.0
+----------------------------------------------------
 
 * Changements importants :
 
@@ -199,6 +242,7 @@ Changements entre Decursive 2.1.0 Final et Decursive 2.2.0
 
 
 Changements entre Decursive 2.0.4 et Decursive 2.1.0 Final
+----------------------------------------------------
 
 * Changements importants :
 
@@ -258,6 +302,7 @@ Changements entre Decursive 2.0.4 et Decursive 2.1.0 Final
   Decursive serait banni par Blizzard. (voir à la fin du fichier lisez-moi.txt)
 
 Changements entre Decursive 2.0.3 et Decursive 2.0.4
+----------------------------------------------------
 
 - Désormais, Decursive est dédié à la mémoire de Bertrand Sence qui nous a
   quitté le mois dernier et était connu sous le nom de Glorfindal sur le
@@ -270,6 +315,7 @@ Changements entre Decursive 2.0.3 et Decursive 2.0.4
 
 
 Changements entre Decursive 2.0 Final et Decursive 2.0.3
+----------------------------------------------------
 
 **Nouvelle fonctionnalités
 
@@ -325,6 +371,7 @@ Changements entre Decursive 2.0 Final et Decursive 2.0.3
 
 
 Changements entre Decursive 2.0 RC1 et Decursive 2.0 Final
+----------------------------------------------------
 
 - Les mages lancent désormais métamorphose rang 1 au lieu du rang le plus élevé
   (utilise moins de mana et dure moins longtemps).
@@ -336,6 +383,7 @@ Changements entre Decursive 2.0 RC1 et Decursive 2.0 Final
 
 
 Changements entre Decursive 2.0 BETA 7-Pub et Decursive 2.0 RC1
+----------------------------------------------------
 
 - Un message d'erreur est affiché si Decursive ne parvient pas à charger ses librairies principales correctement
 - Il est désormais possible de désactiver l'avertissement affiché si aucune touche n'est associé à la macro.
@@ -344,6 +392,7 @@ Changements entre Decursive 2.0 BETA 7-Pub et Decursive 2.0 RC1
 - Fichier .TOC mis à jour pour WoW 2.1.
 
 Changements entre Decursive 2.0 BETA 6-Pub-fixed et 2.0 BETA 7-Pub
+----------------------------------------------------
 
 Nouveautés :
 
@@ -406,11 +455,13 @@ Bugs corrigés :
 
 
 Changements entre Decursive 2.0 BETA 6-Pub et Decursive 2.0 BETA 6-Pub-fixed
+----------------------------------------------------
 
 - Correction de plusieurs problèmes avec le système de priorité des sorts.
 
 
 Changements entre Decursive 2.0 BETA 5 et 2.0 BETA 6-Pub
+----------------------------------------------------
 
     # Changements importants
 
