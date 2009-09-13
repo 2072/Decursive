@@ -620,6 +620,7 @@ function MicroUnitF:OnEnter() -- {{{
 
     end
 
+    --[=[
     --@alpha@  
     local LateDetectTest = false;
     if MF.Debuffs and MF.Debuffs[1].Type then
@@ -629,11 +630,14 @@ function MicroUnitF:OnEnter() -- {{{
     -- removes the CHARMED_STATUS bit from Status, we don't need it
     Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS)); -- XXX do not use this value other than for debugging (not up to date, use the later below)
     --@end-alpha@
+    --]=]
 
     MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
+    --[=[
     --@alpha@  
+
     -- if there was no debuff just before the above update (it's wrong)
     if not LateDetectTest and Status ~= FAR and MF.Debuffs and MF.Debuffs[1].Type then
 	LateDetectTest = true;
@@ -648,6 +652,7 @@ function MicroUnitF:OnEnter() -- {{{
 	end
     end
     --@end-alpha@
+    --]=]
 
     if not Unit then
 	return; -- If the user overs the MUF befor it's completely initialized
@@ -876,7 +881,11 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 
 	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
 		D:errln(L["HLP_WRONGMBUTTON"]);
-		D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
+		if MF_colors[NeededPrio] then
+		    D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
+		else
+		    D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", this.Object.Debuffs[1].Type);
+		end
 
 	    elseif RequestedPrio and D.Status.HasSpell then
 --		D:Print("XXX ClickedMF SET");

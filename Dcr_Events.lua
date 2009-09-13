@@ -485,6 +485,7 @@ do
     function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
 
 	--@alpha@
+	--[=[
 	if destGUID or destName or arg10 then
 	    UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
 	    timev = GetTime();
@@ -517,18 +518,21 @@ do
 	    end
 	    DetectHistoryIndex = DetectHistoryIndex + 1;
 	end
+	--]=]
 	--@end-alpha@
 
 
 	-- check for exceptions
 	if SpecialDebuffs[arg9] and event == SpecialDebuffs[arg9] then
 
+	    --[=[
 	    --@alpha@
 	    if self.Status.CuringSpells[DC.MAGIC] then
 		UnitID = self.Status.Unit_Array_GUIDToUnit[destGUID]; -- get the grouped unit associated to the destGUID if there is none then the unit is not in our group or is filtered out
 		--self:AddDebugText("CbEvent with DM:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, "Z:", GetZoneText(), "Unit:", UnitID);
 	    end
 	    --@end-alpha@
+	    --]=]
 
 	    event = "SPELL_AURA_APPLIED";
 	end
@@ -586,7 +590,7 @@ do
 			self.MicroUnitF:UpdateMUFUnit(UnitID);
 
 			--@alpha@
-			D.DetectHistory[DetectHistoryIndex - 1][4] = D.DetectHistory[DetectHistoryIndex - 1][4] .. "   DETECTED by cem " .. D.DebuffUpdateRequest;
+			--D.DetectHistory[DetectHistoryIndex - 1][4] = D.DetectHistory[DetectHistoryIndex - 1][4] .. "   DETECTED by cem " .. D.DebuffUpdateRequest;
 			--@end-alpha@
 
 		    elseif not self.profile.Hide_LiveList then
