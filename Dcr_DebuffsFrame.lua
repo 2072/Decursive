@@ -879,13 +879,16 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 		end
 	    end
 
-	    if (RequestedPrio and NeededPrio ~= RequestedPrio) then
+	    if RequestedPrio and NeededPrio ~= RequestedPrio then
 		D:errln(L["HLP_WRONGMBUTTON"]);
-		if MF_colors[NeededPrio] then
+		if NeededPrio and MF_colors[NeededPrio] then
 		    D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
+		--@debug@
 		else
 		    D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", this.Object.Debuffs[1].Type);
+		--@end-debug@
 		end
+
 
 	    elseif RequestedPrio and D.Status.HasSpell then
 --		D:Print("XXX ClickedMF SET");
