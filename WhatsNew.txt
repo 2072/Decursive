@@ -1,6 +1,15 @@
-Decursive 2.4.3 by Archarodim (2009-09-07)
-==========================================
+Decursive 2.4.3.2 by Archarodim (2009-09-16)
+============================================
 
+
+Changes from Decursive 2.4.3 to Decursive 2.4.3.2
+-------------------------------------------------
+
+- A Lua error could occur in rare race conditions (when clicking on a MUF at the
+  exact moment its debuff disappears).
+
+- 'Shadoweld' was no longer detected as stealth because its spell ID changed.
+  (future spell ID changes will generate debug reports).
 
 Changes from Decursive 2.4.2 to Decursive 2.4.3
 -----------------------------------------------

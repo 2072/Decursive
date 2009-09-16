@@ -1096,7 +1096,7 @@ function D:GetSpellsTranslations(FromDIAG)
 	['Arcane Blast']		= {	30451,					 },
 	['Prowl']			= {	5215, 6783, 9913, 24450,		 },
 	['Stealth']			= {	1784, 1785, 1786, 1787,			 },
-	['Shadowmeld']			= {	20580,					 },
+	['Shadowmeld']			= {	58984,					 },
 	['Invisibility']		= {	66,					 },
 	['Lesser Invisibility']		= {	7870,                                    },
 	['Ice Armor']			= {	7302, 7320, 10219, 10220, 27124,	 },
@@ -1118,12 +1118,18 @@ function D:GetSpellsTranslations(FromDIAG)
 
 	    if _ == 1 then
 		DS[Sname] = (GetSpellInfo(Sid));
+		if not DS[Sname] then
+		    D:AddDebugText("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
+		end
 	    elseif FromDIAG then
 		if DS[Sname] ~= (GetSpellInfo(Sid)) then
-		    D:AddDebugText("Spell IDs %s and %s have different translations: %s and %s", Sids[1], Sid, DS[Sname], (GetSpellInfo(Sid)) );
-		    D:errln("Spell IDs %s and %s have different translations: %s and %s", Sids[1], Sid, DS[Sname], (GetSpellInfo(Sid)) );
-		    D:errln("Please report this to ARCHARODIM@teaser.fr");
+		    D:AddDebugText("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
+		    D:errln("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
+		    D:errln("Please report this to ARCHARODIM+DcrReport@teaser.fr");
 		    ok = false;
+		elseif not DS[Sname] then
+		    D:AddDebugText("SpellID:", Sid, "no longer exist. This was supposed to represent the spell", Sname);
+		    D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
 		end
 	    end
 

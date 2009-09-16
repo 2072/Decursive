@@ -1,11 +1,20 @@
-Decursive 2.4.3 par Archarodim  (2009-09-07)
-============================================
+Decursive 2.4.3.2 par Archarodim  (2009-09-16)
+==============================================
+
+
+Changements entre Decursive 2.4.3 et Decursive 2.4.3.2
+------------------------------------------------------
+
+- Correction d'une erreur Lua qui pouvait se produire dans de rares conditions
+  (lorsque l'on clique sur une MUF exactement au moment où son affliction disparaît).
+
+- 'Camouflage dans l'ombre' n'était plus détecté comme un camouflage (son SpellID a changé).
 
 
 Changements entre Decursive 2.4.2 et Decursive 2.4.3
 ----------------------------------------------------
 
-- Implémentation d'une solution permanente pour les debuffs non détectés par
+- Implémentation d'une solution permanente pour les afflictions non détectées par
   manque d'évènements directs.
 
 - Les options de la macro sont désormais plus fiable et logique :
