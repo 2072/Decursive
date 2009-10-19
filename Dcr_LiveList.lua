@@ -430,7 +430,7 @@ function LiveList:Update_Display() -- {{{
     if DebuffedUnitsNumber > 0 and Index < D.profile.Amount_Of_Afflicted then
 	for _, UnitID in ipairs(D.Status.Unit_Array) do
 	    -- if the unit is debuffed and still exists and is not stealthed check this only if the MUFs engine is not there, redudent tests otherwise...
-	    if D.UnitDebuffed[UnitID] and UnitExists(UnitID) and not (not D.profile.ShowDebuffsFrame and D.profile.Ingore_Stealthed and D.Stealthed_Units[UnitID]) then
+	    if D.UnitDebuffed[UnitID] and UnitExists(UnitID) then
 
 		-- we don't care about range
 		if not D.profile.LV_OnlyInRange then

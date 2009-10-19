@@ -732,7 +732,7 @@ do
     end -- // }}}
 
     local GetTime	= _G.GetTime;
-    local Debuffs	= {}; local IsCharmed = false; local Unit; local MUF; local IsDebuffed= false;
+    local Debuffs	= {}; local IsCharmed = false; local Unit; local MUF; local IsDebuffed= false; local CheckStealth = false;
     local NoScanStatuses	= false;
     function D:ScanEveryBody()
 
@@ -741,6 +741,7 @@ do
 	end
 
 	local UnitArray = self.Status.Unit_Array; local i = 1;
+	local CheckStealth = self.profile.Show_Stealthed_Status;
 
 	--@debug@
 	local start = GetTime();
@@ -750,11 +751,13 @@ do
 	    Unit = UnitArray[i];
 	    MUF = self.MicroUnitF.UnitToMUF[Unit];
 
-	    -- I want to fuck you like an animal
-	    -- I want to feel you from the inside
-
 	    if MUF and not NoScanStatuses[MUF.UnitStatus] then
 		Debuffs, IsCharmed = self:UnitCurableDebuffs(Unit, true);
+
+		if CheckStealth then
+		    self.Stealthed_Units[Unit] = self:CheckUnitStealth(Unit); -- update stealth status
+		end
+
 		IsDebuffed = (Debuffs and true) or IsCharmed;
 		-- If MUF disagrees
 		if IsDebuffed ~= MUF.IsDebuffed and not D:IsEventScheduled("Dcr_Update" .. Unit) then
@@ -871,11 +874,9 @@ do
     DC.IsStealthBuff = D:tReverse(Stealthed);
 
     function D:CheckUnitStealth(Unit)
-	if (self.profile.Ingore_Stealthed) then
-	    if self:CheckUnitForBuffs(Unit, Stealthed) then
-		--	    self:Debug("Sealth found !");
-		return true;
-	    end
+	if self:CheckUnitForBuffs(Unit, Stealthed) then
+	    --	    self:Debug("Sealth found !");
+	    return true;
 	end
 	return false;
     end

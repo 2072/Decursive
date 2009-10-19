@@ -569,7 +569,7 @@ do
 		end
 		--]=]
 
-		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
+		if arg12 == "BUFF" and self.profile.Show_Stealthed_Status then
 
 		    if DC.IsStealthBuff[arg10] then
 			if AuraEvents[event] == 1 then
@@ -611,7 +611,7 @@ do
 
 		self.LiveList:DelayedGetDebuff("target");
 
-		if arg12 == "BUFF" and self.profile.Ingore_Stealthed then
+		if arg12 == "BUFF" and self.profile.Show_Stealthed_Status then
 		    if DC.IsStealthBuff[arg10] then
 			if AuraEvents[event] == 1 then
 			    self.Stealthed_Units["target"] = true;

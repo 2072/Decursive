@@ -159,8 +159,10 @@ D.defaults = { -- {{{
     -- should we scan pets
     Scan_Pets = true,
 
-    -- should we ignore stealthed units
-    Ingore_Stealthed = true,
+    -- should we ignore stealthed units? A useless option since a very long time.
+    Ingore_Stealthed = false,
+    
+    Show_Stealthed_Status = true,
 
     -- how many to show in the livelist
     Amount_Of_Afflicted = 3,
@@ -169,7 +171,7 @@ D.defaults = { -- {{{
     LV_OnlyInRange = true,
 
     -- how many seconds to "black list" someone with a failed spell
-    CureBlacklist	= 5.0,
+    CureBlacklist = 5.0,
 
     -- how often to poll for afflictions in seconds (for the live-list only)
     ScanTime = 0.3,
@@ -724,6 +726,17 @@ D.options = { -- {{{
 		    disabled = function() return not D.profile.ShowDebuffsFrame end,
 		    order = 1360,
 		},
+		ShowStealthStatus = {
+		    type = "toggle",
+		    name =  L["OPT_SHOW_STEALTH_STATUS"],
+		    desc = L["OPT_SHOW_STEALTH_STATUS_DESC"],
+		    get = function() return D.profile.Show_Stealthed_Status end,
+		    set = function()
+			D.profile.Show_Stealthed_Status = not D.profile.Show_Stealthed_Status;
+		    end,
+		    order = 1370,
+		},
+
 		{
 		    type = "header",
 		    order = 1400,
@@ -1084,6 +1097,7 @@ D.options = { -- {{{
 		    end,
 		    order = 133
 		},
+		--[=[
 		SkipStealthed = {
 		    type = "toggle",
 		    name =  L["IGNORE_STEALTH"],
@@ -1094,8 +1108,7 @@ D.options = { -- {{{
 		    end,
 		    order = 134
 		},
-
-
+		--]=]
 
 		{
 		    type = "header", order = 138,}, Title2 = {

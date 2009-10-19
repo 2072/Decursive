@@ -145,6 +145,7 @@ local ProperErrorHandler = false;
 local IsReporting = false;
 
 _G.original_debuglocals = _G.debuglocals;
+---[=[
 _G.debuglocals = function (level)
     local ADDLEVEL = 2; -- 2 is for this function and DecursiveErrorHandler
 
@@ -159,16 +160,19 @@ _G.debuglocals = function (level)
 
     return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This message is a HotFix from Decursive to prevent a C stack overflow)";
 end; 
+--]=]
 
 function DecursiveErrorHandler(err, ...)
 
     -- second blizzard bug HotFix
+    ---[=[
     if ScriptErrorsFrameScrollFrameText then
 	if not ScriptErrorsFrameScrollFrameText.cursorOffset then
 	    ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
 	    print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil|r");
 	end
     end
+    --]=]
 
     --Add a check to see if the error is happening inside the Blizzard debug tool himself...
     if (err:lower()):find("blizzard_debugtools") then

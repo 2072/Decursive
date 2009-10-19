@@ -1258,7 +1258,7 @@ do
 
 	else
 	    -- If the Unit is invisible
-	    if D.profile.Ingore_Stealthed and D.Stealthed_Units[Unit] then
+	    if D.profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] then
 		if PreviousStatus ~= STEALTHED then
 		    self.Color = MF_colors[STEALTHED];
 		    self.UnitStatus = STEALTHED;
