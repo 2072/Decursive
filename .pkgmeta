@@ -1,7 +1,5 @@
 # vim:syntax=YAML:expandtab
 externals:
-    Libs/LibStub:
-        url: svn://svn.wowace.com/wow/libstub/mainline/tags/1.0
     Libs/AceAddon-2.0:
         url:  svn://svn.wowace.com/wow/ace2/mainline/trunk/AceAddon-2.0
     Libs/AceConsole-2.0:
