@@ -259,6 +259,7 @@ do
 	    ["LibDataBroker-1.1"] = 3,
 	    ["LibDBIcon-1.0"] = 8,
 	    ["CallbackHandler-1.0"] = 3,
+	    ["LibOOP-1.0"] = 0,
 	};
 
 	local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
