@@ -31,6 +31,9 @@ externals:
         url:  git://github.com/tekkub/libdatabroker-1-1.git 
     Libs/CallbackHandler-1.0:
         url:  svn://svn.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0
+    Libs/LibOOP-1.0:
+        url: svn://svn.wowace.com/wow/liboop/mainline/trunk/LibOOP
+        tag: "1.0.0"
 
 
 optional-dependencies:
@@ -42,6 +45,7 @@ optional-dependencies:
     - libdatabroker-1-1
     - libdbicon-1-0
     - callbackhandler
+    - liboop
 
 #license-output: GPL.txt
 

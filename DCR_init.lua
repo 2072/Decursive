@@ -51,6 +51,10 @@ Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConso
 local D = Dcr;
 
 D.AOO	    = AceLibrary("AceOO-2.0");
+
+D.OOP	    = LibStub("LibOOP-1.0");
+
+
 --D.L	    = AceLibrary("AceLocale-2.2"):new("Dcr");
 D.L	    = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 D.DewDrop   = AceLibrary("Dewdrop-2.0");

@@ -68,7 +68,7 @@ end
 		Dcr.LiveList:Onclick();
 	    </OnClick>
 	    <OnEnter>
-		Dcr.LiveList:DebuffTemplate_OnEnter();
+		Dcr.LiveList:DebuffTemplate_OnEnter(self);
 	    </OnEnter>
 	    <OnLeave>
 		DcrDisplay_Tooltip:Hide();

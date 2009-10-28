@@ -50,11 +50,12 @@ local D   = Dcr;
 
 local L	    = D.L;
 local LC    = D.LC;
-local AceOO = D.AOO;
+--local AceOO = D.AOO;
+local OOP   = D.OOP;
 local DC    = DcrC;
 local DS    = DC.DS;
 
-D.LiveList = AceOO.Class();
+D.LiveList = OOP.Class();
 
 local LiveList = D.LiveList;
 local MicroUnitF = D.MicroUnitF;
@@ -96,7 +97,7 @@ function LiveList:Create() -- {{{
 
     self.Number = self.Number + 1;
 
-    self.ExistingPerID[self.Number] = self:new(DcrLiveList, self.Number);
+    self.ExistingPerID[self.Number] = self:New(DcrLiveList, self.Number);
 
 
     return self.ExistingPerID[self.Number];
@@ -169,72 +170,76 @@ function LiveList.prototype:GiveAnchor() -- {{{
 end -- }}}
 
 
-function LiveList.prototype:init(Container,ID) -- {{{
-    LiveList.super.prototype.init(self); -- needed
+function LiveList:New(Container,ID) -- {{{
+    local o = self:Super('New');
+    
+    --LiveList.super.prototype.init(self); -- needed
     D:Debug("(LiveList) Initializing LiveList object '%s'", ID);
 
     --ObjectRelated
-    self.ID		    = ID;
-    self.IsShown	    = false;
-    self.Parent		    = Container;
+    o.ID		    = ID;
+    o.IsShown		    = false;
+    o.Parent		    = Container;
 
     --Debuff info
-    self.UnitID		    = false;
-    self.UnitName	    = false;
-    self.PrevUnitName	    = false;
-    self.PrevUnitID	    = false;
-    self.UnitClass	    = false;
+    o.UnitID		    = false;
+    o.UnitName		    = false;
+    o.PrevUnitName	    = false;
+    o.PrevUnitID	    = false;
+    o.UnitClass		    = false;
     
-    self.Debuff			= {};
+    o.Debuff		    = {};
 
-    self.PrevDebuffIndex	= false;
-    self.PrevDebuffName		= false;
-    self.PrevDebuffTypeName	= false;
-    self.PrevDebuffApplicaton	= false;
-    self.PrevDebuffTexture	= false;
+    o.PrevDebuffIndex	    = false;
+    o.PrevDebuffName	    = false;
+    o.PrevDebuffTypeName    = false;
+    o.PrevDebuffApplicaton  = false;
+    o.PrevDebuffTexture	    = false;
 
-    self.IsCharmed	    = false;
-    self.PrevIsCharmed	    = false;
+    o.IsCharmed		    = false;
+    o.PrevIsCharmed	    = false;
 
-    self.Alpha		    = false;
+    o.Alpha		    = false;
 
     -- Create the frame
-    self.Frame = CreateFrame ("Button", "DcrLiveListItem"..ID, self.Parent, "DcrLVItemTemplate");
+    o.Frame = CreateFrame ("Button", "DcrLiveListItem"..ID, o.Parent, "DcrLVItemTemplate");
 
     -- Set some basic properties
-    self.Frame:SetFrameStrata("LOW");
-    self.Frame:RegisterForClicks("AnyDown");
+    o.Frame:SetFrameStrata("LOW");
+    o.Frame:RegisterForClicks("AnyDown");
 
     -- Set the anchor of this item
-    self.Frame:SetPoint(self:GiveAnchor());
+    o.Frame:SetPoint(o:GiveAnchor());
 
     -- create the background
-    self.BackGroundTexture = self.Frame:CreateTexture("DcrLiveListItem"..ID.."BackTexture", "BACKGROUND", "DcrLVBackgroundTemplate");
+    o.BackGroundTexture = o.Frame:CreateTexture("DcrLiveListItem"..ID.."BackTexture", "BACKGROUND", "DcrLVBackgroundTemplate");
 
     -- Create the Icon Texture
-    self.IconTexture = self.Frame:CreateTexture("DcrLiveListItem"..ID.."Icon", "ARTWORK", "DcrLVIconTemplate");
+    o.IconTexture = o.Frame:CreateTexture("DcrLiveListItem"..ID.."Icon", "ARTWORK", "DcrLVIconTemplate");
 
     -- Create the Debuff application count font string
-    self.DebuffAppsFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Count", "OVERLAY", "DcrLLAfflictionCountFont");
+    o.DebuffAppsFontString = o.Frame:CreateFontString("DcrLiveListItem"..ID.."Count", "OVERLAY", "DcrLLAfflictionCountFont");
 
     -- Create the character name Fontstring
-    self.UnitNameFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitName", "OVERLAY", "DcrLLUnitNameFont");
+    o.UnitNameFontString = o.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitName", "OVERLAY", "DcrLLUnitNameFont");
     
     -- Create the unitID Fontstring
-    self.UnitIDFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitID", "OVERLAY", "DcrLLUnitIDFont");
-    --self.UnitIDFontString:SetHeight(3);
+    o.UnitIDFontString = o.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitID", "OVERLAY", "DcrLLUnitIDFont");
+    --o.UnitIDFontString:SetHeight(3);
 
     -- Create the debuff type fontstring
-    self.DebuffTypeFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Type", "OVERLAY", "DcrLLDebuffTypeFont");
+    o.DebuffTypeFontString = o.Frame:CreateFontString("DcrLiveListItem"..ID.."Type", "OVERLAY", "DcrLLDebuffTypeFont");
 
     -- Create the debuff name fontstring
-    self.DebuffNameFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Name", "OVERLAY", "DcrLLDebuffNameFont");
+    o.DebuffNameFontString = o.Frame:CreateFontString("DcrLiveListItem"..ID.."Name", "OVERLAY", "DcrLLDebuffNameFont");
 
 
     -- a reference to this object
-    self.Frame.Object = self;
+    o.Frame.Object = o;
 
-    self.Frame:Show();
+    o.Frame:Show();
+
+    return o;
 
 end -- }}}
 
@@ -517,12 +522,14 @@ end -- }}}
 
 
 -- this displays the tooltips of the live-list
-function LiveList:DebuffTemplate_OnEnter() --{{{
-    if (D.profile.AfflictionTooltips and this.Object.UnitID) then
-	DcrDisplay_Tooltip:SetOwner(this, "ANCHOR_CURSOR");
+function LiveList:DebuffTemplate_OnEnter(frame) --{{{
+    if (D.profile.AfflictionTooltips and frame.Object.UnitID) then
+	DcrDisplay_Tooltip:SetOwner(frame, "ANCHOR_CURSOR");
 	DcrDisplay_Tooltip:ClearLines();
-	DcrDisplay_Tooltip:SetUnitDebuff(this.Object.UnitID,this.Object.Debuff.index); -- OK
+	DcrDisplay_Tooltip:SetUnitDebuff(frame.Object.UnitID,frame.Object.Debuff.index); -- OK
 	DcrDisplay_Tooltip:Show();
+    else
+	D:Debug(D.profile.AfflictionTooltips, frame.Object.UnitID );
     end
 end --}}}
 
