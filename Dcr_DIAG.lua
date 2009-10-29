@@ -28,7 +28,7 @@ DcrC = {};
 local DC = DcrC;
 
 DC.StartTime = GetTime();
-DC.MyClass = "unkknown";
+DC.MyClass = "unknown";
 
 DcrLoadedFiles = {
     ["Dcr_DIAG.xml"]		= false,
@@ -169,7 +169,9 @@ function DecursiveErrorHandler(err, ...)
     if ScriptErrorsFrameScrollFrameText then
 	if not ScriptErrorsFrameScrollFrameText.cursorOffset then
 	    ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
-	    print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil|r");
+	    if ( GetCVarBool("scriptErrors") ) then
+		print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil|r");
+	    end
 	end
     end
     --]=]
@@ -267,7 +269,7 @@ do
 
 	local ErrorFound = false;
 	local Errors = {};
-	FatalOccured = false;
+	local FatalOccured = false;
 
 	-- Check each version of the required libraries that use LibStub
 	if LibStub then
