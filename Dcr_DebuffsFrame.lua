@@ -40,7 +40,7 @@ DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", T
 end
 -- }}}
 
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_lists.xml"] or not DcrLoadedFiles["Dcr_lists.lua"] then
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_lists.xml"] or not DcrLoadedFiles["Dcr_lists.lua"] then -- XML are loaded even if LUA syntax errors exixts
     if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_lists.xml or Dcr_lists.lua not loaded)"); end;
     DcrCorrupted = true;
     return;

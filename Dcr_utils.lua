@@ -39,8 +39,8 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
 DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["DCR_init.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (DCR_init.lua not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_LDB.lua"] then
+    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_LDB.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end

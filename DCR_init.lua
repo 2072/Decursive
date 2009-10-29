@@ -39,8 +39,8 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
 DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DIAG.xml"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_DIAG.xml not loaded)"); end;
+if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
+    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
     DcrCorrupted = true;
     return;
 end
@@ -50,6 +50,7 @@ Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConso
 
 local D = Dcr;
 
+DcrCorruptedd = 1;
 D.AOO	    = AceLibrary("AceOO-2.0");
 
 D.OOP	    = LibStub("LibOOP-1.0");
@@ -63,6 +64,12 @@ D.T	    = AceLibrary("Tablet-2.0");
 
 D.LC	    = _G.LOCALIZED_CLASS_NAMES_MALE;
 
+
+if not (Dcr and D.AOO and D.OOP and D.L and D.DewDrop and D.Waterfall and D.T)  then
+    DcrFatalError("One or more required libraries could not be loaded, Decurive init aborted.");
+    DcrCorrupted = true;
+    return;
+end
 
 D.DcrFullyInitialized = false;
 

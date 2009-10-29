@@ -116,6 +116,7 @@ end
 		DcrDisplay_Tooltip:Hide();
 	    </OnLeave>
 	    <OnLoad>
+		if DcrCorrupted then return end
 		Dcr.ListFrameTemplate_OnLoad();
 	    </OnLoad>
 	    <OnShow>
@@ -201,6 +202,7 @@ end
 		</Anchors>
 		<Scripts>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["POPULATE"]);
 		    </OnLoad>
 		    <OnClick>
@@ -347,6 +349,7 @@ end
 
 	<Scripts>
 	    <OnLoad>
+		if DcrCorrupted then return end
 		Dcr.ListFrameTemplate_OnLoad();
 
 		this.ScrollUpdateFunc = Dcr.PrioSkipList_ScrollFrame_Update;
@@ -380,6 +383,7 @@ end
 
 	<Scripts>
 	    <OnLoad>
+		if DcrCorrupted then return end
 		Dcr.ListFrameTemplate_OnLoad();
 
 		this.ScrollUpdateFunc = Dcr.PrioSkipList_ScrollFrame_Update;
@@ -480,6 +484,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '1');
 		    </OnLoad>
 		</Scripts>
@@ -502,6 +507,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '2');
 		    </OnLoad>
 		</Scripts>
@@ -524,6 +530,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '3');
 		    </OnLoad>
 		</Scripts>
@@ -546,6 +553,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '4');
 		    </OnLoad>
 		</Scripts>
@@ -568,6 +576,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '5');
 		    </OnLoad>
 		</Scripts>
@@ -590,6 +599,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '6');
 		    </OnLoad>
 		</Scripts>
@@ -612,6 +622,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '7');
 		    </OnLoad>
 		</Scripts>
@@ -634,6 +645,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_GROUP"] .. '8');
 		    </OnLoad>
 		</Scripts>
@@ -655,6 +667,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_WARRIOR;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -677,6 +690,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_PRIEST;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -699,6 +713,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_MAGE;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -721,6 +736,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_WARLOCK;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -743,6 +759,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_HUNTER;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -765,6 +782,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_ROGUE;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -787,6 +805,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_DRUID;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -809,6 +828,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_SHAMAN;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -831,6 +851,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_PALADIN;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -852,6 +873,7 @@ end
 			Dcr:PopulateButtonPress();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this.ClassType = DcrC.CLASS_DEATHKNIGHT;
 			this:SetText(Dcr:ColorText(Dcr.LC[this.ClassType], "FF"..Dcr:GetClassHexColor(this.ClassType)));
 		    </OnLoad>
@@ -874,6 +896,7 @@ end
 			DecursivePopulateListFrame:Hide();
 		    </OnClick>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["STR_CLOSE"]);
 		    </OnLoad>
 		</Scripts>

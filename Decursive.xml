@@ -135,6 +135,7 @@ end
 	    <OnEvent>
 		if event == "ADDON_LOADED" and arg1 == "Decursive" then
 		    DecursiveSelfDiagnostic();
+		    this:UnregisterEvent("ADDON_LOADED");
 		end
 	    </OnEvent>
 	</Scripts>
@@ -153,6 +154,7 @@ end
 		</Anchors>
 		<Scripts>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["PRIORITY_SHOW"]);
 		    </OnLoad>
 		    <OnClick>
@@ -184,6 +186,7 @@ end
 		</Anchors>
 		<Scripts>
 		    <OnLoad>
+			if DcrCorrupted then return end
 			this:SetText(Dcr.L["SKIP_SHOW"]);
 		    </OnLoad>
 		    <OnClick>

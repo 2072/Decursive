@@ -149,6 +149,7 @@ end
 
 	<Scripts>
 	    <OnLoad>
+		if DcrCorrupted then return end
 		Dcr.MicroUnitF:OnLoad();
 	    </OnLoad>
 	    <OnEnter>
