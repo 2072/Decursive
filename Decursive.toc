@@ -14,13 +14,13 @@
 
 ## X-License: GNU GPL
 
-## OptionalDeps: Ace2, Ace3, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0, LibOOP
+## OptionalDeps: Ace2, Ace3, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0 
 
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Class: Mage, Priest, Paladin, Druid, Hunter, Warlock, Shaman
 
 
-## X-Embeds: LibStub, Ace2, AceLocale-3.0, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0, LibOOP
+## X-Embeds: LibStub, Ace2, AceLocale-3.0, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0
 
 ## X-ReleaseDate: "@project-date-iso@"
 ## X-Category: Combat
