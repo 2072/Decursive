@@ -12,7 +12,7 @@
 ## Version: @project-version@
 ## Author: Archarodim
 
-## X-License: GNU GPL
+## X-License: All Rights Reserved
 
 ## OptionalDeps: Ace2, Ace3, DewdropLib, Waterfall-1.0, TabletLib, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0 
 
