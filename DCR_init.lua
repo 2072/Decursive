@@ -51,7 +51,6 @@ Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConso
 local D = Dcr;
 
 DcrCorruptedd = 1;
-D.AOO	    = AceLibrary("AceOO-2.0");
 
 D.L	    = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 D.DewDrop   = AceLibrary("Dewdrop-2.0");
@@ -61,7 +60,7 @@ D.T	    = AceLibrary("Tablet-2.0");
 D.LC	    = _G.LOCALIZED_CLASS_NAMES_MALE;
 
 
-if not (Dcr and D.AOO and D.L and D.DewDrop and D.Waterfall and D.T)  then
+if not (Dcr and D.L and D.DewDrop and D.Waterfall and D.T)  then
     DcrFatalError("One or more required libraries could not be loaded, Decurive init aborted.");
     DcrCorrupted = true;
     return;

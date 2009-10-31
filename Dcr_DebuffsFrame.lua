@@ -52,16 +52,24 @@ local D   = Dcr;
 
 local L	    = D.L;
 local LC    = D.LC;
-local AceOO = D.AOO;
 local DC    = DcrC;
 local DS    = DC.DS;
 
 
--- initialize our MicroUnitF class
-D.MicroUnitF = AceOO.Class();
-
+-- NS def
+D.MicroUnitF = {};
 -- create a shortcut
 local MicroUnitF = D.MicroUnitF;
+MicroUnitF.prototype = {};
+MicroUnitF.metatable ={ __index = MicroUnitF.prototype };
+
+function MicroUnitF:new(...)
+    local instance = setmetatable({}, self.metatable);
+    instance:init(...);
+    return instance;
+end
+
+
 
 -- since there are tens of thousands of globals defined at all times, lets use some locals!
 local BOOKTYPE_PET	= BOOKTYPE_PET;
@@ -908,7 +916,6 @@ end -- }}}
 -- MicroUnitF NON STATIC METHODS {{{
 -- init a new micro frame (Call internally by :new() only)
 function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
-	MicroUnitF.super.prototype.init(self); -- needed
 
 	D:Debug("Initializing MicroUnit object '%s' with FrameNum=%d and ID %d", Unit, FrameNum, ID);
 
