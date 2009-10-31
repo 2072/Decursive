@@ -247,7 +247,7 @@ function LiveList.prototype:init(Container,ID) -- {{{
 
 
     -- a reference to this object
-    self.Frame.Object = o;
+    self.Frame.Object = self;
 
     self.Frame:Show();
 

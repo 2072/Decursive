@@ -46,6 +46,8 @@ if not DcrLoadedFiles or not DcrLoadedFiles["DCR_init.lua"] then
     return;
 end
 
+-- TODO: Switch to LibQTip
+
 local DC = DcrC;
 local D = Dcr;
 local L = D.L;

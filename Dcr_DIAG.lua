@@ -170,7 +170,7 @@ function DecursiveErrorHandler(err, ...)
 	if not ScriptErrorsFrameScrollFrameText.cursorOffset then
 	    ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
 	    if ( GetCVarBool("scriptErrors") ) then
-		print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil|r");
+		print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check Lua errors)|r");
 	    end
 	end
     end
