@@ -20,9 +20,10 @@ externals:
         url:  svn://svn.wowace.com/wow/dewdroplib/mainline/trunk/Dewdrop-2.0
     Libs/Waterfall-1.0:
         url:  svn://svn.wowace.com/wow/waterfall-1-0/mainline/trunk/Waterfall-1.0
-    Libs/Tablet-2.0:
-        url:  svn://svn.wowace.com/wow/tabletlib/mainline/trunk/Tablet-2.0
 
+    libs/LibQTip-1.0:
+        url: svn://svn.wowace.com/wow/libqtip-1-0/mainline/trunk
+        tag: latest
     Libs/LibDBIcon-1.0:
         url:  svn://svn.wowace.com/wow/libdbicon-1-0/mainline/trunk/LibDBIcon-1.0
     Libs/LibDataBroker-1.1:
@@ -36,10 +37,10 @@ optional-dependencies:
     - ace3
     - dewdroplib
     - waterfall-1-0
-    - tabletlib
     - libdatabroker-1-1
     - libdbicon-1-0
     - callbackhandler
+    - libqtip-1-0
 
 license-output: LICENSE.txt
 

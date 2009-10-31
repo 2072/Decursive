@@ -249,7 +249,6 @@ do
 	    ["AceAddon-2.0"]	        = 90000 + 1096,
 	    ["Dewdrop-2.0"]		= 90000 + 320, -- (alpha)
 	    ["Waterfall-1.0"]		= 90000 + 125,
-	    ["Tablet-2.0"]		= 90000 + 216,
 	}; -- }}}
 
 	--LibStub:GetLibrary
@@ -257,6 +256,7 @@ do
 	    ["AceLocale-3.0"] = 2,
 	    ["LibDataBroker-1.1"] = 3,
 	    ["LibDBIcon-1.0"] = 8,
+	    ["LibQTip-1.0"] = 29,
 	    ["CallbackHandler-1.0"] = 3,
 	};
 

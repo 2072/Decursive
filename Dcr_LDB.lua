@@ -52,10 +52,11 @@ local LC = D.LC;
 local DC = DcrC;
 local DS = DC.DS;
 
-local Tablet = D.T;
-local TabletData = {};
 
-local icon = LibStub("LibDBIcon-1.0")
+local icon    = D.LDBI;
+
+local LibQTip = D.LQT;
+
 
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
 	type = "launcher",
@@ -70,151 +71,121 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
 });
 
 
---{{{ function OnTooltipUpdate ()
-local function OnTooltipUpdate ()
+local HeadFont;
+local function CreateFonts()
 
+    Dcr:Debug("create font called");
+
+    -- Create the fonts objects we'll use in the tooltip:
+    -- New font looking like GameTooltipText
+    local HeadFont = CreateFont("DCR_QT_HeadFont")
+    HeadFont:SetFont(GameTooltipText:GetFont(), 16)
+    HeadFont:SetTextColor(0.8,0.8,0.3)
+
+    --[=[
+
+    -- New font looking like defaultFont
+    local CommandFont = CreateFont("DCR_QT_CommandFont")
+    CommandFont:CopyFontObject(defaultFont)
+    CommandFont:SetTextColor(0,1,0)
+
+    --]=]
+
+    return HeadFont;
+
+
+end
+
+
+local function ShowToolTip (frame)
     if not D.DcrFullyInitialized then
 	return;
     end
 
-    D:Debug("Updating LDB tooltip");
-    local cat = D.T:AddCategory(
-    --'text', "Alpha",
-    'columns', 2,
-    'child_textR', 0,
-    'child_textG', 1,
-    'child_textB', 0,
-    'child_textR2', 1,
-    'child_textG2', 1,
-    'child_textB2', 1,
-    'child_justify2', 'LEFT'
-    );
+    Dcr:Debug("ShowToolTip called");
 
-    cat:AddLine(
-    'text', ("%s: "):format(D.L["HLP_RIGHTCLICK"]),
-    'text2',  D.L["STR_OPTIONS"]
-    );
+    if not HeadFont then
+	HeadFont = CreateFonts();
+    end
 
-    cat:AddLine(
-    'text', ("%s-%s: "):format(D.L["ALT"],		D.L["HLP_RIGHTCLICK"]),
-    'text2', D.L["BINDING_NAME_DCRSHOWOPTION"]
-    );
-    cat:AddLine(
-    'text', ("%s-%s: "):format(D.L["CTRL"],		D.L["HLP_LEFTCLICK"]),
-    'text2', D.L["BINDING_NAME_DCRPRSHOW"]
-    );
-    cat:AddLine(
-    'text', ("%s-%s: "):format(D.L["SHIFT"],		D.L["HLP_LEFTCLICK"]),
-    'text2', D.L["BINDING_NAME_DCRSKSHOW"]
-    );
-    cat:AddLine(
-    'text', ("%s-%s: " ):format(D.L["SHIFT"],		D.L["HLP_RIGHTCLICK"]),
-    'text2', D.L["BINDING_NAME_DCRSHOW"]
-    );
+    -- Acquire a tooltip with 3 columns, respectively aligned to left, center and right
+    local tooltip = LibQTip:Acquire("DecursiveGenInfo", 2, "LEFT", "RIGHT");
+    frame.tooltip = tooltip 
+
+    tooltip:SetHeaderFont(HeadFont);
+    
+    -- Add an header filling only the first two columns
+   
+
+    local x, y;
+    -- 1
+    x, y = tooltip:AddLine();
+    tooltip:SetCell(x,y,'Decursive', HeadFont,"CENTER",2);
+
+    -- 2
+    tooltip:AddLine(	("|cFF00FF00%s|r: "):format(D.L["HLP_RIGHTCLICK"]),
+			    D.L["STR_OPTIONS"]);
+
+    -- 3
+    tooltip:AddLine(	("|cFF00FF00%s-%s|r: "):format(D.L["ALT"],	D.L["HLP_RIGHTCLICK"]),
+			    D.L["BINDING_NAME_DCRSHOWOPTION"]);
+
+    -- 4
+    tooltip:AddLine(	("|cFF00FF00%s-%s|r: "):format(D.L["CTRL"],	D.L["HLP_LEFTCLICK"]),
+			    D.L["BINDING_NAME_DCRPRSHOW"]);
+
+    -- 5
+    tooltip:AddLine(	("|cFF00FF00%s-%s|r: "):format(D.L["SHIFT"],	D.L["HLP_LEFTCLICK"]),
+			    D.L["BINDING_NAME_DCRSKSHOW"]);
+
+    -- 6
+    tooltip:AddLine(	("|cFF00FF00%s-%s|r: " ):format(D.L["SHIFT"],	D.L["HLP_RIGHTCLICK"]),
+			    D.L["BINDING_NAME_DCRSHOW"]);
 
     if (D.profile.debugging) then
+	tooltip:AddSeparator();
+
+	x, y = tooltip:AddLine();
+	tooltip:SetCell(x,y,'Debugging', HeadFont,"CENTER",2);
+
+	tooltip:AddLine("Afflicted units count:", D.ForLLDebuffedUnitsNum);
+
+	tooltip:AddLine("Afflicted units count in range:", D.MicroUnitF.UnitsDebuffedInRange);
+
+	tooltip:AddLine("Max Concurrent update events:", D.Status.MaxConcurentUpdateDebuff);
+
+	tooltip:AddSeparator();
+
+	x, y = tooltip:AddLine();
+	tooltip:SetCell(x,y,'Debuff seen history:', HeadFont,"CENTER",2);
+
 	local HistoryIndex = 1;
-	local cat2 = D.T:AddCategory(
-	'text', "Debugging info",
-	'columns', 2,
-	'child_textR', 0.8,
-	'child_textG', 1,
-	'child_textB', 0.8,
-	'child_textR2', 0.7,
-	'child_textG2', 0.6,
-	'child_textB2', 0.5,
-	'child_justify1', 'LEFT',
-	'child_justify2', 'LEFT'
-	);
-
-	cat2:AddLine(
-	'text', "Afflicted units count:",
-	'text2',  D.ForLLDebuffedUnitsNum
-	);
-
-	cat2:AddLine(
-	'text', "Afflicted units count in range:",
-	'text2',  D.MicroUnitF.UnitsDebuffedInRange
-	);
-
-	cat2:AddLine(
-	'text', "Max Concurrent update events:",
-	'text2',  D.Status.MaxConcurentUpdateDebuff
-	);
-
-
-	cat2:AddLine(
-	'text', "Debuff seen history:",
-	'text2',  " "
-	);
 
 	while HistoryIndex < 10 do
-	    cat2:AddLine(
-	    'text', HistoryIndex,
-	    'text2',  (D:Debuff_History_Get (HistoryIndex, true))
-	    );
+	    tooltip:AddLine( "|cFFAAFFAA"..HistoryIndex.."|r", (D:Debuff_History_Get (HistoryIndex, true)));
 
 	    HistoryIndex = HistoryIndex + 1;
 
 	end
-
     end
 
+    -- Use smart anchoring code to anchor the tooltip to our frame
+    tooltip:SmartAnchorTo(frame)
 
-end -- }}}
+    -- Show it
+    tooltip:Show()
 
--- Tablet:Register code inspired by FubarPlugin 2.0 by Cameron Kenneth Knight
-
-local function RegisterTablet (f)
-
-    if not Tablet:IsRegistered(f) then
-	D:Debug("was not registered!");
-
-	Tablet:Register(f,'children',
-	function()
-	    Tablet:SetTitle("Decursive")
-	    OnTooltipUpdate();
-	end,
-	'clickable', false,
-	'data', TabletData,
-	--'detachedData', TabletData,
-
-	'point', function(frame) -- {{{
-	if frame:GetTop() > GetScreenHeight() / 2 then
-	    local x = frame:GetCenter()
-	    if x < GetScreenWidth() / 3 then
-		return "TOPLEFT", "BOTTOMLEFT"
-	    elseif x < GetScreenWidth() * 2 / 3 then
-		return "TOP", "BOTTOM"
-	    else
-		return "TOPRIGHT", "BOTTOMRIGHT"
-	    end
-	else
-	    local x = frame:GetCenter()
-	    if x < GetScreenWidth() / 3 then
-		return "BOTTOMLEFT", "TOPLEFT"
-	    elseif x < GetScreenWidth() * 2 / 3 then
-		return "BOTTOM", "TOP"
-	    else
-		return "BOTTOMRIGHT", "TOPRIGHT"
-	    end
-	end
-    end -- }}}
-
-    );
 end
-end
-
 
 LDB.OnEnter = function(frame) 
-    RegisterTablet(frame);
-    Tablet:Refresh(frame);
+    ShowToolTip(frame);
 end
 
 LDB.OnLeave = function(frame)
-    if Tablet:IsRegistered(frame) then
-	Tablet:Close(frame);
-    end
+    LibQTip:Release(frame.tooltip)
+    frame.tooltip = nil
+
+    Dcr:Debug("Releasing tooltip");
 end
 
 

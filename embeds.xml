@@ -14,7 +14,8 @@
 
 <Script file="libs\Dewdrop-2.0\Dewdrop-2.0.lua" />
 <Script file="Libs\Waterfall-1.0\Waterfall-1.0.lua" />
-<Script file="libs\Tablet-2.0\Tablet-2.0.lua" />
+
+<Script file="libs\LibQTip-1.0\LibQTip-1.0.lua" />
 
 <Script file="libs\CallbackHandler-1.0\CallbackHandler-1.0.lua" />
 <Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua" />
