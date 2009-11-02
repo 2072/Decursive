@@ -43,7 +43,6 @@ if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
 end
 
 Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0");
---, "FuBarPlugin-2.0");
 
 local D = Dcr;
 
@@ -52,9 +51,6 @@ DcrCorruptedd = 1;
 D.L	    = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 D.DewDrop   = AceLibrary("Dewdrop-2.0");
 D.Waterfall = AceLibrary("Waterfall-1.0");
-
-D.LQT	    = LibStub('LibQTip-1.0');
-D.LDBI	    = LibStub("LibDBIcon-1.0");
 
 D.LC	    = _G.LOCALIZED_CLASS_NAMES_MALE;
 

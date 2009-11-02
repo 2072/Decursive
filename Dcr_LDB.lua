@@ -53,9 +53,9 @@ local DC = DcrC;
 local DS = DC.DS;
 
 
-local icon    = D.LDBI;
+local icon    = LibStub("LibDBIcon-1.0");
 
-local LibQTip = D.LQT;
+local LibQTip = LibStub('LibQTip-1.0');
 
 
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
