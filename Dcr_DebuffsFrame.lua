@@ -244,7 +244,7 @@ end -- }}}
 
 function MicroUnitF:Delayed_MFsDisplay_Update ()
     if D.profile.ShowDebuffsFrame then
-	D:ScheduleEvent("Dcr_UpdateMUFsNUM", self.MFsDisplay_Update, 1.5, self);
+	D:ScheduleDelayedCall("Dcr_UpdateMUFsNUM", self.MFsDisplay_Update, 1.5, self);
     end
 end
 
@@ -309,7 +309,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 		MF.ToPlace = true;
 		Updated = Updated + 1;
 
-		D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * Updated, MF, false, false, true);
+		D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * Updated, MF);
 		--D:Debug("|cFF88AA00Show schedule for MUF", Unit, "UnitShown:", self.UnitShown);
 	    end
 	else
@@ -344,7 +344,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 		self.UnitShown = self.UnitShown - 1;
 		--D:Debug("|cFF88AA00Hiding %d (%s), scheduling update in %f|r", i, MF.CurrUnit, D.profile.DebuffsFrameRefreshRate * i);
 		Updated = Updated + 1;
-		D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * Updated, MF, false, false);
+		D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * Updated, MF);
 		MF.Frame:Hide();
 	    end
 
@@ -362,7 +362,7 @@ end -- }}}
 
 function MicroUnitF:Delayed_Force_FullUpdate ()
     if (D.profile.ShowDebuffsFrame) then
-	D:ScheduleEvent("Dcr_Force_FullUpdate", self.Force_FullUpdate, 0.3, self);
+	D:ScheduleDelayedCall("Dcr_Force_FullUpdate", self.Force_FullUpdate, 0.3, self);
     end
 end
 
@@ -396,7 +396,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
 	MF.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
-	D:ScheduleEvent("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * i, MF, false, false, true);
+	D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * i, MF);
 	i = i + 1;
     end
 end -- }}}
@@ -583,9 +583,9 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
 	-- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
 	-- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
 	-- We need to find another way, this hammers AceEvent and won't be authorized with Ace3
-	if (not D:IsEventScheduled("Dcr_Update"..unit)) then
+	if (not D:DelayedCallExixts("Dcr_Update"..unit)) then
 	    D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-	    D:ScheduleEvent("Dcr_Update"..unit, MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF, false, false, CheckStealth);
+	    D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF);
 	    D:Debug("Update scheduled for, ", unit, MF.ID);
 
 	    return true; -- return value used to aknowledge that the function actually did something
@@ -652,7 +652,7 @@ function MicroUnitF:OnEnter() -- {{{
 
     if LateDetectTest then
 	-- if there is no scheduled event for this unit
-	if not D:IsEventScheduled("Dcr_Update"..Unit) then
+	if not D:DelayedCallExixts("Dcr_Update"..Unit) then
 	    MicroUnitF:LateAnalysis("OnEnter", MF.Debuffs, MF, Status, GUIDwasFixed);
 	end
     end
@@ -1048,6 +1048,15 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     end
 
     return ActionsDone;
+end
+
+
+function MicroUnitF.prototype:UpdateWithCS()
+    self:Update(false, false, true);
+end
+
+function MicroUnitF.prototype:UpdateSkippingSetBuf()
+    self:Update(false, true);
 end
 
 -- UPDATE attributes (Spells and Unit) {{{

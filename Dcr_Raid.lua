@@ -232,7 +232,7 @@ do
 	GUIDToUnit[GUID] = unit;
 
 	--[=[
-	if (D.profile.debugging) then
+	if (D.db.global.debugging) then
 	    if not GUID then
 		D:errln("UnitToGUID_mt: no GUID for: ", unit); -- this is not an error, it's to see when raid# ids are not contiguous...
 	    end

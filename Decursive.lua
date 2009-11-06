@@ -97,14 +97,14 @@ function D:ShowHideLiveList(hide) --{{{
     if (hide==1 or (not hide and DcrLiveList:IsVisible())) then
 	D.profile.Hide_LiveList = true;
 	DcrLiveList:Hide();
-	D:CancelScheduledEvent("Dcr_LLupdate");
+	D:CancelDelayedCall("Dcr_LLupdate");
     else
 	D.profile.Hide_LiveList = false;
 	DcrLiveList:ClearAllPoints();
 	DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
 	DcrLiveList:Show();
 
-	D:ScheduleRepeatingEvent("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+	D:ScheduleRepeatedCall("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     end
 
 end --}}}
@@ -247,7 +247,6 @@ function D:PlaySound (UnitID, Caller) --{{{
 	    --		Sound\\interface\\AuctionWindowOpen.wav
 	    --		Sound\\interface\\AlarmClockWarning3.wav
 	    PlaySoundFile(self.profile.SoundFile);
-	    --self:ScheduleEvent("Dcr_Playsound", PlaySoundFile, 0, self.profile.SoundFile);
 	    D:Debug("Sound Played! by %s", Caller);
 	    self.Status.SoundPlayed = true;
 	end
@@ -757,11 +756,11 @@ do
 
 		IsDebuffed = (Debuffs and true) or IsCharmed;
 		-- If MUF disagrees
-		if IsDebuffed ~= MUF.IsDebuffed and not D:IsEventScheduled("Dcr_Update" .. Unit) then
+		if IsDebuffed ~= MUF.IsDebuffed and not D:DelayedCallExixts("Dcr_Update" .. Unit) then
 		    --@debug@
 		    if IsDebuffed then
 			self:AddDebugText("delayed debuff found by scaneveryone, scheduling analysis in 1s");
-			D:ScheduleEvent("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
+			D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
 		    else
 			self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit);
 		    end
@@ -778,7 +777,7 @@ do
 	    i = i + 1;
 	end
 	--@debug@
-	D:Debug("|cFF777777Scanning everybody...", i - 1, "units scanned in ", GetTime() - start, "seconds|r");
+	--D:Debug("|cFF777777Scanning everybody...", i - 1, "units scanned in ", GetTime() - start, "seconds|r");
 	--@end-debug@
     end
 

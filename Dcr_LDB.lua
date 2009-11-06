@@ -43,8 +43,6 @@ if not DcrLoadedFiles or not DcrLoadedFiles["DCR_init.lua"] then
     return;
 end
 
--- TODO: Switch to LibQTip
-
 local DC = DcrC;
 local D = Dcr;
 local L = D.L;
@@ -142,7 +140,7 @@ local function ShowToolTip (frame)
     tooltip:AddLine(	("|cFF00FF00%s-%s|r: " ):format(D.L["SHIFT"],	D.L["HLP_RIGHTCLICK"]),
 			    D.L["BINDING_NAME_DCRSHOW"]);
 
-    if (D.profile.debugging) then
+    if (D.db.global.debugging) then
 	tooltip:AddSeparator();
 
 	x, y = tooltip:AddLine();

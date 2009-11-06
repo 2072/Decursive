@@ -1,5 +1,7 @@
 TODO:
 
+- change timers when mass debuff so that only the 5 or so first units of the array get updated in priority all the rest should be handled by the roaming MUF updater
+
 - change raid# of player to 'player' when using priolist
 
 - Add a menu option to choose between available spells. (will also allow to choose other polymorph spells)
@@ -20,7 +22,7 @@ TODO:
 
 - Add an option to automatically focus sheeped/cycloned units (if no other focus)
 
-- Convert to Ace3. (but this means the loss of drop down config menus :/ ---> it will wait then... )
+- Convert to Ace3. (but this means the loss of drop down config menus :/)
     - Done with AceLocale-3.0
 
 - Add a user debuff warning mechanism where you could define debuff names you

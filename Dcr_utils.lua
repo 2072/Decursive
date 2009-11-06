@@ -134,20 +134,32 @@ end --}}}
 function D:Println( ... ) --{{{
 
     if (D.profile.Print_ChatFrame) then
-	D:CustomPrint (1,1,1, D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
+
+	self:Print(D.Status.OutputWindow, ...);
+	--D:CustomPrint (1,1,1, D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
     end
     if (D.profile.Print_CustomFrame) then
-	D:CustomPrint (1,1,1, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
+	self:Print(DecursiveTextFrame, ...);
+	--D:CustomPrint (1,1,1, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
     end
 end --}}}
 
 function D:ColorPrint (r,g,b, ... )
+
+    D:Println( ... );
+
+    --[[
     if (D.profile.Print_ChatFrame) then
 	D:CustomPrint (r,g,b,D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
     end
     if (D.profile.Print_CustomFrame) then
 	D:CustomPrint (r,g,b, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
     end
+    --]]
+end
+
+function D:Debug(...)
+    self:Print("|cFF00AAAADebug:|r", ...);
 end
 
 
@@ -277,6 +289,8 @@ end --}}}
 
 function D:errln( ... ) --{{{
     if (D.profile.Print_Error) then
+	self:Println ("|cFFFF0000", ..., "|r");
+	--[[
 	if (D.profile.Print_ChatFrame) then
 	    D:CustomPrint ( 1, 0.1, 0.1,D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
 	end
@@ -284,6 +298,7 @@ function D:errln( ... ) --{{{
 	    D:CustomPrint (1,0.1,0.1, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
 	    -- DecursiveTextFrame:AddMessage(Message, 1, 0.1, 0.1, 0.9);
 	end
+	--]]
     end
 end --}}}
 
@@ -362,6 +377,82 @@ end
 
 function D:NiceTime()
     return tonumber(("%.4f"):format(GetTime() - DC.StartTime));
+end
+
+local DcrTimers = {};
+function D:TimerExixts(RefName)
+    return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
+end
+
+function D:DelayedCallExixts(RefName)
+    return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
+end
+
+local ObjectWithArgs = {["obj"]=false, ["arg"]=false,};
+function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
+
+    if DcrTimers[RefName] and DcrTimers[RefName][1] then
+	self:CancelTimer(DcrTimers[RefName][1]);
+    end
+
+    if not DcrTimers[RefName] then
+	DcrTimers[RefName] = {};
+    end
+
+    if select('#', ...) then
+	D:Debug("ScheduleDelayedCall: multiargs");
+
+	-- arg table
+	DcrTimers[RefName][2] = {arg1};
+
+	local i;
+	for i = 1, select('#', ...) do
+	    DcrTimers[RefName][2][i + 1] = select(i, ...)
+	end
+
+	DcrTimers[RefName][1] = self:ScheduleTimer (
+	function(arg)
+	    D:Debug("multirec:", unpack(arg));
+	    FunctionRef(unpack(arg));
+	    DcrTimers[RefName][1] = false;
+	end
+	, Delay, DcrTimers[RefName][2]
+	);
+    else
+	D:Debug("ScheduleDelayedCall: MONOarg");
+
+	DcrTimers[RefName][1] = self:ScheduleTimer (
+	function(arg)
+	    D:Debug("monorec:", arg);
+	    FunctionRef(unpack(arg));
+	    DcrTimers[RefName][1] = false;
+	end
+	, Delay, arg1
+	);
+    end
+
+    return DcrTimers[RefName][1];
+end
+
+function D:ScheduleRepeatedCall(RefName, FunctionRef, Delay, arg)
+    if DcrTimers[RefName] and DcrTimers[RefName][1] then
+	self:CancelTimer(DcrTimers[RefName][1]);
+    end
+
+    if not DcrTimers[RefName] then
+	DcrTimers[RefName] = {};
+    end
+
+    DcrTimers[RefName][1] = self:ScheduleRepeatingTimer(FunctionRef, Delay, arg);
+
+    return DcrTimers[RefName][1];
+end
+
+function D:CancelDelayedCall(RefName)
+    if DcrTimers[RefName] and DcrTimers[RefName][1] then
+	DcrTimers[RefName][1] = false;
+	return self:CancelTimer(DcrTimers[RefName][1]);
+    end
 end
 
 DcrLoadedFiles["Dcr_utils.lua"] = "@project-version@";

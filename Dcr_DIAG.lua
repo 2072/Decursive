@@ -253,7 +253,20 @@ do
 
 	--LibStub:GetLibrary
 	local UseLibStub = {
+	    ["AceAddon-3.0"] = 5,
+	    ["AceConsole-3.0"] = 6,
+	    ["AceEvent-3.0"] = 3,
+	    ["AceTimer-3.0"] = 5,
+	    ["AceHook-3.0"] = 5,
+	    ["AceDB-3.0"] = 13,
 	    ["AceLocale-3.0"] = 2,
+
+	    ["AceGUI-3.0"] = 23,
+	    ["AceConfig-3.0"] = 2,
+	    ["AceConfigRegistry-3.0"] = 9,
+	    ["AceConfigCmd-3.0"] = 9,
+	    ["AceConfigDialog-3.0"] = 34,
+
 	    ["LibDataBroker-1.1"] = 3,
 	    ["LibDBIcon-1.0"] = 8,
 	    ["LibQTip-1.0"] = 29,
@@ -286,6 +299,7 @@ do
 
 
 	-- Check each version of the required libraries that use AceLibrary
+	--[=[
 	if AceLibrary and AceLibrary:HasInstance("AceLibrary") then
 
 	    for k,v in pairs(LibrariesToCheck) do
@@ -302,6 +316,7 @@ do
 	    table.insert(Errors, GenericErrorMessage1);
 	    FatalOccured = true;
 	end
+	--]=]
 
 	-- check if all Decursive files are loaded
 	local mixedFileVersionsdetection = {};
@@ -368,13 +383,13 @@ do
 	    local ConfirmCustomEventMessage = "I was really caught!";
 
 	    -- Register a curstom event
-	    Dcr:RegisterEvent(CustomEvent, function(DiagTestArg1) CustomEventCaught = DiagTestArg1; end);
+	    Dcr:RegisterMessage(CustomEvent, function(DiagTestArg1) CustomEventCaught = DiagTestArg1; end);
 
 	    -- Schedule a function call in 0.5s
-	    Dcr:ScheduleEvent("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2 end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
+	    Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2 end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
 
 	    -- Set a repeating function call that will check for other test event completion
-	    Dcr:ScheduleRepeatingEvent("DcrDiagRepeat",
+	    Dcr:ScheduleRepeatedCall("DcrDiagRepeat",
 	    function (argTest)
 		local argtestdone = false;
 		if not argtestdone and argTest ~= "test" then
@@ -384,8 +399,8 @@ do
 		end
 
 		if OneTimeEvent == ConfirmOneTimeEventMessage and CustomEventCaught == ConfirmCustomEventMessage then
-		    Dcr:CancelScheduledEvent("DcrDiagRepeat");
-		    Dcr:UnregisterEvent(CustomEvent);
+		    Dcr:CancelDelayedCall("DcrDiagRepeat");
+		    Dcr:UnregisterMessage(CustomEvent);
 		    PrintMessage("|cFF00FF00Event library functionning properly!|r");
 		    PrintMessage("|cFF00FF00Everything seems to be OK.|r");
 		    AddDebugText("Event library functionning properly, Everything seems to be OK");
@@ -393,13 +408,13 @@ do
 		end
 
 		-- cast the custom event
-		Dcr:TriggerEvent(CustomEvent, ConfirmCustomEventMessage);
+		Dcr:SendMessage(CustomEvent, ConfirmCustomEventMessage);
 
 		if ReapeatingEventCount == 4 then
 		    AddDebugText("A problem occured, OneTimeEvent:", OneTimeEvent, "CustomEventCaught:", CustomEventCaught);
 		    PrintMessage("|cFFFF0000A problem occured, OneTimeEvent='%s', CustomEventCaught='%s'|r", OneTimeEvent, CustomEventCaught);
-		    Dcr:CancelScheduledEvent("DcrDiagRepeat");
-		    Dcr:UnregisterEvent(CustomEvent);
+		    Dcr:CancelDelayedCall("DcrDiagRepeat");
+		    Dcr:UnregisterMessage(CustomEvent);
 		    return;
 		end
 

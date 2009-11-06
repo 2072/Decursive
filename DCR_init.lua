@@ -42,15 +42,20 @@ if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
     return;
 end
 
-Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0");
+--Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0");
+Dcr	    = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
 
 local D = Dcr;
+
+D.name = "Decursive";
+D.version = "@project-version@";
+D.author = "Archarodim";
 
 DcrCorruptedd = 1;
 
 D.L	    = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
-D.DewDrop   = AceLibrary("Dewdrop-2.0");
-D.Waterfall = AceLibrary("Waterfall-1.0");
+--D.DewDrop   = AceLibrary("Dewdrop-2.0");
+--D.Waterfall = AceLibrary("Waterfall-1.0");
 
 D.LC	    = _G.LOCALIZED_CLASS_NAMES_MALE;
 
@@ -247,8 +252,8 @@ function D:BetaWarning()
 
 	end
 
-	if self.profile.NonRealease ~= "@project-version@" then
-	    self.profile.NonRealease = "@project-version@";
+	if self.db.global.NonRealease ~= "@project-version@" then
+	    self.db.global.NonRealease = "@project-version@";
 	    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
 	end
     end
@@ -257,7 +262,8 @@ function D:BetaWarning()
 end
 
 function D:OnMenuRequest (level, value, inTooltip, v1, v2, v3)
-   D.DewDrop:FeedAceOptionsTable( D.options );
+    D:Print("DewDrop is no more");
+    --   D.DewDrop:FeedAceOptionsTable( D.options );
 end
 
 function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
@@ -268,11 +274,16 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     DcrHookErrorHandler();
 
-    self:RegisterDB("DcrDB");
-    self:RegisterDefaults('profile', D.defaults );
-    self:RegisterDefaults('class', D.defaults.class );
-    self:RegisterChatCommand({'/dcr', '/decursive'}, D.options )
 
+    self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
+
+    self.db.RegisterCallback(self, "OnProfileChanged", "SetConfiguration")
+    self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
+    self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
+    
+    
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("Decursive",  D.options, {'/dcr', '/decursive'});
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Decursive");
     -- Create some useful cache tables
     D:CreateClassColorTables();
 
@@ -285,12 +296,14 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     D.LiveList.Frame = DcrLiveList;
 
 
+    --[=[
     D.DewDrop:Register(DecursiveMainBar,
     'children', function()
 	D.DewDrop:FeedAceOptionsTable( D.options )
     end
     )
     D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L["STR_OPTIONS"],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
+    --]=]
 
     DC.TypeNames = {
 	[DC.MAGIC]	= "Magic";
@@ -494,9 +507,8 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
 end -- // }}}
 
---Old_MacroFrame_SaveMacro = false;
 local FirstEnable = true;
-function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
+function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     if DecursiveSelfDiagnostic() == 2 then
 	return false;
@@ -555,7 +567,8 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
 	SLASH_DECURSIVEOPTION1 = D.CONF.MACRO_OPTION;
 	SlashCmdList["DECURSIVEOPTION"] = function(msg)
-	    D.Waterfall:Open("Decursive");
+	    LibStub("AceConfigDialog-3.0"):Open("Decursive");
+	    --D.Waterfall:Open("Decursive");
 	end
 
 	SLASH_DECURSIVESHOWORDER1 = D.CONF.MACRO_SHOW_ORDER;
@@ -608,12 +621,12 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     --self:RegisterEvent("UNIT_NAME_UPDATE","GroupChanged");
     --self:RegisterEvent("UNIT_NAME_UPDATE", function() D:GroupChanged("UNIT_NAME_UPDATE", arg1) end);
     --self:RegisterEvent("UNIT_PORTRAIT_UPDATE", function() D:GroupChanged("UNIT_PORTRAIT_UPDATE", arg1) end);
-    self:RegisterEvent("PLAYER_FOCUS_CHANGED","PLAYER_FOCUS_CHANGED");
+    self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 
     -- Player pet detection event (used to find pet spells)
-    self:RegisterEvent("UNIT_PET","UNIT_PET");
+    self:RegisterEvent("UNIT_PET");
 
-    self:RegisterEvent("UNIT_AURA","UNIT_AURA");
+    self:RegisterEvent("UNIT_AURA");
 
     self:RegisterEvent("PLAYER_TARGET_CHANGED");
     
@@ -626,10 +639,10 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 
-    self:ScheduleRepeatingEvent("Dcr_SheduledTasks", self.SheduledTasks, 0.2, self);
+    self:ScheduleRepeatingTimer("ScheduledTasks", 0.2);
 
     -- Configure specific profile dependent data
-    D:OnProfileEnable();
+    D:SetConfiguration();
 
     if (FirstEnable) then
 	D:ColorPrint(0.3, 0.5, 1, L["IS_HERE_MSG"]);
@@ -642,15 +655,15 @@ function D:OnEnable(first) -- called after PLAYER_LOGIN -- {{{
 
 end -- // }}}
 
-function D:OnProfileEnable()
+function D:SetConfiguration()
 
     if DecursiveSelfDiagnostic() == 2 then
 	return false;
     end
 
     D.DcrFullyInitialized = false;
-    D:CancelScheduledEvent("Dcr_LLupdate");
-    D:CancelScheduledEvent("Dcr_MUFupdate");
+    D:CancelDelayedCall("Dcr_LLupdate");
+    D:CancelDelayedCall("Dcr_MUFupdate");
 
     D.Groups_datas_are_invalid = true;
     D.Status = {};
@@ -683,18 +696,20 @@ function D:OnProfileEnable()
 	D.Status.OutputWindow = getglobal(D.profile.OutputWindow);
     end
 
-    D.debugging = D.profile.debugging;
+    D.debugging = D.db.global.debugging;
     D.debugFrame = D.Status.OutputWindow;
     D.printFrame = D.Status.OutputWindow;
 
     D:Debug("Loading profile datas...");
 
     -- this is needed to fix a typo in previous versions...
+    --[[
     if (D.profile.skipByClass["WARRIoR"]) then
 	D.profile.skipByClass["WARRIoR"] = nil;
 	D.profile.skipByClass["WARRIOR"] = {};
 	D:tcopy(D.profile.skipByClass["WARRIOR"], D.defaults.skipByClass["WARRIOR"]);
     end
+    --]]
 
     -- some usefull constants
     DC.MyClass = (select(2, UnitClass("player")));
@@ -737,11 +752,11 @@ function D:OnProfileEnable()
 
     -- put the updater events at the end of the init so there is no chance they could be called before everything is ready (even if LUA is not multi-threaded... just to stay logical )
     if not D.profile.Hide_LiveList then
-	self:ScheduleRepeatingEvent("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+	self:ScheduleRepeatedCall("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     end
 
     if D.profile.ShowDebuffsFrame then
-	self:ScheduleRepeatingEvent("Dcr_MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
+	self:ScheduleRepeatedCall("Dcr_MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
     end
 
     D.DcrFullyInitialized = true; -- everything should be OK

@@ -55,7 +55,8 @@ local pairs		= _G.pairs;
 local ipairs		= _G.ipairs;
 local table		= _G.table;
 local str_format	= _G.string.format;
-local str_sub		= _G.string.gsub;
+local str_gsub		= _G.string.gsub;
+local str_sub		= _G.string.sub;
 local abs		= _G.math.abs;
 local GetNumRaidMembers		= _G.GetNumRaidMembers;
 local GetNumPartyMembers	= _G.GetNumPartyMembers;
@@ -65,298 +66,302 @@ local _;
 
 D:GetSpellsTranslations(false); -- Register spell translations
 
-
-D.defaults = { -- {{{
-    debugging = false,
-    -- this is the priority list of people to cure
-    PriorityList = { },
-    PriorityListClass = { },
-    PrioGUIDtoNAME = { },
-
-    -- this is the people to skip
-    SkipList = { },
-    SkipListClass = { },
-    SkipGUIDtoNAME = { },
-
-    -- The micro units debuffs frame
-    ShowDebuffsFrame = true,
-
-    AutoHideDebuffsFrame = 0,
-
-    -- The maximum number of MUFs to be displayed
-    DebuffsFrameMaxCount = 80,
-
-    DebuffsFrameElemScale = 1,
-
-    DebuffsFrameElemAlpha = .35,
-
-    DebuffsFrameElemBorderShow = true,
-
-    DebuffsFrameElemBorderAlpha = .2,
-
-    DebuffsFrameElemTieTransparency = true,
-
-    DebuffsFramePerline = 10,
-
-    DebuffsFrameTieSpacing = true,
-
-    DebuffsFrameXSpacing = 3,
-
-    DebuffsFrameYSpacing = 3,
-
-    DebuffsFrameStickToRight = false,
-
-    -- The time between each MUF update
-    DebuffsFrameRefreshRate = 0.10,
-
-    -- The number of MUFs updated every DebuffsFrameRefreshRate
-    DebuffsFramePerUPdate = 10,
-
-    DebuffsFrameShowHelp = true,
-
-    -- position x save
-    DebuffsFrame_x = false,
-
-    -- position y save
-    DebuffsFrame_y = false,
-
-    -- reverse MUFs disaplay
-    DebuffsFrameGrowToTop = false,
-    
-    -- display chronometer on MUFs
-    DebuffsFrameChrono = true,
-
-    -- this is wether or not to show the live-list	
-    Hide_LiveList = false,
-
-    LiveListAlpha = 0.7,
-
-    LiveListScale = 1.0,
-
-    -- position of the "Decursive" main bar, the live-list is anchored to this bar.
-    MainBarX = false,
-
-    MainBarY = false,
-
-    -- This will turn on and off the sending of messages to the default chat frame
-    Print_ChatFrame = true,
-
-    -- this will send the messages to a custom frame that is moveable	
-    Print_CustomFrame = true,
-
-    -- this will disable error messages
-    Print_Error = true,
-
-    -- check for abolish before curing poison or disease
-    Check_For_Abolish = true,
-
-    -- Will randomize the order of the live-list and of the MUFs
-    --Random_Order = false,
-
-    -- should we scan pets
-    Scan_Pets = true,
-
-    -- should we ignore stealthed units? A useless option since a very long time.
-    Ingore_Stealthed = false,
-    
-    Show_Stealthed_Status = true,
-
-    -- how many to show in the livelist
-    Amount_Of_Afflicted = 3,
-
-    -- The live-list will only display units in range of your curring spell
-    LV_OnlyInRange = true,
-
-    -- how many seconds to "black list" someone with a failed spell
-    CureBlacklist = 5.0,
-
-    -- how often to poll for afflictions in seconds (for the live-list only)
-    ScanTime = 0.3,
-
-    -- Are prio list members protected from blacklisting?
-    DoNot_Blacklist_Prio_List = false,
-
-    -- Play a sound when there is something to decurse
-    PlaySound = true,
-
-    -- The sound file to use
-    SoundFile = DC.AfflictionSound,
-
-    -- Example to change the sound : /run Dcr.profile.SoundFile = "Sound\\interface\\AuctionWindowOpen.wav"
-
-    -- Hide the buttons
-    HideButtons = false,
-
-    -- Display text above in the custom frame
-    CustomeFrameInsertBottom = false,
-
-    -- Disable tooltips in affliction list
-    AfflictionTooltips = true,
-
-    -- Reverse LiveList Display
-    ReverseLiveDisplay = false,
-
-    -- Hide the "Decursive" bar
-    Hidden = false,
-
-    -- if true then the live list will show only if the "Decursive" bar is shown
-    LiveListTied = false,
-
-    -- allow to changes the default output window
-    OutputWindow = "DEFAULT_CHAT_FRAME", -- ACEDB CRASHES if we set it directly
-
-
-    MiniMapIcon = {hide=true},
-
-    -- Are we using the macro?
-    UseMacro = true,
-
-    -- the key to bind the macro to
-    MacroBind = false, --L["DEFAULT_MACROKEY"], -- there were too many unhappy people with this option
-
-    -- Display a warning if no key is mapped.
-    NoKeyWarn = false,
-
-    -- Disable macro creation
-    DisableMacroCreation = false,
-
-    -- Those are the different colors used for the MUFs main textures
-    MF_colors = {
-		[1]		=   {  .8 , 0   , 0    ,  1	}, -- red
-		[2]		=   { 0   , 0   , 0.8  ,  1	}, -- blue
-		[3]		=   { 1   ,  .5 ,  .25 ,  1	}, -- orange
-		[4]		=   { 1   , 0   , 1    ,  1	}, -- purple
-		[5]		=   { 1   , 1   , 1    ,  1	}, -- white for undefined
-		[6]		=   { 1   , 1   , 1    ,  1	}, -- white for undefined
-	[DC.NORMAL]		=   {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
-	[DC.BLACKLISTED]	=   { 0   , 0   , 0    ,  1	}, -- black
-	[DC.ABSENT]		=   {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
-	[DC.FAR]		=   {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
-	[DC.STEALTHED]		=   {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
-	[DC.CHARMED_STATUS]	=   { 0   , 1   , 0    ,  1	}, -- full green
-	["COLORCHRONOS"]	=   { 0.6 , 0.1 , 0.2  ,  0.7	}, -- medium red
+D.defaults = {
+    class = {
+	-- Curring order (1 is the most important, 6 the lesser...)
+	CureOrder = {
+	    [DC.ENEMYMAGIC]     = 1,
+	    [DC.MAGIC]	    = 2,
+	    [DC.CURSE]	    = 3,
+	    [DC.POISON]	    = 4,
+	    [DC.DISEASE]	    = 5,
+	    [DC.CHARMED]	    = 6,
+	},
     },
 
-    NonRealease = false,
-    -- Curring order (1 is the most important, 6 the lesser...)
-    --[[
-    CureOrder = {
+    global = {
+	debugging = false,
+	NonRealease = false,
+    },
+
+    profile = {
+	-- this is the priority list of people to cure
+	PriorityList = { },
+	PriorityListClass = { },
+	PrioGUIDtoNAME = { },
+
+	-- this is the people to skip
+	SkipList = { },
+	SkipListClass = { },
+	SkipGUIDtoNAME = { },
+
+	-- The micro units debuffs frame
+	ShowDebuffsFrame = true,
+
+	AutoHideDebuffsFrame = 0,
+
+	-- The maximum number of MUFs to be displayed
+	DebuffsFrameMaxCount = 80,
+
+	DebuffsFrameElemScale = 1,
+
+	DebuffsFrameElemAlpha = .35,
+
+	DebuffsFrameElemBorderShow = true,
+
+	DebuffsFrameElemBorderAlpha = .2,
+
+	DebuffsFrameElemTieTransparency = true,
+
+	DebuffsFramePerline = 10,
+
+	DebuffsFrameTieSpacing = true,
+
+	DebuffsFrameXSpacing = 3,
+
+	DebuffsFrameYSpacing = 3,
+
+	DebuffsFrameStickToRight = false,
+
+	-- The time between each MUF update
+	DebuffsFrameRefreshRate = 0.10,
+
+	-- The number of MUFs updated every DebuffsFrameRefreshRate
+	DebuffsFramePerUPdate = 10,
+
+	DebuffsFrameShowHelp = true,
+
+	-- position x save
+	DebuffsFrame_x = false,
+
+	-- position y save
+	DebuffsFrame_y = false,
+
+	-- reverse MUFs disaplay
+	DebuffsFrameGrowToTop = false,
+
+	-- display chronometer on MUFs
+	DebuffsFrameChrono = true,
+
+	-- this is wether or not to show the live-list	
+	Hide_LiveList = false,
+
+	LiveListAlpha = 0.7,
+
+	LiveListScale = 1.0,
+
+	-- position of the "Decursive" main bar, the live-list is anchored to this bar.
+	MainBarX = false,
+
+	MainBarY = false,
+
+	-- This will turn on and off the sending of messages to the default chat frame
+	Print_ChatFrame = true,
+
+	-- this will send the messages to a custom frame that is moveable	
+	Print_CustomFrame = true,
+
+	-- this will disable error messages
+	Print_Error = true,
+
+	-- check for abolish before curing poison or disease
+	Check_For_Abolish = true,
+
+	-- Will randomize the order of the live-list and of the MUFs
+	--Random_Order = false,
+
+	-- should we scan pets
+	Scan_Pets = true,
+
+	-- should we ignore stealthed units? A useless option since a very long time.
+	Ingore_Stealthed = false,
+
+	Show_Stealthed_Status = true,
+
+	-- how many to show in the livelist
+	Amount_Of_Afflicted = 3,
+
+	-- The live-list will only display units in range of your curring spell
+	LV_OnlyInRange = true,
+
+	-- how many seconds to "black list" someone with a failed spell
+	CureBlacklist = 5.0,
+
+	-- how often to poll for afflictions in seconds (for the live-list only)
+	ScanTime = 0.3,
+
+	-- Are prio list members protected from blacklisting?
+	DoNot_Blacklist_Prio_List = false,
+
+	-- Play a sound when there is something to decurse
+	PlaySound = true,
+
+	-- The sound file to use
+	SoundFile = DC.AfflictionSound,
+
+	-- Example to change the sound : /run Dcr.profile.SoundFile = "Sound\\interface\\AuctionWindowOpen.wav"
+
+	-- Hide the buttons
+	HideButtons = false,
+
+	-- Display text above in the custom frame
+	CustomeFrameInsertBottom = false,
+
+	-- Disable tooltips in affliction list
+	AfflictionTooltips = true,
+
+	-- Reverse LiveList Display
+	ReverseLiveDisplay = false,
+
+	-- Hide the "Decursive" bar
+	Hidden = false,
+
+	-- if true then the live list will show only if the "Decursive" bar is shown
+	LiveListTied = false,
+
+	-- allow to changes the default output window
+	OutputWindow = "DEFAULT_CHAT_FRAME", -- ACEDB CRASHES if we set it directly
+
+
+	MiniMapIcon = {hide=true},
+
+	-- Are we using the macro?
+	UseMacro = true,
+
+	-- the key to bind the macro to
+	MacroBind = false, --L["DEFAULT_MACROKEY"], -- there were too many unhappy people with this option
+
+	-- Display a warning if no key is mapped.
+	NoKeyWarn = false,
+
+	-- Disable macro creation
+	DisableMacroCreation = false,
+
+	-- Those are the different colors used for the MUFs main textures
+	MF_colors = {
+	    [1]		=   {  .8 , 0   , 0    ,  1	}, -- red
+	    [2]		=   { 0   , 0   , 0.8  ,  1	}, -- blue
+	    [3]		=   { 1   ,  .5 ,  .25 ,  1	}, -- orange
+	    [4]		=   { 1   , 0   , 1    ,  1	}, -- purple
+	    [5]		=   { 1   , 1   , 1    ,  1	}, -- white for undefined
+	    [6]		=   { 1   , 1   , 1    ,  1	}, -- white for undefined
+	    [DC.NORMAL]		=   {  .0 ,  .3 ,  .1  ,   .9	}, -- dark green
+	    [DC.BLACKLISTED]	=   { 0   , 0   , 0    ,  1	}, -- black
+	    [DC.ABSENT]		=   {  .4 ,  .4 ,  .4  ,   .9	}, -- transparent grey
+	    [DC.FAR]		=   {  .4 ,  .1 ,  .4  ,   .85	}, -- transparent purple
+	    [DC.STEALTHED]		=   {  .4 ,  .6 ,  .4  ,  1	}, -- pale green
+	    [DC.CHARMED_STATUS]	=   { 0   , 1   , 0    ,  1	}, -- full green
+	    ["COLORCHRONOS"]	=   { 0.6 , 0.1 , 0.2  ,  0.7	}, -- medium red
+	},
+
+	-- Curring order (1 is the most important, 6 the lesser...)
+	--[[
+	CureOrder = {
 	[DC.ENEMYMAGIC]   = 1,
 	[DC.MAGIC]	    = 2,
 	[DC.CURSE]	    = 3,
 	[DC.POISON]	    = 4,
 	[DC.DISEASE]	    = 5,
 	[DC.CHARMED]	    = 6,
-    },
-    --]]
+	},
+	--]]
 
 
-    -- Debuffs {{{
+	-- Debuffs {{{
+	-- those debuffs prevent us from curing the unit
+	DebuffsToIgnore = {
+	    [DS["Phase Shift"]]		= true,
+	    [DS["Banish"]]			= true,
+	    [DS["Frost Trap Aura"]]		= true,
+	},
 
-    DebuffsToIgnore = { -- those debuffs prevent us from curing the unit
-	[DS["Phase Shift"]]		= true,
-	[DS["Banish"]]			= true,
-	[DS["Frost Trap Aura"]]		= true,
-    },
+	-- thoses debuffs are in fact buffs...
+	BuffDebuff = {
+	    [DS["DREAMLESSSLEEP"]]	= true,
+	    [DS["GDREAMLESSSLEEP"]]	= true,
+	    [DS["MDREAMLESSSLEEP"]]	= true,
+	    [DS["DCR_LOC_MINDVISION"]]	= true,
+	    [DS["MUTATINGINJECTION"]]	= true,
+	    [DS["Arcane Blast"]]		= true,
+	},
 
-    BuffDebuff = { -- thoses debuffs are in fact buffs...
-	[DS["DREAMLESSSLEEP"]]	= true,
-	[DS["GDREAMLESSSLEEP"]]	= true,
-	[DS["MDREAMLESSSLEEP"]]	= true,
-	[DS["DCR_LOC_MINDVISION"]]	= true,
-	[DS["MUTATINGINJECTION"]]	= true,
-	[DS["Arcane Blast"]]		= true,
-    },
+	DebuffAlwaysSkipList = {
+	},
 
-    DebuffAlwaysSkipList = {
-    },
+	DebuffsSkipList = {
+	    DS["DCR_LOC_SILENCE"],
+	    DS["ANCIENTHYSTERIA"],
+	    DS["IGNITE"],
+	    DS["TAINTEDMIND"],
+	    DS["MAGMASHAKLES"],
+	    DS["CRIPLES"],
+	    DS["DUSTCLOUD"],
+	    DS["WIDOWSEMBRACE"],
+	    DS["CURSEOFTONGUES"],
+	    DS["SONICBURST"],
+	    DS["DELUSIONOFJINDO"]
+	},
 
-    DebuffsSkipList = {
-	DS["DCR_LOC_SILENCE"],
-	DS["ANCIENTHYSTERIA"],
-	DS["IGNITE"],
-	DS["TAINTEDMIND"],
-	DS["MAGMASHAKLES"],
-	DS["CRIPLES"],
-	DS["DUSTCLOUD"],
-	DS["WIDOWSEMBRACE"],
-	DS["CURSEOFTONGUES"],
-	DS["SONICBURST"],
-	DS["DELUSIONOFJINDO"]
-    },
-    skipByClass = {
-	["WARRIOR"] = {
-	    [DS["ANCIENTHYSTERIA"]]   = true,
-	    [DS["IGNITE"]]        = true,
-	    [DS["TAINTEDMIND"]]       = true,
-	    [DS["WIDOWSEMBRACE"]]    = true,
-	    [DS["CURSEOFTONGUES"]]   = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["ROGUE"] = {
-	    [DS["DCR_LOC_SILENCE"]]           = true,
-	    [DS["ANCIENTHYSTERIA"]]   = true,
-	    [DS["IGNITE"]]        = true,
-	    [DS["TAINTEDMIND"]]       = true,
-	    [DS["WIDOWSEMBRACE"]]    = true,
-	    [DS["CURSEOFTONGUES"]]   = true,
-	    [DS["SONICBURST"]]        = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["HUNTER"] = {
-	    [DS["MAGMASHAKLES"]]     = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["MAGE"] = {
-	    [DS["MAGMASHAKLES"]]     = true,
-	    [DS["CRIPLES"]]            = true,
-	    [DS["DUSTCLOUD"]]         = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["WARLOCK"] = {
-	    [DS["CRIPLES"]]            = true,
-	    [DS["DUSTCLOUD"]]         = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["DRUID"] = {
-	    [DS["CRIPLES"]]            = true,
-	    [DS["DUSTCLOUD"]]         = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["PALADIN"] = {
-	    [DS["CRIPLES"]]            = true,
-	    [DS["DUSTCLOUD"]]         = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["PRIEST"] = {
-	    [DS["CRIPLES"]]            = true,
-	    [DS["DUSTCLOUD"]]         = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["SHAMAN"] = {
-	    [DS["CRIPLES"]]            = true,
-	    [DS["DUSTCLOUD"]]         = true,
-	    [DS["DELUSIONOFJINDO"]]= true,
-	},
-	["DEATHKNIGHT"] = {
+	skipByClass = {
+	    ["WARRIOR"] = {
+		[DS["ANCIENTHYSTERIA"]]   = true,
+		[DS["IGNITE"]]        = true,
+		[DS["TAINTEDMIND"]]       = true,
+		[DS["WIDOWSEMBRACE"]]    = true,
+		[DS["CURSEOFTONGUES"]]   = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["ROGUE"] = {
+		[DS["DCR_LOC_SILENCE"]]           = true,
+		[DS["ANCIENTHYSTERIA"]]   = true,
+		[DS["IGNITE"]]        = true,
+		[DS["TAINTEDMIND"]]       = true,
+		[DS["WIDOWSEMBRACE"]]    = true,
+		[DS["CURSEOFTONGUES"]]   = true,
+		[DS["SONICBURST"]]        = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["HUNTER"] = {
+		[DS["MAGMASHAKLES"]]     = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["MAGE"] = {
+		[DS["MAGMASHAKLES"]]     = true,
+		[DS["CRIPLES"]]            = true,
+		[DS["DUSTCLOUD"]]         = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["WARLOCK"] = {
+		[DS["CRIPLES"]]            = true,
+		[DS["DUSTCLOUD"]]         = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["DRUID"] = {
+		[DS["CRIPLES"]]            = true,
+		[DS["DUSTCLOUD"]]         = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["PALADIN"] = {
+		[DS["CRIPLES"]]            = true,
+		[DS["DUSTCLOUD"]]         = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["PRIEST"] = {
+		[DS["CRIPLES"]]            = true,
+		[DS["DUSTCLOUD"]]         = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["SHAMAN"] = {
+		[DS["CRIPLES"]]            = true,
+		[DS["DUSTCLOUD"]]         = true,
+		[DS["DELUSIONOFJINDO"]]= true,
+	    },
+	    ["DEATHKNIGHT"] = {
+	    }
 	}
+	-- }}}
     }
-    -- }}}
-
 } -- }}}
-
-D.defaults.class = {
-    -- Curring order (1 is the most important, 6 the lesser...)
-    CureOrder = {
-	[DC.ENEMYMAGIC]     = 1,
-	[DC.MAGIC]	    = 2,
-	[DC.CURSE]	    = 3,
-	[DC.POISON]	    = 4,
-	[DC.DISEASE]	    = 5,
-	[DC.CHARMED]	    = 6,
-    },
-
-}
 
 D.options = { -- {{{
     type = "group",
@@ -365,11 +370,12 @@ D.options = { -- {{{
 	title = {
 	    type = "header",
 	    name = L["STR_OPTIONS"],
-	    textHeight = 13,
-	    justifyH = "CENTER",
+	    --textHeight = 13,
+	    --justifyH = "CENTER",
 	    order = 50,
 	},
 	spacer1 = {
+	    name = "";
 	    type = "header",
 	},
 	livelistoptions = { -- {{{
@@ -470,7 +476,7 @@ D.options = { -- {{{
 		    set = function(v)
 			if (v ~= D.profile.ScanTime) then
 			    D.profile.ScanTime = v;
-			    D:ScheduleRepeatingEvent("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+			    D:ScheduleRepeatedCall("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
 			    D:Debug("LV scan delay changed:", D.profile.ScanTime, v);
 			end
 		    end,
@@ -504,8 +510,9 @@ D.options = { -- {{{
 		    disabled = function() return  D.profile.Hide_LiveList end,
 		    order = 108
 		},
-		{
+		Space_1 = {
 		    type = "header",
+		    name = "";
 		    order = 999,
 		},
 		ShowTestItem = {
@@ -625,8 +632,8 @@ D.options = { -- {{{
 		title1 = {
 		    type = "header",
 		    name = L["OPT_DISPLAYOPTIONS"],
-		    textHeight = 13,
-		    justifyH = "CENTER",
+		    --textHeight = 13,
+		    --justifyH = "CENTER",
 		    order = 1100,
 		},
 		Show = {
@@ -640,17 +647,17 @@ D.options = { -- {{{
 		    disabled = function() return D.Status.Combat end,
 		    order = 1200,
 		},
+		AutoHideDesc = {
+		    type="description",
+		    name = ("%s\n%s\n%s"):format(L["OPT_HIDEMFS_NEVER_DESC"], L["OPT_HIDEMFS_SOLO_DESC"], L["OPT_HIDEMFS_GROUP_DESC"]),
+		    order = 1205,
+		},
 		AutoHide = {
-		    type = "text",
+		    type = "multiselect",
 		    name = L["OPT_AUTOHIDEMFS"],
 		    desc = L["OPT_AUTOHIDEMFS_DESC"],
 		    order = 1210,
-		    validate	    = {L["OPT_HIDEMFS_NEVER"],	L["OPT_HIDEMFS_SOLO"],	L["OPT_HIDEMFS_GROUP"]},
-		    validateDesc    = {
-			[L["OPT_HIDEMFS_NEVER"]]	= L["OPT_HIDEMFS_NEVER_DESC"],
-			[L["OPT_HIDEMFS_SOLO"]]	= L["OPT_HIDEMFS_SOLO_DESC"],
-			[L["OPT_HIDEMFS_GROUP"]]	= L["OPT_HIDEMFS_GROUP_DESC"]
-		    },
+		    values 	    = {L["OPT_HIDEMFS_NEVER"],	L["OPT_HIDEMFS_SOLO"],	L["OPT_HIDEMFS_GROUP"]},
 		    set = function(value)
 			--D:Debug(value);
 			local GetUseableValue = {
@@ -734,8 +741,9 @@ D.options = { -- {{{
 		    order = 1370,
 		},
 
-		{
+		Space_2 = {
 		    type = "header",
+		    name = "";
 		    order = 1400,
 		},
 		MaxCount = {
@@ -776,8 +784,9 @@ D.options = { -- {{{
 		    isPercent = false,
 		    order = 1600,
 		},
-		{
+		Space_3 = {
 		    type = "header",
+		    name = "";
 		    order = 1700,
 		},
 		MUFsColors = {
@@ -788,8 +797,9 @@ D.options = { -- {{{
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    args = {}
 		},
-		{
+		Space_4 = {
 		    type = "header",
+		    name = "";
 		    order = 1710,
 		},
 		FrameScale = {
@@ -891,8 +901,9 @@ D.options = { -- {{{
 			    isPercent = true,
 			    order = 101,
 			},
-			{
+			Space_5 = {
 			    type = "header",
+			    name = "";
 			    order = 103,
 			},
 			TieXY = {
@@ -955,8 +966,9 @@ D.options = { -- {{{
 			},
 		    }
 		},
-		{
+		Space_6 = {
 		    type = "header",
+		    name = "";
 		    order = 2100,
 		},
 		ToolTips = {
@@ -986,15 +998,16 @@ D.options = { -- {{{
 		    disabled = function() return not D.profile.ShowDebuffsFrame end,
 		    order = 2300,
 		},
-		{
+		Space_7 = {
 		    type = "header",
+		    name = "";
 		    order = 2400,
 		},
 		title2 = {
 		    type = "header",
 		    name = L["OPT_MFPERFOPT"],
-		    textHeight = 13,
-		    justifyH = "CENTER",
+		    --textHeight = 13,
+		    --justifyH = "CENTER",
 		    order = 2500,
 		},
 		UpdateRate = {
@@ -1006,7 +1019,7 @@ D.options = { -- {{{
 			if (v ~= D.profile.DebuffsFrameRefreshRate) then
 			    D.profile.DebuffsFrameRefreshRate = v;
 
-			    D:ScheduleRepeatingEvent("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
+			    D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
 			    D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v);
 			end
 		    end,
@@ -1038,6 +1051,7 @@ D.options = { -- {{{
 	}, -- }}}
 
 	spacer5 = {
+	    name = "";
 	    type = "header",
 	    order = 131
 	},
@@ -1107,84 +1121,84 @@ D.options = { -- {{{
 		},
 		--]=]
 
-		{
-		    type = "header", order = 138,}, Title2 = {
-			type="header",  textHeight = 13,
+		head_curringOrderOptions = {
+		    type = "header", order = 138,name="",}, Title2 = {
+			type="header",  --textHeight = 13,
 			name = L["OPT_CURINGORDEROPTIONS"],
 		    order = 139,
 		},
-		{ type = "header", order = 140,   },
+		Space_8 = { type = "header", order = 140, name = "",  },
 
 		CureMagic = {
 		    type = "toggle",
-		    name = D.L["MAGIC"],
+		    name = "  "..D.L["MAGIC"],
 		    desc = L["OPT_MAGICCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.MAGIC) end,
 		    set = function()
 			D:SetCureOrder (DC.MAGIC);
 		    end,
 		    disabled = function() return not D.Status.CuringSpells[DC.MAGIC] end,
-		    CureType = DC.MAGIC,
+		    --CureType = DC.MAGIC,
 		    order = 141
 		},
 		CureEnemyMagic = {
 		    type = "toggle",
-		    name = D.L["MAGICCHARMED"],
+		    name = "  "..D.L["MAGICCHARMED"],
 		    desc = L["OPT_MAGICCHARMEDCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.ENEMYMAGIC) end,
 		    set = function()
 			D:SetCureOrder (DC.ENEMYMAGIC);
 		    end,
 		    disabled = function() return not D.Status.CuringSpells[DC.ENEMYMAGIC] end,
-		    CureType = DC.ENEMYMAGIC,
+		    --CureType = DC.ENEMYMAGIC,
 		    order = 142
 		},
 		CurePoison = {
 		    type = "toggle",
-		    name = D.L["POISON"],
+		    name = "  "..D.L["POISON"],
 		    desc = L["OPT_POISONCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.POISON) end,
 		    set = function()
 			D:SetCureOrder (DC.POISON);
 		    end,
 		    disabled = function() return not D.Status.CuringSpells[DC.POISON] end,
-		    CureType = DC.POISON,
+		    --CureType = DC.POISON,
 		    order = 143
 		},
 		CureDisease = {
 		    type = "toggle",
-		    name = D.L["DISEASE"],
+		    name = "  "..D.L["DISEASE"],
 		    desc = L["OPT_DISEASECHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.DISEASE) end,
 		    set = function()
 			D:SetCureOrder (DC.DISEASE);
 		    end,
 		    disabled = function() return not D.Status.CuringSpells[DC.DISEASE] end,
-		    CureType = DC.DISEASE,
+		    --CureType = DC.DISEASE,
 		    order = 144
 		},
 		CureCurse = {
 		    type = "toggle",
-		    name = D.L["CURSE"],
+		    name = "  "..D.L["CURSE"],
 		    desc = L["OPT_CURSECHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.CURSE) end,
 		    set = function()
 			D:SetCureOrder (DC.CURSE);
 		    end,
 		    disabled = function() return not D.Status.CuringSpells[DC.CURSE] end,
-		    CureType = DC.CURSE,
+		    --CureType = DC.CURSE,
 		    order = 145
 		},
 		CureCharmed = {
 		    type = "toggle",
-		    name = D.L["CHARM"],
+		    name = "  "..D.L["CHARM"],
 		    desc = L["OPT_CHARMEDCHECK_DESC"],
 		    get = function() return D:GetCureCheckBoxStatus(DC.CHARMED) end,
 		    set = function()
 			D:SetCureOrder (DC.CHARMED);
 		    end,
 		    disabled = function() return not D.Status.CuringSpells[DC.CHARMED] end,
-		    CureType = DC.CHARMED,
+		    --CureType = DC.CHARMED,
 		    order = 146
 		},
 	    }
@@ -1199,6 +1213,7 @@ D.options = { -- {{{
 	    args = {}
 	},
 	spacer3 = {
+	    name = "";
 	    type = "header",
 	    order = 146
 	},
@@ -1210,18 +1225,20 @@ D.options = { -- {{{
 	    disabled = function() return  not D.Status.Enabled or D.Status.Combat end,
 	    args = {
 		SetKey = {
-		    type = "text",
+		    type = "keybinding",
 		    name = L["OPT_MACROBIND"],
 		    desc = L["OPT_MACROBIND_DESC"],
-		    validate = "keybinding",
-		    keybindingExcept = {BUTTON1=true, BUTTON2=true}, -- BUTTON1 is always affected to CAMERAORSELECTORMOVE
+		    --validate = "keybinding",
+		    --keybindingExcept = {BUTTON1=true, BUTTON2=true}, -- BUTTON1 is always affected to CAMERAORSELECTORMOVE
 		    get = function ()
 			local key = (GetBindingKey(D.CONF.MACROCOMMAND));
 			D.profile.MacroBind = key;
 			return key;
 		    end,
 		    set = function (key)
-			D:SetMacroKey ( key );
+			if key ~= "BUTTON1" and key ~= "BUTTON2" then
+			    D:SetMacroKey ( key );
+			end
 		    end,
 		    disabled = function () return D.profile.DisableMacroCreation end,
 		    order = 200,
@@ -1254,6 +1271,7 @@ D.options = { -- {{{
 	    }
 	},
 	spacer4 = {
+	    name = "";
 	    type = "header",
 	    order = 148
 	},
@@ -1264,13 +1282,14 @@ D.options = { -- {{{
 	    func = function ()
 		-- D.Tmp.Profile = D:GetProfile();
 		StaticPopup_Show ("DCR_CONFIRM_RESET", D:GetProfile());
-		D.DewDrop:Close(1);
+		--D.DewDrop:Close(1);
 
 	    end,
 	    disabled = function() return  not D.Status.Enabled end,
 	    order = 1500
 	},
 	spacer6 = {
+	    name = "";
 	    type = "header",
 	    order = 1510
 	},
@@ -1285,10 +1304,12 @@ D.options = { -- {{{
 	    order = 1515
 	},
 	spacer7 = {
+	    name = "";
 	    type = "header",
 	    order = 1520
 	},
 	spacer8 = {
+	    name = "";
 	    type = "header",
 	    order = 1530
 	},
@@ -1326,7 +1347,7 @@ D.options = { -- {{{
 			    , 1/50, f);
 			end);
 			--]]
-		    --f:SetScript("OnHide", function() D:CancelScheduledEvent("Dcr_GlorMoveShadow"); end)			
+		    --f:SetScript("OnHide", function() D:CancelDelayedCall("Dcr_GlorMoveShadow"); end)			
 		    f:SetWidth(w);
 		    f:SetHeight(h);
 		    f.tTL = f:CreateTexture("DcrMmTopLeft","BACKGROUND")
@@ -1455,10 +1476,12 @@ D.options = { -- {{{
 	    order = 1540
 	},
 	spacer9 = {
+	    name = "";
 	    type = "header",
 	    order = 1550
 	},
 	spacer10 = {
+	    name = "";
 	    type = "header",
 	    order = 1560
 	},
@@ -1503,15 +1526,16 @@ function D:SetCureCheckBoxNum (Type)
     local CheckBox = D.CureCheckBoxes[Type];
 
     -- save the old name
-    if (not CheckBox.NameOnly) then
-	CheckBox.NameOnly = CheckBox.name;
-    end
+    --if (not CheckBox.NameOnly) then
+--	CheckBox.NameOnly = CheckBox.name;
+   -- end
+    local NameOnly = "  " .. str_sub(CheckBox.name, 2);
 
     -- add the number in green before the name if we have a spell available and if we checked the box
     if (D:GetCureCheckBoxStatus(Type)) then
-	CheckBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. CheckBox.NameOnly;
+	CheckBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. NameOnly;
     else
-	CheckBox.name = "  " .. CheckBox.NameOnly;
+	CheckBox.name = "  " .. NameOnly;
     end
 
 end
@@ -1701,18 +1725,20 @@ function D:ShowHideDebuffsFrame ()
 
 	local i = 0;
 
-	for Unit, MF in pairs(D.MicroUnitF.ExistingPerUNIT) do
+	--[=[
+	for Unit, MF in pairs(D.MicroUnitF.ExistingPerUNIT) do -- XXX what the fuck is this ?!?
 	    if MF.IsDebuffed and MF.Shown then
-		D:ScheduleEvent("Dcr_updMUF"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, MF.CurrUnit, "Test item");
+		D:ScheduleDelayedCall("Dcr_updMUF"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, MF.CurrUnit, "Test item");
 		i = i + 1;
 	    end
 	end
+	--]=]
     end
 
     if (not D.profile.ShowDebuffsFrame) then
-	D:CancelScheduledEvent("Dcr_MUFupdate");
+	D:CancelDelayedCall("Dcr_MUFupdate");
     else
-	D:ScheduleRepeatingEvent("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
+	D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
     end
 
     -- set Icon
@@ -1796,7 +1822,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 
     local DebuffsSkipList, DefaultDebuffsSkipList, skipByClass, AlwaysSkipList, DefaultSkipByClass;
 
-    local spacer = function(num) return { type="header", order = 100 + num } end;
+    local spacer = function(num) return { name="",type="header", order = 100 + num } end;
 
     -- so we can pass arguments to functions like StaticPopupDialogs...
     D.Tmp = {};
@@ -1807,7 +1833,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	D:Debug("Removing '%s'...", handler["Debuff"]);
 	D.Tmp.DebuffToRemove = handler["Debuff"];
 	StaticPopup_Show ("DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION", D:ColorText(handler["Debuff"], "FF11AA66"));
-	D.DewDrop:Close(1);
+	--D.DewDrop:Close(1);
     end
 
     local AddToAlwaysSkippFunc = function (handler, v)
@@ -2015,18 +2041,18 @@ do -- this is a closure, it's a bit like {} blocks in C
     end
 
     function D:CreateDropDownFiltersMenu()
-	DebuffsSkipList	    = D.profile.DebuffsSkipList;
-	DefaultDebuffsSkipList    = D.defaults.DebuffsSkipList;
+	DebuffsSkipList		    = D.profile.DebuffsSkipList;
+	DefaultDebuffsSkipList	    = D.defaults.profile.DebuffsSkipList;
 
 	skipByClass		    = D.profile.skipByClass;
 	AlwaysSkipList		    = D.profile.DebuffAlwaysSkipList;
-	DefaultSkipByClass	    = D.defaults.skipByClass;
+	DefaultSkipByClass	    = D.defaults.profile.skipByClass;
 
 	local DebuffsSubMenu = {};
 	local num = 1;
 
 	for _, Debuff in ipairs(DebuffsSkipList) do
-	    DebuffsSubMenu[str_sub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
+	    DebuffsSubMenu[str_gsub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
 	    num = num + 1;
 	end
 
@@ -2034,7 +2060,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	num = num + 1;
 
 	DebuffsSubMenu["add"] = {
-	    type = "text",
+	    type = "input",
 	    name = D:ColorText(L["OPT_ADDDEBUFF"], "FFFF3300"),
 	    desc = L["OPT_ADDDEBUFF_DESC"],
 	    usage = L["OPT_ADDDEBUFF_USAGE"],
@@ -2046,7 +2072,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	num = num + 1;
 
 	DebuffsSubMenu["addFromHist"] = {
-	    type = "text",
+	    type = "input",
 	    name = L["OPT_ADDDEBUFFFHIST"], --"Add from Debuff history",
 	    desc = L["OPT_ADDDEBUFFFHIST_DESC"], --"Add a recently seen debuff",
 	    disabled = function () GetHistoryDebuff(); return (#DebuffHistTable == 0) end,
@@ -2054,7 +2080,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    set = function(value)
 		AddFunc(D:RemoveColor(value)); end,
 	    order = 100 + num,
-	    validate = DebuffHistTable, --GetHistoryDebuff(),
+	    --validate = DebuffHistTable, --GetHistoryDebuff(),
 	};
 
 
@@ -2144,8 +2170,8 @@ do
 
 	local NameAndDesc = GetNameAndDesc(handler["ColorReason"]);
 
-	D.options.args.MicroFrameOpt.args.MUFsColors.args[handler["ColorReason"]].name = NameAndDesc[1];
-	D.options.args.MicroFrameOpt.args.MUFsColors.args[handler["ColorReason"]].desc = NameAndDesc[2];
+	D.options.args.MicroFrameOpt.args.MUFsColors.args["c"..handler["ColorReason"]].name = NameAndDesc[1];
+	D.options.args.MicroFrameOpt.args.MUFsColors.args["c"..handler["ColorReason"]].desc = NameAndDesc[2];
 
 	D.MicroUnitF:Delayed_Force_FullUpdate();
 
@@ -2173,6 +2199,7 @@ do
 	    if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
 		MUFsColorsSubMenu["Spece" .. num] = {
 		    type = "header",
+		    name = "",
 		    order = 100 + num + (type(ColorReason) == "number" and ColorReason or 2048),
 		}
 		num = num + 1;
@@ -2180,7 +2207,7 @@ do
 
 	    NameAndDesc = GetNameAndDesc(ColorReason);
 
-	    MUFsColorsSubMenu[ColorReason] =  {
+	    MUFsColorsSubMenu["c"..ColorReason] =  {
 		type = "color",
 		name = NameAndDesc[1],
 		desc = NameAndDesc[2],
@@ -2317,7 +2344,7 @@ function D:QuickAccess (CallingObject, button) -- {{{
     if (button == "RightButton" and not IsShiftKeyDown()) then
 
 	if (not IsAltKeyDown()) then
-	   ---[[
+	   --[[
 	   D.DewDrop:Open(CallingObject,
 	    'children', function()
 		D.DewDrop:FeedAceOptionsTable( D.options )
@@ -2325,7 +2352,8 @@ function D:QuickAccess (CallingObject, button) -- {{{
 	    );
 	    --]]
 	else
-	    D.Waterfall:Open("Decursive");
+	    LibStub("AceConfigDialog-3.0"):Open("Decursive");
+	    --D.Waterfall:Open("Decursive");
 	end
 
     elseif (button == "RightButton" and IsShiftKeyDown()) then

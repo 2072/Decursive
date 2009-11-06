@@ -83,13 +83,13 @@ function D:GroupChanged (reason) -- {{{
 	-- Update the MUFs display in a short moment
 	self.MicroUnitF:Delayed_MFsDisplay_Update ();
     elseif not self.profile.Hide_LiveList then
-	D:ScheduleEvent("Dcr_GetUnitArray", self.GetUnitArray, 1.5, self);
+	D:ScheduleDelayedCall("Dcr_GetUnitArray", self.GetUnitArray, 1.5, self);
     end
 
 
     -- Test if we have to hide Decursive MUF window
     if self.profile.AutoHideDebuffsFrame ~= 0 then
-	self:ScheduleEvent("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
+	self:ScheduleDelayedCall("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
     end
 
     self:Debug("Groups changed", reason, arg1);
@@ -109,7 +109,7 @@ function D:UNIT_PET (Unit) -- {{{
 
     -- If the player's pet changed then we should check it for interesting spells
     if ( Unit == "player" ) then
-	self:ScheduleEvent("Dcr_CheckPet", self.UpdatePlayerPet, 2, self);
+	self:ScheduleDelayedCall("Dcr_CheckPet", self.UpdatePlayerPet, 2, self);
 	OncePetRetry = false;
 	D:Debug ("PLAYER pet detected! Poll in 2 seconds...");
     end
@@ -127,7 +127,7 @@ function D:UpdatePlayerPet () -- {{{
 	OncePetRetry = true;
 
 	D:Debug("|cFF9900FFPet lost, retry in 10 seconds|r");
-	D:ScheduleEvent("Dcr_ReCheckPetOnce", D.UpdatePlayerPet, 10, self);
+	D:ScheduleDelayedCall("Dcr_ReCheckPetOnce", D.UpdatePlayerPet, 10, self);
 	return;
     end
 
@@ -174,11 +174,11 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 end -- }}}
 
 function D:OnDebugEnable ()
-    self.profile.debugging = true;
+    self.db.global.debugging = true;
 end
 
 function D:OnDebugDisable ()
-    self.profile.debugging = false;
+    self.db.global.debugging = false;
 end
 
 -- This function update Decursive states :
@@ -186,7 +186,7 @@ end
 --   - Execute things we couldn't do when in combat
 local LastScanAllTime = 0;
 D.Status.MaxConcurentUpdateDebuff = 0;
-function D:SheduledTasks() -- {{{
+function D:ScheduledTasks() -- {{{
 
     -- clean up the blacklist
     for unit in pairs(self.Status.Blacklisted_Array) do
@@ -304,12 +304,12 @@ end
 
 function D:LEARNED_SPELL_IN_TAB()
     --D:Debug("|cFFFF0000A new spell was learned, scheduling a reconfiguration|r");
-    self:ScheduleEvent("Dcr_NewSpellLearned", self.Configure, 5, self);
+    self:ScheduleDelayedCall("Dcr_NewSpellLearned", self.Configure, 5, self);
 end
 
 function D:SPELLS_CHANGED()
     --D:Debug("|cFFFF0000Spells were changed, scheduling a reconfiguration check|r");
-    self:ScheduleEvent("Dcr_SpellsChanged", self.ReConfigure, 15, self);
+    self:ScheduleDelayedCall("Dcr_SpellsChanged", self.ReConfigure, 15, self);
 end
 
 ---[=[
@@ -462,7 +462,7 @@ do
 
     local UnitID;
 
-    function D:DummyDebuff (UnitID, DebuffName)
+    function D:DummyDebuff (UnitID)
 	--[=[
 	if self.profile.ShowDebuffsFrame then
 	    self.MicroUnitF:UpdateMUFUnit(UnitID);
@@ -470,7 +470,7 @@ do
 	    self.LiveList:DelayedGetDebuff(UnitID);
 	end
 	--]=]
-	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, DebuffName, 0x32, "DEBUFF");
+	D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
     end
 
     local SpecialDebuffs = {
@@ -626,7 +626,7 @@ do
 	    if event == "SPELL_CAST_START" then -- useless
 
 		self:Print("|cFFFF0000Starting SPELL: ", arg10, "|r");
-		self:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1 + ((select(7, GetSpellInfo(arg9))) / 1000), self.Status.ClickedMF, false, false);
+		self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1 + ((select(7, GetSpellInfo(arg9))) / 1000), self.Status.ClickedMF);
 	    end
 
 	    if event == "SPELL_CAST_SUCCESS" then
@@ -634,8 +634,8 @@ do
 		self:Debug(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
 
 		--self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
-		self:ScheduleEvent("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF, false, false);
-		self:ScheduleEvent("Dcr_clickedMFreset",
+		self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);
+		self:ScheduleDelayedCall("Dcr_clickedMFreset",
 		function()
 		    if D.Status.ClickedMF then
 			D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
@@ -659,7 +659,7 @@ do
 			self.Status.Blacklisted_Array[self.Status.ClickedMF.CurrUnit] = self.profile.CureBlacklist;
 
 			self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of blacklist frame|r");
-			self:ScheduleEvent("Dcr_Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, self.profile.DebuffsFrameRefreshRate, self.Status.ClickedMF, false, true);
+			self:ScheduleDelayedCall("Dcr_Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.UpdateSkippingSetBuf, self.profile.DebuffsFrameRefreshRate, self.Status.ClickedMF);
 		    end
 
 		    PlaySoundFile(DC.FailedSound);
