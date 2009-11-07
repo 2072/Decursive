@@ -287,7 +287,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     local Old_UnitShown = self.UnitShown;
 
 
-    D:Debug("Update required: NumToShow = %d", NumToShow);
+    D:Debug("Update required: NumToShow = ", NumToShow);
 
     local Unit_Array_UnitToGUID = D.Status.Unit_Array_UnitToGUID;
     local Unit_Array		= D.Status.Unit_Array;
@@ -558,7 +558,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     if (D.Status.Unit_Array_UnitToGUID[Unitid]) then
 	unit = Unitid;
     else
-	D:Debug("Unit %s, not in raid or party!", Unitid);
+	D:Debug("Unit", Unitid "not in raid or party!" );
 	return;
     end
 
@@ -914,7 +914,7 @@ end -- }}}
 -- init a new micro frame (Call internally by :new() only)
 function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
-	D:Debug("Initializing MicroUnit object '%s' with FrameNum=%d and ID %d", Unit, FrameNum, ID);
+	D:Debug("Initializing MicroUnit object", Unit, "with FrameNum=", FrameNum, " and ID", ID);
 
 
 	-- set object default variables
@@ -1625,7 +1625,7 @@ function MicroUnitF:OnPostClick()
 end
 
 function MicroUnitF:OnAttributeChanged(self, name, value)
-	D:Debug("Micro unit '%s' AttributeChanged to '%s'", name, value);
+	D:Debug("Micro unit", name, "AttributeChanged to", value);
 end
 
 

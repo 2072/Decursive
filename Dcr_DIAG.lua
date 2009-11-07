@@ -383,10 +383,10 @@ do
 	    local ConfirmCustomEventMessage = "I was really caught!";
 
 	    -- Register a curstom event
-	    Dcr:RegisterMessage(CustomEvent, function(DiagTestArg1) CustomEventCaught = DiagTestArg1; end);
+	    Dcr:RegisterMessage(CustomEvent, function(message, DiagTestArg1) CustomEventCaught = DiagTestArg1; Dcr:Debug("CustomEvent callback executed"); end);
 
 	    -- Schedule a function call in 0.5s
-	    Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2 end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
+	    Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2; Dcr:Debug("OneTimeEvent callback executed"); end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
 
 	    -- Set a repeating function call that will check for other test event completion
 	    Dcr:ScheduleRepeatedCall("DcrDiagRepeat",
@@ -405,6 +405,8 @@ do
 		    PrintMessage("|cFF00FF00Everything seems to be OK.|r");
 		    AddDebugText("Event library functionning properly, Everything seems to be OK");
 		    return;
+		else
+		    Dcr:Debug(OneTimeEvent, "is not", ConfirmOneTimeEventMessage, "and", CustomEventCaught, "is not", ConfirmCustomEventMessage);
 		end
 
 		-- cast the custom event
@@ -412,7 +414,7 @@ do
 
 		if ReapeatingEventCount == 4 then
 		    AddDebugText("A problem occured, OneTimeEvent:", OneTimeEvent, "CustomEventCaught:", CustomEventCaught);
-		    PrintMessage("|cFFFF0000A problem occured, OneTimeEvent='%s', CustomEventCaught='%s'|r", OneTimeEvent, CustomEventCaught);
+		    PrintMessage("|cFFFF0000A problem occured, OneTimeEvent='%q', CustomEventCaught='%q'|r", OneTimeEvent, CustomEventCaught);
 		    Dcr:CancelDelayedCall("DcrDiagRepeat");
 		    Dcr:UnregisterMessage(CustomEvent);
 		    return;

@@ -120,7 +120,7 @@ local last_petType = false;
 
 function D:UpdatePlayerPet () -- {{{
     curr_petType = UnitCreatureFamily("pet");
-    D:Debug("|cFF0000FFCurrent Pet type is %s|r", curr_petType);
+    D:Debug("|cFF0000FFCurrent Pet type is",curr_petType,"|r");
 
     -- if we had a pet and lost it, retry once later...
     if (last_petType and not curr_petType and not OncePetRetry) then
@@ -133,12 +133,12 @@ function D:UpdatePlayerPet () -- {{{
 
     -- if we've changed of pet
     if (last_petType ~= curr_petType) then
-	if (curr_petType) then D:Debug ("|cFF0066FFPet name changed: %s|r", curr_petType); else D:Debug ("|cFF0066FFNo more pet!|r"); end; -- debug info only
+	if (curr_petType) then D:Debug ("|cFF0066FFPet name changed:",curr_petType,"|r"); else D:Debug ("|cFF0066FFNo more pet!|r"); end; -- debug info only
 
 	last_petType = curr_petType;
 	D:Configure();
     else
-	D:Debug ("|cFFAA66FFNo change in Pet Type (%s)|r", curr_petType);
+	D:Debug ("|cFFAA66FFNo change in Pet Type",curr_petType,"|r");
     end
 end -- }}}
 
@@ -202,7 +202,7 @@ function D:ScheduledTasks() -- {{{
 
     if (not InCombatLockdown() and self.Status.DelayedFunctionCallsCount > 0) then
 	for Id, FuncAndArgs in pairs (self.Status.DelayedFunctionCalls) do
-	    D:Debug("Running post combat command %s", Id);
+	    D:Debug("Running post combat command", Id);
 	    local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
 	    self.Status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
 	    self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount - 1;

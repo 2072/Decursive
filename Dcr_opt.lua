@@ -374,10 +374,6 @@ D.options = { -- {{{
 	    --justifyH = "CENTER",
 	    order = 50,
 	},
-	spacer1 = {
-	    name = "";
-	    type = "header",
-	},
 	livelistoptions = { -- {{{
 	    type = "group",
 	    name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
@@ -443,7 +439,8 @@ D.options = { -- {{{
 		    name = L["AMOUNT_AFFLIC"],
 		    desc = L["OPT_AMOUNT_AFFLIC_DESC"],
 		    get = function() return D.profile.Amount_Of_Afflicted end,
-		    set = function(v) 
+		    set = function(info, v) 
+			D:Debug(v);
 			D.profile.Amount_Of_Afflicted = v;
 			D.LiveList:RestAllPosition();
 		    end,
@@ -459,7 +456,7 @@ D.options = { -- {{{
 		    name = L["BLACK_LENGTH"],
 		    desc = L["OPT_BLACKLENTGH_DESC"],
 		    get = function() return D.profile.CureBlacklist end,
-		    set = function(v) 
+		    set = function(info, v) 
 			D.profile.CureBlacklist = v
 		    end,
 		    min = 1,
@@ -473,7 +470,7 @@ D.options = { -- {{{
 		    name = L["SCAN_LENGTH"],
 		    desc = L["OPT_SCANLENGTH_DESC"],
 		    get = function() return D.profile.ScanTime end,
-		    set = function(v)
+		    set = function(info,v)
 			if (v ~= D.profile.ScanTime) then
 			    D.profile.ScanTime = v;
 			    D:ScheduleRepeatedCall("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
@@ -510,11 +507,7 @@ D.options = { -- {{{
 		    disabled = function() return  D.profile.Hide_LiveList end,
 		    order = 108
 		},
-		Space_1 = {
-		    type = "header",
-		    name = "";
-		    order = 999,
-		},
+		
 		ShowTestItem = {
 		    type = "toggle",
 		    name = L["OPT_CREATE_VIRTUAL_DEBUFF"],
@@ -535,7 +528,7 @@ D.options = { -- {{{
 		    name = L["OPT_LLSCALE"],
 		    desc = L["OPT_LLSCALE_DESC"],
 		    get = function() return D.profile.LiveListScale end, -- D.profile.DebuffsFrameElemScale end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.LiveListScale) then
 			    D.profile.LiveListScale = v;
 
@@ -554,7 +547,7 @@ D.options = { -- {{{
 		    name = L["OPT_LLALPHA"],
 		    desc = L["OPT_LLALPHA_DESC"],
 		    get = function() return 1 - D.profile.LiveListAlpha end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.LiveListAlpha) then
 			    D.profile.LiveListAlpha = 1 - v;
 			    DecursiveMainBar:SetAlpha(D.profile.LiveListAlpha);
@@ -621,7 +614,6 @@ D.options = { -- {{{
 	    }
 	}, -- }}}
 
-
 	MicroFrameOpt = { -- {{{
 	    type = "group",
 	    name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
@@ -658,7 +650,7 @@ D.options = { -- {{{
 		    desc = L["OPT_AUTOHIDEMFS_DESC"],
 		    order = 1210,
 		    values 	    = {L["OPT_HIDEMFS_NEVER"],	L["OPT_HIDEMFS_SOLO"],	L["OPT_HIDEMFS_GROUP"]},
-		    set = function(value)
+		    set = function(info,value)
 			--D:Debug(value);
 			local GetUseableValue = {
 			    [L["OPT_HIDEMFS_NEVER"]]	= 0,
@@ -678,7 +670,7 @@ D.options = { -- {{{
 		    name = L["OPT_GROWDIRECTION"],
 		    desc = L["OPT_GROWDIRECTION_DESC"],
 		    get = function() return D.profile.DebuffsFrameGrowToTop end,
-		    set = function(v)
+		    set = function(info,v)
 			if (v ~= D.profile.DebuffsFrameGrowToTop) then
 			    D.profile.DebuffsFrameGrowToTop = v;
 			    D.MicroUnitF:SavePos();
@@ -694,7 +686,7 @@ D.options = { -- {{{
 		    name = L["OPT_STICKTORIGHT"],
 		    desc = L["OPT_STICKTORIGHT_DESC"],
 		    get = function() return D.profile.DebuffsFrameStickToRight end,
-		    set = function(v)
+		    set = function(info,v)
 			if (v ~= D.profile.DebuffsFrameStickToRight) then
 			    D.profile.DebuffsFrameStickToRight = v;
 			    D.MicroUnitF:SavePos();
@@ -709,7 +701,7 @@ D.options = { -- {{{
 		    name = L["OPT_SHOWBORDER"],
 		    desc = L["OPT_SHOWBORDER_DESC"],
 		    get = function() return D.profile.DebuffsFrameElemBorderShow end,
-		    set = function(v)
+		    set = function(info,v)
 			if (v ~= D.profile.DebuffsFrameElemBorderShow) then
 			    D.profile.DebuffsFrameElemBorderShow = v;
 			end
@@ -722,7 +714,7 @@ D.options = { -- {{{
 		    name = L["OPT_SHOWCHRONO"],
 		    desc = L["OPT_SHOWCHRONO_DESC"],
 		    get = function() return D.profile.DebuffsFrameChrono end,
-		    set = function(v)
+		    set = function(info,v)
 			if (v ~= D.profile.DebuffsFrameChrono) then
 			    D.profile.DebuffsFrameChrono = v;
 			end
@@ -741,17 +733,13 @@ D.options = { -- {{{
 		    order = 1370,
 		},
 
-		Space_2 = {
-		    type = "header",
-		    name = "";
-		    order = 1400,
-		},
+	
 		MaxCount = {
 		    type = 'range',
 		    name = L["OPT_MAXMFS"],
 		    desc = L["OPT_MAXMFS_DESC"],
 		    get = function() return D.profile.DebuffsFrameMaxCount end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.DebuffsFrameMaxCount) then
 			    D.profile.DebuffsFrameMaxCount = v;
 			    D.MicroUnitF.MaxUnit = v;
@@ -770,7 +758,7 @@ D.options = { -- {{{
 		    name = L["OPT_UNITPERLINES"],
 		    desc = L["OPT_UNITPERLINES_DESC"],
 		    get = function() return D.profile.DebuffsFramePerline end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.DebuffsFramePerline) then
 			    D.profile.DebuffsFramePerline = v;
 			    D.MicroUnitF:ResetAllPositions ();
@@ -784,11 +772,7 @@ D.options = { -- {{{
 		    isPercent = false,
 		    order = 1600,
 		},
-		Space_3 = {
-		    type = "header",
-		    name = "";
-		    order = 1700,
-		},
+		
 		MUFsColors = {
 		    type = "group",
 		    name = D:ColorText(L["OPT_MUFSCOLORS"], "FFFF00CA"),
@@ -797,17 +781,13 @@ D.options = { -- {{{
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    args = {}
 		},
-		Space_4 = {
-		    type = "header",
-		    name = "";
-		    order = 1710,
-		},
+		
 		FrameScale = {
 		    type = 'range',
 		    name = L["OPT_MFSCALE"],
 		    desc = L["OPT_MFSCALE_DESC"],
 		    get = function() return D.profile.DebuffsFrameElemScale end, -- D.profile.DebuffsFrameElemScale end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.DebuffsFrameElemScale) then
 			    D.profile.DebuffsFrameElemScale = v;
 
@@ -828,7 +808,7 @@ D.options = { -- {{{
 		    name = L["OPT_MFALPHA"],
 		    desc = L["OPT_MFALPHA_DESC"],
 		    get = function() return 1 - D.profile.DebuffsFrameElemAlpha end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.DebuffsFrameElemAlpha) then
 			    D.profile.DebuffsFrameElemAlpha = 1 - v;
 			    D.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
@@ -853,7 +833,7 @@ D.options = { -- {{{
 			    name = L["OPT_TIECENTERANDBORDER"],
 			    desc = L["OPT_TIECENTERANDBORDER_OPT"],
 			    get = function() return D.profile.DebuffsFrameElemTieTransparency end,
-			    set = function(v)
+			    set = function(info,v)
 				if (v ~= D.profile.DebuffsFrameElemTieTransparency) then
 				    D.profile.DebuffsFrameElemTieTransparency = v;
 				    if v then
@@ -869,7 +849,7 @@ D.options = { -- {{{
 			    name = L["OPT_BORDERTRANSP"],
 			    desc = L["OPT_BORDERTRANSP_DESC"],
 			    get = function() return 1 - D.profile.DebuffsFrameElemBorderAlpha end,
-			    set = function(v) 
+			    set = function(info,v) 
 				if (v ~= D.profile.DebuffsFrameElemBorderAlpha) then
 				    D.profile.DebuffsFrameElemBorderAlpha = 1 - v;
 				end
@@ -886,7 +866,7 @@ D.options = { -- {{{
 			    name = L["OPT_CENTERTRANSP"],
 			    desc = L["OPT_CENTERTRANSP_DESC"],
 			    get = function() return 1 - D.profile.DebuffsFrameElemAlpha end,
-			    set = function(v) 
+			    set = function(info,v) 
 				if (v ~= D.profile.DebuffsFrameElemAlpha) then
 				    D.profile.DebuffsFrameElemAlpha = 1 - v;
 				    if D.profile.DebuffsFrameElemTieTransparency then
@@ -901,17 +881,13 @@ D.options = { -- {{{
 			    isPercent = true,
 			    order = 101,
 			},
-			Space_5 = {
-			    type = "header",
-			    name = "";
-			    order = 103,
-			},
+			
 			TieXY = {
 			    type = "toggle",
 			    name = L["OPT_TIEXYSPACING"],
 			    desc = L["OPT_TIEXYSPACING_DESC"],
 			    get = function() return D.profile.DebuffsFrameTieSpacing end,
-			    set = function(v)
+			    set = function(info,v)
 				if (v ~= D.profile.DebuffsFrameTieSpacing) then
 				    D.profile.DebuffsFrameTieSpacing = v;
 				    if v then
@@ -928,7 +904,7 @@ D.options = { -- {{{
 			    name = L["OPT_XSPACING"],
 			    desc = L["OPT_XSPACING_DESC"],
 			    get = function() return D.profile.DebuffsFrameXSpacing end,
-			    set = function(v) 
+			    set = function(info,v) 
 				if (v ~= D.profile.DebuffsFrameXSpacing) then
 				    D.profile.DebuffsFrameXSpacing = v;
 				    if D.profile.DebuffsFrameTieSpacing then
@@ -950,7 +926,7 @@ D.options = { -- {{{
 			    name = L["OPT_YSPACING"],
 			    desc = L["OPT_YSPACING_DESC"],
 			    get = function() return D.profile.DebuffsFrameYSpacing end,
-			    set = function(v) 
+			    set = function(info,v) 
 				if (v ~= D.profile.DebuffsFrameYSpacing) then
 				    D.profile.DebuffsFrameYSpacing = v;
 				    D.MicroUnitF:ResetAllPositions ();
@@ -966,11 +942,7 @@ D.options = { -- {{{
 			},
 		    }
 		},
-		Space_6 = {
-		    type = "header",
-		    name = "";
-		    order = 2100,
-		},
+		
 		ToolTips = {
 		    type = "toggle",
 		    name = L["SHOW_TOOLTIP"],
@@ -998,11 +970,7 @@ D.options = { -- {{{
 		    disabled = function() return not D.profile.ShowDebuffsFrame end,
 		    order = 2300,
 		},
-		Space_7 = {
-		    type = "header",
-		    name = "";
-		    order = 2400,
-		},
+		
 		title2 = {
 		    type = "header",
 		    name = L["OPT_MFPERFOPT"],
@@ -1015,7 +983,7 @@ D.options = { -- {{{
 		    name = L["OPT_MFREFRESHRATE"],
 		    desc = L["OPT_MFREFRESHRATE_DESC"],
 		    get = function() return D.profile.DebuffsFrameRefreshRate end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.DebuffsFrameRefreshRate) then
 			    D.profile.DebuffsFrameRefreshRate = v;
 
@@ -1035,7 +1003,7 @@ D.options = { -- {{{
 		    name = L["OPT_MFREFRESHSPEED"],
 		    desc = L["OPT_MFREFRESHSPEED_DESC"],
 		    get = function() return D.profile.DebuffsFramePerUPdate end,
-		    set = function(v) 
+		    set = function(info,v) 
 			if (v ~= D.profile.DebuffsFramePerUPdate) then
 			    D.profile.DebuffsFramePerUPdate = v;
 			end
@@ -1049,13 +1017,6 @@ D.options = { -- {{{
 		},
 	    }
 	}, -- }}}
-
-	spacer5 = {
-	    name = "";
-	    type = "header",
-	    order = 131
-	},
-
 
 	CureOptions = { -- {{{
 	    type = "group",
@@ -1121,13 +1082,11 @@ D.options = { -- {{{
 		},
 		--]=]
 
-		head_curringOrderOptions = {
-		    type = "header", order = 138,name="",}, Title2 = {
-			type="header",  --textHeight = 13,
+		Title2 = {
+			type="header",
 			name = L["OPT_CURINGORDEROPTIONS"],
 		    order = 139,
 		},
-		Space_8 = { type = "header", order = 140, name = "",  },
 
 		CureMagic = {
 		    type = "toggle",
@@ -1212,11 +1171,7 @@ D.options = { -- {{{
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {}
 	},
-	spacer3 = {
-	    name = "";
-	    type = "header",
-	    order = 146
-	},
+	
 	Macro = {
 	    type = "group",
 	    name = D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"),
@@ -1235,7 +1190,7 @@ D.options = { -- {{{
 			D.profile.MacroBind = key;
 			return key;
 		    end,
-		    set = function (key)
+		    set = function (info,key)
 			if key ~= "BUTTON1" and key ~= "BUTTON2" then
 			    D:SetMacroKey ( key );
 			end
@@ -1248,7 +1203,7 @@ D.options = { -- {{{
 		    name = D.L["OPT_NOKEYWARN"],
 		    desc = L["OPT_NOKEYWARN_DESC"],
 		    get = function() return D.profile.NoKeyWarn end,
-		    set = function(v)
+		    set = function(info,v)
 			D.profile.NoKeyWarn = v;
 		    end,
 		    disabled = function () return D.profile.DisableMacroCreation end,
@@ -1259,7 +1214,7 @@ D.options = { -- {{{
 		    name = D.L["OPT_DISABLEMACROCREATION"],
 		    desc = L["OPT_DISABLEMACROCREATION_DESC"],
 		    get = function() return D.profile.DisableMacroCreation end,
-		    set = function(v)
+		    set = function(info,v)
 			if v then
 			    D:SetMacroKey (nil); -- remove the macro key assignment.
 			    D:Debug("SetMacroKey (nil)");
@@ -1270,29 +1225,21 @@ D.options = { -- {{{
 		}
 	    }
 	},
-	spacer4 = {
-	    name = "";
-	    type = "header",
-	    order = 148
-	},
+	
 	reset = {
 	    type = "execute",
 	    name = D:ColorText(L["OPT_RESETOPTIONS"], "FF00AAAA"),
 	    desc = L["OPT_RESETOPTIONS_DESC"],
 	    func = function ()
 		-- D.Tmp.Profile = D:GetProfile();
-		StaticPopup_Show ("DCR_CONFIRM_RESET", D:GetProfile());
+		StaticPopup_Show ("DCR_CONFIRM_RESET", D.db:GetCurrentProfile(), "");
 		--D.DewDrop:Close(1);
 
 	    end,
-	    disabled = function() return  not D.Status.Enabled end,
+	    --disabled = function() return  not D.Status.Enabled end,
 	    order = 1500
 	},
-	spacer6 = {
-	    name = "";
-	    type = "header",
-	    order = 1510
-	},
+	
 	report = {
 	    type = "execute",
 	    name = D:ColorText(L["DECURSIVE_DEBUG_REPORT_SHOW"], "FFFF0000"),
@@ -1303,16 +1250,7 @@ D.options = { -- {{{
 	    hidden = function() return  #D.DebugTextTable < 1 end,
 	    order = 1515
 	},
-	spacer7 = {
-	    name = "";
-	    type = "header",
-	    order = 1520
-	},
-	spacer8 = {
-	    name = "";
-	    type = "header",
-	    order = 1530
-	},
+
 	GlorfindalMemorium = { -- {{{
 	    type = "execute",
 	    name = D:ColorText(L["GLOR1"], "FF" .. D:GetClassHexColor( "WARRIOR" )),
@@ -1475,22 +1413,14 @@ D.options = { -- {{{
 	    end,
 	    order = 1540
 	},
-	spacer9 = {
-	    name = "";
-	    type = "header",
-	    order = 1550
-	},
-	spacer10 = {
-	    name = "";
-	    type = "header",
-	    order = 1560
-	},
+	
+	
 	minimap = {
 	    type = "toggle",
 	    name = L["OPT_SHOWMINIMAPICON"],
 	    desc = L["OPT_SHOWMINIMAPICON_DESC"],
 	    get = function() return not D.profile.MiniMapIcon or not D.profile.MiniMapIcon.hide end,
-	    set = function(v)
+	    set = function(info,v)
 		local hide = not v;
 		D.profile.MiniMapIcon.hide = hide;
 		if hide then
@@ -1807,7 +1737,7 @@ StaticPopupDialogs["DCR_CONFIRM_RESET"] = {
     OnAccept = function()
 
 	D:SetMacroKey (nil); --remove the macro key.
-	D:ResetDB("profile");
+	D.db:ResetProfile();
 	D:Println(L["OPT_PROFILERESET"]);
 
     end,
@@ -1870,13 +1800,13 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    handler = {
 		["Debuff"]=DebuffName,
 		["Class"]=Class,
-		["get"] = function  (args)
+		["get"] = function  (handler)
 		    local skipByClass = D.profile.skipByClass;
-		    return skipByClass[args["Class"]][args["Debuff"]]; 
+		    return skipByClass[handler["Class"]][handler["Debuff"]]; 
 		end,
-		["set"] = function  (args, v)
+		["set"] = function  (handler, info, v)
 		    local skipByClass = D.profile.skipByClass;
-		    skipByClass[args["Class"]][string.trim(args["Debuff"])] = v;
+		    skipByClass[handler["Class"]][string.trim(handler["Debuff"])] = v;
 		end
 	    };
 	    get = "get",
@@ -1903,10 +1833,10 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    desc = str_format(L["OPT_ALWAYSIGNORE_DESC"], DebuffName),
 	    handler = {
 		["Debuff"] = DebuffName,
-		["get"] = function (args)
-		    return AlwaysSkipList[args["Debuff"]];
+		["get"] = function (handler)
+		    return AlwaysSkipList[handler["Debuff"]];
 		end,
-		["set"] = AddToAlwaysSkippFunc,
+		["set"] = function (handler,info,v) AddToAlwaysSkippFunc(handler,v) end,
 	    },
 	    get = "get",
 	    set = "set",
@@ -2065,7 +1995,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    desc = L["OPT_ADDDEBUFF_DESC"],
 	    usage = L["OPT_ADDDEBUFF_USAGE"],
 	    get = false,
-	    set = AddFunc,
+	    set = function(info,value) AddFunc(value) end,
 	    order = 100 + num,
 	};
 
@@ -2077,7 +2007,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    desc = L["OPT_ADDDEBUFFFHIST_DESC"], --"Add a recently seen debuff",
 	    disabled = function () GetHistoryDebuff(); return (#DebuffHistTable == 0) end,
 	    get = function() GetHistoryDebuff(); return false; end,
-	    set = function(value)
+	    set = function(info,value)
 		AddFunc(D:RemoveColor(value)); end,
 	    order = 100 + num,
 	    --validate = DebuffHistTable, --GetHistoryDebuff(),
@@ -2148,7 +2078,7 @@ do
 	    name = L[ColorReason];
 
 	    if ColorReason == "COLORCHRONOS" then
-		desc = "COLORCHRONOS_DESC";
+		desc = L["COLORCHRONOS_DESC"];
 	    else
 		desc = "This is abnormal!";
 	    end
@@ -2217,7 +2147,7 @@ do
 		handler = {
 		    ["ColorReason"]  = ColorReason,
 		    ["get"]	    = GetColor,
-		    ["set"]	    = SetColor,
+		    ["set"]	    = function (handler, info,r, g, b, a) SetColor(handler, r, g, b, a) end,
 		},
 
 		get = "get",

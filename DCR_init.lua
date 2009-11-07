@@ -283,7 +283,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     
     
     LibStub("AceConfig-3.0"):RegisterOptionsTable("Decursive",  D.options, {'/dcr', '/decursive'});
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Decursive");
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Decursive", nil, nil, "livelistoptions");
     -- Create some useful cache tables
     D:CreateClassColorTables();
 
@@ -660,6 +660,7 @@ function D:SetConfiguration()
     if DecursiveSelfDiagnostic() == 2 then
 	return false;
     end
+
 
     D.DcrFullyInitialized = false;
     D:CancelDelayedCall("Dcr_LLupdate");
@@ -1113,7 +1114,7 @@ function D:GetSpellsTranslations(FromDIAG)
 	['Unstable Affliction']		= {	30108, 30404, 30405,			 },
 	['Dampen Magic']		= {	604,					 },
 	['Amplify Magic']		= {	1008,					 },
-	['TALENT_BODY_AND_SOUL']	= {	64129, 65081				 },
+	['TALENT_BODY_AND_SOUL']	= {	64129, 65081, 				 },
 	['TALENT_ARCANE_POWER']		= {	12042,					 }, --temp to test
 	['DARK_MATTER']			= {	59868,					 }, --temp to test
 	--['YOGGG_DOMINATE_MIND']	= {	63042,					 }, --temp to test
@@ -1121,6 +1122,10 @@ function D:GetSpellsTranslations(FromDIAG)
     };
 
 
+    local alpha = false;
+    --@alpha@
+    alpha = true;
+    --@end-alpha@
     local Sname, Sids, Sid, _, ok;
     ok = true;
     for Sname, Sids in pairs(Spells) do
@@ -1129,16 +1134,24 @@ function D:GetSpellsTranslations(FromDIAG)
 	    if _ == 1 then
 		DS[Sname] = (GetSpellInfo(Sid));
 		if not DS[Sname] then
-		    D:AddDebugText("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
+		    if random (1, 9000) == 1 or FromDIAG or alpha then
+			D:AddDebugText("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
+		    end
 		end
 	    elseif FromDIAG then
 		if DS[Sname] ~= (GetSpellInfo(Sid)) then
+
 		    D:AddDebugText("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
+
 		    D:errln("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
+
 		    D:errln("Please report this to ARCHARODIM+DcrReport@teaser.fr");
+
 		    ok = false;
 		elseif not DS[Sname] then
+
 		    D:AddDebugText("SpellID:", Sid, "no longer exist. This was supposed to represent the spell", Sname);
+
 		    D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
 		end
 	    end

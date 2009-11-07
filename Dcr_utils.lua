@@ -121,45 +121,68 @@ function D:UnitName(Unit)
 	end 
 end
 
---[=[
-function D:MakeAfflictionName (name) --{{{
-    if (name) then
-	return "|cFFFF6622" .. L[name] .. "|r";
+local function isFormattedString(string)
+    return type(string)=='string' and (string:find("%%[cdEefgGiouXxsq]")) or false;
+end
+
+local function UseFormatIfPresent(...)
+    if not isFormattedString((select(1,...))) then
+	return ...;
     else
-	return "";
+	return (select(1,...)):format(select(2, ...));
     end
-end --}}}
---]=]
+end
+
+Dcr.UseFormatIfPresent = UseFormatIfPresent;
+
+local function debugStyle(...)
+    return "|cFF00AAAADebug:|r", ...;
+end
 
 function D:Println( ... ) --{{{
 
-    if (D.profile.Print_ChatFrame) then
-
-	self:Print(D.Status.OutputWindow, ...);
-	--D:CustomPrint (1,1,1, D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
+    if D.profile.Print_ChatFrame then
+	self:Print(D.Status.OutputWindow, UseFormatIfPresent(...));
     end
-    if (D.profile.Print_CustomFrame) then
-	self:Print(DecursiveTextFrame, ...);
-	--D:CustomPrint (1,1,1, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
+    if D.profile.Print_CustomFrame then
+	self:Print(DecursiveTextFrame, UseFormatIfPresent(...));
     end
 end --}}}
 
-function D:ColorPrint (r,g,b, ... )
+function D:ColorPrint (r,g,b, ... ) --XXX
 
-    D:Println( ... );
+    local datas = {UseFormatIfPresent(...)};
 
-    --[[
-    if (D.profile.Print_ChatFrame) then
-	D:CustomPrint (r,g,b,D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
+    local ColorHeader = ("|cff%02x%02x%02x"):format(r * 255, g * 255, b * 255);
+
+    t_insert(datas, 1, ColorHeader);
+    t_insert(datas, #datas + 1, "|r");
+
+    if D.profile.Print_ChatFrame then
+	self:Print(D.Status.OutputWindow, ColorHeader, unpack(datas));
     end
-    if (D.profile.Print_CustomFrame) then
-	D:CustomPrint (r,g,b, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
+
+    if D.profile.Print_CustomFrame then
+	self:Print(DecursiveTextFrame, ColorHeader, unpack(datas));
     end
-    --]]
+    
 end
 
+function D:errln( ... ) --{{{
+    if D.profile.Print_Error then
+	self:ColorPrint(1,0,0,...);
+	
+    end
+end --}}}
+
+--[[
+local function D:Debugf(string, ...)
+    self:Print(debugStyle( string:format(...)));
+end
+--]]
+
 function D:Debug(...)
-    self:Print("|cFF00AAAADebug:|r", ...);
+    self:Print(debugStyle(UseFormatIfPresent(...)));
 end
 
 
@@ -287,20 +310,6 @@ function D:DisplayGameTooltip(Message) --{{{
     GameTooltip:Show();
 end --}}}
 
-function D:errln( ... ) --{{{
-    if (D.profile.Print_Error) then
-	self:Println ("|cFFFF0000", ..., "|r");
-	--[[
-	if (D.profile.Print_ChatFrame) then
-	    D:CustomPrint ( 1, 0.1, 0.1,D.Status.OutputWindow, D.CONF.TEXT_LIFETIME, " ", ... );
-	end
-	if (D.profile.Print_CustomFrame) then
-	    D:CustomPrint (1,0.1,0.1, DecursiveTextFrame, D.CONF.TEXT_LIFETIME, " ", ... );
-	    -- DecursiveTextFrame:AddMessage(Message, 1, 0.1, 0.1, 0.9);
-	end
-	--]]
-    end
-end --}}}
 
 
 function D:NumToHexColor(ColorTable)
@@ -390,6 +399,7 @@ end
 
 local ObjectWithArgs = {["obj"]=false, ["arg"]=false,};
 function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
+    --D:Debug("registering delayed call: %q", RefName);
 
     if DcrTimers[RefName] and DcrTimers[RefName][1] then
 	self:CancelTimer(DcrTimers[RefName][1]);
@@ -400,19 +410,19 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
     end
 
     if select('#', ...) then
-	D:Debug("ScheduleDelayedCall: multiargs");
+	--D:Debug("ScheduleDelayedCall: multiargs");
 
 	-- arg table
 	DcrTimers[RefName][2] = {arg1};
 
 	local i;
 	for i = 1, select('#', ...) do
-	    DcrTimers[RefName][2][i + 1] = select(i, ...)
+	    DcrTimers[RefName][2][i + 1] = (select(i, ...));
 	end
 
 	DcrTimers[RefName][1] = self:ScheduleTimer (
 	function(arg)
-	    D:Debug("multirec:", unpack(arg));
+	    --D:Debug("multirec:", unpack(arg));
 	    FunctionRef(unpack(arg));
 	    DcrTimers[RefName][1] = false;
 	end
@@ -423,7 +433,7 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
 
 	DcrTimers[RefName][1] = self:ScheduleTimer (
 	function(arg)
-	    D:Debug("monorec:", arg);
+	    --D:Debug("monorec:", arg);
 	    FunctionRef(unpack(arg));
 	    DcrTimers[RefName][1] = false;
 	end
@@ -450,8 +460,9 @@ end
 
 function D:CancelDelayedCall(RefName)
     if DcrTimers[RefName] and DcrTimers[RefName][1] then
+	local cancelHandle = DcrTimers[RefName][1];
 	DcrTimers[RefName][1] = false;
-	return self:CancelTimer(DcrTimers[RefName][1]);
+	return self:CancelTimer(cancelHandle);
     end
 end
 
