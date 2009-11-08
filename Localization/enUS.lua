@@ -346,6 +346,8 @@ L["DEV_VERSION_EXPIRED"] = "DEV_VERSION_EXPIRED"
 L["OPT_SHOW_STEALTH_STATUS"] = "OPT_SHOW_STEALTH_STATUS"
 L["OPT_SHOW_STEALTH_STATUS_DESC"] = "OPT_SHOW_STEALTH_STATUS_DESC"
 
+L["OPT_FILTEROUTCLASSES_FOR_X"] = "%q will be ignored on the specified classes while you are in combat."
+
 --]==]
 --@end-do-not-package@
 

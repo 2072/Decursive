@@ -565,8 +565,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
 	SLASH_DECURSIVEOPTION1 = D.CONF.MACRO_OPTION;
 	SlashCmdList["DECURSIVEOPTION"] = function(msg)
-	    LibStub("AceConfigDialog-3.0"):Open("DecursiveALL");
-	    --D.Waterfall:Open("Decursive");
+	    LibStub("AceConfigDialog-3.0"):Open(L["STR_OPTIONS"]);
 	end
 
 	SLASH_DECURSIVESHOWORDER1 = D.CONF.MACRO_SHOW_ORDER;

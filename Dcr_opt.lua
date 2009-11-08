@@ -375,6 +375,7 @@ D.options = { -- {{{
 	    disabled = function() return  not D.Status.Enabled end,
 
 	    args = {
+		description = {name = L["OPT_LIVELIST_DESC"], order = 1, type = "description"},
 		show = {
 		    type = "toggle",
 		    name = L["HIDE_LIVELIST"],
@@ -564,6 +565,7 @@ D.options = { -- {{{
 	    order = 110,
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {
+		description = {name = L["OPT_MESSAGES_DESC"], order = 1, type = "description"},
 		PrintToDefaultChat = {
 		    type = "toggle",
 		    name =  L["PRINT_CHATFRAME"],
@@ -617,10 +619,9 @@ D.options = { -- {{{
 		title1 = {
 		    type = "header",
 		    name = L["OPT_DISPLAYOPTIONS"],
-		    --textHeight = 13,
-		    --justifyH = "CENTER",
 		    order = 1100,
 		},
+		description = {name = L["OPT_MFSETTINGS_DESC"], order = 1150, type = "description"},
 		Show = {
 		    type = "toggle",
 		    name = L["OPT_SHOWMFS"],
@@ -638,24 +639,19 @@ D.options = { -- {{{
 		    order = 1205,
 		},
 		AutoHide = {
-		    type = "multiselect",
+		    type = "select",
+		    style = "dropdown",
 		    name = L["OPT_AUTOHIDEMFS"],
 		    desc = L["OPT_AUTOHIDEMFS_DESC"],
 		    order = 1210,
-		    values 	    = {L["OPT_HIDEMFS_NEVER"],	L["OPT_HIDEMFS_SOLO"],	L["OPT_HIDEMFS_GROUP"]},
+		    values = {L["OPT_HIDEMFS_NEVER"], L["OPT_HIDEMFS_SOLO"], L["OPT_HIDEMFS_GROUP"]},
 		    set = function(info,value)
-			--D:Debug(value);
-			local GetUseableValue = {
-			    [L["OPT_HIDEMFS_NEVER"]]	= 0,
-			    [L["OPT_HIDEMFS_SOLO"]]		= 1,
-			    [L["OPT_HIDEMFS_GROUP"]]	= 2,
-			};
-			D.profile.AutoHideDebuffsFrame = GetUseableValue[value];
+			D:Debug(value);
+			D.profile.AutoHideDebuffsFrame = value - 1;
 			D:AutoHideShowMUFs();
 		    end,
 		    get = function()
-			local GetUseableNames = {L["OPT_HIDEMFS_NEVER"],	L["OPT_HIDEMFS_SOLO"],	L["OPT_HIDEMFS_GROUP"]};
-			return  GetUseableNames[D.profile.AutoHideDebuffsFrame + 1];
+			return  D.profile.AutoHideDebuffsFrame + 1;
 		    end,
 		},
 		GrowToTop = {
@@ -770,7 +766,7 @@ D.options = { -- {{{
 		    type = "group",
 		    name = D:ColorText(L["OPT_MUFSCOLORS"], "FFFF00CA"),
 		    desc = L["OPT_MUFSCOLORS_DESC"],
-		    order = 1705,
+		    order = 17050,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    args = {}
 		},
@@ -818,7 +814,7 @@ D.options = { -- {{{
 		    type = "group",
 		    name = L["OPT_ADVDISP"],
 		    desc = L["OPT_ADVDISP_DESC"],
-		    order = 2000,
+		    order = 20000,
 		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
 		    args = {
 			TieTransparency = {
@@ -1018,6 +1014,7 @@ D.options = { -- {{{
 	    order = 120,
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {
+		description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description"},
 		AbolishCheck = {
 		    type = "toggle",
 		    name =  L["ABOLISH_CHECK"],
@@ -1156,22 +1153,24 @@ D.options = { -- {{{
 	    }
 	}, -- }}}
 
-	DebuffSkip = {
+	DebuffSkip = { -- {{{
 	    type = "group",
 	    name = D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"),
 	    desc = L["OPT_DEBUFFFILTER_DESC"],
 	    order = 145,
+	    childGroups= "select",
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {}
-	},
+	}, -- }}}
 	
-	Macro = {
+	Macro = { -- {{{
 	    type = "group",
 	    name = D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"),
 	    desc = L["OPT_MACROOPTIONS_DESC"],
 	    order = 147,
 	    disabled = function() return  not D.Status.Enabled or D.Status.Combat end,
 	    args = {
+		description = {name = L["OPT_MACROOPTIONS_DESC"], order = 1, type = "description"},
 		SetKey = {
 		    type = "keybinding",
 		    name = L["OPT_MACROBIND"],
@@ -1217,7 +1216,7 @@ D.options = { -- {{{
 		    order = 400
 		}
 	    }
-	},
+	}, -- }}}
 	
 	reset = {
 	    type = "execute",
@@ -1443,6 +1442,7 @@ function D:ExportOptions ()
 	    Glor = option_args.GlorfindalMemorium,
 	    reset = option_args.reset,
 	    report = option_args.report,
+	    minimap = option_args.minimap,
 	    profileHeader = {
 		type = "header",
 		name = "",
@@ -1453,10 +1453,13 @@ function D:ExportOptions ()
     ToBlizzOPtions_base.args.Glor.order = 1;
     ToBlizzOPtions_base.args.reset.order = 2;
     ToBlizzOPtions_base.args.report.order = 3;
+    ToBlizzOPtions_base.args.minimap.order = 4;
 
+    option_args.profiles.args.reset = nil; -- we use our own reset so we can cleanout befor reseting the profile (this allow us to emove the macro key binding and restore the previous key assignment for exemple)
+
+    -- insert profile management controls at the base of the frame
     for key, value in pairs(option_args.profiles.args) do
 	if key ~= "reset" then
-	    D:Debug("Adding:", key);
 	    ToBlizzOPtions_base.args[key] = value;
 	    ToBlizzOPtions_base.args[key].order = ToBlizzOPtions_base.args[key].order * 10;
 
@@ -1467,11 +1470,24 @@ function D:ExportOptions ()
     end
 
     
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("DecursiveALL",  D.options);
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("Decursive",  ToBlizzOPtions_base);
-    LibStub("AceConfigCmd-3.0"):CreateChatCommand('dcr', "DecursiveALL")
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Decursive");
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("DecursiveALL", "Decursive", "Decursive", "livelistoptions");
+    LibStub("AceConfig-3.0"):RegisterOptionsTable(L["STR_OPTIONS"],  D.options);
+    LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  ToBlizzOPtions_base); -- the .." " is lame...
+    LibStub("AceConfigCmd-3.0"):CreateChatCommand('dcr', L["STR_OPTIONS"]);
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name);
+
+    local SubGroups_ToBlizzOptions = {
+	[D:ColorText(L["OPT_LIVELIST"], "FF22EE33")] = "livelistoptions",
+	[D:ColorText(L["OPT_MESSAGES"], "FF229966")] = "MessageOptions",
+	[D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33")] = "MicroFrameOpt",
+	[D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533")] = "CureOptions",
+	[D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA")] = "DebuffSkip",
+	[D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB")] = "Macro",
+    };
+
+    for key,value in pairs(SubGroups_ToBlizzOptions) do
+	LibStub("AceConfig-3.0"):RegisterOptionsTable(key, option_args[value]);
+	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(key, nil, D.name);
+    end
 end
 
 
@@ -1844,22 +1860,66 @@ do -- this is a closure, it's a bit like {} blocks in C
 		    local skipByClass = D.profile.skipByClass;
 		    skipByClass[handler["Class"]][string.trim(handler["Debuff"])] = v;
 		end
-	    };
+	    },
 	    get = "get",
 	    set = "set",
 	    order = 100 + num;
 	}
     end
 
+    local function ClassValues(DebuffName)
+	local values = {};
+
+	for i, class in pairs (DC.ClassNumToUName) do
+	    values[i] = D:ColorText( LC[class], "FF"..DC.HexClassColor[class]) ..
+	    (DefaultSkipByClass[class][DebuffName] and D:ColorText("  *", "FFFFAA00") or "");
+	end
+
+	--D:Debug(unpack (values));
+	return values;
+
+    end
+
     local function DebuffSubmenu (DebuffName, num)
 	local classes = {};
 
+	--[[
 	for Class, Debuffs in pairs(skipByClass) do
 	    classes[Class] = ClassCheckbox(Class, DebuffName, num);
 	    num = num + 1;
 	end
+	--]]
+	
+	classes["header"] = {
+	    type = "description",
+	    name = (L["OPT_FILTEROUTCLASSES_FOR_X"]):format(D:ColorText(DebuffName, "FF77CC33")),
+	    order = 0,
+	}
 
-	classes["spacer1"] = spacer(num);
+	local skipByClass = D.profile.skipByClass;
+	 classes[DebuffName] = {
+	     type = "multiselect",
+	     name = "",
+	     --desc = "test desc",
+	     values = ClassValues(DebuffName),
+	     order = 100 + num,
+	     get = "get",
+	     set = "set",
+
+	     handler = {
+		["Debuff"]=DebuffName,
+		["get"] = function  (handler, info, Classnum)
+		    --D:Debug(DC.ClassNumToUName[Classnum], skipByClass[DC.ClassNumToUName[Classnum]][handler["Debuff"]]);
+		    return skipByClass[DC.ClassNumToUName[Classnum]][handler["Debuff"]]; 
+		end,
+		["set"] = function  (handler, info, Classnum, state)
+		    skipByClass[DC.ClassNumToUName[Classnum]][string.trim(handler["Debuff"])] = state;
+		end
+	    };
+
+	 };
+
+	--classes["spacer1"] = spacer(num);
 
 	num = num + 1;
 
@@ -1882,7 +1942,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	num = num + 1;
 
-	classes["spacer1p5"] = spacer(num);
+	--classes["spacer1p5"] = spacer(num);
 
 	num = num + 1;
 
@@ -1901,7 +1961,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	num = num + 1;
 
-	classes["spacer2"] = spacer(num);
+	--classes["spacer2"] = spacer(num);
 
 	num = num + 1;
 
@@ -1928,7 +1988,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 
 	num = num + 1;
 
-	classes["spacer3"] = spacer(num);
+	--classes["spacer3"] = spacer(num);
 
 	return classes;
     end
@@ -2067,7 +2127,8 @@ do -- this is a closure, it's a bit like {} blocks in C
 	num = num + 1;
 
 	D.options.args.DebuffSkip.args = DebuffsSubMenu;
-	LibStub("AceConfigRegistry-3.0"):NotifyChange("Decursive");
+	LibStub("AceConfigRegistry-3.0"):NotifyChange(L["STR_OPTIONS"]);
+	LibStub("AceConfigRegistry-3.0"):NotifyChange(D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"));
     end
 end
 
@@ -2318,7 +2379,7 @@ function D:QuickAccess (CallingObject, button) -- {{{
 	    );
 	    --]]
 	else
-	    LibStub("AceConfigDialog-3.0"):Open("DecursiveALL");
+	    LibStub("AceConfigDialog-3.0"):Open(L["STR_OPTIONS"]);
 	    --D.Waterfall:Open("Decursive");
 	end
 
