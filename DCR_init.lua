@@ -42,7 +42,6 @@ if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
     return;
 end
 
---Dcr	    = AceLibrary("AceAddon-2.0"):new ("AceEvent-2.0", "AceDB-2.0", "AceConsole-2.0", "AceDebug-2.0");
 Dcr	    = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
 
 local D = Dcr;
@@ -54,8 +53,6 @@ D.author = "Archarodim";
 DcrCorruptedd = 1;
 
 D.L	    = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
---D.DewDrop   = AceLibrary("Dewdrop-2.0");
---D.Waterfall = AceLibrary("Waterfall-1.0");
 
 D.LC	    = _G.LOCALIZED_CLASS_NAMES_MALE;
 
@@ -277,13 +274,14 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
 
+
+
     self.db.RegisterCallback(self, "OnProfileChanged", "SetConfiguration")
     self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
     self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
+
+    D:ExportOptions ();
     
-    
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("Decursive",  D.options, {'/dcr', '/decursive'});
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Decursive", nil, nil, "livelistoptions");
     -- Create some useful cache tables
     D:CreateClassColorTables();
 
@@ -567,7 +565,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
 	SLASH_DECURSIVEOPTION1 = D.CONF.MACRO_OPTION;
 	SlashCmdList["DECURSIVEOPTION"] = function(msg)
-	    LibStub("AceConfigDialog-3.0"):Open("Decursive");
+	    LibStub("AceConfigDialog-3.0"):Open("DecursiveALL");
 	    --D.Waterfall:Open("Decursive");
 	end
 
@@ -588,12 +586,10 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
 	-- hook the load macro thing {{{
 	-- So Decursive will re-update its macro when the macro UI is closed
-	hooksecurefunc("ShowMacroFrame", function ()
-	    if not D.MacroSaveHooked then
+	D:SecureHook("ShowMacroFrame", function ()
+	    if not D:IsHooked(MacroPopupFrame, "Hide") then
 		D:Debug("Hooking MacroPopupFrame:Hide()");
-		hooksecurefunc(MacroPopupFrame, "Hide", function () D:UpdateMacro(); end);
-    
-		D.MacroSaveHooked = true;
+		D:SecureHook(MacroPopupFrame, "Hide", function () D:UpdateMacro(); end);
 	    end
 	end); -- }}}
 
@@ -612,15 +608,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
 
     -- Raid/Group changes events
-    --self:RegisterEvent("PARTY_MEMBERS_CHANGED","GroupChanged");
     self:RegisterEvent("PARTY_MEMBERS_CHANGED", function() D:GroupChanged("PARTY_MEMBERS_CHANGED", arg1) end);
-    --self:RegisterEvent("PARTY_LEADER_CHANGED","GroupChanged");
     self:RegisterEvent("PARTY_LEADER_CHANGED", function() D:GroupChanged("PARTY_LEADER_CHANGED", arg1) end);
-    --self:RegisterEvent("RAID_ROSTER_UPDATE","GroupChanged");
     self:RegisterEvent("RAID_ROSTER_UPDATE", function() D:GroupChanged("RAID_ROSTER_UPDATE", arg1) end);
-    --self:RegisterEvent("UNIT_NAME_UPDATE","GroupChanged");
-    --self:RegisterEvent("UNIT_NAME_UPDATE", function() D:GroupChanged("UNIT_NAME_UPDATE", arg1) end);
-    --self:RegisterEvent("UNIT_PORTRAIT_UPDATE", function() D:GroupChanged("UNIT_PORTRAIT_UPDATE", arg1) end);
     self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 
     -- Player pet detection event (used to find pet spells)

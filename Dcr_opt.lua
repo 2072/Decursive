@@ -43,7 +43,6 @@ if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_utils.lua"] then
 end
 
 local D = Dcr;
---D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 local L  = D.L;
 local LC = D.LC;
@@ -367,13 +366,7 @@ D.options = { -- {{{
     type = "group",
     handler = D,
     args = {
-	title = {
-	    type = "header",
-	    name = L["STR_OPTIONS"],
-	    --textHeight = 13,
-	    --justifyH = "CENTER",
-	    order = 50,
-	},
+	
 	livelistoptions = { -- {{{
 	    type = "group",
 	    name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
@@ -1409,10 +1402,10 @@ D.options = { -- {{{
 		On ne l'oubliera jamais...
 
 		--]]
-		-- }}}
 	    end,
 	    order = 1540
 	},
+		-- }}}
 	
 	
 	minimap = {
@@ -1437,6 +1430,49 @@ D.options = { -- {{{
     },
 } -- }}}
 
+local ToBlizzOPtions_base = {};
+function D:ExportOptions ()
+    local option_args = D.options.args;
+    option_args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db);
+    option_args.profiles.order = 1000000; -- always the last
+
+
+    ToBlizzOPtions_base = {
+	type = "group",
+	args ={
+	    Glor = option_args.GlorfindalMemorium,
+	    reset = option_args.reset,
+	    report = option_args.report,
+	    profileHeader = {
+		type = "header",
+		name = "",
+		order = 9,
+	    },
+	},
+    }
+    ToBlizzOPtions_base.args.Glor.order = 1;
+    ToBlizzOPtions_base.args.reset.order = 2;
+    ToBlizzOPtions_base.args.report.order = 3;
+
+    for key, value in pairs(option_args.profiles.args) do
+	if key ~= "reset" then
+	    D:Debug("Adding:", key);
+	    ToBlizzOPtions_base.args[key] = value;
+	    ToBlizzOPtions_base.args[key].order = ToBlizzOPtions_base.args[key].order * 10;
+
+	    if not ToBlizzOPtions_base.args[key].handler then
+		ToBlizzOPtions_base.args[key].handler = option_args.profiles.handler;
+	    end
+	end
+    end
+
+    
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("DecursiveALL",  D.options);
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("Decursive",  ToBlizzOPtions_base);
+    LibStub("AceConfigCmd-3.0"):CreateChatCommand('dcr', "DecursiveALL")
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Decursive");
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("DecursiveALL", "Decursive", "Decursive", "livelistoptions");
+end
 
 
 D.CureCheckBoxes = { -- just a shortcut
@@ -2031,7 +2067,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	num = num + 1;
 
 	D.options.args.DebuffSkip.args = DebuffsSubMenu;
-
+	LibStub("AceConfigRegistry-3.0"):NotifyChange("Decursive");
     end
 end
 
@@ -2282,7 +2318,7 @@ function D:QuickAccess (CallingObject, button) -- {{{
 	    );
 	    --]]
 	else
-	    LibStub("AceConfigDialog-3.0"):Open("Decursive");
+	    LibStub("AceConfigDialog-3.0"):Open("DecursiveALL");
 	    --D.Waterfall:Open("Decursive");
 	end
 
