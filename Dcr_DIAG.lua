@@ -259,6 +259,7 @@ do
 	    ["AceTimer-3.0"] = 5,
 	    ["AceHook-3.0"] = 5,
 	    ["AceDB-3.0"] = 13,
+	    ["AceDBOptions-3.0"] = 10,
 	    ["AceLocale-3.0"] = 2,
 
 	    ["AceGUI-3.0"] = 23,
