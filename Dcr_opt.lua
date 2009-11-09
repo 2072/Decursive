@@ -366,7 +366,6 @@ D.options = { -- {{{
     type = "group",
     handler = D,
     args = {
-	
 	livelistoptions = { -- {{{
 	    type = "group",
 	    name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
@@ -611,400 +610,412 @@ D.options = { -- {{{
 
 	MicroFrameOpt = { -- {{{
 	    type = "group",
+	    childGroups = "tab",
 	    name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
-	    desc =		 L["OPT_MFSETTINGS_DESC"],
+	    desc = L["OPT_MFSETTINGS_DESC"],
 	    order = 130,
 	    disabled = function() return  not D.Status.Enabled end,
 	    args = {
-		title1 = {
-		    type = "header",
+		displayOpts = {
+		    type = "group",
 		    name = L["OPT_DISPLAYOPTIONS"],
-		    order = 1100,
-		},
-		description = {name = L["OPT_MFSETTINGS_DESC"], order = 1150, type = "description"},
-		Show = {
-		    type = "toggle",
-		    name = L["OPT_SHOWMFS"],
-		    desc = L["OPT_SHOWMFS_DESC"],
-		    get = function() return D.profile.ShowDebuffsFrame end,
-		    set = function()
-			D:ShowHideDebuffsFrame ();
-		    end,
-		    disabled = function() return D.Status.Combat end,
-		    order = 1200,
-		},
-		AutoHideDesc = {
-		    type="description",
-		    name = ("%s\n%s\n%s"):format(L["OPT_HIDEMFS_NEVER_DESC"], L["OPT_HIDEMFS_SOLO_DESC"], L["OPT_HIDEMFS_GROUP_DESC"]),
-		    order = 1205,
-		},
-		AutoHide = {
-		    type = "select",
-		    style = "dropdown",
-		    name = L["OPT_AUTOHIDEMFS"],
-		    desc = L["OPT_AUTOHIDEMFS_DESC"],
-		    order = 1210,
-		    values = {L["OPT_HIDEMFS_NEVER"], L["OPT_HIDEMFS_SOLO"], L["OPT_HIDEMFS_GROUP"]},
-		    set = function(info,value)
-			D:Debug(value);
-			D.profile.AutoHideDebuffsFrame = value - 1;
-			D:AutoHideShowMUFs();
-		    end,
-		    get = function()
-			return  D.profile.AutoHideDebuffsFrame + 1;
-		    end,
-		},
-		GrowToTop = {
-		    type = "toggle",
-		    name = L["OPT_GROWDIRECTION"],
-		    desc = L["OPT_GROWDIRECTION_DESC"],
-		    get = function() return D.profile.DebuffsFrameGrowToTop end,
-		    set = function(info,v)
-			if (v ~= D.profile.DebuffsFrameGrowToTop) then
-			    D.profile.DebuffsFrameGrowToTop = v;
-			    D.MicroUnitF:SavePos();
-			    D.MicroUnitF:ResetAllPositions ();
-			    D.MicroUnitF:Place ();
-			end
-		    end,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    order = 1300,
-		},
-		StickToRight = {
-		    type = "toggle",
-		    name = L["OPT_STICKTORIGHT"],
-		    desc = L["OPT_STICKTORIGHT_DESC"],
-		    get = function() return D.profile.DebuffsFrameStickToRight end,
-		    set = function(info,v)
-			if (v ~= D.profile.DebuffsFrameStickToRight) then
-			    D.profile.DebuffsFrameStickToRight = v;
-			    D.MicroUnitF:SavePos();
-			    D.MicroUnitF:Delayed_MFsDisplay_Update();
-			end
-		    end,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    order = 1310,
-		},
-		ShowBorder = {
-		    type = "toggle",
-		    name = L["OPT_SHOWBORDER"],
-		    desc = L["OPT_SHOWBORDER_DESC"],
-		    get = function() return D.profile.DebuffsFrameElemBorderShow end,
-		    set = function(info,v)
-			if (v ~= D.profile.DebuffsFrameElemBorderShow) then
-			    D.profile.DebuffsFrameElemBorderShow = v;
-			end
-		    end,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    order = 1350,
-		},
-		ShowChrono = {
-		    type = "toggle",
-		    name = L["OPT_SHOWCHRONO"],
-		    desc = L["OPT_SHOWCHRONO_DESC"],
-		    get = function() return D.profile.DebuffsFrameChrono end,
-		    set = function(info,v)
-			if (v ~= D.profile.DebuffsFrameChrono) then
-			    D.profile.DebuffsFrameChrono = v;
-			end
-		    end,
-		    disabled = function() return not D.profile.ShowDebuffsFrame end,
-		    order = 1360,
-		},
-		ShowStealthStatus = {
-		    type = "toggle",
-		    name =  L["OPT_SHOW_STEALTH_STATUS"],
-		    desc = L["OPT_SHOW_STEALTH_STATUS_DESC"],
-		    get = function() return D.profile.Show_Stealthed_Status end,
-		    set = function()
-			D.profile.Show_Stealthed_Status = not D.profile.Show_Stealthed_Status;
-		    end,
-		    order = 1370,
-		},
-
-	
-		MaxCount = {
-		    type = 'range',
-		    name = L["OPT_MAXMFS"],
-		    desc = L["OPT_MAXMFS_DESC"],
-		    get = function() return D.profile.DebuffsFrameMaxCount end,
-		    set = function(info,v) 
-			if (v ~= D.profile.DebuffsFrameMaxCount) then
-			    D.profile.DebuffsFrameMaxCount = v;
-			    D.MicroUnitF.MaxUnit = v;
-			    D.MicroUnitF:Delayed_MFsDisplay_Update();
-			end
-		    end,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    min = 1,
-		    max = 82,
-		    step = 1,
-		    isPercent = false,
-		    order = 1500,
-		},
-		MFPerline = {
-		    type = 'range',
-		    name = L["OPT_UNITPERLINES"],
-		    desc = L["OPT_UNITPERLINES_DESC"],
-		    get = function() return D.profile.DebuffsFramePerline end,
-		    set = function(info,v) 
-			if (v ~= D.profile.DebuffsFramePerline) then
-			    D.profile.DebuffsFramePerline = v;
-			    D.MicroUnitF:ResetAllPositions ();
-			    D.MicroUnitF:Place ();
-			end
-		    end,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    min = 1,
-		    max = 40,
-		    step = 1,
-		    isPercent = false,
-		    order = 1600,
-		},
-		
-		MUFsColors = {
-		    type = "group",
-		    name = D:ColorText(L["OPT_MUFSCOLORS"], "FFFF00CA"),
-		    desc = L["OPT_MUFSCOLORS_DESC"],
-		    order = 17050,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    args = {}
-		},
-		
-		FrameScale = {
-		    type = 'range',
-		    name = L["OPT_MFSCALE"],
-		    desc = L["OPT_MFSCALE_DESC"],
-		    get = function() return D.profile.DebuffsFrameElemScale end, -- D.profile.DebuffsFrameElemScale end,
-		    set = function(info,v) 
-			if (v ~= D.profile.DebuffsFrameElemScale) then
-			    D.profile.DebuffsFrameElemScale = v;
-
-
-			    D.MicroUnitF:SetScale(D.profile.DebuffsFrameElemScale);
-
-			end
-		    end,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    min = 0.3,
-		    max = 4,
-		    step = 0.01,
-		    isPercent = true,
-		    order = 1800,
-		},
-		Alpha = {
-		    type = 'range',
-		    name = L["OPT_MFALPHA"],
-		    desc = L["OPT_MFALPHA_DESC"],
-		    get = function() return 1 - D.profile.DebuffsFrameElemAlpha end,
-		    set = function(info,v) 
-			if (v ~= D.profile.DebuffsFrameElemAlpha) then
-			    D.profile.DebuffsFrameElemAlpha = 1 - v;
-			    D.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
-			end
-		    end,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D.profile.DebuffsFrameElemTieTransparency end,
-		    min = 0,
-		    max = 1,
-		    step = 0.01,
-		    isPercent = true,
-		    order = 1900,
-		},
-		AdvDispOptions = {
-		    type = "group",
-		    name = L["OPT_ADVDISP"],
-		    desc = L["OPT_ADVDISP_DESC"],
-		    order = 20000,
-		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
-		    args = {
-			TieTransparency = {
+		    desc = L["OPT_MFSETTINGS_DESC"],
+		    order = 1,
+		    args = { -- {{{
+			Show = {
 			    type = "toggle",
-			    name = L["OPT_TIECENTERANDBORDER"],
-			    desc = L["OPT_TIECENTERANDBORDER_OPT"],
-			    get = function() return D.profile.DebuffsFrameElemTieTransparency end,
-			    set = function(info,v)
-				if (v ~= D.profile.DebuffsFrameElemTieTransparency) then
-				    D.profile.DebuffsFrameElemTieTransparency = v;
-				    if v then
-					D.profile.DebuffsFrameElemBorderAlpha = (D.profile.DebuffsFrameElemAlpha / 2);
-				    end
-				end
+			    name = L["OPT_SHOWMFS"],
+			    desc = L["OPT_SHOWMFS_DESC"],
+			    get = function() return D.profile.ShowDebuffsFrame end,
+			    set = function()
+				D:ShowHideDebuffsFrame ();
 			    end,
 			    disabled = function() return D.Status.Combat end,
-			    order = 100
+			    order = 1200,
 			},
-			BorderAlpha = {
-			    type = 'range',
-			    name = L["OPT_BORDERTRANSP"],
-			    desc = L["OPT_BORDERTRANSP_DESC"],
-			    get = function() return 1 - D.profile.DebuffsFrameElemBorderAlpha end,
-			    set = function(info,v) 
-				if (v ~= D.profile.DebuffsFrameElemBorderAlpha) then
-				    D.profile.DebuffsFrameElemBorderAlpha = 1 - v;
+
+			AutoHide = {
+			    type = "select",
+			    style = "dropdown",
+			    name = L["OPT_AUTOHIDEMFS"],
+			    desc = L["OPT_AUTOHIDEMFS_DESC"] .. "\n\n" .. ("%s: %s\n%s: %s\n%s: %s"):format(D:ColorText(L["OPT_HIDEMFS_NEVER"], "FF88CCAA"), L["OPT_HIDEMFS_NEVER_DESC"], D:ColorText(L["OPT_HIDEMFS_SOLO"], "FF88CCAA"), L["OPT_HIDEMFS_SOLO_DESC"], D:ColorText(L["OPT_HIDEMFS_GROUP"], "FF88CCAA"), L["OPT_HIDEMFS_GROUP_DESC"]),
+			    order = 1210,
+			    values = {L["OPT_HIDEMFS_NEVER"], L["OPT_HIDEMFS_SOLO"], L["OPT_HIDEMFS_GROUP"]},
+			    set = function(info,value)
+				D:Debug(value);
+				D.profile.AutoHideDebuffsFrame = value - 1;
+				D:AutoHideShowMUFs();
+			    end,
+			    get = function()
+				return  D.profile.AutoHideDebuffsFrame + 1;
+			    end,
+			},
+			GrowToTop = {
+			    type = "toggle",
+			    name = L["OPT_GROWDIRECTION"],
+			    desc = L["OPT_GROWDIRECTION_DESC"],
+			    get = function() return D.profile.DebuffsFrameGrowToTop end,
+			    set = function(info,v)
+				if (v ~= D.profile.DebuffsFrameGrowToTop) then
+				    D.profile.DebuffsFrameGrowToTop = v;
+				    D.MicroUnitF:SavePos();
+				    D.MicroUnitF:ResetAllPositions ();
+				    D.MicroUnitF:Place ();
 				end
 			    end,
-			    disabled = function() return D.Status.Combat or D.profile.DebuffsFrameElemTieTransparency end,
-			    min = 0,
-			    max = 1,
+			    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+			    order = 1300,
+			},
+			StickToRight = {
+			    type = "toggle",
+			    name = L["OPT_STICKTORIGHT"],
+			    desc = L["OPT_STICKTORIGHT_DESC"],
+			    get = function() return D.profile.DebuffsFrameStickToRight end,
+			    set = function(info,v)
+				if (v ~= D.profile.DebuffsFrameStickToRight) then
+				    D.profile.DebuffsFrameStickToRight = v;
+				    D.MicroUnitF:SavePos();
+				    D.MicroUnitF:Delayed_MFsDisplay_Update();
+				end
+			    end,
+			    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+			    order = 1310,
+			},
+			ShowBorder = {
+			    type = "toggle",
+			    name = L["OPT_SHOWBORDER"],
+			    desc = L["OPT_SHOWBORDER_DESC"],
+			    get = function() return D.profile.DebuffsFrameElemBorderShow end,
+			    set = function(info,v)
+				if (v ~= D.profile.DebuffsFrameElemBorderShow) then
+				    D.profile.DebuffsFrameElemBorderShow = v;
+				end
+			    end,
+			    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+			    order = 1350,
+			},
+			ShowChrono = {
+			    type = "toggle",
+			    name = L["OPT_SHOWCHRONO"],
+			    desc = L["OPT_SHOWCHRONO_DESC"],
+			    get = function() return D.profile.DebuffsFrameChrono end,
+			    set = function(info,v)
+				if (v ~= D.profile.DebuffsFrameChrono) then
+				    D.profile.DebuffsFrameChrono = v;
+				end
+			    end,
+			    disabled = function() return not D.profile.ShowDebuffsFrame end,
+			    order = 1360,
+			},
+			ShowStealthStatus = {
+			    type = "toggle",
+			    name =  L["OPT_SHOW_STEALTH_STATUS"],
+			    desc = L["OPT_SHOW_STEALTH_STATUS_DESC"],
+			    get = function() return D.profile.Show_Stealthed_Status end,
+			    set = function()
+				D.profile.Show_Stealthed_Status = not D.profile.Show_Stealthed_Status;
+			    end,
+			    order = 1370,
+			},
+			ToolTips = {
+			    type = "toggle",
+			    name = L["SHOW_TOOLTIP"],
+			    desc = L["OPT_SHOWTOOLTIP_DESC"],
+			    get = function() return D.profile.AfflictionTooltips end,
+			    set = function()
+				D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
+				local k, v;
+				for k,v in ipairs(D.LiveList.ExistingPerID) do
+				    v.Frame:EnableMouse(D.profile.AfflictionTooltips);
+				end
+			    end,
+			    disabled = function() return  D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame end,
+			    order = 1400,
+			},
+			ShowHelp = {
+			    type = "toggle",
+			    name = L["OPT_SHOWHELP"],
+			    desc = L["OPT_SHOWHELP_DESC"],
+			    get = function() return D.profile.DebuffsFrameShowHelp end,
+			    set = function()
+				D.profile.DebuffsFrameShowHelp = not D.profile.DebuffsFrameShowHelp;
+
+			    end,
+			    disabled = function() return not D.profile.ShowDebuffsFrame end,
+			    order = 1450,
+			},
+			MaxCount = {
+			    type = 'range',
+			    name = L["OPT_MAXMFS"],
+			    desc = L["OPT_MAXMFS_DESC"],
+			    get = function() return D.profile.DebuffsFrameMaxCount end,
+			    set = function(info,v) 
+				if (v ~= D.profile.DebuffsFrameMaxCount) then
+				    D.profile.DebuffsFrameMaxCount = v;
+				    D.MicroUnitF.MaxUnit = v;
+				    D.MicroUnitF:Delayed_MFsDisplay_Update();
+				end
+			    end,
+			    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+			    min = 1,
+			    max = 82,
+			    step = 1,
+			    isPercent = false,
+			    order = 1500,
+			},
+			MFPerline = {
+			    type = 'range',
+			    name = L["OPT_UNITPERLINES"],
+			    desc = L["OPT_UNITPERLINES_DESC"],
+			    get = function() return D.profile.DebuffsFramePerline end,
+			    set = function(info,v) 
+				if (v ~= D.profile.DebuffsFramePerline) then
+				    D.profile.DebuffsFramePerline = v;
+				    D.MicroUnitF:ResetAllPositions ();
+				    D.MicroUnitF:Place ();
+				end
+			    end,
+			    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+			    min = 1,
+			    max = 40,
+			    step = 1,
+			    isPercent = false,
+			    order = 1600,
+			},
+			FrameScale = {
+			    type = 'range',
+			    name = L["OPT_MFSCALE"],
+			    desc = L["OPT_MFSCALE_DESC"],
+			    get = function() return D.profile.DebuffsFrameElemScale end, -- D.profile.DebuffsFrameElemScale end,
+			    set = function(info,v) 
+				if (v ~= D.profile.DebuffsFrameElemScale) then
+				    D.profile.DebuffsFrameElemScale = v;
+
+
+				    D.MicroUnitF:SetScale(D.profile.DebuffsFrameElemScale);
+
+				end
+			    end,
+			    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+			    min = 0.3,
+			    max = 4,
 			    step = 0.01,
 			    isPercent = true,
-			    order = 102,
+			    order = 1800,
 			},
-			CenterAlpha = {
+			Alpha = {
 			    type = 'range',
-			    name = L["OPT_CENTERTRANSP"],
-			    desc = L["OPT_CENTERTRANSP_DESC"],
+			    name = L["OPT_MFALPHA"],
+			    desc = L["OPT_MFALPHA_DESC"],
 			    get = function() return 1 - D.profile.DebuffsFrameElemAlpha end,
 			    set = function(info,v) 
 				if (v ~= D.profile.DebuffsFrameElemAlpha) then
 				    D.profile.DebuffsFrameElemAlpha = 1 - v;
-				    if D.profile.DebuffsFrameElemTieTransparency then
-					D.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
-				    end
+				    D.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
 				end
 			    end,
-			    disabled = function() return D.Status.Combat end,
+			    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D.profile.DebuffsFrameElemTieTransparency end,
 			    min = 0,
 			    max = 1,
 			    step = 0.01,
 			    isPercent = true,
-			    order = 101,
+			    order = 1900,
 			},
-			
-			TieXY = {
-			    type = "toggle",
-			    name = L["OPT_TIEXYSPACING"],
-			    desc = L["OPT_TIEXYSPACING_DESC"],
-			    get = function() return D.profile.DebuffsFrameTieSpacing end,
-			    set = function(info,v)
-				if (v ~= D.profile.DebuffsFrameTieSpacing) then
-				    D.profile.DebuffsFrameTieSpacing = v;
-				    if v then
-					D.profile.DebuffsFrameYSpacing = D.profile.DebuffsFrameXSpacing;
-				    end
-				    D.MicroUnitF:ResetAllPositions ();
-				end
-			    end,
-			    disabled = function() return D.Status.Combat end,
-			    order = 104
-			},
-			XSpace = {
-			    type = 'range',
-			    name = L["OPT_XSPACING"],
-			    desc = L["OPT_XSPACING_DESC"],
-			    get = function() return D.profile.DebuffsFrameXSpacing end,
-			    set = function(info,v) 
-				if (v ~= D.profile.DebuffsFrameXSpacing) then
-				    D.profile.DebuffsFrameXSpacing = v;
-				    if D.profile.DebuffsFrameTieSpacing then
-					D.profile.DebuffsFrameYSpacing = v;
-				    end
-				    D.MicroUnitF:ResetAllPositions ();
-				    D.MicroUnitF:Place ();
-				end
-			    end,
-			    disabled = function() return D.Status.Combat end,
-			    min = 0,
-			    max = 100,
-			    step = 1,
-			    isPercent = false,
-			    order = 105,
-			},
-			YSpace = {
-			    type = 'range',
-			    name = L["OPT_YSPACING"],
-			    desc = L["OPT_YSPACING_DESC"],
-			    get = function() return D.profile.DebuffsFrameYSpacing end,
-			    set = function(info,v) 
-				if (v ~= D.profile.DebuffsFrameYSpacing) then
-				    D.profile.DebuffsFrameYSpacing = v;
-				    D.MicroUnitF:ResetAllPositions ();
-				    D.MicroUnitF:Place ();
-				end
-			    end,
-			    disabled = function() return D.Status.Combat or D.profile.DebuffsFrameTieSpacing end,
-			    min = 0,
-			    max = 100,
-			    step = 1,
-			    isPercent = false,
-			    order = 106,
-			},
-		    }
+			 -- }}}
+		    },
 		},
 		
-		ToolTips = {
-		    type = "toggle",
-		    name = L["SHOW_TOOLTIP"],
-		    desc = L["OPT_SHOWTOOLTIP_DESC"],
-		    get = function() return D.profile.AfflictionTooltips end,
-		    set = function()
-			D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
-			local k, v;
-			for k,v in ipairs(D.LiveList.ExistingPerID) do
-			    v.Frame:EnableMouse(D.profile.AfflictionTooltips);
-			end
-		    end,
-		    disabled = function() return  D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame end,
-		    order = 2200
+		AdvDispOptions = {
+		    type = "group",
+		    name = L["OPT_ADVDISP"],
+		    desc = L["OPT_ADVDISP_DESC"],
+		    order = 2,
+		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+		    args = { -- {{{
+			TransparencyOpts = {
+			    type = 'group',
+			    inline = true,
+			    name = " ",
+			    args = {
+				TieTransparency = {
+				    type = "toggle",
+				    name = L["OPT_TIECENTERANDBORDER"],
+				    desc = L["OPT_TIECENTERANDBORDER_OPT"],
+				    get = function() return D.profile.DebuffsFrameElemTieTransparency end,
+				    set = function(info,v)
+					if (v ~= D.profile.DebuffsFrameElemTieTransparency) then
+					    D.profile.DebuffsFrameElemTieTransparency = v;
+					    if v then
+						D.profile.DebuffsFrameElemBorderAlpha = (D.profile.DebuffsFrameElemAlpha / 2);
+					    end
+					end
+				    end,
+				    disabled = function() return D.Status.Combat end,
+				    order = 100
+				},
+				BorderAlpha = {
+				    type = 'range',
+				    name = L["OPT_BORDERTRANSP"],
+				    desc = L["OPT_BORDERTRANSP_DESC"],
+				    get = function() return 1 - D.profile.DebuffsFrameElemBorderAlpha end,
+				    set = function(info,v) 
+					if (v ~= D.profile.DebuffsFrameElemBorderAlpha) then
+					    D.profile.DebuffsFrameElemBorderAlpha = 1 - v;
+					end
+				    end,
+				    disabled = function() return D.Status.Combat or D.profile.DebuffsFrameElemTieTransparency end,
+				    min = 0,
+				    max = 1,
+				    step = 0.01,
+				    isPercent = true,
+				    order = 102,
+				},
+				CenterAlpha = {
+				    type = 'range',
+				    name = L["OPT_CENTERTRANSP"],
+				    desc = L["OPT_CENTERTRANSP_DESC"],
+				    get = function() return 1 - D.profile.DebuffsFrameElemAlpha end,
+				    set = function(info,v) 
+					if (v ~= D.profile.DebuffsFrameElemAlpha) then
+					    D.profile.DebuffsFrameElemAlpha = 1 - v;
+					    if D.profile.DebuffsFrameElemTieTransparency then
+						D.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
+					    end
+					end
+				    end,
+				    disabled = function() return D.Status.Combat end,
+				    min = 0,
+				    max = 1,
+				    step = 0.01,
+				    isPercent = true,
+				    order = 101,
+				},
+			    },
+			},
+			SpacingOpts = {
+			    type = 'group',
+			    inline = true,
+			    name = " ",
+			    args = {
+				TieXY = {
+				    type = "toggle",
+				    name = L["OPT_TIEXYSPACING"],
+				    desc = L["OPT_TIEXYSPACING_DESC"],
+				    get = function() return D.profile.DebuffsFrameTieSpacing end,
+				    set = function(info,v)
+					if (v ~= D.profile.DebuffsFrameTieSpacing) then
+					    D.profile.DebuffsFrameTieSpacing = v;
+					    if v then
+						D.profile.DebuffsFrameYSpacing = D.profile.DebuffsFrameXSpacing;
+					    end
+					    D.MicroUnitF:ResetAllPositions ();
+					end
+				    end,
+				    disabled = function() return D.Status.Combat end,
+				    order = 104
+				},
+				XSpace = {
+				    type = 'range',
+				    name = L["OPT_XSPACING"],
+				    desc = L["OPT_XSPACING_DESC"],
+				    get = function() return D.profile.DebuffsFrameXSpacing end,
+				    set = function(info,v) 
+					if (v ~= D.profile.DebuffsFrameXSpacing) then
+					    D.profile.DebuffsFrameXSpacing = v;
+					    if D.profile.DebuffsFrameTieSpacing then
+						D.profile.DebuffsFrameYSpacing = v;
+					    end
+					    D.MicroUnitF:ResetAllPositions ();
+					    D.MicroUnitF:Place ();
+					end
+				    end,
+				    disabled = function() return D.Status.Combat end,
+				    min = 0,
+				    max = 100,
+				    step = 1,
+				    isPercent = false,
+				    order = 105,
+				},
+				YSpace = {
+				    type = 'range',
+				    name = L["OPT_YSPACING"],
+				    desc = L["OPT_YSPACING_DESC"],
+				    get = function() return D.profile.DebuffsFrameYSpacing end,
+				    set = function(info,v) 
+					if (v ~= D.profile.DebuffsFrameYSpacing) then
+					    D.profile.DebuffsFrameYSpacing = v;
+					    D.MicroUnitF:ResetAllPositions ();
+					    D.MicroUnitF:Place ();
+					end
+				    end,
+				    disabled = function() return D.Status.Combat or D.profile.DebuffsFrameTieSpacing end,
+				    min = 0,
+				    max = 100,
+				    step = 1,
+				    isPercent = false,
+				    order = 106,
+				}, -- }}}
+			    },
+			},
+		    },
 		},
-		ShowHelp = {
-		    type = "toggle",
-		    name = L["OPT_SHOWHELP"],
-		    desc = L["OPT_SHOWHELP_DESC"],
-		    get = function() return D.profile.DebuffsFrameShowHelp end,
-		    set = function()
-			D.profile.DebuffsFrameShowHelp = not D.profile.DebuffsFrameShowHelp;
 
-		    end,
-		    disabled = function() return not D.profile.ShowDebuffsFrame end,
-		    order = 2300,
+		MUFsColors = {
+		    type = "group",
+		    name = L["OPT_MUFSCOLORS"],
+		    desc = L["OPT_MUFSCOLORS_DESC"],
+		    order = 3,
+		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+		    args = {}
 		},
-		
-		title2 = {
-		    type = "header",
+
+		PerfOptions = {
+		    type = "group",
 		    name = L["OPT_MFPERFOPT"],
-		    --textHeight = 13,
-		    --justifyH = "CENTER",
-		    order = 2500,
-		},
-		UpdateRate = {
-		    type = 'range',
-		    name = L["OPT_MFREFRESHRATE"],
-		    desc = L["OPT_MFREFRESHRATE_DESC"],
-		    get = function() return D.profile.DebuffsFrameRefreshRate end,
-		    set = function(info,v) 
-			if (v ~= D.profile.DebuffsFrameRefreshRate) then
-			    D.profile.DebuffsFrameRefreshRate = v;
+		    --desc = L["OPT_ADVDISP_DESC"],
+		    order = 4,
+		    disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+		    args = { -- {{{
+			UpdateRate = {
+			    type = 'range',
+			    name = L["OPT_MFREFRESHRATE"],
+			    desc = L["OPT_MFREFRESHRATE_DESC"],
+			    get = function() return D.profile.DebuffsFrameRefreshRate end,
+			    set = function(info,v) 
+				if (v ~= D.profile.DebuffsFrameRefreshRate) then
+				    D.profile.DebuffsFrameRefreshRate = v;
 
-			    D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
-			    D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v);
-			end
-		    end,
-		    disabled = function() return not D.profile.ShowDebuffsFrame end,
-		    min = 0.017,
-		    max = 0.2,
-		    step = 0.01,
-		    isPercent = false,
-		    order = 2600,
-		},
-		PerUpdate = {
-		    type = 'range',
-		    name = L["OPT_MFREFRESHSPEED"],
-		    desc = L["OPT_MFREFRESHSPEED_DESC"],
-		    get = function() return D.profile.DebuffsFramePerUPdate end,
-		    set = function(info,v) 
-			if (v ~= D.profile.DebuffsFramePerUPdate) then
-			    D.profile.DebuffsFramePerUPdate = v;
-			end
-		    end,
-		    disabled = function() return not D.profile.ShowDebuffsFrame end,
-		    min = 1,
-		    max = 82,
-		    step = 1,
-		    isPercent = false,
-		    order = 2700,
-		},
-	    }
+				    D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
+				    D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v);
+				end
+			    end,
+			    disabled = function() return not D.profile.ShowDebuffsFrame end,
+			    min = 0.017,
+			    max = 0.2,
+			    step = 0.01,
+			    isPercent = false,
+			    order = 2600,
+			},
+			PerUpdate = {
+			    type = 'range',
+			    name = L["OPT_MFREFRESHSPEED"],
+			    desc = L["OPT_MFREFRESHSPEED_DESC"],
+			    get = function() return D.profile.DebuffsFramePerUPdate end,
+			    set = function(info,v) 
+				if (v ~= D.profile.DebuffsFramePerUPdate) then
+				    D.profile.DebuffsFramePerUPdate = v;
+				end
+			    end,
+			    disabled = function() return not D.profile.ShowDebuffsFrame end,
+			    min = 1,
+			    max = 82,
+			    step = 1,
+			    isPercent = false,
+			    order = 2700,
+			},
+		    },
+		}, -- }}}
+	    },
 	}, -- }}}
 
 	CureOptions = { -- {{{
@@ -1902,7 +1913,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	     name = "",
 	     --desc = "test desc",
 	     values = ClassValues(DebuffName),
-	     order = 100 + num,
+	     order = num,
 	     get = "get",
 	     set = "set",
 
@@ -2002,7 +2013,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	    type = "group",
 	    name = IsADefault and D:ColorText(DebuffName, "FFFFFFFF") or D:ColorText(DebuffName, "FF99FFFF"),
 	    desc = L["OPT_DEBUFFENTRY_DESC"],
-	    order = 100 + num,
+	    order = num,
 	    args = DebuffSubmenu(DebuffName, num),
 	}
     end
@@ -2077,12 +2088,37 @@ do -- this is a closure, it's a bit like {} blocks in C
 	local DebuffsSubMenu = {};
 	local num = 1;
 
+	--[[
+	DebuffsSubMenu["debufflists"] = {
+	    type = 'group',
+	    name = " ",
+	    --childGroups = "select",
+	    order = num,
+	    inline = true,
+	    args = {},
+	};
+	num = num + 1;
+
+	DebuffsSubMenu["debufflistsOpts"] = {
+	    type = 'group',
+	    name = " ",
+	    order = num,
+	    inline = true,
+	    args = {},
+	};
+	num = num + 1;
+	--]]
+
 	for _, Debuff in ipairs(DebuffsSkipList) do
 	    DebuffsSubMenu[str_gsub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
 	    num = num + 1;
 	end
 
-	DebuffsSubMenu["spacer1"] = spacer(num);
+	DebuffsSubMenu["description"] = {
+	    type = "description",
+	    name = L["OPT_DEBUFFFILTER_DESC"],
+	    order = 0,
+	};
 	num = num + 1;
 
 	DebuffsSubMenu["add"] = {
@@ -2123,7 +2159,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 	};
 
 	num = num + 1;
-	DebuffsSubMenu["spacer2"] = spacer(num);
+	--DebuffsSubMenu["spacer2"] = spacer(num);
 	num = num + 1;
 
 	D.options.args.DebuffSkip.args = DebuffsSubMenu;
