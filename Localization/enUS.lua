@@ -27,16 +27,16 @@
 -------------------------------------------------------------------------------
 
 --[=[
---			YOUR ATTENTION PLEASE
+--                      YOUR ATTENTION PLEASE
 --
---	   !!!!!!! TRANSLATORS TRANSLATORS TRANSLATORS !!!!!!!
+--         !!!!!!! TRANSLATORS TRANSLATORS TRANSLATORS !!!!!!!
 --
 --    Thank you very much for your interest in translating Decursive.
 --    Do not edit those files. Use the localization interface available at the following address:
 --
---	################################################################
---	#  http://wow.curseforge.com/projects/decursive/localization/  #
---	################################################################
+--      ################################################################
+--      #  http://wow.curseforge.com/projects/decursive/localization/  #
+--      ################################################################
 --
 --    Your translations made using this interface will be automatically included in the next release.
 --
@@ -50,7 +50,7 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
     button1 = "OK",
     OnAccept = function()
-	return false;
+        return false;
     end,
     timeout = 0,
     whileDead = 1,

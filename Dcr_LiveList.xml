@@ -27,7 +27,7 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
     button1 = "OK",
     OnAccept = function()
-	return false;
+        return false;
     end,
     timeout = 0,
     whileDead = 1,
@@ -37,143 +37,143 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
 DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-	if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_LiveList.lua"] then
-	    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_LiveList.lua not loaded)"); end;
-	    DcrCorrupted = true;
-	    return;
-	end
+        if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_LiveList.lua"] then
+            if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_LiveList.lua not loaded)"); end;
+            DcrCorrupted = true;
+            return;
+        end
 
-	-- Dcr:SetDateAndRevision("$Date: 2007-12-02 22:31:14 +0100 (dim., 02 déc. 2007) $", "$Revision: 56465 $");
+        -- Dcr:SetDateAndRevision("$Date: 2007-12-02 22:31:14 +0100 (dim., 02 déc. 2007) $", "$Revision: 56465 $");
     </Script>
 
     <Frame name="DcrLiveList" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent"> <!-- {{{ -->
-	<Anchors>
-	    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="DecursiveMainBar">
-		<Offset>
-		    <AbsDimension x="0" y="-2"/>
-		</Offset>
-	    </Anchor>
-	</Anchors>
+        <Anchors>
+            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="DecursiveMainBar">
+                <Offset>
+                    <AbsDimension x="0" y="-2"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
     </Frame> <!-- }}} -->
 
     <Button name="DcrLVItemTemplate"  virtual="true" hidden="true"> <!-- {{{ -->
-	<Size>
-	    <AbsDimension x="180" y="32"/>
-	</Size>
-	<Scripts>
-	    <OnClick>
-		Dcr.LiveList:Onclick();
-	    </OnClick>
-	    <OnEnter>
-		Dcr.LiveList:DebuffTemplate_OnEnter(self);
-	    </OnEnter>
-	    <OnLeave>
-		DcrDisplay_Tooltip:Hide();
-	    </OnLeave>
-	</Scripts>
+        <Size>
+            <AbsDimension x="180" y="32"/>
+        </Size>
+        <Scripts>
+            <OnClick>
+                Dcr.LiveList:Onclick();
+            </OnClick>
+            <OnEnter>
+                Dcr.LiveList:DebuffTemplate_OnEnter(self);
+            </OnEnter>
+            <OnLeave>
+                DcrDisplay_Tooltip:Hide();
+            </OnLeave>
+        </Scripts>
     </Button> <!-- }}} -->
 
  
     <Texture name="DcrLVBackgroundTemplate" virtual="true"> <!-- {{{ -->
-	<Anchors>
-	    <Anchor point="TOPLEFT" relativeTo="$parent" />
-	    <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
-	</Anchors>
-	<Color  r="0" g="0" b="0" a="0.75" />
+        <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent" />
+            <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
+        </Anchors>
+        <Color  r="0" g="0" b="0" a="0.75" />
     </Texture> <!-- }}} -->
 
     <Texture name="DcrLVIconTemplate" file="Interface\AddOns\Decursive\iconON.tga" virtual="true"> <!-- {{{ -->
-	<Anchors>
-	    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent">
-		<Offset>
-		    <AbsDimension x="0" y="0"/>
-		</Offset>
-	    </Anchor>
-	</Anchors>
-	<Size>
-	    <AbsDimension x="32" y="32" />
-	</Size>
+        <Anchors>
+            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Size>
+            <AbsDimension x="32" y="32" />
+        </Size>
     </Texture> <!-- }}} -->
 
 
     <FontString name="DcrLLAfflictionCountFont" inherits="NumberFontNormalSmall" maxLines="1" text="1" virtual="true"> <!-- {{{ -->
-	<Anchors>
-	    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentIcon">
-		<Offset>
-		    <AbsDimension x="1" y="1"/>
-		</Offset>
-	    </Anchor>
-	</Anchors>
-	<Color r="1.0" g="0.1" b="0.2"/>
-	<Shadow>
-	    <offset>
-		<AbsDimension x="1" y="1" />
-	    </offset>
-	    <color r="0" g="0" b="0" />
-	</Shadow>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentIcon">
+                <Offset>
+                    <AbsDimension x="1" y="1"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Color r="1.0" g="0.1" b="0.2"/>
+        <Shadow>
+            <offset>
+                <AbsDimension x="1" y="1" />
+            </offset>
+            <color r="0" g="0" b="0" />
+        </Shadow>
     </FontString> <!-- }}} -->
 
     <FontString name="DcrLLUnitNameFont" inherits="GameFontNormalSmall" justifyH="LEFT" maxLines="1" text="Unit Name" virtual="true"> <!-- {{{ -->
-	<Anchors>
-	    <Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPRIGHT">
-		<Offset>
-		    <AbsDimension x="1" y="-1"/>
-		</Offset>
-	    </Anchor>
-	</Anchors>
-	<Size>
-	    <AbsDimension x="73" />
-	</Size>
-	<Color r="1.0" g="0.1" b="0.2"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPRIGHT">
+                <Offset>
+                    <AbsDimension x="1" y="-1"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Size>
+            <AbsDimension x="73" />
+        </Size>
+        <Color r="1.0" g="0.1" b="0.2"/>
     </FontString> <!-- }}} -->
 
     <FontString name="DcrLLUnitIDFont" inherits="MasterFont" font="Fonts\FRIZQT__.TTF" justifyH="LEFT" maxLines="1" text="Unit Name" virtual="true"> <!-- {{{ -->
-	<FontHeight>
-	    <AbsValue val="7.5"/>
-	</FontHeight>
-	<Anchors>
-	    <Anchor point="TOPLEFT" relativeTo="$parentUnitName" relativePoint="BOTTOMLEFT">
-		<Offset>
-		    <AbsDimension x="5" y="-2"/>
-		</Offset>
-	    </Anchor>
-	</Anchors>
-	<Size>
-	    <AbsDimension x="65" />
-	</Size>
-	<Color r=".6" g=".6" b=".6"/>
+        <FontHeight>
+            <AbsValue val="7.5"/>
+        </FontHeight>
+        <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parentUnitName" relativePoint="BOTTOMLEFT">
+                <Offset>
+                    <AbsDimension x="5" y="-2"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Size>
+            <AbsDimension x="65" />
+        </Size>
+        <Color r=".6" g=".6" b=".6"/>
     </FontString> <!-- }}} -->
 
     <FontString name="DcrLLDebuffTypeFont" inherits="GameFontNormalSmall" justifyH="RIGHT" maxLines="1" text="Debuff Type" virtual="true"> <!-- {{{ -->
-	<Anchors>
-	    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent">
-		<Offset>
-		    <AbsDimension x="-1" y="-1"/>
-		</Offset>
-	    </Anchor>
-	</Anchors>
-	<Size>
-	    <AbsDimension x="73" />
-	</Size>
-	<Color r="1.0" g="0.1" b="1.0"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent">
+                <Offset>
+                    <AbsDimension x="-1" y="-1"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Size>
+            <AbsDimension x="73" />
+        </Size>
+        <Color r="1.0" g="0.1" b="1.0"/>
     </FontString> <!-- }}} -->
 
     <FontString name="DcrLLDebuffNameFont" inherits="GameFontNormalSmall" justifyH="LEFT" maxLines="1" text="Name of the afflication" virtual="true"> <!-- {{{ -->
-	<Anchors>
-	    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parentIcon">
-		<Offset>
-		    <AbsDimension x="1" y="1" />
-		</Offset>
-	    </Anchor>
-	</Anchors>
-	<Size>
-	    <AbsDimension x="147" />
-	</Size>
-	<Color r="0.1" g="0.5" b="0.4"/>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parentIcon">
+                <Offset>
+                    <AbsDimension x="1" y="1" />
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Size>
+            <AbsDimension x="147" />
+        </Size>
+        <Color r="0.1" g="0.5" b="0.4"/>
     </FontString> <!-- }}} -->
 
     
     <Script>
-	DcrLoadedFiles["Dcr_LiveList.xml"] = "@project-version@";
+        DcrLoadedFiles["Dcr_LiveList.xml"] = "@project-version@";
     </Script>
 </Ui>

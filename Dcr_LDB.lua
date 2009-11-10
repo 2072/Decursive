@@ -27,7 +27,7 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
     button1 = "OK",
     OnAccept = function()
-	return false;
+        return false;
     end,
     timeout = 0,
     whileDead = 1,
@@ -57,15 +57,15 @@ local LibQTip = LibStub('LibQTip-1.0');
 
 
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
-	type = "launcher",
-	OnClick = function(Frame, button)
-	    D:QuickAccess(Frame, button);
-	end,
-	
-	text = "Decursive",
-	label = "Decursive",
-	
-	icon = DC.IconOFF,
+        type = "launcher",
+        OnClick = function(Frame, button)
+            D:QuickAccess(Frame, button);
+        end,
+        
+        text = "Decursive",
+        label = "Decursive",
+        
+        icon = DC.IconOFF,
 });
 
 
@@ -97,13 +97,13 @@ end
 
 local function ShowToolTip (frame)
     if not D.DcrFullyInitialized then
-	return;
+        return;
     end
 
     Dcr:Debug("ShowToolTip called");
 
     if not HeadFont then
-	HeadFont = CreateFonts();
+        HeadFont = CreateFonts();
     end
 
     -- Acquire a tooltip with 3 columns, respectively aligned to left, center and right
@@ -121,50 +121,50 @@ local function ShowToolTip (frame)
     tooltip:SetCell(x,y,'Decursive', HeadFont,"CENTER",2);
 
     -- 2
-    tooltip:AddLine(	("|cFF00FF00%s|r: "):format(D.L["HLP_RIGHTCLICK"]),
-			    D.L["STR_OPTIONS"]);
+    tooltip:AddLine(    ("|cFF00FF00%s|r: "):format(D.L["HLP_RIGHTCLICK"]),
+                            D.L["STR_OPTIONS"]);
 
     -- 3
-    tooltip:AddLine(	("|cFF00FF00%s-%s|r: "):format(D.L["ALT"],	D.L["HLP_RIGHTCLICK"]),
-			    D.L["BINDING_NAME_DCRSHOWOPTION"]);
+    tooltip:AddLine(    ("|cFF00FF00%s-%s|r: "):format(D.L["ALT"],      D.L["HLP_RIGHTCLICK"]),
+                            D.L["BINDING_NAME_DCRSHOWOPTION"]);
 
     -- 4
-    tooltip:AddLine(	("|cFF00FF00%s-%s|r: "):format(D.L["CTRL"],	D.L["HLP_LEFTCLICK"]),
-			    D.L["BINDING_NAME_DCRPRSHOW"]);
+    tooltip:AddLine(    ("|cFF00FF00%s-%s|r: "):format(D.L["CTRL"],     D.L["HLP_LEFTCLICK"]),
+                            D.L["BINDING_NAME_DCRPRSHOW"]);
 
     -- 5
-    tooltip:AddLine(	("|cFF00FF00%s-%s|r: "):format(D.L["SHIFT"],	D.L["HLP_LEFTCLICK"]),
-			    D.L["BINDING_NAME_DCRSKSHOW"]);
+    tooltip:AddLine(    ("|cFF00FF00%s-%s|r: "):format(D.L["SHIFT"],    D.L["HLP_LEFTCLICK"]),
+                            D.L["BINDING_NAME_DCRSKSHOW"]);
 
     -- 6
-    tooltip:AddLine(	("|cFF00FF00%s-%s|r: " ):format(D.L["SHIFT"],	D.L["HLP_RIGHTCLICK"]),
-			    D.L["BINDING_NAME_DCRSHOW"]);
+    tooltip:AddLine(    ("|cFF00FF00%s-%s|r: " ):format(D.L["SHIFT"],   D.L["HLP_RIGHTCLICK"]),
+                            D.L["BINDING_NAME_DCRSHOW"]);
 
     if (D.db.global.debugging) then
-	tooltip:AddSeparator();
+        tooltip:AddSeparator();
 
-	x, y = tooltip:AddLine();
-	tooltip:SetCell(x,y,'Debugging', HeadFont,"CENTER",2);
+        x, y = tooltip:AddLine();
+        tooltip:SetCell(x,y,'Debugging', HeadFont,"CENTER",2);
 
-	tooltip:AddLine("Afflicted units count:", D.ForLLDebuffedUnitsNum);
+        tooltip:AddLine("Afflicted units count:", D.ForLLDebuffedUnitsNum);
 
-	tooltip:AddLine("Afflicted units count in range:", D.MicroUnitF.UnitsDebuffedInRange);
+        tooltip:AddLine("Afflicted units count in range:", D.MicroUnitF.UnitsDebuffedInRange);
 
-	tooltip:AddLine("Max Concurrent update events:", D.Status.MaxConcurentUpdateDebuff);
+        tooltip:AddLine("Max Concurrent update events:", D.Status.MaxConcurentUpdateDebuff);
 
-	tooltip:AddSeparator();
+        tooltip:AddSeparator();
 
-	x, y = tooltip:AddLine();
-	tooltip:SetCell(x,y,'Debuff seen history:', HeadFont,"CENTER",2);
+        x, y = tooltip:AddLine();
+        tooltip:SetCell(x,y,'Debuff seen history:', HeadFont,"CENTER",2);
 
-	local HistoryIndex = 1;
+        local HistoryIndex = 1;
 
-	while HistoryIndex < 10 do
-	    tooltip:AddLine( "|cFFAAFFAA"..HistoryIndex.."|r", (D:Debuff_History_Get (HistoryIndex, true)));
+        while HistoryIndex < 10 do
+            tooltip:AddLine( "|cFFAAFFAA"..HistoryIndex.."|r", (D:Debuff_History_Get (HistoryIndex, true)));
 
-	    HistoryIndex = HistoryIndex + 1;
+            HistoryIndex = HistoryIndex + 1;
 
-	end
+        end
     end
 
     -- Use smart anchoring code to anchor the tooltip to our frame
@@ -194,7 +194,7 @@ end
 
 function D:SetMinimapIcon()
     if not icon:IsRegistered("Decursive") then
-	icon:Register("Decursive", LDB, D.profile.MiniMapIcon);
+        icon:Register("Decursive", LDB, D.profile.MiniMapIcon);
     end
 end
 
