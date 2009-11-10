@@ -184,14 +184,14 @@ function D:ShowHideButtons(UseCurrentValue) --{{{
         DcrFrame .. "Hide",
     }
 
-    DCRframeObject = getglobal(DcrFrame);
+    local DCRframeObject = getglobal(DcrFrame);
 
     if (not UseCurrentValue) then
         D.profile.HideButtons = (not D.profile.HideButtons);
     end
 
     for _, ButtonName in pairs(buttons) do
-        Button = getglobal(ButtonName);
+        local Button = getglobal(ButtonName);
 
         if (D.profile.HideButtons) then
             Button:Hide();
@@ -570,8 +570,8 @@ do
 
         CureOrder = D.classprofile.CureOrder; -- LUA is too simple, lets do the access optimization...
 
-        cura = (a.Type and CureOrder[a.Type] and CureOrder[a.Type] > 0) and CureOrder[a.Type] or 1024;
-        curb = (b.Type and CureOrder[b.Type] and CureOrder[b.Type] > 0) and CureOrder[b.Type] or 1024;
+        local cura = (a.Type and CureOrder[a.Type] and CureOrder[a.Type] > 0) and CureOrder[a.Type] or 1024;
+        local curb = (b.Type and CureOrder[b.Type] and CureOrder[b.Type] > 0) and CureOrder[b.Type] or 1024;
 
         return cura < curb;
     end
@@ -797,7 +797,7 @@ do
 
         start = GetTime();
         for i =1, 1000000 do
-            t = strings[i%3 + 1];
+            local t = strings[i%3 + 1];
             test = ("test_%s"):format(teststring);
         end
         D:Debug("pass format completed in:", GetTime() - start, test);

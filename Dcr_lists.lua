@@ -133,6 +133,8 @@ end --}}}
 function D:PrioSkipListEntryTemplate_OnClick() --{{{
 --    D:PrintLiteral(arg1);
 
+    local list;
+    local UnitNum;
     if (this:GetParent().Priority) then
         list = D.profile.PriorityList;
         UnitNum = getn(D.profile.PriorityList);

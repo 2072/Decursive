@@ -558,7 +558,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     if (D.Status.Unit_Array_UnitToGUID[Unitid]) then
         unit = Unitid;
     else
-        D:Debug("Unit", Unitid "not in raid or party!" );
+        D:Debug("Unit", Unitid, "not in raid or party!" );
         return;
     end
 
@@ -774,7 +774,7 @@ function MicroUnitF:LateAnalysis(From, Debuffs, MF, Status, GUIDwasFixed)
     end
 
     local DetectHistoryIndex = 1;
-    local halfrange = 5; RangeMatch = false; latestever = "none"; latesttime = 0;
+    local halfrange = 5; local RangeMatch = false; local latestever = "none"; local latesttime = 0;
     local tconcat = _G.table.concat
     D:Debug("Looking for events on", Unit, "between", DebuffApplyTime - halfrange, "and", DebuffApplyTime + halfrange);
     -- look in the history of the combat log event handler
@@ -1007,7 +1007,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     local MF = self;
     local ActionsDone = 0;
 
-    Unit = MF.CurrUnit;
+    local Unit = MF.CurrUnit;
 
     -- The unit is the same but the name isn't... (check for class change)
     if MF.CurrUnit == Unit and D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID then

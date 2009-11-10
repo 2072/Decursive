@@ -50,8 +50,6 @@ D.name = "Decursive";
 D.version = "@project-version@";
 D.author = "Archarodim";
 
-DcrCorruptedd = 1;
-
 D.L         = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 
 D.LC        = _G.LOCALIZED_CLASS_NAMES_MALE;

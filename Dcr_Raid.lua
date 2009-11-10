@@ -329,7 +329,7 @@ do
     --}}}
 
 
-    function IsInSkipList ( GUID, group, classNum ) -- {{{
+    local function IsInSkipList ( GUID, group, classNum ) -- {{{
         if (D.Status.InternalSkipList[GUID] or D.Status.InternalSkipList[group] or D.Status.InternalSkipList[classNum]) then
             return true;
         end
@@ -337,7 +337,7 @@ do
         return false;
     end -- }}}
 
-    function IsInSkipOrPriorList( GUID, group, classNum )  --{{{
+    local function IsInSkipOrPriorList( GUID, group, classNum )  --{{{
 
         if (IsInSkipList ( GUID, group, classNum )) then
             return true;
@@ -356,7 +356,7 @@ do
 
     local currentGroup = 0; -- the group we are in
 
-    function GetUnitDefaultPriority (RaidId, UnitGroup) -- {{{
+    local function GetUnitDefaultPriority (RaidId, UnitGroup) -- {{{
 
         if (not UnitGroup) then
             return RaidId;
@@ -371,7 +371,7 @@ do
         end
     end -- }}}
 
-    function GetUnitPriority(Unit, RaidId, UnitGroup, UNClass, IsPet) -- {{{
+    local function GetUnitPriority(Unit, RaidId, UnitGroup, UNClass, IsPet) -- {{{
 
         -- A little explanation of the principle behind this function {{{
         --[=[ ****************************************************************************
@@ -603,7 +603,7 @@ do
 
         if ( raidnum > 0 ) then -- if we are in a raid
             currentGroup = 0;
-            local rName, rGroup, GUID;
+            local rName, rGroup, rClass, GUID;
             local CaheID = 1; -- make an ordered table
             local excluded = 0;
             local playerPrio = 900;
