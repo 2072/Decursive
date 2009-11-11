@@ -1,6 +1,6 @@
 ## Interface: 30200
 
-## Title: Decursive |cfffff00f -Ace3-|r
+## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: Affliction display and cleaning for solo, group and raids with advanced filtering and priority system.
 ## Notes-ruRU: Отображение и лечение недугов с расширенной фильтрацией и системой приоритетов.
 ## Notes-zhTW: 提供驅魔輔助功能，包含進階的顯示及過濾功能

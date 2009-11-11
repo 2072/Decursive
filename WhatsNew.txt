@@ -1,5 +1,39 @@
-Decursive 2.4.3.2 by Archarodim (2009-09-16)
-============================================
+Decursive 2.4.5 beta 1 by Archarodim (2009-11-11)
+=================================================
+
+
+Changes from Decursive 2.4.3.2 to Decursive 2.4.5
+-------------------------------------------------
+
+**Major changes:**
+
+    - Decursive has been fully converted to Ace3.
+
+    - Decursive is no longer licensed under the GNU GPL, Licensed has changed
+      to 'All Rights Reserved' (see LICENSE.txt).
+
+    - Due to the conversion to Ace3, there is no longer a drop down menu to
+      access the option.
+
+    - New option panel available through Blizzard add-ons option UI, you can also
+      access the options by alt-right clicking on Decursive Icon.
+
+    - Decursive options will be reset to default upon installation of this version.
+
+**Minor changes:**
+
+    - Removed the 'Ignore stealthed units' option that is useless since several
+      years.
+
+    - The Macro key binding is now a global setting (no longer bind to the
+      profile).
+
+    - Replaced TabbletLib by LibQtip-1.0.
+
+    - Removed DewDrop-2.0 which has no replacement in Ace3 framework.
+
+    - Decursive will not display its "hotfix message" in the chat if Lua error
+      reporting is disabled.
 
 
 Changes from Decursive 2.4.3 to Decursive 2.4.3.2
@@ -35,7 +69,7 @@ Changes from Decursive 2.4.2 to Decursive 2.4.3
       that you couldn't see before.
 
 - Always use the "player" unitID in raid (was using raid# when the player was included in the priority list)
-    	This prevents the player MUF from disappearing temporarily while a group update is in progress.
+        This prevents the player MUF from disappearing temporarily while a group update is in progress.
 
 
 Changes from Decursive 2.4.1 to Decursive 2.4.2
@@ -562,25 +596,25 @@ Changes from Decursive 1.9.8.4 to 2.0 BETA 1
 User significant changes:
 
 - Debuff removal capability restored in several ways:
-	- By clicking on-micro unit frames created by Decursive for a
-	  user-defined number of players.
-	- By mouse-overring units or unit frames and pushing a user-defined
-	  keyboard key.
-	- Read the readme file to know more about these changes
+        - By clicking on-micro unit frames created by Decursive for a
+          user-defined number of players.
+        - By mouse-overring units or unit frames and pushing a user-defined
+          keyboard key.
+        - Read the readme file to know more about these changes
 - Priority list management:
-	- Now fully operational, you can very easily change player positions in
-	  the list
-	- List display has been very improved (scrollbars, colors...)
-	- Priority list order defines the order of the micro-unit frames
-	  displayed
+        - Now fully operational, you can very easily change player positions in
+          the list
+        - List display has been very improved (scrollbars, colors...)
+        - Priority list order defines the order of the micro-unit frames
+          displayed
 - The option window has been removed:
-	- All options are accessed through a drop down menu appearing when
-	  right-clicking on "Decursive" bar. (DewDrop Ace2Lib)
-	- Every menu entries has a small explanation tooltip.
-	- All options can be accessed through command line (AceConsole Ace2Lib)
+        - All options are accessed through a drop down menu appearing when
+          right-clicking on "Decursive" bar. (DewDrop Ace2Lib)
+        - Every menu entries has a small explanation tooltip.
+        - All options can be accessed through command line (AceConsole Ace2Lib)
 - Debuff skipping management
-	- Users can easily add/delete debuffs to ignore on specific classes
-	  while in combat
+        - Users can easily add/delete debuffs to ignore on specific classes
+          while in combat
 - Mage can sheep mind-controlled units (if other classes are interested, their
   spell can be added on request)
 - The readme.txt file has been rewritten and should be read of course.

@@ -1,6 +1,38 @@
-Decursive 2.4.3.2 par Archarodim  (2009-09-16)
-==============================================
+Decursive 2.4.5 beta 1 par Archarodim  (2009-11-11)
+===================================================
 
+
+Changements entre Decursive 2.4.3.2 et Decursive 2.4.5
+------------------------------------------------------
+
+**Changements majeurs :**
+
+    - Decursive a été entièrement convertit à Ace3.
+
+    - Decursive n'est plus sous licence GNU GPL mais 'Tous droit réservés',
+      voir le fichier LICENSE.TXT.
+
+    - À cause de la conversion à Ace3 il n'y a plus de menu déroulant pour
+      accéder aux options.
+
+    - Un nouveau panneau d'options est disponible à travers les option
+      d'interface de Blizzard ; vous pouvez aussi y accéder en faisant un
+      Alt-clique-droit sur l'icône de Decursive.
+
+    - Les réglages de Decursive seront remis à zéro une fois cette version
+      installée.
+
+**Changements mineurs :**
+
+    - L'option "ignorer les unités camouflées" a été retirée puisqu'elle était
+      devenue inutile depuis plusieurs années.
+
+    - La touche associée à la macro n'est plus lié au profil.
+
+    - TabbletLib a été remplacé par LibQtip-1.0.
+
+    - DewDrop-2.0 qui n'a pas de remplaçant pour Ace3 a été retiré.
+    
 
 Changements entre Decursive 2.4.3 et Decursive 2.4.3.2
 ------------------------------------------------------
@@ -549,24 +581,24 @@ Changements importants pour l'utilisateur :
 
 - La guérison des affliction a été restauré de plusieurs façons:
 
-	- En cliquant sur des "micro-portrait" créés par Decursive pour un nombre d'unité défini par l'utilisateur.
-	- En plaçant la souris au dessus d'une unité ou d'un portrait d'unité et en appuyant sur une touche du clavier définie par l'utilisateur.
-	- Lisez le fichier readme.txt (en anglais) pour en savoir plus.
+        - En cliquant sur des "micro-portrait" créés par Decursive pour un nombre d'unité défini par l'utilisateur.
+        - En plaçant la souris au dessus d'une unité ou d'un portrait d'unité et en appuyant sur une touche du clavier définie par l'utilisateur.
+        - Lisez le fichier readme.txt (en anglais) pour en savoir plus.
 
 - Gestion de la liste de priorité:
 
-	- La liste est maintenant pleinement opérationnelle, vous pouvez très facilement changer la position des joueurs dans la liste.
-	- L'affichage de la liste a été énormément amélioré, (scrollbars, couleures, ...).
-	- La liste de priorité définie l'ordre d'affichage des micro-portraits.
+        - La liste est maintenant pleinement opérationnelle, vous pouvez très facilement changer la position des joueurs dans la liste.
+        - L'affichage de la liste a été énormément amélioré, (scrollbars, couleures, ...).
+        - La liste de priorité définie l'ordre d'affichage des micro-portraits.
 
 - La fenêtre des options a été enlevée:
 
-	- Toutes les options sont accessibles par un menu déroulant (clique droit sur la barre "Decursive") (Ace2 DewDrop).
-	- Chaque entrée de menu a une petite explication en info-bulle.
-	- Toutes les options sont accessible par ligne de commande. (Ace2-console)
+        - Toutes les options sont accessibles par un menu déroulant (clique droit sur la barre "Decursive") (Ace2 DewDrop).
+        - Chaque entrée de menu a une petite explication en info-bulle.
+        - Toutes les options sont accessible par ligne de commande. (Ace2-console)
 
 - Gestion des afflictions à ignorer pendant les combats:
-	- On peut très facilement ajouter/enlever des afflictions à ignorer sur certaines classes pendant les combat.
+        - On peut très facilement ajouter/enlever des afflictions à ignorer sur certaines classes pendant les combat.
 
 - Les mages peuvent moutonner les unités contrôler mentalement. (Si d'autres classes ont intéressées, d'autres sorts peuvent être ajouté sur demande)
 - Le fichier Readme.txt a été réécrit, vous êtes fortement invité à le lire (en anglais).
