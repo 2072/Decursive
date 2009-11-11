@@ -545,14 +545,6 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
         return;
     end
 
-    --[[
-    if (not Unitid) then
-        D:Debug("XXXXX ==> UpdateMUFUnit: Unitid was nil!");
-    end
-    --]]
-
-
-
     local unit = false;
 
     if (D.Status.Unit_Array_UnitToGUID[Unitid]) then
@@ -830,7 +822,7 @@ function D.MicroUnitF:OnCornerEnter()
         D:DisplayGameTooltip(
         str_format(
         "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
-        "|cFF11FF11%s|r: %s\n"..
+        --"|cFF11FF11%s|r: %s\n"..
         "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
         "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"..
         "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
@@ -838,7 +830,7 @@ function D.MicroUnitF:OnCornerEnter()
 
         D.L["ALT"],             D.L["HLP_LEFTCLICK"],   D.L["HANDLEHELP"],
 
-        D.L["HLP_RIGHTCLICK"],  D.L["STR_OPTIONS"],
+        --D.L["HLP_RIGHTCLICK"],  D.L["STR_OPTIONS"],
         D.L["ALT"],             D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOWOPTION"],
 
         D.L["CTRL"],            D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRPRSHOW"], 

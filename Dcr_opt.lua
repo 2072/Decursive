@@ -253,18 +253,6 @@ D.defaults = {
             ["COLORCHRONOS"]    =   { 0.6 , 0.1 , 0.2  ,  0.7   }, -- medium red
         },
 
-        -- Curring order (1 is the most important, 6 the lesser...)
-        --[[
-        CureOrder = {
-        [DC.ENEMYMAGIC]   = 1,
-        [DC.MAGIC]          = 2,
-        [DC.CURSE]          = 3,
-        [DC.POISON]         = 4,
-        [DC.DISEASE]        = 5,
-        [DC.CHARMED]        = 6,
-        },
-        --]]
-
 
         -- Debuffs {{{
         -- those debuffs prevent us from curing the unit
@@ -367,36 +355,37 @@ D.options = { -- {{{
     handler = D,
     args = {
 
-
         general = { -- {{{
             type = 'group',
-            name = 'General options',
+            name = L["OPT_GENERAL"],
             order = 1,
             args = {
-                reset = {
-                    type = "execute",
-                    name = D:ColorText(L["OPT_RESETOPTIONS"], "FF00AAAA"),
-                    desc = L["OPT_RESETOPTIONS_DESC"],
-                    func = function ()
-                        -- D.Tmp.Profile = D:GetProfile();
-                        StaticPopup_Show ("DCR_CONFIRM_RESET", D.db:GetCurrentProfile(), "");
-                        --D.DewDrop:Close(1);
-
+                Sound = {
+                    type = "toggle",
+                    name = L["PLAY_SOUND"],
+                    desc = L["OPT_PLAYSOUND_DESC"],
+                    get = function() return D.profile.PlaySound end,
+                    set = function()
+                        D.profile.PlaySound = not D.profile.PlaySound
                     end,
-                    --disabled = function() return  not D.Status.Enabled end,
-                    order = 1500,
-                    hidden = true,
+                    disabled = function() return  D.profile.Hide_LiveList and not  D.profile.ShowDebuffsFrame end,
+                    order = 1
                 },
+                ToolTips = {
+                    type = "toggle",
+                    name = L["SHOW_TOOLTIP"],
+                    desc = L["OPT_SHOWTOOLTIP_DESC"],
+                    get = function() return D.profile.AfflictionTooltips end,
+                    set = function()
+                        D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
+                        local k, v;
+                        for k,v in ipairs(D.LiveList.ExistingPerID) do
+                            v.Frame:EnableMouse(D.profile.AfflictionTooltips);
+                        end
 
-                report = {
-                    type = "execute",
-                    name = D:ColorText(L["DECURSIVE_DEBUG_REPORT_SHOW"], "FFFF0000"),
-                    desc = L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"],
-                    func = function ()
-                        D:ShowDebugReport();
                     end,
-                    hidden = function() return  #D.DebugTextTable < 1 end,
-                    order = 1515
+                    disabled = function() return  D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame end,
+                    order = 2
                 },
                 minimap = {
                     type = "toggle",
@@ -414,7 +403,63 @@ D.options = { -- {{{
                     end,
                     hidden = function() return not icon end,
                     disabled = function() return  not D.Status.Enabled end,
-                    order = 1570,
+                    order = 3,
+                },
+                BlacklistedTime = {
+                    type = 'range',
+                    name = L["BLACK_LENGTH"],
+                    desc = L["OPT_BLACKLENTGH_DESC"],
+                    get = function() return D.profile.CureBlacklist end,
+                    set = function(info, v) 
+                        D.profile.CureBlacklist = v
+                    end,
+                    min = 1,
+                    max = 20,
+                    step = 0.1,
+                    isPercent = false,
+                    order = 4,
+                },
+                SysOps = {
+                    type = 'header',
+                    name = "",
+                    order = -4
+                },
+                ShowTestItem = {
+                    type = "toggle",
+                    name = L["OPT_CREATE_VIRTUAL_DEBUFF"],
+                    desc = L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"],
+                    get = function() return  D.LiveList.TestItemDisplayed end,
+                    set = function()
+                        if not D.LiveList.TestItemDisplayed then
+                            D.LiveList:DisplayTestItem();
+                        else
+                            D.LiveList:HideTestItem();
+                        end
+                    end,
+                    disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell end,
+                    order = -3
+                },
+                report = {
+                    type = "execute",
+                    name = D:ColorText(L["DECURSIVE_DEBUG_REPORT_SHOW"], "FFFF0000"),
+                    desc = L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"],
+                    func = function ()
+                        D:ShowDebugReport();
+                    end,
+                    hidden = function() return  #D.DebugTextTable < 1 end,
+                    order = -2
+                },
+                debug = {
+                    type = "toggle",
+                    name = L["OPT_ENABLEDEBUG"],
+                    desc = L["OPT_ENABLEDEBUG_DESC"],
+                    get = function() return D.db.global.debugging end,
+                    set = function(info,v)
+                        D.db.global.debugging = v;
+                        D.debugging = v;
+                    end,
+                    disabled = function() return  not D.Status.Enabled end,
+                    order = -1,
                 },
                 GlorfindalMemorium = { -- {{{
                 type = "execute",
@@ -582,194 +627,139 @@ D.options = { -- {{{
         }, -- }}}
 
         livelistoptions = { -- {{{
-        type = "group",
-        name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
-        desc = L["OPT_LIVELIST_DESC"],
-        order = 100,
-        disabled = function() return  not D.Status.Enabled end,
+            type = "group",
+            name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
+            desc = L["OPT_LIVELIST_DESC"],
+            order = 100,
+            disabled = function() return  not D.Status.Enabled end,
 
-        args = {
-            description = {name = L["OPT_LIVELIST_DESC"], order = 1, type = "description"},
-            show = {
-                type = "toggle",
-                name = L["HIDE_LIVELIST"],
-                desc = L["OPT_HIDELIVELIST_DESC"],
-                get = function() return  D.profile.Hide_LiveList end,
-                set = function()
-                    D:ShowHideLiveList()
-                    if D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
-                        D:SetIcon(DC.IconOFF);
-                    else
-                        D:SetIcon(DC.IconON);
-                    end
-                end,
-                disabled = function() return D.profile.LiveListTied end,
-                order = 100
-            },
-            OnlyInRange = {
-                type = "toggle",
-                name = L["OPT_LVONLYINRANGE"],
-                desc = L["OPT_LVONLYINRANGE_DESC"],
-                get = function() return D.profile.LV_OnlyInRange end,
-                set = function() D.profile.LV_OnlyInRange = not D.profile.LV_OnlyInRange end,
-                disabled = function() return D.profile.Hide_LiveList end,
-                order = 100.5
-            },
-            ToolTips = {
-                type = "toggle",
-                name = L["SHOW_TOOLTIP"],
-                desc = L["OPT_SHOWTOOLTIP_DESC"],
-                get = function() return D.profile.AfflictionTooltips end,
-                set = function()
-                    D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
-                    local k, v;
-                    for k,v in ipairs(D.LiveList.ExistingPerID) do
-                        v.Frame:EnableMouse(D.profile.AfflictionTooltips);
-                    end
+            args = {
+                description = {name = L["OPT_LIVELIST_DESC"], order = 1, type = "description"},
+                show = {
+                    type = "toggle",
+                    name = L["HIDE_LIVELIST"],
+                    desc = L["OPT_HIDELIVELIST_DESC"],
+                    get = function() return  D.profile.Hide_LiveList end,
+                    set = function()
+                        D:ShowHideLiveList()
+                        if D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
+                            D:SetIcon(DC.IconOFF);
+                        else
+                            D:SetIcon(DC.IconON);
+                        end
+                    end,
+                    disabled = function() return D.profile.LiveListTied end,
+                    order = 100
+                },
+                OnlyInRange = {
+                    type = "toggle",
+                    name = L["OPT_LVONLYINRANGE"],
+                    desc = L["OPT_LVONLYINRANGE_DESC"],
+                    get = function() return D.profile.LV_OnlyInRange end,
+                    set = function() D.profile.LV_OnlyInRange = not D.profile.LV_OnlyInRange end,
+                    disabled = function() return D.profile.Hide_LiveList end,
+                    order = 100.5
+                },
+                livenum = {
+                    type = 'range',
+                    name = L["AMOUNT_AFFLIC"],
+                    desc = L["OPT_AMOUNT_AFFLIC_DESC"],
+                    get = function() return D.profile.Amount_Of_Afflicted end,
+                    set = function(info, v) 
+                        D:Debug(v);
+                        D.profile.Amount_Of_Afflicted = v;
+                        D.LiveList:RestAllPosition();
+                    end,
+                    disabled = function() return  D.profile.Hide_LiveList end,
+                    min = 1,
+                    max = D.CONF.MAX_LIVE_SLOTS,
+                    step = 1,
+                    isPercent = false,
+                    order = 104,
+                },
+                ScanFreq = {
+                    type = 'range',
+                    name = L["SCAN_LENGTH"],
+                    desc = L["OPT_SCANLENGTH_DESC"],
+                    get = function() return D.profile.ScanTime end,
+                    set = function(info,v)
+                        if (v ~= D.profile.ScanTime) then
+                            D.profile.ScanTime = v;
+                            D:ScheduleRepeatedCall("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
+                            D:Debug("LV scan delay changed:", D.profile.ScanTime, v);
+                        end
+                    end,
+                    disabled = function() return  D.profile.Hide_LiveList end,
+                    min = 0.1,
+                    max = 1,
+                    step = 0.1,
+                    isPercent = false,
+                    order = 106,
+                },
+                ReverseLL = {
+                    type = "toggle",
+                    name = L["REVERSE_LIVELIST"],
+                    desc = L["OPT_REVERSE_LIVELIST_DESC"],
+                    get = function() return D.profile.ReverseLiveDisplay end,
+                    set = function()
+                        D.profile.ReverseLiveDisplay = not D.profile.ReverseLiveDisplay
+                        D.LiveList:RestAllPosition();
+                    end,
+                    disabled = function() return  D.profile.Hide_LiveList end,
+                    order = 107
+                },
+                TieLLVisibility = {
+                    type = "toggle",
+                    name = L["TIE_LIVELIST"],
+                    desc = L["OPT_TIE_LIVELIST_DESC"],
+                    get = function() return D.profile.LiveListTied end,
+                    set = function()
+                        D.profile.LiveListTied = not D.profile.LiveListTied
+                    end,
+                    disabled = function() return  D.profile.Hide_LiveList end,
+                    order = 108
+                },
 
-                end,
-                disabled = function() return  D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame end,
-                order = 102
-            },
-            Sound = {
-                type = "toggle",
-                name = L["PLAY_SOUND"],
-                desc = L["OPT_PLAYSOUND_DESC"],
-                get = function() return D.profile.PlaySound end,
-                set = function()
-                    D.profile.PlaySound = not D.profile.PlaySound
-                end,
-                disabled = function() return  D.profile.Hide_LiveList and not  D.profile.ShowDebuffsFrame end,
-                order = 103
-            },
-            livenum = {
-                type = 'range',
-                name = L["AMOUNT_AFFLIC"],
-                desc = L["OPT_AMOUNT_AFFLIC_DESC"],
-                get = function() return D.profile.Amount_Of_Afflicted end,
-                set = function(info, v) 
-                    D:Debug(v);
-                    D.profile.Amount_Of_Afflicted = v;
-                    D.LiveList:RestAllPosition();
-                end,
-                disabled = function() return  D.profile.Hide_LiveList end,
-                min = 1,
-                max = D.CONF.MAX_LIVE_SLOTS,
-                step = 1,
-                isPercent = false,
-                order = 104,
-            },
-            BlacklistedTime = {
-                type = 'range',
-                name = L["BLACK_LENGTH"],
-                desc = L["OPT_BLACKLENTGH_DESC"],
-                get = function() return D.profile.CureBlacklist end,
-                set = function(info, v) 
-                    D.profile.CureBlacklist = v
-                end,
-                min = 1,
-                max = 20,
-                step = 0.1,
-                isPercent = false,
-                order = 105,
-            },
-            ScanFreq = {
-                type = 'range',
-                name = L["SCAN_LENGTH"],
-                desc = L["OPT_SCANLENGTH_DESC"],
-                get = function() return D.profile.ScanTime end,
-                set = function(info,v)
-                    if (v ~= D.profile.ScanTime) then
-                        D.profile.ScanTime = v;
-                        D:ScheduleRepeatedCall("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
-                        D:Debug("LV scan delay changed:", D.profile.ScanTime, v);
-                    end
-                end,
-                disabled = function() return  D.profile.Hide_LiveList end,
-                min = 0.1,
-                max = 1,
-                step = 0.1,
-                isPercent = false,
-                order = 106,
-            },
-            ReverseLL = {
-                type = "toggle",
-                name = L["REVERSE_LIVELIST"],
-                desc = L["OPT_REVERSE_LIVELIST_DESC"],
-                get = function() return D.profile.ReverseLiveDisplay end,
-                set = function()
-                    D.profile.ReverseLiveDisplay = not D.profile.ReverseLiveDisplay
-                    D.LiveList:RestAllPosition();
-                end,
-                disabled = function() return  D.profile.Hide_LiveList end,
-                order = 107
-            },
-            TieLLVisibility = {
-                type = "toggle",
-                name = L["TIE_LIVELIST"],
-                desc = L["OPT_TIE_LIVELIST_DESC"],
-                get = function() return D.profile.LiveListTied end,
-                set = function()
-                    D.profile.LiveListTied = not D.profile.LiveListTied
-                end,
-                disabled = function() return  D.profile.Hide_LiveList end,
-                order = 108
-            },
+                
+                FrameScaleLL = {
+                    type = 'range',
+                    name = L["OPT_LLSCALE"],
+                    desc = L["OPT_LLSCALE_DESC"],
+                    get = function() return D.profile.LiveListScale end, -- D.profile.DebuffsFrameElemScale end,
+                    set = function(info,v) 
+                        if (v ~= D.profile.LiveListScale) then
+                            D.profile.LiveListScale = v;
 
-            ShowTestItem = {
-                type = "toggle",
-                name = L["OPT_CREATE_VIRTUAL_DEBUFF"],
-                desc = L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"],
-                get = function() return  D.LiveList.TestItemDisplayed end,
-                set = function()
-                    if not D.LiveList.TestItemDisplayed then
-                        D.LiveList:DisplayTestItem();
-                    else
-                        D.LiveList:HideTestItem();
-                    end
-                end,
-                disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell end,
-                order = 1000
+                            D:SetLLScale(D.profile.LiveListScale);
+                        end
+                    end,
+                    disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
+                    min = 0.3,
+                    max = 4,
+                    step = 0.01,
+                    isPercent = true,
+                    order = 1009,
+                },
+                AlphaLL = {
+                    type = 'range',
+                    name = L["OPT_LLALPHA"],
+                    desc = L["OPT_LLALPHA_DESC"],
+                    get = function() return 1 - D.profile.LiveListAlpha end,
+                    set = function(info,v) 
+                        if (v ~= D.profile.LiveListAlpha) then
+                            D.profile.LiveListAlpha = 1 - v;
+                            DecursiveMainBar:SetAlpha(D.profile.LiveListAlpha);
+                            DcrLiveList:SetAlpha(D.profile.LiveListAlpha);
+                        end
+                    end,
+                    disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
+                    min = 0,
+                    max = 0.8,
+                    step = 0.01,
+                    isPercent = true,
+                    order = 1010,
+                }
             },
-            FrameScaleLL = {
-                type = 'range',
-                name = L["OPT_LLSCALE"],
-                desc = L["OPT_LLSCALE_DESC"],
-                get = function() return D.profile.LiveListScale end, -- D.profile.DebuffsFrameElemScale end,
-                set = function(info,v) 
-                    if (v ~= D.profile.LiveListScale) then
-                        D.profile.LiveListScale = v;
-
-                        D:SetLLScale(D.profile.LiveListScale);
-                    end
-                end,
-                disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
-                min = 0.3,
-                max = 4,
-                step = 0.01,
-                isPercent = true,
-                order = 1009,
-            },
-            AlphaLL = {
-                type = 'range',
-                name = L["OPT_LLALPHA"],
-                desc = L["OPT_LLALPHA_DESC"],
-                get = function() return 1 - D.profile.LiveListAlpha end,
-                set = function(info,v) 
-                    if (v ~= D.profile.LiveListAlpha) then
-                        D.profile.LiveListAlpha = 1 - v;
-                        DecursiveMainBar:SetAlpha(D.profile.LiveListAlpha);
-                        DcrLiveList:SetAlpha(D.profile.LiveListAlpha);
-                    end
-                end,
-                disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
-                min = 0,
-                max = 0.8,
-                step = 0.01,
-                isPercent = true,
-                order = 1010,
-            }
-        },
     }, -- // }}}
 
     MessageOptions = { -- {{{
@@ -1261,19 +1251,6 @@ AdvDispOptions = {
             end,
             order = 131
         },
-        --[=[
-        RandomCure = {
-        type = "toggle",
-        name =  L["RANDOM_ORDER"],
-        desc =  L["OPT_RANDOMORDER_DESC"],
-        get = function() return D.profile.Random_Order end,
-        set = function()
-        D.profile.Random_Order = not D.profile.Random_Order;
-        D:GroupChanged ("opt RANDOM_ORDER");
-        end,
-        order = 132
-        },
-        --]=]
         CurePets = {
             type = "toggle",
             name =  L["CURE_PETS"],
@@ -1285,18 +1262,6 @@ AdvDispOptions = {
             end,
             order = 133
         },
-        --[=[
-        SkipStealthed = {
-        type = "toggle",
-        name =  L["IGNORE_STEALTH"],
-        desc = L["OPT_IGNORESTEALTHED_DESC"],
-        get = function() return D.profile.Ingore_Stealthed end,
-        set = function()
-        D.profile.Ingore_Stealthed = not D.profile.Ingore_Stealthed;
-        end,
-        order = 134
-        },
-        --]=]
 
         Title2 = {
             type="header",
@@ -1306,75 +1271,74 @@ AdvDispOptions = {
 
         CureMagic = {
             type = "toggle",
-            name = "  "..D.L["MAGIC"],
+            name = "  "..L["MAGIC"],
             desc = L["OPT_MAGICCHECK_DESC"],
             get = function() return D:GetCureCheckBoxStatus(DC.MAGIC) end,
             set = function()
                 D:SetCureOrder (DC.MAGIC);
             end,
             disabled = function() return not D.Status.CuringSpells[DC.MAGIC] end,
-            --CureType = DC.MAGIC,
             order = 141
         },
         CureEnemyMagic = {
             type = "toggle",
-            name = "  "..D.L["MAGICCHARMED"],
+            name = "  "..L["MAGICCHARMED"],
             desc = L["OPT_MAGICCHARMEDCHECK_DESC"],
             get = function() return D:GetCureCheckBoxStatus(DC.ENEMYMAGIC) end,
             set = function()
                 D:SetCureOrder (DC.ENEMYMAGIC);
             end,
             disabled = function() return not D.Status.CuringSpells[DC.ENEMYMAGIC] end,
-            --CureType = DC.ENEMYMAGIC,
             order = 142
         },
         CurePoison = {
             type = "toggle",
-            name = "  "..D.L["POISON"],
+            name = "  "..L["POISON"],
             desc = L["OPT_POISONCHECK_DESC"],
             get = function() return D:GetCureCheckBoxStatus(DC.POISON) end,
             set = function()
                 D:SetCureOrder (DC.POISON);
             end,
             disabled = function() return not D.Status.CuringSpells[DC.POISON] end,
-            --CureType = DC.POISON,
             order = 143
         },
         CureDisease = {
             type = "toggle",
-            name = "  "..D.L["DISEASE"],
+            name = "  "..L["DISEASE"],
             desc = L["OPT_DISEASECHECK_DESC"],
             get = function() return D:GetCureCheckBoxStatus(DC.DISEASE) end,
             set = function()
                 D:SetCureOrder (DC.DISEASE);
             end,
             disabled = function() return not D.Status.CuringSpells[DC.DISEASE] end,
-            --CureType = DC.DISEASE,
             order = 144
         },
         CureCurse = {
             type = "toggle",
-            name = "  "..D.L["CURSE"],
+            name = "  "..L["CURSE"],
             desc = L["OPT_CURSECHECK_DESC"],
             get = function() return D:GetCureCheckBoxStatus(DC.CURSE) end,
             set = function()
                 D:SetCureOrder (DC.CURSE);
             end,
             disabled = function() return not D.Status.CuringSpells[DC.CURSE] end,
-            --CureType = DC.CURSE,
             order = 145
         },
         CureCharmed = {
             type = "toggle",
-            name = "  "..D.L["CHARM"],
+            name = "  "..L["CHARM"],
             desc = L["OPT_CHARMEDCHECK_DESC"],
             get = function() return D:GetCureCheckBoxStatus(DC.CHARMED) end,
             set = function()
                 D:SetCureOrder (DC.CHARMED);
             end,
             disabled = function() return not D.Status.CuringSpells[DC.CHARMED] end,
-            --CureType = DC.CHARMED,
             order = 146
+        },
+        description = {
+            type = "description",
+            name = L["OPT_CURINGOPTIONS_EXPLANATION"],
+            order = 140,
         },
     }
 }, -- }}}
@@ -1401,8 +1365,6 @@ args = {}
                 type = "keybinding",
                 name = L["OPT_MACROBIND"],
                 desc = L["OPT_MACROBIND_DESC"],
-                --validate = "keybinding",
-                --keybindingExcept = {BUTTON1=true, BUTTON2=true}, -- BUTTON1 is always affected to CAMERAORSELECTORMOVE
                 get = function ()
                     local key = (GetBindingKey(D.CONF.MACROCOMMAND));
                     D.db.global.MacroBind = key;
@@ -1418,7 +1380,7 @@ args = {}
             },
             NoKeyWarn = {
                 type = "toggle",
-                name = D.L["OPT_NOKEYWARN"],
+                name = L["OPT_NOKEYWARN"],
                 desc = L["OPT_NOKEYWARN_DESC"],
                 get = function() return D.profile.NoKeyWarn end,
                 set = function(info,v)
@@ -1429,7 +1391,7 @@ args = {}
             },
             DisableMacroCreation = {
                 type = "toggle",
-                name = D.L["OPT_DISABLEMACROCREATION"],
+                name = L["OPT_DISABLEMACROCREATION"],
                 desc = L["OPT_DISABLEMACROCREATION_DESC"],
                 get = function() return D.profile.DisableMacroCreation end,
                 set = function(info,v)
@@ -1444,23 +1406,18 @@ args = {}
         }
     }, -- }}}
 
-
-
-
-
-
-
     },
 } -- }}}
 
 function D:ExportOptions ()
+    -- Export the option table to Blizz option UI and to Ace3 option UI
     local option_args = D.options.args;
     option_args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db);
     option_args.general.args.profiles.order = -1;
     option_args.general.args.profiles.inline = true;
 
     LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  D.options, 'dcr');
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, nil, nil, "general");
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, D.name, nil, "general");
 
     local SubGroups_ToBlizzOptions = {
         [D:ColorText(L["OPT_LIVELIST"], "FF22EE33")] = "livelistoptions",
@@ -1477,8 +1434,8 @@ function D:ExportOptions ()
 end
 
 
-D.CureCheckBoxes = { -- just a shortcut
-[DC.ENEMYMAGIC]   = D.options.args.CureOptions.args.CureEnemyMagic,
+local CureCheckBoxes = { -- just a shortcut
+[DC.ENEMYMAGIC]     = D.options.args.CureOptions.args.CureEnemyMagic,
 [DC.MAGIC]          = D.options.args.CureOptions.args.CureMagic,
 [DC.CURSE]          = D.options.args.CureOptions.args.CureCurse,
 [DC.POISON]         = D.options.args.CureOptions.args.CurePoison,
@@ -1490,20 +1447,23 @@ function D:GetCureCheckBoxStatus (Type)
     return D.classprofile.CureOrder[Type] and D.classprofile.CureOrder[Type] > 0;
 end
 
-function D:SetCureCheckBoxNum (Type)
-    local CheckBox = D.CureCheckBoxes[Type];
+local TypesToUName = {
+    [DC.ENEMYMAGIC]     = "MAGICCHARMED",
+    [DC.MAGIC]          = "MAGIC",
+    [DC.CURSE]          = "CURSE",
+    [DC.POISON]         = "POISON",
+    [DC.DISEASE]        = "DISEASE",
+    [DC.CHARMED]        = "CHARM",
+}
 
-    -- save the old name
-    --if (not CheckBox.NameOnly) then
---      CheckBox.NameOnly = CheckBox.name;
-   -- end
-    local NameOnly = "  " .. str_sub(CheckBox.name, 2);
+function D:SetCureCheckBoxNum (Type)
+    local CheckBox = CureCheckBoxes[Type];
 
     -- add the number in green before the name if we have a spell available and if we checked the box
     if (D:GetCureCheckBoxStatus(Type)) then
-        CheckBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. NameOnly;
+        CheckBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. L[TypesToUName[Type]];
     else
-        CheckBox.name = "  " .. NameOnly;
+        CheckBox.name = "  " .. L[TypesToUName[Type]];
     end
 
 end
@@ -1553,7 +1513,6 @@ function D:CheckCureOrder ()
 
         if (AuthorizedKeys[key]) then -- is this a correct type ?
             if (AuthorizedValues[value] and not GivenValues[value]) then -- is this value authorized and not already given?
-                --TempTable[key] = value;
                 GivenValues[value] = true;
 
             elseif (value) then -- FALSE is the only value that can be given several times
@@ -1567,7 +1526,6 @@ function D:CheckCureOrder ()
         end
     end
 
-    --D.classprofile.CureOrder = TempTable;
 end
 
 function D:SetCureOrder (ToChange)
@@ -1627,17 +1585,13 @@ function D:SetCureOrder (ToChange)
     -- create / update the ReversedCureOrder table (prio => type, ..., )
     D.Status.ReversedCureOrder = D:tReverse(CureOrder);
 
-    for Type, CheckBox in pairs(D.CureCheckBoxes) do
+    for Type, CheckBox in pairs(CureCheckBoxes) do
         D:SetCureCheckBoxNum(Type);
     end
 
 
     -- Create spell priority table
     D.Status.CuringSpellsPrio = {};
-
---    if not D.Status.HasSpell then
---      return;
---    end
 
     -- some shortcuts
     local CuringSpellsPrio = D.Status.CuringSpellsPrio;
@@ -2062,26 +2016,6 @@ do -- this is a closure, it's a bit like {} blocks in C
         local DebuffsSubMenu = {};
         local num = 1;
 
-        --[[
-        DebuffsSubMenu["debufflists"] = {
-            type = 'group',
-            name = " ",
-            --childGroups = "select",
-            order = num,
-            inline = true,
-            args = {},
-        };
-        num = num + 1;
-
-        DebuffsSubMenu["debufflistsOpts"] = {
-            type = 'group',
-            name = " ",
-            order = num,
-            inline = true,
-            args = {},
-        };
-        num = num + 1;
-        --]]
 
         for _, Debuff in ipairs(DebuffsSkipList) do
             DebuffsSubMenu[str_gsub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
@@ -2108,13 +2042,14 @@ do -- this is a closure, it's a bit like {} blocks in C
         num = num + 1;
 
         DebuffsSubMenu["addFromHist"] = {
-            type = "input",
+            type = "select",
             name = L["OPT_ADDDEBUFFFHIST"], --"Add from Debuff history",
             desc = L["OPT_ADDDEBUFFFHIST_DESC"], --"Add a recently seen debuff",
             disabled = function () GetHistoryDebuff(); return (#DebuffHistTable == 0) end,
+            values = GetHistoryDebuff;
             get = function() GetHistoryDebuff(); return false; end,
             set = function(info,value)
-                AddFunc(D:RemoveColor(value)); end,
+                AddFunc(D:RemoveColor(GetHistoryDebuff()[value])); end,
             order = 100 + num,
             --validate = DebuffHistTable, --GetHistoryDebuff(),
         };
@@ -2132,13 +2067,10 @@ do -- this is a closure, it's a bit like {} blocks in C
             order = 100 + num,
         };
 
-        num = num + 1;
-        --DebuffsSubMenu["spacer2"] = spacer(num);
-        num = num + 1;
-
+        table.wipe(D.options.args.DebuffSkip.args);
         D.options.args.DebuffSkip.args = DebuffsSubMenu;
+
         LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
-        --LibStub("AceConfigRegistry-3.0"):NotifyChange(D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"));
     end
 end
 
@@ -2381,16 +2313,9 @@ function D:QuickAccess (CallingObject, button) -- {{{
     if (button == "RightButton" and not IsShiftKeyDown()) then
 
         if (not IsAltKeyDown()) then
-           --[[
-           D.DewDrop:Open(CallingObject,
-            'children', function()
-                D.DewDrop:FeedAceOptionsTable( D.options )
-            end
-            );
-            --]]
+            D:Println("There is no DewDrop equivalent for Ace3, use alt-right click to open the option panel");
         else
             LibStub("AceConfigDialog-3.0"):Open(D.name);
-            --D.Waterfall:Open("Decursive");
         end
 
     elseif (button == "RightButton" and IsShiftKeyDown()) then

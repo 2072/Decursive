@@ -348,6 +348,19 @@ L["OPT_SHOW_STEALTH_STATUS_DESC"] = "OPT_SHOW_STEALTH_STATUS_DESC"
 
 L["OPT_FILTEROUTCLASSES_FOR_X"] = "%q will be ignored on the specified classes while you are in combat."
 
+L["OPT_GENERAL"] = "General options"
+L["OPT_ENABLEDEBUG"] = "Enable Debugging";
+L["OPT_ENABLEDEBUG_DESC"] = "Enable Debugging output";
+L["OPT_CURINGOPTIONS_EXPLANATION"] = [[
+Select the types of the afflictions you want to cure, unchecked types will be completely ignored by Decursive.
+
+The green number determine the priority of the affliction. This priority will affect several aspects:
+- What Decursive shows you first if a player got several types of Debuff.
+- What mouse button you'll have to click to cure the debuff (First spell is Left-Click, second is Right-Click, etc...)
+
+All of this is explained in the documentation (a must see):
+http://www.wowace.com/addons/decursive/
+]]
 --]==]
 --@end-do-not-package@
 

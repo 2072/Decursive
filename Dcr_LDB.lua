@@ -106,23 +106,19 @@ local function ShowToolTip (frame)
         HeadFont = CreateFonts();
     end
 
-    -- Acquire a tooltip with 3 columns, respectively aligned to left, center and right
     local tooltip = LibQTip:Acquire("DecursiveGenInfo", 2, "LEFT", "RIGHT");
     frame.tooltip = tooltip 
 
     tooltip:SetHeaderFont(HeadFont);
     
-    -- Add an header filling only the first two columns
-   
-
     local x, y;
     -- 1
     x, y = tooltip:AddLine();
     tooltip:SetCell(x,y,'Decursive', HeadFont,"CENTER",2);
 
     -- 2
-    tooltip:AddLine(    ("|cFF00FF00%s|r: "):format(D.L["HLP_RIGHTCLICK"]),
-                            D.L["STR_OPTIONS"]);
+    --tooltip:AddLine(    ("|cFF00FF00%s|r: "):format(D.L["HLP_RIGHTCLICK"]),
+      --                      D.L["STR_OPTIONS"]);
 
     -- 3
     tooltip:AddLine(    ("|cFF00FF00%s-%s|r: "):format(D.L["ALT"],      D.L["HLP_RIGHTCLICK"]),
