@@ -175,14 +175,11 @@ function D:errln( ... ) --{{{
     end
 end --}}}
 
---[[
-local function D:Debugf(string, ...)
-    self:Print(debugStyle( string:format(...)));
-end
---]]
 
 function D:Debug(...)
-    self:Print(debugStyle(UseFormatIfPresent(...)));
+    if self.debugging then
+        self:Print(debugStyle(UseFormatIfPresent(...)));
+    end
 end
 
 
@@ -409,8 +406,8 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
         DcrTimers[RefName] = {};
     end
 
-    if select('#', ...) then
-        --D:Debug("ScheduleDelayedCall: multiargs");
+    if select('#', ...) > 0 then
+        --D:Debug("ScheduleDelayedCall: multiargs", select('#', ...));
 
         -- arg table
         DcrTimers[RefName][2] = {arg1};
@@ -429,12 +426,11 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
         , Delay, DcrTimers[RefName][2]
         );
     else
-        D:Debug("ScheduleDelayedCall: MONOarg");
+        --D:Debug("ScheduleDelayedCall: |cFFFF0000MONOarg|r", select('#', ...));
 
         DcrTimers[RefName][1] = self:ScheduleTimer (
         function(arg)
-            --D:Debug("monorec:", arg);
-            FunctionRef(unpack(arg));
+            FunctionRef(arg);
             DcrTimers[RefName][1] = false;
         end
         , Delay, arg1

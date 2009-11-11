@@ -218,7 +218,6 @@ D.defaultMinimapPosition = 250;
 D.hideWithoutStandby    = true;
 D.defaultPosition       = "LEFT";
 D.hideMenuTitle         = true;
---D.clickableTooltip    = true;
 
 local AddDebugText = Dcr_AddDebugText;
 function D:AddDebugText(a1, ...)
@@ -254,11 +253,6 @@ function D:BetaWarning()
     end
 
 
-end
-
-function D:OnMenuRequest (level, value, inTooltip, v1, v2, v3)
-    D:Print("DewDrop is no more");
-    --   D.DewDrop:FeedAceOptionsTable( D.options );
 end
 
 function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
@@ -605,9 +599,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
 
     -- Raid/Group changes events
-    self:RegisterEvent("PARTY_MEMBERS_CHANGED", function() D:GroupChanged("PARTY_MEMBERS_CHANGED", arg1) end);
-    self:RegisterEvent("PARTY_LEADER_CHANGED", function() D:GroupChanged("PARTY_LEADER_CHANGED", arg1) end);
-    self:RegisterEvent("RAID_ROSTER_UPDATE", function() D:GroupChanged("RAID_ROSTER_UPDATE", arg1) end);
+    self:RegisterEvent("PARTY_MEMBERS_CHANGED", D.GroupChanged, D);
+    self:RegisterEvent("PARTY_LEADER_CHANGED", D.GroupChanged, D);
+    self:RegisterEvent("RAID_ROSTER_UPDATE", D.GroupChanged, D);
     self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 
     -- Player pet detection event (used to find pet spells)
@@ -689,15 +683,6 @@ function D:SetConfiguration()
     D.printFrame = D.Status.OutputWindow;
 
     D:Debug("Loading profile datas...");
-
-    -- this is needed to fix a typo in previous versions...
-    --[[
-    if (D.profile.skipByClass["WARRIoR"]) then
-        D.profile.skipByClass["WARRIoR"] = nil;
-        D.profile.skipByClass["WARRIOR"] = {};
-        D:tcopy(D.profile.skipByClass["WARRIOR"], D.defaults.skipByClass["WARRIOR"]);
-    end
-    --]]
 
     -- some usefull constants
     DC.MyClass = (select(2, UnitClass("player")));

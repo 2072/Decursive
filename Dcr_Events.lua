@@ -97,7 +97,7 @@ end -- }}}
 
 local OncePetRetry = false;
 
-function D:UNIT_PET (Unit) -- {{{
+function D:UNIT_PET (selfevent, Unit) -- {{{
 
     -- when a pet changes somwhere, we update the unit array.
 
@@ -255,13 +255,11 @@ end --}}}
     -- the called function must return a non false value when it does something to prevent UI lagging
 function D:AddDelayedFunctionCall(CallID,functionLink, ...)
 
---      D:Println("|cFFFF0000ALERT:|r  test %s (%s)",  select("#",...), CallID);
     
     if (not self.Status.DelayedFunctionCalls[CallID]) then 
         self.Status.DelayedFunctionCalls[CallID] =  {["func"] = functionLink, ["args"] =  {...}};
         self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount + 1;
     elseif select("#",...) > 1 then -- if we had more than the function reference and its object
---      D:Println("|cFFFF0000ALERT:|r  used (%s)", CallID);
 
         local args = self.Status.DelayedFunctionCalls[CallID].args;
 
@@ -325,7 +323,7 @@ do
     local GetTime       = _G.GetTime;
     -- This event manager is only here to catch events when the GUID unit array is not reliable.
     -- For everything else the combat log event manager does the job since it's a lot more resource friendly. (UNIT_AURA fires way too often and provides no data)
-    function D:UNIT_AURA(UnitID, ...)
+    function D:UNIT_AURA(selfevent, UnitID, ...)
 
         if not self.Status.Unit_Array_UnitToGUID[UnitID] then
             -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
@@ -470,7 +468,7 @@ do
             self.LiveList:DelayedGetDebuff(UnitID);
         end
         --]=]
-        D:COMBAT_LOG_EVENT_UNFILTERED(0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
+        D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
     end
 
     local SpecialDebuffs = {
@@ -479,7 +477,7 @@ do
 
     local oldest = 0;
 
-    function D:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
+    function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12)
 
         --@alpha@
         --[=[
@@ -679,7 +677,7 @@ do
 
             ----  }}}
         --else
-           --D:Print("UNKNOWN EVENT: (source=%s -- %X) (dest=|cFF00AA00%s|r -- %x): |cFFBB0000%s|r for spell |cFF00FF00%s|r, %s, %s, %s, %s, %s, %s", sourceName, sourceFlags, destName, destFlags, event, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
+          -- D:Debug(sourceName, sourceFlags, destName, destFlags, event, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
             --  }}}
         end
 
@@ -691,10 +689,7 @@ do
 end
 
 function D:SPELL_UPDATE_COOLDOWN()
-    --if arg1 then
     D.Status.UpdateCooldown = GetTime();
-    --end
-    --D:Debug("update cd:", arg1);
 end
 
 DcrLoadedFiles["Dcr_Events.lua"] = "@project-version@";
