@@ -22,9 +22,6 @@ TODO:
 
 - Add an option to automatically focus sheeped/cycloned units (if no other focus)
 
-- Convert to Ace3. (but this means the loss of drop down config menus :/)
-    - Done with AceLocale-3.0
-
 - Add a user debuff warning mechanism where you could define debuff names you
   want to be aware of, then Decursive would add a special status, such as a
   little colored triangle in the middle of the MUFs and then you will have to

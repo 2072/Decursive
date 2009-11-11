@@ -52,6 +52,7 @@ local icon = LibStub("LibDBIcon-1.0", true)
 
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
+local type              = _G.type;
 local table             = _G.table;
 local str_format        = _G.string.format;
 local str_gsub          = _G.string.gsub;

@@ -103,6 +103,7 @@ local unpack            = _G.unpack;
 local select            = _G.select;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
+local GetTime            = _G.GetTime;
 local PlaySoundFile     = _G.PlaySoundFile;
 local IsControlKeyDown  = _G.IsControlKeyDown;
 local floor             = _G.math.floor;
@@ -1372,7 +1373,7 @@ do
 
             --if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.LV_OnlyInRange) then
             if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.Hide_LiveList) then
-                Dcr:Debug("SetColor(): No more unit, sound re-enabled");
+                D:Debug("SetColor(): No more unit, sound re-enabled");
                 Status.SoundPlayed = false;
             end
         end

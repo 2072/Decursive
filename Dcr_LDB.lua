@@ -100,7 +100,7 @@ local function ShowToolTip (frame)
         return;
     end
 
-    Dcr:Debug("ShowToolTip called");
+    --Dcr:Debug("ShowToolTip called");
 
     if not HeadFont then
         HeadFont = CreateFonts();
@@ -179,7 +179,7 @@ LDB.OnLeave = function(frame)
     LibQTip:Release(frame.tooltip)
     frame.tooltip = nil
 
-    Dcr:Debug("Releasing tooltip");
+    --Dcr:Debug("Releasing tooltip");
 end
 
 

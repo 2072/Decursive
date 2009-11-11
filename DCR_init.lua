@@ -67,6 +67,8 @@ local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
 
 
 local select    = _G.select;
+local pairs    = _G.pairs;
+local ipairs    = _G.ipairs;
 local InCombatLockdown  = _G.InCombatLockdown;
 
 

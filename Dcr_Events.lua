@@ -92,7 +92,7 @@ function D:GroupChanged (reason) -- {{{
         self:ScheduleDelayedCall("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
     end
 
-    self:Debug("Groups changed", reason, arg1);
+    self:Debug("Groups changed", reason);
 end -- }}}
 
 local OncePetRetry = false;
@@ -411,8 +411,10 @@ do
     local bor = bit.bor;
     local UnitGUID = _G.UnitGUID;
     local GetTime = _G.GetTime;
+    local GetSpellInfo = _G.GetSpellInfo;
     local time = _G.time;
     local timev = 0;
+
 
     --@alpha@  
     local DetectHistoryIndex = 1;
@@ -570,7 +572,7 @@ do
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units[UnitID] = true;
                         else
-                            D:Debug("STEALTH LOST: ", UnitID, buffName);
+                            D:Debug("STEALTH LOST: ", UnitID, arg10);
                             self.Stealthed_Units[UnitID] = false;
                         end
                         self.MicroUnitF:UpdateMUFUnit(UnitID);
@@ -611,7 +613,7 @@ do
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units["target"] = true;
                         else
-                            D:Debug("TARGET STEALTH LOST: ", "target", buffName);
+                            D:Debug("TARGET STEALTH LOST: ", "target", arg10);
                             self.Stealthed_Units["target"] = false;
                         end
                     end
@@ -661,7 +663,7 @@ do
                     end
 
                     PlaySoundFile(DC.FailedSound);
-                elseif arg12 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then -- XXX test this
+                elseif arg12 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then
                     self:AddDebugText(ERR_GENERIC_NO_TARGET, "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12);
                 end
                 self.Status.ClickedMF = false;

@@ -256,7 +256,7 @@ do
         end
 
         if (not GUID) then
-            D:errln("GUIDToUnit_mt: no GUID! ", unit);
+            D:errln("GUIDToUnit_mt: no GUID! ");
             return false;
         end
 
