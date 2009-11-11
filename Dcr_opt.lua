@@ -67,7 +67,7 @@ local _;
 D:GetSpellsTranslations(false); -- Register spell translations
 
 function D:GetDefaultsSettings()
-    return = {
+    return {
         -- default settings {{{
         class = {
             -- Curring order (1 is the most important, 6 the lesser...)
@@ -365,6 +365,7 @@ local function GetOptions()
                 type = 'group',
                 name = L["OPT_GENERAL"],
                 order = 1,
+                icon = DC.IconON,
                 args = {
                     Sound = {
                         type = "toggle",
@@ -638,7 +639,7 @@ local function GetOptions()
                 type = "group",
                 name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
                 desc = L["OPT_LIVELIST_DESC"],
-                order = 100,
+                order = 2,
                 disabled = function() return  not D.Status.Enabled end,
 
                 args = {
@@ -775,12 +776,13 @@ local function GetOptions()
                 type = "group",
                 name = D:ColorText(L["OPT_MESSAGES"], "FF229966"),
                 desc = L["OPT_MESSAGES_DESC"],
-                order = 110,
+                order = 3,
                 disabled = function() return  not D.Status.Enabled end,
                 args = {
                     description = {name = L["OPT_MESSAGES_DESC"], order = 1, type = "description"},
                     PrintToDefaultChat = {
                         type = "toggle",
+                        width = 'full',
                         name =  L["PRINT_CHATFRAME"],
                         desc = L["OPT_CHATFRAME_DESC"],
                         get = function() return D.profile.Print_ChatFrame end,
@@ -791,6 +793,7 @@ local function GetOptions()
                     },
                     PrintToCustomChat = {
                         type = "toggle",
+                        width = 'full',
                         name =  L["PRINT_CUSTOM"],
                         desc = L["OPT_PRINT_CUSTOM_DESC"],
                         get = function() return D.profile.Print_CustomFrame end,
@@ -801,6 +804,7 @@ local function GetOptions()
                     },
                     PrintErrors = {
                         type = "toggle",
+                        width = 'full',
                         name =  L["PRINT_ERRORS"],
                         desc =  L["OPT_PRINT_ERRORS_DESC"],
                         get = function() return D.profile.Print_Error end,
@@ -811,6 +815,7 @@ local function GetOptions()
                     },
                     ShowCustomFAnchor = {
                         type = "toggle",
+                        width = 'full',
                         name =  L["ANCHOR"],
                         desc = L["OPT_ANCHOR_DESC"],
                         get = function() return DecursiveAnchor:IsVisible() end,
@@ -828,7 +833,7 @@ local function GetOptions()
                 childGroups = "tab",
                 name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
                 desc = L["OPT_MFSETTINGS_DESC"],
-                order = 130,
+                order = 4,
                 disabled = function() return  not D.Status.Enabled end,
                 args = {
                     displayOpts = {
@@ -1241,12 +1246,13 @@ local function GetOptions()
                 type = "group",
                 name = D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533"),
                 desc = L["OPT_CURINGOPTIONS_DESC"],
-                order = 120,
+                order = 5,
                 disabled = function() return  not D.Status.Enabled end,
                 args = {
                     description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description"},
                     AbolishCheck = {
                         type = "toggle",
+                        width = 'full',
                         name =  L["ABOLISH_CHECK"],
                         desc = L["OPT_ABOLISHCHECK_DESC"],
                         get = function() return D.profile.Check_For_Abolish end,
@@ -1257,6 +1263,7 @@ local function GetOptions()
                     },
                     DoNotBlPrios = {
                         type = "toggle",
+                        width = 'full',
                         name =  L["DONOT_BL_PRIO"],
                         desc = L["OPT_DONOTBLPRIO_DESC"],
                         get = function() return D.profile.DoNot_Blacklist_Prio_List end,
@@ -1267,6 +1274,7 @@ local function GetOptions()
                     },
                     CurePets = {
                         type = "toggle",
+                        width = 'full',
                         name =  L["CURE_PETS"],
                         desc = L["OPT_CUREPETS_DESC"],
                         get = function() return D.profile.Scan_Pets end,
@@ -1362,7 +1370,7 @@ local function GetOptions()
                 type = "group",
                 name = D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"),
                 desc = L["OPT_DEBUFFFILTER_DESC"],
-                order = 145,
+                order = 6,
                 childGroups= "select",
                 disabled = function() return  not D.Status.Enabled end,
                 args = {}
@@ -1373,7 +1381,7 @@ local function GetOptions()
                 type = "group",
                 name = D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"),
                 desc = L["OPT_MACROOPTIONS_DESC"],
-                order = 147,
+                order = 7,
                 disabled = function() return  not D.Status.Enabled or D.Status.Combat end,
                 args = {
                     description = {name = L["OPT_MACROOPTIONS_DESC"], order = 1, type = "description"},
@@ -1452,14 +1460,6 @@ function D:ExportOptions ()
 end
 
 
-local CureCheckBoxes = { -- just a shortcut
-[DC.ENEMYMAGIC]     = D.options.args.CureOptions.args.CureEnemyMagic,
-[DC.MAGIC]          = D.options.args.CureOptions.args.CureMagic,
-[DC.CURSE]          = D.options.args.CureOptions.args.CureCurse,
-[DC.POISON]         = D.options.args.CureOptions.args.CurePoison,
-[DC.DISEASE]        = D.options.args.CureOptions.args.CureDisease,
-[DC.CHARMED]        = D.options.args.CureOptions.args.CureCharmed,
-}
 
 function D:GetCureCheckBoxStatus (Type)
     return D.classprofile.CureOrder[Type] and D.classprofile.CureOrder[Type] > 0;
@@ -1474,7 +1474,12 @@ local TypesToUName = {
     [DC.CHARMED]        = "CHARM",
 }
 
+local CureCheckBoxes = false;
 function D:SetCureCheckBoxNum (Type)
+
+
+
+
     local CheckBox = CureCheckBoxes[Type];
 
     -- add the number in green before the name if we have a spell available and if we checked the box
@@ -1547,6 +1552,17 @@ function D:CheckCureOrder ()
 end
 
 function D:SetCureOrder (ToChange)
+
+    if not CureCheckBoxes then
+        CureCheckBoxes = {
+            [DC.ENEMYMAGIC]     = D.options.args.CureOptions.args.CureEnemyMagic,
+            [DC.MAGIC]          = D.options.args.CureOptions.args.CureMagic,
+            [DC.CURSE]          = D.options.args.CureOptions.args.CureCurse,
+            [DC.POISON]         = D.options.args.CureOptions.args.CurePoison,
+            [DC.DISEASE]        = D.options.args.CureOptions.args.CureDisease,
+            [DC.CHARMED]        = D.options.args.CureOptions.args.CureCharmed,
+        }
+    end
 
     local CureOrder = D.classprofile.CureOrder;
     local tmpTable = {};
@@ -1709,54 +1725,6 @@ function D:ChangeTextFrameDirection(bottom) --{{{
     end
 end --}}}
 
--- Popups definition {{{
-StaticPopupDialogs["DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION"] = {
-    text = L["OPT_REMOVESKDEBCONF"],
-    button1 = TEXT(ACCEPT),
-    button2 = TEXT(CANCEL),
-    OnAccept = function()
-
-        local DebuffsSkipList   = D.profile.DebuffsSkipList;
-        local skipByClass       = D.profile.skipByClass;
-        local AlwaysSkipList    = D.profile.DebuffAlwaysSkipList;
-
-
-        D:tremovebyval(DebuffsSkipList, D.Tmp.DebuffToRemove)
-
-        for class, debuffs in pairs (skipByClass) do
-            skipByClass[class][D.Tmp.DebuffToRemove] = nil; -- changed from false to nil on 20070415
-        end
-
-        AlwaysSkipList[D.Tmp.DebuffToRemove] = nil; -- remove it from the table
-
-        D:Debug("%s removed!", D.Tmp.DebuffToRemove);
-        D:CreateDropDownFiltersMenu();
-        D.Tmp.DebuffToRemove = false;
-
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    ShowAlert = 1,
-};
-
-StaticPopupDialogs["DCR_CONFIRM_RESET"] = {
-    text = L["OPT_RESTPROFILECONF"],
-    button1 = TEXT(ACCEPT),
-    button2 = TEXT(CANCEL),
-    OnAccept = function()
-
-        D.db:ResetProfile();
-        D:Println(L["OPT_PROFILERESET"]);
-
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    ShowAlert = 1,
-}; -- // }}}
-
-
 do -- this is a closure, it's a bit like {} blocks in C
 
     local DebuffsSkipList, DefaultDebuffsSkipList, skipByClass, AlwaysSkipList, DefaultSkipByClass;
@@ -1770,9 +1738,20 @@ do -- this is a closure, it's a bit like {} blocks in C
 
     local RemoveFunc = function (handler)
         D:Debug("Removing '%s'...", handler["Debuff"]);
-        D.Tmp.DebuffToRemove = handler["Debuff"];
-        StaticPopup_Show ("DCR_REMOVE_SKIPPED_DEBUFF_CONFIRMATION", D:ColorText(handler["Debuff"], "FF11AA66"));
-        --D.DewDrop:Close(1);
+
+
+        D:tremovebyval(D.profile.DebuffsSkipList, handler["Debuff"])
+
+        skipByClass  = D.profile.skipByClass;
+        for class, debuffs in pairs (skipByClass) do
+            skipByClass[class][handler["Debuff"]] = nil;
+        end
+
+        D.profile.DebuffAlwaysSkipList[handler["Debuff"]] = nil; -- remove it from the table
+
+        D:Debug("%s removed!", handler["Debuff"]);
+        D:CreateDropDownFiltersMenu();
+
     end
 
     local AddToAlwaysSkippFunc = function (handler, v)
@@ -1784,6 +1763,7 @@ do -- this is a closure, it's a bit like {} blocks in C
 
         D:Debug("Resetting '%s'...", handler["Debuff"]);
 
+        skipByClass  = D.profile.skipByClass;
         for Classe, Debuffs in pairs(skipByClass) do
             if (DefaultSkipByClass[Classe][DebuffName]) then
                 skipByClass[Classe][DebuffName] = true;
@@ -1810,11 +1790,11 @@ do -- this is a closure, it's a bit like {} blocks in C
                 ["Debuff"]=DebuffName,
                 ["Class"]=Class,
                 ["get"] = function  (handler)
-                    local skipByClass = D.profile.skipByClass;
+                    skipByClass = D.profile.skipByClass;
                     return skipByClass[handler["Class"]][handler["Debuff"]]; 
                 end,
                 ["set"] = function  (handler, info, v)
-                    local skipByClass = D.profile.skipByClass;
+                    skipByClass = D.profile.skipByClass;
                     skipByClass[handler["Class"]][string.trim(handler["Debuff"])] = v;
                 end
             },
@@ -1840,20 +1820,13 @@ do -- this is a closure, it's a bit like {} blocks in C
     local function DebuffSubmenu (DebuffName, num)
         local classes = {};
 
-        --[[
-        for Class, Debuffs in pairs(skipByClass) do
-            classes[Class] = ClassCheckbox(Class, DebuffName, num);
-            num = num + 1;
-        end
-        --]]
-        
         classes["header"] = {
             type = "description",
             name = (L["OPT_FILTEROUTCLASSES_FOR_X"]):format(D:ColorText(DebuffName, "FF77CC33")),
             order = 0,
         }
 
-        local skipByClass = D.profile.skipByClass;
+        skipByClass = D.profile.skipByClass;
          classes[DebuffName] = {
              type = "multiselect",
              name = "",
@@ -1866,7 +1839,6 @@ do -- this is a closure, it's a bit like {} blocks in C
              handler = {
                 ["Debuff"]=DebuffName,
                 ["get"] = function  (handler, info, Classnum)
-                    --D:Debug(DC.ClassNumToUName[Classnum], skipByClass[DC.ClassNumToUName[Classnum]][handler["Debuff"]]);
                     return skipByClass[DC.ClassNumToUName[Classnum]][handler["Debuff"]]; 
                 end,
                 ["set"] = function  (handler, info, Classnum, state)
@@ -1911,8 +1883,9 @@ do -- this is a closure, it's a bit like {} blocks in C
                 ["Debuff"] = DebuffName,
                 ["remove"] = RemoveFunc,
             },
-            func = "remove";
-            order = 100 + num;
+            confirm = true,
+            func = "remove",
+            order = 100 + num,
 
         };
 

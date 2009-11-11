@@ -269,8 +269,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
 
-
-
     self.db.RegisterCallback(self, "OnProfileChanged", "SetConfiguration")
     self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
     self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
