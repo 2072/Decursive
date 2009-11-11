@@ -265,6 +265,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     DcrHookErrorHandler();
 
+    D.defaults = D:GetDefaultsSettings();
 
     self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
 
