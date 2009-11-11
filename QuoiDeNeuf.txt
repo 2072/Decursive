@@ -1,11 +1,11 @@
-Decursive 2.4.5 beta 1 par Archarodim  (2009-11-11)
+Decursive 2.4.5 beta 2 par Archarodim  (2009-11-11)
 ===================================================
 
 
-Changements entre Decursive 2.4.3.2 et Decursive 2.4.5
-------------------------------------------------------
+Changements entre Decursive 2.4.3.2 et Decursive 2.4.5 beta 2
+-------------------------------------------------------------
 
-**Changements majeurs :**
+- **Changements majeurs :**
 
     - Decursive a été entièrement convertit à Ace3.
 
@@ -22,7 +22,7 @@ Changements entre Decursive 2.4.3.2 et Decursive 2.4.5
     - Les réglages de Decursive seront remis à zéro une fois cette version
       installée.
 
-**Changements mineurs :**
+- **Changements mineurs :**
 
     - L'option "ignorer les unités camouflées" a été retirée puisqu'elle était
       devenue inutile depuis plusieurs années.

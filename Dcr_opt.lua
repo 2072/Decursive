@@ -2192,13 +2192,13 @@ do
     end
 end
 
--- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(Dcr.profile.MacroBind));
+-- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(D.db.global.MacroBind));
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingKey(D.CONF.MACROCOMMAND));
 
 function D:SetMacroKey ( key )
 
     -- if the key is already correctly mapped, return here.
-    --if (key and key == D.profile.MacroBind and GetBindingAction(key) == D.CONF.MACROCOMMAND) then
+    --if (key and key == D.db.global.MacroBind and GetBindingAction(key) == D.CONF.MACROCOMMAND) then
     if D.profile.DisableMacroCreation or key and key == D.db.global.MacroBind and D:tcheckforval({GetBindingKey(D.CONF.MACROCOMMAND)}, key) then -- change for 2.3 where GetBindingAction() is no longer working
         return;
     end

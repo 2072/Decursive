@@ -1,11 +1,11 @@
-Decursive 2.4.5 beta 1 by Archarodim (2009-11-11)
+Decursive 2.4.5 beta 2 by Archarodim (2009-11-11)
 =================================================
 
 
-Changes from Decursive 2.4.3.2 to Decursive 2.4.5
--------------------------------------------------
+Changes from Decursive 2.4.3.2 to Decursive 2.4.5 beta 2
+--------------------------------------------------------
 
-**Major changes:**
+- **Major changes:**
 
     - Decursive has been fully converted to Ace3.
 
@@ -20,7 +20,7 @@ Changes from Decursive 2.4.3.2 to Decursive 2.4.5
 
     - Decursive options will be reset to default upon installation of this version.
 
-**Minor changes:**
+- **Minor changes:**
 
     - Removed the 'Ignore stealthed units' option that is useless since several
       years.

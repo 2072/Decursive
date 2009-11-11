@@ -842,8 +842,8 @@ function D:Init() --{{{
     DecursiveMainBar:SetAlpha(D.profile.LiveListAlpha);
     -- }}}
 
-    if (D.profile.MacroBind == "NONE") then
-        D.profile.MacroBind = false;
+    if (D.db.global.MacroBind == "NONE") then
+        D.db.global.MacroBind = false;
     end
 
 
@@ -1207,7 +1207,7 @@ function D:UpdateMacro ()
     end
 
 
-    D:SetMacroKey(D.profile.MacroBind);
+    D:SetMacroKey(D.db.global.MacroBind);
 
     return true;
 
