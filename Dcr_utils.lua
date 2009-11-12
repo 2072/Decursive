@@ -378,7 +378,7 @@ end
 function D:MakeError(something)
     local testlocal = "test local";
    
-    testErrorCapturing();
+    testErrorCapturing(testlocal);
 end
 
 function D:NiceTime()

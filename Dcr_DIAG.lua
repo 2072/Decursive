@@ -141,6 +141,9 @@ local AddDebugText = Dcr_AddDebugText;
 local ProperErrorHandler = false;
 local IsReporting = false;
 
+local version, build, date, tocversion = GetBuildInfo();
+
+-- seems to be required even in 3.3 because debuglocals, unlike debugstack is sensitive to intermediates so we need to add 1 to its level for each intermediate
 _G.original_debuglocals = _G.debuglocals;
 ---[=[
 _G.debuglocals = function (level)
@@ -155,7 +158,12 @@ _G.debuglocals = function (level)
         ADDLEVEL = ADDLEVEL + 1;
     end
 
-    return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This message is a HotFix from Decursive to prevent a C stack overflow)";
+
+    if tocversion < 30300 then
+        return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
+    else
+        return original_debuglocals(level + ADDLEVEL); -- in 3.3, debuglocals returning nothing seems no longer to be an issue.
+    end
 end; 
 --]=]
 
@@ -167,7 +175,7 @@ function DecursiveErrorHandler(err, ...)
         if not ScriptErrorsFrameScrollFrameText.cursorOffset then
             ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
             if ( GetCVarBool("scriptErrors") ) then
-                print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check Lua errors)|r");
+                print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors)|r");
             end
         end
     end
@@ -185,7 +193,7 @@ function DecursiveErrorHandler(err, ...)
         IsReporting = true;
         AddDebugText(err, debugstack(2), ...);
         if Dcr then
-            Dcr:Debug("Error recorded", ...);
+            Dcr:Debug("Error recorded");
         end
         IsReporting = false;
     end

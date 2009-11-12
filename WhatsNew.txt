@@ -9,7 +9,7 @@ Changes from Decursive 2.4.3.2 to Decursive 2.4.5 beta 2
 
     - Decursive has been fully converted to Ace3.
 
-    - Decursive is no longer licensed under the GNU GPL, Licensed has changed
+    - Decursive is no longer licensed under the GNU GPL, License has changed
       to 'All Rights Reserved' (see LICENSE.txt).
 
     - Due to the conversion to Ace3, there is no longer a drop down menu to
