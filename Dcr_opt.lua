@@ -367,6 +367,12 @@ local function GetOptions()
                 order = 1,
                 icon = DC.IconON,
                 args = {
+                    version = {
+                        type = 'description',
+                        name = D.version,
+                        image = DC.IconON,
+                        order = 0,
+                    },
                     Sound = {
                         type = "toggle",
                         name = L["PLAY_SOUND"],
