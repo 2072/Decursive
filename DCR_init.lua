@@ -405,7 +405,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         },
         [DS["SPELL_CURE_TOXINS"]]           = {
             Types = {DC.POISON, DC.DISEASE},
-            IsBest = true,
+            IsBest = false,
             Pet = false,
         },
         -- mages
@@ -1024,6 +1024,8 @@ function D:Configure() --{{{
     self:CheckCureOrder ();
     -- Set the appropriate priorities according to debuffs types
     self:SetCureOrder ();
+
+    LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
 
     if (not self.Status.HasSpell) then
         return;
