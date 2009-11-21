@@ -97,7 +97,7 @@ local function tostring_args(a1, ...)
 end
 
 Dcr_DebugText = "";
--- taken from BugSack
+-- inspired from BugSack
 function Dcr_DebugFrameOnTextChanged()
     if this:GetText() ~= Dcr_DebugText then
         this:SetText(Dcr_DebugText)
@@ -143,29 +143,7 @@ local IsReporting = false;
 
 local version, build, date, tocversion = GetBuildInfo();
 
--- seems to be required even in 3.3 because debuglocals, unlike debugstack is sensitive to intermediates so we need to add 1 to its level for each intermediate
-_G.original_debuglocals = _G.debuglocals;
----[=[
-_G.debuglocals = function (level)
-    local ADDLEVEL = 2; -- 2 is for this function and DecursiveErrorHandler
 
-    -- test for other add-on that hooks the error handler and increment ADDLEVEL
-    if QuestHelper_Errors then
-        ADDLEVEL = ADDLEVEL + 1;
-    end
-
-    if Swatter and Swatter.OnError then
-        ADDLEVEL = ADDLEVEL + 1;
-    end
-
-
-    if tocversion < 30300 then
-        return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
-    else
-        return original_debuglocals(level + ADDLEVEL); -- in 3.3, debuglocals returning nothing seems no longer to be an issue.
-    end
-end; 
---]=]
 
 function DecursiveErrorHandler(err, ...)
 
@@ -205,6 +183,36 @@ end
 
 function DcrHookErrorHandler()
     if not ProperErrorHandler then
+
+        ---[=[
+        -- seems to be required even in 3.3 because debuglocals, unlike debugstack is sensitive to intermediates so we need to add 1 to its level for each intermediate
+        if GetCVarBool("scriptErrors") and not BugGrabber then
+            -- this whole block is a bad idea, it could create cascading tainting issues if an error occur in a Blizz secured code...
+            -- it is enabled only if the user turned Lua error reporting on otherwise no one cares about debuglocals being useless.
+            _G.original_debuglocals = _G.debuglocals;
+            _G.debuglocals = function (level)
+                local ADDLEVEL = 2; -- 2 is for this function and DecursiveErrorHandler
+
+                -- test for other add-on that hooks the error handler and increment ADDLEVEL
+                if QuestHelper_Errors then
+                    ADDLEVEL = ADDLEVEL + 1;
+                end
+
+                if Swatter and Swatter.OnError then
+                    ADDLEVEL = ADDLEVEL + 1;
+                end
+
+
+                if tocversion < 30300 then
+                    return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
+                else
+                    return original_debuglocals(level + ADDLEVEL); -- in 3.3, debuglocals returning nothing seems no longer to be an issue.
+                end
+            end; 
+        end
+        --]=]
+
+
         ProperErrorHandler = geterrorhandler();
         seterrorhandler(DecursiveErrorHandler);
     end
@@ -237,7 +245,8 @@ do
     local PrintMessage = function (message, ...) if DcrDiagStatus ~= 2 then Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
 
-    function DecursiveSelfDiagnostic (force, FromCommand) -- {{{
+    -- {{{
+    function DecursiveSelfDiagnostic (force, FromCommand)
 
         -- will not executes several times unless forced
         if not force and DcrDiagStatus then
@@ -247,7 +256,8 @@ do
         DcrDiagStatus = 0; -- will be set to 1 if the diagnostic fails
 
         -- Table with all the required libraries with their current revision at Decursive release time.
-        local LibrariesToCheck = { -- {{{
+        -- {{{
+        local LibrariesToCheck = {
             ["AceLibrary"]              = 90000 + 1091,
             ["AceOO-2.0"]               = 90000 + 1091,
             ["AceDebug-2.0"]            = 90000 + 1091,
@@ -370,7 +380,7 @@ do
 
         -- if no fatal error let this file update the date and revision of Decursive
         --if DcrDiagStatus ~= 2 then
-          --  Dcr:SetDateAndRevision("@file-date-iso@", "$Revision: 79890 $");
+        --  Dcr:SetDateAndRevision("@file-date-iso@", "$Revision: 79890 $");
         --end
 
         -- if the diagnostic was requested by the user, we also test AceEvent functionalities {{{ -
