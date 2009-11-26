@@ -360,6 +360,25 @@ local function GetOptions()
         type = "group",
         handler = D,
         args = {
+            -- enable and disable
+            enable = {
+                type = 'toggle',
+                guiHidden = true,
+                name = 'enable',
+                set = function(info) D.Status.Enabled = D:Enable(); return D.Status.Enabled; end,
+                get = function(info) return D:IsEnabled(); end,
+                disabled = function(info) return D:IsEnabled(); end,
+                order = -2,
+            },
+            disable = {
+                type = 'toggle',
+                guiHidden = true,
+                name = 'disable',
+                set = function(info) D.Status.Enabled = not D:Disable(); return not D.Status.Enabled; end,
+                get = function(info) return not D:IsEnabled(); end,
+                disabled = function(info) return not D:IsEnabled(); end,
+                order = -3,
+            },
             general = {
                 -- {{{
                 type = 'group',
@@ -381,7 +400,7 @@ local function GetOptions()
                         set = function()
                             D.profile.PlaySound = not D.profile.PlaySound
                         end,
-                        disabled = function() return  D.profile.Hide_LiveList and not  D.profile.ShowDebuffsFrame end,
+                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
                         order = 1
                     },
                     ToolTips = {
@@ -397,7 +416,7 @@ local function GetOptions()
                             end
 
                         end,
-                        disabled = function() return  D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame end,
+                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
                         order = 2
                     },
                     minimap = {
@@ -415,7 +434,7 @@ local function GetOptions()
                             end
                         end,
                         hidden = function() return not icon end,
-                        disabled = function() return  not D.Status.Enabled end,
+                        disabled = function() return not D.Status.Enabled end,
                         order = 3,
                     },
                     BlacklistedTime = {

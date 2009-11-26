@@ -125,9 +125,7 @@ L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Scan and cure pets"
 L["CURSE"] = "Curse"
 L["DEFAULT_MACROKEY"] = "`"
-L["DISABLEWARNING"] = [=[Decursive has been disabled!
-
-To enable it again, type |cFFFFAA44/DCR STANDBY|r]=]
+L["DISABLEWARNING"] = "Decursive will be disables"
 L["DISEASE"] = "Disease"
 L["DONOT_BL_PRIO"] = "Don't blacklist priority list names"
 L["FAILEDCAST"] = [=[|cFF22FFFF%s %s|r |cFFAA0000failed on|r %s

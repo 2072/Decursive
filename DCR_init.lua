@@ -757,7 +757,7 @@ function D:SetConfiguration()
 
 end
 
-function D:OnDisable() -- When the addon is disabled by ACE
+function D:OnDisable() -- When the addon is disabled by Ace
     D.Status.Enabled = false;
     D.DcrFullyInitialized = false;
     
