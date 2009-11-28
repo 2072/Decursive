@@ -396,7 +396,6 @@ end
 
 local ObjectWithArgs = {["obj"]=false, ["arg"]=false,};
 function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
-    --D:Debug("registering delayed call: %q", RefName);
 
     if DcrTimers[RefName] and DcrTimers[RefName][1] then
         self:CancelTimer(DcrTimers[RefName][1]);
@@ -407,8 +406,6 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
     end
 
     if select('#', ...) > 0 then
-        --D:Debug("ScheduleDelayedCall: multiargs", select('#', ...));
-
         -- arg table
         DcrTimers[RefName][2] = {arg1};
 
@@ -419,15 +416,12 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
 
         DcrTimers[RefName][1] = self:ScheduleTimer (
         function(arg)
-            --D:Debug("multirec:", unpack(arg));
             FunctionRef(unpack(arg));
             DcrTimers[RefName][1] = false;
         end
         , Delay, DcrTimers[RefName][2]
         );
     else
-        --D:Debug("ScheduleDelayedCall: |cFFFF0000MONOarg|r", select('#', ...));
-
         DcrTimers[RefName][1] = self:ScheduleTimer (
         function(arg)
             FunctionRef(arg);
@@ -459,6 +453,12 @@ function D:CancelDelayedCall(RefName)
         local cancelHandle = DcrTimers[RefName][1];
         DcrTimers[RefName][1] = false;
         return self:CancelTimer(cancelHandle);
+    end
+end
+
+function D:CancelAllTimedCalls()
+    for RefName in pairs(DcrTimers) do
+        self:CancelDelayedCall(RefName);
     end
 end
 

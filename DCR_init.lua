@@ -767,6 +767,8 @@ function D:OnDisable() -- When the addon is disabled by Ace
         D.MFContainer:Hide();
     end
 
+    D:CancelAllTimedCalls();
+
     -- the disable warning popup : {{{ -
     StaticPopupDialogs["Decursive_OnDisableWarning"] = {
         text = L["DISABLEWARNING"],
