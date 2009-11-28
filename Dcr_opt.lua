@@ -358,25 +358,32 @@ local function GetOptions()
     return {
         -- {{{
         type = "group",
-        handler = D,
+        --handler = D,
+        handler = {
+            ["hidden"] = function () return not D:IsEnabled(); end,
+            ["disabled"] = function () return not D:IsEnabled(); end,
+        },
+        hidden = false,
         args = {
             -- enable and disable
             enable = {
                 type = 'toggle',
                 guiHidden = true,
+                --hidden = function() return D:IsEnabled(); end,
+                disabled = function() return D:IsEnabled(); end,
                 name = 'enable',
-                set = function(info) D.Status.Enabled = D:Enable(); return D.Status.Enabled; end,
-                get = function(info) return D:IsEnabled(); end,
-                disabled = function(info) return D:IsEnabled(); end,
+                set = function() D.Status.Enabled = D:Enable(); return D.Status.Enabled; end,
+                get = function() return D:IsEnabled(); end,
                 order = -2,
             },
             disable = {
                 type = 'toggle',
-                guiHidden = true,
+                --hidden = function() return not D:IsEnabled(); end,
+                guiHidden  = true,
+                disabled = function() return not D:IsEnabled(); end,
                 name = 'disable',
-                set = function(info) D.Status.Enabled = not D:Disable(); return not D.Status.Enabled; end,
-                get = function(info) return not D:IsEnabled(); end,
-                disabled = function(info) return not D:IsEnabled(); end,
+                set = function() D.Status.Enabled = not D:Disable(); return not D.Status.Enabled; end,
+                get = function() return not D:IsEnabled(); end,
                 order = -3,
             },
             general = {
@@ -392,19 +399,30 @@ local function GetOptions()
                         image = DC.IconON,
                         order = 0,
                     },
+                    enable = {
+                        type = 'execute',
+                        hidden = function() return  D:IsEnabled() end,
+                        disabled = function() return  D:IsEnabled() end,
+                        name = "Enable Decursive",
+                        func = function() D.Status.Enabled = D:Enable(); return D.Status.Enabled; end,
+                        order = 5,
+                    },
                     Sound = {
                         type = "toggle",
+                        hidden = "hidden",
+                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
                         name = L["PLAY_SOUND"],
                         desc = L["OPT_PLAYSOUND_DESC"],
                         get = function() return D.profile.PlaySound end,
                         set = function()
                             D.profile.PlaySound = not D.profile.PlaySound
                         end,
-                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
-                        order = 1
+                        order = 10,
                     },
                     ToolTips = {
                         type = "toggle",
+                        hidden = "hidden",
+                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
                         name = L["SHOW_TOOLTIP"],
                         desc = L["OPT_SHOWTOOLTIP_DESC"],
                         get = function() return D.profile.AfflictionTooltips end,
@@ -416,11 +434,12 @@ local function GetOptions()
                             end
 
                         end,
-                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
-                        order = 2
+                        order = 20,
                     },
                     minimap = {
                         type = "toggle",
+                        hidden = "hidden",
+                        disabled = "disabled",
                         name = L["OPT_SHOWMINIMAPICON"],
                         desc = L["OPT_SHOWMINIMAPICON_DESC"],
                         get = function() return not D.profile.MiniMapIcon or not D.profile.MiniMapIcon.hide end,
@@ -433,12 +452,12 @@ local function GetOptions()
                                 icon:Show("Decursive");
                             end
                         end,
-                        hidden = function() return not icon end,
-                        disabled = function() return not D.Status.Enabled end,
-                        order = 3,
+                        order = 30,
                     },
                     BlacklistedTime = {
                         type = 'range',
+                        hidden = "hidden",
+                        disabled = "disabled",
                         name = L["BLACK_LENGTH"],
                         desc = L["OPT_BLACKLENTGH_DESC"],
                         get = function() return D.profile.CureBlacklist end,
@@ -449,15 +468,17 @@ local function GetOptions()
                         max = 20,
                         step = 0.1,
                         isPercent = false,
-                        order = 4,
+                        order = 40,
                     },
                     SysOps = {
                         type = 'header',
+                        hidden = "hidden",
                         name = "",
-                        order = -4
+                        order = -40
                     },
                     ShowTestItem = {
                         type = "toggle",
+                        hidden = "hidden",
                         name = L["OPT_CREATE_VIRTUAL_DEBUFF"],
                         desc = L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"],
                         get = function() return  D.LiveList.TestItemDisplayed end,
@@ -468,21 +489,23 @@ local function GetOptions()
                                 D.LiveList:HideTestItem();
                             end
                         end,
-                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell end,
-                        order = -3
+                        disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell or not D.Status.Enabled end,
+                        order = -30
                     },
                     report = {
                         type = "execute",
+                        hidden = "hidden",
                         name = D:ColorText(L["DECURSIVE_DEBUG_REPORT_SHOW"], "FFFF0000"),
                         desc = L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"],
                         func = function ()
                             D:ShowDebugReport();
                         end,
                         hidden = function() return  #D.DebugTextTable < 1 end,
-                        order = -2
+                        order = -20
                     },
                     debug = {
                         type = "toggle",
+                        hidden = "hidden",
                         name = L["OPT_ENABLEDEBUG"],
                         desc = L["OPT_ENABLEDEBUG_DESC"],
                         get = function() return D.db.global.debugging end,
@@ -490,12 +513,13 @@ local function GetOptions()
                             D.db.global.debugging = v;
                             D.debugging = v;
                         end,
-                        disabled = function() return  not D.Status.Enabled end,
+                        disabled = "disabled",
                         order = -1,
                     },
                     GlorfindalMemorium = {
                         -- {{{
                         type = "execute",
+                        hidden = "hidden",
                         name = D:ColorText(L["GLOR1"], "FF" .. D:GetClassHexColor( "WARRIOR" )),
                         desc = L["GLOR2"],
                         func = function ()
@@ -653,7 +677,7 @@ local function GetOptions()
 
                             --]]
                         end,
-                        order = 1540
+                        order = -2,
                     },
                     -- }}}
                 }
@@ -662,13 +686,20 @@ local function GetOptions()
             livelistoptions = {
                 -- {{{
                 type = "group",
+                handler = {
+                    ["hidden"] = function () return not D:IsEnabled(); end,
+                    ["disabled"] = function () return not D:IsEnabled(); end,
+                    ["subhidden"] = function () return not D:IsEnabled() or D.profile.Hide_LiveList; end,
+                    ["subdisabled"] = function () return not D:IsEnabled() or D.profile.Hide_LiveList; end,
+                },
+                hidden = "hidden",
+                disabled = "disabled",
                 name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
                 desc = L["OPT_LIVELIST_DESC"],
                 order = 2,
-                disabled = function() return  not D.Status.Enabled end,
 
                 args = {
-                    description = {name = L["OPT_LIVELIST_DESC"], order = 1, type = "description"},
+                    description = {name = L["OPT_LIVELIST_DESC"], order = 0, type = "description"},
                     show = {
                         type = "toggle",
                         name = L["HIDE_LIVELIST"],
@@ -682,20 +713,22 @@ local function GetOptions()
                                 D:SetIcon(DC.IconON);
                             end
                         end,
-                        disabled = function() return D.profile.LiveListTied end,
                         order = 100
                     },
                     OnlyInRange = {
                         type = "toggle",
+                        hidden = "subhidden",
+                        disabled = "subdisabled",
                         name = L["OPT_LVONLYINRANGE"],
                         desc = L["OPT_LVONLYINRANGE_DESC"],
                         get = function() return D.profile.LV_OnlyInRange end,
                         set = function() D.profile.LV_OnlyInRange = not D.profile.LV_OnlyInRange end,
-                        disabled = function() return D.profile.Hide_LiveList end,
                         order = 100.5
                     },
                     livenum = {
                         type = 'range',
+                        hidden = "subhidden",
+                        disabled = "subdisabled",
                         name = L["AMOUNT_AFFLIC"],
                         desc = L["OPT_AMOUNT_AFFLIC_DESC"],
                         get = function() return D.profile.Amount_Of_Afflicted end,
@@ -704,7 +737,6 @@ local function GetOptions()
                             D.profile.Amount_Of_Afflicted = v;
                             D.LiveList:RestAllPosition();
                         end,
-                        disabled = function() return  D.profile.Hide_LiveList end,
                         min = 1,
                         max = D.CONF.MAX_LIVE_SLOTS,
                         step = 1,
@@ -713,6 +745,8 @@ local function GetOptions()
                     },
                     ScanFreq = {
                         type = 'range',
+                        hidden = "subhidden",
+                        disabled = "subdisabled",
                         name = L["SCAN_LENGTH"],
                         desc = L["OPT_SCANLENGTH_DESC"],
                         get = function() return D.profile.ScanTime end,
@@ -723,7 +757,6 @@ local function GetOptions()
                                 D:Debug("LV scan delay changed:", D.profile.ScanTime, v);
                             end
                         end,
-                        disabled = function() return  D.profile.Hide_LiveList end,
                         min = 0.1,
                         max = 1,
                         step = 0.1,
@@ -732,6 +765,8 @@ local function GetOptions()
                     },
                     ReverseLL = {
                         type = "toggle",
+                        hidden = "subhidden",
+                        disabled = "subdisabled",
                         name = L["REVERSE_LIVELIST"],
                         desc = L["OPT_REVERSE_LIVELIST_DESC"],
                         get = function() return D.profile.ReverseLiveDisplay end,
@@ -739,24 +774,24 @@ local function GetOptions()
                             D.profile.ReverseLiveDisplay = not D.profile.ReverseLiveDisplay
                             D.LiveList:RestAllPosition();
                         end,
-                        disabled = function() return  D.profile.Hide_LiveList end,
                         order = 107
                     },
                     TieLLVisibility = {
                         type = "toggle",
+                        disabled = true, -- deprecated old option, let's see how people react
+                        hidden = true,
                         name = L["TIE_LIVELIST"],
                         desc = L["OPT_TIE_LIVELIST_DESC"],
                         get = function() return D.profile.LiveListTied end,
                         set = function()
                             D.profile.LiveListTied = not D.profile.LiveListTied
                         end,
-                        disabled = function() return  D.profile.Hide_LiveList end,
                         order = 108
                     },
-
-
                     FrameScaleLL = {
                         type = 'range',
+                        hidden = "subhidden",
+                        disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
                         name = L["OPT_LLSCALE"],
                         desc = L["OPT_LLSCALE_DESC"],
                         get = function() return D.profile.LiveListScale end, -- D.profile.DebuffsFrameElemScale end,
@@ -767,7 +802,6 @@ local function GetOptions()
                                 D:SetLLScale(D.profile.LiveListScale);
                             end
                         end,
-                        disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
                         min = 0.3,
                         max = 4,
                         step = 0.01,
@@ -776,6 +810,8 @@ local function GetOptions()
                     },
                     AlphaLL = {
                         type = 'range',
+                        hidden = "subhidden",
+                        disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
                         name = L["OPT_LLALPHA"],
                         desc = L["OPT_LLALPHA_DESC"],
                         get = function() return 1 - D.profile.LiveListAlpha end,
@@ -786,7 +822,6 @@ local function GetOptions()
                                 DcrLiveList:SetAlpha(D.profile.LiveListAlpha);
                             end
                         end,
-                        disabled = function() return D.profile.Hide_LiveList or D.profile.Hidden end,
                         min = 0,
                         max = 0.8,
                         step = 0.01,
@@ -799,6 +834,7 @@ local function GetOptions()
             MessageOptions = {
                 -- {{{
                 type = "group",
+                hidden = "hidden",
                 name = D:ColorText(L["OPT_MESSAGES"], "FF229966"),
                 desc = L["OPT_MESSAGES_DESC"],
                 order = 3,
@@ -855,6 +891,13 @@ local function GetOptions()
             MicroFrameOpt = {
                 -- {{{
                 type = "group",
+                handler = {
+                    ["hidden"] = function () return not D:IsEnabled(); end,
+                    ["disabled"] = function () return not D:IsEnabled(); end,
+                    ["subhidden"] = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
+                    ["subdisabled"] = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
+                },
+                hidden = "hidden",
                 childGroups = "tab",
                 name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
                 desc = L["OPT_MFSETTINGS_DESC"],
@@ -942,6 +985,7 @@ local function GetOptions()
                             },
                             ShowChrono = {
                                 type = "toggle",
+                                disabled = "subdisabled",
                                 name = L["OPT_SHOWCHRONO"],
                                 desc = L["OPT_SHOWCHRONO_DESC"],
                                 get = function() return D.profile.DebuffsFrameChrono end,
@@ -950,11 +994,11 @@ local function GetOptions()
                                         D.profile.DebuffsFrameChrono = v;
                                     end
                                 end,
-                                disabled = function() return not D.profile.ShowDebuffsFrame end,
                                 order = 1360,
                             },
                             ShowStealthStatus = {
                                 type = "toggle",
+                                disabled = "subdisabled",
                                 name =  L["OPT_SHOW_STEALTH_STATUS"],
                                 desc = L["OPT_SHOW_STEALTH_STATUS_DESC"],
                                 get = function() return D.profile.Show_Stealthed_Status end,
@@ -980,6 +1024,7 @@ local function GetOptions()
                             },
                             ShowHelp = {
                                 type = "toggle",
+                                disabled = "subdisabled",
                                 name = L["OPT_SHOWHELP"],
                                 desc = L["OPT_SHOWHELP_DESC"],
                                 get = function() return D.profile.DebuffsFrameShowHelp end,
@@ -987,7 +1032,6 @@ local function GetOptions()
                                     D.profile.DebuffsFrameShowHelp = not D.profile.DebuffsFrameShowHelp;
 
                                 end,
-                                disabled = function() return not D.profile.ShowDebuffsFrame end,
                                 order = 1450,
                             },
                             MaxCount = {
@@ -1237,7 +1281,8 @@ local function GetOptions()
                                         D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v);
                                     end
                                 end,
-                                disabled = function() return not D.profile.ShowDebuffsFrame end,
+                                --disabled = function() return not D.profile.ShowDebuffsFrame end,
+                                disabled = "subdisabled",
                                 min = 0.017,
                                 max = 0.2,
                                 step = 0.01,
@@ -1254,7 +1299,8 @@ local function GetOptions()
                                         D.profile.DebuffsFramePerUPdate = v;
                                     end
                                 end,
-                                disabled = function() return not D.profile.ShowDebuffsFrame end,
+                                --disabled = function() return not D.profile.ShowDebuffsFrame end,
+                                disabled = "subdisabled",
                                 min = 1,
                                 max = 82,
                                 step = 1,
@@ -1269,6 +1315,7 @@ local function GetOptions()
             CureOptions = {
                 -- {{{
                 type = "group",
+                hidden = "hidden",
                 name = D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533"),
                 desc = L["OPT_CURINGOPTIONS_DESC"],
                 order = 5,
@@ -1393,6 +1440,8 @@ local function GetOptions()
             DebuffSkip = {
                 -- {{{
                 type = "group",
+                hidden = function () return not D:IsEnabled(); end,
+                disabled = function () return not D:IsEnabled(); end,
                 name = D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"),
                 desc = L["OPT_DEBUFFFILTER_DESC"],
                 order = 6,
@@ -1404,6 +1453,7 @@ local function GetOptions()
             Macro = {
                 -- {{{
                 type = "group",
+                hidden = "hidden",
                 name = D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"),
                 desc = L["OPT_MACROOPTIONS_DESC"],
                 order = 7,
@@ -1466,6 +1516,8 @@ function D:ExportOptions ()
     option_args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db);
     option_args.general.args.profiles.order = -1;
     option_args.general.args.profiles.inline = true;
+    option_args.general.args.profiles.hidden = function() return not D:IsEnabled(); end;
+    option_args.general.args.profiles.disabled = option_args.general.args.profiles.hidden;
 
     LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  D.options, 'dcr');
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, D.name, nil, "general");
@@ -2200,6 +2252,8 @@ do
                 order = 100 + num + (type(ColorReason) == "number" and ColorReason or 2048),
 
                 handler = {
+                    ["hidden"] = function () return not D:IsEnabled(); end,
+                    ["disabled"] = function () return not D:IsEnabled(); end,
                     ["ColorReason"]  = ColorReason,
                     ["get"]         = GetColor,
                     ["set"]         = function (handler, info,r, g, b, a) SetColor(handler, r, g, b, a) end,

@@ -782,6 +782,7 @@ function D:OnDisable() -- When the addon is disabled by Ace
         showAlert = 1,
     }; -- }}}
 
+    LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
     StaticPopup_Show("Decursive_OnDisableWarning");
 end
 

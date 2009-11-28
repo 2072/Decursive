@@ -137,6 +137,8 @@ function D:HideBar(hide) --{{{
     else
         D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
     end
+
+    LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
 end --}}}
 
 function D:ShowHidePriorityListUI() --{{{
