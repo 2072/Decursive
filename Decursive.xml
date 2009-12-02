@@ -91,11 +91,12 @@ end
                 Dcr:DisplayTooltip(
                 string.format(
                 "|cFF0055AA%s|r %s by %s|r\n" ..
-                "|cFF11FF11%s|r: %s\n" ..
-                "|cFF11FF11%s|r / |cFF11FF11%s|r-|cFF11FF11%s|r"
+                --"|cFF11FF11%s|r: %s\n" ..
+                "|cFF11FF11%s|r / |cFF11FF11%s|r-|cFF11FF11%s|r: %s"
                 , Dcr.name, Dcr.version, Dcr.author,
-                Dcr.L["HLP_RIGHTCLICK"], Dcr.L["STR_OPTIONS"],
-                Dcr.L["HLP_MIDDLECLICK"], Dcr.L["SHIFT"], Dcr.L["HLP_LEFTCLICK"]
+                --Dcr.L["HLP_RIGHTCLICK"], Dcr.L["STR_OPTIONS"],
+                Dcr.L["HLP_MIDDLECLICK"], Dcr.L["SHIFT"], Dcr.L["HLP_LEFTCLICK"],
+                Dcr.L["HIDESHOW_BUTTONS"]
                 )
                 , this);
                 end

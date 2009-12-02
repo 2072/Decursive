@@ -360,6 +360,8 @@ All of this is explained in the documentation (a must see):
 http://www.wowace.com/addons/decursive/
 ]]
 
+L["HIDESHOW_BUTTONS"]            = "Hide/Show buttons"
+
 L["OPT_ENABLEDECURSIVE"]    = "Enable Decursive"
 L["OPT_ABOUT"]              = "About"
 L["ABOUT_NOTES"]            = "Afflictions display and cleaning for solo, group and raids with advanced filtering and priority system."
