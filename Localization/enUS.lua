@@ -125,7 +125,7 @@ L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Scan and cure pets"
 L["CURSE"] = "Curse"
 L["DEFAULT_MACROKEY"] = "`"
-L["DISABLEWARNING"] = "Decursive will be disables"
+L["DISABLEWARNING"] = "Decursive has been disabled!"
 L["DISEASE"] = "Disease"
 L["DONOT_BL_PRIO"] = "Don't blacklist priority list names"
 L["FAILEDCAST"] = [=[|cFF22FFFF%s %s|r |cFFAA0000failed on|r %s
@@ -359,6 +359,16 @@ The green number determine the priority of the affliction. This priority will af
 All of this is explained in the documentation (a must see):
 http://www.wowace.com/addons/decursive/
 ]]
+
+L["OPT_ENABLEDECURSIVE"]    = "Enable Decursive"
+L["OPT_ABOUT"]              = "About"
+L["ABOUT_NOTES"]            = "Afflictions display and cleaning for solo, group and raids with advanced filtering and priority system."
+L["ABOUT_LICENSE"]          = "LICENSE"
+L["ABOUT_SHAREDLIBS"]       = "SHARED LIBRARIES"
+L["ABOUT_OFFICIALWEBSITE"]  = "OFFICIAL WEBSITE"
+L["ABOUT_AUTHOREMAIL"]      = "AUTHOR E-MAIL"
+L["ABOUT_CREDITS"]          = "CREDITS"
+
 --]==]
 --@end-do-not-package@
 

@@ -238,7 +238,7 @@ function D:BetaWarning()
         -- check for expiration of this dev version
         if D.VersionTimeStamp ~= 0 then
 
-            local VersionLifeTime  = 3600 * 24 * 7; -- 7 days
+            local VersionLifeTime  = 3600 * 24 * 10; -- 10 days
 
             if time() > D.VersionTimeStamp + VersionLifeTime then
                 DC.DevVersionExpired = true;

@@ -403,7 +403,7 @@ local function GetOptions()
                         type = 'execute',
                         hidden = function() return  D:IsEnabled() end,
                         disabled = function() return  D:IsEnabled() end,
-                        name = "Enable Decursive",
+                        name = L["OPT_ENABLEDECURSIVE"],
                         func = function() D.Status.Enabled = D:Enable(); return D.Status.Enabled; end,
                         order = 5,
                     },
@@ -707,7 +707,7 @@ local function GetOptions()
                         get = function() return  D.profile.Hide_LiveList end,
                         set = function()
                             D:ShowHideLiveList()
-                            if D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
+                            if D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell then
                                 D:SetIcon(DC.IconOFF);
                             else
                                 D:SetIcon(DC.IconON);
@@ -1505,6 +1505,40 @@ local function GetOptions()
                 }
             }, -- }}}
 
+            About = {
+                type = "group",
+                name = D:ColorText(L["OPT_ABOUT"], "FFFFFFFF"),
+                order = -1,
+                args = {
+                    -- Decursive vxx by x released on XX
+                    Title = {
+                        type = 'description',
+                        name = (
+                                    "\n\n\n\nDecursive |cFFDD0000 v%s |r by |cFFDD0000 %s |r released on |cFFDD0000 %s |r"..
+                                    "\n\n      |cFF55DDDD %s |r"..
+                                    "\n\n|cFFDDDD00 %s|r:\n   %s"..
+                                    "\n\n|cFFDDDD00 %s|r:\n   %s"..
+                                    "\n\n|cFFDDDD00 %s|r:\n   %s"..
+                                    "\n\n|cFFDDDD00 %s|r:\n   %s"..
+                                    "\n\n|cFFDDDD00 %s|r:\n   %s"
+                                ):format(
+                                    "@project-version@", "@project-author@", ("@project-date-iso@"):sub(1,10),
+                                    L["ABOUT_NOTES"],
+                                    L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License"),
+                                    L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds"),
+                                    L["ABOUT_OFFICIALWEBSITE"], GetAddOnMetadata("Decursive", "X-Website"),
+                                    L["ABOUT_AUTHOREMAIL"],     GetAddOnMetadata("Decursive", "X-eMail"),
+                                    L["ABOUT_CREDITS"],         GetAddOnMetadata("Decursive", "X-Credits")
+                                ),
+                        order = 0,
+                    },
+                    -- Notes XXX re translate that, the one from the TOC cannot be translated
+                    -- licensed
+                    -- used libs
+                    -- websites
+                    -- email
+                }
+            }
         },
     } -- }}}
 end
@@ -1529,6 +1563,7 @@ function D:ExportOptions ()
         [D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533")] = "CureOptions",
         [D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA")] = "DebuffSkip",
         [D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB")] = "Macro",
+        [D:ColorText(L["OPT_ABOUT"], "FFFFFFFF")] = "About",
     };
 
     for key,value in pairs(SubGroups_ToBlizzOptions) do

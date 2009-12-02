@@ -1,7 +1,7 @@
 ## Interface: 30200
 
 ## Title: Decursive |cffff00ff -Ace3-|r
-## Notes: Affliction display and cleaning for solo, group and raids with advanced filtering and priority system.
+## Notes: Afflictions display and cleaning for solo, group and raids with advanced filtering and priority system.
 ## Notes-ruRU: Отображение и лечение недугов с расширенной фильтрацией и системой приоритетов.
 ## Notes-zhTW: 提供驅魔輔助功能，包含進階的顯示及過濾功能
 ## Notes-frFR: Affichage et guérison des afflictions avec un système évolué de filtrage et de priorité.
@@ -13,18 +13,18 @@
 
 ## X-License: All Rights Reserved
 
-## OptionalDeps: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0 
+## OptionalDeps: Ace3, CallbackHandler-1.0, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0 
 
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Class: Mage, Priest, Paladin, Druid, Hunter, Warlock, Shaman
 
 
-## X-Embeds: LibStub, LibQTip-1.0, AceLocale-3.0, LibDataBroker-1.1, LibDBIcon-1.0, CallbackHandler-1.0
+## X-Embeds: Ace3, LibStub, CallbackHandler-1.0, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0
 
 ## X-ReleaseDate: "@project-date-iso@"
 ## X-Category: Combat
-## X-Website: http://www.2072productions.com/?to=decursive.php
-## X-Credits: Sylvin (Full french translation), Peter Sun (ZhTW translation), Fenlis (koKR translation)
+## X-Website: http://www.2072productions.com/to/decursive.php
+## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix (Russian Translation), Floyddotnet, Dessa, Farook (German translation)
 
 ## X-AceForum: 4195
 
