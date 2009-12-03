@@ -19,7 +19,7 @@ Decursive, user possible actions
 
     You can easily **organize the micro-unit frame order** by using the **priority** and
     **skip** list, clicking on the buttons in the Decursive bar (These list can *also*
-    be displayed by *Ctrl-Left-Clicking* and *Shift-Left-Clicking* on the [MUF][] handle or on Decursive **MIni-Map Icon**).
+    be displayed by *Ctrl-Left-Clicking* and *Shift-Left-Clicking* on the [MUF][] handle or on Decursive **Mini-Map Icon**).
 
     These lists allow you to **dynamically sort** the members of your raid or
     group per **class**, **raid group** or **per name**. A typical
@@ -72,10 +72,9 @@ Decursive, user possible actions
 
     There are **several ways** to access the options:
  
-     - On the 'Decursive bar', on the MUFs handle, or on Decursive Mini-Map
-       Icon *Right-Click* to display a drop-down menu option.
-     - *Shift-Right-Click* will display a **static option panel**. (Or type Type /DcrOptions)
-     - Type /Dcr to access the options by command line.
+     - On the MUFs handle, or on Decursive icon (Mini-Map or LDB), *Alt-Right-Click*
+       to display a **static option panel**. (Or type Type /DcrOptions)
+     - In Blizzard Interface->Addons panel, there is a Decursive section.
  
     Each options has an explanation tool-tip, here are **the most important ones**:
 

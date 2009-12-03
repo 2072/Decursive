@@ -1,9 +1,9 @@
-Decursive 2.4.5 beta 2 by Archarodim (2009-11-11)
-=================================================
+Decursive 2.4.5 by Archarodim (2009-12-02)
+==========================================
 
 
-Changes from Decursive 2.4.3.2 to Decursive 2.4.5 beta 2
---------------------------------------------------------
+Changes from Decursive 2.4.3.2 to Decursive 2.4.5
+-------------------------------------------------
 
 - **Major changes:**
 
@@ -22,6 +22,9 @@ Changes from Decursive 2.4.3.2 to Decursive 2.4.5 beta 2
 
 - **Minor changes:**
 
+    - Fix for Shamans: 'Cleans Spirit' was not replacing 'Cure Toxins', the two
+      spells were both active and confusing for the user.
+
     - Removed the 'Ignore stealthed units' option that is useless since several
       years.
 
@@ -32,8 +35,9 @@ Changes from Decursive 2.4.3.2 to Decursive 2.4.5 beta 2
 
     - Removed DewDrop-2.0 which has no replacement in Ace3 framework.
 
-    - Decursive will not display its "hotfix message" in the chat if Lua error
-      reporting is disabled.
+    - Added an about panel.
+
+    - Various little enhancements and code cleanup.
 
 
 Changes from Decursive 2.4.3 to Decursive 2.4.3.2

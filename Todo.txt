@@ -2,21 +2,11 @@ TODO:
 
 - change timers when mass debuff so that only the 5 or so first units of the array get updated in priority all the rest should be handled by the roaming MUF updater
 
-- change raid# of player to 'player' when using priolist
-
 - Add a menu option to choose between available spells. (will also allow to choose other polymorph spells)
 
 - Add Cleansing Totem for shaman when the above point is done
 
-- use UNIT_NAME event to update the old table and trigger class border updates
-
 - see table.wipe() to limit garbage
-
-- add clever update trigger of the MUF
-    - class change (see above)
-    - Attributes (unitID or spells)
-    - Stealth
-    - Debuff
 
 - Add an option to disable spell stopping when clicking on a MUF
 

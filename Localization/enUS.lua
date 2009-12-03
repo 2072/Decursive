@@ -371,6 +371,8 @@ L["ABOUT_OFFICIALWEBSITE"]  = "OFFICIAL WEBSITE"
 L["ABOUT_AUTHOREMAIL"]      = "AUTHOR E-MAIL"
 L["ABOUT_CREDITS"]          = "CREDITS"
 
+L["DEWDROPISGONE"]          = "There is no DewDrop equivalent for Ace3, use alt-right click to open the option panel"
+
 --]==]
 --@end-do-not-package@
 

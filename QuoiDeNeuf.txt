@@ -1,9 +1,9 @@
-Decursive 2.4.5 beta 2 par Archarodim  (2009-11-11)
+Decursive 2.4.5 beta 2 par Archarodim  (2009-12-02)
 ===================================================
 
 
-Changements entre Decursive 2.4.3.2 et Decursive 2.4.5 beta 2
--------------------------------------------------------------
+Changements entre Decursive 2.4.3.2 et Decursive 2.4.5
+------------------------------------------------------
 
 - **Changements majeurs :**
 
@@ -24,6 +24,9 @@ Changements entre Decursive 2.4.3.2 et Decursive 2.4.5 beta 2
 
 - **Changements mineurs :**
 
+    - Correction pour les chamans : 'Purifier l'esprit' ne remplaçait pas
+      'Guérisons des toxines', les deux sorts étaient tous les deux actifs.
+
     - L'option "ignorer les unités camouflées" a été retirée puisqu'elle était
       devenue inutile depuis plusieurs années.
 
@@ -32,6 +35,10 @@ Changements entre Decursive 2.4.3.2 et Decursive 2.4.5 beta 2
     - TabbletLib a été remplacé par LibQtip-1.0.
 
     - DewDrop-2.0 qui n'a pas de remplaçant pour Ace3 a été retiré.
+
+    - Ajout d'un panneau 'À propos'.
+
+    - Divers améliorations internes.
     
 
 Changements entre Decursive 2.4.3 et Decursive 2.4.3.2
