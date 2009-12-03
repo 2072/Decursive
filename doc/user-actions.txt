@@ -73,7 +73,7 @@ Decursive, user possible actions
     There are **several ways** to access the options:
  
      - On the MUFs handle, or on Decursive icon (Mini-Map or LDB), *Alt-Right-Click*
-       to display a **static option panel**. (Or type Type /DcrOptions)
+       to display a **static option panel**. (Or type /DcrOptions in the chat window)
      - In Blizzard Interface->Addons panel, there is a Decursive section.
  
     Each options has an explanation tool-tip, here are **the most important ones**:

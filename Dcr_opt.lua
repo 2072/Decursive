@@ -2418,7 +2418,7 @@ function D:QuickAccess (CallingObject, button) -- {{{
     if (button == "RightButton" and not IsShiftKeyDown()) then
 
         if (not IsAltKeyDown()) then
-            D:Println("There is no DewDrop equivalent for Ace3, use alt-right click to open the option panel");
+            D:Println(L["DEWDROPISGONE"]);
         else
             LibStub("AceConfigDialog-3.0"):Open(D.name);
         end
