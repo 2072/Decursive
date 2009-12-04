@@ -31,10 +31,7 @@ externals:
     
 
 optional-dependencies:
-    - ace2
     - ace3
-    - dewdroplib
-    - waterfall-1-0
     - libdatabroker-1-1
     - libdbicon-1-0
     - callbackhandler
