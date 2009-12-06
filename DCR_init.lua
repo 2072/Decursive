@@ -594,6 +594,8 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     -- Spell changes events
     self:RegisterEvent("LEARNED_SPELL_IN_TAB");
     self:RegisterEvent("SPELLS_CHANGED");
+    self:RegisterEvent("PLAYER_TALENT_UPDATE");
+    self:RegisterEvent("PLAYER_ALIVE");
 
     -- Combat detection events
     self:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
@@ -629,11 +631,12 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     if (FirstEnable) then
         D:ColorPrint(0.3, 0.5, 1, L["IS_HERE_MSG"]);
         D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
+
+        -- schedule a reconfigure in 5 seconds
+        --self:ScheduleDelayedCall("Dcr_FirstLogConfUpdate", self.ReConfigure, 5, self);
     end
 
     FirstEnable = false;
-
-
 
 end -- // }}}
 
