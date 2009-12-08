@@ -1,4 +1,4 @@
-## Interface: 30200
+## Interface: 30300
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: Afflictions display and cleaning for solo, group and raids with advanced filtering and priority system.

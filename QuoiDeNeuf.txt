@@ -1,5 +1,17 @@
-Decursive 2.4.5 beta 2 par Archarodim  (2009-12-02)
-===================================================
+Decursive 2.4.5.1 par Archarodim  (2009-12-08)
+==============================================
+
+
+Changements entre Decursive 2.4.5 et Decursive 2.4.5.1
+------------------------------------------------------
+
+- Correction d'un problème pour les prêtres où le talent 'Corps et âme' n'était
+  pas détecté correctement à la connexion.
+
+- Ré-activation de la correction concernant debuglocals() pour WoW 3.3 lorsque
+  les rapports d'erreur Lua sont activés.
+
+- Mise à jour de la localisation.
 
 
 Changements entre Decursive 2.4.3.2 et Decursive 2.4.5

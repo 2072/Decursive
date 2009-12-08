@@ -203,11 +203,7 @@ function DcrHookErrorHandler()
                 end
 
 
-                if tocversion < 30300  or 1 then
-                    return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
-                else
-                    return original_debuglocals(level + ADDLEVEL); -- in 3.3, debuglocals returning nothing seems no longer to be an issue. -- actually it still is... :/
-                end
+                return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
             end; 
         end
         --]=]

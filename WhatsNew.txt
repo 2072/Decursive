@@ -1,5 +1,18 @@
-Decursive 2.4.5 by Archarodim (2009-12-02)
-==========================================
+Decursive 2.4.5.1 by Archarodim (2009-12-08)
+============================================
+
+
+Changes from Decursive 2.4.5 to Decursive 2.4.5.1
+-------------------------------------------------
+
+- Fix a problem where Decursive would not correctly detect priest talent 'Body
+  and Soul' at login.
+
+- Re-enabled debuglocals() hotfix for 3.3 when Lua error reporting is enabled.
+
+- Localization update.
+
+- TOC update for WoW 3.3.
 
 
 Changes from Decursive 2.4.3.2 to Decursive 2.4.5
