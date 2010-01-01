@@ -662,8 +662,8 @@ function MicroUnitF:OnEnter() -- {{{
         for i, Debuff in ipairs(MF.Debuffs) do
             if Debuff.Type then
                 -- Create a warning if the Unstable Affliction is detected
-               -- if Debuff.Name == DS["Unstable Affliction"] then
-                    if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
+                if Debuff.Name == DS["Unstable Affliction"] then
+                    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
                     D:Println("|cFFFF0000 ==> %s !!|r (%s)", DS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                     PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
                 end
