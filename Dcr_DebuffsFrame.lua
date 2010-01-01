@@ -594,6 +594,7 @@ end
 local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
 local UnitGUID = _G.UnitGUID;
 -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
+-- it also handles Unstable Affliction detection and warning.
 function MicroUnitF:OnEnter() -- {{{
     D.Status.MouseOveringMUF = true;
 
@@ -656,13 +657,27 @@ function MicroUnitF:OnEnter() -- {{{
         return; -- If the user overs the MUF befor it's completely initialized
     end
 
-    if (D.profile.AfflictionTooltips) then
+    --Test for unstable affliction
+    if MF.Debuffs then
+        for i, Debuff in ipairs(MF.Debuffs) do
+            if Debuff.Type then
+                -- Create a warning if the Unstable Affliction is detected
+               -- if Debuff.Name == DS["Unstable Affliction"] then
+                    if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
+                    D:Println("|cFFFF0000 ==> %s !!|r (%s)", DS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
+                    PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
+                end
+            end
+        end
+    end
+
+    if D.profile.AfflictionTooltips then
 
         -- removes the CHARMED_STATUS bit from Status, we don't need it
         Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
 
         -- First, write the name of the unit in its class color
-        if (UnitExists(MF.CurrUnit)) then
+        if UnitExists(MF.CurrUnit) then
             TooltipText =
             -- Colored unit name
             -- D:ColorText(         (D:PetUnitName(       Unit, true    )) -- cannot be replaced by MF.UnitName, (UnitName is set by SetClassBorder only if class borders are displayed)
@@ -675,22 +690,22 @@ function MicroUnitF:OnEnter() -- {{{
         local StatusText = "";
 
         -- set the status text, just translate the bitfield to readable text
-        if (Status == NORMAL) then
+        if Status == NORMAL then
             StatusText = L["NORMAL"];
 
-        elseif (Status == ABSENT) then
+        elseif Status == ABSENT then
             StatusText = str_format(L["ABSENT"], Unit);
 
-        elseif (Status == FAR) then
+        elseif Status == FAR then
             StatusText = L["TOOFAR"];
 
-        elseif (Status == STEALTHED) then
+        elseif Status == STEALTHED then
             StatusText = L["STEALTHED"];
 
-        elseif (Status == BLACKLISTED) then
+        elseif Status == BLACKLISTED then
             StatusText = L["BLACKLISTED"];
 
-        elseif (MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR)) then
+        elseif MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
             local DebuffType = MF.Debuffs[1].Type;
             StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[str_upper(DC.TypeNames[DebuffType])], "FF" .. DC.TypeColors[DebuffType]) );
         end
@@ -699,21 +714,11 @@ function MicroUnitF:OnEnter() -- {{{
         TooltipText = TooltipText .. "\n" .. L["UNITSTATUS"] .. StatusText .. "\n";
 
         -- list the debuff(s) names
-        if (MF.Debuffs) then
+        if MF.Debuffs then
             for i, Debuff in ipairs(MF.Debuffs) do
-                if (Debuff.Type) then
+                if Debuff.Type then
                     local DebuffApps = Debuff.Applications;
                     TooltipText = TooltipText .. "\n" .. str_format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and str_format(" (%d)", DebuffApps) or "");
-
-                    -- Create a warning if the Unstable Affliction is detected
-                    if Debuff.Name == DS["Unstable Affliction"] then
-                    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
-                        D:Println("|cFFFF0000 ==> %s !!|r (%s)", DS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
-                        PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
-                    end
-
-                else
-                    break;
                 end
             end
         end
@@ -726,7 +731,7 @@ function MicroUnitF:OnEnter() -- {{{
     end
 
     -- show a help text in the Game default tooltip
-    if (D.profile.DebuffsFrameShowHelp) then
+    if D.profile.DebuffsFrameShowHelp then
         local helpText = MF.TooltipButtonsInfo;
         GameTooltip_SetDefaultAnchor(GameTooltip, this);
         GameTooltip:SetText(helpText);
