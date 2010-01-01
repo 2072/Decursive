@@ -30,12 +30,12 @@ externals:
         url:  svn://svn.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0
     
 
-optional-dependencies:
-    - ace3
-    - libdatabroker-1-1
-    - libdbicon-1-0
-    - callbackhandler
-    - libqtip-1-0
+#optional-dependencies:
+#    - ace3
+#    - libdatabroker-1-1
+#    - libdbicon-1-0
+#    - callbackhandler
+#    - libqtip-1-0
 
 license-output: LICENSE.txt
 
