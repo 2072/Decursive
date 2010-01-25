@@ -627,7 +627,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     -- Configure specific profile dependent data
     D:SetConfiguration();
 
-    if (FirstEnable) then
+    if FirstEnable and not D.db.global.NoStartMessages then
         D:ColorPrint(0.3, 0.5, 1, L["IS_HERE_MSG"]);
         D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
 
@@ -801,7 +801,9 @@ function D:Init() --{{{
         D.profile.OutputWindow =  "DEFAULT_CHAT_FRAME";
     end
 
-    D:Println("%s %s by %s", D.name, D.version, D.author);
+    if not D.db.global.NoStartMessages then
+        D:Println("%s %s by %s", D.name, D.version, D.author);
+    end
 
     D:Debug( "Decursive Initialization started!");
 

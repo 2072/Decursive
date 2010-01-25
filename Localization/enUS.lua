@@ -373,6 +373,8 @@ L["ABOUT_AUTHOREMAIL"]      = "AUTHOR E-MAIL"
 L["ABOUT_CREDITS"]          = "CREDITS"
 
 L["DEWDROPISGONE"]          = "There is no DewDrop equivalent for Ace3, use alt-right click to open the option panel"
+L["OPT_NOSTARTMESSAGES"]    = "Disable welcome messages"
+L["OPT_NOSTARTMESSAGES_DESC"] = "Remove the three messages Decursive prints to the chat frame at every login."
 
 --]==]
 --@end-do-not-package@

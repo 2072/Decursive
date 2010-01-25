@@ -87,7 +87,7 @@ function D:GetDefaultsSettings()
             NonRealease = false,
             -- the key to bind the macro to
             MacroBind = false,
-
+            NoStartMessages = false,
         },
 
         profile = {
@@ -475,7 +475,7 @@ local function GetOptions()
                         type = 'header',
                         hidden = "hidden",
                         name = "",
-                        order = -40
+                        order = 50
                     },
                     ShowTestItem = {
                         type = "toggle",
@@ -491,8 +491,22 @@ local function GetOptions()
                             end
                         end,
                         disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell or not D.Status.Enabled end,
-                        order = -30
+                        order = 60
                     },
+                    ---[[
+                    NoStartMessages = {
+                        type = "toggle",
+                        hidden = "hidden",
+                        name = L["OPT_NOSTARTMESSAGES"],
+                        desc = L["OPT_NOSTARTMESSAGES_DESC"],
+                        get = function() return D.db.global.NoStartMessages end,
+                        set = function(info,v)
+                            D.db.global.NoStartMessages = v;
+                        end,
+                        disabled = function() return not D.Status.Enabled end,
+                        order = 70
+                    },
+                    --]]
                     report = {
                         type = "execute",
                         hidden = "hidden",
@@ -502,7 +516,7 @@ local function GetOptions()
                             D:ShowDebugReport();
                         end,
                         hidden = function() return  #T._DebugTextTable < 1 end,
-                        order = -20
+                        order = 1000
                     },
                     debug = {
                         type = "toggle",
@@ -515,16 +529,16 @@ local function GetOptions()
                             D.debugging = v;
                         end,
                         disabled = "disabled",
-                        order = -1,
+                        order = 90,
                     },
                     GlorfindalMemorium = {
-                        -- {{{
                         type = "execute",
                         hidden = "hidden",
                         name = D:ColorText(L["GLOR1"], "FF" .. D:GetClassHexColor( "WARRIOR" )),
                         desc = L["GLOR2"],
                         func = function ()
 
+                        -- {{{
                             if not D.MemoriumFrame then
                                 D.MemoriumFrame = CreateFrame("Frame", "DcrMemorium", UIParent);
                                 local f = D.MemoriumFrame;
@@ -677,10 +691,10 @@ local function GetOptions()
                             On ne l'oubliera jamais...
 
                             --]]
+                            -- }}}
                         end,
-                        order = -2,
+                        order = 100,
                     },
-                    -- }}}
                 }
             }, -- }}}
 
