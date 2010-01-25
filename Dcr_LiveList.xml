@@ -20,27 +20,29 @@
     -->
     <Script>
 
--- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
--- the beautiful error popup : {{{ -
-StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
-    text = "|cFFFF0000Decursive Error:|r\n%s",
-    button1 = "OK",
-    OnAccept = function()
+        local T = DecursiveRootTable or {};
+
+        -- big ugly scary fatal error message display function {{{
+        if not T._FatalError then
+        -- the beautiful error popup : {{{ -
+        StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
         return false;
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    showAlert = 1,
-    }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
-end
--- }}}
-        if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_LiveList.lua"] then
-            if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_LiveList.lua not loaded)"); end;
-            DcrCorrupted = true;
-            return;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
+        }; -- }}}
+        T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+        end
+        -- }}}
+        if not T._LoadedFiles or not T._LoadedFiles["Dcr_LiveList.lua"] then
+        if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_LiveList.lua not loaded)"); end;
+        DecursiveInstallCorrupted = true;
+        return;
         end
 
         -- Dcr:SetDateAndRevision("$Date: 2007-12-02 22:31:14 +0100 (dim., 02 déc. 2007) $", "$Revision: 56465 $");
@@ -174,6 +176,7 @@ end
 
     
     <Script>
-        DcrLoadedFiles["Dcr_LiveList.xml"] = "@project-version@";
+        local T = DecursiveRootTable or {};
+        T._LoadedFiles["Dcr_LiveList.xml"] = "@project-version@";
     </Script>
 </Ui>

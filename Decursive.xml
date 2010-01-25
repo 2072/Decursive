@@ -20,8 +20,10 @@
     -->
     <Script>
 
+        local T = DecursiveRootTable or {};
+
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
+if not T._FatalError then
 -- the beautiful error popup : {{{ -
 StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
@@ -34,12 +36,12 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     hideOnEscape = 1,
     showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-        if not DcrLoadedFiles or not DcrLoadedFiles["Decursive.lua"] then
-            if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Decursive.lua not loaded)"); end;
-            DcrCorrupted = true;
+        if not T._LoadedFiles or not T._LoadedFiles["Decursive.lua"] then
+            if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Decursive.lua not loaded)"); end;
+            DecursiveInstallCorrupted = true;
         end
 
     </Script>
@@ -86,7 +88,9 @@ end
 
         <Scripts>
             <OnEnter>
-                if DecursiveSelfDiagnostic() ~= 2 then
+        local T = DecursiveRootTable or {};
+
+                if T._SelfDiagnostic() ~= 2 then
 
                 Dcr:DisplayTooltip(
                 string.format(
@@ -132,7 +136,9 @@ end
             </OnLOad>
             <OnEvent>
                 if event == "ADDON_LOADED" and arg1 == "Decursive" then
-                    DecursiveSelfDiagnostic();
+        local T = DecursiveRootTable or {};
+
+                    T._SelfDiagnostic();
                     this:UnregisterEvent("ADDON_LOADED");
                 end
             </OnEvent>
@@ -152,16 +158,20 @@ end
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        if DcrCorrupted then return end
+                        if DecursiveInstallCorrupted then return end
                         this:SetText(Dcr.L["PRIORITY_SHOW"]);
                     </OnLoad>
                     <OnClick>
-                        if DecursiveSelfDiagnostic(true) ~= 2 then
+        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic(true) ~= 2 then
                         Dcr:ShowHidePriorityListUI();
                         end
                     </OnClick>
                     <OnEnter>
-                        if DecursiveSelfDiagnostic() ~= 2 then
+        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic() ~= 2 then
                         Dcr:DisplayTooltip(Dcr.L["PRIORITY_LIST"], this);
                         end
                     </OnEnter>
@@ -184,16 +194,20 @@ end
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        if DcrCorrupted then return end
+                        if DecursiveInstallCorrupted then return end
                         this:SetText(Dcr.L["SKIP_SHOW"]);
                     </OnLoad>
                     <OnClick>
-                        if DecursiveSelfDiagnostic(true) ~= 2 then
+        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic(true) ~= 2 then
                         Dcr:ShowHideSkipListUI();
                         end
                     </OnClick>
                     <OnEnter>
-                        if DecursiveSelfDiagnostic() ~= 2 then
+        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic() ~= 2 then
                         Dcr:DisplayTooltip(Dcr.L["SKIP_LIST_STR"], this);
                         end
                     </OnEnter>
@@ -216,12 +230,16 @@ end
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        if DecursiveSelfDiagnostic(true) ~= 2 then
+        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic(true) ~= 2 then
                         Dcr:HideBar(false);
                         end
                     </OnClick>
                     <OnEnter>
-                        if DecursiveSelfDiagnostic() ~= 2 then
+        local T = DecursiveRootTable or {};
+
+                        if T._SelfDiagnostic() ~= 2 then
                         Dcr:DisplayTooltip(Dcr.L["HIDE_MAIN"], this);
                         end
                     </OnEnter>
@@ -325,7 +343,9 @@ end
     <Frame name="Decursive" />
 
     <Script>
-        DcrLoadedFiles["Decursive.xml"] = "@project-version@";
+        local T = DecursiveRootTable or {};
+
+        T._LoadedFiles["Decursive.xml"] = "@project-version@";
     </Script>
 
 

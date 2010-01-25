@@ -19,8 +19,9 @@
 --]]
 -------------------------------------------------------------------------------
 
+local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
+if not T._FatalError then
 -- the beautiful error popup : {{{ -
 StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
@@ -33,12 +34,12 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     hideOnEscape = 1,
     showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_Raid.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_Raid.lua not loaded)"); end;
-    DcrCorrupted = true;
+if not T._LoadedFiles or not T._LoadedFiles["Dcr_Raid.lua"] then
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_Raid.lua not loaded)"); end;
+    DecursiveInstallCorrupted = true;
     return;
 end
 
@@ -270,7 +271,7 @@ function D:PlaceLL () -- {{{
     -- check if the coordinates are correct
     if x and y and (x + 10 > UIParent:GetWidth() * UIScale or x < 0 or (-1 * y + 10) > UIParent:GetHeight() * UIScale or y > 0) then
         x = false; -- reset to default position
-        DcrFatalError("Decursive's bar position reset to default");
+        T._FatalError("Decursive's bar position reset to default");
     end
 
     -- Executed for the very first time, then put it in the top right corner of the screen
@@ -883,6 +884,6 @@ end
 
 
 
-DcrLoadedFiles["Decursive.lua"] = "@project-version@";
+T._LoadedFiles["Decursive.lua"] = "@project-version@";
 
 -- Sin

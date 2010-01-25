@@ -19,8 +19,9 @@
 --]]
 -------------------------------------------------------------------------------
 
+local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
+if not T._FatalError then
 -- the beautiful error popup : {{{ -
 StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
@@ -33,12 +34,12 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     hideOnEscape = 1,
     showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_Events.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_Events.lua not loaded)"); end;
-    DcrCorrupted = true;
+if not T._LoadedFiles or not T._LoadedFiles["Dcr_Events.lua"] then
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_Events.lua not loaded)"); end;
+    DecursiveInstallCorrupted = true;
     return;
 end
 
@@ -753,7 +754,7 @@ end
 --}}}
 
 -------------------------------------------------------------------------------
-DcrLoadedFiles["Dcr_Raid.lua"] = "@project-version@";
+T._LoadedFiles["Dcr_Raid.lua"] = "@project-version@";
 
 -- "Your God is dead and no one cares"
 -- "If there is a Hell I'll see you there"

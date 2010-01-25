@@ -43,8 +43,9 @@
 --]=]
 
 
+local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
+if not T._FatalError then
 -- the beautiful error popup : {{{ -
 StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
@@ -57,12 +58,12 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     hideOnEscape = 1,
     showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_DIAG.xml"] or not DcrLoadedFiles["Dcr_DIAG.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_DIAG.lua or Dcr_DIAG.xml not loaded)"); end;
-    DcrCorrupted = true;
+if not T._LoadedFiles or not T._LoadedFiles["Dcr_DIAG.xml"] or not T._LoadedFiles["Dcr_DIAG.lua"] then
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_DIAG.lua or Dcr_DIAG.xml not loaded)"); end;
+    DecursiveInstallCorrupted = true;
     return;
 end
 
@@ -377,4 +378,4 @@ L["DEWDROPISGONE"]          = "There is no DewDrop equivalent for Ace3, use alt-
 --@end-do-not-package@
 
 
-DcrLoadedFiles["enUS.lua"] = "@project-version@";
+T._LoadedFiles["enUS.lua"] = "@project-version@";

@@ -19,32 +19,34 @@
 --]]
 -------------------------------------------------------------------------------
 
+local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
--- the beautiful error popup : {{{ -
-StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
-    text = "|cFFFF0000Decursive Error:|r\n%s",
-    button1 = "OK",
-    OnAccept = function()
-        return false;
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    showAlert = 1,
+if not T._FatalError then
+    -- the beautiful error popup : {{{ -
+    StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
+            return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+    T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["enUS.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
-    DcrCorrupted = true;
+if not T._LoadedFiles or not T._LoadedFiles["enUS.lua"] then
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (enUS.lua not loaded)"); end;
+    DecursiveInstallCorrupted = true;
     return;
 end
 
-Dcr         = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
+T.Dcr         = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
+Dcr = T.Dcr; -- needed until we get rid of the xml based UI.
 
-local D = Dcr;
+local D = T.Dcr;
 
 D.name = "Decursive";
 D.version = "@project-version@";
@@ -202,8 +204,6 @@ D.ManagedDebuffUnitCache = {};
 -- A table UnitID=>IsDebuffed (boolean)
 D.UnitDebuffed = {};
 
-D.DebugTextTable    = Dcr_DebugTextTable;
-
 -- // }}}
 -------------------------------------------------------------------------------
 
@@ -221,9 +221,8 @@ D.hideWithoutStandby    = true;
 D.defaultPosition       = "LEFT";
 D.hideMenuTitle         = true;
 
-local AddDebugText = Dcr_AddDebugText;
 function D:AddDebugText(a1, ...)
-    AddDebugText(a1, ...);
+    T._AddDebugText(a1, ...);
 end
 
 function D:BetaWarning()
@@ -259,11 +258,11 @@ end
 
 function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
-    if DecursiveSelfDiagnostic() == 2 then
+    if T._SelfDiagnostic() == 2 then
         return false;
     end
 
-    DcrHookErrorHandler();
+    T._HookErrorHandler();
 
     D.defaults = D:GetDefaultsSettings();
 
@@ -501,7 +500,7 @@ end -- // }}}
 local FirstEnable = true;
 function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
-    if DecursiveSelfDiagnostic() == 2 then
+    if T._SelfDiagnostic() == 2 then
         return false;
     end
 
@@ -510,7 +509,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     if (FirstEnable) then
         SLASH_DECURSIVEDIAG1 = D.CONF.MACRO_DIAG;
         SlashCmdList["DECURSIVEDIAG"] = function(msg)
-            DecursiveSelfDiagnostic(true, true);
+            T._SelfDiagnostic(true, true);
         end
 
         SLASH_DECURSIVEPRADD1 = D.CONF.MACRO_PRADD;
@@ -642,7 +641,7 @@ end -- // }}}
 
 function D:SetConfiguration()
 
-    if DecursiveSelfDiagnostic() == 2 then
+    if T._SelfDiagnostic() == 2 then
         return false;
     end
 
@@ -1279,7 +1278,7 @@ do
 
 end
 
-DcrLoadedFiles["DCR_init.lua"] = "@project-version@";
+T._LoadedFiles["DCR_init.lua"] = "@project-version@";
 
 -------------------------------------------------------------------------------
 

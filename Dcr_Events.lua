@@ -19,27 +19,28 @@
 --]]
 -------------------------------------------------------------------------------
 
+local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
--- the beautiful error popup : {{{ -
-StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
-    text = "|cFFFF0000Decursive Error:|r\n%s",
-    button1 = "OK",
-    OnAccept = function()
-        return false;
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    showAlert = 1,
+if not T._FatalError then
+    -- the beautiful error popup : {{{ -
+    StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
+            return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+    T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
 
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_opt.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_opt.lua not loaded)"); end;
-    DcrCorrupted = true;
+if not T._LoadedFiles or not T._LoadedFiles["Dcr_opt.lua"] then
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_opt.lua not loaded)"); end;
+    DecursiveInstallCorrupted = true;
     return;
 end
 local D = Dcr;
@@ -241,9 +242,9 @@ function D:LeaveCombat() --{{{
     self.Status.Combat = false;
 
     -- test for debug report
-    if #D.DebugTextTable > 0 and GetTime() - LastDebugReportNotification > 300 then
+    if #T._DebugTextTable > 0 and GetTime() - LastDebugReportNotification > 300 then
         if LastDebugReportNotification == 0 then
-            DcrFatalError(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
+            T._FatalError(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
         end
         self:Println(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
         LastDebugReportNotification = GetTime();
@@ -705,6 +706,6 @@ function D:SPELL_UPDATE_COOLDOWN()
     D.Status.UpdateCooldown = GetTime();
 end
 
-DcrLoadedFiles["Dcr_Events.lua"] = "@project-version@";
+T._LoadedFiles["Dcr_Events.lua"] = "@project-version@";
 
 -- The Great Below

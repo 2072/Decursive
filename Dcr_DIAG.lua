@@ -19,15 +19,20 @@
 --]]
 -------------------------------------------------------------------------------
 
-DcrCorrupted     = false;
 
-DcrC = {};
+local addonName, T = ...;
+DecursiveRootTable = T;
+
+DecursiveInstallCorrupted     = false;
+
+DcrC = {};  -- needed until we get rid of the xml based UI.
+T._C = DcrC;
 local DC = DcrC;
 
 DC.StartTime = GetTime();
 DC.MyClass = "unknown";
 
-DcrLoadedFiles = {
+T._LoadedFiles = {
     ["Dcr_DIAG.xml"]            = false,
     ["Dcr_DIAG.lua"]            = false,
     ["DCR_init.lua"]            = false,
@@ -74,7 +79,7 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     hideOnEscape = false,
     showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 
 -- Decursive LUA error manager and debug reporting functions {{{
 
@@ -96,11 +101,11 @@ local function tostring_args(a1, ...)
         return tostring(a1), tostring_args(...)
 end
 
-Dcr_DebugText = "";
+T._DebugText = "";
 -- inspired from BugSack
-function Dcr_DebugFrameOnTextChanged()
-    if this:GetText() ~= Dcr_DebugText then
-        this:SetText(Dcr_DebugText)
+function T._DebugFrameOnTextChanged()
+    if this:GetText() ~= T._DebugText then
+        this:SetText(T._DebugText)
     end
     this:GetParent():UpdateScrollChildRect()
     local _, m = DecursiveDebuggingFrameScrollScrollBar:GetMinMaxValues()
@@ -110,14 +115,14 @@ function Dcr_DebugFrameOnTextChanged()
     end
 end
 
-Dcr_DebugTextTable = {};
-local DebugTextTable = Dcr_DebugTextTable;
+T._DebugTextTable = {};
+local DebugTextTable = T._DebugTextTable;
 local Reported = {};
 local GetFramerate = _G.GetFramerate;
 local GetNetStats = _G.GetNetStats;
-function Dcr_AddDebugText(a1, ...)
+function T._AddDebugText(a1, ...)
 
-    Dcr:Debug("Error processed");
+    T.Dcr:Debug("Error processed");
     local text = "";
 
     if select('#', ...) > 0 then
@@ -135,7 +140,7 @@ function Dcr_AddDebugText(a1, ...)
     end
 end
 
-local AddDebugText = Dcr_AddDebugText;
+local AddDebugText = T._AddDebugText;
 
 -- The error handler
 local ProperErrorHandler = false;
@@ -145,7 +150,7 @@ local version, build, date, tocversion = GetBuildInfo();
 
 
 
-function DecursiveErrorHandler(err, ...)
+function T._DecursiveErrorHandler(err, ...)
 
     -- second blizzard bug HotFix
     ---[=[
@@ -170,8 +175,8 @@ function DecursiveErrorHandler(err, ...)
     if (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\") and not IsReporting then
         IsReporting = true;
         AddDebugText(err, debugstack(2), ...);
-        if Dcr then
-            Dcr:Debug("Error recorded");
+        if T.Dcr then
+            T.Dcr:Debug("Error recorded");
         end
         IsReporting = false;
     end
@@ -181,7 +186,7 @@ function DecursiveErrorHandler(err, ...)
     end
 end
 
-function DcrHookErrorHandler()
+function T._HookErrorHandler()
     if not ProperErrorHandler then
 
         ---[=[
@@ -189,9 +194,9 @@ function DcrHookErrorHandler()
         if GetCVarBool("scriptErrors") and not BugGrabber then
             -- this whole block is a bad idea, it could create cascading tainting issues if an error occur in a Blizz secured code...
             -- it is enabled only if the user turned Lua error reporting on otherwise no one cares about debuglocals being useless.
-            _G.original_debuglocals = _G.debuglocals;
+            T._original_debuglocals = _G.debuglocals;
             _G.debuglocals = function (level)
-                local ADDLEVEL = 2; -- 2 is for this function and DecursiveErrorHandler
+                local ADDLEVEL = 2; -- 2 is for this function and _DecursiveErrorHandler
 
                 -- test for other add-on that hooks the error handler and increment ADDLEVEL
                 if QuestHelper_Errors then
@@ -203,14 +208,14 @@ function DcrHookErrorHandler()
                 end
 
 
-                return original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
+                return T._original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
             end; 
         end
         --]=]
 
 
         ProperErrorHandler = geterrorhandler();
-        seterrorhandler(DecursiveErrorHandler);
+        seterrorhandler(T._DecursiveErrorHandler);
     end
 end
 
@@ -236,20 +241,19 @@ StaticPopupDialogs["Decursive_Notice_Frame"] = {
 -- }}}
 
 do
-    DcrDiagStatus = false;
+    T._DiagStatus = false;
 
-    local PrintMessage = function (message, ...) if DcrDiagStatus ~= 2 then Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
-
+    local PrintMessage = function (message, ...) if T._DiagStatus ~= 2 then T.Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
     -- {{{
-    function DecursiveSelfDiagnostic (force, FromCommand)
+    function T._SelfDiagnostic (force, FromCommand)
 
         -- will not executes several times unless forced
-        if not force and DcrDiagStatus then
-            return DcrDiagStatus;
+        if not force and T._DiagStatus then
+            return T._DiagStatus;
         end
 
-        DcrDiagStatus = 0; -- will be set to 1 if the diagnostic fails
+        T._DiagStatus = 0; -- will be set to 1 if the diagnostic fails
 
         -- Table with all the required libraries with their current revision at Decursive release time.
         -- {{{
@@ -313,31 +317,11 @@ do
         end
 
 
-        -- Check each version of the required libraries that use AceLibrary
-        --[=[
-        if AceLibrary and AceLibrary:HasInstance("AceLibrary") then
-
-            for k,v in pairs(LibrariesToCheck) do
-                if AceLibrary:HasInstance(k) then
-                    if AceLibrary:IsNewVersion(k,v) then
-                        table.insert(Errors, ("The shared library |cFF00FF00%s|r is out-dated, revision |cFF0077FF%s|r at least is required.\n"):format(k, tostring(v)));
-                    end
-                else
-                    table.insert(Errors, ("The shared library |cFF00FF00%s|r could not be found!!!\n"):format(k));
-                    FatalOccured = true;
-                end
-            end
-        else
-            table.insert(Errors, GenericErrorMessage1);
-            FatalOccured = true;
-        end
-        --]=]
-
         -- check if all Decursive files are loaded
         local mixedFileVersionsdetection = {};
         local MixedVersionsCount = 0;
         if not FatalOccured then
-            for k,v in pairs (DcrLoadedFiles) do
+            for k,v in pairs (T._LoadedFiles) do
                 if v and v ~= "@pro" .. "ject-version@" and not mixedFileVersionsdetection[v] then
                     mixedFileVersionsdetection[v] = k;
                     MixedVersionsCount = MixedVersionsCount + 1;
@@ -370,22 +354,17 @@ do
 
             ErrorString = ErrorString .. "\n\n" .. GenericErrorMessage2;
 
-            DcrFatalError(ErrorString);
-            DcrDiagStatus = FatalOccured and 2 or 1;
+            T._FatalError(ErrorString);
+            T._DiagStatus = FatalOccured and 2 or 1;
         end
 
-        -- if no fatal error let this file update the date and revision of Decursive
-        --if DcrDiagStatus ~= 2 then
-        --  Dcr:SetDateAndRevision("@file-date-iso@", "$Revision: 79890 $");
-        --end
-
         -- if the diagnostic was requested by the user, we also test AceEvent functionalities {{{ -
-        if force and FromCommand and DcrDiagStatus == 0 then
+        if force and FromCommand and T._DiagStatus == 0 then
 
             PrintMessage("|cFF00FF00No problem found in shared libraries or Decursive files!|r");
 
             PrintMessage("Now checking spell translations...");
-            if Dcr:GetSpellsTranslations(true) then
+            if T.Dcr:GetSpellsTranslations(true) then
                 PrintMessage("|cFF00FF00No error found in spell translations!|r");
             end
 
@@ -398,13 +377,13 @@ do
             local ConfirmCustomEventMessage = "I was really caught!";
 
             -- Register a curstom event
-            Dcr:RegisterMessage(CustomEvent, function(message, DiagTestArg1) CustomEventCaught = DiagTestArg1; Dcr:Debug("CustomEvent callback executed"); end);
+            T.Dcr:RegisterMessage(CustomEvent, function(message, DiagTestArg1) CustomEventCaught = DiagTestArg1; T.Dcr:Debug("CustomEvent callback executed"); end);
 
             -- Schedule a function call in 0.5s
-            Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2; Dcr:Debug("OneTimeEvent callback executed"); end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
+            T.Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2; T.Dcr:Debug("OneTimeEvent callback executed"); end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
 
             -- Set a repeating function call that will check for other test event completion
-            Dcr:ScheduleRepeatedCall("DcrDiagRepeat",
+            T.Dcr:ScheduleRepeatedCall("DcrDiagRepeat",
             function (argTest)
                 local argtestdone = false;
                 if not argtestdone and argTest ~= "test" then
@@ -414,24 +393,24 @@ do
                 end
 
                 if OneTimeEvent == ConfirmOneTimeEventMessage and CustomEventCaught == ConfirmCustomEventMessage then
-                    Dcr:CancelDelayedCall("DcrDiagRepeat");
-                    Dcr:UnregisterMessage(CustomEvent);
+                    T.Dcr:CancelDelayedCall("DcrDiagRepeat");
+                    T.Dcr:UnregisterMessage(CustomEvent);
                     PrintMessage("|cFF00FF00Event library functionning properly!|r");
                     PrintMessage("|cFF00FF00Everything seems to be OK.|r");
                     AddDebugText("Event library functionning properly, Everything seems to be OK");
                     return;
                 else
-                    Dcr:Debug(OneTimeEvent, "is not", ConfirmOneTimeEventMessage, "and", CustomEventCaught, "is not", ConfirmCustomEventMessage);
+                    T.Dcr:Debug(OneTimeEvent, "is not", ConfirmOneTimeEventMessage, "and", CustomEventCaught, "is not", ConfirmCustomEventMessage);
                 end
 
                 -- cast the custom event
-                Dcr:SendMessage(CustomEvent, ConfirmCustomEventMessage);
+                T.Dcr:SendMessage(CustomEvent, ConfirmCustomEventMessage);
 
                 if ReapeatingEventCount == 4 then
                     AddDebugText("A problem occured, OneTimeEvent:", OneTimeEvent, "CustomEventCaught:", CustomEventCaught);
                     PrintMessage("|cFFFF0000A problem occured, OneTimeEvent='%q', CustomEventCaught='%q'|r", OneTimeEvent, CustomEventCaught);
-                    Dcr:CancelDelayedCall("DcrDiagRepeat");
-                    Dcr:UnregisterMessage(CustomEvent);
+                    T.Dcr:CancelDelayedCall("DcrDiagRepeat");
+                    T.Dcr:UnregisterMessage(CustomEvent);
                     return;
                 end
 
@@ -442,11 +421,15 @@ do
 
         end -- }}}
 
-        return DcrDiagStatus;
+        if T._DiagStatus == 0 then
+            DecursiveInstallCorrupted = nil;
+        end
+
+        return T._DiagStatus;
 
 
     end -- }}}
 end
 
 
-DcrLoadedFiles["Dcr_DIAG.lua"] = "@project-version@";
+T._LoadedFiles["Dcr_DIAG.lua"] = "@project-version@";

@@ -19,8 +19,9 @@
 --]]
 -------------------------------------------------------------------------------
 
+local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
+if not T._FatalError then
 -- the beautiful error popup : {{{ -
 StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
@@ -33,12 +34,12 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     hideOnEscape = 1,
     showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_utils.lua"] then
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_utils.lua not loaded)"); end;
-    DcrCorrupted = true;
+if not T._LoadedFiles or not T._LoadedFiles["Dcr_utils.lua"] then
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_utils.lua not loaded)"); end;
+    DecursiveInstallCorrupted = true;
     return;
 end
 
@@ -500,7 +501,7 @@ local function GetOptions()
                         func = function ()
                             D:ShowDebugReport();
                         end,
-                        hidden = function() return  #D.DebugTextTable < 1 end,
+                        hidden = function() return  #T._DebugTextTable < 1 end,
                         order = -20
                     },
                     debug = {
@@ -2446,13 +2447,13 @@ function D:ShowDebugReport()
         DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f D: %s (%s, %s, %s, %s)"):format((Dcr and Dcr.L) and Dcr.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", DC.MyClass, D:NiceTime(), date(), GetBuildInfo());
     end
 
-    Dcr_DebugText = DebugHeader .. table.concat(D.DebugTextTable, "");
-    _G.DecursiveDebuggingFrameText:SetText(Dcr_DebugText);
+    T._DebugText = DebugHeader .. table.concat(T._DebugTextTable, "");
+    _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
 
     _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
     _G.DecursiveDebuggingFrame:Show();
 end
 
-DcrLoadedFiles["Dcr_opt.lua"] = "@project-version@";
+T._LoadedFiles["Dcr_opt.lua"] = "@project-version@";
 
 -- Closer

@@ -19,8 +19,10 @@
 --]]
 -------------------------------------------------------------------------------
 
+local addonName, T = ...;
+
 -- big ugly scary fatal error message display function {{{
-if not DcrFatalError then
+if not T._FatalError then
 -- the beautiful error popup : {{{ -
 StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     text = "|cFFFF0000Decursive Error:|r\n%s",
@@ -33,17 +35,17 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     hideOnEscape = 1,
     showAlert = 1,
     }; -- }}}
-DcrFatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
 
-if not DcrLoadedFiles or not DcrLoadedFiles["Dcr_lists.xml"] or not DcrLoadedFiles["Dcr_lists.lua"] then -- XML are loaded even if LUA syntax errors exixts
-    if not DcrCorrupted then DcrFatalError("Decursive installation is corrupted! (Dcr_lists.xml or Dcr_lists.lua not loaded)"); end;
-    DcrCorrupted = true;
+if not T._LoadedFiles or not T._LoadedFiles["Dcr_lists.xml"] or not T._LoadedFiles["Dcr_lists.lua"] then -- XML are loaded even if LUA syntax errors exixts
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_lists.xml or Dcr_lists.lua not loaded)"); end;
+    DecursiveInstallCorrupted = true;
     return;
 end
 
-local D   = Dcr;
+local D   = T.Dcr;
 --D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 
@@ -802,7 +804,7 @@ function MicroUnitF:LateAnalysis(From, Debuffs, MF, Status, GUIDwasFixed)
 
     -- trigger a dcr diag if DetectHistoryIndex is 1 :/
     if DetectHistoryIndex == 1 then
-        DecursiveSelfDiagnostic(true, true);
+        T._SelfDiagnostic(true, true);
     end
 
     if #foundcblevents == 0 then
@@ -1651,6 +1653,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-DcrLoadedFiles["Dcr_DebuffsFrame.lua"] = "@project-version@";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "@project-version@";
 
 -- Heresy
