@@ -706,6 +706,35 @@ function D:SPELL_UPDATE_COOLDOWN()
     D.Status.UpdateCooldown = GetTime();
 end
 
+function D:OnCommReceived(message, distribution, from)
+    local alpha = false;
+    --@alpha@
+    alpha = true;
+    --@end-alpha@
+
+    --@alpha@
+    D:Debug("OnCommReceived:", message, distribution, from);
+    --@end-alpha@
+    if message == "giveversion" then
+
+        LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 ), distribution, from )
+
+    elseif message:sub(1, 8) == "Version:" then
+
+        local version, date, isAlpha, enabled = message:match ("^Version: ([^,]+),(%d+),(%d),(%d)");
+
+        --@alpha@
+        D:Debug("Version info received from, ", from, "by", distribution, "version:", version, "date:", date, "islpha:", isAlpha, "enabled:", enabled);
+        --@end-alpha@
+
+        if not D.versions then
+            D.versions = {}
+        end
+
+        D.versions[from] = { version, date, isAlpha, enabled };
+    end
+end
+
 T._LoadedFiles["Dcr_Events.lua"] = "@project-version@";
 
 -- The Great Below

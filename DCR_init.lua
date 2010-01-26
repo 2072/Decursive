@@ -495,6 +495,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     -- // }}}
 
+
+    -- New Comm Part used for version checking
+    -- only if AceComm is here
+    if LibStub:GetLibrary("AceComm-3.0", true) then
+        LibStub("AceComm-3.0"):RegisterComm("DecursiveVersion", D.OnCommReceived);
+    end
+
 end -- // }}}
 
 local FirstEnable = true;
