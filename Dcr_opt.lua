@@ -88,6 +88,18 @@ function D:GetDefaultsSettings()
             -- the key to bind the macro to
             MacroBind = false,
             NoStartMessages = false,
+
+            AvailableButtons = {
+                "%s1", -- left mouse button
+                "%s2", -- right mouse button
+                "ctrl-%s1",
+                "ctrl-%s2",
+                "shift-%s1",
+                "shift-%s2",
+                "alt-%s1",
+                "alt-%s2",
+                -- 3, -- middle mouse button || RESERVED FOR TARGETING
+            },
         },
 
         profile = {
@@ -1271,15 +1283,45 @@ local function GetOptions()
                         name = L["OPT_MUFSCOLORS"],
                         desc = L["OPT_MUFSCOLORS_DESC"],
                         order = 3,
-                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
+                        hidden = function () return not D:IsEnabled(); end,
                         args = {}
+                    },
+
+                    MUFsMouseButtons = {
+                        type = "group",
+                        name = L["OPT_MUFMOUSEBUTTONS"],
+                        desc = L["OPT_MUFMOUSEBUTTONS_DESC"],
+                        order = 4,
+                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
+                        hidden = function () return not D:IsEnabled(); end,
+                        args = {
+                            -- {{{
+                            ClicksAdssigmentsDesc = {
+                                type = "description",
+                                name = L["OPT_MUFMOUSEBUTTONS_DESC"],
+                                order = 151,
+                            },
+                            ResetClicksAdssigments = {
+                                type = "execute",
+                                confirm = true,
+                                name = L["OPT_RESETMUFMOUSEBUTTONS"],
+                                desc = L["OPT_RESETMUFMOUSEBUTTONS_DESC"],
+                                func = function ()
+                                    table.wipe(D.db.global.AvailableButtons);
+                                    D:tcopy(D.db.global.AvailableButtons, D.defaults.global.AvailableButtons);
+                                end,
+                                order = -1,
+                            },
+                            -- }}}
+                        }
                     },
 
                     PerfOptions = {
                         type = "group",
                         name = L["OPT_MFPERFOPT"],
                         --desc = L["OPT_ADVDISP_DESC"],
-                        order = 4,
+                        order = 5,
                         disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
                         args = {
                             -- {{{
@@ -1377,7 +1419,11 @@ local function GetOptions()
                         name = L["OPT_CURINGORDEROPTIONS"],
                         order = 139,
                     },
-
+                    description = {
+                        type = "description",
+                        name = L["OPT_CURINGOPTIONS_EXPLANATION"],
+                        order = 140,
+                    },
                     CureMagic = {
                         type = "toggle",
                         name = "  "..L["MAGIC"],
@@ -1443,11 +1489,6 @@ local function GetOptions()
                         end,
                         disabled = function() return not D.Status.CuringSpells[DC.CHARMED] end,
                         order = 146
-                    },
-                    description = {
-                        type = "description",
-                        name = L["OPT_CURINGOPTIONS_EXPLANATION"],
-                        order = 140,
                     },
                 }
             }, -- }}}
@@ -1806,9 +1847,8 @@ function D:ShowHideDebuffsFrame ()
         D.profile.ShowDebuffsFrame = true;
         D.MicroUnitF:Delayed_MFsDisplay_Update ();
 
-        local i = 0;
-
         --[=[
+        local i = 0;
         for Unit, MF in pairs(D.MicroUnitF.ExistingPerUNIT) do -- XXX what the fuck is this ?!?
             if MF.IsDebuffed and MF.Shown then
                 D:ScheduleDelayedCall("Dcr_updMUF"..i, D.DummyDebuff, i * (D.profile.ScanTime / 2), D, MF.CurrUnit, "Test item");
@@ -1852,16 +1892,12 @@ function D:ChangeTextFrameDirection(bottom) --{{{
     end
 end --}}}
 
-do -- this is a closure, it's a bit like {} blocks in C
+do -- All this block predates Ace3, it could be recoded in a much more effecicent and cleaner way now (memory POV) thanks to the "info" table given to all callbacks in Ace3.
+   -- A good example would be the code creating the MUF color configuration menu or the click assigment settings right after this block.
 
     local DebuffsSkipList, DefaultDebuffsSkipList, skipByClass, AlwaysSkipList, DefaultSkipByClass;
 
     local spacer = function(num) return { name="",type="header", order = 100 + num } end;
-
-    -- so we can pass arguments to functions like StaticPopupDialogs...
-    D.Tmp = {};
-
-
 
     local RemoveFunc = function (handler)
         D:Debug("Removing '%s'...", handler["Debuff"]);
@@ -2194,16 +2230,18 @@ end
 
 do
 
+    local tonumber = _G.tonumber;
     local L_MF_colors = {};
-    local function GetNameAndDesc (ColorReason)
+
+    local function GetNameAndDesc (ColorReason) -- {{{
         local name, desc;
 
         L_MF_colors = D.profile.MF_colors;
 
         if (type(ColorReason) == "number" and ColorReason <= 6) then
 
-            name = D:ColorText(DC.AvailableButtonsReadable[ColorReason], D:NumToHexColor(L_MF_colors[ColorReason]));
-            desc = (L["COLORALERT"]):format(DC.AvailableButtonsReadable[ColorReason]);
+            name = D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[ColorReason] ], D:NumToHexColor(L_MF_colors[ColorReason]));
+            desc = (L["COLORALERT"]):format(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[ColorReason] ]);
 
         elseif (type(ColorReason) == "number")      then
             local Text = "";
@@ -2242,83 +2280,151 @@ do
         end
 
         return {name, desc};
+    end -- }}}
+
+    local retrieveColorReason = function(info)
+        local ColorReason = str_sub(info[#info], 2);
+
+        if tonumber(ColorReason) then 
+            return tonumber(ColorReason);
+        else
+            return ColorReason;
+        end
     end
 
-    local function GetColor (handler)
-        -- D:PrintLiteral("Name: " .. handler["ColorReason"], unpack(L_MF_colors[handler["ColorReason"]]));
-        return unpack(D.profile.MF_colors[handler["ColorReason"]]);
+    local GetName = function (info)
+        return GetNameAndDesc(retrieveColorReason(info))[1];
     end
 
-    local function SetColor (handler, r, g, b, a)
-        D.profile.MF_colors[handler["ColorReason"]] = {r, g, b, (a and a or 1)};
---      D:PrintLiteral(D.profile.MF_colors[handler["ColorReason"]]); --XXX
+    local GetDesc = function (info)
+        return GetNameAndDesc(retrieveColorReason(info))[2];
+    end
+
+    local GetOrder = function (info)
+        local ColorReason = retrieveColorReason(info);
+        return 100 + (type(ColorReason) == "number" and ColorReason or 2048);
+    end
+
+    local function GetColor (info)
+        return unpack(D.profile.MF_colors[retrieveColorReason(info)]);
+    end
+
+    local function SetColor (info, r, g, b, a)
+
+        local ColorReason = retrieveColorReason(info);
+
+        D.profile.MF_colors[ColorReason] = {r, g, b, (a and a or 1)};
         D.MicroUnitF:RegisterMUFcolors();
         L_MF_colors = D.profile.MF_colors;
 
-        local NameAndDesc = GetNameAndDesc(handler["ColorReason"]);
-
-        D.options.args.MicroFrameOpt.args.MUFsColors.args["c"..handler["ColorReason"]].name = NameAndDesc[1];
-        D.options.args.MicroFrameOpt.args.MUFsColors.args["c"..handler["ColorReason"]].desc = NameAndDesc[2];
-
         D.MicroUnitF:Delayed_Force_FullUpdate();
 
-        D:Debug("MUF color setting %d changed.", handler["ColorReason"]);
+        D:Debug("MUF color setting %d changed.", ColorReason);
     end
 
+    local ColorPicker = {
+        type = "color",
+        name = GetName,
+        desc = GetDesc,
+        hasAlpha = true,
+        order = GetOrder,
 
- 
+        get = GetColor,
+        set = SetColor,
+    };
 
     function D:CreateDropDownMUFcolorsMenu()
         L_MF_colors = D.profile.MF_colors;
 
         local MUFsColorsSubMenu = {};
-        local num = 0;
-        local NameAndDesc = {};
 
         for ColorReason, Color in pairs(L_MF_colors) do
-
 
             if not L_MF_colors[ColorReason][4] then
                 D.profile.MF_colors[ColorReason][4] = 1;
             end
 
-
+            -- add a separator for the different color typs when necessary.
             if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
-                MUFsColorsSubMenu["Spece" .. num] = {
+                MUFsColorsSubMenu["S" .. ColorReason] = {
                     type = "header",
                     name = "",
-                    order = 100 + num + (type(ColorReason) == "number" and ColorReason or 2048),
+                    order = function (info) return GetOrder(info) - 1 end,
                 }
-                num = num + 1;
+                D:Debug("Created space ", "Space" .. ColorReason, "at ", MUFsColorsSubMenu["S" .. ColorReason].order);
             end
 
-            NameAndDesc = GetNameAndDesc(ColorReason);
 
-            MUFsColorsSubMenu["c"..ColorReason] =  {
-                type = "color",
-                name = NameAndDesc[1],
-                desc = NameAndDesc[2],
-                hasAlpha = true,
-                order = 100 + num + (type(ColorReason) == "number" and ColorReason or 2048),
-
-                handler = {
-                    ["hidden"] = function () return not D:IsEnabled(); end,
-                    ["disabled"] = function () return not D:IsEnabled(); end,
-                    ["ColorReason"]  = ColorReason,
-                    ["get"]         = GetColor,
-                    ["set"]         = function (handler, info,r, g, b, a) SetColor(handler, r, g, b, a) end,
-                },
-
-                get = "get",
-                set = "set",
-            };
-
+            MUFsColorsSubMenu["c"..ColorReason] = ColorPicker;
             
-            num = num + 1;
         end
 
         D.options.args.MicroFrameOpt.args.MUFsColors.args = MUFsColorsSubMenu;
     end
+end
+
+-- Modifiers order choosing dynamic menu creation
+do
+
+    local orderStart = 152;
+    local tonumber = _G.tonumber;
+
+    local TempTable = {};
+    local i = 1;
+
+    local function retrieveKeyComboNum (info)
+        return tonumber(str_sub(info[#info], -1));
+    end
+
+    local function GetValues (info) -- {{{
+
+        if retrieveKeyComboNum (info) == 1 then
+            table.wipe(TempTable);
+
+            for i=1, #D.db.global.AvailableButtons do
+                TempTable[i] = D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[i]],  i < 7 and D:NumToHexColor(D.profile.MF_colors[i]) or "FFBBBBBB"  );
+            end
+        end
+
+        return TempTable;
+    end -- }}}
+
+    local function GetOrder (info)
+        return orderStart + retrieveKeyComboNum (info);
+    end
+
+    local OptionPrototype = {
+        -- {{{
+        type = "select",
+             name = "",
+             values = GetValues,
+             order = GetOrder,
+             get = function (info)
+                 return retrieveKeyComboNum (info);
+             end,
+             set = function (info, value)
+
+                 local ThisKeyComboNum = retrieveKeyComboNum (info);
+
+
+                 if value ~= ThisKeyComboNum then -- we would destroy the table
+
+                     D:tSwap(D.db.global.AvailableButtons, ThisKeyComboNum, value);
+
+                     -- force all MUFs to update their attributes
+                     D.Status.SpellsChanged = GetTime();
+                 end
+             end,
+             style = "dropdown",
+             -- }}}
+    };
+
+    function D:CreateModifierOptionMenu ()
+        for i = 1, 6 do
+            D.options.args.MicroFrameOpt.args.MUFsMouseButtons.args["KeyCombo" .. i] = OptionPrototype;
+        end
+    end
+
 end
 
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(D.db.global.MacroBind));

@@ -19,7 +19,7 @@ command line for example, "/dcr macro SetKey V" will set the new key to [V].
 
 - [Decursive usage][user-actions]
 - [Micro Unit Frames documentation][MUFs]
-- [Frequently Ask Questions][FAQ] *try this before asking any question*
+- [Frequently Asked Questions][FAQ] *try this before asking any question*
 - [commands][]
 
 

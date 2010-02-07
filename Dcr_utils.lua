@@ -199,9 +199,9 @@ end -- }}}
 function D:tcheckforval(tab, val) -- {{{
     local k;
     local v;
-    if (tab) then
+    if tab then
         for k,v in pairs(tab) do
-            if(v==val) then
+            if v==val then
                 return true;
             end
         end
@@ -230,10 +230,8 @@ end
 
 
 function D:tGiveValueIndex(tab, val)
-    local k;
-    local v;
     for k,v in pairs(tab) do
-        if(v==val) then
+        if v==val then
             return k;
         end
     end
@@ -278,6 +276,30 @@ function D:Pack(...)
         args[i]=select(i, ...);
     end
     return args;
+end
+
+function D:tSwap(t, i1, i2)
+
+    if i1 == i2 then
+        return false;
+    end
+
+    local i1c= t[i1];
+    local i2c= t[i2];
+
+    if i1 <= i2 then
+        t_remove(t, i2) -- remove the greater one first
+        t_remove(t, i1)
+        t_insert(t, i1, i2c) -- insert the smaller one first
+        t_insert(t, i2, i1c)
+    else
+        t_remove(t, i1) -- remove the greater one first
+        t_remove(t, i2)
+        t_insert(t, i2, i1c) -- insert the smaller one first
+        t_insert(t, i1, i2c)
+    end
+
+    return true;
 end
 
 

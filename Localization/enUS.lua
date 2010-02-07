@@ -376,6 +376,12 @@ L["DEWDROPISGONE"]          = "There is no DewDrop equivalent for Ace3, use alt-
 L["OPT_NOSTARTMESSAGES"]    = "Disable welcome messages"
 L["OPT_NOSTARTMESSAGES_DESC"] = "Remove the three messages Decursive prints to the chat frame at every login."
 
+L["OPT_MUFMOUSEBUTTONS"]        = "Mouse buttons";
+L["OPT_MUFMOUSEBUTTONS_DESC"]   = "Set the [MODIFIER]+Mouse-button you want to use for each MUF alert color.";
+L["OPT_RESETMUFMOUSEBUTTONS"]   = "Reset";
+L["OPT_RESETMUFMOUSEBUTTONS_DESC"]   = "Reset mouse button assignments to defaults.";
+
+
 --]==]
 --@end-do-not-package@
 

@@ -71,7 +71,7 @@ HAS THE SAME SIZE AS A MUF AND HIGHLIGHTS WHEN YOUR MOUSE POINTER IS OVER IT).
 
 - [Decursive usage][user-actions]
 - [Decursive Macro documentation][mouse-over macro]
-- [Frequently Ask Questions][FAQ] *try this before asking any question*
+- [Frequently Asked Questions][FAQ] *try this before asking any question*
 - [commands][]
 
 

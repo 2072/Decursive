@@ -111,7 +111,7 @@ Decursive, user possible actions
 
 - [Micro Unit Frames documentation][MUFs]
 - [Decursive Macro documentation][mouse-over macro]
-- [Frequently Ask Questions][FAQ] *try this before asking any question*
+- [Frequently Asked Questions][FAQ] *try this before asking any question*
 - [commands][]
 
 

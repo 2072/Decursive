@@ -711,6 +711,7 @@ function D:SetConfiguration()
 
     D.Groups_datas_are_invalid = true;
     D:CreateDropDownFiltersMenu(); -- create per class filters menus
+    D:CreateModifierOptionMenu();
 
 
     if D.profile.MF_colors['Chronometers'] then

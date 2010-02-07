@@ -123,28 +123,16 @@ local str_upper         = _G.string.upper;
 local InCombatLockdown  = _G.InCombatLockdown;
 local UnitAura          = _G.UnitAura;
 
--- Those are lookups table to set the frame attributes
-local AvailableButtons = { -- {{{
-    "%s1", -- left mouse button
-    "%s2", -- right mouse button
-    "ctrl-%s1",
-    "ctrl-%s2",
-    "shift-%s1",
-    "shift-%s2",
-    "alt-%s1",
-    "alt-%s2",
-    -- 3, -- middle mouse button || RESERVED FOR TARGETING
-}; -- }}}
 
 DC.AvailableButtonsReadable = { -- {{{
-    L["HLP_LEFTCLICK"], -- left mouse button
-    L["HLP_RIGHTCLICK"], -- right mouse button
-    L["CTRL"] .. "-" .. L["HLP_LEFTCLICK"],
-    L["CTRL"] .. "-" .. L["HLP_RIGHTCLICK"],
-    L["SHIFT"] .. "-" .. L["HLP_LEFTCLICK"],
-    L["SHIFT"] .. "-" .. L["HLP_RIGHTCLICK"],
-    L["ALT"] .. "-" .. L["HLP_LEFTCLICK"],
-    L["ALT"] .. "-" .. L["HLP_RIGHTCLICK"],
+    ["%s1"]         =   L["HLP_LEFTCLICK"], -- left mouse button
+    ["%s2"]         =   L["HLP_RIGHTCLICK"], -- right mouse button
+    ["ctrl-%s1"]    =   L["CTRL"]  .. "-" .. L["HLP_LEFTCLICK"],
+    ["ctrl-%s2"]    =   L["CTRL"]  .. "-" .. L["HLP_RIGHTCLICK"],
+    ["shift-%s1"]   =   L["SHIFT"] .. "-" .. L["HLP_LEFTCLICK"],
+    ["shift-%s2"]   =   L["SHIFT"] .. "-" .. L["HLP_RIGHTCLICK"],
+    ["alt-%s1"]     =   L["ALT"]   .. "-" .. L["HLP_LEFTCLICK"],
+    ["alt-%s2"]     =   L["ALT"]   .. "-" .. L["HLP_RIGHTCLICK"],
     -- 3, -- middle mouse button || RESERVED FOR TARGETTING
 }; -- }}}
 
@@ -394,9 +382,6 @@ function MicroUnitF:Force_FullUpdate () -- {{{
             MF.UnitStatus = 0; -- reset status to force SetColor to update
         end
 
-        MF.TooltipUpdate = 0; -- force help tooltip to update
-        --MF_f = MF.Frame;
-
         MF.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
         D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * i, MF);
@@ -560,24 +545,9 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
     -- get the MUF object
     local MF = self.UnitToMUF[unit];
 
-    --[=[
-    if MF then
-        -- sanity test: test if UnitToMUF[] == getattributeUnit -- XXX probably fixed (99.99% sure) was due to misuse of player regen event instead of incombatlockdown
-        if MF.Frame:GetAttribute("unit") ~= MF.CurrUnit then -- never comes true :/ it does... (reproduceable by mind-controlling something and releasing it)
-            D:AddDebugText("Sanity check failed in MicroUnitF:UpdateMUFUnit() Cattrib ~= CurrUnit", MF.CurrUnit, MF.Frame:GetAttribute("unit"), MF.Shown);
-        end
-
-        -- sanity test: test if unit == CurrUnit -- XXX is completely impossible
-        if unit ~= MF.CurrUnit then -- should be completely impossible since CurrUnit is set with UnitToMUF...
-            D:AddDebugText("Sanity check failed in MicroUnitF:UpdateMUFUnit() unit ~= MF.CurrUnit (%s ~= %s - %s).", unit, MF.CurrUnit, MF.Shown);
-        end
-    end
-    --]=]
-
     if (MF and MF.Shown) then
         -- The MUF will be updated only every DebuffsFrameRefreshRate seconds at most
         -- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
-        -- We need to find another way, this hammers AceEvent and won't be authorized with Ace3
         if (not D:DelayedCallExixts("Dcr_Update"..unit)) then
             D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
             D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF);
@@ -595,6 +565,8 @@ end
 -- It's outside the function to avoid creating and discarding this table at each call
 local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
 local UnitGUID = _G.UnitGUID;
+local TooltipButtonsInfo = {}; -- help tooltip text table
+local TooltipUpdate = 0; -- help tooltip change update check
 -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
 -- it also handles Unstable Affliction detection and warning.
 function MicroUnitF:OnEnter() -- {{{
@@ -616,45 +588,13 @@ function MicroUnitF:OnEnter() -- {{{
             D.Status.Unit_Array_UnitToGUID[Unit] = unitguid;
             D.Status.Unit_Array_GUIDToUnit[unitguid] = Unit;
             GUIDwasFixed = true;
-            --D:AddDebugText("Wrong stored GUID detected (MicroUnitF:OnEnter()) ", "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent); -- XXX to remove for release
         end
 
     end
-
-    --[=[
-    --@alpha@  
-    local LateDetectTest = false;
-    if MF.Debuffs and MF.Debuffs[1].Type then
-        LateDetectTest = 0;
-    end
-
-    -- removes the CHARMED_STATUS bit from Status, we don't need it
-    Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS)); -- XXX do not use this value other than for debugging (not up to date, use the later below)
-    --@end-alpha@
-    --]=]
 
     MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
-
-    --[=[
-    --@alpha@  
-
-    -- if there was no debuff just before the above update (it's wrong)
-    if not LateDetectTest and Status ~= FAR and MF.Debuffs and MF.Debuffs[1].Type then
-        LateDetectTest = true;
-    else
-        LateDetectTest = false;
-    end
-
-    if LateDetectTest then
-        -- if there is no scheduled event for this unit
-        if not D:DelayedCallExixts("Dcr_Update"..Unit) then
-            MicroUnitF:LateAnalysis("OnEnter", MF.Debuffs, MF, Status, GUIDwasFixed);
-        end
-    end
-    --@end-alpha@
-    --]=]
-
+    
     if not Unit then
         return; -- If the user overs the MUF befor it's completely initialized
     end
@@ -682,7 +622,6 @@ function MicroUnitF:OnEnter() -- {{{
         if UnitExists(MF.CurrUnit) then
             TooltipText =
             -- Colored unit name
-            -- D:ColorText(         (D:PetUnitName(       Unit, true    )) -- cannot be replaced by MF.UnitName, (UnitName is set by SetClassBorder only if class borders are displayed)
             D:ColorText(            (D:PetUnitName(       Unit, true    ))
             , "FF" .. ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
         end
@@ -734,9 +673,23 @@ function MicroUnitF:OnEnter() -- {{{
 
     -- show a help text in the Game default tooltip
     if D.profile.DebuffsFrameShowHelp then
-        local helpText = MF.TooltipButtonsInfo;
+        -- if necessary we will update the help tooltip text
+        if (D.Status.SpellsChanged ~= TooltipUpdate) then
+            TooltipButtonsInfo = {};
+
+            for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+                TooltipButtonsInfo[Prio] =
+                str_format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell);
+            end
+
+            t_insert(TooltipButtonsInfo, str_format("%s: %s", L["HLP_MIDDLECLICK"], L["TARGETUNIT"]));
+            t_insert(TooltipButtonsInfo, str_format("%s: %s", L["CTRL"] .. "-" .. L["HLP_MIDDLECLICK"], L["FOCUSUNIT"]));
+            TooltipButtonsInfo = table.concat(TooltipButtonsInfo, "\n");
+            TooltipUpdate = D.Status.SpellsChanged;
+        end
+
         GameTooltip_SetDefaultAnchor(GameTooltip, this);
-        GameTooltip:SetText(helpText);
+        GameTooltip:SetText(TooltipButtonsInfo);
         GameTooltip:Show();
 
     end
@@ -861,7 +814,6 @@ function MicroUnitF:OnPreClick(Button) -- {{{
 
         local Unit = this.Object.CurrUnit; -- shortcut
 
-
         if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 
             D:Println(L["HLP_NOTHINGTOCURE"]);
@@ -869,25 +821,28 @@ function MicroUnitF:OnPreClick(Button) -- {{{
         elseif (this.Object.UnitStatus == AFFLICTED) then
             local NeededPrio = D:GiveSpellPrioNum(this.Object.Debuffs[1].Type);
             local RequestedPrio = false;
+            local ButtonsString = "";
 
-            if (Button == "LeftButton") then
-                if (IsControlKeyDown()) then
-                    RequestedPrio = 3;
-                else
-                    RequestedPrio = 1;
-                end
-            elseif (Button == "RightButton") then
-                if (IsControlKeyDown()) then
-                    RequestedPrio = 4;
-                else
-                    RequestedPrio = 2;
-                end
+            if IsControlKeyDown() then
+                ButtonsString = "ctrl-";
+            elseif IsAltKeyDown() then
+                ButtonsString = "alt-";
+            elseif IsShiftKeyDown() then
+                ButtonsString = "shift-";
             end
+
+            if Button == "LeftButton" then
+               ButtonsString = ButtonsString .. "%s1";
+            elseif Button == "RightButton" then
+               ButtonsString = ButtonsString .. "%s2";
+            end
+
+            RequestedPrio = D:tGiveValueIndex(D.db.global.AvailableButtons, ButtonsString);
 
             if RequestedPrio and NeededPrio ~= RequestedPrio then
                 D:errln(L["HLP_WRONGMBUTTON"]);
                 if NeededPrio and MF_colors[NeededPrio] then
-                    D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[NeededPrio], D:NumToHexColor(MF_colors[NeededPrio])));
+                    D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[ D.db.global.AvailableButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
                 --@debug@
                 else
                     D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", this.Object.Debuffs[1].Type);
@@ -1067,7 +1022,7 @@ do
     -- used to tell if we changed something to improve performances.
     -- Each attribute change trigger an event...
     local ReturnValue = false;
-    -- this updates the sttributes of the MUF's frame object
+    -- this updates the sttributes of a MUF's frame object
     function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
 
         -- Delay the call if we are fighting
@@ -1099,50 +1054,38 @@ do
             ReturnValue = self;
         end
 
-        -- if the spell settings (the priority order or available spells) did not changed
         if (D.Status.SpellsChanged == self.LastAttribUpdate) then
-            return ReturnValue;
+            return ReturnValue; -- nothing changed
         end
 
---      D:Debug("UpdateAttributes() executed");
-        -- set the mouse middle-button action
-        self.Frame:SetAttribute("type3", "target"); --never changes
+        -- D:Debug("UpdateAttributes() executed");
 
-        -- set the mouse ctrl-middle-button action
-        self.Frame:SetAttribute("ctrl-type3", "focus"); -- never changes
+        if self.LastAttribUpdate == 0 then -- only once
+            -- set the mouse middle-button action
+            self.Frame:SetAttribute("type3", "target"); --never changes
 
-        -- set the mouse left-button action
-        --self.Frame:SetAttribute("type1", "target"); -- required to disable an hidden cache somewhere...
-        self.Frame:SetAttribute("type1", "macro");
+            -- set the mouse ctrl-middle-button action
+            self.Frame:SetAttribute("ctrl-type3", "focus"); -- never changes
 
-        -- set the mouse ctrl-left-button action
-        --self.Frame:SetAttribute("ctrl-type1", "target");  -- required to disable an hidden cache somewhere...
-        self.Frame:SetAttribute("ctrl-type1", "macro");
+            -- set the mouse left-button actions on all modifiers
+            self.Frame:SetAttribute("type1", "macro");
+            self.Frame:SetAttribute("ctrl-type1", "macro");
+            self.Frame:SetAttribute("alt-type1", "macro");
+            self.Frame:SetAttribute("shift-type1", "macro");
 
-        -- set the mouse right-button action
-        --self.Frame:SetAttribute("type2", "target"); -- required to disable an hidden cache somewhere...
-        self.Frame:SetAttribute("type2", "macro");
-
-        -- set the mouse ctrl-right-button action
-        --self.Frame:SetAttribute("ctrl-type2", "target"); -- required to disable an hidden cache somewhere...
-        self.Frame:SetAttribute("ctrl-type2", "macro");
-
-        -- We need:
-        --
-        --  - a table telling the priority of each spell
-        --              D.Status.CuringSpellsPrio [ __SPELL_NAME__ ] = __PRIO_NUM__
-
-        -- if necessary we will update the help tooltip text
-        if (D.Status.SpellsChanged ~= self.TooltipUpdate) then
-            self.TooltipButtonsInfo = {};
+            -- set the mouse right-button actions on all modifiers
+            self.Frame:SetAttribute("type2", "macro");
+            self.Frame:SetAttribute("ctrl-type2", "macro");
+            self.Frame:SetAttribute("alt-type2", "macro");
+            self.Frame:SetAttribute("shift-type2", "macro");
         end
 
         -- set the spells attributes using the lookup tables above
         for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
-            --self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "spell"), Spell);
+            --self.Frame:SetAttribute(str_format(D.db.global.AvailableButtons[Prio], "spell"), Spell);
             --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
-            self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
+            self.Frame:SetAttribute(str_format(D.db.global.AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
             ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
             Unit,Unit,
             Spell,
@@ -1150,26 +1093,13 @@ do
 
 
             --[[
-            D:Debug("XX-> macro: ",str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, exists] %s%s",
+            D:Debug("XX-> macro: ",str_format(D.db.global.AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
             ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
-            Unit,
+            Unit,Unit,
             Spell,
             (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
             --]]
 
-            -- set the tooltip text for the current prio if necessary
-            if (D.Status.SpellsChanged ~= self.TooltipUpdate) then
-                self.TooltipButtonsInfo[Prio] =
-                str_format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[Prio], D:NumToHexColor(MF_colors[Prio])), Spell);
-            end
-        end
-
-        -- concatenate the tooltip text if necessary
-        if (D.Status.SpellsChanged ~= self.TooltipUpdate) then
-            t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L["HLP_MIDDLECLICK"], L["TARGETUNIT"]));
-            t_insert(self.TooltipButtonsInfo, str_format("%s: %s", L["CTRL"] .. "-" .. L["HLP_MIDDLECLICK"], L["FOCUSUNIT"]));
-            self.TooltipButtonsInfo = table.concat(self.TooltipButtonsInfo, "\n");
-            self.TooltipUpdate = D.Status.SpellsChanged;
         end
 
         self.Debuff1Prio = false;

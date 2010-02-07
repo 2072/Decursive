@@ -6,8 +6,6 @@ TODO:
 
 - Add Cleansing Totem for shaman when the above point is done
 
-- see table.wipe() to limit garbage
-
 - Add an option to disable spell stopping when clicking on a MUF
 
 - Add an option to automatically focus sheeped/cycloned units (if no other focus)
