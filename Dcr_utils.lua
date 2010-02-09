@@ -229,6 +229,28 @@ function D:tcopy(to, from)   -- "to" must be a table (possibly empty)
 end
 
 
+-- tcopycallback: recursively copy contents of one table to another calling a callback before storing the new values
+function D:tcopycallback(to, from, CallBack) -- "to" must be a table (possibly empty)
+    if (type(from) ~= "table") then 
+        return error(("D:tcopycallback: bad argument #2 'from' must be a table, got '%s' instead"):format(type(from)),2);
+    end
+
+    if (type(to) ~= "table") then 
+        return error(("D:tcopycallback: bad argument #1 'to' must be a table, got '%s' instead"):format(type(to)),2);
+    end
+    if (type(CallBack) ~= "function") then 
+        return error(("D:tcopycallback: bad argument #3 'CallBack' must be a function ref, got '%s' instead"):format(type(CallBack)),2);
+    end
+    for k,v in pairs(from) do
+        if(type(v)=="table") then
+            to[k] = {}; -- this generate garbage
+            D:tcopycallback(to[k], v, CallBack);
+        else
+            to[k] = CallBack(v);
+        end
+    end
+end
+
 function D:tGiveValueIndex(tab, val)
     for k,v in pairs(tab) do
         if v==val then

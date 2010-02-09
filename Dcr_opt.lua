@@ -2351,7 +2351,7 @@ do
                     name = "",
                     order = function (info) return GetOrder(info) - 1 end,
                 }
-                D:Debug("Created space ", "Space" .. ColorReason, "at ", MUFsColorsSubMenu["S" .. ColorReason].order);
+                --D:Debug("Created space ", "Space" .. ColorReason, "at ", MUFsColorsSubMenu["S" .. ColorReason].order);
             end
 
 

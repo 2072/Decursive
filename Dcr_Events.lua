@@ -305,6 +305,7 @@ function D:PLAYER_ALIVE()
     D:Debug("|cFFFF0000PLAYER_ALIVE|r");
     D:ReConfigure();
     self:UnregisterEvent("PLAYER_ALIVE");
+    D:CheckPlayer();
 end
 
 function D:LEARNED_SPELL_IN_TAB()
