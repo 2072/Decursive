@@ -381,6 +381,8 @@ L["OPT_MUFMOUSEBUTTONS_DESC"]   = "Set the [MODIFIER]+Mouse-button you want to u
 L["OPT_RESETMUFMOUSEBUTTONS"]   = "Reset";
 L["OPT_RESETMUFMOUSEBUTTONS_DESC"]   = "Reset mouse button assignments to defaults.";
 
+L["OPT_CHECKOTHERPLAYERS"]   = "Check other players";
+L["OPT_CHECKOTHERPLAYERS_DESC"]   = "Will check and display Decursive version among the players in your current group or guild, (cannot display versions prior to Decursive 2.4.6)";
 
 --]==]
 --@end-do-not-package@

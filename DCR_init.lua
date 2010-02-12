@@ -499,6 +499,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- New Comm Part used for version checking
     -- only if AceComm is here
     if LibStub:GetLibrary("AceComm-3.0", true) then
+        DC.COMMAVAILABLE = true;
         LibStub("AceComm-3.0"):RegisterComm("DecursiveVersion", D.OnCommReceived);
     end
 
@@ -800,10 +801,12 @@ end
 
 -- A list of some people I personally have problems with. Decursive will not function for them.
 -- I don't want this kind of people benefiting from my hard work.
--- It's the only thing I can do since nothing can be done in game against such [Insert appropriate word here].
+-- Those [Insert appropriate word here] are players you really don't want to meet. Ignorance is just not enough for them...
 -- This list will only be used to disable Decursive for them, nothing else will ever happen.
 local BADPLAYERS = {
     {"|A|r|a|d|o|s", "|C|o|n|s|e|i|l| |d|e|s| |O|m|b|r|e|s|", "|P|A|L|A|D|I|N|"}, -- This one gave me the most horrible experience I ever had in a pickup-group (At the Oculus). He is a terrible leader ; the kind of incompetent person who will accuse you of his own failures. All of this in a perverse and insidious way so he can turn others against you.
+
+
     --{"|A|r|c|h|a|r|o|d|i|m|", "|L|e|s| |S|e|n|t|i|n|e|l|l|e|s|", "|M|A|G|E|"}, -- so I can test if it works.
 };
 local BADPLAYERS_READABLE = false;

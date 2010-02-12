@@ -1588,11 +1588,35 @@ local function GetOptions()
                                 ),
                         order = 0,
                     },
-                    -- Notes XXX re translate that, the one from the TOC cannot be translated
-                    -- licensed
-                    -- used libs
-                    -- websites
-                    -- email
+                    Sep1 = {
+                        type = "header",
+                        name = "",
+                        order = 5,
+                    },
+                    CheckVersions = {
+                        type = "execute",
+                        name = L["OPT_CHECKOTHERPLAYERS"],
+                        desc = L["OPT_CHECKOTHERPLAYERS_DESC"],
+                        hidden = function () return not DC.COMMAVAILABLE; end,
+                        disabled = function () return InCombatLockdown(); end,
+                        func = function () D.versions = false; D:AskVersion(); end,
+                        order = 10,
+                    },
+                    --[[
+                    ClearVersions = {
+                        type = "execute",
+                        name = "Clear found versions",
+                        hidden = function () return not D.versions; end,
+                        func = function () D.versions = false; end,
+                        order = 20,
+                    },--]]
+                    VersionsDisplay = {
+                        type = "description",
+                        name = D.ReturnVersions,
+                        hidden = function () return not D.versions; end,
+                        order = 30,
+                    },
+                   
                 }
             }
         },

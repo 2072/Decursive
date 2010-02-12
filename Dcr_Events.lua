@@ -707,6 +707,53 @@ function D:SPELL_UPDATE_COOLDOWN()
     D.Status.UpdateCooldown = GetTime();
 end
 
+local LastVCheck = 0;
+function D:AskVersion()
+
+    if InCombatLockdown() then
+        -- if we are fighting, postpone the call
+        D:AddDelayedFunctionCall ("AskVersion", self.AskVersion);
+        return false;
+    end
+
+    if GetTime() - LastVCheck < 30 then
+        D:Debug("AskVersion(): Too early!");
+        return false;
+    end
+
+    LastVCheck = GetTime();
+
+    local Distribution = false;
+    --  "PARTY", "RAID", "GUILD", "BATTLEGROUND". As of 2.1, "WHISPER"
+
+    if UnitExists("target") then
+        LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", "WHISPER", self:UnitName("target"));
+        D:Debug("Asking version to ", self:UnitName("target"));
+    end
+
+    local inInstance, InstanceType = IsInInstance();
+
+    if inInstance and InstanceType ~= "none" then
+
+        local InstanceTypeToDistribution = {
+            party = "PARTY",
+            arena = "PARTY",
+            raid  = "RAID",
+            pvp = "BATTLEGROUND",
+        };
+
+        Distribution = InstanceTypeToDistribution[InstanceType];
+    else
+        Distribution = "GUILD";
+    end
+
+    if Distribution then
+        LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", Distribution);
+        D:Debug("Asking version on ", Distribution);
+    end
+    
+end
+
 function D:OnCommReceived(message, distribution, from)
     local alpha = false;
     --@alpha@
@@ -728,12 +775,32 @@ function D:OnCommReceived(message, distribution, from)
         D:Debug("Version info received from, ", from, "by", distribution, "version:", version, "date:", date, "islpha:", isAlpha, "enabled:", enabled);
         --@end-alpha@
 
-        if not D.versions then
-            D.versions = {}
-        end
+        if from ~= DC.MyName or true then
+            if not D.versions then
+                D.versions = {}
+            end
 
-        D.versions[from] = { version, date, isAlpha, enabled };
+            D.versions[from] = { version, date, isAlpha, enabled };
+
+            --delayed call to LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
+            if not D:DelayedCallExixts ("NewversionDatareceived") then
+                D:ScheduleDelayedCall("NewversionDatareceived", LibStub("AceConfigRegistry-3.0").NotifyChange, 1, LibStub("AceConfigRegistry-3.0"), D.name);
+            end
+        end
     end
+end
+
+function D:ReturnVersions()
+    if not D.versions then
+        return "no data available";
+    end
+
+    local formatedversions = {};
+    for name, versiondetails in pairs(D.versions) do
+        formatedversions[#formatedversions + 1] = ("%s: %s %s (%s)"):format(D:ColorText(name, "FF00AA00"), versiondetails[1], versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", date("%Y-%m-%d", versiondetails[2]));
+    end
+
+    return table.concat(formatedversions, "\n");
 end
 
 T._LoadedFiles["Dcr_Events.lua"] = "@project-version@";
