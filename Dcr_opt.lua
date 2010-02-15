@@ -1599,17 +1599,9 @@ local function GetOptions()
                         desc = L["OPT_CHECKOTHERPLAYERS_DESC"],
                         hidden = function () return not DC.COMMAVAILABLE; end,
                         disabled = function () return InCombatLockdown(); end,
-                        func = function () D.versions = false; D:AskVersion(); end,
+                        func = function () if D:AskVersion() then D.versions = false; end end,
                         order = 10,
                     },
-                    --[[
-                    ClearVersions = {
-                        type = "execute",
-                        name = "Clear found versions",
-                        hidden = function () return not D.versions; end,
-                        func = function () D.versions = false; end,
-                        order = 20,
-                    },--]]
                     VersionsDisplay = {
                         type = "description",
                         name = D.ReturnVersions,

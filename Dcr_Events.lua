@@ -733,24 +733,24 @@ function D:AskVersion()
 
     local inInstance, InstanceType = IsInInstance();
 
-    if inInstance and InstanceType ~= "none" then
-
-        local InstanceTypeToDistribution = {
-            party = "PARTY",
-            arena = "PARTY",
-            raid  = "RAID",
-            pvp = "BATTLEGROUND",
-        };
-
-        Distribution = InstanceTypeToDistribution[InstanceType];
-    else
-        Distribution = "GUILD";
+    if InstanceType == "pvp" then
+        Distribution = "BATTLEGROUND";
     end
 
-    if Distribution then
-        LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", Distribution);
-        D:Debug("Asking version on ", Distribution);
+    if not Distribution then
+        if GetNumRaidMembers() ~= 0 then
+            Distribution = "RAID";
+        elseif UnitExists("party1") then
+            Distribution = "PARTY";
+        else
+            Distribution = "GUILD";
+        end
     end
+
+    LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", Distribution);
+    D:Debug("Asking version on ", Distribution);
+
+    return true;
     
 end
 
