@@ -551,21 +551,20 @@ local function GetOptions()
                         func = function ()
 
                         -- {{{
+                            LibStub("AceConfigDialog-3.0"):Close(D.name);
                             if not D.MemoriumFrame then
-                                D.MemoriumFrame = CreateFrame("Frame", "DcrMemorium", UIParent);
+                                D.MemoriumFrame = CreateFrame("Frame", nil, UIParent);
                                 local f = D.MemoriumFrame;
                                 local w = 512; local h = 390;
 
-                                f:SetFrameStrata("DIALOG");
+                                f:SetFrameStrata("TOOLTIP");
                                 f:EnableKeyboard(true);
-                                --f:EnableMouse(true);
                                 f:SetScript("OnKeyUp", function (frame, event, arg1, arg2) D.MemoriumFrame:Hide(); end);
-                                --f:SetScript("OnMouseUp", function (frame, event, arg1, arg2) D.MemoriumFrame:Hide(); end);
                                 --[[
                                 f:SetScript("OnShow",
                                 function ()
                                 -- I wanted to make the shadow to move over the marble very slowly as clouds
-                                -- I tried to make it rotate but the way I found would only make it rotate around its origin (which is rearely useful)
+                                -- I tried to make it rotate but the way I found would only make it rotate around its origin (which is rarely useful)
                                 -- so leaving it staedy for now... if someone got an idea, let me know.
                                 D:ScheduleRepeatingEvent("Dcr_GlorMoveShadow",
                                 function (f)
@@ -578,55 +577,54 @@ local function GetOptions()
                                 end
                                 , 1/50, f);
                                 end);
+                                f:SetScript("OnHide", function() D:CancelDelayedCall("Dcr_GlorMoveShadow"); end)
                                 --]]
-                                --f:SetScript("OnHide", function() D:CancelDelayedCall("Dcr_GlorMoveShadow"); end)                  
+
                                 f:SetWidth(w);
                                 f:SetHeight(h);
-                                f.tTL = f:CreateTexture("DcrMmTopLeft","BACKGROUND")
+                                f.tTL = f:CreateTexture(nil,"BACKGROUND")
                                 f.tTL:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-TopLeft")
                                 f.tTL:SetWidth(w - w / 5);
                                 f.tTL:SetHeight(h - h / 3);
                                 f.tTL:SetTexCoord(0, 1, 5/256, 1);
                                 f.tTL:SetPoint("TOPLEFT", f, "TOPLEFT", 2, -10);
 
-                                f.tTR = f:CreateTexture("DcrMmTopRight","BACKGROUND")
+                                f.tTR = f:CreateTexture(nil,"BACKGROUND")
                                 f.tTR:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-TopRight")
                                 f.tTR:SetWidth(w / 5 - 3);
                                 f.tTR:SetHeight(h - h / 3);
                                 f.tTR:SetTexCoord(0, 1, 5/256, 1);
                                 f.tTR:SetPoint("TOPLEFT", f.tTL, "TOPRIGHT", 0, 0);
 
-                                f.tBL = f:CreateTexture("DcrMmBotLeft","BACKGROUND")
+                                f.tBL = f:CreateTexture(nil,"BACKGROUND")
                                 f.tBL:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-BotLeft")
                                 f.tBL:SetWidth(w - w / 5);
                                 f.tBL:SetHeight(h / 3 - 20);
                                 f.tBL:SetTexCoord(0,1,0, 408/512);
                                 f.tBL:SetPoint("TOPLEFT", f.tTL, "BOTTOMLEFT", 0, 0);
 
-                                f.tBR = f:CreateTexture("DcrMmBotRight","BACKGROUND")
+                                f.tBR = f:CreateTexture(nil,"BACKGROUND")
                                 f.tBR:SetTexture("Interface\\ItemTextFrame\\ItemText-Marble-BotRight")
                                 f.tBR:SetWidth(w / 5 - 3);
                                 f.tBR:SetHeight(h / 3 - 20);
                                 f.tBR:SetTexCoord(0,1,0, 408/512);
                                 f.tBR:SetPoint("TOPLEFT", f.tBL, "TOPRIGHT", 0, 0);
 
-                                f.Shadow = f:CreateTexture("DcrMmShadow", "ARTWORK");
+                                f.Shadow = f:CreateTexture(nil, "ARTWORK");
                                 f.Shadow:SetTexture("Interface\\TabardFrame\\TabardFrameBackground")
                                 f.Shadow:SetPoint("TOPLEFT", f, "TOPLEFT", 2, -9);
                                 f.Shadow:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -2, 9);
                                 f.Shadow:SetAlpha(0.1);
-                                --f.Shadow.Angle = 0;
 
                                 ---[[
-                                f.fB = f:CreateTexture("DcrMmGoldBorder","OVERLAY")
+                                f.fB = f:CreateTexture(nil,"OVERLAY")
                                 f.fB:SetTexture("Interface\\AddOns\\Decursive\\Textures\\GoldBorder")
                                 f.fB:SetTexCoord(5/512, 324/512, 6/512, 287/512);
                                 f.fB:SetPoint("TOPLEFT", f, "TOPLEFT", 0, 0);
                                 f.fB:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 0);
                                 --]]
 
-
-                                f.FSt = f:CreateFontString("DcrMmTitleFont","OVERLAY", "MailTextFontNormal");
+                                f.FSt = f:CreateFontString(nil,"OVERLAY", "MailTextFontNormal");
                                 f.FSt:SetFont("Fonts\\MORPHEUS.TTF", 18 );
                                 f.FSt:SetTextColor(0.18, 0.12, 0.06, 1);
                                 f.FSt:SetPoint("TOPLEFT", f.tTL, "TOPLEFT", 5, -20);
@@ -635,7 +633,7 @@ local function GetOptions()
                                 f.FSt:SetText(L["GLOR3"]);
                                 f.FSt:SetAlpha(0.80);
 
-                                f.FSc = f:CreateFontString("DcrMmCntFont","OVERLAY", "MailTextFontNormal");
+                                f.FSc = f:CreateFontString(nil,"OVERLAY", "MailTextFontNormal");
                                 f.FSc:SetFont("Fonts\\MORPHEUS.TTF", 15 );
                                 f.FSc:SetTextColor(0.18, 0.12, 0.06, 1);
                                 f.FSc:SetHeight(h - 30 - 60);
@@ -651,7 +649,7 @@ local function GetOptions()
 
                                 f.FSc:SetAlpha(0.80);
 
-                                f.FSl = f:CreateFontString("DcrMmlastFont","OVERLAY", "MailTextFontNormal");
+                                f.FSl = f:CreateFontString(nil,"OVERLAY", "MailTextFontNormal");
                                 f.FSl:SetFont("Fonts\\MORPHEUS.TTF", 15 );
                                 f.FSl:SetTextColor(0.18, 0.12, 0.06, 1);
                                 f.FSl:SetJustifyH("LEFT");
