@@ -384,6 +384,9 @@ L["OPT_RESETMUFMOUSEBUTTONS_DESC"]   = "Reset mouse button assignments to defaul
 L["OPT_CHECKOTHERPLAYERS"]   = "Check other players";
 L["OPT_CHECKOTHERPLAYERS_DESC"]   = "Will check and display Decursive version among the players in your current group or guild, (cannot display versions prior to Decursive 2.4.6)";
 
+L["OPT_SHOWCHRONOTIMElEFT"]   = "Time left";
+L["OPT_SHOWCHRONOTIMElEFT_DESC"]   = "Display time left instead of time elapsed.";
+
 --]==]
 --@end-do-not-package@
 

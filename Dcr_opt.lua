@@ -161,6 +161,8 @@ function D:GetDefaultsSettings()
             -- display chronometer on MUFs
             DebuffsFrameChrono = true,
 
+            DebuffsFrameTimeLeft = false,
+
             -- this is wether or not to show the live-list  
             Hide_LiveList = false,
 
@@ -427,8 +429,8 @@ local function GetOptions()
                         name = L["PLAY_SOUND"],
                         desc = L["OPT_PLAYSOUND_DESC"],
                         get = function() return D.profile.PlaySound end,
-                        set = function()
-                            D.profile.PlaySound = not D.profile.PlaySound
+                        set = function(info, v)
+                            D.profile.PlaySound = v;
                         end,
                         order = 10,
                     },
@@ -439,9 +441,8 @@ local function GetOptions()
                         name = L["SHOW_TOOLTIP"],
                         desc = L["OPT_SHOWTOOLTIP_DESC"],
                         get = function() return D.profile.AfflictionTooltips end,
-                        set = function()
-                            D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
-                            local k, v;
+                        set = function(info, v)
+                            D.profile.AfflictionTooltips = v;
                             for k,v in ipairs(D.LiveList.ExistingPerID) do
                                 v.Frame:EnableMouse(D.profile.AfflictionTooltips);
                             end
@@ -747,7 +748,7 @@ local function GetOptions()
                         name = L["OPT_LVONLYINRANGE"],
                         desc = L["OPT_LVONLYINRANGE_DESC"],
                         get = function() return D.profile.LV_OnlyInRange end,
-                        set = function() D.profile.LV_OnlyInRange = not D.profile.LV_OnlyInRange end,
+                        set = function(info, v) D.profile.LV_OnlyInRange = v end,
                         order = 100.5
                     },
                     livenum = {
@@ -795,8 +796,8 @@ local function GetOptions()
                         name = L["REVERSE_LIVELIST"],
                         desc = L["OPT_REVERSE_LIVELIST_DESC"],
                         get = function() return D.profile.ReverseLiveDisplay end,
-                        set = function()
-                            D.profile.ReverseLiveDisplay = not D.profile.ReverseLiveDisplay
+                        set = function(info, v)
+                            D.profile.ReverseLiveDisplay = v
                             D.LiveList:RestAllPosition();
                         end,
                         order = 107
@@ -808,8 +809,8 @@ local function GetOptions()
                         name = L["TIE_LIVELIST"],
                         desc = L["OPT_TIE_LIVELIST_DESC"],
                         get = function() return D.profile.LiveListTied end,
-                        set = function()
-                            D.profile.LiveListTied = not D.profile.LiveListTied
+                        set = function(info, v)
+                            D.profile.LiveListTied = v
                         end,
                         order = 108
                     },
@@ -872,8 +873,8 @@ local function GetOptions()
                         name =  L["PRINT_CHATFRAME"],
                         desc = L["OPT_CHATFRAME_DESC"],
                         get = function() return D.profile.Print_ChatFrame end,
-                        set = function()
-                            D.profile.Print_ChatFrame = not D.profile.Print_ChatFrame;
+                        set = function(info,v)
+                            D.profile.Print_ChatFrame = v;
                         end,
                         order = 120
                     },
@@ -883,8 +884,8 @@ local function GetOptions()
                         name =  L["PRINT_CUSTOM"],
                         desc = L["OPT_PRINT_CUSTOM_DESC"],
                         get = function() return D.profile.Print_CustomFrame end,
-                        set = function()
-                            D.profile.Print_CustomFrame = not D.profile.Print_CustomFrame;
+                        set = function(info,v)
+                            D.profile.Print_CustomFrame = v;
                         end,
                         order = 121
                     },
@@ -894,8 +895,8 @@ local function GetOptions()
                         name =  L["PRINT_ERRORS"],
                         desc =  L["OPT_PRINT_ERRORS_DESC"],
                         get = function() return D.profile.Print_Error end,
-                        set = function()
-                            D.profile.Print_Error = not D.profile.Print_Error;
+                        set = function(info,v)
+                            D.profile.Print_Error = v;
                         end,
                         order = 122
                     },
@@ -1001,9 +1002,7 @@ local function GetOptions()
                                 desc = L["OPT_SHOWBORDER_DESC"],
                                 get = function() return D.profile.DebuffsFrameElemBorderShow end,
                                 set = function(info,v)
-                                    if (v ~= D.profile.DebuffsFrameElemBorderShow) then
-                                        D.profile.DebuffsFrameElemBorderShow = v;
-                                    end
+                                    D.profile.DebuffsFrameElemBorderShow = v;
                                 end,
                                 disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
                                 order = 1350,
@@ -1015,11 +1014,20 @@ local function GetOptions()
                                 desc = L["OPT_SHOWCHRONO_DESC"],
                                 get = function() return D.profile.DebuffsFrameChrono end,
                                 set = function(info,v)
-                                    if (v ~= D.profile.DebuffsFrameChrono) then
-                                        D.profile.DebuffsFrameChrono = v;
-                                    end
+                                    D.profile.DebuffsFrameChrono = v;
                                 end,
                                 order = 1360,
+                            },
+                            ShowChronoTimeLeft = {
+                                type = "toggle",
+                                disabled = function () return not D.profile.DebuffsFrameChrono or not D.profile.ShowDebuffsFrame end,
+                                name = L["OPT_SHOWCHRONOTIMElEFT"],
+                                desc = L["OPT_SHOWCHRONOTIMElEFT_DESC"],
+                                get = function() return D.profile.DebuffsFrameTimeLeft end,
+                                set = function(info,v)
+                                    D.profile.DebuffsFrameTimeLeft = v;
+                                end,
+                                order = 1365,
                             },
                             ShowStealthStatus = {
                                 type = "toggle",
@@ -1027,8 +1035,8 @@ local function GetOptions()
                                 name =  L["OPT_SHOW_STEALTH_STATUS"],
                                 desc = L["OPT_SHOW_STEALTH_STATUS_DESC"],
                                 get = function() return D.profile.Show_Stealthed_Status end,
-                                set = function()
-                                    D.profile.Show_Stealthed_Status = not D.profile.Show_Stealthed_Status;
+                                set = function(info,v)
+                                    D.profile.Show_Stealthed_Status = v;
                                 end,
                                 order = 1370,
                             },
@@ -1037,9 +1045,8 @@ local function GetOptions()
                                 name = L["SHOW_TOOLTIP"],
                                 desc = L["OPT_SHOWTOOLTIP_DESC"],
                                 get = function() return D.profile.AfflictionTooltips end,
-                                set = function()
-                                    D.profile.AfflictionTooltips = not D.profile.AfflictionTooltips
-                                    local k, v;
+                                set = function(info,v)
+                                    D.profile.AfflictionTooltips = v
                                     for k,v in ipairs(D.LiveList.ExistingPerID) do
                                         v.Frame:EnableMouse(D.profile.AfflictionTooltips);
                                     end
@@ -1053,9 +1060,8 @@ local function GetOptions()
                                 name = L["OPT_SHOWHELP"],
                                 desc = L["OPT_SHOWHELP_DESC"],
                                 get = function() return D.profile.DebuffsFrameShowHelp end,
-                                set = function()
-                                    D.profile.DebuffsFrameShowHelp = not D.profile.DebuffsFrameShowHelp;
-
+                                set = function(info,v)
+                                    D.profile.DebuffsFrameShowHelp = v;
                                 end,
                                 order = 1450,
                             },
@@ -1383,8 +1389,8 @@ local function GetOptions()
                         name =  L["ABOLISH_CHECK"],
                         desc = L["OPT_ABOLISHCHECK_DESC"],
                         get = function() return D.profile.Check_For_Abolish end,
-                        set = function()
-                            D.profile.Check_For_Abolish = not D.profile.Check_For_Abolish;
+                        set = function(info, v)
+                            D.profile.Check_For_Abolish = v;
                         end,
                         order = 130
                     },
@@ -1394,8 +1400,8 @@ local function GetOptions()
                         name =  L["DONOT_BL_PRIO"],
                         desc = L["OPT_DONOTBLPRIO_DESC"],
                         get = function() return D.profile.DoNot_Blacklist_Prio_List end,
-                        set = function()
-                            D.profile.DoNot_Blacklist_Prio_List = not D.profile.DoNot_Blacklist_Prio_List;
+                        set = function(info, v)
+                            D.profile.DoNot_Blacklist_Prio_List = v;
                         end,
                         order = 131
                     },
@@ -1405,8 +1411,8 @@ local function GetOptions()
                         name =  L["CURE_PETS"],
                         desc = L["OPT_CUREPETS_DESC"],
                         get = function() return D.profile.Scan_Pets end,
-                        set = function()
-                            D.profile.Scan_Pets = not D.profile.Scan_Pets;
+                        set = function(info, v)
+                            D.profile.Scan_Pets = v;
                             D:GroupChanged ("opt CURE_PETS");
                         end,
                         order = 133

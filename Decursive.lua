@@ -240,7 +240,6 @@ function D:ResetWindow() --{{{
 end --}}}
 
 
-
 function D:PlaySound (UnitID, Caller) --{{{
     if (self.profile.PlaySound and not self.Status.SoundPlayed) then
         local Debuffs = self:UnitCurableDebuffs(UnitID, true);
@@ -387,7 +386,7 @@ end
 
 do
 
-    local Name, rank, Texture, Applications, TypeName; --, Duration;
+    local Name, rank, Texture, Applications, TypeName, Duration, expirationTime;
     local D = _G.Dcr;
     local UnitAura = _G.UnitAura;
 
@@ -396,22 +395,22 @@ do
 
         if D.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" and UnitExists(Unit) then
             D:Debug("|cFFFF0000Setting test debuff for %s (debuff %d)|r", Unit, i);
-            return "Test item", DC.TypeNames[D.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga", 70;
+            return "Test item", DC.TypeNames[D.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga", D.LiveList.TestItemDisplayed + 70;
         end
 
         --D:Debug("|cFFFF0000Getting debuffs for %s , id = %d|r", Unit, i);
 
 
-        -- name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
+        --    Name, rank, Texture, Applications, TypeName, duration, expirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
 
-        local Name, rank, Texture, Applications, TypeName = UnitAura(Unit, i, "HARMFUL");
+        local Name, rank, Texture, Applications, TypeName, Duration, expirationTime = UnitAura(Unit, i, "HARMFUL");
 
         --local Name, rank, Texture, Applications, TypeName, Duration = UnitDebuff(Unit, i);
 
-        if (Name) then
-            return Name, TypeName, Applications, Texture;
+        if Name then
+            return Name, TypeName, Applications, Texture, expirationTime;
         else
-            return false, false, false, false;
+            return false, false, false, false, false;
         end
     end --}}}
 
@@ -447,7 +446,7 @@ do
 
 
         -- test if the unit is mind controlled once
-        if (UnitIsCharmed(Unit) and (UnitCanAttack("player", Unit)  or UnitIsCharmed("player"))) then
+        if (UnitIsCharmed(Unit) and (UnitCanAttack("player", Unit) or UnitIsCharmed("player"))) then
             IsCharmed = true;
         else
             IsCharmed = false;
@@ -455,7 +454,7 @@ do
 
         -- iterate all available debuffs
         while (true) do
-            Name, TypeName, Applications, Texture = GetUnitDebuff(Unit, i);
+            Name, TypeName, Applications, Texture, expirationTime = GetUnitDebuff(Unit, i);
 
             if not Name then
                 break;
@@ -529,14 +528,13 @@ do
                     ThisUnitDebuffs[StoredDebuffIndex] = {};
                 end
 
---              ThisUnitDebuffs[StoredDebuffIndex].TimeLeft     = TimeLeft;
---              ThisUnitDebuffs[StoredDebuffIndex].TimeStamp    = false;
-                ThisUnitDebuffs[StoredDebuffIndex].Texture      = Texture;
-                ThisUnitDebuffs[StoredDebuffIndex].Applications = Applications;
-                ThisUnitDebuffs[StoredDebuffIndex].TypeName     = TypeName;
-                ThisUnitDebuffs[StoredDebuffIndex].Type         = Type;
-                ThisUnitDebuffs[StoredDebuffIndex].Name         = Name;
-                ThisUnitDebuffs[StoredDebuffIndex].index        = i;
+                ThisUnitDebuffs[StoredDebuffIndex].expirationTime = expirationTime;
+                ThisUnitDebuffs[StoredDebuffIndex].Texture        = Texture;
+                ThisUnitDebuffs[StoredDebuffIndex].Applications   = Applications;
+                ThisUnitDebuffs[StoredDebuffIndex].TypeName       = TypeName;
+                ThisUnitDebuffs[StoredDebuffIndex].Type           = Type;
+                ThisUnitDebuffs[StoredDebuffIndex].Name           = Name;
+                ThisUnitDebuffs[StoredDebuffIndex].index          = i;
 
                 -- we can't use i, else we wouldn't have contiguous indexes in the table
                 StoredDebuffIndex = StoredDebuffIndex + 1;

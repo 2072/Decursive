@@ -1158,6 +1158,7 @@ do
     local fmod              = _G.math.fmod;
     local CooldownFrame_SetTimer = _G.CooldownFrame_SetTimer;
     local GetSpellCooldown = _G.GetSpellCooldown;
+    local bor = _G.bit.bor;
 
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -1183,7 +1184,6 @@ do
                 if self.LitTime then
                     self.LitTime = false;
                     self.ChronoFontString:SetText(" ");
-
                 end
             end
 
@@ -1201,7 +1201,7 @@ do
 
         else
             -- If the Unit is invisible
-            if D.profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] then
+            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] then
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
                     self.UnitStatus = STEALTHED;
@@ -1256,26 +1256,29 @@ do
                     if self.LitTime then
                         PrevChrono = self.Chrono;
 
-                        self.Chrono = floor(Time - self.LitTime + 0.5);
+                        if not profile.DebuffsFrameTimeLeft then
+                            self.Chrono = floor(Time - self.LitTime);
 
-                        if self.Chrono ~= PrevChrono then
-                            self.ChronoFontString:SetText( ((self.Chrono < 60) and self.Chrono or (floor(self.Chrono / 60) .. "\'") ));
+                            if self.Chrono ~= PrevChrono then
+                                self.ChronoFontString:SetText( ((self.Chrono < 60) and self.Chrono or (floor(self.Chrono / 60) .. "\'") ));
+                            end
+                        else
+                            self.Chrono = floor(self.Debuffs[1].expirationTime - Time);
+
+                            if self.Chrono ~= PrevChrono then
+                                self.ChronoFontString:SetText( ((self.Chrono < 60) and (self.Chrono + 1) or (floor(self.Chrono / 60 + 1) .. "\'") ));
+                            end
                         end
                     else
                         self.LitTime = Time;
-                        
                     end
                 end
-
+ 
 
                 -- set the status according to RangeStatus
                 if (not RangeStatus or RangeStatus == 0) then
                     Alpha = 0.40;
                     self.UnitStatus = AFFLICTED_NIR;
-
-                    --  if profile.LV_OnlyInRange then
-                    --  D.UnitDebuffed[self.CurrUnit] = false;
-                    --  end
                 else
                     Alpha = 1;
                     self.UnitStatus = AFFLICTED;
@@ -1300,22 +1303,19 @@ do
                 if PreviousStatus == FAR then
                     D.MicroUnitF:UpdateMUFUnit(self.CurrUnit, true); -- this is able to deal when a lot of update queries
                 end
-                
-
             end
         end
 
         if PreviousStatus == AFFLICTED or PreviousStatus == AFFLICTED_AND_CHARMED  then
             MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange - 1;
 
-            --if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.LV_OnlyInRange) then
-            if (MicroUnitF.UnitsDebuffedInRange == 0 and profile.Hide_LiveList) then
+            if MicroUnitF.UnitsDebuffedInRange == 0 and profile.Hide_LiveList then
                 D:Debug("SetColor(): No more unit, sound re-enabled");
                 Status.SoundPlayed = false;
             end
         end
 
-        if (not profile.DebuffsFrameElemBorderShow) then
+        if not profile.DebuffsFrameElemBorderShow then
             BorderAlpha = 0;
         end
 
@@ -1324,7 +1324,7 @@ do
         --self:SetClassBorder();
         
         -- set the alpha of the border if necessary
-        if (self.BorderAlpha ~= BorderAlpha) then
+        if self.BorderAlpha ~= BorderAlpha then
             self.OuterTexture1:SetAlpha(BorderAlpha);
             self.OuterTexture2:SetAlpha(BorderAlpha);
             self.OuterTexture3:SetAlpha(BorderAlpha);
@@ -1339,12 +1339,12 @@ do
 
 
         -- Add the charm status to the bitfield (note that it's treated separatly because it's shown even if the unit is not afflicetd by anything we can cure)
-        if (self.IsCharmed) then
-            self.UnitStatus = bit.bor( self.UnitStatus, CHARMED_STATUS);
+        if self.IsCharmed then
+            self.UnitStatus = bor(self.UnitStatus, CHARMED_STATUS);
         end
 
         -- if the unit is not afflicted or too far set the color to a lower alpha
-        if (not DebuffType) then -- if DebuffType was not set, it means that the unit is too far
+        if not DebuffType then -- if DebuffType was not set, it means that the unit is too far
             Alpha = self.Color[4] * profile.DebuffsFrameElemAlpha;
             self.PrevDebuff1Prio = false;
         end
@@ -1363,7 +1363,7 @@ do
             --self.Texture:SetAlpha(Alpha);
 
             -- Show the charmed alert square
-            if (self.IsCharmed) then
+            if self.IsCharmed then
                 self.InnerTexture:Show();
             else
                 self.InnerTexture:Hide();

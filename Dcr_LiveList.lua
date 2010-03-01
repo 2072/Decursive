@@ -510,7 +510,7 @@ end -- }}}
 
 function LiveList:DisplayTestItem() -- {{{
     if not self.TestItemDisplayed and D.Status.Unit_Array[1] then
-        self.TestItemDisplayed = true;
+        self.TestItemDisplayed = GetTime();
         D:DummyDebuff(D.Status.Unit_Array[1], "Test item");
     end
 end -- }}}
