@@ -1602,7 +1602,7 @@ local function GetOptions()
                         name = L["OPT_CHECKOTHERPLAYERS"],
                         desc = L["OPT_CHECKOTHERPLAYERS_DESC"],
                         hidden = function () return not DC.COMMAVAILABLE; end,
-                        disabled = function () return InCombatLockdown(); end,
+                        disabled = function () return InCombatLockdown() or GetTime() - T.LastVCheck < 60; end,
                         func = function () if D:AskVersion() then D.versions = false; end end,
                         order = 10,
                     },

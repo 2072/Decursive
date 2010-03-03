@@ -643,7 +643,7 @@ do
             end
 
             if event == "SPELL_CAST_SUCCESS" then
-                --D:Println(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
+
                 self:Debug(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName));
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
@@ -677,7 +677,7 @@ do
 
                     PlaySoundFile(DC.FailedSound);
                 elseif arg12 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then
-                    self:AddDebugText(ERR_GENERIC_NO_TARGET, "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12);
+                    self:AddDebugText("ERR_GENERIC_NO_TARGET", "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12);
                 end
                 self.Status.ClickedMF = false;
 
@@ -707,7 +707,7 @@ function D:SPELL_UPDATE_COOLDOWN()
     D.Status.UpdateCooldown = GetTime();
 end
 
-local LastVCheck = 0;
+T.LastVCheck = 0;
 function D:AskVersion()
 
     if InCombatLockdown() then
@@ -716,12 +716,12 @@ function D:AskVersion()
         return false;
     end
 
-    if GetTime() - LastVCheck < 30 then
+    if GetTime() - T.LastVCheck < 60 then
         D:Debug("AskVersion(): Too early!");
         return false;
     end
 
-    LastVCheck = GetTime();
+    T.LastVCheck = GetTime();
 
     local Distribution = false;
     --  "PARTY", "RAID", "GUILD", "BATTLEGROUND". As of 2.1, "WHISPER"
@@ -754,6 +754,8 @@ function D:AskVersion()
     
 end
 
+local LastVersionQueryAnswerPerFrom = {};
+local LastVersionQueryAnswerPerDist = {};
 function D:OnCommReceived(message, distribution, from)
     local alpha = false;
     --@alpha@
@@ -763,10 +765,26 @@ function D:OnCommReceived(message, distribution, from)
     --@alpha@
     D:Debug("OnCommReceived:", message, distribution, from);
     --@end-alpha@
-    if message == "giveversion" then
+
+    local time = GetTime();
+
+    -- answer version queries but no more than once every 60 seconds to the same player and every 5 seconds to the same chanel
+    --      This avoids a player who would be crafting its own version query messages and sending them repeatidly from causing any damage
+    --      This avoids race conditions where several players would send a version query at the same time on the same chanel
+    if message == "giveversion"
+        and (not LastVersionQueryAnswerPerDist[distribution] or time - LastVersionQueryAnswerPerDist[distribution] > 5 )
+        and (not LastVersionQueryAnswerPerFrom[from]         or time - LastVersionQueryAnswerPerFrom[from] > 60        )
+    then
 
         LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 ), distribution, from )
 
+        LastVersionQueryAnswerPerFrom[from]         = time;
+        LastVersionQueryAnswerPerDist[distribution] = time;
+
+        --@alpha@
+        D:Debug("Version info sent to, ", from, "by", distribution, ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 ));
+        --@end-alpha@
+ 
     elseif message:sub(1, 8) == "Version:" then
 
         local version, date, isAlpha, enabled = message:match ("^Version: ([^,]+),(%d+),(%d),(%d)");
@@ -782,11 +800,14 @@ function D:OnCommReceived(message, distribution, from)
 
             D.versions[from] = { version, date, isAlpha, enabled };
 
-            --delayed call to LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
+            --delayed call to LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name); plus "spam" prevention system (after receiving version info from someone)
             if not D:DelayedCallExixts ("NewversionDatareceived") then
                 D:ScheduleDelayedCall("NewversionDatareceived", LibStub("AceConfigRegistry-3.0").NotifyChange, 1, LibStub("AceConfigRegistry-3.0"), D.name);
+                T.LastVCheck = time;
             end
         end
+    else
+        D:Debug("Unhandled comm received (spam?)");
     end
 end
 
