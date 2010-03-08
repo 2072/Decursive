@@ -726,7 +726,7 @@ function D:AskVersion()
     local Distribution = false;
     --  "PARTY", "RAID", "GUILD", "BATTLEGROUND". As of 2.1, "WHISPER"
 
-    if UnitExists("target") then
+    if UnitExists("target") and (UnitFactionGroup("target")) == (UnitFactionGroup("player")) and (tonumber((UnitGUID("target")):sub(5,5), 16) % 8) == 0  then -- the unit exists and is a player of our faction
         LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", "WHISPER", self:UnitName("target"));
         D:Debug("Asking version to ", self:UnitName("target"));
     end
