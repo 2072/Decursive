@@ -85,6 +85,8 @@ function D:GetDefaultsSettings()
         global = {
             debugging = false,
             NonRealease = false,
+            LastExpirationAlert = 0,
+
             -- the key to bind the macro to
             MacroBind = false,
             NoStartMessages = false,

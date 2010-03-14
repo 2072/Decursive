@@ -241,7 +241,13 @@ function D:BetaWarning()
 
             if time() > D.VersionTimeStamp + VersionLifeTime then
                 DC.DevVersionExpired = true;
-                StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+                -- Display the expiration notice only once evry 48 hours
+                if time() - self.db.global.LastExpirationAlert > 48 * 3600  then
+                    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+
+                    self.db.global.LastExpirationAlert = time();
+                end
+
                 return;
             end
 
