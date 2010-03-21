@@ -1,9 +1,31 @@
-Decursive 2.4.5.1 by Archarodim (2009-12-08)
-============================================
+Decursive 2.5.0 beta 1 by Archarodim (2010-03-21)
+=================================================
+
+Changes from Decursive 2.4.5.1 to Decursive 2.5.0 beta 1
+--------------------------------------------------------
+
+- NEW OPTION: "Time left" for MUF chronometers. (Defaults to off) Displays time
+  left instead of time elapsed on afflicted MUFs.
+
+- NEW OPTION PANEL: (under the MUF options) to let the user choose the
+  MUF's mouse button assignments.
+
+- It's now possible to check Decursive versions used in your current group or
+  Guild (From the 'About' option panel).
+
+- The 'Unstable Affliction' warning will also work when tool-tip display is
+  disabled.
+
+- Added a new option (under the general tab) to disable the three welcome
+  messages Decursive prints at each login.
+
+- Non-release versions (alphas and betas) of Decursive will expire after 30
+  days instead of 10. The expiration alert of these versions will be displayed
+  only once every 48 hours (and no longer at every login).
 
 
-Changes from Decursive 2.4.5 to Decursive 2.4.5.1
--------------------------------------------------
+Changes from Decursive 2.4.5.1 to Decursive 2.4.5.1
+---------------------------------------------------
 
 - Fix a problem where Decursive would not correctly detect priest talent 'Body
   and Soul' at login.

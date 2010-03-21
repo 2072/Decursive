@@ -1,5 +1,29 @@
-Decursive 2.4.5.1 par Archarodim  (2009-12-08)
-==============================================
+Decursive 2.5.0 beta 1 par Archarodim (2010-03-21)
+==================================================
+
+Changements entre Decursive 2.4.5.1 et Decursive 2.5.0 beta 1
+-------------------------------------------------------------
+
+- Nouvelle option: "Temps restant" pour les chronomètres des micro-portraits.
+  (Désactivée par défaut). Affiche le temps restant au lieu du temps écoulé sur
+  les micro-portraits des gens affectés.
+
+- Nouveau panneau d'options (sous les options des mirco-portraits) qui permet
+  de réaffecter les actions des boutons de la souris sur les micro-portraits.
+
+- Il est désormais possible de vérifier la versions de Decursive utilisée par
+  les autres membres du groupe ou de la guilde. (Depuis le panneau 'À propos'
+  dans les options)
+
+- L'alerte concernant 'Affliction Instable' fonctionnera également si les
+  info-bulles des micro-portraits sont désactivés.
+
+- Nouvelle option (onglet 'Options générales') pour désactiver les 3 messages
+  de bienvenue affichés par Decursive à chaque chargement.
+
+- Les versions non-définitives (alphas et bêtas) de Decursive expirent au bout
+  de 30 jours au lieu de 10. Les alertes d'expiration de ces versions ne seront
+  affichées qu'une seule fois toutes les 48 heurs (et non plus à chaque connexion).
 
 
 Changements entre Decursive 2.4.5 et Decursive 2.4.5.1
