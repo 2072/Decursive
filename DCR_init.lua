@@ -199,6 +199,9 @@ D.Status.UpdateCooldown = 0;
 D.Status.GroupUpdatedOn = 0;
 D.Status.GroupUpdateEvent = 0;
 
+D.Status.TestLayout = false;
+D.Status.TestLayoutUNum = 25;
+
 -- An acces the debuff table
 D.ManagedDebuffUnitCache = {};
 -- A table UnitID=>IsDebuffed (boolean)
@@ -683,6 +686,8 @@ function D:SetConfiguration()
     D.Status.GroupUpdateEvent = 0;
     D.Status.UpdateCooldown = 0;
     D.Status.MouseOveringMUF = false;
+    D.Status.TestLayout = false;
+    D.Status.TestLayoutUNum = 25;
     
 
     -- if we log in and we are already fighting...

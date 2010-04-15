@@ -1144,6 +1144,35 @@ local function GetOptions()
                                 isPercent = true,
                                 order = 1900,
                             },
+                            TestLayout = {
+                                type = "toggle",
+                                disabled = "subdisabled",
+                                name = L["OPT_TESTLAYOUT"],
+                                desc = L["OPT_TESTLAYOUT_DESC"],
+                                get = function() return D.Status.TestLayout end,
+                                set = function(info,v)
+                                    D.Status.TestLayout = v;
+                                end,
+                                order = 1950,
+                            },
+                            TestLayoutUNum = {
+                                type = 'range',
+                                name = L["OPT_TESTLAYOUTUNUM"],
+                                desc = L["OPT_TESTLAYOUTUNUM_DESC"],
+                                get = function() return D.Status.TestLayoutUNum end,
+                                set = function(info,v) 
+                                    if (v ~= D.Status.TestLayoutUNum) then
+                                        D.Status.TestLayoutUNum = v;
+                                        --D.MicroUnitF:Delayed_MFsDisplay_Update();
+                                    end
+                                end,
+                                disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D.Status.TestLayout end,
+                                min = 1,
+                                max = 82,
+                                step = 1,
+                                isPercent = false,
+                                order = 2000,
+                            },
                             -- }}}
                         },
                     },
@@ -1666,10 +1695,6 @@ local TypesToUName = {
 
 local CureCheckBoxes = false;
 function D:SetCureCheckBoxNum (Type)
-
-
-
-
     local CheckBox = CureCheckBoxes[Type];
 
     -- add the number in green before the name if we have a spell available and if we checked the box
