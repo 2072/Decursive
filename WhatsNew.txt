@@ -24,7 +24,7 @@ Changes from Decursive 2.4.5.1 to Decursive 2.5.0 beta 1
   only once every 48 hours (and no longer at every login).
 
 
-Changes from Decursive 2.4.5.1 to Decursive 2.4.5.1
+Changes from Decursive 2.4.5 to Decursive 2.4.5.1
 ---------------------------------------------------
 
 - Fix a problem where Decursive would not correctly detect priest talent 'Body

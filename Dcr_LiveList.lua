@@ -461,7 +461,16 @@ function LiveList:Update_Display() -- {{{
                         RangeStatus = MicroUnitF.UnitToMUF[UnitID].UnitStatus; -- MicroUnitF.UnitToMUF[UnitID] is nil sometimes XXX
                         RangeStatus = (RangeStatus == DC.AFFLICTED or RangeStatus == DC.AFFLICTED_AND_CHARMED) and true or false;
                     else
-                        RangeStatus = IsSpellInRange(D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
+                        if D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type] then
+                            RangeStatus = IsSpellInRange(D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
+                        else
+                            D:AddDebugText("LiveList:Update_Display(): couldn't get range, DType:", D.ManagedDebuffUnitCache[UnitID][1].Type, "DTypeName:", D.ManagedDebuffUnitCache[UnitID][1].TypeName
+                            , "DName:", D.ManagedDebuffUnitCache[UnitID][1].Name
+
+                             "MUFs are", D.profile.ShowDebuffsFrame, "InCombatLockdown():", InCombatLockdown());
+                            RangeStatus = 0;
+
+                        end
                         RangeStatus = (RangeStatus and RangeStatus ~= 0) and true or false;
                     end
 
