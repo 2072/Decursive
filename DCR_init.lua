@@ -295,15 +295,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     D.LiveList.Frame = DcrLiveList;
 
 
-    --[=[
-    D.DewDrop:Register(DecursiveMainBar,
-    'children', function()
-        D.DewDrop:FeedAceOptionsTable( D.options )
-    end
-    )
-    D.Waterfall:Register("Decursive","aceOptions", D.options, 'title',  L["STR_OPTIONS"],  "colorR", 0.1, "colorG", 0.1, "colorB", 0.3);
-    --]=]
-
     DC.TypeNames = {
         [DC.MAGIC]      = "Magic";
         [DC.ENEMYMAGIC] = "Magic";
@@ -326,44 +317,37 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         [DC.NOTYPE]     = "AAAAAA";
     }
 
-
-
     -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
     -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; Dcr:Configure();
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
     DC.SpellsToUse = {
 
-        --Mages
-        [DS["SPELL_POLYMORPH"]]     = {
-            Types = {DC.CHARMED},
-            IsBest = false,
-            Pet = false,
-            Rank = 1,
-        },
-        -- Druids
-        [DS["SPELL_CYCLONE"]]       = {
-            Types = {DC.CHARMED},
-            IsBest = false,
-            Pet = false,
-        },
         --[[
         -- used for testing only
         [DS["Dampen Magic"] ]       = {
         Types = {DC.MAGIC},--, DC.DISEASE, DC.POISON},
-        IsBest = false,
+        IsBest = 0,
         Pet = false,
         }, --]]
         --[[
         -- used for testing only
         [DS["Amplify Magic"] ]      = {
             Types = {DC.DISEASE, DC.POISON},
-            IsBest = false,
+            IsBest = 0,
             Pet = false,
         }, --]]
+      
+        -- Priests
+        [DS["SPELL_CURE_DISEASE"]]          = {
+            Types = {DC.DISEASE},
+            IsBest = 0,
+            Pet = false,
+        },
+        -- Priests
         [DS["SPELL_ABOLISH_DISEASE"]]       = {
             Types = {DC.DISEASE},
-            IsBest = true,
+            IsBest = 1,
             Pet = false,
 
             EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
@@ -378,57 +362,49 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
                 },
             }
         },
-        [DS["SPELL_CURE_DISEASE"]]          = {
-            Types = {DC.DISEASE},
-            IsBest = false,
-            Pet = false,
-        },
-        -- paladins
-        [DS["SPELL_CLEANSE"]]               = {
-            Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-            IsBest = true,
-            Pet = false,
-        },
-        [DS["SPELL_PURIFY"]]                = {
-            Types = {DC.DISEASE, DC.POISON},
-            IsBest = false,
-            Pet = false,
-        },
         -- Priests
         [DS["SPELL_DISPELL_MAGIC"]]         = {
             Types = {DC.MAGIC, DC.ENEMYMAGIC},
-            IsBest = true,
+            IsBest = 1,
+            Pet = false,
+        },
+        -- Paladins
+        [DS["SPELL_PURIFY"]]                = {
+            Types = {DC.DISEASE, DC.POISON},
+            IsBest = 1,
+            Pet = false,
+        },
+        -- Paladins
+        [DS["SPELL_CLEANSE"]]               = {
+            Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+            IsBest = 2,
+            Pet = false,
+        },
+        -- Druids
+        [DS["SPELL_CURE_POISON"]]           = {
+            Types = {DC.POISON},
+            IsBest = 0,
             Pet = false,
         },
         -- Druids
         [DS["SPELL_ABOLISH_POISON"]]        = {
             Types = {DC.POISON},
-            IsBest = true,
+            IsBest = 1,
             Pet = false,
         },
-        [DS["SPELL_CURE_POISON"]]           = {
-            Types = {DC.POISON},
-            IsBest = false,
+        -- Druids
+        [DS["SPELL_CYCLONE"]]       = {
+            Types = {DC.CHARMED},
+            IsBest = 0,
             Pet = false,
         },
-        [DS["SPELL_CURE_TOXINS"]]           = {
-            Types = {DC.POISON, DC.DISEASE},
-            IsBest = false,
-            Pet = false,
-        },
-        -- mages
-        [DS["SPELL_REMOVE_LESSER_CURSE"]]   = {
+        -- Mages and Druids
+        [DS["SPELL_REMOVE_CURSE"]]   = {
             Types = {DC.CURSE},
-            IsBest = true,
-            Pet = false,
-        },
-        -- druids and mages
-        [DS["SPELL_REMOVE_CURSE"]]          = {
-            Types = {DC.CURSE},
-            IsBest = true,
+            IsBest = 0,
             Pet = false,
 
-            --[===[ for testing purpose only
+            --[===[ for testing purpose only {{{
             EnhancedBy = DS["TALENT_ARCANE_POWER"], 
             EnhancedByCheck = function ()
                 return (select(5, GetTalentInfo(1,1))) > 0;
@@ -440,56 +416,68 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
                     [DC.MAGIC]  = true,
                 },
             }
-            --]===]
-
+            --}}} ]===]
         },
-        --[=[ -- disabled because of Korean locals... see below
-        [DS["SPELL_PURGE"]]                 = {
-            Types = {DC.ENEMYMAGIC},
-            IsBest = true,
-            Pet = false,
-        },
-        --]=]
-
-        -- HUNTERS http://www.wowhead.com/?spell=19801
-        [DS["SPELL_TRANQUILIZING_SHOT"]]    = {
-            Types = {DC.ENEMYMAGIC},
-            IsBest = true,
-            Pet = false,
-        },
-        
-        -- SHAMAN http://www.wowhead.com/?spell=51514
-        [DS["SPELL_HEX"]]    = {
+        -- Mages
+        [DS["SPELL_POLYMORPH"]]      = {
             Types = {DC.CHARMED},
-            IsBest = true,
+            IsBest = 0,
+            Pet = false,
+            Rank = 1,
+        },
+        -- Shamans
+        [DS["SPELL_CURE_TOXINS"]]           = {
+            Types = {DC.POISON, DC.DISEASE},
+            IsBest = 1,
             Pet = false,
         },
-
-        [DS["PET_FEL_CAST"]]                = {
-            Types = {DC.MAGIC, DC.ENEMYMAGIC},
-            IsBest = true,
-            Pet = true,
-        },
-        [DS["PET_DOOM_CAST"]]               = {
-            Types = {DC.MAGIC, DC.ENEMYMAGIC},
-            IsBest = true,
-            Pet = true,
-        },
+        -- Shaman resto
         [DS["CLEANSE_SPIRIT"]]              = {
             Types = {DC.CURSE, DC.DISEASE, DC.POISON},
-            IsBest = true,
+            IsBest = 3,
             Pet = false,
         },
-
+        -- Shamans http://www.wowhead.com/?spell=51514
+        [DS["SPELL_HEX"]]    = {
+            Types = {DC.CHARMED},
+            IsBest = 0,
+            Pet = false,
+        },
+        --[=[ -- disabled because of Korean locals... see below
+        -- Shamans
+        [DS["SPELL_PURGE"]]                 = {
+            Types = {DC.ENEMYMAGIC},
+            IsBest = 0,
+            Pet = false,
+        }, --]=]
+        -- Hunters http://www.wowhead.com/?spell=19801
+        [DS["SPELL_TRANQUILIZING_SHOT"]]    = {
+            Types = {DC.ENEMYMAGIC},
+            IsBest = 0,
+            Pet = false,
+        },
+        -- Warlock
+        [DS["PET_FEL_CAST"]]                = {
+            Types = {DC.MAGIC, DC.ENEMYMAGIC},
+            IsBest = 1,
+            Pet = true,
+        },
+        -- Warlock
+        [DS["PET_DOOM_CAST"]]               = {
+            Types = {DC.MAGIC, DC.ENEMYMAGIC},
+            IsBest = 1,
+            Pet = true,
+        },
     };
 
 
     -- Thanks to Korean localization team of WoW we have to make an exception....
     -- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
     if ((select(2, UnitClass("player"))) == "SHAMAN") then
+        -- Shamans
         DC.SpellsToUse[DS["SPELL_PURGE"]]                   = {
             Types = {DC.ENEMYMAGIC},
-            IsBest = true,
+            IsBest = 0,
             Pet = false,
         };
     end
@@ -1020,7 +1008,7 @@ function D:Configure() --{{{
             -- register it
             for _, Type in pairs (Types) do
 
-                if not CuringSpells[Type] or not DC.SpellsToUse[ CuringSpells[Type] ].IsBest then  -- we did not already registered this spell or it's not the best spell for this type
+                if not CuringSpells[Type] or DC.SpellsToUse[spellName].IsBest > DC.SpellsToUse[ CuringSpells[Type] ].IsBest then  -- we did not already registered this spell or it's not the best spell for this type
 
                     self.Status.FoundSpells[spellName] = {DC.SpellsToUse[spellName].Pet, (select(2, GetSpellInfo(spellName))), IsEnhanced};
                     CuringSpells[Type] = spellName;
@@ -1068,8 +1056,8 @@ function D:GetSpellsTranslations(FromDIAG)
         ["SPELL_CURE_TOXINS"]           = {     526,                                     }, -- shamans
         ["SPELL_CURE_POISON"]           = {     8946,                                    },
         ["SPELL_ABOLISH_POISON"]        = {     2893,                                    },
-        ["SPELL_REMOVE_LESSER_CURSE"]   = {     475,                                     },
-        ["SPELL_REMOVE_CURSE"]          = {     2782,                                    },
+        ["SPELL_REMOVE_LESSER_CURSE"]   = {     475,                                     }, -- Mages
+        ["SPELL_REMOVE_CURSE"]          = {     2782,                                    }, -- Druids
         ['SPELL_TRANQUILIZING_SHOT']    = {     19801,                                   },
         ['SPELL_HEX']                   = {     51514,                                   }, -- shamans
         ["CLEANSE_SPIRIT"]              = {     51886,                                   },

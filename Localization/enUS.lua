@@ -388,10 +388,10 @@ L["OPT_SHOWCHRONOTIMElEFT"]   = "Time left";
 L["OPT_SHOWCHRONOTIMElEFT_DESC"]   = "Display time left instead of time elapsed.";
 
 L["OPT_TESTLAYOUT"] = "Test Layout";
-L["OPT_TESTLAYOUT_DESC"] = "Created fake units so you can test the display layout.";
+L["OPT_TESTLAYOUT_DESC"] = "Create fake units so you can test the display layout.";
 
 L["OPT_TESTLAYOUTUNUM"] = "Unit number";
-L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake unit to create.";
+L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create.";
 --]==]
 --@end-do-not-package@
 
