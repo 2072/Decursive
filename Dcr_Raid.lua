@@ -457,7 +457,7 @@ do
     local pet;
     function D:GetUnitArray() --{{{
         -- if the groups composition did not changed
-        if (not self.Groups_datas_are_invalid or not self.DcrFullyInitialized) then
+        if not self.Groups_datas_are_invalid or not self.DcrFullyInitialized then
             return;
         end
         self.Groups_datas_are_invalid = false;
@@ -493,6 +493,11 @@ do
         UnitToGUID = setmetatable(UnitToGUID, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
         GUIDToUnit = setmetatable(GUIDToUnit, GUIDToUnit_mt); -- this one cannot be erased (memory leak due to GUID...)
         GUIDToUnit_ScannedAll = false;
+
+        if Status.TestLayout then
+            D:GetFakeUnit_array ();
+            return;
+        end
 
 
         local unit;
@@ -714,12 +719,6 @@ do
         for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
             t_insert(Status.Unit_Array, unit);
 
-            --[=[
-            if Status.Unit_Array_UnitToGUID[unit] then -- XXX to remove for release
-                D:AddDebugText("multi-unit bug for ", unit, GUID, "previous found GUID", Status.Unit_Array_UnitToGUID[unit]);
-            end
-            --]=]
-
             Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a useful table, not used here :)
         end
 
@@ -732,13 +731,6 @@ do
         end);
 
 
-        --[=[
-        if UnitExists("focus") then
-            self.Status.last_focus_GUID = false;
-            D:PLAYER_FOCUS_CHANGED();
-        end
-        --]=]
-
         Status.UnitNum = #Status.Unit_Array;
 
         UnitToGUID = {};
@@ -747,6 +739,37 @@ do
 
         self:Debug ("|cFFFF44FF-->|r Update complete!", Status.UnitNum);
         return;
+    end
+
+    function D:GetFakeUnit_array ()
+
+        if not D.Status.TestLayout then
+            return;
+        end
+
+        self:Debug ("|cFFFF22FF-->|r Creating fake Units Array");
+
+        local Status = self.Status;
+        Status.Unit_Array_GUIDToUnit[DC.MyGUID] =  "player";
+
+        Status.Unit_Array = {}
+
+        for i = 1, D.Status.TestLayoutUNum - 1 do -- the player is always in so we remove one here.
+            Status.Unit_Array_GUIDToUnit["raid" .. i .. "GUID"] = "raid" .. i;
+        end
+
+        local GUID;
+        for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
+            t_insert(Status.Unit_Array, unit);
+
+            Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a useful table, not used here :)
+        end
+
+        table.sort(Status.Unit_Array);
+
+        Status.UnitNum = #Status.Unit_Array;
+        D.Status.GroupUpdatedOn = D:NiceTime(); -- It's used in UNIT_AURA event handler to trigger a rescan if the array is found inacurate
+
     end
 
 end

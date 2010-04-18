@@ -761,7 +761,7 @@ do
                     --@debug@
                     if IsDebuffed then
                         self:AddDebugText("delayed debuff found by scaneveryone, scheduling analysis in 1s");
-                        D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
+                        --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
                     else
                         self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit);
                     end

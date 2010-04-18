@@ -1152,6 +1152,7 @@ local function GetOptions()
                                 get = function() return D.Status.TestLayout end,
                                 set = function(info,v)
                                     D.Status.TestLayout = v;
+                                    D:GroupChanged("Test Layout");
                                 end,
                                 order = 1950,
                             },
@@ -1161,8 +1162,9 @@ local function GetOptions()
                                 desc = L["OPT_TESTLAYOUTUNUM_DESC"],
                                 get = function() return D.Status.TestLayoutUNum end,
                                 set = function(info,v) 
-                                    if (v ~= D.Status.TestLayoutUNum) then
+                                    if v ~= D.Status.TestLayoutUNum then
                                         D.Status.TestLayoutUNum = v;
+                                        D:GroupChanged("Test Layout num changed");
                                         --D.MicroUnitF:Delayed_MFsDisplay_Update();
                                     end
                                 end,

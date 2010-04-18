@@ -623,6 +623,8 @@ function MicroUnitF:OnEnter() -- {{{
             -- Colored unit name
             D:ColorText(            (D:PetUnitName(       Unit, true    ))
             , "FF" .. ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
+        else
+            TooltipText = MF.CurrUnit;
         end
 
 
@@ -695,6 +697,8 @@ function MicroUnitF:OnEnter() -- {{{
 
 end -- }}}
 
+-- No longer used
+--[===[
 function MicroUnitF:LateAnalysis(From, Debuffs, MF, Status, GUIDwasFixed)
 
     local Unit = MF.CurrUnit; -- shortcut
@@ -765,6 +769,7 @@ function MicroUnitF:LateAnalysis(From, Debuffs, MF, Status, GUIDwasFixed)
         D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "or debuff:", debuffname, "Status:", Status, "Events:\n", unpack(foundcblevents));
     end
 end
+--]===]
 
 function MicroUnitF:OnLeave() -- {{{
     D.Status.MouseOveringMUF = false;
@@ -1501,7 +1506,7 @@ do
                 if UnitToGUID[MF.CurrUnit] ~= MF.UnitGUID then
                     MF.UpdateCountDown = 0; -- will force MF:Update() to be called
                     --@debug@
-                    D:Println("|cFFFFAA55GUID change detected while placing for |r", MicroFrameUpdateIndex);
+                    D:Println("|cFFFFAA55GUID change detected while placing for |r", MicroFrameUpdateIndex, UnitToGUID[MF.CurrUnit], MF.UnitGUID );
                     --@end-debug@
                 end
 
