@@ -742,12 +742,14 @@ function D:AskVersion()
             Distribution = "RAID";
         elseif UnitExists("party1") then
             Distribution = "PARTY";
-        else
+        elseif GetGuildInfo("player") then
             Distribution = "GUILD";
         end
     end
 
-    LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", Distribution);
+    if Distribution then
+        LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", Distribution);
+    end
     D:Debug("Asking version on ", Distribution);
 
     return true;
@@ -793,7 +795,7 @@ function D:OnCommReceived(message, distribution, from)
         D:Debug("Version info received from, ", from, "by", distribution, "version:", version, "date:", date, "islpha:", isAlpha, "enabled:", enabled);
         --@end-alpha@
 
-        if from ~= DC.MyName or true then
+        if version then
             if not D.versions then
                 D.versions = {}
             end
@@ -805,6 +807,8 @@ function D:OnCommReceived(message, distribution, from)
                 D:ScheduleDelayedCall("NewversionDatareceived", LibStub("AceConfigRegistry-3.0").NotifyChange, 1, LibStub("AceConfigRegistry-3.0"), D.name);
                 T.LastVCheck = time;
             end
+        else
+            D:Debug("Malformed version string received: ", message);
         end
     else
         D:Debug("Unhandled comm received (spam?)");
