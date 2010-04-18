@@ -158,7 +158,7 @@ function T._DecursiveErrorHandler(err, ...)
         if not ScriptErrorsFrameScrollFrameText.cursorOffset then
             ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
             if ( GetCVarBool("scriptErrors") ) then
-                print("|cFF00FF00Decursive HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors)|r");
+                print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
             end
         end
     end
@@ -256,40 +256,29 @@ do
         T._DiagStatus = 0; -- will be set to 1 if the diagnostic fails
 
         -- Table with all the required libraries with their current revision at Decursive release time.
-        -- {{{
-        local LibrariesToCheck = {
-            ["AceLibrary"]              = 90000 + 1091,
-            ["AceOO-2.0"]               = 90000 + 1091,
-            ["AceDebug-2.0"]            = 90000 + 1091,
-            ["AceEvent-2.0"]            = 90000 + 1091,
-            ["AceDB-2.0"]               = 90000 + 1094,
-            ["AceConsole-2.0"]          = 90000 + 1094,
-            ["AceAddon-2.0"]            = 90000 + 1096,
-            ["Dewdrop-2.0"]             = 90000 + 320, -- (alpha)
-            ["Waterfall-1.0"]           = 90000 + 125,
-        }; -- }}}
 
         --LibStub:GetLibrary
         local UseLibStub = {
             ["AceAddon-3.0"] = 5,
-            ["AceConsole-3.0"] = 6,
+            ["AceConsole-3.0"] = 7,
             ["AceEvent-3.0"] = 3,
             ["AceTimer-3.0"] = 5,
             ["AceHook-3.0"] = 5,
-            ["AceDB-3.0"] = 13,
-            ["AceDBOptions-3.0"] = 10,
+            ["AceDB-3.0"] = 20,
+            ["AceDBOptions-3.0"] = 11,
             ["AceLocale-3.0"] = 2,
+            ["AceComm-3.0"] = 6,
 
-            ["AceGUI-3.0"] = 23,
+            ["AceGUI-3.0"] = 30,
             ["AceConfig-3.0"] = 2,
-            ["AceConfigRegistry-3.0"] = 9,
-            ["AceConfigCmd-3.0"] = 9,
-            ["AceConfigDialog-3.0"] = 34,
+            ["AceConfigRegistry-3.0"] = 11,
+            ["AceConfigCmd-3.0"] = 12,
+            ["AceConfigDialog-3.0"] = 45,
 
-            ["LibDataBroker-1.1"] = 3,
-            ["LibDBIcon-1.0"] = 8,
-            ["LibQTip-1.0"] = 29,
-            ["CallbackHandler-1.0"] = 3,
+            ["LibDataBroker-1.1"] = 4,
+            ["LibDBIcon-1.0"] = 12,
+            ["LibQTip-1.0"] = 34,
+            ["CallbackHandler-1.0"] = 5,
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
