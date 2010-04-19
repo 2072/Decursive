@@ -48,7 +48,7 @@
         -- Dcr:SetDateAndRevision("$Date: 2008-04-10 00:53:55 +0200 (jeu., 10 avr. 2008) $", "$Revision: 68827 $");
     </Script>
 
-    <Frame name="DcrMUFsContainer" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
+    <Frame name="DcrMUFsContainer" clampedToScreen="true" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
         <Size>
             <AbsDimension x="20" y="20" />
         </Size>

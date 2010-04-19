@@ -47,7 +47,7 @@ end
     </Script>
 
 
-    <Frame name="DecursiveMainBar" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent"> <!-- {{{ -->
+    <Frame name="DecursiveMainBar" clampedToScreen="true" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent"> <!-- {{{ -->
         <Size>
             <AbsDimension x="80" y="25" />
         </Size>

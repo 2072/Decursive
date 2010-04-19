@@ -220,6 +220,8 @@ function MicroUnitF:ResetAllPositions () -- {{{
 end -- }}}
 
 -- return the anchor of a given MUF depending on its creation ID
+do
+local Anchor = { "TOPLEFT", x, y, "TOPLEFT" };
 function MicroUnitF:GiveMFAnchor (ID) -- {{{
     local LineNum = floor( (ID - 1) / D.profile.DebuffsFramePerline);
     local NumOnLine = fmod( (ID - 1), D.profile.DebuffsFramePerline);
@@ -227,9 +229,11 @@ function MicroUnitF:GiveMFAnchor (ID) -- {{{
     local x = (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0) + NumOnLine * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing);
     local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
 
+    Anchor[2] = x; Anchor[3] = y;
 
-    return { "TOPLEFT", x, y, "TOPLEFT" };
-end -- }}}
+    return Anchor;
+end
+end-- }}}
 
 
 function MicroUnitF:Delayed_MFsDisplay_Update ()
@@ -665,11 +669,33 @@ function MicroUnitF:OnEnter() -- {{{
             end
         end
 
-        -- The tooltip is anchored above the first MUF
-        local FirstMUFAnchor = self:GiveMFAnchor(1); DefaultTTAnchor[2] = FirstMUFAnchor[2]; DefaultTTAnchor[3] = FirstMUFAnchor[3];
+        local VerticalMUF    = floor((self.Number - 1) / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline + 1;
 
-        -- finally display the tooltip
+        -- The tooltip is anchored above the top first MUF
+        if not D.profile.DebuffsFrameGrowToTop then
+            local FirstMUFAnchor = self:GiveMFAnchor(1);
+            DefaultTTAnchor[2] = FirstMUFAnchor[2];
+            DefaultTTAnchor[3] = FirstMUFAnchor[3];
+        else
+            local TopMUFAnchor   = self:GiveMFAnchor(VerticalMUF);
+            DefaultTTAnchor[2] = TopMUFAnchor[2];
+            DefaultTTAnchor[3] = TopMUFAnchor[3];
+        end
+
+        -- Display the tooltip
         D:DisplayTooltip( TooltipText , self.Frame, DefaultTTAnchor);
+
+        -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
+        if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then
+            local RefMUF = 1;
+
+            if not D.profile.DebuffsFrameGrowToTop then
+               RefMUF = VerticalMUF;
+            end
+
+            DcrDisplay_Tooltip:ClearAllPoints();
+            DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerNum[RefMUF].Frame, "BOTTOMLEFT");
+        end
     end
 
     -- show a help text in the Game default tooltip
