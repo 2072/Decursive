@@ -18,12 +18,8 @@ externals:
 
 
 
-    
-   
-
     libs/LibQTip-1.0:
         url: svn://svn.wowace.com/wow/libqtip-1-0/mainline/trunk
-        tag: latest
     Libs/LibDBIcon-1.0:
         url:  svn://svn.wowace.com/wow/libdbicon-1-0/mainline/trunk/LibDBIcon-1.0
     Libs/LibDataBroker-1.1:
@@ -42,5 +38,4 @@ externals:
 license-output: LICENSE.txt
 
 #manual-changelog: changelog.txt
-
 
