@@ -669,7 +669,7 @@ function MicroUnitF:OnEnter() -- {{{
             end
         end
 
-        local VerticalMUF    = floor((self.Number - 1) / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline + 1;
+        local VerticalMUF    = floor((self.UnitShown - 1) / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline + 1;
 
         -- The tooltip is anchored above the top first MUF
         if not D.profile.DebuffsFrameGrowToTop then
