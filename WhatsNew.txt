@@ -1,5 +1,23 @@
-Decursive 2.5.0 beta 1 by Archarodim (2010-03-21)
+Decursive 2.5.0 beta 2 by Archarodim (2010-04-20)
 =================================================
+
+Changes from Decursive 2.5.0 beta 1 to Decursive 2.5.0 beta 2
+-------------------------------------------------------------
+
+- Testing MUF display layout is now possible. Look in the MUF display options.
+
+- Enhancement: The MUF tool-tip is always displayed above the MUFs or beneath
+  them if it's not possible. (it can't overlap the MUFS anymore).
+
+- The 'target' and 'mouseover' units will no longer be displayed in the
+  Live-list if the player is part of the group.
+
+- Clean up, organisation and commenting in the curing spell "database". Also
+  changed the way "best spells" are handled.
+  PLEASE, REPORT ANY PROBLEM REGARDING CURING SPELL RECOGNITION.
+
+- Updated minimum library versions requirements.
+
 
 Changes from Decursive 2.4.5.1 to Decursive 2.5.0 beta 1
 --------------------------------------------------------

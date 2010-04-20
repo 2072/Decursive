@@ -1,5 +1,22 @@
-Decursive 2.5.0 beta 1 par Archarodim (2010-03-21)
+Decursive 2.5.0 beta 2 par Archarodim (2010-04-20)
 ==================================================
+
+Changements entre  Decursive 2.5.0 beta 1 et Decursive 2.5.0 beta 2
+-------------------------------------------------------------------
+
+- Il est désormais possible de tester la disposition des micro-portraits. Jetez
+  un oeil dans les options d'affichage de ces derniers.
+
+- Amélioration : La bulle d'information des micro-portraits ne peut plus les masquer.
+
+- Les unités 'target' et 'mouseover' ne s'afficheront plus dans la liste des
+  affligées si l'unité fait parti du groupe.
+
+- Réorganisation interne de la base de donnée gérant les sorts de guérisons.
+  MERCI DE RAPPORTER TOUT PROBLÈME CONCERNANT LA DÉTECTION DES SORTS.
+
+- Actualisation des versions minimum requises des librairies partagées.
+
 
 Changements entre Decursive 2.4.5.1 et Decursive 2.5.0 beta 1
 -------------------------------------------------------------
