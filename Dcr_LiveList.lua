@@ -89,6 +89,7 @@ local UnitExists        = _G.UnitExists;
 local IsSpellInRange    = _G.IsSpellInRange;
 local UnitClass         = _G.UnitClass;
 local UnitIsFriend      = _G.UnitIsFriend;
+local UnitGUID          = _G.UnitGUID;
 local floor             = _G.math.floor;
 local str_upper         = _G.string.upper;
 
@@ -403,7 +404,7 @@ function LiveList:Update_Display() -- {{{
     -- Check the units in order of importance:
 
     -- First the Target
-    if D.Status.TargetExists and self:GetDebuff("target") then -- TargetExists implies that the unit is a friend
+    if D.Status.TargetExists and not D.Status.Unit_Array_GUIDToUnit[UnitGUID("target")] and self:GetDebuff("target") then -- TargetExists implies that the unit is a friend
         Index = Index + 1;
         self:DisplayItem(Index, "target");
         --D:Debug("frenetic target update");
@@ -416,7 +417,7 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- Then the MouseOver
-    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
+    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and not D.Status.Unit_Array_GUIDToUnit[UnitGUID("mouseover")] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
         Index = Index + 1;
         self:DisplayItem(Index, "mouseover");
         --D:Debug("frenetic mouseover update");
@@ -499,7 +500,7 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- Hide unneeded Items
-    if self.NumberShown > Index then -- if there are more unit shown than the actual number of debuffed units
+    if self.NumberShown > Index then -- if there are more units shown than the actual number of debuffed units
         for i = Index + 1, self.NumberShown do
             if self.ExistingPerID[i] and self.ExistingPerID[i].IsShown then
                 --D:Debug("(LiveList) Hidding LVItem %d", i);
