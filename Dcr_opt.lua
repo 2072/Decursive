@@ -98,9 +98,12 @@ function D:GetDefaultsSettings()
                 "ctrl-%s2",
                 "shift-%s1",
                 "shift-%s2",
+                "shift-%s3",
                 "alt-%s1",
                 "alt-%s2",
-                -- 3, -- middle mouse button || RESERVED FOR TARGETING
+                "alt-%s3",
+                "%s3",       -- the last two entries are always target and focus
+                "ctrl-%s3",
             },
         },
 
@@ -2422,7 +2425,8 @@ do
     local i = 1;
 
     local function retrieveKeyComboNum (info)
-        return tonumber(str_sub(info[#info], -1));
+        return tonumber(str_sub(info[#info], 9));
+        -- #"KeyCombo" == 8
     end
 
     local function GetValues (info) -- {{{
@@ -2431,7 +2435,11 @@ do
             table.wipe(TempTable);
 
             for i=1, #D.db.global.AvailableButtons do
-                TempTable[i] = D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[i]],  i < 7 and D:NumToHexColor(D.profile.MF_colors[i]) or "FFBBBBBB"  );
+                TempTable[i] = D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[i]],
+                        i < 7 and D:NumToHexColor(D.profile.MF_colors[i]) -- defined priorities
+                        or (i >= #D.db.global.AvailableButtons - 1 and "FFFFFFFF" -- target and focus
+                        or "FFBBBBBB") -- other unused buttons
+                    );
             end
         end
 
@@ -2445,7 +2453,15 @@ do
     local OptionPrototype = {
         -- {{{
         type = "select",
-             name = "",
+             name = function (info)
+                 if retrieveKeyComboNum (info) < #D.db.global.AvailableButtons - 1 then
+                     return "";
+                 elseif  retrieveKeyComboNum (info) == #D.db.global.AvailableButtons - 1 then
+                     return L["OPT_MUFTARGETBUTTON"];
+                 else
+                     return L["OPT_MUFFOCUSBUTTON"];
+                 end
+             end,
              values = GetValues,
              order = GetOrder,
              get = function (info)
@@ -2472,6 +2488,11 @@ do
         for i = 1, 6 do
             D.options.args.MicroFrameOpt.args.MUFsMouseButtons.args["KeyCombo" .. i] = OptionPrototype;
         end
+
+        -- create choice munu for targeting (it's always the last but one available button)
+        D.options.args.MicroFrameOpt.args.MUFsMouseButtons.args["KeyCombo" .. #D.db.global.AvailableButtons - 1] = OptionPrototype;
+        -- create choice munu for focusing (it's always the last available button)
+        D.options.args.MicroFrameOpt.args.MUFsMouseButtons.args["KeyCombo" .. #D.db.global.AvailableButtons] = OptionPrototype;
     end
 
 end

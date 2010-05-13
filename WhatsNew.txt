@@ -1,5 +1,12 @@
-Decursive 2.5.0 beta 2 by Archarodim (2010-04-20)
+Decursive 2.5.0 beta 3 by Archarodim (2010-05-13)
 =================================================
+
+Changes from Decursive 2.5.0 beta 2 to Decursive 2.5.0 beta 3
+-------------------------------------------------------------
+
+- The third mouse button (middle button) can be used to cast the curing spells.
+  As a result you can also choose the mouse buttons for targeting and focusing.
+
 
 Changes from Decursive 2.5.0 beta 1 to Decursive 2.5.0 beta 2
 -------------------------------------------------------------

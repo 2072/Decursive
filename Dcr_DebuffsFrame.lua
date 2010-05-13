@@ -126,12 +126,16 @@ local UnitAura          = _G.UnitAura;
 DC.AvailableButtonsReadable = { -- {{{
     ["%s1"]         =   L["HLP_LEFTCLICK"], -- left mouse button
     ["%s2"]         =   L["HLP_RIGHTCLICK"], -- right mouse button
+    ["%s3"]         =   L["HLP_MIDDLECLICK"], -- middle mouse button
     ["ctrl-%s1"]    =   L["CTRL"]  .. "-" .. L["HLP_LEFTCLICK"],
     ["ctrl-%s2"]    =   L["CTRL"]  .. "-" .. L["HLP_RIGHTCLICK"],
+    ["ctrl-%s3"]    =   L["CTRL"]  .. "-" .. L["HLP_MIDDLECLICK"],
     ["shift-%s1"]   =   L["SHIFT"] .. "-" .. L["HLP_LEFTCLICK"],
     ["shift-%s2"]   =   L["SHIFT"] .. "-" .. L["HLP_RIGHTCLICK"],
+    ["shift-%s3"]   =   L["SHIFT"] .. "-" .. L["HLP_MIDDLECLICK"],
     ["alt-%s1"]     =   L["ALT"]   .. "-" .. L["HLP_LEFTCLICK"],
     ["alt-%s2"]     =   L["ALT"]   .. "-" .. L["HLP_RIGHTCLICK"],
+    ["alt-%s3"]     =   L["ALT"]   .. "-" .. L["HLP_MIDDLECLICK"],
     -- 3, -- middle mouse button || RESERVED FOR TARGETTING
 }; -- }}}
 
@@ -703,14 +707,15 @@ function MicroUnitF:OnEnter() -- {{{
         -- if necessary we will update the help tooltip text
         if (D.Status.SpellsChanged ~= TooltipUpdate) then
             TooltipButtonsInfo = {};
+            local AvailableButtons = D.db.global.AvailableButtons;
 
             for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
                 TooltipButtonsInfo[Prio] =
-                str_format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell);
+                str_format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[AvailableButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell);
             end
 
-            t_insert(TooltipButtonsInfo, str_format("%s: %s", L["HLP_MIDDLECLICK"], L["TARGETUNIT"]));
-            t_insert(TooltipButtonsInfo, str_format("%s: %s", L["CTRL"] .. "-" .. L["HLP_MIDDLECLICK"], L["FOCUSUNIT"]));
+            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.AvailableButtonsReadable[AvailableButtons[#AvailableButtons - 1]], L["TARGETUNIT"]));
+            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.AvailableButtonsReadable[AvailableButtons[#AvailableButtons    ]], L["FOCUSUNIT"]));
             TooltipButtonsInfo = table.concat(TooltipButtonsInfo, "\n");
             TooltipUpdate = D.Status.SpellsChanged;
         end
@@ -1091,12 +1096,6 @@ do
         -- D:Debug("UpdateAttributes() executed");
 
         if self.LastAttribUpdate == 0 then -- only once
-            -- set the mouse middle-button action
-            self.Frame:SetAttribute("type3", "target"); --never changes
-
-            -- set the mouse ctrl-middle-button action
-            self.Frame:SetAttribute("ctrl-type3", "focus"); -- never changes
-
             -- set the mouse left-button actions on all modifiers
             self.Frame:SetAttribute("type1", "macro");
             self.Frame:SetAttribute("ctrl-type1", "macro");
@@ -1108,14 +1107,24 @@ do
             self.Frame:SetAttribute("ctrl-type2", "macro");
             self.Frame:SetAttribute("alt-type2", "macro");
             self.Frame:SetAttribute("shift-type2", "macro");
+
+            -- set the mouse middle-button actions on all modifiers
+            self.Frame:SetAttribute("type3", "macro");
+            self.Frame:SetAttribute("ctrl-type3", "macro");
+            self.Frame:SetAttribute("alt-type3", "macro");
+            self.Frame:SetAttribute("shift-type3", "macro");
         end
+
+        local AvailableButtons = D.db.global.AvailableButtons;
+
+        self.Frame:SetAttribute(str_format(AvailableButtons[#AvailableButtons - 1], "macrotext"), str_format("/target %s", Unit));
+        self.Frame:SetAttribute(str_format(AvailableButtons[#AvailableButtons    ], "macrotext"), str_format("/focus %s", Unit));
 
         -- set the spells attributes using the lookup tables above
         for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
-            --self.Frame:SetAttribute(str_format(D.db.global.AvailableButtons[Prio], "spell"), Spell);
             --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
-            self.Frame:SetAttribute(str_format(D.db.global.AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
+            self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
             ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
             Unit,Unit,
             Spell,
@@ -1123,7 +1132,7 @@ do
 
 
             --[[
-            D:Debug("XX-> macro: ",str_format(D.db.global.AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
+            D:Debug("XX-> macro: ",str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
             ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
             Unit,Unit,
             Spell,

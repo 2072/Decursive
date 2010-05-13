@@ -1,5 +1,14 @@
-Decursive 2.5.0 beta 2 par Archarodim (2010-04-20)
+Decursive 2.5.0 beta 3 par Archarodim (2010-05-13)
 ==================================================
+
+Changements entre  Decursive 2.5.0 beta 2 et Decursive 2.5.0 beta 3
+-------------------------------------------------------------------
+
+- Le troisième bouton de la souris (bouton du milieu) peut-être utilisé pour
+  lancer les sorts de guérisons.
+  Par conséquent, il est également possible de choisir les boutons utilisés pour
+  cibler et focaliser.
+
 
 Changements entre  Decursive 2.5.0 beta 1 et Decursive 2.5.0 beta 2
 -------------------------------------------------------------------
