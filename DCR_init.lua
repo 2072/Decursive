@@ -235,7 +235,7 @@ function D:BetaWarning()
     alpha = true;
     --@end-alpha@
 
-    if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or alpha then
+    if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or ("@project-version@"):find("Candidate") or alpha then
 
         -- check for expiration of this dev version
         if D.VersionTimeStamp ~= 0 then

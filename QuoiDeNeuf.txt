@@ -1,8 +1,19 @@
-Decursive 2.5.0 beta 3 par Archarodim (2010-05-13)
-==================================================
+Decursive 2.5.0 RC 1 par Archarodim (2010-05-15)
+================================================
 
-Changements entre  Decursive 2.5.0 beta 2 et Decursive 2.5.0 beta 3
--------------------------------------------------------------------
+
+Si vous lisez ce fichier, merci de participer au sondage suivant:
+
+http://www.wowace.com/addons/decursive/polls/do-you-read-the-file-quoi-de-neuf-txt-the-french-changelog/
+
+Du résultat de ce sondage dépendra le futur de ce fichier.
+
+
+
+
+
+Changements entre  Decursive 2.5.0 beta 2 et Decursive 2.5.0 RC 1
+------------------------------------------------------------------
 
 - Le troisième bouton de la souris (bouton du milieu) peut-être utilisé pour
   lancer les sorts de guérisons.
