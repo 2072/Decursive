@@ -37,7 +37,7 @@ externals:
 
 license-output: LICENSE.txt
 
-manual-changelog:
-    filename: WhatsNew.txt.txt
-    markup-type: markdown
+#manual-changelog:
+#    filename: WhatsNew.txt.txt
+#    markup-type: markdown
 

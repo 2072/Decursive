@@ -465,10 +465,13 @@ function LiveList:Update_Display() -- {{{
                         if D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type] then
                             RangeStatus = IsSpellInRange(D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
                         else
-                            D:AddDebugText("LiveList:Update_Display(): couldn't get range, DType:", D.ManagedDebuffUnitCache[UnitID][1].Type, "DTypeName:", D.ManagedDebuffUnitCache[UnitID][1].TypeName
-                            , "DName:", D.ManagedDebuffUnitCache[UnitID][1].Name
-
-                             "MUFs are", D.profile.ShowDebuffsFrame, "InCombatLockdown():", InCombatLockdown());
+                            D:AddDebugText(
+                                "LiveList:Update_Display(): couldn't get range, DType:", D.ManagedDebuffUnitCache[UnitID][1].Type,
+                                "DTypeName:", D.ManagedDebuffUnitCache[UnitID][1].TypeName,
+                                "DName:", D.ManagedDebuffUnitCache[UnitID][1].Name,
+                                "MUFs are", D.profile.ShowDebuffsFrame,
+                                "InCombatLockdown():", InCombatLockdown()
+                            );
                             RangeStatus = 0;
 
                         end
