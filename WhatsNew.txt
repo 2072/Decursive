@@ -1,5 +1,5 @@
-Decursive 2.5.0 Release Candidate 2 by Archarodim (2010-05-27)
-==============================================================
+Decursive 2.5.0 by Archarodim (2010-06-08)
+==========================================
 
 
 Changes from Decursive 2.4.5.1 to Decursive 2.5.0

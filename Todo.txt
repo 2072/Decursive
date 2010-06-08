@@ -1,10 +1,10 @@
 TODO:
 
+- add a donators credit section in the About UI
+
 - change timers when mass debuff so that only the 5 or so first units of the array get updated in priority all the rest should be handled by the roaming MUF updater
 
 - Add a menu option to choose between available spells. (will also allow to choose other polymorph spells)
-
-- Add Cleansing Totem for shaman when the above point is done
 
 - Add an option to disable spell stopping when clicking on a MUF
 

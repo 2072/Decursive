@@ -1,12 +1,12 @@
-Decursive 2.5.0 RC 1 par Archarodim (2010-05-15)
-================================================
+Decursive 2.5.0 par Archarodim (2010-06-08)
+===========================================
 
 
 Si vous lisez ce fichier, merci de participer au sondage suivant:
 
 http://www.wowace.com/addons/decursive/polls/do-you-read-the-file-quoi-de-neuf-txt-the-french-changelog/
 
-Du résultat de ce sondage dépendra le futur de ce fichier.
+L'avenir de ce document dépend du résultat de ce sondage.
 
 
 
