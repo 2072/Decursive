@@ -325,7 +325,7 @@ function LiveList:GetDebuff(UnitID) -- {{{
     if (UnitID == "target" or UnitID == "mouseover") and not UnitIsFriend(UnitID, "player") then
         if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] and D.ManagedDebuffUnitCache[UnitID][1].Type then
             D.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target/mouseover debuff
-            D.UnitDebuffed["target"] = false;
+            D.UnitDebuffed[UnitID] = false; -- XXX changed from 'target' to UnitID on 2010-06-08
         end
         --D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile or gone.", UnitID);
         return false;
@@ -469,8 +469,9 @@ function LiveList:Update_Display() -- {{{
                                 "LiveList:Update_Display(): couldn't get range, DType:", D.ManagedDebuffUnitCache[UnitID][1].Type,
                                 "DTypeName:", D.ManagedDebuffUnitCache[UnitID][1].TypeName,
                                 "DName:", D.ManagedDebuffUnitCache[UnitID][1].Name,
-                                "MUFs are", D.profile.ShowDebuffsFrame,
-                                "InCombatLockdown():", InCombatLockdown()
+                                "MUFs are:", D.profile.ShowDebuffsFrame,
+                                "InCombatLockdown():", InCombatLockdown(),
+                                "UnitID:", UnitID
                             );
                             RangeStatus = 0;
 
