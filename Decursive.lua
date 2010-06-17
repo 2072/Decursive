@@ -241,16 +241,18 @@ end --}}}
 
 
 function D:PlaySound (UnitID, Caller) --{{{
-    if (self.profile.PlaySound and not self.Status.SoundPlayed) then
+    if self.profile.PlaySound and not self.Status.SoundPlayed then
         local Debuffs = self:UnitCurableDebuffs(UnitID, true);
-        if (Debuffs and Debuffs[1] and Debuffs[1].Type) then
+        if Debuffs and Debuffs[1] and Debuffs[1].Type then
 
             -- good sounds: Sound\\Doodad\\BellTollTribal.wav
             --          Sound\\interface\\AuctionWindowOpen.wav
             --          Sound\\interface\\AlarmClockWarning3.wav
             PlaySoundFile(self.profile.SoundFile);
-            D:Debug("Sound Played! by %s", Caller);
+            self:Debug("Sound Played! by %s", Caller);
             self.Status.SoundPlayed = true;
+        else
+            self.UnitDebuffed[UnitID] = false;
         end
     end
 end --}}}
