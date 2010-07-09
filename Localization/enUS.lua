@@ -79,7 +79,7 @@ if not L then return end;
 
 -- Used for testing the addon withour the packager
 
-L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = "A debug report is available! Type |cFFFF0000/dcr report|r to see it"
+L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = "A debug report is available!\nType |cFFFF0000/dcr report|r to see it"
 L["DECURSIVE_DEBUG_REPORT_SHOW"] = "Debug report available!"
 L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"] = "Show a debug report the author needs to see..."
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"

@@ -122,7 +122,9 @@ local GetFramerate = _G.GetFramerate;
 local GetNetStats = _G.GetNetStats;
 function T._AddDebugText(a1, ...)
 
-    T.Dcr:Debug("Error processed");
+    if T.Dcr.Debug then
+        T.Dcr:Debug("Error processed");
+    end
     local text = "";
 
     if select('#', ...) > 0 then

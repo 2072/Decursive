@@ -172,6 +172,11 @@ DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage crea
 
 DC.DevVersionExpired = false;
 
+DC.RAID_ICON_LIST = _G.ICON_LIST;
+if not DC.RAID_ICON_LIST then
+    T._AddDebugText("DCR_init.lua: Couldn't get Raid Target Icon List!");
+    DC.RAID_ICON_LIST = {};
+end
 
 D.DebuffHistory = {};
 
