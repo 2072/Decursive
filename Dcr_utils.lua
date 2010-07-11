@@ -134,6 +134,14 @@ local function UseFormatIfPresent(...)
     end
 end
 
+function D:NumToHexStr(number)
+    if type(number) == 'number' then
+        return ("%X"):format(number);
+    else
+        return tostring(number);
+    end
+end
+
 Dcr.UseFormatIfPresent = UseFormatIfPresent;
 
 local function debugStyle(...)
