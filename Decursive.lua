@@ -397,7 +397,7 @@ do
 
         if D.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" and UnitExists(Unit) then
             D:Debug("|cFFFF0000Setting test debuff for %s (debuff %d)|r", Unit, i);
-            return "Test item", DC.TypeNames[D.Status.ReversedCureOrder[1]], 1, "Interface\\AddOns\\Decursive\\iconON.tga", D.LiveList.TestItemDisplayed + 70;
+            return "Test item", DC.TypeNames[D.Status.ReversedCureOrder[1]], 2, "Interface\\AddOns\\Decursive\\iconON.tga", D.LiveList.TestItemDisplayed + 70;
         end
 
         --D:Debug("|cFFFF0000Getting debuffs for %s , id = %d|r", Unit, i);
