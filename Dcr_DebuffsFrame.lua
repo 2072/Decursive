@@ -629,7 +629,7 @@ function MicroUnitF:OnEnter() -- {{{
         -- First, write the name of the unit in its class color
         if UnitExists(MF.CurrUnit) then
             TooltipText =
-            ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:-10|t ") or ""  ) ..
+            ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or ""  ) ..
             -- Colored unit name
             D:ColorText(            (D:PetUnitName(       Unit, true    ))
             , "FF" .. ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
@@ -663,7 +663,8 @@ function MicroUnitF:OnEnter() -- {{{
         end
 
         -- Unit Status
-        TooltipText = TooltipText .. "\n" .. L["UNITSTATUS"] .. StatusText .. "\n";
+        --TooltipText = TooltipText .. "\n" .. L["UNITSTATUS"] .. StatusText .. "\n";
+        TooltipText = TooltipText .. "\n" .. StatusText;
 
         -- list the debuff(s) names
         if MF.Debuffs then
