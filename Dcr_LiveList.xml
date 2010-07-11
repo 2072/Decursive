@@ -97,6 +97,25 @@
         </Size>
     </Texture> <!-- }}} -->
 
+    <Texture name="DcrLVRaidIconTemplate" file="Interface\AddOns\Decursive\iconON.tga" virtual="true"> <!-- {{{ -->
+        <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent">
+                <Offset>
+                    <AbsDimension x="-1" y="1"/>
+                </Offset>
+            </Anchor>
+            <!--
+            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentType">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>
+                </Offset>
+            </Anchor>
+            -->
+        </Anchors>
+        <Size>
+            <AbsDimension x="20" y="20" />
+        </Size>
+    </Texture> <!-- }}} -->
 
     <FontString name="DcrLLAfflictionCountFont" inherits="NumberFontNormalSmall" maxLines="1" text="1" virtual="true"> <!-- {{{ -->
         <Anchors>
@@ -134,9 +153,14 @@
             <AbsValue val="7.5"/>
         </FontHeight>
         <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="$parentUnitName" relativePoint="BOTTOMLEFT">
+            <Anchor point="TOP" relativeTo="$parentUnitName" relativePoint="BOTTOM">
                 <Offset>
-                    <AbsDimension x="5" y="-2"/>
+                    <AbsDimension x="0" y="-1"/>
+                </Offset>
+            </Anchor>
+            <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentIcon">
+                <Offset>
+                    <AbsDimension x="5" y="0" />
                 </Offset>
             </Anchor>
         </Anchors>
@@ -162,9 +186,14 @@
 
     <FontString name="DcrLLDebuffNameFont" inherits="GameFontNormalSmall" justifyH="LEFT" maxLines="1" text="Name of the afflication" virtual="true"> <!-- {{{ -->
         <Anchors>
-            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parentIcon">
+            <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentIcon">
                 <Offset>
-                    <AbsDimension x="1" y="1" />
+                    <AbsDimension x="0" y="0" />
+                </Offset>
+            </Anchor>
+            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentUnitID">
+                <Offset>
+                    <AbsDimension x="0" y="-2" />
                 </Offset>
             </Anchor>
         </Anchors>

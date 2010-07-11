@@ -92,6 +92,7 @@ local UnitIsFriend      = _G.UnitIsFriend;
 local UnitGUID          = _G.UnitGUID;
 local floor             = _G.math.floor;
 local str_upper         = _G.string.upper;
+local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 
 
 -- defines what is printed when the object is read as a string
@@ -194,8 +195,10 @@ function LiveList.prototype:init(Container,ID) -- {{{
     --Debuff info
     self.UnitID             = false;
     self.UnitName           = false;
+    self.RaidTargetIndex    = false;
     self.PrevUnitName       = false;
     self.PrevUnitID         = false;
+    self.PrevRaidTargetIndex= false;
     self.UnitClass          = false;
     
     self.Debuff             = {};
@@ -239,6 +242,9 @@ function LiveList.prototype:init(Container,ID) -- {{{
 
     -- Create the debuff type fontstring
     self.DebuffTypeFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Type", "OVERLAY", "DcrLLDebuffTypeFont");
+    
+    -- Create the Raid Target Icon Texture
+    self.RaidIconTexture = self.Frame:CreateTexture("DcrLiveListItem"..ID.."RaidIcon", "ARTWORK", "DcrLVRaidIconTemplate");
 
     -- Create the debuff name fontstring
     self.DebuffNameFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Name", "OVERLAY", "DcrLLDebuffNameFont");
@@ -257,6 +263,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     self.UnitName           = D:PetUnitName(UnitID, true);
     self.Debuff             = Debuff;
     self.IsCharmed          = IsCharmed;
+    self.RaidTargetIndex    = GetRaidTargetIndex(UnitID);
 
     if D.profile.LiveListAlpha ~= self.Alpha then
         self.Frame:SetAlpha(D.profile.LiveListAlpha);
@@ -268,6 +275,12 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     if self.PrevDebuffTexture ~= Debuff.Texture then
         self.IconTexture:SetTexture(Debuff.Texture);
         self.PrevDebuffTexture =  Debuff.Texture;
+    end
+
+    -- Raid Icon
+    if self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
+        self.RaidIconTexture:SetTexture(self.RaidTargetIndex and "Interface\\TargetingFrame\\UI-RaidTargetingIcon_" .. self.RaidTargetIndex or nil);
+        self.PrevRaidTargetIndex = self.RaidTargetIndex
     end
 
     -- Applications count
