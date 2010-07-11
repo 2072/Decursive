@@ -166,6 +166,8 @@ function T._DecursiveErrorHandler(err, ...)
     end
     --]=]
 
+    err = tostring(err);
+
     --Add a check to see if the error is happening inside the Blizzard debug tool himself...
     if (err:lower()):find("blizzard_debugtools") then
         if ( GetCVarBool("scriptErrors") ) then
