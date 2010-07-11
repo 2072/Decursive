@@ -52,6 +52,7 @@ local LC = D.LC;
 local DC = DcrC;
 local DS = DC.DS;
 local _;
+local _G = _G;
 
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
@@ -63,13 +64,13 @@ local t_insert          = _G.table.insert;
 
 -- Dcr_ListFrameTemplate specific internal functions {{{
 function D.ListFrameTemplate_OnLoad()
-    this.ScrollFrame = getglobal(this:GetName().."ScrollFrame");
-    this.ScrollBar = getglobal(this.ScrollFrame:GetName().."ScrollBar");
+    this.ScrollFrame = _G[this:GetName().."ScrollFrame"];
+    this.ScrollBar = _G[this.ScrollFrame:GetName().."ScrollBar"];
     this.ScrollFrame.offset = 0;
 end
 
 function D:ListFrameScrollFrameTemplate_OnMouseWheel(value)
-    local scrollBar = getglobal(this:GetName().."ScrollBar");
+    local scrollBar = _G[this:GetName().."ScrollBar"];
     local min, max = scrollBar:GetMinMaxValues();
     if ( value > 0 ) then
         if (IsShiftKeyDown() ) then
@@ -115,7 +116,7 @@ function D.PrioSkipListFrame_OnUpdate() --{{{
             if (i < 10) then
                 id = "0"..i;
             end
-            local btn = getglobal(baseName.."Index"..id);
+            local btn = _G[baseName.."Index"..id];
 
             btn:SetID( i + this.ScrollFrame.offset);
             D:PrioSkipListEntry_Update(btn);
@@ -126,7 +127,7 @@ function D.PrioSkipListFrame_OnUpdate() --{{{
                 btn:Hide();
             end
         end
-        this.ScrollUpdateFunc(getglobal(baseName.."ScrollFrame"), true);
+        this.ScrollUpdateFunc(_G[baseName.."ScrollFrame"], true);
     end
 
 end --}}}

@@ -334,11 +334,11 @@ end
 
 
 function D:ThisSetText(text) --{{{
-    getglobal(this:GetName().."Text"):SetText(text);
+    _G[this:GetName().."Text"]:SetText(text);
 end --}}}
 
 function D:ThisSetParentText(text) --{{{
-    getglobal(this:GetParent():GetName().."Text"):SetText(text);
+    _G[this:GetParent():GetName().."Text"]:SetText(text);
 end --}}}
 
 do

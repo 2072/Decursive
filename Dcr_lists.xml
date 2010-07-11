@@ -355,7 +355,7 @@
 
                 this.Priority = true;
                 this.ListTitle = Dcr.L["PRIORITY_LIST"];
-                getglobal(this:GetName().."Text"):SetText(Dcr.L["STR_DCR_PRIO"]);
+                _G[this:GetName().."Text"]:SetText(Dcr.L["STR_DCR_PRIO"]);
 
                 this.OnUpdate = Dcr.PrioSkipListFrame_OnUpdate;
 
@@ -390,7 +390,7 @@
                 this.Priority = false;
                 this.ListTitle = Dcr.L["SKIP_LIST_STR"];
 
-                getglobal(this:GetName().."Text"):SetText(Dcr.L["STR_DCR_SKIP"]);
+                _G[this:GetName().."Text"]:SetText(Dcr.L["STR_DCR_SKIP"]);
 
                 this.OnUpdate = Dcr.PrioSkipListFrame_OnUpdate;
 
@@ -439,7 +439,7 @@
 
         <Scripts>
             <OnShow>
-                getglobal(this:GetName().."Title"):SetText(Dcr.L["STR_QUICK_POP"]);
+                _G[this:GetName().."Title"]:SetText(Dcr.L["STR_QUICK_POP"]);
             </OnShow>
         </Scripts>
         <Layers>

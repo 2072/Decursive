@@ -187,14 +187,14 @@ function D:ShowHideButtons(UseCurrentValue) --{{{
         DcrFrame .. "Hide",
     }
 
-    local DCRframeObject = getglobal(DcrFrame);
+    local DCRframeObject = _G[DcrFrame];
 
     if (not UseCurrentValue) then
         D.profile.HideButtons = (not D.profile.HideButtons);
     end
 
     for _, ButtonName in pairs(buttons) do
-        local Button = getglobal(ButtonName);
+        local Button = _G[ButtonName];
 
         if (D.profile.HideButtons) then
             Button:Hide();

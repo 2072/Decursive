@@ -692,7 +692,7 @@ function D:SetConfiguration()
     D.classprofile = D.db.class; -- shortcut
 
     if type (D.profile.OutputWindow) == "string" then
-        D.Status.OutputWindow = getglobal(D.profile.OutputWindow);
+        D.Status.OutputWindow = _G[D.profile.OutputWindow];
     end
 
     D.debugging = D.db.global.debugging;
