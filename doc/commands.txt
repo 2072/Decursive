@@ -49,8 +49,22 @@ when you loose a frame)
  
 **NOTE:**
 
-All these commands can also be bound to a key through the key-binding
+All the above commands can also be bound to a key through the key-binding
 WoW interface.
+**Commands are not case sensitive**
+
+
+*Other useful commands:*
+
+- /dcr
+
+    Lists all the command line configuration options.
+
+- /dcr HideMUFsHandle
+
+   Hides the Micro-Unit Frames handle and disables the possibility to move them.
+   Use the same command to get it back.
+
 
 
 *See also:*

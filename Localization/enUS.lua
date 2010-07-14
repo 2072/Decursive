@@ -397,7 +397,7 @@ L["OPT_TESTLAYOUTUNUM"] = "Unit number";
 L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create.";
 
 L["OPT_HIDEMUFSHANDLE"] = "Hide the MUFs handle";
-L["OPT_HIDEMUFSHANDLE_DESC"] = "Hide the Micro-Unit Frames handle and disable the possibility to move them.\nUse the same command to get it back.";
+L["OPT_HIDEMUFSHANDLE_DESC"] = "Hides the Micro-Unit Frames handle and disables the possibility to move them.\nUse the same command to get it back.";
 --]==]
 --@end-do-not-package@
 
