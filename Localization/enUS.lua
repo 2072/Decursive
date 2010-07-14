@@ -395,6 +395,9 @@ L["OPT_TESTLAYOUT_DESC"] = "Create fake units so you can test the display layout
 
 L["OPT_TESTLAYOUTUNUM"] = "Unit number";
 L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create.";
+
+L["OPT_HIDEMUFSHANDLE"] = "Hide the MUFs handle";
+L["OPT_HIDEMUFSHANDLE_DESC"] = "Hide the Micro-Unit Frames handle and disable the possibility to move them.\nUse the same command to get it back.";
 --]==]
 --@end-do-not-package@
 

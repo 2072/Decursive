@@ -121,6 +121,9 @@ function D:GetDefaultsSettings()
             -- The micro units debuffs frame
             ShowDebuffsFrame = true,
 
+            -- Setting to hide the MUF handle (render it mouse-non-interactive)
+            HideMUFsHandle = false,
+
             AutoHideDebuffsFrame = 0,
 
             -- The maximum number of MUFs to be displayed
@@ -406,6 +409,25 @@ local function GetOptions()
                 get = function() return not D:IsEnabled(); end,
                 order = -3,
             },
+            HideMUFsHandle = {
+                type = 'toggle',
+                name = L["OPT_HIDEMUFSHANDLE"],
+                desc = L["OPT_HIDEMUFSHANDLE_DESC"],
+                guiHidden   = true,
+                disabled = function() return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
+                set = function(info, v)
+                    D.profile[info[#info]] = v;
+                    D.MFContainerHandle:EnableMouse(not v);
+                    D:Print(v and "MUFs handle disabled" or "MUFs handle enabled");
+                    return v;
+                end,
+                get = function(info) return not D.MFContainerHandle:IsMouseEnabled(); end,
+                confirm = function(info, v) return v; end,
+                order = -4,
+            },
+
+            -- Atticus Ross rules!
+ 
             general = {
                 -- {{{
                 type = 'group',

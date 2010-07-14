@@ -293,6 +293,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
 
     D.MFContainer = DcrMUFsContainer;
+    D.MFContainerHandle = DcrMUFsContainerDragButton;
     D.MicroUnitF.Frame = D.MFContainer;
 
 
@@ -867,6 +868,7 @@ function D:Init() --{{{
     else
         D.MFContainer:Hide();
     end
+    D.MFContainerHandle:EnableMouse(not D.profile.HideMUFsHandle);
     -- }}}
 
     -- SET THE LIVE_LIST FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
