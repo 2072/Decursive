@@ -51,6 +51,7 @@ when you loose a frame)
 
 All the above commands can also be bound to a key through the key-binding
 WoW interface.
+
 **Commands are not case sensitive**
 
 

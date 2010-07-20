@@ -178,6 +178,14 @@ if not DC.RAID_ICON_LIST then
     DC.RAID_ICON_LIST = {};
 end
 
+DC.RAID_ICON_TEXTURE_LIST = {};
+
+for i,v in ipairs(DC.RAID_ICON_LIST) do
+    DC.RAID_ICON_TEXTURE_LIST[i] = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_" .. i;
+end
+
+
+
 D.DebuffHistory = {};
 
 D.MFContainer = false;

@@ -936,6 +936,8 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         self.PrevChrono         = false;
         self.Shown              = false; -- Setting this to true will broke the stick to right option
         self.UpdateCD           = 0;
+        self.RaidTargetIcon     = false;
+        self.PrevRaidTargetIndex= false;
 
         -- create the frame
         self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..Unit, self.Parent, "DcrMicroUnitTemplateSecure");
@@ -977,8 +979,15 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
         -- Chrono Font string
-        self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..Unit.."Chrono", "OVERLAY", "DcrMicroUnitChronoFont");
+        self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..Unit.."Chrono", "ARTWORK", "DcrMicroUnitChronoFont");
         self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
+
+        -- raid target icon
+        self.RaidIconTexture = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."RaidTargetIcon", "OVERLAY");
+        self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
+        self.RaidIconTexture:SetHeight(13);
+        self.RaidIconTexture:SetWidth(13);
+
 
         -- a reference to this object
         self.Frame.Object = self;
@@ -1200,6 +1209,7 @@ do
     local fmod              = _G.math.fmod;
     local CooldownFrame_SetTimer = _G.CooldownFrame_SetTimer;
     local GetSpellCooldown = _G.GetSpellCooldown;
+    local GetRaidTargetIndex= _G.GetRaidTargetIndex;
     local bor = _G.bit.bor;
 
     function MicroUnitF.prototype:SetColor() -- {{{
@@ -1315,6 +1325,12 @@ do
                         self.LitTime = Time;
                     end
                 end
+                
+                self.RaidTargetIcon = GetRaidTargetIndex(Unit);
+                if self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
+                    self.RaidIconTexture:SetTexture(self.RaidTargetIcon and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIcon] or nil);
+                    self.PrevRaidTargetIndex = self.RaidTargetIcon;
+                end
  
 
                 -- set the status according to RangeStatus
@@ -1339,6 +1355,12 @@ do
                 if self.LitTime then
                     self.LitTime = false;
                     self.ChronoFontString:SetText(" ");
+                end
+
+                if self.RaidTargetIcon then
+                    self.RaidIconTexture:SetTexture(nil);
+                    self.RaidTargetIcon = false;
+                    self.PrevRaidTargetIndex = false;
                 end
 
                 -- if the previous status was FAR, trigger a full rescan of the unit (combat log event does not report events for far away units)
@@ -1403,6 +1425,8 @@ do
             -- Set the main texture
             self.Texture:SetTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
             --self.Texture:SetAlpha(Alpha);
+
+            
 
             -- Show the charmed alert square
             if self.IsCharmed then
