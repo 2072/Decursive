@@ -10,6 +10,8 @@ Changes from Decursive 2.5.0 to Decursive 2.5.1
 - New command line option to hide and disable the MUFs handle: 
   (/dcr HideMUFsHandle)
 
+- German translation is now complete (thanks to Freydis88).
+
 - Remove the ERR_GENERIC_NO_TARGET debug report happening when the player
   tries to use Polymorph or Purge on himself or another friendly player.
 

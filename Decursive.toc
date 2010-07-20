@@ -26,7 +26,7 @@
 ## X-ReleaseDate: "@project-date-iso@"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
-## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Floyddotnet, Vilogity, Dessa, Farook (German translation)
+## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)
 
 ## X-AceForum: 4195
 
