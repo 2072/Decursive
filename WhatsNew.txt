@@ -1,5 +1,23 @@
-Decursive 2.5.0 by Archarodim (2010-06-08)
-==========================================
+Decursive 2.5.1 beta 1 by Archarodim (2010-07-19)
+=================================================
+
+
+Changes from Decursive 2.5.0 to Decursive 2.5.1
+-----------------------------------------------
+
+- Raid Target Icons are now supported (MUFs and LiveList display)
+
+- New command line option to hide and disable the MUFs handle: 
+  (/dcr HideMUFsHandle)
+
+- Remove the ERR_GENERIC_NO_TARGET debug report happening when the player
+  tries to use Polymorph or Purge on himself or another friendly player.
+
+- Fixe to "LiveList:Update_Display(): couldn't get range" error occurring when
+  not using the MUFs.
+
+- Removed the French version of 'readme' and 'changelog'.
+
 
 
 Changes from Decursive 2.4.5.1 to Decursive 2.5.0
