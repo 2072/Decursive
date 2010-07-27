@@ -262,6 +262,9 @@ function D:GetDefaultsSettings()
             -- Disable macro creation
             DisableMacroCreation = false,
 
+            -- Allow Decursive's macro editing
+	    AllowMacroEdit = false,
+
             -- Those are the different colors used for the MUFs main textures
             MF_colors = {
                 [1]         =   {  .8 , 0   , 0    ,  1     }, -- red
@@ -1605,6 +1608,17 @@ local function GetOptions()
                         end,
                         disabled = function () return D.profile.DisableMacroCreation end,
                         order = 300
+                    },
+		    AllowMacroEdit = {
+                        type = "toggle",
+                        name = L["OPT_ALLOWMACROEDIT"],
+                        desc = L["OPT_ALLOWMACROEDIT_DESC"],
+                        get = function() return D.profile.AllowMacroEdit end,
+                        set = function(info,v)
+                            D.profile.AllowMacroEdit = v;
+                        end,
+                        disabled = function () return D.profile.DisableMacroCreation end,
+                        order = 350
                     },
                     DisableMacroCreation = {
                         type = "toggle",

@@ -398,6 +398,9 @@ L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create.";
 
 L["OPT_HIDEMUFSHANDLE"] = "Hide the MUFs handle";
 L["OPT_HIDEMUFSHANDLE_DESC"] = "Hides the Micro-Unit Frames handle and disables the possibility to move them.\nUse the same command to get it back.";
+
+L["OPT_ALLOWMACROEDIT"] = "Allow macro edition";
+L["OPT_ALLOWMACROEDIT_DESC"] = "Enable this to prevent Decursive from updating its macro, letting you edit it as you want.";
 --]==]
 --@end-do-not-package@
 

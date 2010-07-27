@@ -1217,10 +1217,14 @@ function D:UpdateMacro ()
     };
 
     --D:PrintLiteral(GetMacroIndexByName(D.CONF.MACRONAME));
-    if (GetMacroIndexByName(D.CONF.MACRONAME) ~= 0) then
-        -- D:Debug("Macro found");
-        EditMacro(D.CONF.MACRONAME, unpack(MacroParameters));
-    elseif ((GetNumMacros()) < 36) then
+    if GetMacroIndexByName(D.CONF.MACRONAME) ~= 0 then
+	if not D.profile.AllowMacroEdit then
+	    EditMacro(D.CONF.MACRONAME, unpack(MacroParameters));
+	    D:Debug("Macro updated");
+	else
+	    D:Debug("Macro not updated due to AllowMacroEdit");
+	end
+    elseif (GetNumMacros()) < 36 then
         CreateMacro(unpack(MacroParameters));
     else
         D:errln("Too many macros exist, Decursive cannot create its macro");
