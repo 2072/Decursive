@@ -285,6 +285,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     end
 
     T._HookErrorHandler();
+    T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
 
     D.defaults = D:GetDefaultsSettings();
 
@@ -514,6 +515,8 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         LibStub("AceComm-3.0"):RegisterComm("DecursiveVersion", D.OnCommReceived);
     end
 
+    T._CatchAllErrors = false;
+
 end -- // }}}
 
 local FirstEnable = true;
@@ -522,6 +525,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     if T._SelfDiagnostic() == 2 then
         return false;
     end
+    T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
 
 
     -- Register slashes command {{{
@@ -657,6 +661,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     FirstEnable = false;
 
     D:CheckPlayer();
+    T._CatchAllErrors = false;
 
 end -- // }}}
 
@@ -665,6 +670,7 @@ function D:SetConfiguration()
     if T._SelfDiagnostic() == 2 then
         return false;
     end
+    T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
 
 
     D.DcrFullyInitialized = false;
@@ -779,6 +785,7 @@ function D:SetConfiguration()
     D:GetUnitArray(); -- get the unit array
     D.MicroUnitF:ResetAllPositions (); -- reset all anchors
 
+    T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
     D:BetaWarning();
 
 end

@@ -150,7 +150,7 @@ local IsReporting = false;
 
 local version, build, date, tocversion = GetBuildInfo();
 
-
+T._CatchAllErrors = false;
 
 function T._DecursiveErrorHandler(err, ...)
 
@@ -176,7 +176,8 @@ function T._DecursiveErrorHandler(err, ...)
         return;
     end
 
-    if (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\") and not IsReporting then
+    if not IsReporting and (T._CatchAllErrors or (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\")) then
+	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         IsReporting = true;
         AddDebugText(err, debugstack(2), ...);
         if T.Dcr then
