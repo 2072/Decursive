@@ -11,6 +11,10 @@ Changes from Decursive 2.5.0 to Decursive 2.5.1
   will prefer 'Cure Disease' and 'Cure Poison' over their 'Abolish' equivalent.
   (Defaults to off)
 
+- "Check for 'Abolish' before curing" option now defaults to off. (May not be
+  wanted when a disease or poison needs to be removed at all costs ; it was
+  also confusing for some users)
+
 - *NEW option*: "Allow macro edition" preventing Decursive from updating its
   macro and letting the user change it and still use Decursive macro key-binding
   management. (Defaults to off)

@@ -193,7 +193,7 @@ function D:GetDefaultsSettings()
             Print_Error = true,
 
             -- check for abolish before curing poison or disease
-            Check_For_Abolish = true,
+            Check_For_Abolish = false,
 
 	    -- "Do not use 'Abolish' spells
 	    DisableAbolish = false,
