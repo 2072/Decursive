@@ -1,13 +1,21 @@
-Decursive 2.5.1 beta 1 by Archarodim (2010-07-19)
+Decursive 2.5.1 beta 2 by Archarodim (2010-07-27)
 =================================================
 
 
 Changes from Decursive 2.5.0 to Decursive 2.5.1
 -----------------------------------------------
 
-- Raid Target Icons are now supported (MUFs and LiveList display)
+- *Raid Target Icons are now supported* (MUFs and Live-List display)
 
-- New command line option to hide and disable the MUFs handle: 
+- *NEW option*: "Do not use 'Abolish' spells" (in the cure options). If enabled
+  will prefer 'Cure Disease' and 'Cure Poison' over their 'Abolish' equivalent.
+  (Defaults to off)
+
+- *NEW option*: "Allow macro edition" preventing Decursive from updating its
+  macro and letting the user change it and still use Decursive macro key-binding
+  management. (Defaults to off)
+
+- *NEW command line option* to hide and disable the MUFs handle: 
   (/dcr HideMUFsHandle)
 
 - German translation is now complete (thanks to Freydis88).
@@ -15,10 +23,11 @@ Changes from Decursive 2.5.0 to Decursive 2.5.1
 - Remove the ERR_GENERIC_NO_TARGET debug report happening when the player
   tries to use Polymorph or Purge on himself or another friendly player.
 
-- Fixe to "LiveList:Update_Display(): couldn't get range" error occurring when
+- Fix to "LiveList:Update_Display(): couldn't get range" error occurring when
   not using the MUFs.
 
-- Removed the French version of 'readme' and 'changelog'.
+- Removed the French version of 'readme' and 'changelog' since 3 persons only
+  were reading those.
 
 
 
