@@ -195,6 +195,9 @@ function D:GetDefaultsSettings()
             -- check for abolish before curing poison or disease
             Check_For_Abolish = true,
 
+	    -- "Do not use 'Abolish' spells
+	    DisableAbolish = false,
+
             -- Will randomize the order of the live-list and of the MUFs
             --Random_Order = false,
 
@@ -1452,6 +1455,25 @@ local function GetOptions()
                         get = function() return D.profile.Check_For_Abolish end,
                         set = function(info, v)
                             D.profile.Check_For_Abolish = v;
+                        end,
+                        order = 120
+                    },
+		    DisableAbolish = {
+                        type = "toggle",
+                        width = 'full',
+                        name =  L["OPT_DISABLEABOLISH"],
+                        desc = L["OPT_DISABLEABOLISH_DESC"],
+                        get = function() return D.profile.DisableAbolish end,
+                        set = function(info, v)
+                            D.profile.DisableAbolish = v;
+			    if v then
+				DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]].IsBest = 10;
+				DC.SpellsToUse[DS["SPELL_CURE_POISON"]].IsBest = 10;
+			    else
+				DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]].IsBest = 0;
+				DC.SpellsToUse[DS["SPELL_CURE_POISON"]].IsBest = 0;
+			    end
+			    D:Configure();
                         end,
                         order = 130
                     },

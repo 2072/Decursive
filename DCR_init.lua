@@ -725,6 +725,11 @@ function D:SetConfiguration()
         DC.MyGUID = "NONE";
     end
 
+    if D.profile.DisableAbolish then
+        DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]].IsBest = 10;
+        DC.SpellsToUse[DS["SPELL_CURE_POISON"]].IsBest = 10;
+    end
+
     D:Init(); -- initialize Dcr core (set frames display, scans available cleansing spells)
 
 

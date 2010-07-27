@@ -401,6 +401,9 @@ L["OPT_HIDEMUFSHANDLE_DESC"] = "Hides the Micro-Unit Frames handle and disables 
 
 L["OPT_ALLOWMACROEDIT"] = "Allow macro edition";
 L["OPT_ALLOWMACROEDIT_DESC"] = "Enable this to prevent Decursive from updating its macro, letting you edit it as you want.";
+
+L["OPT_DISABLEABOLISH"] = "Do not use 'Abolish' spells";
+L["OPT_DISABLEABOLISH_DESC"] = "Disable the use of Abolish Disease and Abolish Poison";
 --]==]
 --@end-do-not-package@
 
