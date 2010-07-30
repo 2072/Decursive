@@ -1,5 +1,5 @@
-Decursive 2.5.1 beta 2 by Archarodim (2010-07-27)
-=================================================
+Decursive 2.5.1 by Archarodim (2010-07-31)
+==========================================
 
 
 Changes from Decursive 2.5.0 to Decursive 2.5.1
