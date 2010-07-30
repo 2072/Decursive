@@ -402,7 +402,6 @@ do
             local r, g, b = self:GetClassColor(EnglishClass)
             DC.HexClassColor[EnglishClass] = str_format("%02x%02x%02x", r * 255, g * 255, b * 255);
             DC.HexClassColor[LC[EnglishClass]] = DC.HexClassColor[EnglishClass];
-
         end
 
         return DC.HexClassColor[EnglishClass];
@@ -413,16 +412,20 @@ do
         if RAID_CLASS_COLORS then
             local class, colors;
             for class in pairs(RAID_CLASS_COLORS) do
-                if not class:find(" ") then -- thank to a wonderful add-on that adds the wrong translation "Death Knight" to the global RAID_CLASS_COLORS....
+                if LC[class] then -- Some badly coded add-ons are modifying RAID_CLASS_COLORS causing multiple problems...
                     D:GetClassHexColor(class);
                     D:GetClassColor(class);
                 else
                     RAID_CLASS_COLORS[class] = nil; -- Eat that!
+                    --@alpha@
+                    D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class);
+                    --@end-alpha@
+                    print("Decursive: |cFFFF0000Stupid value found in _G.RAID_CLASS_COLORS table|r\nThis will cause many issues (tainting), Decursive will display this message until the culprit add-on is fixed or removed, the Stupid value is: '", class, "'");
                 end
             end
         else
             D:AddDebugText("global RAID_CLASS_COLORS does not exist...");
-            D:Error("global RAID_CLASS_COLORS does not exist...");
+            T._FatalError("global RAID_CLASS_COLORS does not exist...");
         end
     end
 

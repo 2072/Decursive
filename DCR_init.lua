@@ -56,6 +56,10 @@ D.L         = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 
 D.LC        = _G.LOCALIZED_CLASS_NAMES_MALE;
 
+if not D.LC then
+    T._AddDebugText("DCR_init.lua: Couldn't get LOCALIZED_CLASS_NAMES_MALE!");
+    D.LC = {};
+end
 
 D.DcrFullyInitialized = false;
 
