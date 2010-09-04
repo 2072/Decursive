@@ -103,14 +103,14 @@ end
 
 T._DebugText = "";
 -- inspired from BugSack
-function T._DebugFrameOnTextChanged()
-    if this:GetText() ~= T._DebugText then
-        this:SetText(T._DebugText)
+function T._DebugFrameOnTextChanged(frame)
+    if frame:GetText() ~= T._DebugText then
+        frame:SetText(T._DebugText)
     end
-    this:GetParent():UpdateScrollChildRect()
+    frame:GetParent():UpdateScrollChildRect()
     local _, m = DecursiveDebuggingFrameScrollScrollBar:GetMinMaxValues()
-    if m > 0 and this.max ~= m then
-        this.max = m
+    if m > 0 and frame.max ~= m then
+        frame.max = m
         DecursiveDebuggingFrameScrollScrollBar:SetValue(0)
     end
 end

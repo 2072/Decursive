@@ -110,16 +110,16 @@
                         <FontString inherits="ChatFontNormal"/>
                         <Scripts>
                             <OnLoad>
-                                this:SetAutoFocus(false)
+                                self:SetAutoFocus(false)
                             </OnLoad>
                             <OnShow>
-                                this:SetFocus()
+                                self:SetFocus()
                             </OnShow>
                             <OnTextChanged>
-                                DecursiveRootTable._DebugFrameOnTextChanged()
+                                DecursiveRootTable._DebugFrameOnTextChanged(self)
                             </OnTextChanged>
                             <OnEscapePressed>
-                                this:ClearFocus()
+                                self:ClearFocus()
                             </OnEscapePressed>
                         </Scripts>
                     </EditBox>

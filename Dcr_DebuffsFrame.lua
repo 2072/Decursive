@@ -577,10 +577,10 @@ local TooltipButtonsInfo = {}; -- help tooltip text table
 local TooltipUpdate = 0; -- help tooltip change update check
 -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
 -- it also handles Unstable Affliction detection and warning.
-function MicroUnitF:OnEnter() -- {{{
+function MicroUnitF:OnEnter(frame) -- {{{
     D.Status.MouseOveringMUF = true;
 
-    local MF = this.Object;
+    local MF = frame.Object;
     local Status;
 
     local Unit = MF.CurrUnit; -- shortcut
@@ -723,7 +723,7 @@ function MicroUnitF:OnEnter() -- {{{
             TooltipUpdate = D.Status.SpellsChanged;
         end
 
-        GameTooltip_SetDefaultAnchor(GameTooltip, this);
+        GameTooltip_SetDefaultAnchor(GameTooltip, frame);
         GameTooltip:SetText(TooltipButtonsInfo);
         GameTooltip:Show();
 
@@ -816,9 +816,9 @@ function MicroUnitF:OnLeave() -- {{{
 end -- }}}
 
 
-function D.MicroUnitF:OnCornerEnter()
+function D.MicroUnitF:OnCornerEnter(frame)
     if (D.profile.DebuffsFrameShowHelp) then
-        D:DisplayGameTooltip(
+        D:DisplayGameTooltip(frame,
         str_format(
         "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
         --"|cFF11FF11%s|r: %s\n"..
@@ -841,23 +841,23 @@ function D.MicroUnitF:OnCornerEnter()
 end
 
 
-function MicroUnitF:OnLoad() -- {{{
-    this:SetScript("PreClick", self.OnPreClick);
-    this:SetScript("PostClick", self.OnPostClick);
+function MicroUnitF:OnLoad(frame) -- {{{
+    frame:SetScript("PreClick", self.OnPreClick);
+    frame:SetScript("PostClick", self.OnPostClick);
 end
 -- }}}
 
-function MicroUnitF:OnPreClick(Button) -- {{{
-        -- D:Debug("Micro unit Preclicked: ", Button);
+function MicroUnitF.OnPreClick(frame, Button) -- {{{
+        D:Debug("Micro unit Preclicked: ", Button);
 
-        local Unit = this.Object.CurrUnit; -- shortcut
+        local Unit = frame.Object.CurrUnit; -- shortcut
 
-        if (this.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
+        if (frame.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 
             D:Println(L["HLP_NOTHINGTOCURE"]);
 
-        elseif (this.Object.UnitStatus == AFFLICTED) then
-            local NeededPrio = D:GiveSpellPrioNum(this.Object.Debuffs[1].Type);
+        elseif (frame.Object.UnitStatus == AFFLICTED) then
+            local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
             local RequestedPrio = false;
             local ButtonsString = "";
 
@@ -883,16 +883,16 @@ function MicroUnitF:OnPreClick(Button) -- {{{
                     D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[ D.db.global.AvailableButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
                 --@debug@
                 else
-                    D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", this.Object.Debuffs[1].Type);
+                    D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                 --@end-debug@
                 end
 
 
             elseif RequestedPrio and D.Status.HasSpell then
 --              D:Print("XXX ClickedMF SET");
-                D.Status.ClickedMF = this.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
+                D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
                 D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
-                D:Debuff_History_Add(this.Object.Debuffs[1].Name, this.Object.Debuffs[1].TypeName);
+                D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName);
             end
         end
 end -- }}}
@@ -1616,7 +1616,7 @@ end -- }}}
 -- UNUSED STUFF {{{
 -- Micro Frame Events, useless for now
 
-function MicroUnitF:OnPostClick()
+function MicroUnitF:OnPostClick(frame, button)
 --      D:Debug("Micro unit PostClicked");
 end
 

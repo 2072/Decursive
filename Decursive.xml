@@ -102,7 +102,7 @@ end
                 Dcr.L["HLP_MIDDLECLICK"], Dcr.L["SHIFT"], Dcr.L["HLP_LEFTCLICK"],
                 Dcr.L["HIDESHOW_BUTTONS"]
                 )
-                , this);
+                , self);
                 end
             </OnEnter>
             <OnLeave>
@@ -110,36 +110,36 @@ end
             </OnLeave>
 
             <OnMouseUp>
-                if ( this.isMoving ) then
-                this:StopMovingOrSizing();
-                this.isMoving = false;
+                if ( self.isMoving ) then
+                self:StopMovingOrSizing();
+                self.isMoving = false;
                 end
                 Dcr:SaveLLPos();
             </OnMouseUp>
             <OnMouseDown>
-                if ( ( ( not this.isLocked ) or ( this.isLocked == 0 ) or IsAltKeyDown()) and ( arg1 == "LeftButton" ) ) then
-                this:StartMoving();
-                this.isMoving = true;
+                if ( ( ( not self.isLocked ) or ( self.isLocked == 0 ) or IsAltKeyDown()) and ( button == "LeftButton" ) ) then
+                self:StartMoving();
+                self.isMoving = true;
                 end
-                if (arg1 == "MiddleButton" or arg1 == "LeftButton" and IsShiftKeyDown()) then
+                if (button == "MiddleButton" or button == "LeftButton" and IsShiftKeyDown()) then
                 Dcr:ShowHideButtons();
                 end
             </OnMouseDown>
             <OnHide>
-                if ( this.isMoving ) then
-                this:StopMovingOrSizing();
-                this.isMoving = false;
+                if ( self.isMoving ) then
+                self:StopMovingOrSizing();
+                self.isMoving = false;
                 end
             </OnHide>
             <OnLOad>
-                this:RegisterEvent("ADDON_LOADED");
+                self:RegisterEvent("ADDON_LOADED");
             </OnLOad>
             <OnEvent>
-                if event == "ADDON_LOADED" and arg1 == "Decursive" then
-        local T = DecursiveRootTable or {};
+                if event == "ADDON_LOADED" and (...) == "Decursive" then
+                    local T = DecursiveRootTable or {};
 
                     T._SelfDiagnostic();
-                    this:UnregisterEvent("ADDON_LOADED");
+                    self:UnregisterEvent("ADDON_LOADED");
                 end
             </OnEvent>
         </Scripts>
@@ -159,7 +159,7 @@ end
                 <Scripts>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        this:SetText(Dcr.L["PRIORITY_SHOW"]);
+                        self:SetText(Dcr.L["PRIORITY_SHOW"]);
                     </OnLoad>
                     <OnClick>
         local T = DecursiveRootTable or {};
@@ -172,7 +172,7 @@ end
         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic() ~= 2 then
-                        Dcr:DisplayTooltip(Dcr.L["PRIORITY_LIST"], this);
+                        Dcr:DisplayTooltip(Dcr.L["PRIORITY_LIST"], self);
                         end
                     </OnEnter>
                     <OnLeave>
@@ -195,7 +195,7 @@ end
                 <Scripts>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        this:SetText(Dcr.L["SKIP_SHOW"]);
+                        self:SetText(Dcr.L["SKIP_SHOW"]);
                     </OnLoad>
                     <OnClick>
         local T = DecursiveRootTable or {};
@@ -208,7 +208,7 @@ end
         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic() ~= 2 then
-                        Dcr:DisplayTooltip(Dcr.L["SKIP_LIST_STR"], this);
+                        Dcr:DisplayTooltip(Dcr.L["SKIP_LIST_STR"], self);
                         end
                     </OnEnter>
                     <OnLeave>
@@ -240,7 +240,7 @@ end
         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic() ~= 2 then
-                        Dcr:DisplayTooltip(Dcr.L["HIDE_MAIN"], this);
+                        Dcr:DisplayTooltip(Dcr.L["HIDE_MAIN"], self);
                         end
                     </OnEnter>
                     <OnLeave>
@@ -316,7 +316,7 @@ end
 
                     </OnClick>
                     <OnShow>
-                        Dcr:ThisSetParentText(Dcr.L["ANCHOR"]);
+                        Dcr:ThisSetParentText(self, Dcr.L["ANCHOR"]);
                     </OnShow>
                 </Scripts>
             </Button>

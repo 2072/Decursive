@@ -61,9 +61,9 @@
         </Anchors>
         <Scripts>
             <OnLoad>
-                this.UpdateYourself = true;
-                this.MaxUnit = 5;
-                this.UnitShown = 0;
+                self.UpdateYourself = true;
+                self.MaxUnit = 5;
+                self.UnitShown = 0;
             </OnLoad>
         </Scripts>
         <Frames>
@@ -84,35 +84,35 @@
 
                 <Scripts>
                     <OnMouseUp>
-                        if ( this.isMoving ) then
-                            this:GetParent():StopMovingOrSizing();
-                            this.isMoving = false;
+                        if ( self.isMoving ) then
+                            self:GetParent():StopMovingOrSizing();
+                            self.isMoving = false;
                             Dcr.MicroUnitF.DraggingHandle = false;
                             Dcr.MicroUnitF:SavePos();
                             Dcr.MicroUnitF:Place();
                             Dcr.MicroUnitF:SavePos();
                         elseif Dcr.Status.MouseOveringCorner then
-                            Dcr:QuickAccess(this, arg1);
+                            Dcr:QuickAccess(self, button);
                         end
                     </OnMouseUp>
                     <OnMouseDown>
-                        if (   arg1 == "LeftButton" and IsAltKeyDown() ) then
-                            this.isMoving = true;
+                        if (   button == "LeftButton" and IsAltKeyDown() ) then
+                            self.isMoving = true;
                             Dcr.MicroUnitF.DraggingHandle = true;
-                            this:GetParent():StartMoving();
+                            self:GetParent():StartMoving();
                         end
                     </OnMouseDown>
 
                     <OnHide>
-                        if ( this.isMoving ) then
-                            this:GetParent():StopMovingOrSizing();
-                            this.isMoving = false;
+                        if ( self.isMoving ) then
+                            self:GetParent():StopMovingOrSizing();
+                            self.isMoving = false;
                             Dcr.MicroUnitF.DraggingHandle = false;
                         end
                     </OnHide>
                     <OnEnter>
                         Dcr.Status.MouseOveringCorner = true;
-                        Dcr.MicroUnitF:OnCornerEnter();
+                        Dcr.MicroUnitF:OnCornerEnter(self);
                     </OnEnter>
                     <OnLeave>
                         Dcr.Status.MouseOveringCorner = false;
@@ -148,10 +148,10 @@
 
         <Scripts>
             <OnLoad>
-                Dcr.MicroUnitF:OnLoad();
+                Dcr.MicroUnitF:OnLoad(self);
             </OnLoad>
             <OnEnter>
-                Dcr.MicroUnitF:OnEnter();
+                Dcr.MicroUnitF:OnEnter(self);
             </OnEnter>
             <OnLeave>
                 Dcr.MicroUnitF:OnLeave();
