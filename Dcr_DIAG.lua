@@ -151,6 +151,7 @@ local IsReporting = false;
 local version, build, date, tocversion = GetBuildInfo();
 
 T._CatchAllErrors = false;
+T._tocversion = tocversion;
 
 function T._DecursiveErrorHandler(err, ...)
 

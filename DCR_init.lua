@@ -1076,7 +1076,11 @@ end --}}}
 
 function D:GetSpellsTranslations(FromDIAG)
     local GetSpellInfo = _G.GetSpellInfo;
-    local Spells = {
+
+    local Spells = {};
+
+
+    Spells = {
         ["SPELL_POLYMORPH"]             = {     118,                                     },
         ["SPELL_CYCLONE"]               = {     33786,                                   },
         ["SPELL_CURE_DISEASE"]          = {     528,                                     },
@@ -1088,7 +1092,7 @@ function D:GetSpellsTranslations(FromDIAG)
         ["SPELL_CURE_POISON"]           = {     8946,                                    },
         ["SPELL_ABOLISH_POISON"]        = {     2893,                                    },
         ["SPELL_REMOVE_LESSER_CURSE"]   = {     475,                                     }, -- Mages
-        ["SPELL_REMOVE_CURSE"]          = {     2782,                                    }, -- Druids
+        ["SPELL_REMOVE_CURSE"]          = {     2782,                                    }, -- Druids/Mages
         ['SPELL_TRANQUILIZING_SHOT']    = {     19801,                                   },
         ['SPELL_HEX']                   = {     51514,                                   }, -- shamans
         ["CLEANSE_SPIRIT"]              = {     51886,                                   },
@@ -1131,6 +1135,14 @@ function D:GetSpellsTranslations(FromDIAG)
         --['STALVAN_CURSE']             = {     3105,                                    }, --temp to test
     };
 
+    -- WoW 4.0 compatibility fix
+    if T._tocversion == 40000 then
+        Spells["SPELL_REMOVE_CURSE"]          = {     475,                                    }; -- Druids/Mages
+    end
+
+    DC.ttest = Spells;
+
+
 
     local alpha = false;
     --@alpha@
@@ -1144,12 +1156,14 @@ function D:GetSpellsTranslations(FromDIAG)
             if _ == 1 then
                 DS[Sname] = (GetSpellInfo(Sid));
                 if not DS[Sname] then
-                    if random (1, 9000) == 1 or FromDIAG or alpha then
+                    if random (1, 9000) == 1 or FromDIAG then
                         D:AddDebugText("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
+                        D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
                     end
+                    DS[Sname] = "_LOST SPELL_";
                 end
             elseif FromDIAG then
-                if DS[Sname] ~= (GetSpellInfo(Sid)) then
+                if (GetSpellInfo(Sid)) and DS[Sname] ~= (GetSpellInfo(Sid)) then
 
                     D:AddDebugText("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
 

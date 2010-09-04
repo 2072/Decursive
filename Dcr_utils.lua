@@ -174,11 +174,15 @@ function D:ColorPrint (r,g,b, ... ) --XXX
     if D.profile.Print_CustomFrame then
         self:Print(DecursiveTextFrame, ColorHeader, unpack(datas));
     end
+
+    if not Dcr.db then
+        self:Print(ColorHeader, unpack(datas));
+    end
     
 end
 
 function D:errln( ... ) --{{{
-    if D.profile.Print_Error then
+    if not D.db or D.profile.Print_Error then
         self:ColorPrint(1,0,0,...);
         
     end
@@ -337,7 +341,7 @@ function D:ThisSetText(text) --{{{
     _G[this:GetName().."Text"]:SetText(text);
 end --}}}
 
-function D:ThisSetParentText(text) --{{{
+function D:ThisSetParentText(frame, text) --{{{
     _G[this:GetParent():GetName().."Text"]:SetText(text);
 end --}}}
 
@@ -354,8 +358,8 @@ local DefaultAnchorTab = {"ANCHOR_LEFT"};
     end --}}}
 end
 
-function D:DisplayGameTooltip(Message) --{{{
-    GameTooltip_SetDefaultAnchor(GameTooltip, this);
+function D:DisplayGameTooltip(frame, Message) --{{{
+    GameTooltip_SetDefaultAnchor(GameTooltip, frame);
     GameTooltip:SetText(Message);
     GameTooltip:Show();
 end --}}}
