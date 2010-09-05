@@ -476,6 +476,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = false,
         },
         -- Warlock
+        [DS["SPELL_FEAR"]]    = {
+            Types = {DC.CHARMED},
+            IsBest = 0,
+            Pet = false,
+            Rank = 1,
+        },
+        -- Warlock
         [DS["PET_FEL_CAST"]]                = {
             Types = {DC.MAGIC, DC.ENEMYMAGIC},
             IsBest = 1,
@@ -488,6 +495,36 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = true,
         },
     };
+
+    -- WoW 4.0 changes {{{
+
+    if T._tocversion == 40000 then
+        DC.SpellsToUse[DS["PET_FEL_CAST"]]              = {
+            Types = {DC.ENEMYMAGIC},
+            IsBest = 0,
+            Pet = true,
+        };
+        -- Warlocks
+        DC.SpellsToUse[DS["SPELL_SINGE_MAGIC"]]         = {
+            Types = {DC.MAGIC},
+            IsBest = 0,
+            Pet = true,
+        };
+        -- Warlock
+        DC.SpellsToUse[DS["SPELL_FEAR"]]    = {
+            Types = {DC.CHARMED},
+            IsBest = 0,
+            Pet = false,
+        };
+        -- Mages
+        DC.SpellsToUse[DS["SPELL_POLYMORPH"]]      = {
+            Types = {DC.CHARMED},
+            IsBest = 0,
+            Pet = false,
+        };
+    end
+    
+    -- }}}
 
 
     -- Thanks to Korean localization team of WoW we have to make an exception....
@@ -1098,6 +1135,7 @@ function D:GetSpellsTranslations(FromDIAG)
         ["CLEANSE_SPIRIT"]              = {     51886,                                   },
         ["SPELL_PURGE"]                 = {     370, 8012,                               },
         ["PET_FEL_CAST"]                = {     19505, 19731, 19734, 19736, 27276, 27277,},
+        ["SPELL_FEAR"]                  = {     5782                                     },
         ["PET_DOOM_CAST"]               = {     527, 988,                                },
         ["CURSEOFTONGUES"]              = {     1714, 11719,                             },
         ["DCR_LOC_SILENCE"]             = {     15487,                                   },
@@ -1137,7 +1175,8 @@ function D:GetSpellsTranslations(FromDIAG)
 
     -- WoW 4.0 compatibility fix
     if T._tocversion == 40000 then
-        Spells["SPELL_REMOVE_CURSE"]          = {     475,                                    }; -- Druids/Mages
+        Spells["SPELL_REMOVE_CURSE"]         = {     475,                                    }; -- Druids/Mages
+        Spells["SPELL_SINGE_MAGIC"]          = {     89808,                                    }; -- Warlock imp
     end
 
     DC.ttest = Spells;
