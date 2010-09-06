@@ -9,6 +9,8 @@
 ## Notes-zhCN: 当单独、小队和团队时清除有害状态，并可使用高级过滤和优先等级系统。
 
 ## X-Compatible-With: 40000
+## X-Max-Interface: 40000
+## X-Min-Interface: 30300
 
 ## SavedVariables: DecursiveDB
 
