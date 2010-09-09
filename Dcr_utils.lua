@@ -337,12 +337,12 @@ function D:tSwap(t, i1, i2)
 end
 
 
-function D:ThisSetText(text) --{{{
-    _G[this:GetName().."Text"]:SetText(text);
+function D:ThisSetText(frame, text) --{{{
+    _G[frame:GetName().."Text"]:SetText(text);
 end --}}}
 
 function D:ThisSetParentText(frame, text) --{{{
-    _G[this:GetParent():GetName().."Text"]:SetText(text);
+    _G[frame:GetParent():GetName().."Text"]:SetText(text);
 end --}}}
 
 do
