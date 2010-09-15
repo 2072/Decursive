@@ -421,9 +421,9 @@ do
                     D:GetClassColor(class);
                 else
                     RAID_CLASS_COLORS[class] = nil; -- Eat that!
-                    --@alpha@
+                    --@debug@
                     D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class);
-                    --@end-alpha@
+                    --@end-debug@
                     print("Decursive: |cFFFF0000Stupid value found in _G.RAID_CLASS_COLORS table|r\nThis will cause many issues (tainting), Decursive will display this message until the culprit add-on is fixed or removed, the Stupid value is: '", class, "'");
                 end
             end
