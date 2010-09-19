@@ -149,7 +149,7 @@ L["HANDLEHELP"] = "Drag all the Micro-UnitFrames (MUFs)"
 L["HIDE_LIVELIST"] = "Hide the live-list"
 L["HIDE_MAIN"] = "Hide Decursive Window"
 L["HLP_LEFTCLICK"] = "Left-Click"
-L["HLP_LL_ONCLICK_TEXT"] = [=[Clicking on the live-list is useless since WoW 2.0. You should read the FAQ in the "Readme.txt" file located in Decursive folder...
+L["HLP_LL_ONCLICK_TEXT"] = [=[Please, read the documentation to learn how to use this add-on. Just search for 'Decursive' on WoWAce.com
 (To move this list move the Decursive bar, /dcrshow and left-alt-click to move)]=]
 L["HLP_MIDDLECLICK"] = "Middle-Click"
 L["HLP_NOTHINGTOCURE"] = "There is nothing to cure!"
