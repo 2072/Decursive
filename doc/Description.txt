@@ -3,6 +3,15 @@ Decursive for World of Warcraft
 
 *Decursive is a cleansing mod intended to render affliction removal easy, effective and fun for all the classes having this ability.*
 
+CATACLYSM (WoW 4.0 beta) compatibility
+--------------------------------------
+
+[The current alpha version][dev] is compatible with Cataclysm, you must download it on [WoWAce.org][dev].
+
+
+Documentation:
+--------------
+
 [Decursive usage][user-actions] - [Micro Unit Frames documentation][MUFs] - [Decursive Macro documentation][mouse-over macro] - [Frequently Asked Questions][FAQ] - [commands][]
 
 Decursive key benefits
@@ -71,7 +80,7 @@ In brief, what you get with Decursive is **effectiveness**, *a player using Decu
   
 Decursive is dedicated to the memory of Bertrand Sense known as Glorfindal on
 the European server *Les Sentinelles*.
-He was the raid leader of my guild (<http://www.wow-horizon.org>)
+He was the raid leader of my guild (Horizon)
 
 
 
@@ -83,3 +92,4 @@ He was the raid leader of my guild (<http://www.wow-horizon.org>)
 [mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
 [commands]: http://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
 [user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
+[dev]: http://www.2072productions.com/to/decursive_dev
