@@ -444,6 +444,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = false,
             Rank = 1,
         },
+        -- Druids
+        [DS["SPELL_REMOVE_CORRUPTION"]]      = {
+            Types = {DC.POISON, DC.CURSE},
+            IsBest = 0,
+            Pet = false,
+            Rank = 1,
+        },
         -- Shamans
         [DS["SPELL_CURE_TOXINS"]]           = {
             Types = {DC.POISON, DC.DISEASE},
@@ -1120,6 +1127,7 @@ function D:GetSpellsTranslations(FromDIAG)
     Spells = {
         ["SPELL_POLYMORPH"]             = {     118,                                     },
         ["SPELL_CYCLONE"]               = {     33786,                                   },
+        ["SPELL_REMOVE_CORRUPTION"]     = {     2782,                                   },
         ["SPELL_CURE_DISEASE"]          = {     528,                                     },
         ["SPELL_ABOLISH_DISEASE"]       = {     552,                                     },
         ["SPELL_PURIFY"]                = {     1152,                                    }, -- paladins
