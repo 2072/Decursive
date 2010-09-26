@@ -444,13 +444,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = false,
             Rank = 1,
         },
-        -- Druids
-        [DS["SPELL_REMOVE_CORRUPTION"]]      = {
-            Types = {DC.POISON, DC.CURSE},
-            IsBest = 0,
-            Pet = false,
-            Rank = 1,
-        },
         -- Shamans
         [DS["SPELL_CURE_TOXINS"]]           = {
             Types = {DC.POISON, DC.DISEASE},
@@ -528,6 +521,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Types = {DC.CHARMED},
             IsBest = 0,
             Pet = false,
+        };
+        -- Druids
+        DC.SpellsToUse[DS["SPELL_REMOVE_CORRUPTION"]]      = {
+            Types = {DC.POISON, DC.CURSE},
+            IsBest = 0,
+            Pet = false,
+            Rank = 1,
         };
     end
     
@@ -1127,7 +1127,6 @@ function D:GetSpellsTranslations(FromDIAG)
     Spells = {
         ["SPELL_POLYMORPH"]             = {     118,                                     },
         ["SPELL_CYCLONE"]               = {     33786,                                   },
-        ["SPELL_REMOVE_CORRUPTION"]     = {     2782,                                   },
         ["SPELL_CURE_DISEASE"]          = {     528,                                     },
         ["SPELL_ABOLISH_DISEASE"]       = {     552,                                     },
         ["SPELL_PURIFY"]                = {     1152,                                    }, -- paladins
@@ -1184,6 +1183,7 @@ function D:GetSpellsTranslations(FromDIAG)
     -- WoW 4.0 compatibility fix
     if T._tocversion == 40000 then
         Spells["SPELL_REMOVE_CURSE"]         = {     475,                                    }; -- Druids/Mages
+        Spells["SPELL_REMOVE_CORRUPTION"]    = {     2782,                                   };
         Spells["SPELL_SINGE_MAGIC"]          = {     89808,                                    }; -- Warlock imp
     end
 
