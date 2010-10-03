@@ -120,9 +120,9 @@ DC.DS = {};
 
 local DS = DC.DS;
 
-DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.wav";
+DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.ogg";
+DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.ogg";
 --DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
-DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.wav";
 
 DC.IconON = "Interface\\AddOns\\Decursive\\iconON.tga";
 DC.IconOFF = "Interface\\AddOns\\Decursive\\iconOFF.tga";
