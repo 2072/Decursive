@@ -940,50 +940,50 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         self.PrevRaidTargetIndex= false;
 
         -- create the frame
-        self.Frame  = CreateFrame ("Button", "DcrMicroUnit"..Unit, self.Parent, "DcrMicroUnitTemplateSecure");
-        self.CooldownFrame = CreateFrame ("Cooldown", "DcrMicroUnitCD"..Unit, self.Frame, "DcrMicroUnitCDTemplate");
+        self.Frame  = CreateFrame ("Button", nil, self.Parent, "DcrMicroUnitTemplateSecure");
+        self.CooldownFrame = CreateFrame ("Cooldown", nil, self.Frame, "DcrMicroUnitCDTemplate");
 
         -- outer texture (the class border)
         -- Bottom side
-        self.OuterTexture1 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Bottom", "BORDER");
+        self.OuterTexture1 = self.Frame:CreateTexture(nil, "BORDER");
         self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
         self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
 
         -- left side
-        self.OuterTexture2 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Left", "BORDER");
+        self.OuterTexture2 = self.Frame:CreateTexture(nil, "BORDER");
         self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
         self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
 
         -- top side
-        self.OuterTexture3 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Top", "BORDER");
+        self.OuterTexture3 = self.Frame:CreateTexture(nil, "BORDER");
         self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
         self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 
         -- right side
-        self.OuterTexture4 = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Right", "BORDER");
+        self.OuterTexture4 = self.Frame:CreateTexture(nil, "BORDER");
         self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
         self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
 
 
         -- global texture
-        self.Texture = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Back", "ARTWORK");
+        self.Texture = self.Frame:CreateTexture(nil, "ARTWORK");
         self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
         self.Texture:SetHeight(16);
         self.Texture:SetWidth(16);
 
         -- inner Texture (Charmed special texture)
-        self.InnerTexture = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."Charmed", "OVERLAY");
+        self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY");
         self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
         self.InnerTexture:SetHeight(7);
         self.InnerTexture:SetWidth(7);
         self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
         -- Chrono Font string
-        self.ChronoFontString = self.Frame:CreateFontString("DcrMicroUnit"..Unit.."Chrono", "ARTWORK", "DcrMicroUnitChronoFont");
+        self.ChronoFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
         self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
         -- raid target icon
-        self.RaidIconTexture = self.Frame:CreateTexture("DcrMicroUnit"..Unit.."RaidTargetIcon", "OVERLAY");
+        self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY");
         self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
         self.RaidIconTexture:SetHeight(13);
         self.RaidIconTexture:SetWidth(13);

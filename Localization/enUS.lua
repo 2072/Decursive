@@ -77,7 +77,7 @@ if not L then return end;
 --@do-not-package@
 ---[==[
 
--- Used for testing the addon withour the packager
+-- Used for testing the addon without the packager
 
 L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = "A debug report is available!\nType |cFFFF0000/dcr report|r to see it"
 L["DECURSIVE_DEBUG_REPORT_SHOW"] = "Debug report available!"
