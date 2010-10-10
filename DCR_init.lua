@@ -529,6 +529,29 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = false,
             Rank = 1,
         };
+
+
+        -- Priests
+         DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]]       = {
+            Types = {DC.DISEASE},
+            IsBest = 0,
+            Pet = false,
+
+            EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
+            EnhancedByCheck = function ()
+                return (select(5, GetTalentInfo(2,13))) > 0;
+            end,
+            Enhancements = {
+                Types = {DC.DISEASE, DC.POISON},
+                OnPlayerOnly = {
+                    [DC.DISEASE] = false,
+                    [DC.POISON]  = true,
+                },
+            }
+        };
+
+
+
     end
     
     -- }}}
