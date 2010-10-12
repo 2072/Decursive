@@ -3,18 +3,6 @@ Decursive for World of Warcraft
 
 *Decursive is a cleansing mod intended to make affliction removal easy, effective and fun for all the classes having this ability.*
 
-CATACLYSM (WoW 4.0 beta) compatibility
---------------------------------------
-
-[The current alpha version][dev] is compatible with Cataclysm, you must download it on [WoWAce.org][dev].
-
-Everything should be working in Cataclysm, if you find something wrong, don't keep it to yourself and make a [ticket][ticket] about it.
-
-Currently I need some feedback about missing spells (cleansing spells have changed in Cataclysm, some were removed others were merged, etc...).
-
-Thanks :-)
-
-
 Documentation:
 --------------
 

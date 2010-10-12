@@ -1,5 +1,16 @@
-Decursive 2.5.1 by Archarodim (2010-07-31)
+Decursive 2.5.2 by Archarodim (2010-10-12)
 ==========================================
+
+
+
+Changes from Decursive 2.5.1 to Decursive 2.5.2
+-----------------------------------------------
+
+- Compatible with World of Warcraft 4.0, spells have been updated, if
+  something is missing, open a [ticket][ticket] on WoWAce.org or email me at
+  <archarodim+dcrMS@teaser.fr>
+
+- Warlocks can use fear on charmed players.
 
 
 Changes from Decursive 2.5.0 to Decursive 2.5.1
@@ -254,3 +265,4 @@ Changes from Decursive 2.3.1 to Decursive 2.4
 - Some other minor bug fixes.
 
 
+[ticket]: http://www.wowace.com/addons/decursive/tickets/
