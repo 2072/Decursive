@@ -279,12 +279,12 @@ do
             ["AceConfig-3.0"] = 2,
             ["AceConfigRegistry-3.0"] = 12,
             ["AceConfigCmd-3.0"] = 12,
-            ["AceConfigDialog-3.0"] = 49,
+            ["AceConfigDialog-3.0"] = 50,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 14,
-            ["LibQTip-1.0"] = 34,
-            ["CallbackHandler-1.0"] = 5,
+            ["LibDBIcon-1.0"] = 15,
+            ["LibQTip-1.0"] = 36,
+            ["CallbackHandler-1.0"] = 6,
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
