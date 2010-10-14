@@ -498,6 +498,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     -- WoW 4.0 changes {{{
 
+    --https://docs.google.com/document/pub?id=13GLsRWUA4pMQ0EAV2FWkmJvDNQTeIcivO8XtP0iZ-tA
     if T._tocversion == 40000 then
 
         -- Shaman resto
@@ -544,7 +545,14 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Types = {DC.POISON, DC.CURSE},
             IsBest = 0,
             Pet = false,
-            Rank = 1,
+
+            EnhancedBy = DS["TALENT_NATURES_CURE"],
+            EnhancedByCheck = function ()
+                return (select(5, GetTalentInfo(3,17))) > 0;
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC, DC.POISON, DC.CURSE},
+            }
         };
 
 
@@ -1226,6 +1234,7 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["SPELL_REMOVE_CORRUPTION"]    = {     2782,                                   };
         Spells["SPELL_SINGE_MAGIC"]          = {     89808,                                    }; -- Warlock imp
         Spells["TALENT_IMPROVED_CLEANSE_SPIRIT"] = {  77130,                                    }; -- resto shaman
+        Spells["TALENT_NATURES_CURE"]        = {  88423,                                    }; -- resto druids
     end
 
     DC.ttest = Spells;
