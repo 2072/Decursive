@@ -341,21 +341,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
     DC.SpellsToUse = {
-
-        --[[
-        -- used for testing only
-        [DS["Dampen Magic"] ]       = {
-        Types = {DC.MAGIC},--, DC.DISEASE, DC.POISON},
-        IsBest = 0,
-        Pet = false,
-        }, --]]
-        --[[
-        -- used for testing only
-        [DS["Amplify Magic"] ]      = {
-            Types = {DC.DISEASE, DC.POISON},
-            IsBest = 0,
-            Pet = false,
-        }, --]]
       
         -- Priests
         [DS["SPELL_CURE_DISEASE"]]          = {
@@ -363,7 +348,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             IsBest = 0,
             Pet = false,
         },
-        -- Priests
+        -- Priests -- XXX to be removed
         [DS["SPELL_ABOLISH_DISEASE"]]       = {
             Types = {DC.DISEASE},
             IsBest = 1,
@@ -501,6 +486,21 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     --https://docs.google.com/document/pub?id=13GLsRWUA4pMQ0EAV2FWkmJvDNQTeIcivO8XtP0iZ-tA
     if T._tocversion == 40000 then
 
+        -- Paladins
+        DC.SpellsToUse[DS["SPELL_CLEANSE"]]               = {
+            Types = {DC.DISEASE, DC.POISON},
+            IsBest = 2,
+            Pet = false,
+
+            EnhancedBy = DS["TALENT_SACRED_CLEANSING"],
+            EnhancedByCheck = function ()
+                return (select(1, GetTalentInfo(1,14))) == DS["TALENT_SACRED_CLEANSING"] and (select(5, GetTalentInfo(1,14))) > 0;
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+            }
+        };
+
         -- Shaman resto
         DC.SpellsToUse[DS["CLEANSE_SPIRIT"]]              = {
             Types = {DC.CURSE},
@@ -509,7 +509,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
             EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"],
             EnhancedByCheck = function ()
-                return (select(5, GetTalentInfo(3,12))) > 0;
+                return (select(1, GetTalentInfo(3,12))) == DS["TALENT_IMPROVED_CLEANSE_SPIRIT"] and (select(5, GetTalentInfo(3,12))) > 0;
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.CURSE},
@@ -548,7 +548,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
             EnhancedBy = DS["TALENT_NATURES_CURE"],
             EnhancedByCheck = function ()
-                return (select(5, GetTalentInfo(3,17))) > 0;
+                return (select(1, GetTalentInfo(3,17))) == DS["TALENT_NATURES_CURE"] and (select(5, GetTalentInfo(3,17))) > 0;
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.POISON, DC.CURSE},
@@ -564,7 +564,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
             EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
             EnhancedByCheck = function ()
-                return (select(5, GetTalentInfo(2,13))) > 0;
+                return (select(1, GetTalentInfo(2,13))) == DS["TALENT_BODY_AND_SOUL"] and (select(5, GetTalentInfo(2,13))) > 0;
             end,
             Enhancements = {
                 Types = {DC.DISEASE, DC.POISON},
@@ -1230,11 +1230,12 @@ function D:GetSpellsTranslations(FromDIAG)
 
     -- WoW 4.0 compatibility fix
     if T._tocversion == 40000 then
-        Spells["SPELL_REMOVE_CURSE"]         = {     475,                                    }; -- Druids/Mages
-        Spells["SPELL_REMOVE_CORRUPTION"]    = {     2782,                                   };
-        Spells["SPELL_SINGE_MAGIC"]          = {     89808,                                    }; -- Warlock imp
-        Spells["TALENT_IMPROVED_CLEANSE_SPIRIT"] = {  77130,                                    }; -- resto shaman
+        Spells["SPELL_REMOVE_CURSE"]         = {     475,                                   }; -- Druids/Mages
+        Spells["SPELL_REMOVE_CORRUPTION"]    = {     2782,                                  };
+        Spells["SPELL_SINGE_MAGIC"]          = {     89808,                                 }; -- Warlock imp
+        Spells["TALENT_IMPROVED_CLEANSE_SPIRIT"] = {  77130,                                }; -- resto shaman
         Spells["TALENT_NATURES_CURE"]        = {  88423,                                    }; -- resto druids
+        Spells["TALENT_SACRED_CLEANSING"]    = {  53551,                                    }; -- holy palladins
     end
 
     DC.ttest = Spells;
