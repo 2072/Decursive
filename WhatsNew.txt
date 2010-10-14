@@ -1,6 +1,18 @@
-Decursive 2.5.2 by Archarodim (2010-10-12)
-==========================================
+Decursive 2.5.2.1 by Archarodim (2010-10-14)
+============================================
 
+
+Changes from Decursive 2.5.2 to Decursive 2.5.2.1
+-------------------------------------------------
+
+- Added 'Improved Cleanse Spirit' talent detection for Shamans allowing them to
+  cure magic with 'Cleanse Spirit'
+
+- Added 'Nature's Cure' talent detection for Druids allowing them to cure magic
+  with 'Remove Corruption'
+
+- Added 'Sacred Cleansing' talent detection for Paladins allowing them to cure
+  magic with 'Cleanse'
 
 
 Changes from Decursive 2.5.1 to Decursive 2.5.2

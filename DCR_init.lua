@@ -821,10 +821,12 @@ function D:SetConfiguration()
         DC.MyGUID = "NONE";
     end
 
+    --[=[
     if D.profile.DisableAbolish then
         DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]].IsBest = 10;
         DC.SpellsToUse[DS["SPELL_CURE_POISON"]].IsBest = 10;
     end
+    --]=]
 
     D:Init(); -- initialize Dcr core (set frames display, scans available cleansing spells)
 
@@ -1236,6 +1238,19 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["TALENT_IMPROVED_CLEANSE_SPIRIT"] = {  77130,                                }; -- resto shaman
         Spells["TALENT_NATURES_CURE"]        = {  88423,                                    }; -- resto druids
         Spells["TALENT_SACRED_CLEANSING"]    = {  53551,                                    }; -- holy palladins
+
+
+        --[=[
+        Spells["Dampen Magic"]    = nil;
+        Spells["Amplify Magic"]    = nil;
+        Spells["SPELL_ABOLISH_DISEASE"]    = nil;
+        Spells["SPELL_ABOLISH_POISON"]    = nil;
+        Spells["SPELL_CURE_TOXINS"]    = nil;
+        Spells["SPELL_CURE_POISON"]    = nil;
+        Spells["SPELL_PURIFY"]    = nil;
+        Spells["Phase Shift"]    = nil;
+        --]=]
+        
     end
 
     DC.ttest = Spells;

@@ -679,28 +679,22 @@ do
 
                     -- if we do have a spell to cure
                     if (Spells[Debuff.Type]) then
-                        -- The user doesn't want to cure a unit afllicted by poison or disease if the unit
-                        -- is beeing cured by an abolish spell
 
-                        if (self.profile.Check_For_Abolish and (Debuff.Type == DC.POISON and self:CheckUnitForBuffs(Unit, DS["SPELL_ABOLISH_POISON"]) or Debuff.Type == DC.DISEASE and self:CheckUnitForBuffs(Unit, DS["SPELL_ABOLISH_DISEASE"]))) then
-                            self:Debug("Abolish buff found, skipping");
-                        else
-                            -- self:Debug("It's managed");
+                        -- self:Debug("It's managed");
 
-                            -- create an entry for this debuff index if necessary
-                            if (not ManagedDebuffs[DebuffNum]) then
-                                ManagedDebuffs[DebuffNum] = {};
-                            end
+                        -- create an entry for this debuff index if necessary
+                        if (not ManagedDebuffs[DebuffNum]) then
+                            ManagedDebuffs[DebuffNum] = {};
+                        end
 
-                            -- copy the debuff information to this table.
-                            self:tcopy(ManagedDebuffs[DebuffNum], Debuff);
+                        -- copy the debuff information to this table.
+                        self:tcopy(ManagedDebuffs[DebuffNum], Debuff);
 
-                            DebuffNum = DebuffNum + 1;
+                        DebuffNum = DebuffNum + 1;
 
-                            -- the live-list only reports the first debuf found and set JustOne to true
-                            if (JustOne) then
-                                break;
-                            end
+                        -- the live-list only reports the first debuf found and set JustOne to true
+                        if (JustOne) then
+                            break;
                         end
                     end
                 end

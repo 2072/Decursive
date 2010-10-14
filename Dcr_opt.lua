@@ -193,10 +193,10 @@ function D:GetDefaultsSettings()
             Print_Error = true,
 
             -- check for abolish before curing poison or disease
-            Check_For_Abolish = false,
+            --Check_For_Abolish = false,
 
 	    -- "Do not use 'Abolish' spells
-	    DisableAbolish = false,
+	    --DisableAbolish = false,
 
             -- Will randomize the order of the live-list and of the MUFs
             --Random_Order = false,
@@ -289,7 +289,7 @@ function D:GetDefaultsSettings()
             -- Debuffs {{{
             -- those debuffs prevent us from curing the unit
             DebuffsToIgnore = {
-                [DS["Phase Shift"]]         = true,
+                --[DS["Phase Shift"]]         = true,
                 [DS["Banish"]]                      = true,
                 [DS["Frost Trap Aura"]]             = true,
             },
@@ -1447,6 +1447,7 @@ local function GetOptions()
                 disabled = function() return  not D.Status.Enabled end,
                 args = {
                     description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description"},
+                    --[=[
                     AbolishCheck = {
                         type = "toggle",
                         width = 'full',
@@ -1477,6 +1478,7 @@ local function GetOptions()
                         end,
                         order = 130
                     },
+                    --]=]
                     DoNotBlPrios = {
                         type = "toggle",
                         width = 'full',
