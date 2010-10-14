@@ -980,6 +980,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
         -- Chrono Font string
         self.ChronoFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
+        self.ChronoFontString:SetPoint("CENTER",self.Frame ,"CENTER",1,-2)
         self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
         -- raid target icon
