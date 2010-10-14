@@ -499,6 +499,23 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- WoW 4.0 changes {{{
 
     if T._tocversion == 40000 then
+
+        -- Shaman resto
+        DC.SpellsToUse[DS["CLEANSE_SPIRIT"]]              = {
+            Types = {DC.CURSE},
+            IsBest = 3,
+            Pet = false,
+
+            EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"],
+            EnhancedByCheck = function ()
+                return (select(5, GetTalentInfo(3,12))) > 0;
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC, DC.CURSE},
+            }
+        };
+
+
         DC.SpellsToUse[DS["PET_FEL_CAST"]]              = {
             Types = {DC.ENEMYMAGIC},
             IsBest = 0,
@@ -1157,7 +1174,7 @@ function D:GetSpellsTranslations(FromDIAG)
         ["SPELL_DISPELL_MAGIC"]         = {     527, 988,                                },
         ["SPELL_CURE_TOXINS"]           = {     526,                                     }, -- shamans
         ["SPELL_CURE_POISON"]           = {     8946,                                    },
-        ["SPELL_ABOLISH_POISON"]        = {     2893,                                    },
+        ["SPELL_ABOLISH_POISON"]        = {     2893,                                    }, -- removed in WoW 4.0
         ["SPELL_REMOVE_LESSER_CURSE"]   = {     475,                                     }, -- Mages
         ["SPELL_REMOVE_CURSE"]          = {     2782,                                    }, -- Druids/Mages
         ['SPELL_TRANQUILIZING_SHOT']    = {     19801,                                   },
@@ -1208,6 +1225,7 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["SPELL_REMOVE_CURSE"]         = {     475,                                    }; -- Druids/Mages
         Spells["SPELL_REMOVE_CORRUPTION"]    = {     2782,                                   };
         Spells["SPELL_SINGE_MAGIC"]          = {     89808,                                    }; -- Warlock imp
+        Spells["TALENT_IMPROVED_CLEANSE_SPIRIT"] = {  77130,                                    }; -- resto shaman
     end
 
     DC.ttest = Spells;
