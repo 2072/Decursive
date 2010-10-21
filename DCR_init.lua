@@ -741,7 +741,8 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 
-    self:ScheduleRepeatingTimer("ScheduledTasks", 0.2);
+    --    self:ScheduleRepeatingTimer("ScheduledTasks", 0.2);
+    D:ScheduleRepeatedCall("ScheduledTasks", D.ScheduledTasks, 0.2, D);
 
     -- Configure specific profile dependent data
     D:SetConfiguration();
@@ -904,6 +905,7 @@ function D:OnDisable() -- When the addon is disabled by Ace
     end
 
     D:CancelAllTimedCalls();
+    D:Debug(D:GetTimersNumber());
 
     -- the disable warning popup : {{{ -
     StaticPopupDialogs["Decursive_OnDisableWarning"] = {
@@ -1269,7 +1271,7 @@ function D:GetSpellsTranslations(FromDIAG)
             if _ == 1 then
                 DS[Sname] = (GetSpellInfo(Sid));
                 if not DS[Sname] then
-                    if random (1, 9000) == 1 or FromDIAG then
+                    if random (1, 20000) == 1 or FromDIAG then
                         D:AddDebugText("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
                         D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
                     end

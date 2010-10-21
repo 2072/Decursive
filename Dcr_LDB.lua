@@ -148,6 +148,8 @@ local function ShowToolTip (frame)
         tooltip:AddLine("Afflicted units count in range:", D.MicroUnitF.UnitsDebuffedInRange);
 
         tooltip:AddLine("Max Concurrent update events:", D.Status.MaxConcurentUpdateDebuff);
+        
+        tooltip:AddLine("Live timers:", D:GetTimersNumber());
 
         tooltip:AddSeparator();
 

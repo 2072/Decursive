@@ -235,6 +235,7 @@ function MicroUnitF:GiveMFAnchor (ID) -- {{{
     local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
 
     Anchor[2] = x; Anchor[3] = y;
+    --Anchor[3] = x; Anchor[2] = y;
 
     return Anchor;
 end

@@ -446,6 +446,7 @@ function D:NiceTime()
 end
 
 local DcrTimers = {};
+Dcr._dcrtimers = DcrTimers; --XXX for debug only
 function D:TimerExixts(RefName)
     return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
 end
@@ -458,7 +459,14 @@ local ObjectWithArgs = {["obj"]=false, ["arg"]=false,};
 function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
 
     if DcrTimers[RefName] and DcrTimers[RefName][1] then
-        self:CancelTimer(DcrTimers[RefName][1]);
+        if not self:CancelTimer(DcrTimers[RefName][1]) then
+            self:AddDebugText("Timer cancellation failed in ScheduleDelayedCall() for", RefName);
+        end
+    end
+
+
+    if Delay > 20 then
+        self:AddDebugText("A delayed call for", RefName, "was requested with a very large timer:", Delay);
     end
 
     if not DcrTimers[RefName] then
@@ -496,7 +504,9 @@ end
 
 function D:ScheduleRepeatedCall(RefName, FunctionRef, Delay, arg)
     if DcrTimers[RefName] and DcrTimers[RefName][1] then
-        self:CancelTimer(DcrTimers[RefName][1]);
+        if not self:CancelTimer(DcrTimers[RefName][1]) then
+            self:AddDebugText("Timer cancellation failed in ScheduleRepeatedCall() for", RefName);
+        end
     end
 
     if not DcrTimers[RefName] then
@@ -509,11 +519,20 @@ function D:ScheduleRepeatedCall(RefName, FunctionRef, Delay, arg)
 end
 
 function D:CancelDelayedCall(RefName)
+    local success = false;
     if DcrTimers[RefName] and DcrTimers[RefName][1] then
         local cancelHandle = DcrTimers[RefName][1];
-        DcrTimers[RefName][1] = false;
-        return self:CancelTimer(cancelHandle);
+        success = self:CancelTimer(cancelHandle);
+
+        if success then
+            DcrTimers[RefName][1] = false;
+        else
+            self:AddDebugText("Timer cancellation failed in CancelDelayedCall() for", RefName);
+        end
+
+        return success;
     end
+    return 0;
 end
 
 function D:CancelAllTimedCalls()
@@ -521,5 +540,24 @@ function D:CancelAllTimedCalls()
         self:CancelDelayedCall(RefName);
     end
 end
+
+function D:GetTimersNumber()
+    local dcrcount = 0;
+    for RefName, timer in pairs(D._dcrtimers) do
+        if timer[1] then
+            dcrcount = dcrcount + 1;
+        end
+    end
+    local acetimercount = 0;
+    local Acetimer = LibStub("AceTimer-3.0");
+    for table in pairs(Acetimer.selfs[D]) do
+        acetimercount = acetimercount + 1;
+    end
+    return "Dcr says: " .. dcrcount .. ", AceTimers says: " .. acetimercount;
+end
+
+-- /echo LibStub("AceTimer-3.0").selfs[Dcr]
+
+
 
 T._LoadedFiles["Dcr_utils.lua"] = "@project-version@";
