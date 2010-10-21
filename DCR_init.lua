@@ -341,30 +341,11 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
     DC.SpellsToUse = {
-      
         -- Priests
         [DS["SPELL_CURE_DISEASE"]]          = {
             Types = {DC.DISEASE},
             IsBest = 0,
             Pet = false,
-        },
-        -- Priests -- XXX to be removed
-        [DS["SPELL_ABOLISH_DISEASE"]]       = {
-            Types = {DC.DISEASE},
-            IsBest = 1,
-            Pet = false,
-
-            EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
-            EnhancedByCheck = function ()
-                return (select(5, GetTalentInfo(2,20))) > 0;
-            end,
-            Enhancements = {
-                Types = {DC.DISEASE, DC.POISON},
-                OnPlayerOnly = {
-                    [DC.DISEASE] = false,
-                    [DC.POISON]  = true,
-                },
-            }
         },
         -- Priests
         [DS["SPELL_DISPELL_MAGIC"]]         = {
@@ -373,27 +354,9 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = false,
         },
         -- Paladins
-        [DS["SPELL_PURIFY"]]                = {
-            Types = {DC.DISEASE, DC.POISON},
-            IsBest = 1,
-            Pet = false,
-        },
-        -- Paladins
         [DS["SPELL_CLEANSE"]]               = {
             Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
             IsBest = 2,
-            Pet = false,
-        },
-        -- Druids
-        [DS["SPELL_CURE_POISON"]]           = {
-            Types = {DC.POISON},
-            IsBest = 0,
-            Pet = false,
-        },
-        -- Druids
-        [DS["SPELL_ABOLISH_POISON"]]        = {
-            Types = {DC.POISON},
-            IsBest = 1,
             Pet = false,
         },
         -- Druids
@@ -429,12 +392,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = false,
             Rank = 1,
         },
-        -- Shamans
-        [DS["SPELL_CURE_TOXINS"]]           = {
-            Types = {DC.POISON, DC.DISEASE},
-            IsBest = 1,
-            Pet = false,
-        },
+        
         -- Shaman resto
         [DS["CLEANSE_SPIRIT"]]              = {
             Types = {DC.CURSE, DC.DISEASE, DC.POISON},
@@ -481,11 +439,11 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         },
     };
 
+
     -- WoW 4.0 changes {{{
 
     --https://docs.google.com/document/pub?id=13GLsRWUA4pMQ0EAV2FWkmJvDNQTeIcivO8XtP0iZ-tA
     if T._tocversion == 40000 then
-
         -- Paladins
         DC.SpellsToUse[DS["SPELL_CLEANSE"]]               = {
             Types = {DC.DISEASE, DC.POISON},
@@ -500,7 +458,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
             }
         };
-
         -- Shaman resto
         DC.SpellsToUse[DS["CLEANSE_SPIRIT"]]              = {
             Types = {DC.CURSE},
@@ -515,8 +472,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
                 Types = {DC.MAGIC, DC.CURSE},
             }
         };
-
-
+        -- Warlocks
         DC.SpellsToUse[DS["PET_FEL_CAST"]]              = {
             Types = {DC.ENEMYMAGIC},
             IsBest = 0,
@@ -554,10 +510,8 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
                 Types = {DC.MAGIC, DC.POISON, DC.CURSE},
             }
         };
-
-
         -- Priests
-         DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]]       = {
+        DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]]       = {
             Types = {DC.DISEASE},
             IsBest = 0,
             Pet = false,
@@ -575,7 +529,53 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             }
         };
 
+        -- Still in WoW 3.5??
+    else
+         -- Priests -- XXX to be removed
+        DC.SpellsToUse[DS["SPELL_ABOLISH_DISEASE"]]       = {
+            Types = {DC.DISEASE},
+            IsBest = 1,
+            Pet = false,
 
+            EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
+            EnhancedByCheck = function ()
+                return (select(5, GetTalentInfo(2,20))) > 0;
+            end,
+            Enhancements = {
+                Types = {DC.DISEASE, DC.POISON},
+                OnPlayerOnly = {
+                    [DC.DISEASE] = false,
+                    [DC.POISON]  = true,
+                },
+            }
+        };
+
+        -- Druids
+        DC.SpellsToUse[DS["SPELL_ABOLISH_POISON"]]        = {
+            Types = {DC.POISON},
+            IsBest = 1,
+            Pet = false,
+        };
+
+        -- Shamans
+        DC.SpellsToUse[DS["SPELL_CURE_TOXINS"]]           = {
+            Types = {DC.POISON, DC.DISEASE},
+            IsBest = 1,
+            Pet = false,
+        };
+
+        -- Druids
+        DC.SpellsToUse[DS["SPELL_CURE_POISON"]]           = {
+            Types = {DC.POISON},
+            IsBest = 0,
+            Pet = false,
+        };
+        -- Paladins
+        DC.SpellsToUse[DS["SPELL_PURIFY"]]                = {
+            Types = {DC.DISEASE, DC.POISON},
+            IsBest = 1,
+            Pet = false,
+        };
 
     end
     
@@ -822,12 +822,6 @@ function D:SetConfiguration()
         DC.MyGUID = "NONE";
     end
 
-    --[=[
-    if D.profile.DisableAbolish then
-        DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]].IsBest = 10;
-        DC.SpellsToUse[DS["SPELL_CURE_POISON"]].IsBest = 10;
-    end
-    --]=]
 
     D:Init(); -- initialize Dcr core (set frames display, scans available cleansing spells)
 
@@ -1242,7 +1236,7 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["TALENT_SACRED_CLEANSING"]    = {  53551,                                    }; -- holy palladins
 
 
-        --[=[
+        ---[=[
         Spells["Dampen Magic"]    = nil;
         Spells["Amplify Magic"]    = nil;
         Spells["SPELL_ABOLISH_DISEASE"]    = nil;
@@ -1271,7 +1265,7 @@ function D:GetSpellsTranslations(FromDIAG)
             if _ == 1 then
                 DS[Sname] = (GetSpellInfo(Sid));
                 if not DS[Sname] then
-                    if random (1, 20000) == 1 or FromDIAG then
+                    if random (1, 15000) == 2323 or FromDIAG then
                         D:AddDebugText("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
                         D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
                     end

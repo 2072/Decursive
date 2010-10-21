@@ -192,15 +192,6 @@ function D:GetDefaultsSettings()
             -- this will disable error messages
             Print_Error = true,
 
-            -- check for abolish before curing poison or disease
-            --Check_For_Abolish = false,
-
-	    -- "Do not use 'Abolish' spells
-	    --DisableAbolish = false,
-
-            -- Will randomize the order of the live-list and of the MUFs
-            --Random_Order = false,
-
             -- should we scan pets
             Scan_Pets = true,
 
@@ -289,7 +280,6 @@ function D:GetDefaultsSettings()
             -- Debuffs {{{
             -- those debuffs prevent us from curing the unit
             DebuffsToIgnore = {
-                --[DS["Phase Shift"]]         = true,
                 [DS["Banish"]]                      = true,
                 [DS["Frost Trap Aura"]]             = true,
             },
@@ -1448,38 +1438,6 @@ local function GetOptions()
                 disabled = function() return  not D.Status.Enabled end,
                 args = {
                     description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description"},
-                    --[=[
-                    AbolishCheck = {
-                        type = "toggle",
-                        width = 'full',
-                        name =  L["ABOLISH_CHECK"],
-                        desc = L["OPT_ABOLISHCHECK_DESC"],
-                        get = function() return D.profile.Check_For_Abolish end,
-                        set = function(info, v)
-                            D.profile.Check_For_Abolish = v;
-                        end,
-                        order = 120
-                    },
-		    DisableAbolish = {
-                        type = "toggle",
-                        width = 'full',
-                        name =  L["OPT_DISABLEABOLISH"],
-                        desc = L["OPT_DISABLEABOLISH_DESC"],
-                        get = function() return D.profile.DisableAbolish end,
-                        set = function(info, v)
-                            D.profile.DisableAbolish = v;
-			    if v then
-				DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]].IsBest = 10;
-				DC.SpellsToUse[DS["SPELL_CURE_POISON"]].IsBest = 10;
-			    else
-				DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]].IsBest = 0;
-				DC.SpellsToUse[DS["SPELL_CURE_POISON"]].IsBest = 0;
-			    end
-			    D:Configure();
-                        end,
-                        order = 130
-                    },
-                    --]=]
                     DoNotBlPrios = {
                         type = "toggle",
                         width = 'full',
