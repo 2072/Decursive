@@ -586,6 +586,7 @@ local function GetOptions()
 
                         -- {{{
                             LibStub("AceConfigDialog-3.0"):Close(D.name);
+                            GameTooltip:Hide();
                             if not D.MemoriumFrame then
                                 D.MemoriumFrame = CreateFrame("Frame", nil, UIParent);
                                 local f = D.MemoriumFrame;
@@ -1699,7 +1700,7 @@ local function GetOptions()
                         desc = L["OPT_CHECKOTHERPLAYERS_DESC"],
                         hidden = function () return not DC.COMMAVAILABLE; end,
                         disabled = function () return InCombatLockdown() or GetTime() - T.LastVCheck < 60; end,
-                        func = function () if D:AskVersion() then D.versions = false; end end,
+                        func = function () if D:AskVersion() then D.versions = false; end GameTooltip:Hide(); end,
                         order = 10,
                     },
                     VersionsDisplay = {
