@@ -73,12 +73,12 @@ function D:GetDefaultsSettings()
         class = {
             -- Curring order (1 is the most important, 6 the lesser...)
             CureOrder = {
-                [DC.ENEMYMAGIC]     = 1,
-                [DC.MAGIC]      = 2,
-                [DC.CURSE]      = 3,
-                [DC.POISON]     = 4,
-                [DC.DISEASE]            = 5,
-                [DC.CHARMED]            = 6,
+                [DC.MAGIC]      = 1,
+                [DC.CURSE]      = 2,
+                [DC.POISON]     = 3,
+                [DC.DISEASE]    = 4,
+                [DC.ENEMYMAGIC] = 5,
+                [DC.CHARMED]    = 6,
             },
         },
 
