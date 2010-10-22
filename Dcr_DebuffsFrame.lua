@@ -244,7 +244,7 @@ end-- }}}
 
 function MicroUnitF:Delayed_MFsDisplay_Update ()
     if D.profile.ShowDebuffsFrame then
-        D:ScheduleDelayedCall("Dcr_UpdateMUFsNUM", self.MFsDisplay_Update, 1.5, self);
+        D:ScheduleDelayedCall("Dcr_Delayed_MFsDisplay_Update", self.MFsDisplay_Update, 1.5, self);
     end
 end
 

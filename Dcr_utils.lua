@@ -446,7 +446,7 @@ function D:NiceTime()
 end
 
 local DcrTimers = {};
-Dcr._dcrtimers = DcrTimers; --XXX for debug only
+Dcr._dcrtimers = DcrTimers; -- Used when debugging is on
 function D:TimerExixts(RefName)
     return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
 end
@@ -456,16 +456,29 @@ function D:DelayedCallExixts(RefName)
 end
 
 local ObjectWithArgs = {["obj"]=false, ["arg"]=false,};
+local argCount = 0;
 function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
 
-    if DcrTimers[RefName] and DcrTimers[RefName][1] then
+    if DcrTimers[RefName] and DcrTimers[RefName][1] then -- a timer with the same refname still exists
+        argCount = select('#', ...);
+        -- we test up to two arguments to avoid the cancellation->re-creation of the timer (AceTimers doesn't remove them right away)
+        if (argCount == 0 or argCount == 1 and  select(1, ...) == DcrTimers[RefName][2][2]) and arg1 == DcrTimers[RefName][2][1] then
+            --@debug@
+            D:Debug("Timer |cFF0000DDcancellation-creation canceled|r for", RefName, "Arg:", arg1, "indargcount:", argCount);
+            --@end-debug@
+            return;
+            --@debug@
+        else
+            D:Debug("Timer |cFF0066DD-replaced-|r for", RefName, "argcount:", argCount);
+            --@end-debug@
+        end
         if not self:CancelTimer(DcrTimers[RefName][1]) then
             self:AddDebugText("Timer cancellation failed in ScheduleDelayedCall() for", RefName);
         end
     end
 
 
-    if Delay > 20 then
+    if Delay > 30 then
         self:AddDebugText("A delayed call for", RefName, "was requested with a very large timer:", Delay);
     end
 
@@ -473,9 +486,10 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
         DcrTimers[RefName] = {};
     end
 
+    -- arg table
+    DcrTimers[RefName][2] = {arg1};
+
     if select('#', ...) > 0 then
-        -- arg table
-        DcrTimers[RefName][2] = {arg1};
 
         local i;
         for i = 1, select('#', ...) do
