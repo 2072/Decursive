@@ -1028,10 +1028,6 @@ end --}}}
 
 function D:ReConfigure() --{{{
 
-    if not D.Status.HasSpell then
-        return;
-    end
-
     D:Debug("|cFFFF0000D:ReConfigure was called!|r");
 
     local Spell, spellName;

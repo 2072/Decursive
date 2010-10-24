@@ -303,24 +303,24 @@ end
 
 function D:PLAYER_ALIVE()
     D:Debug("|cFFFF0000PLAYER_ALIVE|r");
-    D:ReConfigure();
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
     self:UnregisterEvent("PLAYER_ALIVE");
     D:CheckPlayer();
 end
 
 function D:LEARNED_SPELL_IN_TAB()
     D:Debug("|cFFFF0000A new spell was learned, scheduling a reconfiguration|r");
-    self:ScheduleDelayedCall("Dcr_NewSpellLearned", self.Configure, 5, self);
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
 end
 
 function D:SPELLS_CHANGED()
     D:Debug("|cFFFF0000Spells were changed, scheduling a reconfiguration check|r");
-    self:ScheduleDelayedCall("Dcr_SpellsChanged", self.ReConfigure, 15, self);
+    self:ScheduleDelayedCall("Dcr_ReConfigureSlow", self.ReConfigure, 15, self);
 end
 
 function D:PLAYER_TALENT_UPDATE()
     D:Debug("|cFFFF0000Talents were changed, scheduling a reconfiguration check|r");
-    self:ScheduleDelayedCall("Dcr_TalentUpdate", self.ReConfigure, 4, self);
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
 end
 
 ---[=[
