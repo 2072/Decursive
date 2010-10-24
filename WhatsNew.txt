@@ -1,5 +1,23 @@
-Decursive 2.5.2.1 by Archarodim (2010-10-14)
+Decursive 2.5.2.2 by Archarodim (2010-10-24)
 ============================================
+
+
+Changes from Decursive 2.5.2.1 to Decursive 2.5.2.2
+---------------------------------------------------
+
+- Internal optimizations concerning timers creation.
+
+- "Magic Charm" has now a lower priority. This will prevent 'Purge' being set
+  on left-click by default for Shamans.
+
+- Several fixes and additions to German localization by Freydis88.
+
+- Decursive could have troubles detecting talents for some people.
+
+- Removed old 3.5 deprecated spells when in 4.0. This fixes the error message
+  some users were getting about no longer existing SpellIDs.
+
+- Other small fixes and enhancements.
 
 
 Changes from Decursive 2.5.2 to Decursive 2.5.2.1
