@@ -816,17 +816,107 @@ function D:OnCommReceived(message, distribution, from)
     end
 end
 
-function D:ReturnVersions()
-    if not D.versions then
-        return "no data available";
-    end
+do
 
-    local formatedversions = {};
-    for name, versiondetails in pairs(D.versions) do
-        formatedversions[#formatedversions + 1] = ("%s: %s %s (%s)"):format(D:ColorText(name, "FF00AA00"), versiondetails[1], versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", date("%Y-%m-%d", versiondetails[2]));
-    end
+    -- local Name_To_Unit (Auto-Cached table) {{{
+    -- Warning this part is not very optimized, fortunately it's just sugar, I'm probably the only one using it :p
 
-    return table.concat(formatedversions, "\n");
+    local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
+    local GetNumRaidMembers = _G.GetNumRaidMembers;
+    local GetNumPartyMembers = _G.GetNumPartyMembers;
+    local GetRaidRosterInfo = _G.GetRaidRosterInfo;
+
+    local Name_To_Unit = {};
+
+    local Name_To_Unit_mt = {__index =
+        function (self, name )
+
+            if not name then return false end
+
+            local numRaidMembers = GetNumRaidMembers();
+            local foundUnit = false;
+
+            if numRaidMembers == 0 then
+                if name == D:UnitName("player") then
+                    foundUnit =  "player";
+                    --elseif name == (D:UnitName("pet") then
+                    --    foundUnit =  "pet";
+                elseif name == D:UnitName("target") then
+                    foundUnit =  "target";
+                elseif GetNumPartyMembers() > 0 then
+                    if name == D:UnitName("party1") then
+                        foundUnit =  "party1";
+                    elseif name == D:UnitName("party2") then
+                        foundUnit =  "party2";
+                    elseif name == D:UnitName("party3") then
+                        foundUnit =  "party3";
+                    elseif name == D:UnitName("party4") then
+                        foundUnit =  "party4";
+                    elseif name == D:UnitName("partypet1") then
+                        foundUnit =  "partypet1";
+                    elseif name == D:UnitName("partypet2") then
+                        foundUnit =  "partypet2";
+                    elseif name == D:UnitName("partypet3") then
+                        foundUnit =  "partypet3";
+                    elseif name == D:UnitName("partypet4") then
+                        foundUnit =  "partypet4";
+                    end
+                end
+            else
+                -- we are in a raid
+                local i;
+                local foundmembers = 0;
+                local raidName;
+                for i=1, MAX_RAID_MEMBERS do
+                    raidName = (GetRaidRosterInfo(i));
+
+                    if raidName then
+
+                        foundmembers = foundmembers + 1;
+
+                        if name == raidName then
+                            foundUnit =  "raid"..i;
+                            break;
+                        end
+                        --[[
+                        if  D.profile.Scan_Pets and name == D:UnitName("raidpet"..i) then
+                        foundUnit =  "raidpet"..i;
+                        break;
+                        end
+                        --]]
+
+                        if foundmembers == numRaidMembers then
+                            break;
+                        end
+
+                    end
+                end
+            end
+
+            self[name] = foundUnit;
+
+            return self[name];
+
+        end
+    };
+    Name_To_Unit = setmetatable(Name_To_Unit, Name_To_Unit_mt);
+    --}}}
+
+    local UnitClass = _G.UnitClass;
+    local select = _G.select;
+    local date = _G.date;
+    function D:ReturnVersions()
+        if not D.versions then
+            return "no data available";
+        end
+
+        local formatedversions = {};
+        for name, versiondetails in pairs(D.versions) do
+            formatedversions[#formatedversions + 1] = ("%s: %s %s (%s)"):format(D:ColorText(name, "FF"..DC.HexClassColor[select(2, UnitClass(Name_To_Unit[name]))]), versiondetails[1], versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", date("%Y-%m-%d", versiondetails[2]));
+        end
+
+        return table.concat(formatedversions, "\n");
+    end
 end
 
 T._LoadedFiles["Dcr_Events.lua"] = "@project-version@";
