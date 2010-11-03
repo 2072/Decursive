@@ -86,6 +86,9 @@ function D:GetDefaultsSettings()
             debugging = false,
             NonRealease = false,
             LastExpirationAlert = 0,
+            --@debug@
+            LastChekOutAlert = 0,
+            --@end-debug@
 
             -- the key to bind the macro to
             MacroBind = false,

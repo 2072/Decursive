@@ -282,6 +282,29 @@ function D:BetaWarning()
 
 end
 
+--@debug@
+function D:CheckOutWarning()
+    if time() - self.db.global.LastChekOutAlert > 24 * 3600  then
+        StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. 
+        [[
+|cFFFF0000You're using an unpackaged version of Decursive.|r
+Decursive is not meant to be used this way.
+Annoying and invasive debugging messages will be displayed.
+More resources (memory and CPU) will be used due to debug routines and sanity test code being executed.
+Localisation is not working and English text may be wrong.
+
+Using Decursive in this state will bring you nothing but troubles.
+
+|cFF00FF00Alpha versions of Decursive are automatically packaged. You should use those instead.|r
+
+        ]]
+        .. "|r");
+
+        self.db.global.LastChekOutAlert = time();
+    end
+end
+--@end-debug@
+
 function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     if T._SelfDiagnostic() == 2 then
@@ -885,6 +908,9 @@ function D:SetConfiguration()
 
     T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
     D:BetaWarning();
+    --@debug@
+    D:CheckOutWarning();
+    --@end-debug@
 
 end
 
