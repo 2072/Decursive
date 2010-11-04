@@ -1,5 +1,9 @@
 Decursive's COMMANDS
 ====================
+
+- /Decursive
+
+    To open the configuration interface
  
 - /DcrShow
 
@@ -11,10 +15,6 @@ Note that *this bar is also the anchor of the live-list*
 - /DcrHide
 
     To hide the Decursive bar (leaving live-list displayed)
- 
-- /DcrOptions
-
-    To show a static option panel
  
 - /DcrReset
 
@@ -49,8 +49,8 @@ when you loose a frame)
  
 **NOTE:**
 
-All the above commands can also be bound to a key through the key-binding
-WoW interface.
+All the above commands can also be bound to a key through WoW key-binding
+interface.
 
 **Commands are not case sensitive**
 

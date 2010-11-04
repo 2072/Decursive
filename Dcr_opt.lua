@@ -2476,6 +2476,8 @@ do
         -- {{{
         type = "select",
              name = function (info)
+                 if not retrieveKeyComboNum (info) then return "" end -- needed because when called by command line, info is set to the parent
+
                  if retrieveKeyComboNum (info) < #D.db.global.AvailableButtons - 1 then
                      return "";
                  elseif  retrieveKeyComboNum (info) == #D.db.global.AvailableButtons - 1 then

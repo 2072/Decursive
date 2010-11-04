@@ -94,10 +94,9 @@ D.CONF.MACROCOMMAND = string.format("MACRO %s", D.CONF.MACRONAME);
 BINDING_HEADER_DECURSIVE = "Decursive";
 
 D.CONF.MACRO_DIAG     = "/dcrdiag";
-D.CONF.MACRO_COMMAND  = "/decursive";
 D.CONF.MACRO_SHOW     = "/dcrshow";
 D.CONF.MACRO_HIDE     = "/dcrhide";
-D.CONF.MACRO_OPTION   = "/dcroptions";
+D.CONF.MACRO_OPTION   = "/decursive";
 D.CONF.MACRO_RESET    = "/dcrreset";
 
 D.CONF.MACRO_PRADD    = "/dcrpradd";

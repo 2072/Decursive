@@ -27,7 +27,7 @@
                         Dcr:ShowHideDebuffsFrame ();
         </Binding>
         <Binding name="DCRSHOWOPTION">
-                        Dcr.Waterfall:Open("Decursive");
+                        LibStub("AceConfigDialog-3.0"):Open(Dcr.name);
         </Binding>
         <Binding name="DCRPRSHOW">
                         Dcr:ShowHidePriorityListUI();
