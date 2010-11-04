@@ -940,9 +940,22 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         self.RaidTargetIcon     = false;
         self.PrevRaidTargetIndex= false;
 
+        -- if it's a pet make it a little bit smaller
+        local petminus = 0;
+        if Unit:find("pet") then
+            petminus = 4;
+        end
+
         -- create the frame
         self.Frame  = CreateFrame ("Button", nil, self.Parent, "DcrMicroUnitTemplateSecure");
         self.CooldownFrame = CreateFrame ("Cooldown", nil, self.Frame, "DcrMicroUnitCDTemplate");
+
+        if petminus ~= 0 then
+            self.Frame:SetWidth(20 - petminus);
+            self.Frame:SetHeight(20 - petminus);
+            self.CooldownFrame:SetWidth(16 - petminus);
+            self.CooldownFrame:SetHeight(16 - petminus);
+        end
 
         -- outer texture (the class border)
         -- Bottom side
@@ -969,14 +982,14 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         -- global texture
         self.Texture = self.Frame:CreateTexture(nil, "ARTWORK");
         self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
-        self.Texture:SetHeight(16);
-        self.Texture:SetWidth(16);
+        self.Texture:SetHeight(16 - petminus);
+        self.Texture:SetWidth(16 - petminus);
 
         -- inner Texture (Charmed special texture)
         self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY");
         self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
-        self.InnerTexture:SetHeight(7);
-        self.InnerTexture:SetWidth(7);
+        self.InnerTexture:SetHeight(7 - petminus);
+        self.InnerTexture:SetWidth(7 - petminus);
         self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
         -- Chrono Font string
@@ -987,8 +1000,8 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         -- raid target icon
         self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY");
         self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
-        self.RaidIconTexture:SetHeight(13);
-        self.RaidIconTexture:SetWidth(13);
+        self.RaidIconTexture:SetHeight(13 - petminus);
+        self.RaidIconTexture:SetWidth(13 - petminus);
 
 
         -- a reference to this object
