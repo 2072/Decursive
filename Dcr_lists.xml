@@ -70,7 +70,7 @@
                 self:RegisterForClicks('LeftButtonUp', 'RightButtonUp', 'MiddleButtonUp');
             </OnLoad>
             <OnClick>
-                self:GetParent():EntryOnclick(self);
+                self:GetParent():EntryOnclick(self, button);
 
             </OnClick>
             <OnEnter>

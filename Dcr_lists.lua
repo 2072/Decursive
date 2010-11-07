@@ -132,12 +132,11 @@ function D.PrioSkipListFrame_OnUpdate(frame) --{{{
 
 end --}}}
 
-function D:PrioSkipListEntryTemplate_OnClick(frame) --{{{
---    D:PrintLiteral(arg1);
+function D.PrioSkipListEntryTemplate_OnClick(listFrame, entryBFrame, button) --{{{
 
     local list;
     local UnitNum;
-    if (frame:GetParent().Priority) then
+    if listFrame.Priority then
         list = D.profile.PriorityList;
         UnitNum = getn(D.profile.PriorityList);
     else
@@ -146,10 +145,10 @@ function D:PrioSkipListEntryTemplate_OnClick(frame) --{{{
     end
 
 
-    local id = frame:GetID();
+    local id = entryBFrame:GetID();
     if (id) then
         if (IsControlKeyDown()) then
-            if (frame:GetParent().Priority) then
+            if (listFrame.Priority) then
                 D:RemoveIDFromPriorityList(id);
             else
                 D:RemoveIDFromSkipList(id);
@@ -157,39 +156,33 @@ function D:PrioSkipListEntryTemplate_OnClick(frame) --{{{
         elseif (UnitNum > 1) then
             local previousUnit_ID, previousUnit, nextUnit_ID, nextUnit, currentUnit;
 
-            --if (id == 0) then
-                -- previousUnit_ID      = UnitNum;  else 
-                previousUnit_ID  = id - 1;
-            --end
-            --if (id == UnitNum - 1) then
-                --nextUnit_ID   =           0;  else
-                nextUnit_ID      = id + 1;
-            --end
+            previousUnit_ID  = id - 1;
+            nextUnit_ID      = id + 1;
 
             previousUnit = list[previousUnit_ID];
             nextUnit     = list[nextUnit_ID    ];
             currentUnit  = list[id];
 
 
-            if (arg1=="RightButton" and IsShiftKeyDown()) then -- move at the bottom
+            if (button=="RightButton" and IsShiftKeyDown()) then -- move at the bottom
                 table.remove(list, id);
                 table.insert(list, UnitNum, currentUnit);
 
-            elseif (arg1=="LeftButton" and IsShiftKeyDown()) then -- move at the top
+            elseif (button=="LeftButton" and IsShiftKeyDown()) then -- move at the top
                 table.remove(list, id);
                 table.insert(list, 1, currentUnit);
-            elseif (arg1=="LeftButton" and id ~= 1) then -- unit gets higher
+            elseif (button=="LeftButton" and id ~= 1) then -- unit gets higher
                 D:Debug("upping %s of id %d", list[id], id);
                 list[previousUnit_ID]   = list[id];
                 list[id]                = previousUnit;
-            elseif (arg1=="RightButton" and id ~= UnitNum) then -- unit gets lower
+            elseif (button=="RightButton" and id ~= UnitNum) then -- unit gets lower
                 D:Debug("downing %s of id %d", list[id], id);
                 list[nextUnit_ID]       = list[id];
                 list[id]                = nextUnit;
-            elseif (arg1=="MiddleButton") then
+            elseif (button=="MiddleButton") then
             
             end
-            frame:GetParent().UpdateYourself = true;
+            listFrame.UpdateYourself = true;
         end
         D.Status.PrioChanged       = true;
         D:GroupChanged ("PrioSkipListEntryTemplate_OnClick");
