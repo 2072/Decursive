@@ -18,11 +18,11 @@ Decursive key benefits
 
 - Control **what and who** you want to dispel:
 
-    -   Easily **Filter out** afflictions you don't want to cure or that are useless to remove by class (*some are pre-configured*).  
+    -   Easily [**Filter out**][filteropts] afflictions you don't want to cure or that are useless to remove by class (*some are pre-configured*).  
 	(Such as afflictions affecting mana on non-mana classes, etc...).
-    -   **Choose** between what you can dispel (**magic, curses, poison, diseases, charms**) choosing their priority.
+    -   [**Choose** between what you can dispel][cureopts] (**magic, curses, poison, diseases, charms**) choosing their priority.
 	(this allows you to *share* the cleansing work with other players effectively)
-    -   **Prioritize** or exclude members.
+    -   [**Prioritize** or exclude members][prioskipopts].
 	(keep players, classes, or raid groups in a specific order to cleanse them in order of importance)
 
 - **Manage Mind controlled units:**
@@ -42,15 +42,15 @@ Decursive key benefits
     	
 - **React faster:**
 
-    -   **Visual** and/or **auditive** alerts when someone needs your attention and *can* be dispelled.
+    -   [**Visual**][curseexemple1] and/or **auditive** alerts when someone needs your attention and *can* be dispelled.
     -   Special sound alert when *Unstable Affliction* is detected and you're about to dispel it.
     -   Visual and auditive alert when your dispel attempts are *resisted or fail*.
 
 - **Integration in any interface:**
 
     -	Decursive is designed to **save screen real estate** and to be forgotten when not needed.
-    -	Many options allow you to customize Decursive appearance and interface behavior.
-    -	All Decursive alert colors can be modified making it suitable for color-blind people.
+    -	Many options allow you to [customize Decursive appearance][mufsdisplayopts] and interface behavior.
+    -	[All Decursive alert colors can be modified][mufscolors] making it suitable for color-blind people.
 
 - **Highly optimized and effective coding:**
 
@@ -77,7 +77,7 @@ the European server *Les Sentinelles*.
 He was the raid leader of my guild (Horizon)
 
 
-
+![stats](http://www.2072productions.com/to/dcrcursedisplaystat.gif)
 
 
 [MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
@@ -88,3 +88,16 @@ He was the raid leader of my guild (Horizon)
 [user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
 [dev]: http://www.2072productions.com/to/decursive_dev
 [ticket]: http://www.wowace.com/addons/decursive/tickets/
+
+[cureopts]: http://www.wowace.com/addons/decursive/images/12-decursives-option-panels-curing/
+[filteropts]: http://www.wowace.com/addons/decursive/images/11-decursives-option-panels-affliction-filtering/
+[prioskipopts]: http://www.wowace.com/addons/decursive/images/22-priority-and-skip-list-management-interface/
+[curseexemple1]: http://www.wowace.com/addons/decursive/images/7-curse-affliction-1/
+[mufsdisplayopts]: http://www.wowace.com/addons/decursive/images/19-decursives-option-panels-mufs-display/
+[mufscolors]: http://www.wowace.com/addons/decursive/images/18-decursives-option-panels-mufs-colors/
+[mufsmousebuttons]: http://www.wowace.com/addons/decursive/images/20-decursives-option-panels-mufs-mouse-buttons/
+[generalopts]: http://www.wowace.com/addons/decursive/images/13-decursives-option-panels-general/
+[livelistopts]: http://www.wowace.com/addons/decursive/images/14-decursives-option-panels-live-list/
+[mufshandle]: http://www.wowace.com/addons/decursive/images/23-micro-unit-frames-handle/
+[decursivebar]: http://www.wowace.com/addons/decursive/images/24-decursives-bar/
+[messagesopts]: http://www.wowace.com/addons/decursive/images/16-decursives-option-panels-messages/
