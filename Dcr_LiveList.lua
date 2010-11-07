@@ -484,10 +484,17 @@ function LiveList:Update_Display() -- {{{
                                 "DName:", D.ManagedDebuffUnitCache[UnitID][1].Name,
                                 "MUFs are:", D.profile.ShowDebuffsFrame,
                                 "InCombatLockdown():", InCombatLockdown(),
-                                "UnitID:", UnitID
+                                "UnitID:", UnitID,
+                                "HasSpell", self.Status.HasSpell,
+
+                                "MAGIC:", D.Status.CuringSpells[DC.MAGIC],
+                                "ENEMYMAGIC:", D.Status.CuringSpells[DC.ENEMYMAGIC],
+                                "CURSE:", D.Status.CuringSpells[DC.CURSE],
+                                "POISON:", D.Status.CuringSpells[DC.POISON],
+                                "DISEASE:", D.Status.CuringSpells[DC.DISEASE],
+                                "CHARMED:", D.Status.CuringSpells[DC.CHARMED]
                             );
                             RangeStatus = 0;
-
                         end
                         RangeStatus = (RangeStatus and RangeStatus ~= 0) and true or false;
                     end
