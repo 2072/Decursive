@@ -69,12 +69,23 @@ In brief, what you get with Decursive is **effectiveness**, *a player using Decu
 - [Frequently Asked Questions][FAQ] *try this before asking any question*
 - [commands][]
  
-******************************************  
+******************************************
   
   
 Decursive is dedicated to the memory of Bertrand Sense known as Glorfindal on
 the European server *Les Sentinelles*.
 He was the raid leader of my guild (Horizon)
+
+******************************************
+
+You can **subscribe** to [Decursive's newsletter](http://www.2072productions.com/to/decursive-newsletter.php) to be alerted whenever a new stable version is released.
+
+For **suggestions, feature request, or bug report**, use the [ticket system provided by WoWAce.com](http://www.wowace.com/projects/decursive/tickets/).
+
+**Development versions of Decursive are available** at this URI: [http://www.2072productions.com/to/decursive_dev](http://www.2072productions.com/to/decursive_dev) ; note that development versions may be unstable.
+Unless you want to help testing unstable code you should download the versions considered stable below.
+
+**Do not forget to rate Decursive!**
 
 
 ![stats](http://www.2072productions.com/to/dcrcursedisplaystat.gif)
@@ -101,3 +112,4 @@ He was the raid leader of my guild (Horizon)
 [mufshandle]: http://www.wowace.com/addons/decursive/images/23-micro-unit-frames-handle/
 [decursivebar]: http://www.wowace.com/addons/decursive/images/24-decursives-bar/
 [messagesopts]: http://www.wowace.com/addons/decursive/images/16-decursives-option-panels-messages/
+
