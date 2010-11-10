@@ -672,7 +672,7 @@ do
                 -- (it happens for warlocks or when using the same profile with
                 -- several characters)
                 --if (self.classprofile.CureOrder[Debuff.Type] and self.classprofile.CureOrder[Debuff.Type] > 0) then
-                if (self:GetCureCheckBoxStatus(Debuff.Type)) then
+                if (self:GetCureTypeStatus(Debuff.Type)) then
 
 
                     -- self:Debug("we can cure it");

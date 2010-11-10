@@ -321,7 +321,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
     self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
 
-    D:ExportOptions ();
     
     -- Create some useful cache tables
     D:CreateClassColorTables();
@@ -710,6 +709,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D:LocalizeBindings ();
 
     if (FirstEnable) then
+        D:ExportOptions ();
         -- configure the message frame for Decursive
         DecursiveTextFrame:SetFading(true);
         DecursiveTextFrame:SetFadeDuration(D.CONF.TEXT_LIFETIME / 3);
@@ -852,8 +852,6 @@ function D:SetConfiguration()
 
 
     D.Groups_datas_are_invalid = true;
-    D:CreateDropDownFiltersMenu(); -- create per class filters menus
-    D:CreateModifierOptionMenu();
 
 
     if D.profile.MF_colors['Chronometers'] then
@@ -861,7 +859,6 @@ function D:SetConfiguration()
         D.profile.MF_colors['Chronometers'] = nil;
     end
 
-    D:CreateDropDownMUFcolorsMenu(); -- create MUF color configuration menus
     D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors); -- set the colors as set in the profile
 
 

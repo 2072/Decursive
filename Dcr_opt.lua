@@ -376,10 +376,12 @@ function D:GetDefaultsSettings()
     } -- }}}
 end
 
-local function GetOptions()
+---[====[
+local function GetStaticOptions ()
     return {
         -- {{{
         type = "group",
+        name = D.name,
         --handler = D,
         handler = {
             ["hidden"] = function () return not D:IsEnabled(); end,
@@ -1479,7 +1481,7 @@ local function GetOptions()
                         type = "toggle",
                         name = "  "..L["MAGIC"],
                         desc = L["OPT_MAGICCHECK_DESC"],
-                        get = function() return D:GetCureCheckBoxStatus(DC.MAGIC) end,
+                        get = function() return D:GetCureTypeStatus(DC.MAGIC) end,
                         set = function()
                             D:SetCureOrder (DC.MAGIC);
                         end,
@@ -1490,7 +1492,7 @@ local function GetOptions()
                         type = "toggle",
                         name = "  "..L["MAGICCHARMED"],
                         desc = L["OPT_MAGICCHARMEDCHECK_DESC"],
-                        get = function() return D:GetCureCheckBoxStatus(DC.ENEMYMAGIC) end,
+                        get = function() return D:GetCureTypeStatus(DC.ENEMYMAGIC) end,
                         set = function()
                             D:SetCureOrder (DC.ENEMYMAGIC);
                         end,
@@ -1501,7 +1503,7 @@ local function GetOptions()
                         type = "toggle",
                         name = "  "..L["POISON"],
                         desc = L["OPT_POISONCHECK_DESC"],
-                        get = function() return D:GetCureCheckBoxStatus(DC.POISON) end,
+                        get = function() return D:GetCureTypeStatus(DC.POISON) end,
                         set = function()
                             D:SetCureOrder (DC.POISON);
                         end,
@@ -1512,7 +1514,7 @@ local function GetOptions()
                         type = "toggle",
                         name = "  "..L["DISEASE"],
                         desc = L["OPT_DISEASECHECK_DESC"],
-                        get = function() return D:GetCureCheckBoxStatus(DC.DISEASE) end,
+                        get = function() return D:GetCureTypeStatus(DC.DISEASE) end,
                         set = function()
                             D:SetCureOrder (DC.DISEASE);
                         end,
@@ -1523,7 +1525,7 @@ local function GetOptions()
                         type = "toggle",
                         name = "  "..L["CURSE"],
                         desc = L["OPT_CURSECHECK_DESC"],
-                        get = function() return D:GetCureCheckBoxStatus(DC.CURSE) end,
+                        get = function() return D:GetCureTypeStatus(DC.CURSE) end,
                         set = function()
                             D:SetCureOrder (DC.CURSE);
                         end,
@@ -1534,7 +1536,7 @@ local function GetOptions()
                         type = "toggle",
                         name = "  "..L["CHARM"],
                         desc = L["OPT_CHARMEDCHECK_DESC"],
-                        get = function() return D:GetCureCheckBoxStatus(DC.CHARMED) end,
+                        get = function() return D:GetCureTypeStatus(DC.CHARMED) end,
                         set = function()
                             D:SetCureOrder (DC.CHARMED);
                         end,
@@ -1676,18 +1678,52 @@ local function GetOptions()
         },
     } -- }}}
 end
+--]====]
+
+local function GetOptions()
+
+    local options = GetStaticOptions();
+
+    local CureCheckBoxes = {
+        [DC.ENEMYMAGIC]     = options.args.CureOptions.args.CureEnemyMagic,
+        [DC.MAGIC]          = options.args.CureOptions.args.CureMagic,
+        [DC.CURSE]          = options.args.CureOptions.args.CureCurse,
+        [DC.POISON]         = options.args.CureOptions.args.CurePoison,
+        [DC.DISEASE]        = options.args.CureOptions.args.CureDisease,
+        [DC.CHARMED]        = options.args.CureOptions.args.CureCharmed,
+    }
+
+    -- Add the green number infront of the checkboxes
+    for Type, CheckBox in pairs(CureCheckBoxes) do
+        D:SetCureCheckBoxNum(Type, CheckBox);
+    end
+
+    -- create per class filters menus
+    options.args.DebuffSkip.args = D:CreateDropDownFiltersMenu();
+    -- create MUF color configuration menus
+    options.args.MicroFrameOpt.args.MUFsColors.args = D:CreateDropDownMUFcolorsMenu();
+    -- create MUF's mouse buttons configuration menus
+    options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
+
+    -- Create profile options
+    options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
+    options.args.general.args.profiles.order = -1;
+    options.args.general.args.profiles.inline = true;
+    options.args.general.args.profiles.hidden = function() return not D:IsEnabled(); end;
+    options.args.general.args.profiles.disabled = options.args.general.args.profiles.hidden;
+
+    return options;
+
+end
 
 function D:ExportOptions ()
     -- Export the option table to Blizz option UI and to Ace3 option UI
-    D.options = GetOptions();
-    local option_args = D.options.args;
-    option_args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db);
-    option_args.general.args.profiles.order = -1;
-    option_args.general.args.profiles.inline = true;
-    option_args.general.args.profiles.hidden = function() return not D:IsEnabled(); end;
-    option_args.general.args.profiles.disabled = option_args.general.args.profiles.hidden;
+    --D.options = GetOptions();
 
-    LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  D.options, 'dcr');
+    LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  GetOptions, 'dcr');
+
+    
+    
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, D.name, nil, "general");
 
     local SubGroups_ToBlizzOptions = {
@@ -1707,7 +1743,7 @@ end
 
 
 
-function D:GetCureCheckBoxStatus (Type)
+function D:GetCureTypeStatus (Type)
     return D.classprofile.CureOrder[Type] and D.classprofile.CureOrder[Type] > 0;
 end
 
@@ -1721,14 +1757,12 @@ local TypesToUName = {
 }
 
 local CureCheckBoxes = false;
-function D:SetCureCheckBoxNum (Type)
-    local CheckBox = CureCheckBoxes[Type];
-
+function D:SetCureCheckBoxNum (Type, checkBox)
     -- add the number in green before the name if we have a spell available and if we checked the box
-    if (D:GetCureCheckBoxStatus(Type)) then
-        CheckBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. L[TypesToUName[Type]];
+    if (D:GetCureTypeStatus(Type)) then
+        checkBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. L[TypesToUName[Type]];
     else
-        CheckBox.name = "  " .. L[TypesToUName[Type]];
+        checkBox.name = "  " .. L[TypesToUName[Type]];
     end
 
 end
@@ -1795,27 +1829,17 @@ end
 
 function D:SetCureOrder (ToChange)
 
-    if not CureCheckBoxes then
-        CureCheckBoxes = {
-            [DC.ENEMYMAGIC]     = D.options.args.CureOptions.args.CureEnemyMagic,
-            [DC.MAGIC]          = D.options.args.CureOptions.args.CureMagic,
-            [DC.CURSE]          = D.options.args.CureOptions.args.CureCurse,
-            [DC.POISON]         = D.options.args.CureOptions.args.CurePoison,
-            [DC.DISEASE]        = D.options.args.CureOptions.args.CureDisease,
-            [DC.CHARMED]        = D.options.args.CureOptions.args.CureCharmed,
-        }
-    end
 
     local CureOrder = D.classprofile.CureOrder;
     local tmpTable = {};
     D:Debug("SetCureOrder called for prio ", CureOrder[ToChange]);
 
     if (ToChange) then
-        -- if there is a positive value, it means we want to disable this type, set it to false (see GetCureCheckBoxStatus())
-        if (D:GetCureCheckBoxStatus(ToChange)) then
+        -- if there is a positive value, it means we want to disable this type, set it to false (see GetCureTypeStatus())
+        if (D:GetCureTypeStatus(ToChange)) then
             CureOrder[ToChange] = false;
             D:Debug("SetCureOrder(): set to false");
-        else -- else if there was no value (or a negative one), add this type at the end (see GetCureCheckBoxStatus())
+        else -- else if there was no value (or a negative one), add this type at the end (see GetCureTypeStatus())
             CureOrder[ToChange] = 20; -- this will cause the spell to be added at the end
             D:Debug("SetCureOrder(): set to 20");
         end
@@ -1860,11 +1884,6 @@ function D:SetCureOrder (ToChange)
 
     -- create / update the ReversedCureOrder table (prio => type, ..., )
     D.Status.ReversedCureOrder = D:tReverse(CureOrder);
-
-    for Type, CheckBox in pairs(CureCheckBoxes) do
-        D:SetCureCheckBoxNum(Type);
-    end
-
 
     -- Create spell priority table
     D.Status.CuringSpellsPrio = {};
@@ -1987,7 +2006,6 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         D.profile.DebuffAlwaysSkipList[handler["Debuff"]] = nil; -- remove it from the table
 
         D:Debug("%s removed!", handler["Debuff"]);
-        D:CreateDropDownFiltersMenu();
 
     end
 
@@ -2177,7 +2195,6 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     local AddFunc = function (NewDebuff)
         if (not D:tcheckforval(DebuffsSkipList, NewDebuff)) then
             table.insert(DebuffsSkipList, strtrim(NewDebuff));
-            D:CreateDropDownFiltersMenu();
             D:Debug("'%s' added to debuff skip list", strtrim(NewDebuff));
         end
     end
@@ -2196,7 +2213,6 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             end
         end
 
-        D:CreateDropDownFiltersMenu();
     end
 
     local CheckDefaultsPresence = function ()
@@ -2295,10 +2311,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             order = 100 + num,
         };
 
-        table.wipe(D.options.args.DebuffSkip.args);
-        D.options.args.DebuffSkip.args = DebuffsSubMenu;
-
-        LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
+        return DebuffsSubMenu;
     end
 end
 
@@ -2433,7 +2446,7 @@ do
             
         end
 
-        D.options.args.MicroFrameOpt.args.MUFsColors.args = MUFsColorsSubMenu;
+        return MUFsColorsSubMenu;
     end
 end
 
@@ -2509,14 +2522,18 @@ do
     };
 
     function D:CreateModifierOptionMenu ()
+        local key_Combos_Select = {};
+
         for i = 1, 6 do
-            D.options.args.MicroFrameOpt.args.MUFsMouseButtons.args["KeyCombo" .. i] = OptionPrototype;
+            key_Combos_Select["KeyCombo" .. i] = OptionPrototype;
         end
 
         -- create choice munu for targeting (it's always the last but one available button)
-        D.options.args.MicroFrameOpt.args.MUFsMouseButtons.args["KeyCombo" .. #D.db.global.AvailableButtons - 1] = OptionPrototype;
+        key_Combos_Select["KeyCombo" .. #D.db.global.AvailableButtons - 1] = OptionPrototype;
         -- create choice munu for focusing (it's always the last available button)
-        D.options.args.MicroFrameOpt.args.MUFsMouseButtons.args["KeyCombo" .. #D.db.global.AvailableButtons] = OptionPrototype;
+        key_Combos_Select["KeyCombo" .. #D.db.global.AvailableButtons] = OptionPrototype;
+
+        return key_Combos_Select;
     end
 
 end
