@@ -117,7 +117,7 @@
         </Size>
     </Texture> <!-- }}} -->
 
-    <FontString name="DcrLLAfflictionCountFont" inherits="NumberFontNormalSmall" maxLines="1" text="1" virtual="true"> <!-- {{{ -->
+    <FontString name="DcrLLAfflictionCountFont" inherits="NumberFont_Shadow_Small" maxLines="1" text="1" virtual="true"> <!-- {{{ -->
         <Anchors>
             <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentIcon">
                 <Offset>

@@ -159,16 +159,29 @@
         </Scripts>
     </Button>
 
-
-    <FontString name="DcrMicroUnitChronoFont" inherits="NumberFontNormalSmall" maxLines="1" text="" virtual="true"> <!-- {{{ -->
+    <!--
+    <FontString name="DcrMicroUnitChronoFontold" inherits="NumberFontNormalSmall" monochrome="false" maxLines="1" text="" virtual="true">
         <Shadow>
             <offset>
                 <AbsDimension x="1" y="-1" />
             </offset>
             <color r="0" g="0" b="0" />
         </Shadow>
-    </FontString> <!-- }}} -->
+    </FontString>
 
+
+    <Font name="DcrMicroUnitChronoFont" font="Fonts\ARIALN.TTF" virtual="true">
+        <FontHeight>
+            <AbsValue val="12"/>
+        </FontHeight>
+        <Shadow>
+            <offset>
+                <AbsDimension x="0.5" y="0.5" />
+            </offset>
+            <color r="0" g="0" b="0" />
+        </Shadow>
+    </Font>
+    -->
 
     <Script>
         local T = DecursiveRootTable or {};
