@@ -993,8 +993,10 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
         -- Chrono Font string
-        self.ChronoFontString = self.Frame:CreateFontString(nil, "ARTWORK", "NumberFont_Shadow_Small");
-        self.ChronoFontString:SetPoint("CENTER",self.Frame ,"CENTER",1,-2)
+        self.ChronoFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
+        self.ChronoFontString:SetFont(DC.NumberFontFileName, 12.2, "THICKOUTLINE, MONOCHROME")
+        self.ChronoFontString:SetPoint("CENTER",self.Frame ,"CENTER",1.6,0)
+        self.ChronoFontString:SetPoint("BOTTOM",self.Frame ,"BOTTOM",0,1)
         self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
         -- raid target icon

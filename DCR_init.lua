@@ -175,6 +175,9 @@ DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage crea
 
 DC.DevVersionExpired = false;
 
+-- Create MUFs number fontinstance
+DC.NumberFontFileName = _G.NumberFont_Shadow_Small:GetFont();
+
 DC.RAID_ICON_LIST = _G.ICON_LIST;
 if not DC.RAID_ICON_LIST then
     T._AddDebugText("DCR_init.lua: Couldn't get Raid Target Icon List!");

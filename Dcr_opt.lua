@@ -172,7 +172,7 @@ function D:GetDefaultsSettings()
             -- display chronometer on MUFs
             DebuffsFrameChrono = true,
 
-            DebuffsFrameTimeLeft = false,
+            DebuffsFrameTimeLeft = true,
 
             -- this is wether or not to show the live-list  
             Hide_LiveList = false,
@@ -264,19 +264,19 @@ function D:GetDefaultsSettings()
 
             -- Those are the different colors used for the MUFs main textures
             MF_colors = {
-                [1]         =   {  .8 , 0   , 0    ,  1     }, -- red
-                [2]         =   { 0   , 0   , 0.8  ,  1     }, -- blue
-                [3]         =   { 1   ,  .5 ,  .25 ,  1     }, -- orange
-                [4]         =   { 1   , 0   , 1    ,  1     }, -- purple
-                [5]         =   { 1   , 1   , 1    ,  1     }, -- white for undefined
-                [6]         =   { 1   , 1   , 1    ,  1     }, -- white for undefined
+                [1]                 =   {  .8 , 0   , 0    ,  1     }, -- red
+                [2]                 =   {  .3 ,  .3 ,  .8  ,  1     }, -- blue
+                [3]                 =   {  .8 ,  .5 ,  .25 ,  1     }, -- orange
+                [4]                 =   { 1   , 0   , 1    ,  1     }, -- purple
+                [5]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
+                [6]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
                 [DC.NORMAL]         =   {  .0 ,  .3 ,  .1  ,   .9   }, -- dark green
                 [DC.BLACKLISTED]    =   { 0   , 0   , 0    ,  1     }, -- black
                 [DC.ABSENT]         =   {  .4 ,  .4 ,  .4  ,   .9   }, -- transparent grey
                 [DC.FAR]            =   {  .4 ,  .1 ,  .4  ,   .85  }, -- transparent purple
-                [DC.STEALTHED]              =   {  .4 ,  .6 ,  .4  ,  1     }, -- pale green
+                [DC.STEALTHED]      =   {  .4 ,  .6 ,  .4  ,  1     }, -- pale green
                 [DC.CHARMED_STATUS] =   { 0   , 1   , 0    ,  1     }, -- full green
-                ["COLORCHRONOS"]    =   { 0.6 , 0.1 , 0.2  ,  0.7   }, -- medium red
+                ["COLORCHRONOS"]    =   { 0.6 , 0.1 , 0.2  ,   .6   }, -- medium red
             },
 
 
