@@ -912,7 +912,7 @@ do
 
         local formatedversions = {};
         for name, versiondetails in pairs(D.versions) do
-            if Name_To_Unit[name] then
+            if Name_To_Unit[name] and UnitExists(Name_To_Unit[name]) then
                 formatedversions[#formatedversions + 1] = ("%s: %s %s (%s)"):format(D:ColorText(name, "FF"..DC.HexClassColor[select(2, UnitClass(Name_To_Unit[name]))]), versiondetails[1], versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", date("%Y-%m-%d", versiondetails[2]));
             else
                 D:Debug("ReturnVersions() no unit for ", name);
