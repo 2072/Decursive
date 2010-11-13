@@ -910,6 +910,8 @@ do
             return "no data available";
         end
 
+        table.wipe(Name_To_Unit);
+
         local formatedversions = {};
         for name, versiondetails in pairs(D.versions) do
             if Name_To_Unit[name] and UnitExists(Name_To_Unit[name]) then
