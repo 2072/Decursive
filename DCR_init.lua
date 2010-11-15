@@ -313,6 +313,15 @@ function D:VersionWarnings()
         D.db.global.NewerVersionBugMeNot = false;
     end
 
+
+    -- Prevent time travelers from blocking the system
+    if D.db.global.NewerVersionDetected > time() then
+        D.db.global.NewerVersionDetected = D.VersionTimeStamp;
+        D.db.global.NewerVersionName = false;
+        D.db.global.NewerVersionAlert = 0;
+        D:Debug("|cFFFF0000TIME TRAVELER DETECTED!|r");
+    end
+
     -- if not fromCheckOut then -- this version is properly packaged
     if D.db.global.NewerVersionName then -- a new version was detected some time ago
         if D.db.global.NewerVersionDetected > D.VersionTimeStamp then -- it's still newer than this one

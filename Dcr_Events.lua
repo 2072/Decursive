@@ -65,6 +65,7 @@ local ipairs    = _G.ipairs;
 local unpack    = _G.unpack;
 local select    = _G.select;
 local tonumber  = _G.tonumber;
+local time      = _G.time;
 local table             = _G.table;
 local UnitCreatureFamily= _G.UnitCreatureFamily;
 local UnitFactionGroup  = _G.UnitFactionGroup;
@@ -790,22 +791,22 @@ function D:OnCommReceived(message, distribution, from)
     D:Debug("OnCommReceived:", message, distribution, from);
     --@end-alpha@
 
-    local time = GetTime();
+    local gettime = GetTime();
 
     -- answer version queries but no more than once every 60 seconds to the same player and every 10 seconds to the same chanel
     --      This avoids a player who would be crafting its own version query messages and sending them repeatidly from causing any damage
     --      This avoids race conditions where several players would send a version query at the same time on the same chanel
     if message == "giveversion"
-        and (not LastVersionQueryAnswerPerDist[distribution] or time - LastVersionQueryAnswerPerDist[distribution] > 10 )
-        and (not LastVersionQueryAnswerPerFrom[from]         or time - LastVersionQueryAnswerPerFrom[from] > 60         )
+        and (not LastVersionQueryAnswerPerDist[distribution] or gettime - LastVersionQueryAnswerPerDist[distribution] > 10 )
+        and (not LastVersionQueryAnswerPerFrom[from]         or gettime - LastVersionQueryAnswerPerFrom[from] > 60         )
     then
 
         LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 ), distribution, from )
 
         -- /run LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format("Super-test2", time(), 1, 1), "WHISPER", 'torni' )
 
-        LastVersionQueryAnswerPerFrom[from]         = time;
-        LastVersionQueryAnswerPerDist[distribution] = time;
+        LastVersionQueryAnswerPerFrom[from]         = gettime;
+        LastVersionQueryAnswerPerDist[distribution] = gettime;
 
         --@alpha@
         if self.debugging then D:Debug("Version info sent to, ", from, "by", distribution, ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 )); end
@@ -828,21 +829,23 @@ function D:OnCommReceived(message, distribution, from)
                 D.versions = {}
             end
 
-            D.NewerVersionLastAutoTest = time; -- reset auto test cooldown
+            D.NewerVersionLastAutoTest = gettime; -- reset auto test cooldown
 
             D.versions[from] = { versionName, versionTimeStamp, versionIsAlpha, versionEnabled, distribution };
 
-            if versionTimeStamp > D.db.global.NewerVersionDetected then
+            if versionTimeStamp > D.db.global.NewerVersionDetected and versionTimeStamp < time() then
                 if versionIsAlpha==0 or D.RunningADevVersion then -- if the version received is not an alpha or if we are running one
                     D.db.global.NewerVersionDetected = versionTimeStamp;
                     D.db.global.NewerVersionName = versionName;
                 end
+            elseif versionTimeStamp >= time() then
+                D:Debug("|cFFFF0000TIME TRAVELER DETECTED!|r");
             end
 
             --delayed call to LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name); plus "spam" prevention system (after receiving version info from someone)
             if not D:DelayedCallExixts ("NewversionDatareceived") then
                 D:ScheduleDelayedCall("NewversionDatareceived", LibStub("AceConfigRegistry-3.0").NotifyChange, 1, LibStub("AceConfigRegistry-3.0"), D.name);
-                T.LastVCheck = time;
+                T.LastVCheck = gettime;
             end
         else
             D:Debug("Malformed version string received: ", message);
