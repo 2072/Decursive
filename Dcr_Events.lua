@@ -64,8 +64,13 @@ local pairs     = _G.pairs;
 local ipairs    = _G.ipairs;
 local unpack    = _G.unpack;
 local select    = _G.select;
+local tonumber  = _G.tonumber;
 local table             = _G.table;
-local UnitCreatureFamily        = _G.UnitCreatureFamily;
+local UnitCreatureFamily= _G.UnitCreatureFamily;
+local UnitFactionGroup  = _G.UnitFactionGroup;
+local IsInInstance      = _G.IsInInstance;
+local GetNumRaidMembers = _G.GetNumRaidMembers;
+local GetGuildInfo      = _G.GetGuildInfo;
 local InCombatLockdown  = _G.InCombatLockdown;
 local PlaySoundFile     = _G.PlaySoundFile;
 local UnitExists        = _G.UnitExists;
@@ -95,6 +100,12 @@ function D:GroupChanged (reason) -- {{{
 
     self:Debug("Groups changed", reason);
 end -- }}}
+
+function D:PLAYER_ENTERING_WORLD()
+    -- clean gathered version info at this occasion
+    self:Debug("|cFFFF0000Cleaning D.versions!|r");
+    self.versions = false;
+end
 
 local OncePetRetry = false;
 
@@ -236,20 +247,30 @@ function D:EnterCombat() -- called on PLAYER_REGEN_DISABLED {{{
     self.Status.Combat = true;
 end --}}}
 
-local LastDebugReportNotification = 0;
-function D:LeaveCombat() --{{{
-    --D:Debug("Leaving combat");
-    self.Status.Combat = false;
+--function D:LeaveCombat() --{{{
+do
+    local LastDebugReportNotification = 0;
+    D.NewerVersionLastAutoTest = 0;
+    function D:LeaveCombat()
+        --D:Debug("Leaving combat");
+        self.Status.Combat = false;
 
-    -- test for debug report
-    if #T._DebugTextTable > 0 and GetTime() - LastDebugReportNotification > 300 then
-        if LastDebugReportNotification == 0 then
-            T._FatalError(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
+        -- test for debug report
+        if #T._DebugTextTable > 0 and GetTime() - LastDebugReportNotification > 300 then
+            if LastDebugReportNotification == 0 then
+                T._FatalError(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
+            end
+            self:Println(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
+            LastDebugReportNotification = GetTime();
         end
-        self:Println(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
-        LastDebugReportNotification = GetTime();
+
+        -- check for a newer version every hour
+        if not self.db.global.NewerVersionName and GetTime() - T.LastVCheck < 60 and GetTime() - self.NewerVersionLastAutoTest < 3600 then
+            self:AskVersion();
+            self.NewerVersionLastAutoTest = GetTime();
+        end
     end
-end --}}}
+end--}}}
 -- }}}
 
 -- This let us park command we can't execute while in combat to execute them later {{{
@@ -771,15 +792,17 @@ function D:OnCommReceived(message, distribution, from)
 
     local time = GetTime();
 
-    -- answer version queries but no more than once every 60 seconds to the same player and every 5 seconds to the same chanel
+    -- answer version queries but no more than once every 60 seconds to the same player and every 10 seconds to the same chanel
     --      This avoids a player who would be crafting its own version query messages and sending them repeatidly from causing any damage
     --      This avoids race conditions where several players would send a version query at the same time on the same chanel
     if message == "giveversion"
-        and (not LastVersionQueryAnswerPerDist[distribution] or time - LastVersionQueryAnswerPerDist[distribution] > 5 )
-        and (not LastVersionQueryAnswerPerFrom[from]         or time - LastVersionQueryAnswerPerFrom[from] > 60        )
+        and (not LastVersionQueryAnswerPerDist[distribution] or time - LastVersionQueryAnswerPerDist[distribution] > 10 )
+        and (not LastVersionQueryAnswerPerFrom[from]         or time - LastVersionQueryAnswerPerFrom[from] > 60         )
     then
 
         LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 ), distribution, from )
+
+        -- /run LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format("Super-test2", time(), 1, 1), "WHISPER", 'torni' )
 
         LastVersionQueryAnswerPerFrom[from]         = time;
         LastVersionQueryAnswerPerDist[distribution] = time;
@@ -790,18 +813,31 @@ function D:OnCommReceived(message, distribution, from)
  
     elseif message:sub(1, 8) == "Version:" then
 
-        local version, date, isAlpha, enabled = message:match ("^Version: ([^,]+),(%d+),(%d),(%d)");
+        local versionName, versionTimeStamp, versionIsAlpha, versionEnabled = message:match ("^Version: ([^,]+),(%d+),(%d),(%d)");
+
+        versionTimeStamp    = tonumber(versionTimeStamp);
+        versionIsAlpha      = tonumber(versionIsAlpha);
+        versionEnabled      = tonumber(versionEnabled);
 
         --@alpha@
-        if self.debugging then D:Debug("Version info received from, ", from, "by", distribution, "version:", version, "date:", date, "islpha:", isAlpha, "enabled:", enabled); end
+        if self.debugging then D:Debug("Version info received from, ", from, "by", distribution, "version:", versionName, "date:", versionTimeStamp, "islpha:", versionIsAlpha, "enabled:", versionEnabled); end
         --@end-alpha@
 
-        if version then
+        if versionName then
             if not D.versions then
                 D.versions = {}
             end
 
-            D.versions[from] = { version, date, isAlpha, enabled };
+            D.NewerVersionLastAutoTest = time; -- reset auto test cooldown
+
+            D.versions[from] = { versionName, versionTimeStamp, versionIsAlpha, versionEnabled, distribution };
+
+            if versionTimeStamp > D.db.global.NewerVersionDetected then
+                if versionIsAlpha==0 or D.RunningADevVersion then -- if the version received is not an alpha or if we are running one
+                    D.db.global.NewerVersionDetected = versionTimeStamp;
+                    D.db.global.NewerVersionName = versionName;
+                end
+            end
 
             --delayed call to LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name); plus "spam" prevention system (after receiving version info from someone)
             if not D:DelayedCallExixts ("NewversionDatareceived") then
@@ -915,7 +951,14 @@ do
         local formatedversions = {};
         for name, versiondetails in pairs(D.versions) do
             if Name_To_Unit[name] and UnitExists(Name_To_Unit[name]) then
-                formatedversions[#formatedversions + 1] = ("%s: %s %s (%s)"):format(D:ColorText(name, "FF"..DC.HexClassColor[select(2, UnitClass(Name_To_Unit[name]))]), versiondetails[1], versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", date("%Y-%m-%d", versiondetails[2]));
+                formatedversions[#formatedversions + 1] = ("%s: %s %s (%s) %s %s"):format(
+                    D:ColorText(name, "FF"..DC.HexClassColor[select(2, UnitClass(Name_To_Unit[name]))]), -- Class-Colored name
+                    versiondetails[1], -- version name
+                    versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", -- Enable/Disabled
+                    D:ColorText(date("%Y-%m-%d", versiondetails[2]), versiondetails[2] > D.VersionTimeStamp and "FF00FF00" or "FF00AAAA" ), -- date version
+                    versiondetails[3]==1 and "|cFFFFAA55"..L["UNSTABLERELEASE"].."|r" or "", -- is alpha?
+                    "|cAA555555" .. versiondetails[5] .. "|r"
+                );
             else
                 D:Debug("ReturnVersions() no unit for ", name);
             end

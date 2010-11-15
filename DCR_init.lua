@@ -76,6 +76,8 @@ local select    = _G.select;
 local pairs    = _G.pairs;
 local ipairs    = _G.ipairs;
 local InCombatLockdown  = _G.InCombatLockdown;
+local GetTalentInfo  = _G.GetTalentInfo;
+local UnitClass  = _G.UnitClass;
 
 
 
@@ -247,14 +249,17 @@ function D:AddDebugText(a1, ...)
     T._AddDebugText(a1, ...);
 end
 
-function D:BetaWarning()
+function D:VersionWarnings()
 
     local alpha = false;
+    local fromCheckOut = false;
     --@alpha@
     alpha = true;
     --@end-alpha@
 
     if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or ("@project-version@"):find("Candidate") or alpha then
+
+        D.RunningADevVersion = true;
 
         -- check for expiration of this dev version
         if D.VersionTimeStamp ~= 0 then
@@ -281,31 +286,51 @@ function D:BetaWarning()
         end
     end
 
-
-end
-
---@debug@
-function D:CheckOutWarning()
+    --@debug@
+    fromCheckOut = true;
     if time() - self.db.global.LastChekOutAlert > 24 * 3600  then
         StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. 
         [[
-|cFFFF0000You're using an unpackaged version of Decursive.|r
-Decursive is not meant to be used this way.
-Annoying and invasive debugging messages will be displayed.
-More resources (memory and CPU) will be used due to debug routines and sanity test code being executed.
-Localisation is not working and English text may be wrong.
+        |cFFFF0000You're using an unpackaged version of Decursive.|r
+        Decursive is not meant to be used this way.
+        Annoying and invasive debugging messages will be displayed.
+        More resources (memory and CPU) will be used due to debug routines and sanity test code being executed.
+        Localisation is not working and English text may be wrong.
 
-Using Decursive in this state will bring you nothing but troubles.
+        Using Decursive in this state will bring you nothing but troubles.
 
-|cFF00FF00Alpha versions of Decursive are automatically packaged. You should use those instead.|r
+        |cFF00FF00Alpha versions of Decursive are automatically packaged. You should use those instead.|r
 
         ]]
         .. "|r");
 
         self.db.global.LastChekOutAlert = time();
     end
+    --@end-debug@
+
+    -- re-enable new version pop-up alerts when a newer version is installed
+    if D.db.global.NewerVersionBugMeNot and D.db.global.NewerVersionBugMeNot < D.VersionTimeStamp then
+        D.db.global.NewerVersionBugMeNot = false;
+    end
+
+    -- if not fromCheckOut then -- this version is properly packaged
+    if D.db.global.NewerVersionName then -- a new version was detected some time ago
+        if D.db.global.NewerVersionDetected > D.VersionTimeStamp then -- it's still newer than this one
+            if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 7 then -- it's been more than 7 days since the new version alert was shown
+                if not D.db.global.NewerVersionBugMeNot then -- the user did not disable new version alerts
+                    StaticPopup_Show ("Decursive_Notice_Frame", "|cff55ff55Decursive version: @project-version@|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
+                    D.db.global.NewerVersionAlert = time();
+                end
+            end
+        else
+            D.db.global.NewerVersionDetected = D.VersionTimeStamp;
+            D.db.global.NewerVersionName = false;
+        end
+    end
+--    end
+
 end
---@end-debug@
+
 
 function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
@@ -739,6 +764,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("SPELLS_CHANGED");
     self:RegisterEvent("PLAYER_TALENT_UPDATE");
     self:RegisterEvent("PLAYER_ALIVE");
+    self:RegisterEvent("PLAYER_ENTERING_WORLD");
 
     -- Combat detection events
     self:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
@@ -906,11 +932,7 @@ function D:SetConfiguration()
     D.MicroUnitF:ResetAllPositions (); -- reset all anchors
 
     T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
-    D:BetaWarning();
-    --@debug@
-    D:CheckOutWarning();
-    --@end-debug@
-
+    D:VersionWarnings();
 end
 
 function D:OnDisable() -- When the addon is disabled by Ace

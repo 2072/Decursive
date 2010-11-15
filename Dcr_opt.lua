@@ -86,6 +86,10 @@ function D:GetDefaultsSettings()
             debugging = false,
             NonRealease = false,
             LastExpirationAlert = 0,
+            NewerVersionDetected = D.VersionTimeStamp,
+            NewerVersionName = false,
+            NewerVersionAlert = 0,
+            NewerVersionBugMeNot = false,
             --@debug@
             LastChekOutAlert = 0,
             --@end-debug@
@@ -442,6 +446,12 @@ local function GetStaticOptions ()
                         image = DC.IconON,
                         order = 0,
                     },
+                    newVersion = {
+                        type = 'description',
+                        name = "|cFFEE0022" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r",
+                        hidden = function() return not D.db.global.NewerVersionName end,
+                        order = 2,
+                    },
                     enable = {
                         type = 'execute',
                         hidden = function() return  D:IsEnabled() end,
@@ -534,7 +544,6 @@ local function GetStaticOptions ()
                         disabled = function() return D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell or not D.Status.Enabled end,
                         order = 60
                     },
-                    ---[[
                     NoStartMessages = {
                         type = "toggle",
                         hidden = "hidden",
@@ -547,7 +556,18 @@ local function GetStaticOptions ()
                         disabled = function() return not D.Status.Enabled end,
                         order = 70
                     },
-                    --]]
+                    NewerVersionBugMeNot ={
+                        type = "toggle",
+                        hidden = "hidden",
+                        name = L["OPT_NEWVERSIONBUGMENOT"],
+                        desc = L["OPT_NEWVERSIONBUGMENOT_DESC"],
+                        get = function() return not D.db.global.NewerVersionBugMeNot end,
+                        set = function(info,v)
+                            D.db.global.NewerVersionBugMeNot = v == false and D.VersionTimeStamp or false;
+                        end,
+                        disabled = function() return not D.Status.Enabled end,
+                        order = 75
+                    },
                     report = {
                         type = "execute",
                         hidden = "hidden",
@@ -2670,7 +2690,7 @@ local DebugHeader = false;
 function D:ShowDebugReport()
 
     if DC.DevVersionExpired then
-        D:BetaWarning();
+        D:VersionWarnings();
         return;
     end
 

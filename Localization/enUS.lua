@@ -404,6 +404,13 @@ L["OPT_ALLOWMACROEDIT_DESC"] = "Enable this to prevent Decursive from updating i
 
 L["OPT_DISABLEABOLISH"] = "Do not use 'Abolish' spells";
 L["OPT_DISABLEABOLISH_DESC"] = "Disable the use of Abolish Disease and Abolish Poison";
+
+L["NEW_VERSION_ALERT"] = "A new version of Decursive has been detected: |cFFEE7722%q|r released on |cFFEE7722%s|r!\n\n\nGo to |cFFFF0000WoWAce.com|r to get it!\n--------";
+
+L["OPT_NEWVERSIONBUGMENOT"]      = "New version alerts";
+L["OPT_NEWVERSIONBUGMENOT_DESC"] = "If a newer version of Decursive is detected, a pop-up alert will be displayed once every seven days.";
+
+L["UNSTABLERELEASE"] = "Unstable release";
 --]==]
 --@end-do-not-package@
 
