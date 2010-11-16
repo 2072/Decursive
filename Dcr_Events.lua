@@ -251,7 +251,6 @@ end --}}}
 --function D:LeaveCombat() --{{{
 do
     local LastDebugReportNotification = 0;
-    D.NewerVersionLastAutoTest = 0;
     function D:LeaveCombat()
         --D:Debug("Leaving combat");
         self.Status.Combat = false;
@@ -266,9 +265,9 @@ do
         end
 
         -- check for a newer version every hour
-        if not self.db.global.NewerVersionName and GetTime() - T.LastVCheck < 60 and GetTime() - self.NewerVersionLastAutoTest < 3600 then
+        if not self.db.global.NewerVersionName and GetTime() - T.LastVCheck > 60 and time() - self.db.global.NewerVersionLastAutoTest > 3600 then
             self:AskVersion();
-            self.NewerVersionLastAutoTest = GetTime();
+            self.db.global.NewerVersionLastAutoTest = time();
         end
     end
 end--}}}
@@ -829,7 +828,7 @@ function D:OnCommReceived(message, distribution, from)
                 D.versions = {}
             end
 
-            D.NewerVersionLastAutoTest = gettime; -- reset auto test cooldown
+            D.db.global.NewerVersionLastAutoTest = time(); -- reset auto test cooldown
 
             D.versions[from] = { versionName, versionTimeStamp, versionIsAlpha, versionEnabled, distribution };
 
