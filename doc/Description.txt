@@ -13,7 +13,7 @@ Decursive key benefits
 
 - **Ease of use:**
 
-    -	Decursive configures itself **automatically** for your character class, *it works straight out of the box*, no configuration is required.
+    -	Decursive supports **all classes with cleansing abilities** and configures itself **automatically**, *it works straight out of the box*, no configuration is required.
     -	Intuitive interface and detailed options, Decursive is suitable for simple usage and power users.
 
 - Control **what and who** you want to dispel:
