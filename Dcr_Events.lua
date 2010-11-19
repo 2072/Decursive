@@ -80,32 +80,55 @@ local UnitName          = _G.UnitName;
 local UnitGUID          = _G.UnitGUID;
 local GetTime           = _G.GetTime;
 
+-- GroupChanged(reason) {{{
+do
 
-function D:GroupChanged (reason) -- {{{
-    -- this will trigger an update of the unit array
-    self.Groups_datas_are_invalid = true;
-    self.Status.GroupUpdateEvent = self:NiceTime();
-
-    if self.profile.ShowDebuffsFrame then
-        -- Update the MUFs display in a short moment
-        self.MicroUnitF:Delayed_MFsDisplay_Update ();
-    elseif not self.profile.Hide_LiveList then
-        D:ScheduleDelayedCall("Dcr_GetUnitArray", self.GetUnitArray, 1.5, self);
+    local function OnGroupeLeave ()
+        -- clean gathered version info at this occasion
+        D:Debug("|cFFFF0000groupe left, cleaning D.versions!|r");
+        D.versions = false;
     end
 
+    local Grouped = false;
+    function D:GroupChanged (reason) 
+        -- this will trigger an update of the unit array
+        self.Groups_datas_are_invalid = true;
+        self.Status.GroupUpdateEvent = self:NiceTime();
 
-    -- Test if we have to hide Decursive MUF window
-    if self.profile.AutoHideDebuffsFrame ~= 0 then
-        self:ScheduleDelayedCall("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
+        if self.profile.ShowDebuffsFrame then
+            -- Update the MUFs display in a short moment
+            self.MicroUnitF:Delayed_MFsDisplay_Update ();
+        elseif not self.profile.Hide_LiveList then
+            D:ScheduleDelayedCall("Dcr_GetUnitArray", self.GetUnitArray, 1.5, self);
+        end
+
+        -- Test if we have to hide Decursive MUF window
+        if self.profile.AutoHideDebuffsFrame ~= 0 then
+            self:ScheduleDelayedCall("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
+        end
+
+        if reason ~= "UNIT_PET" then
+            if GetNumRaidMembers() ~= 0 or GetNumPartyMembers() ~= 0 then
+                Grouped = true;
+                D:Debug("|cFF007700Grouped!!|r", Grouped);
+            else
+                if Grouped then -- we are NO LONGER in a group
+                    OnGroupeLeave();
+                end
+                Grouped = false;
+            end
+        end
+
+        self:Debug("Group changed", reason);
     end
-
-    self:Debug("Groups changed", reason);
-end -- }}}
+end
+ -- }}}
 
 function D:PLAYER_ENTERING_WORLD()
-    -- clean gathered version info at this occasion
-    self:Debug("|cFFFF0000Cleaning D.versions!|r");
-    self.versions = false;
+    if time() - self.db.global.LastVersionAnnounce > 3600/2 then
+        -- wait 10 seconds and announce Decursive's version
+        self:ScheduleDelayedCall("AnnounceVersion", self.AnnounceVersion, 10, self);
+    end
 end
 
 local OncePetRetry = false;
@@ -262,12 +285,6 @@ do
             end
             self:Println(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
             LastDebugReportNotification = GetTime();
-        end
-
-        -- check for a newer version every hour
-        if not self.db.global.NewerVersionName and GetTime() - T.LastVCheck > 60 and time() - self.db.global.NewerVersionLastAutoTest > 3600 then
-            self:AskVersion();
-            self.db.global.NewerVersionLastAutoTest = time();
         end
     end
 end--}}}
@@ -584,7 +601,7 @@ do
             --if not UnitID and band (destFlags, OUTSIDER) ~= OUTSIDER then -- we don't have a unit but the flags say it's in our group...
             --end
 
-            if UnitID then -- this test is enough, if the unit is groupped we definetely need to scan it, whatever is its status...
+            if UnitID then -- this test is enough, if the unit is grouped we definetely need to scan it, whatever is its status...
 
                 --[=[
                 if UnitGUID(UnitID) ~= destGUID then --  sometimes UnitGUID("player") may returns nil... but it's not important since the player GUID is registered once and for all at init time
@@ -729,130 +746,158 @@ function D:SPELL_UPDATE_COOLDOWN()
     D.Status.UpdateCooldown = GetTime();
 end
 
-T.LastVCheck = 0;
-function D:AskVersion()
-
-    if InCombatLockdown() then
-        -- if we are fighting, postpone the call
-        D:AddDelayedFunctionCall ("AskVersion", self.AskVersion);
-        return false;
-    end
-
-    if GetTime() - T.LastVCheck < 60 then
-        D:Debug("AskVersion(): Too early!");
-        return false;
-    end
-
-    T.LastVCheck = GetTime();
-
-    local Distribution = false;
-    --  "PARTY", "RAID", "GUILD", "BATTLEGROUND". As of 2.1, "WHISPER"
-
-    if UnitExists("target") and (UnitFactionGroup("target")) == (UnitFactionGroup("player")) and (tonumber((UnitGUID("target")):sub(5,5), 16) % 8) == 0  then -- the unit exists and is a player of our faction
-        LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", "WHISPER", self:UnitName("target"));
-        D:Debug("Asking version to ", self:UnitName("target"));
-    end
-
-    local inInstance, InstanceType = IsInInstance();
-
-    if InstanceType == "pvp" then
-        Distribution = "BATTLEGROUND";
-    end
-
-    if not Distribution then
-        if GetNumRaidMembers() ~= 0 then
-            Distribution = "RAID";
-        elseif UnitExists("party1") then
-            Distribution = "PARTY";
-        elseif GetGuildInfo("player") then
-            Distribution = "GUILD";
-        end
-    end
-
-    if Distribution then
-        LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", Distribution);
-    end
-    D:Debug("Asking version on ", Distribution);
-
-    return true;
-    
-end
-
-local LastVersionQueryAnswerPerFrom = {};
-local LastVersionQueryAnswerPerDist = {};
-function D:OnCommReceived(message, distribution, from)
+do
     local alpha = false;
     --@alpha@
     alpha = true;
     --@end-alpha@
-
-    --@alpha@
-    D:Debug("OnCommReceived:", message, distribution, from);
-    --@end-alpha@
-
-    local gettime = GetTime();
-
-    -- answer version queries but no more than once every 60 seconds to the same player and every 10 seconds to the same chanel
-    --      This avoids a player who would be crafting its own version query messages and sending them repeatidly from causing any damage
-    --      This avoids race conditions where several players would send a version query at the same time on the same chanel
-    if message == "giveversion"
-        and (not LastVersionQueryAnswerPerDist[distribution] or gettime - LastVersionQueryAnswerPerDist[distribution] > 10 )
-        and (not LastVersionQueryAnswerPerFrom[from]         or gettime - LastVersionQueryAnswerPerFrom[from] > 60         )
-    then
-
-        LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 ), distribution, from )
-
-        -- /run LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format("Super-test2", time(), 1, 1), "WHISPER", 'torni' )
-
-        LastVersionQueryAnswerPerFrom[from]         = gettime;
-        LastVersionQueryAnswerPerDist[distribution] = gettime;
-
-        --@alpha@
-        if self.debugging then D:Debug("Version info sent to, ", from, "by", distribution, ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 )); end
-        --@end-alpha@
  
-    elseif message:sub(1, 8) == "Version:" then
+    local function GetDistributionChanel()
+        local inInstance, InstanceType = IsInInstance();
 
-        local versionName, versionTimeStamp, versionIsAlpha, versionEnabled = message:match ("^Version: ([^,]+),(%d+),(%d),(%d)");
+        --  "PARTY", "RAID", "GUILD", "BATTLEGROUND". As of 2.1, "WHISPER"
 
-        versionTimeStamp    = tonumber(versionTimeStamp);
-        versionIsAlpha      = tonumber(versionIsAlpha);
-        versionEnabled      = tonumber(versionEnabled);
+        if InstanceType == "pvp" then
+            return "BATTLEGROUND";
+        end
+
+        if GetNumRaidMembers() ~= 0 then
+            return "RAID";
+        elseif GetNumPartyMembers() ~= 0 then
+            return "PARTY";
+        elseif GetGuildInfo("player") then
+            return "GUILD";
+        end
+
+        return false;
+    end
+
+    T.LastVCheck = 0;
+    function D:AskVersion()
+
+        if InCombatLockdown() then
+            -- if we are fighting, postpone the call
+            D:AddDelayedFunctionCall ("AskVersion", self.AskVersion);
+            return false;
+        end
+
+        if GetTime() - T.LastVCheck < 60 then
+            D:Debug("AskVersion(): Too early!");
+            return false;
+        end
+
+        T.LastVCheck = GetTime();
+
+        if UnitExists("target") and (UnitFactionGroup("target")) == (UnitFactionGroup("player")) and (tonumber((UnitGUID("target")):sub(5,5), 16) % 8) == 0  then -- the unit exists and is a player of our faction
+            LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", "WHISPER", self:UnitName("target"));
+            D:Debug("Asking version to ", self:UnitName("target"));
+        end
+
+        local Distribution = GetDistributionChanel();
+
+        if Distribution then
+            LibStub("AceComm-3.0"):SendCommMessage( "DecursiveVersion", "giveversion", Distribution);
+        end
+        D:Debug("Asking version on ", Distribution);
+
+        return true;
+
+    end
+
+    function D:OnCommReceived(message, distribution, from)
+       
 
         --@alpha@
-        if self.debugging then D:Debug("Version info received from, ", from, "by", distribution, "version:", versionName, "date:", versionTimeStamp, "islpha:", versionIsAlpha, "enabled:", versionEnabled); end
+        D:Debug("OnCommReceived:", message, distribution, from);
         --@end-alpha@
 
-        if versionName then
-            if not D.versions then
-                D.versions = {}
-            end
+        local gettime = GetTime();
 
-            D.db.global.NewerVersionLastAutoTest = time(); -- reset auto test cooldown
+        if message == "giveversion" then
 
-            D.versions[from] = { versionName, versionTimeStamp, versionIsAlpha, versionEnabled, distribution };
+            D:AnnounceVersion(distribution, from);
 
-            if versionTimeStamp > D.db.global.NewerVersionDetected and versionTimeStamp < time() then
-                if versionIsAlpha==0 or D.RunningADevVersion then -- if the version received is not an alpha or if we are running one
-                    D.db.global.NewerVersionDetected = versionTimeStamp;
-                    D.db.global.NewerVersionName = versionName;
+        elseif message:sub(1, 8) == "Version:" then
+
+            local versionName, versionTimeStamp, versionIsAlpha, versionEnabled = message:match ("^Version: ([^,]+),(%d+),(%d),(%d)");
+
+            versionTimeStamp    = tonumber(versionTimeStamp);
+            versionIsAlpha      = tonumber(versionIsAlpha);
+            versionEnabled      = tonumber(versionEnabled);
+
+            --@alpha@
+            if self.debugging then D:Debug("Version info received from, ", from, "by", distribution, "version:", versionName, "date:", versionTimeStamp, "islpha:", versionIsAlpha, "enabled:", versionEnabled); end
+            --@end-alpha@
+
+            if versionName then
+                if not D.versions then
+                    D.versions = {}
                 end
-            elseif versionTimeStamp >= time() then
-                D:Debug("|cFFFF0000TIME TRAVELER DETECTED!|r");
-            end
 
-            --delayed call to LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name); plus "spam" prevention system (after receiving version info from someone)
-            if not D:DelayedCallExixts ("NewversionDatareceived") then
-                D:ScheduleDelayedCall("NewversionDatareceived", LibStub("AceConfigRegistry-3.0").NotifyChange, 1, LibStub("AceConfigRegistry-3.0"), D.name);
-                T.LastVCheck = gettime;
+                D.versions[from] = { versionName, versionTimeStamp, versionIsAlpha, versionEnabled, distribution };
+
+                if versionTimeStamp > D.db.global.NewerVersionDetected and versionTimeStamp < time() then
+                    if versionIsAlpha==0 or D.RunningADevVersion then -- if the version received is not an alpha or if we are running one
+                        D.db.global.NewerVersionDetected = versionTimeStamp;
+                        D.db.global.NewerVersionName = versionName;
+                    end
+                elseif versionTimeStamp >= time() then
+                    D:Debug("|cFFFF0000TIME TRAVELER DETECTED!|r");
+                end
+
+                -- delayed call to LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name); plus "spam" prevention system (after receiving version info from someone)
+                -- We don't want to update the thing if the option panel is closed so we update up to 60s after the check version button was used
+                if not D:DelayedCallExixts ("NewversionDatareceived") and gettime - T.LastVCheck < 60 then
+                    D:ScheduleDelayedCall("NewversionDatareceived", LibStub("AceConfigRegistry-3.0").NotifyChange, 1, LibStub("AceConfigRegistry-3.0"), D.name);
+                    T.LastVCheck = gettime;
+                end
+            else
+                D:Debug("Malformed version string received: ", message);
             end
         else
-            D:Debug("Malformed version string received: ", message);
+            D:Debug("Unhandled comm received (spam?)");
         end
-    else
-        D:Debug("Unhandled comm received (spam?)");
+    end
+
+    local LastVersionAnnouceByFrom = {};
+    local LastVersionAnnouceByDist = {};
+    function D:AnnounceVersion(distribution, from)
+
+        if not distribution then
+            distribution = GetDistributionChanel();
+        end
+ 
+        if not distribution then
+            return false;
+        end
+
+        local gettime = GetTime();
+
+        -- announce version but no more than once every 60 seconds to the same player and every 10 seconds to the same chanel
+        --      This avoids a player who would be crafting its own version query messages and sending them repeatidly from causing any problem
+        --      This avoids race conditions where several players would send a version query at the same time on the same chanel
+        if  (not LastVersionAnnouceByDist[distribution] or gettime - LastVersionAnnouceByDist[distribution] > 10 )
+            and (not LastVersionAnnouceByFrom[from]     or gettime - LastVersionAnnouceByFrom[from] > 60         ) then
+
+            LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 ), distribution, from )
+
+            -- /run LibStub("AceComm-3.0"):SendCommMessage("DecursiveVersion", ("Version: %s,%u,%d,%d"):format("Super-test2", time(), 1, 1), "WHISPER", 'torni' )
+
+            if from then
+                LastVersionAnnouceByFrom[from]      = gettime;
+            else
+                self.db.global.LastVersionAnnounce = time(); -- it's not an answer
+            end
+            LastVersionAnnouceByDist[distribution]  = gettime;
+
+            --@alpha@
+            if self.debugging then D:Debug("Version info sent to, ", from, "by", distribution, ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 )); end
+            --@end-alpha@
+
+        end
     end
 end
+
 
 do
 

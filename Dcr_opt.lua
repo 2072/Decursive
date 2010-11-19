@@ -90,7 +90,7 @@ function D:GetDefaultsSettings()
             NewerVersionName = false,
             NewerVersionAlert = 0,
             NewerVersionBugMeNot = false,
-            NewerVersionLastAutoTest = 0,
+            LastVersionAnnounce = 0,
             --@debug@
             LastChekOutAlert = 0,
             --@end-debug@
