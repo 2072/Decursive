@@ -998,17 +998,18 @@ do
         local formatedversions = {};
         for name, versiondetails in pairs(D.versions) do
             if Name_To_Unit[name] and UnitExists(Name_To_Unit[name]) then
-                formatedversions[#formatedversions + 1] = ("%s: %s %s (%s) %s %s"):format(
-                    D:ColorText(name, "FF"..DC.HexClassColor[select(2, UnitClass(Name_To_Unit[name]))]), -- Class-Colored name
-                    versiondetails[1], -- version name
-                    versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", -- Enable/Disabled
-                    D:ColorText(date("%Y-%m-%d", versiondetails[2]), versiondetails[2] > D.VersionTimeStamp and "FF00FF00" or "FF00AAAA" ), -- date version
-                    versiondetails[3]==1 and "|cFFFFAA55"..L["UNSTABLERELEASE"].."|r" or "", -- is alpha?
-                    "|cAA555555" .. versiondetails[5] .. "|r"
-                );
+                name = D:ColorText(name, "FF"..DC.HexClassColor[select(2, UnitClass(Name_To_Unit[name]))]);
             else
                 D:Debug("ReturnVersions() no unit for ", name);
             end
+            formatedversions[#formatedversions + 1] = ("|cFFAAAAAA%s|r: %s %s (%s) %s %s"):format(
+                name, -- Class-Colored name
+                versiondetails[1], -- version name
+                versiondetails[4]==0 and D:ColorText("disabled", "FFFF0000") or "", -- Enable/Disabled
+                D:ColorText(date("%Y-%m-%d", versiondetails[2]), versiondetails[2] > D.VersionTimeStamp and "FF00FF00" or "FF00AAAA" ), -- date version
+                versiondetails[3]==1 and "|cFFFFAA55"..L["UNSTABLERELEASE"].."|r" or "", -- is alpha?
+                "|cAA555555" .. versiondetails[5] .. "|r"
+            );
         end
 
         return table.concat(formatedversions, "\n");
