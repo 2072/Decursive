@@ -68,7 +68,18 @@ In brief, what you get with Decursive is **effectiveness**, *a player using Decu
 - [Decursive Macro documentation][mouse-over macro]
 - [Frequently Asked Questions][FAQ] *try this before asking any question*
 - [commands][]
+
  
+*******************************************
+Interesting articles about Decursive usage:
+-------------------------------------------
+
+2010-11-20:
+[http://daritos.apotheosis-now.com/?p=24](http://daritos.apotheosis-now.com/?p=24)
+
+2009-07-15:
+[http://www.hotsdots.com/2009/07/improving-the-interface-using-addons-7-decursive-cleansing-and-dispelling/](http://www.hotsdots.com/2009/07/improving-the-interface-using-addons-7-decursive-cleansing-and-dispelling/)
+
 ******************************************
   
   

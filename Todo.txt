@@ -22,6 +22,3 @@ TODO:
 - Add an option to let the user choose the alert sound.
 
 
-A very nice review of Decursive :
-
-http://www.hotsdots.com/2009/07/improving-the-interface-using-addons-7-decursive-cleansing-and-dispelling/
