@@ -151,6 +151,8 @@ local function ShowToolTip (frame)
         
         tooltip:AddLine("Live timers:", D:GetTimersNumber());
 
+        tooltip:AddLine("Version annouces received:", T.VersionAnnounceReceived);
+
         tooltip:AddSeparator();
 
         x, y = tooltip:AddLine();

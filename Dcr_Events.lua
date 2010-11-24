@@ -804,6 +804,7 @@ do
 
     end
 
+    T.VersionAnnounceReceived = 0;
     function D:OnCommReceived(message, distribution, from)
        
 
@@ -834,7 +835,16 @@ do
                     D.versions = {}
                 end
 
-                D.versions[from] = { versionName, versionTimeStamp, versionIsAlpha, versionEnabled, distribution };
+                -- only populate the table if it was requested (through the 'check add-on version' button in the about panel)
+                if gettime - T.LastVCheck < 60 then
+                    D.versions[from] = { versionName, versionTimeStamp, versionIsAlpha, versionEnabled, distribution };
+                end
+
+                if from ~= DC.MyName then
+                    T.VersionAnnounceReceived = T.VersionAnnounceReceived + 1;
+                else
+                    D:Debug("Version from self, VersionAnnounceReceived counter not incresead", T.VersionAnnounceReceived);
+                end
 
                 if versionTimeStamp > D.db.global.NewerVersionDetected and versionTimeStamp < time() then
                     if versionIsAlpha==0 or D.RunningADevVersion then -- if the version received is not an alpha or if we are running one
