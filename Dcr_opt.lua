@@ -255,9 +255,6 @@ function D:GetDefaultsSettings()
 
             MiniMapIcon = {hide=true},
 
-            -- Are we using the macro?
-            UseMacro = true,
-
             -- Display a warning if no key is mapped.
             NoKeyWarn = false,
 

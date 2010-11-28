@@ -265,7 +265,7 @@ do
 
         --LibStub:GetLibrary
         local UseLibStub = {
-            ["AceAddon-3.0"] = 5,
+            ["AceAddon-3.0"] = 10,
             ["AceConsole-3.0"] = 7,
             ["AceEvent-3.0"] = 3,
             ["AceTimer-3.0"] = 5,
@@ -279,11 +279,11 @@ do
             ["AceConfig-3.0"] = 2,
             ["AceConfigRegistry-3.0"] = 12,
             ["AceConfigCmd-3.0"] = 12,
-            ["AceConfigDialog-3.0"] = 50,
+            ["AceConfigDialog-3.0"] = 52,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 15,
-            ["LibQTip-1.0"] = 36,
+            ["LibDBIcon-1.0"] = 17,
+            ["LibQTip-1.0"] = 38,
             ["CallbackHandler-1.0"] = 6,
         };
 
