@@ -817,6 +817,7 @@ do
         if message == "giveversion" then
 
             D:AnnounceVersion(distribution, from);
+            T.LastVCheck = gettime; -- Enable version info gathering for 60 seconds (just like if the user clicked the button himself)
 
         elseif message:sub(1, 8) == "Version:" then
 
