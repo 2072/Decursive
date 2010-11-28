@@ -1377,26 +1377,7 @@ local function GetStaticOptions ()
                         order = 4,
                         disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
                         hidden = function () return not D:IsEnabled(); end,
-                        args = {
-                            -- {{{
-                            ClicksAdssigmentsDesc = {
-                                type = "description",
-                                name = L["OPT_MUFMOUSEBUTTONS_DESC"],
-                                order = 151,
-                            },
-                            ResetClicksAdssigments = {
-                                type = "execute",
-                                confirm = true,
-                                name = L["OPT_RESETMUFMOUSEBUTTONS"],
-                                desc = L["OPT_RESETMUFMOUSEBUTTONS_DESC"],
-                                func = function ()
-                                    table.wipe(D.db.global.AvailableButtons);
-                                    D:tcopy(D.db.global.AvailableButtons, D.defaults.global.AvailableButtons);
-                                end,
-                                order = -1,
-                            },
-                            -- }}}
-                        }
+                        args = {},
                     },
 
                     PerfOptions = {
@@ -1407,6 +1388,11 @@ local function GetStaticOptions ()
                         disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
                         args = {
                             -- {{{
+                            Warning = {
+                                type = "description",
+                                name = D:ColorText(L["OPT_PERFOPTIONWARNING"], "FFFF0000"),
+                                order = 2500,
+                            },
                             UpdateRate = {
                                 type = 'range',
                                 name = L["OPT_MFREFRESHRATE"],
@@ -2540,7 +2526,26 @@ do
     };
 
     function D:CreateModifierOptionMenu ()
-        local key_Combos_Select = {};
+        local key_Combos_Select = {
+            -- {{{
+            ClicksAdssigmentsDesc = {
+                type = "description",
+                name = L["OPT_MUFMOUSEBUTTONS_DESC"],
+                order = 151,
+            },
+            ResetClicksAdssigments = {
+                type = "execute",
+                confirm = true,
+                name = L["OPT_RESETMUFMOUSEBUTTONS"],
+                desc = L["OPT_RESETMUFMOUSEBUTTONS_DESC"],
+                func = function ()
+                    table.wipe(D.db.global.AvailableButtons);
+                    D:tcopy(D.db.global.AvailableButtons, D.defaults.global.AvailableButtons);
+                end,
+                order = -1,
+            },
+            -- }}}
+        };
 
         for i = 1, 6 do
             key_Combos_Select["KeyCombo" .. i] = OptionPrototype;

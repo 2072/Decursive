@@ -377,7 +377,7 @@ L["OPT_NOSTARTMESSAGES"]    = "Disable welcome messages"
 L["OPT_NOSTARTMESSAGES_DESC"] = "Remove the three messages Decursive prints to the chat frame at every login."
 
 L["OPT_MUFMOUSEBUTTONS"]        = "Mouse buttons";
-L["OPT_MUFMOUSEBUTTONS_DESC"]   = "Set the [MODIFIER]+Mouse-button you want to use for each MUF alert color.";
+L["OPT_MUFMOUSEBUTTONS_DESC"]   = "Set the [MODIFIER]+Mouse-button you want to use for each MUF alert color.\nBefore changing this, please check the '|cFFFF5533Curing options|r'";
 L["OPT_RESETMUFMOUSEBUTTONS"]   = "Reset";
 L["OPT_RESETMUFMOUSEBUTTONS_DESC"]   = "Reset mouse button assignments to defaults.";
 
@@ -411,6 +411,10 @@ L["OPT_NEWVERSIONBUGMENOT"]      = "New version alerts";
 L["OPT_NEWVERSIONBUGMENOT_DESC"] = "If a newer version of Decursive is detected, a pop-up alert will be displayed once every seven days.";
 
 L["UNSTABLERELEASE"] = "Unstable release";
+
+
+L["OPT_PERFOPTIONWARNING"] = "WARNING: Do not change those values unless you know exactly what you are doing. These settings can have a great impact on the game performance. Most users should use the default values of 0.1 and 10";
+
 --]==]
 --@end-do-not-package@
 
