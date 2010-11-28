@@ -1,9 +1,61 @@
-Decursive 2.5.2.2 by Archarodim (2010-10-31)
-============================================
+Decursive 2.6.0 by Archarodim (2010-11-28)
+==========================================
+
+Changes from Decursive 2.5.2.2 to Decursive 2.6.0
+-------------------------------------------------
+
+**Enhancements:**
+
+- Pet's Micro-Unit Frames are now smaller.
+
+- A 'new-version' detection mechanism has been implemented.
+
+  Users will receive an alert every seven days at login once a new version has
+been detected.
+
+  This alert can be disabled through the new option ("New version alerts") available
+  in the General option tab.
+
+- Slightly changed the MUFs' default colors and chronometers' font to make
+  things clearer.
+
+- Reduced Decursive's static memory footprint by 100Kb.
+
+- Multiple enhancements to the About dialog when using the "Check other
+  players" feature.
+
+- Typing /Decursive will now open the configuration UI instead of printing a yellowish
+  error message.
+
+- Text and description change concerning MUFs' window's auto-hide option to
+  avoid confusion.
+
+- Updated [documentation][] with in-line links to various [screen-shots][] of Decursive's UI.
+
+- Added A new section in [Decursive's main page][Decursive]: "Interesting articles about
+  Decursive usage".
+
+  The article written by Darista is a very interesting read if you want to get the
+  max out of Decursive:
+        [http://daritos.apotheosis-now.com/?p=24](http://daritos.apotheosis-now.com/?p=24)
 
 
-Changes from Decursive 2.5.2.1 to Decursive 2.5.2.2
----------------------------------------------------
+**Bug Fixes:**
+
+- Fix Priority and Skip list mouse button handling, it was no longer possible
+  to move units in those lists.
+
+- The configurable key-binding to open the config UI was broken since the
+  conversion to Ace3.
+
+[Decursive]: http://www.wowace.com/addons/decursive/
+[screen-shots]: http://www.wowace.com/addons/decursive/images/
+[documentation]: http://www.wowace.com/addons/decursive/pages/
+
+----------------------------------
+
+Changes from Decursive 2.5.2.1 to Decursive 2.5.2.2 (2010-10-31)
+----------------------------------------------------------------
 
 - Internal optimizations concerning timers creation.
 
@@ -19,6 +71,7 @@ Changes from Decursive 2.5.2.1 to Decursive 2.5.2.2
 
 - Other small fixes and enhancements.
 
+----------------------------------
 
 Changes from Decursive 2.5.2 to Decursive 2.5.2.1
 -------------------------------------------------
@@ -36,6 +89,7 @@ Changes from Decursive 2.5.2 to Decursive 2.5.2.1
 
 - Removed now useless 'Abolish' spells related options.
 
+----------------------------------
 
 Changes from Decursive 2.5.1 to Decursive 2.5.2
 -----------------------------------------------
@@ -46,6 +100,7 @@ Changes from Decursive 2.5.1 to Decursive 2.5.2
 
 - Warlocks can use fear on charmed players.
 
+----------------------------------
 
 Changes from Decursive 2.5.0 to Decursive 2.5.1
 -----------------------------------------------
@@ -78,7 +133,7 @@ Changes from Decursive 2.5.0 to Decursive 2.5.1
 - Removed the French version of 'readme' and 'changelog' since 3 persons only
   were reading those.
 
-
+----------------------------------
 
 Changes from Decursive 2.4.5.1 to Decursive 2.5.0
 -------------------------------------------------
@@ -121,8 +176,7 @@ Changes from Decursive 2.4.5.1 to Decursive 2.5.0
 
 - Updated minimum library versions requirements.
 
-
-
+----------------------------------
 
 Changes from Decursive 2.4.5 to Decursive 2.4.5.1
 ---------------------------------------------------
