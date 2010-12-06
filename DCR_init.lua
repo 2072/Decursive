@@ -324,7 +324,7 @@ function D:VersionWarnings()
 
     -- if not fromCheckOut then -- this version is properly packaged
     if D.db.global.NewerVersionName then -- a new version was detected some time ago
-        if D.db.global.NewerVersionDetected > D.VersionTimeStamp then -- it's still newer than this one
+        if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
             if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 7 then -- it's been more than 7 days since the new version alert was shown
                 if not D.db.global.NewerVersionBugMeNot then -- the user did not disable new version alerts
                     StaticPopup_Show ("Decursive_Notice_Frame", "|cff55ff55Decursive version: @project-version@|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
@@ -1478,7 +1478,7 @@ do
         --local example =  "2008-05-01T12:34:56Z";
 
         local year, month, day, hour, min, sec = string.match( D.date, "(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)");
-        local projectDate = {["year"] = year, ["month"] = month, ["day"] = day, ["hour"] = hour, ["min"] = min, ["sec"] = sec};
+        local projectDate = {["year"] = year, ["month"] = month, ["day"] = day, ["hour"] = hour, ["min"] = min, ["sec"] = sec, ["isdst"] = false };
 
         D.VersionTimeStamp = time(projectDate);
     else

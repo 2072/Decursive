@@ -847,7 +847,7 @@ do
                     D:Debug("Version from self, VersionAnnounceReceived counter not incresead", T.VersionAnnounceReceived);
                 end
 
-                if versionTimeStamp > D.db.global.NewerVersionDetected and versionTimeStamp < time() then
+                if versionTimeStamp > D.db.global.NewerVersionDetected and versionTimeStamp < time() and versionName ~= D.version then
                     if versionIsAlpha==0 or D.RunningADevVersion then -- if the version received is not an alpha or if we are running one
                         D.db.global.NewerVersionDetected = versionTimeStamp;
                         D.db.global.NewerVersionName = versionName;
