@@ -2,12 +2,13 @@ Decursive 2.6.0.1 by Archarodim (2010-12-06)
 ============================================
 
 
-
 Changes from Decursive 2.6.0 to Decursive 2.6.0.1 (2010-12-06)
 --------------------------------------------------------------
 
-- Fix: Decursive's users who are located in a region where Daylight Saving Time (DST) is
+- *Fix:* Decursive's users who are located in a region where Daylight Saving Time (DST) is
   still active could trigger the new version alert for other users using the same version of Decursive.
+
+----------------------------------
 
 Changes from Decursive 2.5.2.2 to Decursive 2.6.0 (2010-11-28)
 --------------------------------------------------------------
