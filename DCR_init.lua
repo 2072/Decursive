@@ -501,7 +501,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     -- WoW 4.0 changes {{{
 
     --https://docs.google.com/document/pub?id=13GLsRWUA4pMQ0EAV2FWkmJvDNQTeIcivO8XtP0iZ-tA
-    if T._tocversion == 40000 then
+    if T._tocversion >= 40000 then
         -- Paladins
         DC.SpellsToUse[DS["SPELL_CLEANSE"]]               = {
             Types = {DC.DISEASE, DC.POISON},
@@ -1279,7 +1279,7 @@ function D:GetSpellsTranslations(FromDIAG)
     };
 
     -- WoW 4.0 compatibility fix
-    if T._tocversion == 40000 then
+    if T._tocversion >= 40000 then
         Spells["SPELL_REMOVE_CURSE"]         = {     475,                                   }; -- Druids/Mages
         Spells["SPELL_REMOVE_CORRUPTION"]    = {     2782,                                  };
         Spells["SPELL_SINGE_MAGIC"]          = {     89808,                                 }; -- Warlock imp

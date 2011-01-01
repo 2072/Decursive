@@ -3,8 +3,10 @@ TODO:
 - add a donators credit section in the About UI
 
 - change timers when mass debuff so that only the 5 or so first units of the array get updated in priority all the rest should be handled by the roaming MUF updater
+-- not really possible since events are received in a random order and there is no way to know how many we are going to receive until we got them all
 
 - Add a menu option to choose between available spells. (will also allow to choose other polymorph spells)
+-- only useful for polymorphs
 
 - Add an option to disable spell stopping when clicking on a MUF
 
