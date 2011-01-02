@@ -772,7 +772,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("LEARNED_SPELL_IN_TAB");
     self:RegisterEvent("SPELLS_CHANGED");
     self:RegisterEvent("PLAYER_TALENT_UPDATE");
-    self:RegisterEvent("PLAYER_ALIVE");
+    self:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
 
     -- Combat detection events
@@ -794,14 +794,11 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     
     self:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
-    -- used for Debugging purpose
-    --self:RegisterEvent("ADDON_ACTION_FORBIDDEN","ADDON_ACTION_FORBIDDEN");
-    --self:RegisterEvent("ADDON_ACTION_BLOCKED","ADDON_ACTION_BLOCKED");
-
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 
-    --    self:ScheduleRepeatingTimer("ScheduledTasks", 0.2);
+    self:RegisterMessage("DECURSIVE_TALENTS_AVAILABLE");
+
     D:ScheduleRepeatedCall("ScheduledTasks", D.ScheduledTasks, 0.2, D);
 
     -- Configure specific profile dependent data
@@ -810,12 +807,11 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     if FirstEnable and not D.db.global.NoStartMessages then
         D:ColorPrint(0.3, 0.5, 1, L["IS_HERE_MSG"]);
         D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
-
-        -- schedule a reconfigure in 5 seconds
-        --self:ScheduleDelayedCall("Dcr_FirstLogConfUpdate", self.ReConfigure, 5, self);
     end
 
     FirstEnable = false;
+
+    D:StartTalentAvaibilityPolling();
 
     D:CheckPlayer();
     T._CatchAllErrors = false;

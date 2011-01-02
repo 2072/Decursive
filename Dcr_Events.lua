@@ -343,6 +343,7 @@ function D:PLAYER_ALIVE()
     D:Debug("|cFFFF0000PLAYER_ALIVE|r");
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
     self:UnregisterEvent("PLAYER_ALIVE");
+    T.PLAYER_IS_ALIVE = GetTime();
     D:CheckPlayer();
 end
 
@@ -361,6 +362,10 @@ function D:PLAYER_TALENT_UPDATE()
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
 end
 
+function D:DECURSIVE_TALENTS_AVAILABLE()
+    D:Debug("|cFFFF0000Talents are available scheduling a reconfiguration|r");
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 1, self);
+end
 ---[=[
 local SeenUnitEventsUNITAURA = {};
 local SeenUnitEventsCOMBAT = {};
@@ -1024,6 +1029,90 @@ do
         end
 
         return table.concat(formatedversions, "\n");
+    end
+end
+
+do
+
+    local GetNumTalentPoints = _G.GetNumTalentPoints;
+    local GetUnspentTalentPoints = _G.GetUnspentTalentPoints;
+
+    --@alpha@
+    local GetTalentInfo = _G.GetTalentInfo;
+    -- Sanity check, to make sure GetTalentInfo() and GetNumTalentPoints() agree
+    local function CheckTalentsAvaibility_thebadway() -- {{{
+        local talentfound = 0;
+
+        -- let's check the five first talents of each tree
+        for tree=1,3 do
+            for talent=1,5 do
+                talentfound = (select(5, GetTalentInfo(tree,talent)));
+                if talentfound ~=0 then  return true end
+            end
+        end
+
+        return false;
+    end --}}}
+    --@end-alpha@
+
+    local function CheckTalentsAvaibility() -- {{{
+
+        local unspentTalentPoints = GetUnspentTalentPoints();
+        local totalTalentPoints = GetNumTalentPoints();
+
+        if totalTalentPoints ~= 0 then
+            -- Talents are available
+            --@alpha@
+            if totalTalentPoints ~= unspentTalentPoints and not CheckTalentsAvaibility_thebadway() then
+                -- no talent detected by GetTalentInfo() --> sanity check failed
+                D:AddDebugText("CheckTalentsAvaibility(): Sanity check failed: GetNumTalentPoints() said 'yes' but GetNumTalentPoints() said 'no', totalTalentPoints=", totalTalentPoints, "unspentTalentPoints=", unspentTalentPoints);
+            end
+            --@end-alpha@
+
+            return true;
+        else
+            -- Talents are not available
+            --@alpha@
+            if CheckTalentsAvaibility_thebadway() then
+                -- talents detected by GetTalentInfo() --> sanity check failed
+                D:AddDebugText("CheckTalentsAvaibility(): Sanity check failed: GetNumTalentPoints() said 'no' but GetNumTalentPoints() said 'yes', totalTalentPoints=", totalTalentPoints, "unspentTalentPoints=", unspentTalentPoints);
+            end
+            --@end-alpha@
+
+            return false;
+        end
+    end -- }}}
+
+    local player_is_almost_alive = false; -- I'm trying to figure out why sometimes talents are not detected while PLAYER_ALIVE event fired
+    local function PollTalentsAvaibility() -- {{{
+        D:Debug("Polling talents...");
+        if CheckTalentsAvaibility() then
+            -- remove the timer
+            D:CancelDelayedCall("PollTalents");
+            -- dispatch event
+            D:SendMessage("DECURSIVE_TALENTS_AVAILABLE");
+            D:Debug("Talents found");
+
+            --@alpha@
+            if player_is_almost_alive then
+                D:AddDebugText("StartTalentAvaibilityPolling(): Talents were not available after PLAYER_ALIVE was fired, test was made", player_is_almost_alive, "seconds after PLAYER_ALIVE fired. Sucess happened", GetTime() - T.PLAYER_IS_ALIVE, "secondes after PLAYER_ALIVE fired");
+            end
+        else
+            if T.PLAYER_IS_ALIVE and not player_is_almost_alive then
+                player_is_almost_alive = GetTime() - T.PLAYER_IS_ALIVE;
+            end
+            --@end-alpha@
+        end
+    end -- }}}
+
+
+    function D:StartTalentAvaibilityPolling()
+        -- poll talents every 2 seconds
+        if D:TimerExixts("PollTalents") then
+            return;
+        end
+
+        self:ScheduleRepeatedCall("PollTalents", PollTalentsAvaibility, 2);
     end
 end
 
