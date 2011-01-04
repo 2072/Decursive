@@ -385,7 +385,7 @@ do
     local pet;
     function D:GetUnitArray() --{{{
         -- if the groups composition did not changed
-        if not self.Groups_datas_are_invalid or not self.DcrFullyInitialized then
+        if not self.Groups_datas_are_invalid or DC.MyGUID == "NONE" then
             return;
         end
         self.Groups_datas_are_invalid = false;
@@ -394,19 +394,6 @@ do
 
         local pGUID;
         raidnum = GetNumRaidMembers();
-
-        if DC.MyGUID == "NONE" then
-
-            self:Debug("|cFFFF0000DC.MyGUID was nil!!|r");
-
-            DC.MyGUID = (UnitGUID("player"));
-
-            if not DC.MyGUID then
-                DC.MyGUID = "NONE";
-                self:Debug("|cFFFF0000DC.MyGUID is STILL nil!!|r");
-            end
-
-        end
 
         local MyGUID  = DC.MyGUID;
 

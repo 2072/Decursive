@@ -91,6 +91,12 @@ do
 
     local Grouped = false;
     function D:GroupChanged (reason) 
+
+        if not D.DcrFullyInitialized then
+            D:Debug("|cFFFF0000D:GroupChanged aborted, init uncomplete!|r");
+            return;
+        end
+
         -- this will trigger an update of the unit array
         self.Groups_datas_are_invalid = true;
         self.Status.GroupUpdateEvent = self:NiceTime();
@@ -125,6 +131,12 @@ end
  -- }}}
 
 function D:PLAYER_ENTERING_WORLD()
+
+    if not D.DcrFullyInitialized then
+        D:Debug("|cFFFF0000D:PLAYER_ENTERING_WORLD aborted, init uncomplete!|r");
+        return;
+    end
+
     if time() - self.db.global.LastVersionAnnounce > 3600/2 then
         -- wait 10 seconds and announce Decursive's version
         self:ScheduleDelayedCall("AnnounceVersion", self.AnnounceVersion, 10, self);
@@ -134,6 +146,11 @@ end
 local OncePetRetry = false;
 
 function D:UNIT_PET (selfevent, Unit) -- {{{
+
+    if not D.DcrFullyInitialized then
+        D:Debug("|cFFFF0000D:UNIT_PET aborted, init uncomplete!|r");
+        return;
+    end
 
     -- when a pet changes somwhere, we update the unit array.
 
@@ -183,6 +200,11 @@ end -- }}}
 local FocusPrevious_ElligStatus = false;
 function D:PLAYER_FOCUS_CHANGED () -- {{{
 
+    if not D.DcrFullyInitialized then
+        D:Debug("|cFFFF0000D:PLAYER_FOCUS_CHANGED aborted, init uncomplete!|r");
+        return;
+    end
+
     -- we need to rescan if the focus is not in our group and it's nice or if we already have a focus unit registered
  
     local FocusCurrent_ElligStatus = (
@@ -223,6 +245,11 @@ end
 local LastScanAllTime = 0;
 D.Status.MaxConcurentUpdateDebuff = 0;
 function D:ScheduledTasks() -- {{{
+
+    if not D.DcrFullyInitialized then
+        D:Debug("|cFFFF0000D:ScheduledTasks aborted, init uncomplete!|r");
+        return;
+    end
 
     -- clean up the blacklist
     for unit in pairs(self.Status.Blacklisted_Array) do
@@ -312,6 +339,12 @@ end -- }}}
 
 
 function D:UPDATE_MOUSEOVER_UNIT ()
+
+    if not D.DcrFullyInitialized then
+        D:Debug("|cFFFF0000D:UPDATE_MOUSEOVER_UNIT aborted, init uncomplete!|r");
+        return;
+    end
+
     if not self.profile.Hide_LiveList and not self.Status.MouseOveringMUF and not UnitCanAttack("mouseover", "player") then
         --      D:Debug("will check MouseOver");
         self.LiveList:DelayedGetDebuff("mouseover");
@@ -321,6 +354,12 @@ end
 
 
 function D:PLAYER_TARGET_CHANGED()
+
+
+    if not D.DcrFullyInitialized then
+        D:Debug("|cFFFF0000D:PLAYER_TARGET_CHANGED aborted, init uncomplete!|r");
+        return;
+    end
 
     if UnitExists("target") and not UnitCanAttack("player", "target") then
 
@@ -344,7 +383,6 @@ function D:PLAYER_ALIVE()
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
     self:UnregisterEvent("PLAYER_ALIVE");
     T.PLAYER_IS_ALIVE = GetTime();
-    D:CheckPlayer();
 end
 
 function D:LEARNED_SPELL_IN_TAB()
@@ -363,8 +401,27 @@ function D:PLAYER_TALENT_UPDATE()
 end
 
 function D:DECURSIVE_TALENTS_AVAILABLE()
-    D:Debug("|cFFFF0000Talents are available scheduling a reconfiguration|r");
+    D:Debug("|cFFFF0000Talents are available recnfiguration in 1 second|r");
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 1, self);
+
+    if time() - self.db.global.LastVersionAnnounce > 3600/2 then
+        -- wait 10 seconds and announce Decursive's version
+        self:ScheduleDelayedCall("AnnounceVersion", self.AnnounceVersion, 10, self);
+    end
+
+    -- some useful constants
+    DC.MyClass = (select(2, UnitClass("player")));
+    DC.MyName  = (self:UnitName("player"));
+    DC.MyGUID  = (UnitGUID("player"));
+
+    if not DC.MyGUID then
+        DC.MyGUID = "NONE";
+        D:AddDebugText("DECURSIVE_TALENTS_AVAILABLE(): (UnitGUID(\"player\")) still returned nil even after the talents were available... this is the fifth dimension");
+    end
+
+    self.Groups_datas_are_invalid = true;
+    D:GetUnitArray(); -- get the unit array
+    D:CheckPlayer();
 end
 ---[=[
 local SeenUnitEventsUNITAURA = {};
@@ -380,6 +437,12 @@ do
     -- This event manager is only here to catch events when the GUID unit array is not reliable.
     -- For everything else the combat log event manager does the job since it's a lot more resource friendly. (UNIT_AURA fires way too often and provides no data)
     function D:UNIT_AURA(selfevent, UnitID, ...)
+
+
+        if not D.DcrFullyInitialized then
+            D:Debug("|cFFFF0000D:UNIT_AURA aborted, init uncomplete!|r");
+            return;
+        end
 
         if not self.Status.Unit_Array_UnitToGUID[UnitID] then
             -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
@@ -593,7 +656,7 @@ do
         if destName and AuraEvents[event] then
 
             if not self.DcrFullyInitialized then
-                self:Println("|cFFFF0000Could not process event: init uncomplete!|r");
+                self:Debug("|cFFFF0000Could not process event: init uncomplete!|r");
                 return;
             end
 

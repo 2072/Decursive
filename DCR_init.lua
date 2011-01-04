@@ -141,7 +141,7 @@ DC.CLASS_DEATHKNIGHT = 'DEATHKNIGHT';
 
 DC.MyClass = "NOCLASS";
 DC.MyName = "NONAME";
-DC.MyGUID = "";
+DC.MyGUID = "NONE";
 
 DC.MAGIC        = 1;
 DC.ENEMYMAGIC   = 2;
@@ -680,6 +680,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
         return false;
     end
     T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
+    D.debugging = D.db.global.debugging;
 
 
     -- Register slashes command {{{
@@ -813,7 +814,6 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     D:StartTalentAvaibilityPolling();
 
-    D:CheckPlayer();
     T._CatchAllErrors = false;
 
 end -- // }}}
@@ -849,6 +849,11 @@ function D:SetConfiguration()
     D.Status.MouseOveringMUF = false;
     D.Status.TestLayout = false;
     D.Status.TestLayoutUNum = 25;
+    D.Status.Unit_Array_GUIDToUnit = {};
+    D.Status.Unit_Array_UnitToGUID = {};
+    D.Status.Unit_Array = {};
+    D.Status.InternalPrioList = {};
+    D.Status.InternalSkipList = {};
     
 
     -- if we log in and we are already fighting...
@@ -864,29 +869,14 @@ function D:SetConfiguration()
     end
 
     D.debugging = D.db.global.debugging;
-    D.debugFrame = D.Status.OutputWindow;
-    D.printFrame = D.Status.OutputWindow;
+    --D.debugFrame = D.Status.OutputWindow;
+    --D.printFrame = D.Status.OutputWindow;
 
     D:Debug("Loading profile datas...");
 
-    -- some useful constants
-    DC.MyClass = (select(2, UnitClass("player")));
-    DC.MyName  = (self:UnitName("player"));
-    DC.MyGUID  = (UnitGUID("player"));
-
-    if not DC.MyGUID then
-        DC.MyGUID = "NONE";
-    end
-
-
     D:Init(); -- initialize Dcr core (set frames display, scans available cleansing spells)
 
-
     D.MicroUnitF.MaxUnit = D.profile.DebuffsFrameMaxCount;
-
-
-    D.Groups_datas_are_invalid = true;
-
 
     if D.profile.MF_colors['Chronometers'] then
         D.profile.MF_colors[ "COLORCHRONOS"] = D.profile.MF_colors['Chronometers'];
@@ -895,10 +885,7 @@ function D:SetConfiguration()
 
     D.MicroUnitF:RegisterMUFcolors(D.profile.MF_colors); -- set the colors as set in the profile
 
-
-
     D.Status.Enabled = true;
-
 
     -- set Icon
     if not D.Status.HasSpell or D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
@@ -932,8 +919,7 @@ function D:SetConfiguration()
         D:ClearPriorityList();
         D:ClearSkipList();
     end
-
-    D:GetUnitArray(); -- get the unit array
+    
     D.MicroUnitF:ResetAllPositions (); -- reset all anchors
 
     T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
@@ -1081,6 +1067,10 @@ end --}}}
 function D:ReConfigure() --{{{
 
     D:Debug("|cFFFF0000D:ReConfigure was called!|r");
+    if not D.DcrFullyInitialized then
+        D:Debug("|cFFFF0000D:ReConfigure aborted, init uncomplete!|r");
+        return;
+    end
 
     local Spell, spellName;
     local GetSpellInfo = _G.GetSpellInfo;
