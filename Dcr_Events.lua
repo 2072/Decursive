@@ -1099,6 +1099,7 @@ do
 
     local GetNumTalentPoints = _G.GetNumTalentPoints;
     local GetUnspentTalentPoints = _G.GetUnspentTalentPoints;
+    local UnitLevel = _G.UnitLevel;
 
     --@alpha@
     local GetTalentInfo = _G.GetTalentInfo;
@@ -1122,6 +1123,11 @@ do
 
         local unspentTalentPoints = GetUnspentTalentPoints();
         local totalTalentPoints = GetNumTalentPoints();
+        local playerLevel = UnitLevel("player");
+
+        if playerLevel > 0 and playerLevel < 10 then
+            return true;
+        end
 
         if totalTalentPoints ~= 0 then
             -- Talents are available
