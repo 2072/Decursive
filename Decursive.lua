@@ -242,8 +242,8 @@ end --}}}
 
 function D:PlaySound (UnitID, Caller) --{{{
     if self.profile.PlaySound and not self.Status.SoundPlayed then
-        local Debuffs = self:UnitCurableDebuffs(UnitID, true);
-        if Debuffs and Debuffs[1] and Debuffs[1].Type then
+        local Debuffs, IsCharmed = self:UnitCurableDebuffs(UnitID, true);
+        if Debuffs and Debuffs[1] and Debuffs[1].Type or IsCharmed then
 
             -- good sounds: Sound\\Doodad\\BellTollTribal.wav
             --          Sound\\interface\\AuctionWindowOpen.wav
@@ -454,12 +454,26 @@ do
             IsCharmed = false;
         end
 
+        --[=[
+        if D.LiveList.TestItemDisplayed then
+            IsCharmed = true;
+        end
+        --]=]
+
         -- iterate all available debuffs
         while (true) do
             Name, TypeName, Applications, Texture, expirationTime = GetUnitDebuff(Unit, i);
 
             if not Name then
-                break;
+                if not IsCharmed or CharmFound then
+                    break;
+                else
+                    Name = "*Charm effect*";
+                    Texture = "Interface\\AddOns\\Decursive\\iconON.tga";
+                    expirationTime = false;
+                    Applications = 0;
+                    D:AddDebugText("Charm effect without debuff", i);
+                end
             end
 
         
@@ -551,10 +565,10 @@ do
             StoredDebuffIndex = StoredDebuffIndex + 1;
         end
 
-        -- if no debuff on the unit then it can't be charmed... FUCKING LAG!!
-        if i == 1 then
-            IsCharmed = false;
-        end
+        -- if no debuff on the unit then it can't be charmed... or is it?
+        -- if i == 1 then
+        --    IsCharmed = false;
+        -- end
 
         return ThisUnitDebuffs, IsCharmed;
     end --}}}
@@ -724,9 +738,10 @@ do
 
     end -- // }}}
 
-    local GetTime       = _G.GetTime;
-    local Debuffs       = {}; local IsCharmed = false; local Unit; local MUF; local IsDebuffed= false; local CheckStealth = false;
+    local GetTime               = _G.GetTime;
+    local Debuffs               = {}; local IsCharmed = false; local Unit; local MUF; local IsDebuffed = false; local IsMUFDebuffed = false; local CheckStealth = false;
     local NoScanStatuses        = false;
+    local band                  = _G.bit.band;
     function D:ScanEveryBody()
 
         if not NoScanStatuses then
@@ -752,11 +767,12 @@ do
                 end
 
                 IsDebuffed = (Debuffs and true) or IsCharmed;
+                IsMUFDebuffed = MUF.IsDebuffed and true or band(MUF.UnitStatus, DC.CHARMED_STATUS) == DC.CHARMED_STATUS;
                 -- If MUF disagrees
-                if IsDebuffed ~= MUF.IsDebuffed and not D:DelayedCallExixts("Dcr_Update" .. Unit) then
+                if (IsDebuffed ~= IsMUFDebuffed) and not D:DelayedCallExixts("Dcr_Update" .. Unit) then
                     --@debug@
                     if IsDebuffed then
-                        self:AddDebugText("delayed debuff found by scaneveryone, scheduling analysis in 1s");
+                        self:AddDebugText("delayed debuff found by scaneveryone");
                         --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
                     else
                         self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit);
@@ -766,7 +782,7 @@ do
                     self.MicroUnitF:UpdateMUFUnit(Unit, true);
 
                     --@debug@
-                    D:Println("HAAAAAAA!!!!!");
+                    --D:Println("HAAAAAAA!!!!!");
                     --@end-debug@
                 end
             end

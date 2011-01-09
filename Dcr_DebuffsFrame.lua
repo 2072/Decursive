@@ -1153,6 +1153,7 @@ do
         for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
             --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
+            -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
             self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
             ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
             Unit,Unit,
@@ -1321,7 +1322,7 @@ do
                 end
 
                 -- update the chrono
-                if profile.DebuffsFrameChrono then
+                if profile.DebuffsFrameChrono and self.Debuffs[1].expirationTime then
                     if self.LitTime then
                         PrevChrono = self.Chrono;
 

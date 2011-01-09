@@ -572,6 +572,8 @@ local function GetStaticOptions ()
                         name = D:ColorText(L["DECURSIVE_DEBUG_REPORT_SHOW"], "FFFF0000"),
                         desc = L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"],
                         func = function ()
+                            LibStub("AceConfigDialog-3.0"):Close(D.name);
+                            GameTooltip:Hide();
                             D:ShowDebugReport();
                         end,
                         hidden = function() return  #T._DebugTextTable < 1 end,
