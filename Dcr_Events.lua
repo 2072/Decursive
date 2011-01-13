@@ -306,7 +306,7 @@ do
         self.Status.Combat = false;
 
         -- test for debug report
-        if #T._DebugTextTable > 0 and GetTime() - LastDebugReportNotification > 300 then
+        if #T._DebugTextTable > 0 and GetTime() - LastDebugReportNotification > 300 * 3 then
             if LastDebugReportNotification == 0 then
                 T._FatalError(L["DECURSIVE_DEBUG_REPORT_NOTIFY"]);
             end

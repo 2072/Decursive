@@ -120,6 +120,7 @@ local DebugTextTable = T._DebugTextTable;
 local Reported = {};
 local GetFramerate = _G.GetFramerate;
 local GetNetStats = _G.GetNetStats;
+local GetRealZoneText = _G.GetRealZoneText;
 function T._AddDebugText(a1, ...)
 
     if T.Dcr.Debug then
@@ -133,8 +134,10 @@ function T._AddDebugText(a1, ...)
         text = tostring(a1);
     end
 
+    local zone = GetRealZoneText() or "none";
+
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n------\n%.4f (%d-%d): %s -|count: "):format(NiceTime(), select(3, GetNetStats()), GetFramerate(), text) );
+        table.insert (DebugTextTable,  ("\n------\n%.4f (%d-%d-%s): %s -|count: "):format(NiceTime(), select(3, GetNetStats()), GetFramerate(), zone, text) );
         table.insert (DebugTextTable, 1);
         Reported[text] = #DebugTextTable;
     else

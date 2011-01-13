@@ -472,7 +472,7 @@ do
                     Texture = "Interface\\AddOns\\Decursive\\iconON.tga";
                     expirationTime = false;
                     Applications = 0;
-                    D:AddDebugText("Charm effect without debuff", i);
+                    --D:AddDebugText("Charm effect without debuff", i);
                 end
             end
 
