@@ -395,7 +395,7 @@ do
     -- This function only returns interesting values of UnitDebuff()
     local function GetUnitDebuff  (Unit, i) --{{{
 
-        if D.LiveList.TestItemDisplayed and i == 1 and Unit ~= "target" and Unit ~= "mouseover" and UnitExists(Unit) then
+        if D.LiveList.TestItemDisplayed and i == 1 and UnitExists(Unit) and Unit ~= "target" and Unit ~= "mouseover" then
             D:Debug("|cFFFF0000Setting test debuff for %s (debuff %d)|r", Unit, i);
             return "Test item", DC.TypeNames[D.Status.ReversedCureOrder[1]], 2, "Interface\\AddOns\\Decursive\\iconON.tga", D.LiveList.TestItemDisplayed + 70;
         end
@@ -429,6 +429,11 @@ do
     local GetTime       = _G.GetTime;
     local IsSpellInRange    = _G.IsSpellInRange;
 
+    local UnTrustedUnitIDs = {
+        ['mouseover'] = true,
+        ['target'] = true,
+    };
+
     -- This is the core debuff scanning function of Decursive
     -- This function does more than just reporting Debuffs. it also detects charmed units
 
@@ -448,7 +453,9 @@ do
 
 
         -- test if the unit is mind controlled once
-        if (UnitIsCharmed(Unit) and (UnitCanAttack("player", Unit) or UnitIsCharmed("player"))) then
+        --if (UnitIsCharmed(Unit) and (UnitCanAttack("player", Unit) or UnitIsCharmed("player"))) then
+        -- The unit is not mouseover or target and it's attackable ---> it's charmed! (A new game's mechanic as been introduced where a player can become hostile but remain in controll...)
+        if not UnTrustedUnitIDs[Unit] and UnitCanAttack("player", Unit) then
             IsCharmed = true;
         else
             IsCharmed = false;
