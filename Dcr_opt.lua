@@ -979,6 +979,11 @@ local function GetStaticOptions ()
                 order = 4,
                 disabled = function() return  not D.Status.Enabled end,
                 args = {
+                    hint = {
+                        type = 'description',
+                        name = D:ColorText(L["OPT_MUFHANDLE_HINT"], "FF00EF00"),
+                        order = 0,
+                    },
                     displayOpts = {
                         type = "group",
                         name = L["OPT_DISPLAYOPTIONS"],

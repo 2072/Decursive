@@ -415,6 +415,8 @@ L["UNSTABLERELEASE"] = "Unstable release";
 
 L["OPT_PERFOPTIONWARNING"] = "WARNING: Do not change those values unless you know exactly what you are doing. These settings can have a great impact on the game performance. Most users should use the default values of 0.1 and 10";
 
+L["OPT_MUFHANDLE_HINT"] = "To move the micro-unit frames, alt-click the invisible handle located above the first one.";
+
 --]==]
 --@end-do-not-package@
 
