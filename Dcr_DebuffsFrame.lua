@@ -652,15 +652,15 @@ function MicroUnitF:OnEnter(frame) -- {{{
         elseif Status == FAR then
             StatusText = L["TOOFAR"];
 
-        elseif Status == STEALTHED then
-            StatusText = L["STEALTHED"];
-
         elseif Status == BLACKLISTED then
             StatusText = L["BLACKLISTED"];
 
         elseif MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
             local DebuffType = MF.Debuffs[1].Type;
             StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[str_upper(DC.TypeNames[DebuffType])], "FF" .. DC.TypeColors[DebuffType]) );
+
+        elseif Status == STEALTHED then
+            StatusText = L["STEALTHED"];
         end
 
         -- Unit Status
@@ -1271,7 +1271,7 @@ do
 
         else
             -- If the Unit is invisible
-            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] then
+            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.IsDebuffed then
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
                     self.UnitStatus = STEALTHED;
@@ -1295,7 +1295,7 @@ do
                 end
 
                 -- if the unit has some debuffs we can handle
-            elseif (self.IsDebuffed) then
+            elseif self.IsDebuffed then
                 DebuffType = self.Debuffs[1].Type;
 
                 if self.PrevDebuff1Prio ~= self.Debuff1Prio then
