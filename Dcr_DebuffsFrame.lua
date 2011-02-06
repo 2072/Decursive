@@ -1391,7 +1391,7 @@ do
         if PreviousStatus == AFFLICTED or PreviousStatus == AFFLICTED_AND_CHARMED  then
             MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange - 1;
 
-            if MicroUnitF.UnitsDebuffedInRange == 0 and profile.Hide_LiveList then
+            if MicroUnitF.UnitsDebuffedInRange == 0 and profile.HideLiveList then
                 D:Debug("SetColor(): No more unit, sound re-enabled");
                 Status.SoundPlayed = false;
             end

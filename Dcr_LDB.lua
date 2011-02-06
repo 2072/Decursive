@@ -137,7 +137,7 @@ local function ShowToolTip (frame)
     tooltip:AddLine(    ("|cFF00FF00%s-%s|r: " ):format(D.L["SHIFT"],   D.L["HLP_RIGHTCLICK"]),
                             D.L["BINDING_NAME_DCRSHOW"]);
 
-    if (D.db.global.debugging) then
+    if (D.db.global.debug) then
         tooltip:AddSeparator();
 
         x, y = tooltip:AddLine();

@@ -680,7 +680,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
         return false;
     end
     T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
-    D.debugging = D.db.global.debugging;
+    D.debug = D.db.global.debug;
 
 
     -- Register slashes command {{{
@@ -868,7 +868,6 @@ function D:SetConfiguration()
         D.Status.OutputWindow = _G[D.profile.OutputWindow];
     end
 
-    D.debugging = D.db.global.debugging;
     --D.debugFrame = D.Status.OutputWindow;
     --D.printFrame = D.Status.OutputWindow;
 
@@ -888,14 +887,14 @@ function D:SetConfiguration()
     D.Status.Enabled = true;
 
     -- set Icon
-    if not D.Status.HasSpell or D.profile.Hide_LiveList and not D.profile.ShowDebuffsFrame then
+    if not D.Status.HasSpell or D.profile.HideLiveList and not D.profile.ShowDebuffsFrame then
         D:SetIcon(DC.IconOFF);
     else
         D:SetIcon(DC.IconON);
     end
 
     -- put the updater events at the end of the init so there is no chance they could be called before everything is ready (even if LUA is not multi-threaded... just to stay logical )
-    if not D.profile.Hide_LiveList then
+    if not D.profile.HideLiveList then
         self:ScheduleRepeatedCall("Dcr_LLupdate", D.LiveList.Update_Display, D.profile.ScanTime, D.LiveList);
     end
 
@@ -1039,7 +1038,7 @@ function D:Init() --{{{
     end
 
     -- displays frame according to the current profile
-    if (D.profile.Hide_LiveList) then
+    if (D.profile.HideLiveList) then
         DcrLiveList:Hide();
     else
         DcrLiveList:ClearAllPoints();

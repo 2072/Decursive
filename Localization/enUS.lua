@@ -79,13 +79,13 @@ if not L then return end;
 
 -- Used for testing the addon without the packager
 
-L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = "A debug report is available!\nType |cFFFF0000/dcr report|r to see it"
-L["DECURSIVE_DEBUG_REPORT_SHOW"] = "Debug report available!"
-L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"] = "Show a debug report the author needs to see..."
-L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
-L["DEBUG_REPORT_HEADER"] = "|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n"
-
 L["ABOLISH_CHECK"] = "Check for \"Abolish\" before curing"
+L["ABOUT_AUTHOREMAIL"] = "AUTHOR E-MAIL"
+L["ABOUT_CREDITS"] = "CREDITS"
+L["ABOUT_LICENSE"] = "LICENSE"
+L["ABOUT_NOTES"] = "Afflictions display and cleaning for solo, group and raid with advanced filtering and priority system."
+L["ABOUT_OFFICIALWEBSITE"] = "OFFICIAL WEBSITE"
+L["ABOUT_SHAREDLIBS"] = "SHARED LIBRARIES"
 L["ABSENT"] = "Missing (%s)"
 L["AFFLICTEDBY"] = "%s Afflicted"
 L["ALT"] = "Alt"
@@ -103,19 +103,10 @@ L["BINDING_NAME_DCRSKADD"] = "Add target to skip list"
 L["BINDING_NAME_DCRSKCLEAR"] = "Clear the skip list"
 L["BINDING_NAME_DCRSKLIST"] = "Print the skip list"
 L["BINDING_NAME_DCRSKSHOW"] = "Show or hide the skip list"
-L["BLACK_LENGTH"] = "Seconds on the blacklist : "
 L["BLACKLISTED"] = "Black-listed"
+L["BLACK_LENGTH"] = "Seconds on the blacklist : "
 L["CHARM"] = "Charm"
-L["CLASS_DEATHKNIGHT"] = "Deathknight"
-L["CLASS_DRUID"] = "Druid"
 L["CLASS_HUNTER"] = "Hunter"
-L["CLASS_MAGE"] = "Mage"
-L["CLASS_PALADIN"] = "Paladin"
-L["CLASS_PRIEST"] = "Priest"
-L["CLASS_ROGUE"] = "Rogue"
-L["CLASS_SHAMAN"] = "Shaman"
-L["CLASS_WARLOCK"] = "Warlock"
-L["CLASS_WARRIOR"] = "Warrior"
 L["CLEAR_PRIO"] = "C"
 L["CLEAR_SKIP"] = "C"
 L["COLORALERT"] = "Set the color alert when a '%s' is required."
@@ -125,8 +116,28 @@ L["COLORSTATUS"] = "Set the color for the '%s' MUF status."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Scan and cure pets"
 L["CURSE"] = "Curse"
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please report the content of this window to Archarodim+DcrReport@teaser.fr|r
+|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r
+Also tell in your report if you noticed any strange behavior of Decursive.
+]=]
+L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
+L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = [=[A debug report is available!
+Type |cFFFF0000/dcr general report|r to see it.]=]
+L["DECURSIVE_DEBUG_REPORT_SHOW"] = "Debug report available!"
+L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"] = "Show a debug report the author needs to see..."
 L["DEFAULT_MACROKEY"] = "`"
-L["DISABLEWARNING"] = "Decursive has been disabled!"
+L["DEV_VERSION_ALERT"] = [=[You are using a development version of Decursive.
+
+If you do not want to participate in testing new features/fixes, receive in-game debug reports, send issues to the author then DO NOT USE THIS VERSION and download the latest STABLE version on curse.com or wowace.com.
+
+This message will be displayed only once per version]=]
+L["DEV_VERSION_EXPIRED"] = [=[This development version of Decursive has expired.
+You should, download the latest development version or go back to the current stable release available on CURSE.COM or WOWACE.COM.
+This warning will be displayed every two days.]=]
+L["DEWDROPISGONE"] = "There is no DewDrop equivalent for Ace3. Alt-Right-Click to open the option panel."
+L["DISABLEWARNING"] = [=[Decursive has been disabled!
+
+To enable it again, type |cFFFFAA44/DCR ENABLE|r]=]
 L["DISEASE"] = "Disease"
 L["DONOT_BL_PRIO"] = "Don't blacklist priority list names"
 L["FAILEDCAST"] = [=[|cFF22FFFF%s %s|r |cFFAA0000failed on|r %s
@@ -146,6 +157,7 @@ He was in life as he was in game, selfless, generous, dedicated to his friends a
 He left us at the age of 38 leaving behind him not just anonymous players in a virtual world but, a group of true friends who will miss him forever.]=]
 L["GLOR5"] = "He will always be remembered..."
 L["HANDLEHELP"] = "Drag all the Micro-UnitFrames (MUFs)"
+L["HIDESHOW_BUTTONS"] = "Hide/Show buttons"
 L["HIDE_LIVELIST"] = "Hide the live-list"
 L["HIDE_MAIN"] = "Hide Decursive Window"
 L["HLP_LEFTCLICK"] = "Left-Click"
@@ -171,23 +183,32 @@ L["MACROKEYNOTMAPPED"] = "Decursive mouse-over macro is not mapped to a key, tak
 L["MAGIC"] = "Magic"
 L["MAGICCHARMED"] = "Magic Charm"
 L["MISSINGUNIT"] = "Missing unit"
+L["NEW_VERSION_ALERT"] = [=[A new version of Decursive has been detected: |cFFEE7722%q|r released on |cFFEE7722%s|r!
+
+
+Go to |cFFFF0000WoWAce.com|r to get it!
+--------]=]
 L["NORMAL"] = "Normal"
 L["NOSPELL"] = "No spell available"
+L["OPTION_MENU"] = "Decursive Options Menu"
 L["OPT_ABOLISHCHECK_DESC"] = "select whether units with an active 'Abolish' spell are shown and cured"
+L["OPT_ABOUT"] = "About"
 L["OPT_ADDDEBUFF"] = "Add a custom affliction"
-L["OPT_ADDDEBUFF_DESC"] = "Adds a new affliction to this list"
 L["OPT_ADDDEBUFFFHIST"] = "Add a recent affliction"
 L["OPT_ADDDEBUFFFHIST_DESC"] = "Add an affliction using the history"
+L["OPT_ADDDEBUFF_DESC"] = "Adds a new affliction to this list"
 L["OPT_ADDDEBUFF_USAGE"] = "<Affliction name>"
 L["OPT_ADVDISP"] = "Advance display Options"
 L["OPT_ADVDISP_DESC"] = "Allow to set Transparency of the border and center separately, to set the space between each MUF"
 L["OPT_AFFLICTEDBYSKIPPED"] = "%s afflicted by %s will be skipped"
+L["OPT_ALLOWMACROEDIT"] = "Allow macro edition"
+L["OPT_ALLOWMACROEDIT_DESC"] = "Enable this to prevent Decursive from updating its macro, letting you edit it as you want."
 L["OPT_ALWAYSIGNORE"] = "Also ignore when not in combat"
 L["OPT_ALWAYSIGNORE_DESC"] = "If checked, this affliction will also be ignored when you are not in combat"
 L["OPT_AMOUNT_AFFLIC_DESC"] = "Defines the max number of cursed to display in the live-list"
 L["OPT_ANCHOR_DESC"] = "Shows the anchor of the custom message frame"
-L["OPT_AUTOHIDEMFS"] = "Auto-Hide"
-L["OPT_AUTOHIDEMFS_DESC"] = "Choose when to hide the MUF window"
+L["OPT_AUTOHIDEMFS"] = "Hide MUFs when:"
+L["OPT_AUTOHIDEMFS_DESC"] = "Choose when to automatically hide the MUFs' window."
 L["OPT_BLACKLENTGH_DESC"] = "Defines how long someone stays on the blacklist"
 L["OPT_BORDERTRANSP"] = "Border transparency"
 L["OPT_BORDERTRANSP_DESC"] = "Set the transparency of the border"
@@ -195,11 +216,25 @@ L["OPT_CENTERTRANSP"] = "Center transparency"
 L["OPT_CENTERTRANSP_DESC"] = "Set the transparency of the center"
 L["OPT_CHARMEDCHECK_DESC"] = "If checked you'll be able to see and deal with charmed units"
 L["OPT_CHATFRAME_DESC"] = "Decursive's messages will be printed to the default chat frame"
+L["OPT_CHECKOTHERPLAYERS"] = "Check other players"
+L["OPT_CHECKOTHERPLAYERS_DESC"] = "Displays Decursive version among the players in your current group or guild (cannot display versions prior to Decursive 2.4.6)."
+L["OPT_CMD_DISBLED"] = "Disabled"
+L["OPT_CMD_ENABLED"] = "Enabled"
 L["OPT_CREATE_VIRTUAL_DEBUFF"] = "Create a virtual test affliction"
 L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"] = "Lets you see how it looks like when an affliction is found"
 L["OPT_CUREPETS_DESC"] = "Pets will be managed and cured"
 L["OPT_CURINGOPTIONS"] = "Curing options"
 L["OPT_CURINGOPTIONS_DESC"] = "Set different aspects of the curing process"
+L["OPT_CURINGOPTIONS_EXPLANATION"] = [=[
+Select the types of the afflictions you want to cure, unchecked types will be completely ignored by Decursive.
+
+The green number determine the priority of the affliction. This priority will affect several aspects:
+- What Decursive shows you first if a player got several types of Debuff.
+- What mouse button you'll have to click to cure the debuff (First spell is Left-Click, second is Right-Click, etc...)
+
+All of this is explained in the documentation (a must see):
+http://www.wowace.com/addons/decursive/
+]=]
 L["OPT_CURINGORDEROPTIONS"] = "Curing Order Options"
 L["OPT_CURSECHECK_DESC"] = "If checked you'll be able to see and cure cursed units"
 L["OPT_DEBCHECKEDBYDEF"] = [=[
@@ -208,20 +243,31 @@ Checked by default]=]
 L["OPT_DEBUFFENTRY_DESC"] = "Select what class should be ignored in combat when afflicted by this affliction"
 L["OPT_DEBUFFFILTER"] = "Affliction filtering"
 L["OPT_DEBUFFFILTER_DESC"] = "Select afflictions to filter out by name and class while you are in combat"
+L["OPT_DISABLEABOLISH"] = "Do not use 'Abolish' spells"
+L["OPT_DISABLEABOLISH_DESC"] = "If enabled, Decursive will prefer 'Cure Disease' and 'Cure Poison' over their 'Abolish' equivalent."
+L["OPT_DISABLEMACROCREATION"] = "Disable macro creation"
+L["OPT_DISABLEMACROCREATION_DESC"] = "Decursive macro will no longer be created or maintained"
 L["OPT_DISEASECHECK_DESC"] = "If checked you'll be able to see and cure diseased units"
 L["OPT_DISPLAYOPTIONS"] = "Display options"
 L["OPT_DONOTBLPRIO_DESC"] = "Prioritized units won't be blacklisted"
+L["OPT_ENABLEDEBUG"] = "Enable Debugging"
+L["OPT_ENABLEDEBUG_DESC"] = "Enable Debugging output"
+L["OPT_ENABLEDECURSIVE"] = "Enable Decursive"
+L["OPT_FILTEROUTCLASSES_FOR_X"] = "%q will be ignored on the specified classes while you are in combat."
+L["OPT_GENERAL"] = "General options"
 L["OPT_GROWDIRECTION"] = "Reverse MUFs Display"
 L["OPT_GROWDIRECTION_DESC"] = "The MUFs will be displayed from bottom to top"
 L["OPT_HIDELIVELIST_DESC"] = "If not hidden, displays an informative list of cursed people"
-L["OPT_HIDEMFS_GROUP"] = "Solo/Party"
-L["OPT_HIDEMFS_GROUP_DESC"] = "Hide the MUF window when you are not in a raid"
-L["OPT_HIDEMFS_NEVER"] = "Never"
-L["OPT_HIDEMFS_NEVER_DESC"] = "Never auto-hide the MUF window"
-L["OPT_HIDEMFS_SOLO"] = "Solo"
-L["OPT_HIDEMFS_SOLO_DESC"] = "Hide the MUF window when you are not in a party or raid"
+L["OPT_HIDEMFS_GROUP"] = "in solo or in party"
+L["OPT_HIDEMFS_GROUP_DESC"] = "Hide the MUF's window when you are not in a raid."
+L["OPT_HIDEMFS_NEVER"] = "Never auto-hide"
+L["OPT_HIDEMFS_NEVER_DESC"] = "Never auto-hide the MUFs' window."
+L["OPT_HIDEMFS_SOLO"] = "in solo"
+L["OPT_HIDEMFS_SOLO_DESC"] = "Hide the MUFs' window when you are not part of any kind of group."
+L["OPT_HIDEMUFSHANDLE"] = "Hide the MUFs handle"
+L["OPT_HIDEMUFSHANDLE_DESC"] = [=[Hides the Micro-Unit Frames handle and disables the possibility to move them.
+Use the same command to get it back.]=]
 L["OPT_IGNORESTEALTHED_DESC"] = "Cloaked units will be ignored"
-L["OPTION_MENU"] = "Decursive Options Menu"
 L["OPT_LIVELIST"] = "Live list"
 L["OPT_LIVELIST_DESC"] = "Options for the live list"
 L["OPT_LLALPHA"] = "Live-list transparency"
@@ -253,12 +299,21 @@ L["OPT_MFSCALE"] = "Scale of the micro-unit-frames"
 L["OPT_MFSCALE_DESC"] = "Set the size of the micro-unit-frames"
 L["OPT_MFSETTINGS"] = "Micro Unit Frame Settings"
 L["OPT_MFSETTINGS_DESC"] = "Set the micro units frame window options to suit your needs"
+L["OPT_MUFFOCUSBUTTON"] = "Focusing button:"
+L["OPT_MUFHANDLE_HINT"] = "To move the micro-unit-frames: ALT-click the invisible handle located above the first micro-unit-frame."
+L["OPT_MUFMOUSEBUTTONS"] = "Mouse buttons"
+L["OPT_MUFMOUSEBUTTONS_DESC"] = [=[Set the mouse-buttons you want to use for each Micro-Unit-Frame alert color.
+Before modifying this tab you should check out the '|cFFFF5533Curing options|r'!]=]
 L["OPT_MUFSCOLORS"] = "Colors"
 L["OPT_MUFSCOLORS_DESC"] = "Change the colors of the Micro Unit Frames."
+L["OPT_MUFTARGETBUTTON"] = "Targeting button:"
+L["OPT_NEWVERSIONBUGMENOT"] = "New version alerts"
+L["OPT_NEWVERSIONBUGMENOT_DESC"] = "If a newer version of Decursive is detected, a pop-up alert will be displayed once every seven days."
 L["OPT_NOKEYWARN"] = "Warn if no key"
 L["OPT_NOKEYWARN_DESC"] = "Display a warning if no key is mapped."
-L["OPT_DISABLEMACROCREATION"] = "Disable macro creation"
-L["OPT_DISABLEMACROCREATION_DESC"] = "Decursive macro will no longer be created or maintained"
+L["OPT_NOSTARTMESSAGES"] = "Disable welcome messages"
+L["OPT_NOSTARTMESSAGES_DESC"] = "Remove the three messages Decursive prints to the chat frame at every login."
+L["OPT_PERFOPTIONWARNING"] = "WARNING: Do not change those values unless you know exactly what you are doing. These settings can have a great impact on the game performances. Most users should use the default values of 0.1 and 10."
 L["OPT_PLAYSOUND_DESC"] = "Play a sound if someone get cursed"
 L["OPT_POISONCHECK_DESC"] = "If checked you'll be able to see and cure poisoned units"
 L["OPT_PRINT_CUSTOM_DESC"] = "Decursive's messages will be printed in a custom chat frame"
@@ -276,6 +331,8 @@ L["OPT_REMOVETHISDEBUFF"] = "Remove this affliction"
 L["OPT_REMOVETHISDEBUFF_DESC"] = "Removes '%s' from the skip list"
 L["OPT_RESETDEBUFF"] = "Reset this affliction"
 L["OPT_RESETDTDCRDEFAULT"] = "Resets '%s' to Decursive default"
+L["OPT_RESETMUFMOUSEBUTTONS"] = "Reset"
+L["OPT_RESETMUFMOUSEBUTTONS_DESC"] = "Reset mouse button assignments to defaults."
 L["OPT_RESETOPTIONS"] = "Reset options to defaults"
 L["OPT_RESETOPTIONS_DESC"] = "Reset the current profile to the default values"
 L["OPT_RESTPROFILECONF"] = [=[Are you sure you want to reset the profile
@@ -286,6 +343,8 @@ L["OPT_SCANLENGTH_DESC"] = "Defines the time between each scan"
 L["OPT_SHOWBORDER"] = "Show the class-colored borders"
 L["OPT_SHOWBORDER_DESC"] = "A colored border will be displayed around the MUFs representing the unit's class"
 L["OPT_SHOWCHRONO"] = "Show chronometers"
+L["OPT_SHOWCHRONOTIMElEFT"] = "Time left"
+L["OPT_SHOWCHRONOTIMElEFT_DESC"] = "Display time left instead of time elapsed."
 L["OPT_SHOWCHRONO_DESC"] = "The number of seconds elapsed since a unit has been afflicted is displayed"
 L["OPT_SHOWHELP"] = "Show help"
 L["OPT_SHOWHELP_DESC"] = "Shows an detailed tooltip when you mouse-over a micro-unit-frame"
@@ -294,13 +353,20 @@ L["OPT_SHOWMFS_DESC"] = "This must be enabled if you want to cure by clicking"
 L["OPT_SHOWMINIMAPICON"] = "Minimap Icon"
 L["OPT_SHOWMINIMAPICON_DESC"] = "Toggle the minimap icon."
 L["OPT_SHOWTOOLTIP_DESC"] = "Shows a detailed tooltips about curses in the live-list and on the MUFs"
+L["OPT_SHOW_STEALTH_STATUS"] = "Show stealth status"
+L["OPT_SHOW_STEALTH_STATUS_DESC"] = "When a player is stealthed, his MUF will take a special color"
 L["OPT_STICKTORIGHT"] = "Align MUF window to the right"
 L["OPT_STICKTORIGHT_DESC"] = "The MUF window will grow from right to left, the handle will be moved as necessary."
+L["OPT_TESTLAYOUT"] = "Test Layout"
+L["OPT_TESTLAYOUTUNUM"] = "Unit number"
+L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create."
+L["OPT_TESTLAYOUT_DESC"] = [=[Create fake units so you can test the display layout.
+(Wait a few seconds after clicking)]=]
 L["OPT_TIECENTERANDBORDER"] = "Tie center and border transparency"
 L["OPT_TIECENTERANDBORDER_OPT"] = "The transparency of the border is half the center transparency when checked"
-L["OPT_TIE_LIVELIST_DESC"] = "The live-list display is tied to \"Decursive\" bar display"
 L["OPT_TIEXYSPACING"] = "Tie horizontal and vertical spacing"
 L["OPT_TIEXYSPACING_DESC"] = "The horizontal and vertical space between MUFs are the same"
+L["OPT_TIE_LIVELIST_DESC"] = "The live-list display is tied to \"Decursive\" bar display"
 L["OPT_UNITPERLINES"] = "Number of units per line"
 L["OPT_UNITPERLINES_DESC"] = "Defines the max number of micro-unit-frames to display per line"
 L["OPT_USERDEBUFF"] = "This affliction is not part of Decursive's default afflictions"
@@ -340,82 +406,7 @@ L["TARGETUNIT"] = "Target Unit"
 L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
-L["DEV_VERSION_ALERT"] = "DEV_VERSION_ALERT"
-L["DEV_VERSION_EXPIRED"] = "DEV_VERSION_EXPIRED"
-L["OPT_SHOW_STEALTH_STATUS"] = "OPT_SHOW_STEALTH_STATUS"
-L["OPT_SHOW_STEALTH_STATUS_DESC"] = "OPT_SHOW_STEALTH_STATUS_DESC"
-
-L["OPT_FILTEROUTCLASSES_FOR_X"] = "%q will be ignored on the specified classes while you are in combat."
-
-L["OPT_GENERAL"] = "General options"
-L["OPT_ENABLEDEBUG"] = "Enable Debugging";
-L["OPT_ENABLEDEBUG_DESC"] = "Enable Debugging output";
-L["OPT_CURINGOPTIONS_EXPLANATION"] = [[
-Select the types of the afflictions you want to cure, unchecked types will be completely ignored by Decursive.
-
-The green number determine the priority of the affliction. This priority will affect several aspects:
-- What Decursive shows you first if a player got several types of Debuff.
-- What mouse button you'll have to click to cure the debuff (First spell is Left-Click, second is Right-Click, etc...)
-
-All of this is explained in the documentation (a must see):
-http://www.wowace.com/addons/decursive/
-]]
-
-L["HIDESHOW_BUTTONS"]            = "Hide/Show buttons"
-
-L["OPT_ENABLEDECURSIVE"]    = "Enable Decursive"
-L["OPT_ABOUT"]              = "About"
-L["ABOUT_NOTES"]            = "Afflictions display and cleaning for solo, group and raids with advanced filtering and priority system."
-L["ABOUT_LICENSE"]          = "LICENSE"
-L["ABOUT_SHAREDLIBS"]       = "SHARED LIBRARIES"
-L["ABOUT_OFFICIALWEBSITE"]  = "OFFICIAL WEBSITE"
-L["ABOUT_AUTHOREMAIL"]      = "AUTHOR E-MAIL"
-L["ABOUT_CREDITS"]          = "CREDITS"
-
-L["DEWDROPISGONE"]          = "There is no DewDrop equivalent for Ace3, use alt-right click to open the option panel"
-L["OPT_NOSTARTMESSAGES"]    = "Disable welcome messages"
-L["OPT_NOSTARTMESSAGES_DESC"] = "Remove the three messages Decursive prints to the chat frame at every login."
-
-L["OPT_MUFMOUSEBUTTONS"]        = "Mouse buttons";
-L["OPT_MUFMOUSEBUTTONS_DESC"]   = "Set the [MODIFIER]+Mouse-button you want to use for each MUF alert color.\nBefore changing this, please check the '|cFFFF5533Curing options|r'";
-L["OPT_RESETMUFMOUSEBUTTONS"]   = "Reset";
-L["OPT_RESETMUFMOUSEBUTTONS_DESC"]   = "Reset mouse button assignments to defaults.";
-
-L["OPT_MUFTARGETBUTTON"] = "Targeting button:";
-L["OPT_MUFFOCUSBUTTON"] = "Focusing button:";
-
-L["OPT_CHECKOTHERPLAYERS"]   = "Check other players";
-L["OPT_CHECKOTHERPLAYERS_DESC"]   = "Will check and display Decursive version among the players in your current group or guild, (cannot display versions prior to Decursive 2.4.6)";
-
-L["OPT_SHOWCHRONOTIMElEFT"]   = "Time left";
-L["OPT_SHOWCHRONOTIMElEFT_DESC"]   = "Display time left instead of time elapsed.";
-
-L["OPT_TESTLAYOUT"] = "Test Layout";
-L["OPT_TESTLAYOUT_DESC"] = "Create fake units so you can test the display layout.";
-
-L["OPT_TESTLAYOUTUNUM"] = "Unit number";
-L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create.";
-
-L["OPT_HIDEMUFSHANDLE"] = "Hide the MUFs handle";
-L["OPT_HIDEMUFSHANDLE_DESC"] = "Hides the Micro-Unit Frames handle and disables the possibility to move them.\nUse the same command to get it back.";
-
-L["OPT_ALLOWMACROEDIT"] = "Allow macro edition";
-L["OPT_ALLOWMACROEDIT_DESC"] = "Enable this to prevent Decursive from updating its macro, letting you edit it as you want.";
-
-L["OPT_DISABLEABOLISH"] = "Do not use 'Abolish' spells";
-L["OPT_DISABLEABOLISH_DESC"] = "Disable the use of Abolish Disease and Abolish Poison";
-
-L["NEW_VERSION_ALERT"] = "A new version of Decursive has been detected: |cFFEE7722%q|r released on |cFFEE7722%s|r!\n\n\nGo to |cFFFF0000WoWAce.com|r to get it!\n--------";
-
-L["OPT_NEWVERSIONBUGMENOT"]      = "New version alerts";
-L["OPT_NEWVERSIONBUGMENOT_DESC"] = "If a newer version of Decursive is detected, a pop-up alert will be displayed once every seven days.";
-
-L["UNSTABLERELEASE"] = "Unstable release";
-
-
-L["OPT_PERFOPTIONWARNING"] = "WARNING: Do not change those values unless you know exactly what you are doing. These settings can have a great impact on the game performance. Most users should use the default values of 0.1 and 10";
-
-L["OPT_MUFHANDLE_HINT"] = "To move the micro-unit frames, alt-click the invisible handle located above the first one.";
+L["UNSTABLERELEASE"] = "Unstable release"
 
 --]==]
 --@end-do-not-package@

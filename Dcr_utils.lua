@@ -190,7 +190,7 @@ end --}}}
 
 
 function D:Debug(...)
-    if self.debugging then
+    if self.debug then
         self:Print(debugStyle(UseFormatIfPresent(...)));
     end
 end
@@ -572,6 +572,11 @@ end
 
 -- /echo LibStub("AceTimer-3.0").selfs[Dcr]
 
+
+-- function D:GetOPtionPath(info) {{{
+function D:GetOPtionPath(info)
+    return table.concat(info, "->");
+end -- }}}
 
 
 T._LoadedFiles["Dcr_utils.lua"] = "@project-version@";

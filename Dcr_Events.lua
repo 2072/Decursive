@@ -104,12 +104,12 @@ do
         if self.profile.ShowDebuffsFrame then
             -- Update the MUFs display in a short moment
             self.MicroUnitF:Delayed_MFsDisplay_Update ();
-        elseif not self.profile.Hide_LiveList then
+        elseif not self.profile.HideLiveList then
             D:ScheduleDelayedCall("Dcr_GetUnitArray", self.GetUnitArray, 1.5, self);
         end
 
         -- Test if we have to hide Decursive MUF window
-        if self.profile.AutoHideDebuffsFrame ~= 0 then
+        if self.profile.AutoHideMUFs ~= 1 then
             self:ScheduleDelayedCall("Dcr_CheckIfHideShow", self.AutoHideShowMUFs, 2, self);
         end
 
@@ -232,11 +232,11 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 end -- }}}
 
 function D:OnDebugEnable ()
-    self.db.global.debugging = true;
+    self.db.global.debug = true;
 end
 
 function D:OnDebugDisable ()
-    self.db.global.debugging = false;
+    self.db.global.debug = false;
 end
 
 -- This function update Decursive states :
@@ -345,7 +345,7 @@ function D:UPDATE_MOUSEOVER_UNIT ()
         return;
     end
 
-    if not self.profile.Hide_LiveList and not self.Status.MouseOveringMUF and not UnitCanAttack("mouseover", "player") then
+    if not self.profile.HideLiveList and not self.Status.MouseOveringMUF and not UnitCanAttack("mouseover", "player") then
         --      D:Debug("will check MouseOver");
         self.LiveList:DelayedGetDebuff("mouseover");
     end
@@ -514,7 +514,7 @@ do
                 return;
             end
 
-            if not self.profile.Hide_LiveList then
+            if not self.profile.HideLiveList then
                 self.LiveList:DelayedGetDebuff(UnitID);
             end
         end
@@ -585,7 +585,7 @@ do
         --[=[
         if self.profile.ShowDebuffsFrame then
             self.MicroUnitF:UpdateMUFUnit(UnitID);
-        elseif not self.profile.Hide_LiveList then
+        elseif not self.profile.HideLiveList then
             self.LiveList:DelayedGetDebuff(UnitID);
         end
         --]=]
@@ -691,7 +691,7 @@ do
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units[UnitID] = true;
                         else
-                            if self.debugging then D:Debug("STEALTH LOST: ", UnitID, arg10); end
+                            if self.debug then D:Debug("STEALTH LOST: ", UnitID, arg10); end
                             self.Stealthed_Units[UnitID] = false;
                         end
                         self.MicroUnitF:UpdateMUFUnit(UnitID);
@@ -699,7 +699,7 @@ do
                 else
 
                     --@debug@
-                    if self.debugging then D:Debug("Debuff, UnitId: ", UnitID, arg10, event, time() + (GetTime() % 1), timestamp); end
+                    if self.debug then D:Debug("Debuff, UnitId: ", UnitID, arg10, event, time() + (GetTime() % 1), timestamp); end
                     --@end-debug@
 
                     if self.profile.ShowDebuffsFrame then
@@ -709,8 +709,8 @@ do
                         --D.DetectHistory[DetectHistoryIndex - 1][4] = D.DetectHistory[DetectHistoryIndex - 1][4] .. "   DETECTED by cem " .. D.DebuffUpdateRequest;
                         --@end-alpha@
 
-                    elseif not self.profile.Hide_LiveList then
-                        if self.debugging then D:Debug("(LiveList) Registering delayed GetDebuff for ", destName); end
+                    elseif not self.profile.HideLiveList then
+                        if self.debug then D:Debug("(LiveList) Registering delayed GetDebuff for ", destName); end
                         self.LiveList:DelayedGetDebuff(UnitID);
                     end
 
@@ -723,7 +723,7 @@ do
 
             if self.Status.TargetExists and band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then -- TARGET
 
-                if self.debugging then D:Debug("A Target got something (source=", sourceName, "sFlags:", D:NumToHexStr(sourceFlags), "(dest=|cFF00AA00", destName, "dFlags:", D:NumToHexStr(destFlags), "|r, |cffff0000", event, "|r, |cFF00AAAA", arg10, "|r", arg12); end
+                if self.debug then D:Debug("A Target got something (source=", sourceName, "sFlags:", D:NumToHexStr(sourceFlags), "(dest=|cFF00AA00", destName, "dFlags:", D:NumToHexStr(destFlags), "|r, |cffff0000", event, "|r, |cFF00AAAA", arg10, "|r", arg12); end
 
                 self.LiveList:DelayedGetDebuff("target");
 
@@ -732,7 +732,7 @@ do
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units["target"] = true;
                         else
-                            if self.debugging then D:Debug("TARGET STEALTH LOST: ", "target", arg10); end
+                            if self.debug then D:Debug("TARGET STEALTH LOST: ", "target", arg10); end
                             self.Stealthed_Units["target"] = false;
                         end
                     end
@@ -750,7 +750,7 @@ do
 
             if event == "SPELL_CAST_SUCCESS" then
 
-                if self.debugging then self:Debug(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName)); end
+                if self.debug then self:Debug(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName)); end
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
                 self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);
@@ -759,7 +759,7 @@ do
                     if D.Status.ClickedMF then
                         D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
                         D.Status.ClickedMF = false;
-                        if self.debugging then D:Debug("ClickedMF to false (sched)"); end
+                        if self.debug then D:Debug("ClickedMF to false (sched)"); end
                     end
                 end, 0.1 );
 
@@ -799,7 +799,7 @@ do
 
             ----  }}}
         --else
-          -- if self.debugging then D:Debug(sourceName, sourceFlags, destName, destFlags, event, arg10, arg11, arg12, arg13, arg14, arg15, arg16); end
+          -- if self.debug then D:Debug(sourceName, sourceFlags, destName, destFlags, event, arg10, arg11, arg12, arg13, arg14, arg15, arg16); end
             --  }}}
         end
 
@@ -896,7 +896,7 @@ do
             versionEnabled      = tonumber(versionEnabled);
 
             --@alpha@
-            if self.debugging then D:Debug("Version info received from, ", from, "by", distribution, "version:", versionName, "date:", versionTimeStamp, "islpha:", versionIsAlpha, "enabled:", versionEnabled); end
+            if self.debug then D:Debug("Version info received from, ", from, "by", distribution, "version:", versionName, "date:", versionTimeStamp, "islpha:", versionIsAlpha, "enabled:", versionEnabled); end
             --@end-alpha@
 
             if versionName then
@@ -970,7 +970,7 @@ do
             LastVersionAnnouceByDist[distribution]  = gettime;
 
             --@alpha@
-            if self.debugging then D:Debug("Version info sent to, ", from, "by", distribution, ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 )); end
+            if self.debug then D:Debug("Version info sent to, ", from, "by", distribution, ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 )); end
             --@end-alpha@
 
         end

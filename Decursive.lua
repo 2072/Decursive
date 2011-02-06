@@ -96,11 +96,11 @@ function D:ShowHideLiveList(hide) --{{{
 
     -- if hide is requested or if hide is not set and the live-list is shown
     if (hide==1 or (not hide and DcrLiveList:IsVisible())) then
-        D.profile.Hide_LiveList = true;
+        D.profile.HideLiveList = true;
         DcrLiveList:Hide();
         D:CancelDelayedCall("Dcr_LLupdate");
     else
-        D.profile.Hide_LiveList = false;
+        D.profile.HideLiveList = false;
         DcrLiveList:ClearAllPoints();
         DcrLiveList:SetPoint("TOPLEFT", "DecursiveMainBar", "BOTTOMLEFT");
         DcrLiveList:Show();
