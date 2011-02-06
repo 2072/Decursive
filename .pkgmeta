@@ -28,16 +28,9 @@ externals:
         url:  git://github.com/tekkub/libdatabroker-1-1.git 
     
 
-#optional-dependencies:
-#    - ace3
-#    - libdatabroker-1-1
-#    - libdbicon-1-0
-#    - callbackhandler
-#    - libqtip-1-0
-
 license-output: LICENSE.txt
 
-#manual-changelog:
-#    filename: WhatsNew.txt
-#    markup-type: markdown
+manual-changelog:
+    filename: WhatsNew.txt
+    markup-type: markdown
 

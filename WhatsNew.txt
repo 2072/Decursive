@@ -1,6 +1,29 @@
-Decursive 2.6.0.1 by Archarodim (2010-12-06)
-============================================
+Decursive 2.6.1 beta 1 by Archarodim (2011-02-06)
+=================================================
 
+
+Changes from Decursive 2.6.0.1 to Decursive 2.6.1 (2011-02-06)
+--------------------------------------------------------------
+
+- Important fix to charm detection, previously Decursive only reported
+  affliction related charm effects.
+  Decursive is now able to report charmed players even when they have no active
+  debuffs (any player becoming attackable is considered as charmed)
+  This fixes Cho'Gall's [Worshipping][worshiping] buff detection issue ([ticket 71][ticket71]).
+  Many thanks to Wcshadow for his help in fixing this!
+
+- Enhancements to talents detection and initialization.
+
+- If a unit was invisible and afflicted, Decursive would only show the stealth status.
+
+- Major option tree cleanup and optimization (reduced static memory usage by 14
+  Kib), as a result, some options have moved and other have reset to their
+  default values.
+
+- Added visible hint on how to move the Micro-Unit-Frames in the related option panel.
+
+[ticket71]: http://www.wowace.com/addons/decursive/tickets/71-chogall-worship/
+[worshiping]: http://www.wowhead.com/spell=91317
 
 Changes from Decursive 2.6.0 to Decursive 2.6.0.1 (2010-12-06)
 --------------------------------------------------------------
