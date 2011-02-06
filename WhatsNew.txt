@@ -1,4 +1,4 @@
-Decursive 2.6.1 beta 1 by Archarodim (2011-02-06)
+Decursive 2.6.1 beta 2 by Archarodim (2011-02-06)
 =================================================
 
 
