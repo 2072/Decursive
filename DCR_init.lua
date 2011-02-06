@@ -95,23 +95,6 @@ D.CONF.MACROCOMMAND = string.format("MACRO %s", D.CONF.MACRONAME);
 
 BINDING_HEADER_DECURSIVE = "Decursive";
 
-D.CONF.MACRO_DIAG     = "/dcrdiag";
-D.CONF.MACRO_SHOW     = "/dcrshow";
-D.CONF.MACRO_HIDE     = "/dcrhide";
-D.CONF.MACRO_OPTION   = "/decursive";
-D.CONF.MACRO_RESET    = "/dcrreset";
-
-D.CONF.MACRO_PRADD    = "/dcrpradd";
-D.CONF.MACRO_PRCLEAR  = "/dcrprclear";
-D.CONF.MACRO_PRLIST   = "/dcrprlist";
-D.CONF.MACRO_PRSHOW   = "/dcrprshow";
-
-D.CONF.MACRO_SKADD    = "/dcrskadd";
-D.CONF.MACRO_SKCLEAR  = "/dcrskclear";
-D.CONF.MACRO_SKLIST   = "/dcrsklist";
-D.CONF.MACRO_SKSHOW   = "/dcrskshow";
-D.CONF.MACRO_DEBUG         = "/dcrdebug";
-D.CONF.MACRO_SHOW_ORDER   = "/dcrshoworder";
 
 -- CONSTANTS
 
@@ -350,6 +333,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     T._HookErrorHandler();
     T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
 
+    D:LocalizeBindings ();
     D.defaults = D:GetDefaultsSettings();
 
     self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
@@ -359,6 +343,21 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
 
     
+    -- Register slashes command {{{
+    self:RegisterChatCommand("dcrdiag"      ,function() T._SelfDiagnostic(true, true)               end         );
+    self:RegisterChatCommand("decursive"    ,function() LibStub("AceConfigDialog-3.0"):Open(D.name) end         );
+    self:RegisterChatCommand("dcrpradd"     ,function() D:AddTargetToPriorityList()                 end, false  );
+    self:RegisterChatCommand("dcrprclear"   ,function() D:ClearPriorityList()                       end, false  );
+    self:RegisterChatCommand("dcrprshow"    ,function() D:ShowHidePriorityListUI()                  end, false  );
+    self:RegisterChatCommand("dcrskadd"     ,function() D:AddTargetToSkipList()                     end, false  );
+    self:RegisterChatCommand("dcrskclear"   ,function() D:ClearSkipList()                           end, false  );
+    self:RegisterChatCommand("dcrskshow"    ,function() D:ShowHideSkipListUI()                      end, false  );
+    self:RegisterChatCommand("dcrreset"     ,function() D:ResetWindow()                             end, false  );
+    self:RegisterChatCommand("dcrshow"      ,function() D:HideBar(0)                                end, false  );
+    self:RegisterChatCommand("dcrhide"      ,function() D:HideBar(1)                                end, false  );
+    self:RegisterChatCommand("dcrshoworder" ,function() D:Show_Cure_Order()                         end, false  );
+    -- }}}
+
     -- Create some useful cache tables
     D:CreateClassColorTables();
 
@@ -683,76 +682,12 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D.debug = D.db.global.debug;
 
 
-    -- Register slashes command {{{
-    if (FirstEnable) then
-        SLASH_DECURSIVEDIAG1 = D.CONF.MACRO_DIAG;
-        SlashCmdList["DECURSIVEDIAG"] = function(msg)
-            T._SelfDiagnostic(true, true);
-        end
-
-        SLASH_DECURSIVEPRADD1 = D.CONF.MACRO_PRADD;
-        SlashCmdList["DECURSIVEPRADD"] = function(msg)
-            D:AddTargetToPriorityList();
-        end
-        SLASH_DECURSIVEPRCLEAR1 = D.CONF.MACRO_PRCLEAR;
-        SlashCmdList["DECURSIVEPRCLEAR"] = function(msg)
-            D:ClearPriorityList();
-        end
-
-        SLASH_DECURSIVEPRSHOW1 = D.CONF.MACRO_PRSHOW;
-        SlashCmdList["DECURSIVEPRSHOW"] = function(msg)
-            D:ShowHidePriorityListUI();
-        end
-
-        SLASH_DECURSIVESKADD1 = D.CONF.MACRO_SKADD;
-        SlashCmdList["DECURSIVESKADD"] = function(msg)
-            D:AddTargetToSkipList();
-        end
-        SLASH_DECURSIVESKCLEAR1 = D.CONF.MACRO_SKCLEAR;
-        SlashCmdList["DECURSIVESKCLEAR"] = function(msg)
-            D:ClearSkipList();
-        end
-
-        SLASH_DECURSIVESKSHOW1 = D.CONF.MACRO_SKSHOW;
-        SlashCmdList["DECURSIVESKSHOW"] = function(msg)
-            D:ShowHideSkipListUI();
-        end
-
-        SLASH_DECURSIVESHOW1 = D.CONF.MACRO_SHOW;
-        SlashCmdList["DECURSIVESHOW"] = function(msg)
-            D:HideBar(0);
-        end
-
-        SLASH_DECURSIVERESET1 = D.CONF.MACRO_RESET;
-        SlashCmdList["DECURSIVERESET"] = function(msg)
-            D:ResetWindow();
-        end
-
-        SLASH_DECURSIVEHIDE1 = D.CONF.MACRO_HIDE;
-        SlashCmdList["DECURSIVEHIDE"] = function(msg)
-            D:HideBar(1);
-        end
-
-        SLASH_DECURSIVEOPTION1 = D.CONF.MACRO_OPTION;
-        SlashCmdList["DECURSIVEOPTION"] = function(msg)
-            LibStub("AceConfigDialog-3.0"):Open(D.name);
-        end
-
-        SLASH_DECURSIVESHOWORDER1 = D.CONF.MACRO_SHOW_ORDER;
-        SlashCmdList["DECURSIVESHOWORDER"] = function(msg)
-            D:Show_Cure_Order();
-        end
-    end -- }}}
-
-    D:LocalizeBindings ();
-
     if (FirstEnable) then
         D:ExportOptions ();
         -- configure the message frame for Decursive
         DecursiveTextFrame:SetFading(true);
         DecursiveTextFrame:SetFadeDuration(D.CONF.TEXT_LIFETIME / 3);
         DecursiveTextFrame:SetTimeVisible(D.CONF.TEXT_LIFETIME);
-
 
         -- hook the load macro thing {{{
         -- So Decursive will re-update its macro when the macro UI is closed
@@ -762,9 +697,6 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
                 D:SecureHook(MacroPopupFrame, "Hide", function () D:UpdateMacro(); end);
             end
         end); -- }}}
-
-
-
     end
 
     -- these events are automatically stopped when the addon is disabled by Ace
@@ -824,7 +756,6 @@ function D:SetConfiguration()
         return false;
     end
     T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
-
 
     D.DcrFullyInitialized = false;
     D:CancelDelayedCall("Dcr_LLupdate");

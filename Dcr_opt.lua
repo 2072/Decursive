@@ -377,7 +377,7 @@ function D:GetDefaultsSettings()
     } -- }}}
 end
 
-local OptionsPostSetActions = {
+local OptionsPostSetActions = { -- {{{
     ["debug"] = function(v)  D.debug = v end,
     ["HideMUFsHandle"] = function(v) D.MFContainerHandle:EnableMouse(not v); D:Print(v and "MUFs handle disabled" or "MUFs handle enabled"); end,
     ["AfflictionTooltips"] = function(v) for id,lvitem in ipairs(D.LiveList.ExistingPerID) do lvitem.Frame:EnableMouse(v); end end,
@@ -395,7 +395,7 @@ local OptionsPostSetActions = {
 
     ["Scan_Pets"] = function(v) D:GroupChanged ("opt CURE_PETS"); end,
     ["DisableMacroCreation"] = function(v) if v then D:SetMacroKey (nil); D:Debug("SetMacroKey (nil)"); end end,
-}
+} -- }}}
 
 function D.GetHandler (info, value) -- {{{
     local source = D.db.global;
@@ -448,7 +448,6 @@ function D.SetHandler (info, value) -- {{{
     end
 end -- }}}
 
----[====[
 local function GetStaticOptions ()
     return {
         -- {{{
@@ -1468,7 +1467,6 @@ local function GetStaticOptions ()
         },
     } -- }}}
 end
---]====]
 
 local function GetOptions()
 
@@ -1500,7 +1498,7 @@ local function GetOptions()
     options.args.general.args.profiles.order = -1;
     options.args.general.args.profiles.inline = true;
     options.args.general.args.profiles.hidden = function() return not D:IsEnabled(); end;
-    options.args.general.args.profiles.disabled = options.args.general.args.profiles.hidden;
+    options.args.general.args.profiles.disabled = function() return D.Status.Combat or not D:IsEnabled(); end;
 
     return options;
 
