@@ -292,8 +292,8 @@ function D:VersionWarnings()
     --@end-debug@
 
     -- re-enable new version pop-up alerts when a newer version is installed
-    if D.db.global.NewerVersionBugMeNot and D.db.global.NewerVersionBugMeNot < D.VersionTimeStamp then
-        D.db.global.NewerVersionBugMeNot = false;
+    if D.db.global.NewVersionsBugMeNot and D.db.global.NewVersionsBugMeNot < D.VersionTimeStamp then
+        D.db.global.NewVersionsBugMeNot = false;
     end
 
 
@@ -309,7 +309,7 @@ function D:VersionWarnings()
     if D.db.global.NewerVersionName then -- a new version was detected some time ago
         if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
             if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 7 then -- it's been more than 7 days since the new version alert was shown
-                if not D.db.global.NewerVersionBugMeNot then -- the user did not disable new version alerts
+                if not D.db.global.NewVersionsBugMeNot then -- the user did not disable new version alerts
                     StaticPopup_Show ("Decursive_Notice_Frame", "|cff55ff55Decursive version: @project-version@|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
                     D.db.global.NewerVersionAlert = time();
                 end

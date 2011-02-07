@@ -1,5 +1,12 @@
-Decursive 2.6.1 beta 2 by Archarodim (2011-02-06)
+Decursive 2.6.1 beta 3 by Archarodim (2011-02-06)
 =================================================
+
+Changes from Decursive 2.6.1 beta 2 to Decursive 2.6.1 beta 3 (2011-02-07)
+--------------------------------------------------------------------------
+
+- "New versions alerts" option was broken and appeared unchecked after
+  installing 2.6.1 beta 2.
+  If the user checked it, a Lua error would happen at next login.
 
 
 Changes from Decursive 2.6.0.1 to Decursive 2.6.1 (2011-02-06)

@@ -89,7 +89,7 @@ function D:GetDefaultsSettings()
             NewerVersionDetected = D.VersionTimeStamp,
             NewerVersionName = false,
             NewerVersionAlert = 0,
-            NewerVersionBugMeNot = false,
+            NewVersionsBugMeNot = false,
             LastVersionAnnounce = 0,
             --@debug@
             LastChekOutAlert = 0,
@@ -614,10 +614,14 @@ local function GetStaticOptions ()
                         desc = L["OPT_NOSTARTMESSAGES_DESC"],
                         order = 70
                     },
-                    NewerVersionBugMeNot ={
+                    NewerVersionAlerts ={
                         type = "toggle",
                         name = L["OPT_NEWVERSIONBUGMENOT"],
                         desc = L["OPT_NEWVERSIONBUGMENOT_DESC"],
+                        get = function() return not D.db.global.NewVersionsBugMeNot end,
+                        set = function(info,v)
+                            D.db.global.NewVersionsBugMeNot = v == false and D.VersionTimeStamp or false;
+                        end,
                         order = 75
                     },
                     report = {
