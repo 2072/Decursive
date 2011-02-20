@@ -70,15 +70,25 @@ In brief, what you get with Decursive is **effectiveness**, *a player using Decu
 - [commands][]
 
  
-*******************************************
-Interesting articles about Decursive usage:
--------------------------------------------
+******************************************************
+Interesting articles and videos about Decursive usage:
+------------------------------------------------------
 
-2010-11-20:
-[http://daritos.apotheosis-now.com/?p=24](http://daritos.apotheosis-now.com/?p=24)
+- 2010-11-20
 
-2009-07-15:
-[http://www.hotsdots.com/2009/07/improving-the-interface-using-addons-7-decursive-cleansing-and-dispelling/](http://www.hotsdots.com/2009/07/improving-the-interface-using-addons-7-decursive-cleansing-and-dispelling/)
+Article: [http://daritos.apotheosis-now.com/?p=24](http://daritos.apotheosis-now.com/?p=24)
+
+- 2009-07-15
+
+Article: [http://www.hotsdots.com/2009/07/improving-the-interface-using-addons-7-decursive-cleansing-and-dispelling/](http://www.hotsdots.com/2009/07/improving-the-interface-using-addons-7-decursive-cleansing-and-dispelling/)
+
+
+- 2010-02-20:
+
+Video: [WarcraftScience's Decursive tutorial][GoodYoutube1]
+
+For other videos about Decursive, see the [YouTube playlist][youtubeplaylist].
+
 
 ******************************************
   
@@ -123,4 +133,7 @@ Unless you want to help testing unstable code you should download the versions c
 [mufshandle]: http://www.wowace.com/addons/decursive/images/23-micro-unit-frames-handle/
 [decursivebar]: http://www.wowace.com/addons/decursive/images/24-decursives-bar/
 [messagesopts]: http://www.wowace.com/addons/decursive/images/16-decursives-option-panels-messages/
+
+[youtubeplaylist]: http://www.youtube.com/view_play_list?p=BAC83C82EDE3FD24
+[GoodYoutube1]: http://www.youtube.com/watch?v=Q0OqxD3Svqo
 
