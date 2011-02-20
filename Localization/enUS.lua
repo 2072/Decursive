@@ -367,8 +367,8 @@ L["OPT_TIECENTERANDBORDER_OPT"] = "The transparency of the border is half the ce
 L["OPT_TIEXYSPACING"] = "Tie horizontal and vertical spacing"
 L["OPT_TIEXYSPACING_DESC"] = "The horizontal and vertical space between MUFs are the same"
 L["OPT_TIE_LIVELIST_DESC"] = "The live-list display is tied to \"Decursive\" bar display"
-L["OPT_UNITPERLINES"] = "Number of units per line"
-L["OPT_UNITPERLINES_DESC"] = "Defines the max number of micro-unit-frames to display per line"
+L["OPT_UNITPERLINES"] = "Number of units per row"
+L["OPT_UNITPERLINES_DESC"] = "Defines the max number of micro-unit-frames to display per row"
 L["OPT_USERDEBUFF"] = "This affliction is not part of Decursive's default afflictions"
 L["OPT_XSPACING"] = "Horizontal spacing"
 L["OPT_XSPACING_DESC"] = "Set the Horizontal space between MUFs"
@@ -407,6 +407,8 @@ L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
+L["OPT_MUFSVERTICALDISPLAY"] = "Vertical display"
+L["OPT_MUFSVERTICALDISPLAY_DESC"] = "Set this to make MUFs to grow vertically"
 
 --]==]
 --@end-do-not-package@

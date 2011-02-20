@@ -53,7 +53,7 @@
             <AbsDimension x="20" y="20" />
         </Size>
         <Anchors>
-            <Anchor point="CENTER" relativePoint="CENTER">
+            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT">
                 <Offset>
                     <AbsDimension x="200" y="250"/>
                 </Offset>
@@ -67,7 +67,7 @@
             </OnLoad>
         </Scripts>
         <Frames>
-            <Button name="$parentDragButton">
+            <Button name="$parentDragButton" clampedToScreen="true" >
                 <Size>
                     <AbsDimension x="20" y="20" />
                 </Size>
@@ -79,8 +79,6 @@
                     </Anchor>
                 </Anchors>
                 <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" />
-                <!--<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD" /> -->
-                <!--<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/> -->
 
                 <Scripts>
                     <OnMouseUp>

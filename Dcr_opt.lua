@@ -166,13 +166,15 @@ function D:GetDefaultsSettings()
             DebuffsFrameShowHelp = true,
 
             -- position x save
-            DebuffsFrame_x = false,
+            DebuffsFrameContainer_x = false,
 
             -- position y save
-            DebuffsFrame_y = false,
+            DebuffsFrameContainer_y = false,
 
             -- reverse MUFs disaplay
             DebuffsFrameGrowToTop = false,
+
+            DebuffsFrameVerticalDisplay = false,
 
             -- display chronometer on MUFs
             DebuffsFrameChrono = true,
@@ -387,8 +389,9 @@ local OptionsPostSetActions = { -- {{{
     ["LiveListScale"] = function(v) D:SetLLScale(v); end,
     ["AutoHideMUFs"] = function(v) D:AutoHideShowMUFs(); end,
     ["DebuffsFrameGrowToTop"] = function(v) D.MicroUnitF:SavePos(); D.MicroUnitF:ResetAllPositions (); D.MicroUnitF:Place (); end,
-    ["DebuffsFrameStickToRight"] = function(v) D.MicroUnitF:SavePos(); D.MicroUnitF:Delayed_MFsDisplay_Update(); end,
-    ["DebuffsFrameMaxCount"] = function(v) D.MicroUnitF.MaxUnit = v; D.MicroUnitF:Delayed_MFsDisplay_Update(); end,
+    ["DebuffsFrameStickToRight"] = function(v) D.MicroUnitF:SavePos(); D.MicroUnitF:Delayed_MFsDisplay_Update(); end, -- XXX ??? why Delayed_MFsDisplay_Update() ??
+    ["DebuffsFrameVerticalDisplay"] = function(v) D.MicroUnitF:ResetAllPositions (); D.MicroUnitF:Place (); end,
+    ["DebuffsFrameMaxCount"] = function(v) D.MicroUnitF.MaxUnit = v; D.MicroUnitF:Delayed_MFsDisplay_Update(); end, -- XXX why not place ?
     ["DebuffsFramePerline"] = function(v)  D.MicroUnitF:ResetAllPositions (); D.MicroUnitF:Place (); end,
     ["DebuffsFrameElemScale"] = function(v) D.MicroUnitF:SetScale(D.profile.DebuffsFrameElemScale); end,
     ["DebuffsFrameRefreshRate"] = function(v) D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D); D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v); end,
@@ -962,6 +965,13 @@ local function GetStaticOptions ()
                                 desc = L["OPT_STICKTORIGHT_DESC"],
                                 disabled = "disabled",
                                 order = 1310,
+                            },
+                            DebuffsFrameVerticalDisplay = {
+                                type = "toggle",
+                                name = L["OPT_MUFSVERTICALDISPLAY"],
+                                desc = L["OPT_MUFSVERTICALDISPLAY_DESC"],
+                                disabled = "disabled",
+                                order = 1315,
                             },
                             DebuffsFrameElemBorderShow = {
                                 type = "toggle",
@@ -1725,11 +1735,7 @@ function D:ShowHideDebuffsFrame ()
         D.MFContainer:Hide();
         D.profile.ShowDebuffsFrame = false;
     else
-        D.MFContainer:Show();
-        D.MFContainer:SetScale(D.profile.DebuffsFrameElemScale);
-        D.MicroUnitF:Place ();
-        D.profile.ShowDebuffsFrame = true;
-        D.MicroUnitF:Delayed_MFsDisplay_Update ();
+        D.MicroUnitF:Show();
     end
 
     if (not D.profile.ShowDebuffsFrame) then

@@ -23,19 +23,19 @@ local addonName, T = ...;
 
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
--- the beautiful error popup : {{{ -
-StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
-    text = "|cFFFF0000Decursive Error:|r\n%s",
-    button1 = "OK",
-    OnAccept = function()
-        return false;
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    showAlert = 1,
+    -- the beautiful error popup : {{{ -
+    StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
+            return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
     }; -- }}}
-T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+    T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
 
@@ -76,7 +76,7 @@ local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
 -- Init object factory defaults
 --MicroUnitF.ExistingPerID          = {};
 MicroUnitF.ExistingPerUNIT          = {};
-MicroUnitF.ExistingPerNum           = {};
+-- MicroUnitF.ExistingPerNum           = {};
 MicroUnitF.UnitToMUF                = {};
 MicroUnitF.Number                   = 0;
 MicroUnitF.UnitShown                = 0;
@@ -147,9 +147,18 @@ local AvailableModifier = { -- {{{
 
 -- MicroUnitF STATIC methods {{{
 
+function MicroUnitF:Show()
+    -- change handle position here depending on reverse display option or in INIT?
+    D.MFContainer:SetScale(D.profile.DebuffsFrameElemScale);
+    D.MicroUnitF:Place();
+    D.MFContainer:Show();
+    D.profile.ShowDebuffsFrame = true;
+    D.MicroUnitF:Delayed_MFsDisplay_Update ();
+end
+
 -- Updates the color table
 function MicroUnitF:RegisterMUFcolors ()
-   -- MF_colors = D.profile.MF_colors; -- this should be enough but is not because D.profile can change at unexpected times....
+    -- MF_colors = D.profile.MF_colors; -- this should be enough but is not because D.profile can change at unexpected times....
     D:tcopy(MF_colors, D.profile.MF_colors);
 end
 
@@ -179,18 +188,11 @@ function MicroUnitF:Create(Unit, ID) -- {{{
     -- create a new MUF object
     self.ExistingPerUNIT[Unit] = self:new(D.MFContainer, Unit, self.Number, ID);
 
-    self.ExistingPerNum[self.Number] = self.ExistingPerUNIT[Unit];
+--    self.ExistingPerNum[self.Number] = self.ExistingPerUNIT[Unit];
 
     return self.ExistingPerUNIT[Unit];
 end -- }}}
 
--- return a MUF object if it exists, nil otherwise
---[=[
-function MicroUnitF:Exists(IdOrNum) -- {{{
-    return self.ExistingPerID[IdOrNum] or self.ExistingPerNum[IdOrNum];
-end
---]=]
--- }}}
 
 -- return the number MUFs we can use
 function MicroUnitF:MFUsableNumber () -- {{{
@@ -219,23 +221,30 @@ function MicroUnitF:ResetAllPositions () -- {{{
         MF = self.ExistingPerUNIT[ Unit_Array[i] ]
 
         if MF then
-            MF.Frame:SetPoint(unpack(self:GiveMFAnchor(i)));
+            MF.Frame:SetPoint(unpack(self:GetMUFAnchor(i)));
         end
     end
 end -- }}}
 
 -- return the anchor of a given MUF depending on its creation ID
 do
-    local Anchor = { "TOPLEFT", x, y, "TOPLEFT" };
-    function MicroUnitF:GiveMFAnchor (ID) -- {{{
-        local LineNum = floor( (ID - 1) / D.profile.DebuffsFramePerline);
-        local NumOnLine = fmod( (ID - 1), D.profile.DebuffsFramePerline);
+    local Anchor = { "BOTTOMLEFT", 0, 0, "BOTTOMLEFT" };
+    function MicroUnitF:GetMUFAnchor (ID) -- {{{
 
-        local x = (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0) + NumOnLine * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing);
-        local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
+        local RowNum, NumOnRow
+
+        if not D.profile.DebuffsFrameVerticalDisplay then
+            RowNum =   floor( (ID - 1) / D.profile.DebuffsFramePerline);
+            NumOnRow = fmod( (ID - 1), D.profile.DebuffsFramePerline);
+        else
+            RowNum =   fmod(  (ID - 1),  D.profile.DebuffsFramePerline );
+            NumOnRow = floor( (ID - 1) / D.profile.DebuffsFramePerline );
+        end
+
+        local x = NumOnRow * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing);
+        local y = (D.profile.DebuffsFrameGrowToTop and 1 or -1) * RowNum * (D.profile.DebuffsFrameYSpacing + DC.MFSIZE);
 
         Anchor[2] = x; Anchor[3] = y;
-        --Anchor[3] = x; Anchor[2] = y;
 
         return Anchor;
     end
@@ -270,7 +279,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
     -- =======
     --  Begin
     -- =======
-   
+
     -- get the number of MUFs we should display
     local NumToShow = self:MFUsableNumber();
 
@@ -420,13 +429,13 @@ do
         return x, y;
     end -- }}}
 
-    function MicroUnitF.prototype:IsOnScreen() -- {{{
+    function MicroUnitF.prototype:IsOnScreen(xDelta, yDelta) -- {{{
 
         -- frame relative position
         local left, bottom, width, height = self.Frame:GetRect();
 
         -- we need to check just one corner (MUFs are fix-sized squares)
-        return TestMUFCorner(left * FrameScale, bottom * FrameScale, width * FrameScale);
+        return TestMUFCorner(left * FrameScale - xDelta, bottom * FrameScale - yDelta, width * FrameScale);
 
     end -- }}}
 
@@ -449,31 +458,58 @@ do
         DC.ScreenWidth  = UIParent:GetWidth() * UIScale;
         DC.ScreenHeight = UIParent:GetHeight() * UIScale;
 
-        local x, y = D.profile.DebuffsFrame_x, D.profile.DebuffsFrame_y;
+        local saved_x, saved_y = D.profile.DebuffsFrameContainer_x, D.profile.DebuffsFrameContainer_y;
+        local current_x, current_y = self.Frame:GetRect();
+        current_x = current_x * FrameScale;
+        current_y = current_y * FrameScale;
+
+        --D:Debug("xDelta=", current_x - saved_x, "yDelta=", current_y - saved_y); -- XXX will crash
 
         -- If executed for the very first time, then put it in the top right corner of the screen
-        if (not x or not y) then
-            x =    (UIParent:GetWidth() * UIScale) - (UIParent:GetWidth() * UIScale) / 4;
-            y =  - (UIParent:GetHeight() * UIScale) / 5;
+        if (not saved_x or not saved_y) then
+            saved_x =    (UIParent:GetWidth() * UIScale) - (UIParent:GetWidth() * UIScale) / 4;
+            saved_y =    (UIParent:GetHeight() * UIScale) - (UIParent:GetWidth() * UIScale) / 5;
 
-            D.profile.DebuffsFrame_x = x;
-            D.profile.DebuffsFrame_y = y;
+            D.profile.DebuffsFrameContainer_x = saved_x;
+            D.profile.DebuffsFrameContainer_y = saved_y;
         end
 
 
         -- test and fix handle's position if some MUFs are out of the screen
         local Handle_x_offset = 0;
         local Handle_y_offset = 0;
+        local StickToRightOffest = 0;
 
         local Unit_Array = D.Status.Unit_Array;
         local x_out_arrays = {};
         local y_out_arrays = {};
 
-        -- get a list of all out of screen MUFs
-        for i=1, #Unit_Array do
+
+        if D.profile.DebuffsFrameStickToRight then -- {{{
+            local FirstLineNum = 0;
+            -- get the number of max unit per line/row
+            if not D.profile.DebuffsFrameVerticalDisplay then
+                if self.UnitShown > D.profile.DebuffsFramePerline then
+                    FirstLineNum = D.profile.DebuffsFramePerline;
+                else FirstLineNum = self.UnitShown; end
+            else
+                if self.UnitShown > D.profile.DebuffsFramePerline then
+                    FirstLineNum = floor( (self.UnitShown ) /  D.profile.DebuffsFramePerline ) + ((self.UnitShown % D.profile.DebuffsFramePerline ~= 0) and 1 or 0);
+                else FirstLineNum = 1; end
+            end
+
+            -- get the offset of the handle we need to apply in order to align the MUFs on the right
+            StickToRightOffest = FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing );
+        end -- }}}
+
+
+        -- get a list of all MUFs which position is *saved* outside of the screen (hence the current_y - saved_y)
+        for i=1, self.UnitShown do
             local MF = self.ExistingPerUNIT[ Unit_Array[i] ];
 
-            x_out_arrays[#x_out_arrays + 1], y_out_arrays[#y_out_arrays + 1] = MF:IsOnScreen()
+            if MF then
+                x_out_arrays[#x_out_arrays + 1], y_out_arrays[#y_out_arrays + 1] = MF:IsOnScreen(current_x - saved_x + StickToRightOffest, current_y - saved_y)
+            end
         end
 
         -- sort those lists to find the extrems
@@ -481,9 +517,9 @@ do
         if #y_out_arrays then table.sort(y_out_arrays) end
 
 
-        -- test if there is no solution
-        if x_out_arrays[1] and x_out_arrays[1] < 0 and  x_out_arrays[#x_out_arrays] > DC.ScreenWidth
-        or y_out_arrays[1] and y_out_arrays[1] < 0 and  y_out_arrays[#y_out_arrays] > DC.ScreenHeight then
+        -- test if there is no solution -- XXX cannot work
+        if (x_out_arrays[1] and x_out_arrays[1] < 0 and  (x_out_arrays[#x_out_arrays] > DC.ScreenWidth))
+            or (y_out_arrays[1] and y_out_arrays[1] < 0 and  (y_out_arrays[#y_out_arrays] > DC.ScreenHeight)) then
             D:Print(D:ColorText("WARNING: Your Micro-Unit-Frames' window is too big to fit entirely on your screen, you should change MUFs display settings (scale and/or disposition)! (Type /Decursive)", "FFFF0000"));
         end
 
@@ -509,105 +545,93 @@ do
 
         D:Debug(Handle_x_offset, Handle_y_offset);
 
-        Handle_x_offset = Handle_x_offset - FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
-        Handle_y_offset = Handle_y_offset + FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
 
 
-        x = x + Handle_x_offset;
-        y = y + Handle_y_offset;
-
-        --[=[ -- oldWay {{{
-        local FirstLineNum    = 0;
-        -- get the number of max unit per line
-        if self.UnitShown >= D.profile.DebuffsFramePerline then FirstLineNum = D.profile.DebuffsFramePerline; else FirstLineNum = self.UnitShown; end
-
-        -- get the offset of the handle we need to apply in order to align the MUFs on the right
-        if D.profile.DebuffsFrameStickToRight then
-        Handle_x_offset = -1 * FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing );
-        end
-
-        Handle_x_offset = Handle_x_offset - FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
-        Handle_y_offset = Handle_y_offset + FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
-
-        -- check the right edge so it can't be out of the screen
-        local RightEdge = x + FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing + (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0)) + Handle_x_offset ;
-
-        if (RightEdge > UIParent:GetWidth() * UIScale) then
-        Handle_x_offset = Handle_x_offset - (RightEdge - UIParent:GetWidth() * UIScale);
-        D:Debug("put the MUFs on the screen!!! (Right edge out)");
-        end
-
-        -- check the left edge so it can't be out of the screen
-        local LeftEdge = x + Handle_x_offset;
-        if (LeftEdge < 0) then
-        Handle_x_offset = Handle_x_offset - LeftEdge;
-        D:Debug("put the MUFs on the screen!!! (Left edge out)");
-        end
-
-        -- check the bottom edge
-        local NumberOfLines = floor( (self.UnitShown - 1) / D.profile.DebuffsFramePerline) + 1;
-        --D:Debug(NumberOfLines);
-
-        local BottomEdge = y - FrameScale * ((D.profile.DebuffsFrameGrowToTop and 1 or NumberOfLines) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
-
-        if -BottomEdge > UIParent:GetHeight() * UIScale then
-        Handle_y_offset = Handle_y_offset - (BottomEdge + UIParent:GetHeight() * UIScale);
-        D:Debug("put the MUFs on the screen!!! (Bottom edge out)");
-        end
-
-        -- check the top edge
-        local TopEdge = y + FrameScale * (((D.profile.DebuffsFrameGrowToTop and NumberOfLines > 1) and NumberOfLines - 1 or 1) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - ((not D.profile.DebuffsFrameGrowToTop) and 1 or 0) * D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
-        if (TopEdge > 0) then
-        Handle_y_offset = Handle_y_offset - TopEdge;
-        D:Debug("put the MUFs on the screen!!! (Top edge out)");
-        end
-
-        x = x + Handle_x_offset;
-        y = y + Handle_y_offset;
-        --]=] --}}}
-
+        saved_x = saved_x + Handle_x_offset - StickToRightOffest;
+        saved_y = saved_y + Handle_y_offset;
 
         -- set to the scaled position
         self.Frame:ClearAllPoints();
-        self.Frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
+        self.Frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", saved_x/FrameScale , saved_y/FrameScale);
         D:Debug("MUF Window position set");
-    end -- }}}
-end
-
--- Save the position of the frame without its scale
-function MicroUnitF:SavePos () -- {{{
-
-    if self.UnitShown == 0 then return end
-
-    local FirstLineNum;
-
-    if self.Frame:IsVisible() then
-        -- We save the unscalled position (no problem if the sacale is changed behind our back)
-        D.profile.DebuffsFrame_x = self.Frame:GetEffectiveScale() * self.Frame:GetLeft();
-        D.profile.DebuffsFrame_y = self.Frame:GetEffectiveScale() * self.Frame:GetTop() - UIParent:GetHeight() * UIParent:GetEffectiveScale();
 
 
-        -- if we choosed to align the MUF to the right then we have to add the
-        -- width of the first line to get the original position of the handle
+        -- move the handle to always be above the first MUF
+        local RefMUF = 1;
+        if D.profile.DebuffsFrameGrowToTop then
 
-        if D.profile.DebuffsFrameStickToRight then
-
-            if self.UnitShown >= D.profile.DebuffsFramePerline then
-                FirstLineNum = D.profile.DebuffsFramePerline;
+            if not D.profile.DebuffsFrameVerticalDisplay then
+                if self.UnitShown > D.profile.DebuffsFramePerline then
+                    RefMUF = floor( (self.UnitShown ) / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline
+                    + ((self.UnitShown % D.profile.DebuffsFramePerline ~= 0) and 1 or - D.profile.DebuffsFramePerline + 1);
+                end
             else
-                FirstLineNum = self.UnitShown;
+                if self.UnitShown > D.profile.DebuffsFramePerline then
+                    RefMUF = D.profile.DebuffsFramePerline;
+                else
+                    RefMUF = self.UnitShown;
+                end
             end
 
-            D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing);
         end
 
-        D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
-        D.profile.DebuffsFrame_y = D.profile.DebuffsFrame_y - self.Frame:GetEffectiveScale() * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+        if self.ExistingPerUNIT[Unit_Array[RefMUF]] then
+            D.MFContainerHandle:ClearAllPoints();
+            D.MFContainerHandle:SetPoint("BOTTOMLEFT", self.ExistingPerUNIT[Unit_Array[RefMUF]].Frame, "TOPLEFT");
 
-        --      D:Debug("Frame position saved");
-    end
+            -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
+            if floor(D.MFContainerHandle:GetTop() * FrameScale) == floor(UIParent:GetTop() * UIScale) then
+                D.MFContainerHandle:ClearAllPoints();
+                D.MFContainerHandle:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or RefMUF]].Frame, "BOTTOMLEFT");
+            end
+        end
 
-end -- }}}
+
+    end -- }}}
+
+    -- Save the position of the frame without its scale
+    function MicroUnitF:SavePos () -- {{{
+
+        if self.UnitShown == 0 then return end
+
+
+        if self.Frame:IsVisible() then
+            -- We save the unscalled position (no problem if the sacale is changed behind our back)
+            D.profile.DebuffsFrameContainer_x = self.Frame:GetEffectiveScale() * self.Frame:GetLeft();
+            D.profile.DebuffsFrameContainer_y = self.Frame:GetEffectiveScale() * self.Frame:GetBottom();
+            D:Debug("MUF pos:", D.profile.DebuffsFrameContainer_x, D.profile.DebuffsFrameContainer_y);
+
+
+            -- if we choosed to align the MUF to the right then we have to add the
+            -- width of the first line to get the original position of the handle
+
+            if D.profile.DebuffsFrameStickToRight then -- {{{
+
+                local FirstLineNum;
+
+                if not D.profile.DebuffsFrameVerticalDisplay then
+                    if self.UnitShown > D.profile.DebuffsFramePerline then
+                        FirstLineNum = D.profile.DebuffsFramePerline;
+                    else
+                        FirstLineNum = self.UnitShown;
+                    end
+                else
+                    if self.UnitShown > D.profile.DebuffsFramePerline then
+                        FirstLineNum = floor( self.UnitShown / D.profile.DebuffsFramePerline ) + ((self.UnitShown % D.profile.DebuffsFramePerline ~= 0) and 1 or 0);
+                    else
+                        FirstLineNum = 1;
+                    end
+                end
+
+                D.profile.DebuffsFrameContainer_x = D.profile.DebuffsFrameContainer_x + self.Frame:GetEffectiveScale() * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing);
+            end -- }}}
+
+            --      D:Debug("Frame position saved");
+            D:Debug("MUF pos saved:", D.profile.DebuffsFrameContainer_x, D.profile.DebuffsFrameContainer_y);
+        end
+
+    end -- }}}
+end
 
 -- set the scaling of the MUFs container according to the user settings
 function MicroUnitF:SetScale (NewScale) -- {{{
@@ -656,7 +680,6 @@ end
 -- Event management functions
 -- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnLoad, OnPreClick) {{{
 -- It's outside the function to avoid creating and discarding this table at each call
-local DefaultTTAnchor = {"ANCHOR_TOPLEFT", 0, 6};
 local UnitGUID = _G.UnitGUID;
 local TooltipButtonsInfo = {}; -- help tooltip text table
 local TooltipUpdate = 0; -- help tooltip change update check
@@ -748,7 +771,6 @@ function MicroUnitF:OnEnter(frame) -- {{{
         end
 
         -- Unit Status
-        --TooltipText = TooltipText .. "\n" .. L["UNITSTATUS"] .. StatusText .. "\n";
         TooltipText = TooltipText .. "\n" .. StatusText;
 
         -- list the debuff(s) names
@@ -761,32 +783,39 @@ function MicroUnitF:OnEnter(frame) -- {{{
             end
         end
 
-        local VerticalMUF    = floor((self.UnitShown - 1) / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline + 1;
+        local RefMUF = 1;
+        if D.profile.DebuffsFrameGrowToTop then
 
-        -- The tooltip is anchored above the top first MUF
-        if not D.profile.DebuffsFrameGrowToTop then
-            local FirstMUFAnchor = self:GiveMFAnchor(1);
-            DefaultTTAnchor[2] = FirstMUFAnchor[2];
-            DefaultTTAnchor[3] = FirstMUFAnchor[3];
-        else
-            local TopMUFAnchor   = self:GiveMFAnchor(VerticalMUF);
-            DefaultTTAnchor[2] = TopMUFAnchor[2];
-            DefaultTTAnchor[3] = TopMUFAnchor[3];
-        end
-
-        -- Display the tooltip
-        D:DisplayTooltip( TooltipText , self.Frame, DefaultTTAnchor);
-
-        -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
-        if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then
-            local RefMUF = 1;
-
-            if not D.profile.DebuffsFrameGrowToTop then
-                RefMUF = VerticalMUF;
+            if not D.profile.DebuffsFrameVerticalDisplay then
+                if self.UnitShown > D.profile.DebuffsFramePerline then
+                    RefMUF = floor( self.UnitShown / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline
+                    + ((self.UnitShown % D.profile.DebuffsFramePerline ~= 0) and 1 or - D.profile.DebuffsFramePerline + 1);
+                end
+            else
+                if self.UnitShown > D.profile.DebuffsFramePerline then
+                    RefMUF = D.profile.DebuffsFramePerline;
+                else
+                    RefMUF = self.UnitShown;
+                end
             end
 
+        end
+
+        local Unit_Array = D.Status.Unit_Array;
+        D:Debug("RefMUF:", RefMUF, self.ExistingPerUNIT[Unit_Array[RefMUF]].CurrUnit);
+
+        -- Display the tooltip
+        D:DisplayTooltip(TooltipText, self.Frame, "ANCHOR_TOPLEFT");
+
+        if self.ExistingPerUNIT[Unit_Array[RefMUF]] then
             DcrDisplay_Tooltip:ClearAllPoints();
-            DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerNum[RefMUF].Frame, "BOTTOMLEFT");
+            DcrDisplay_Tooltip:SetPoint("BOTTOMLEFT", self.ExistingPerUNIT[Unit_Array[RefMUF]].Frame, "TOPLEFT", 0, 3);
+
+            -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
+            if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then
+                DcrDisplay_Tooltip:ClearAllPoints();
+                DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or RefMUF]].Frame, "BOTTOMLEFT", 0, -3);
+            end
         end
     end
 
@@ -815,80 +844,6 @@ function MicroUnitF:OnEnter(frame) -- {{{
     end
 
 end -- }}}
-
--- No longer used
---[===[
-function MicroUnitF:LateAnalysis(From, Debuffs, MF, Status, GUIDwasFixed)
-
-    local Unit = MF.CurrUnit; -- shortcut
-    local unitguid = UnitGUID(Unit);
-    local RegisteredUnitguid = MF.UnitGUID;
-    -- search for detection by combat event manager
-    local foundcblevents = {}; local highestever = 0; local _; local i=1; local dname; local DebuffApplyTime = false;
-    local debuffname = Debuffs and Debuffs[1].Name or "No debuff, charmed?";
-
-    -- find the debuff on the unit and find out when it was applyed
-    while 1 do
-        dname = UnitAura(Unit, i, "HARMFUL");
-
-        if not dname then break end;
-
-        if dname == debuffname then
-            local Dduration, DexpireTime;
-            dname, _, _, _, _, Dduration, DexpireTime = UnitAura(Unit, i, "HARMFUL");
-            DebuffApplyTime = DexpireTime - Dduration;
-            break;
-        end
-        i = i + 1;
-    end
-
-
-    if not DebuffApplyTime or DebuffApplyTime == 0 then
-        D:AddDebugText("DebuffApplyTime could not be found for ", dname, "on", Unit, "DebuffApplyTime set to now - 3s");
-        DebuffApplyTime = GetTime() - 3;
-    end
-
-    local DetectHistoryIndex = 1;
-    local halfrange = 5; local RangeMatch = false; local latestever = "none"; local latesttime = 0;
-    local tconcat = _G.table.concat
-    D:Debug("Looking for events on", Unit, "between", DebuffApplyTime - halfrange, "and", DebuffApplyTime + halfrange);
-    -- look in the history of the combat log event handler
-    while D.DetectHistory[DetectHistoryIndex] do
-        -- take all the events related to this unit or debuffname around the time the missed debuff was applyed
-        if D.DetectHistory[DetectHistoryIndex][8] == unitguid or D.DetectHistory[DetectHistoryIndex][12] == debuffname then
-
-            if D.DetectHistory[DetectHistoryIndex][1] > DebuffApplyTime - halfrange and D.DetectHistory[DetectHistoryIndex][1] < DebuffApplyTime + halfrange then
-                t_insert(foundcblevents, tconcat(D.DetectHistory[DetectHistoryIndex],", "));
-                t_insert(foundcblevents, "\n");
-                RangeMatch = true;
-            elseif D.DetectHistory[DetectHistoryIndex][1] > latesttime then-- find the latest event concerning this unit
-                latesttime = D.DetectHistory[DetectHistoryIndex][1];
-                latestever = DetectHistoryIndex;
-            end
-
-        end
-
-        DetectHistoryIndex = DetectHistoryIndex + 1;
-    end
-
-    if latestever ~= "none" then
-        latestever = tconcat(D.DetectHistory[latestever],", ");
-    end
-
-    D:AddDebugText("Debuff late detection:", From, debuffname, "Type:", Debuffs[1].TypeName, "on unit:", Unit, unitguid, "_AppT_:", DebuffApplyTime, "DFRR:", D.profile.DebuffsFrameRefreshRate, "Status:", Status, "DT:", GetTime(), "LGU:", D.Status.GroupUpdatedOn, "LGuEr", D.Status.GroupUpdateEvent, "JFGUID:", GUIDwasFixed, "DbUreq:", D.DebuffUpdateRequest, "MFGuid~:", RegisteredUnitguid ~= unitguid, "Z:", GetZoneText(), "DTI:", DetectHistoryIndex);
-
-    -- trigger a dcr diag if DetectHistoryIndex is 1 :/
-    if DetectHistoryIndex == 1 then
-        T._SelfDiagnostic(true, true);
-    end
-
-    if #foundcblevents == 0 then
-        D:AddDebugText("No event in range at all for ", Unit, "or debuff:", debuffname, "latest found:", latestever);
-    else
-        D:AddDebugText(#foundcblevents / 2, "events for ", Unit, "or debuff:", debuffname, "Status:", Status, "Events:\n", unpack(foundcblevents));
-    end
-end
---]===]
 
 function MicroUnitF:OnLeave() -- {{{
     D.Status.MouseOveringMUF = false;
@@ -1667,7 +1622,7 @@ do
 
                 MF.ToPlace = MicroFrameUpdateIndex;
 
-                MF.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(MicroFrameUpdateIndex)));
+                MF.Frame:SetPoint(unpack(MicroUnitF:GetMUFAnchor(MicroFrameUpdateIndex)));
                 if MF.Shown then
                     MF.Frame:Show();
                 end
@@ -1676,7 +1631,7 @@ do
                 if UnitToGUID[MF.CurrUnit] ~= MF.UnitGUID then
                     MF.UpdateCountDown = 0; -- will force MF:Update() to be called
                     --@debug@
-                    D:Println("|cFFFFAA55GUID change detected while placing for |r", MicroFrameUpdateIndex, UnitToGUID[MF.CurrUnit], MF.UnitGUID );
+                    --D:Println("|cFFFFAA55GUID change detected while placing for |r", MicroFrameUpdateIndex, UnitToGUID[MF.CurrUnit], MF.UnitGUID );
                     --@end-debug@
                 end
 
@@ -1734,24 +1689,24 @@ end
 
 
 local MUF_Status = { -- unused
-[1] = "normal";
-[2] = "absent";
-[3] = "far";
-[4] = "stealthed";
-[5] = "blacklist";
-[6] = "afflicted";
-[7] = "afflicted-far";
-[8] = "afflicted-charmed";
-[9] = "afflicted-charmed-far";
+    [1] = "normal";
+    [2] = "absent";
+    [3] = "far";
+    [4] = "stealthed";
+    [5] = "blacklist";
+    [6] = "afflicted";
+    [7] = "afflicted-far";
+    [8] = "afflicted-charmed";
+    [9] = "afflicted-charmed-far";
 }
 
 
 local MF_Textures = { -- unused
-"Interface/AddOns/Decursive/Textures/BackDrop-red", -- red
-"Interface/AddOns/Decursive/Textures/BackDrop-blue", -- blue
-"Interface/AddOns/Decursive/Textures/BackDrop-orange", -- orange
-["grey"] = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-grey-medium",
-["black"] = "Interface/AddOns/Decursive/Textures/BackDrop",
+    "Interface/AddOns/Decursive/Textures/BackDrop-red", -- red
+    "Interface/AddOns/Decursive/Textures/BackDrop-blue", -- blue
+    "Interface/AddOns/Decursive/Textures/BackDrop-orange", -- orange
+    ["grey"] = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-grey-medium",
+    ["black"] = "Interface/AddOns/Decursive/Textures/BackDrop",
 };
 
 

@@ -345,18 +345,15 @@ function D:ThisSetParentText(frame, text) --{{{
     _G[frame:GetParent():GetName().."Text"]:SetText(text);
 end --}}}
 
-do
-local DefaultAnchorTab = {"ANCHOR_LEFT"};
-    function D:DisplayTooltip(Message, RelativeTo, AnchorTab) --{{{
-        if (not AnchorTab) then
-            AnchorTab = DefaultAnchorTab;
+function D:DisplayTooltip(Message, RelativeTo, AnchorType, x, y) --{{{
+        if not AnchorType then
+            AnchorType = "ANCHOR_LEFT";
         end
-        DcrDisplay_Tooltip:SetOwner(RelativeTo, unpack(AnchorTab));
+        DcrDisplay_Tooltip:SetOwner(RelativeTo, AnchorType, x, y);
         DcrDisplay_Tooltip:ClearLines();
         DcrDisplay_Tooltip:SetText(Message);
         DcrDisplay_Tooltip:Show();
-    end --}}}
-end
+end --}}}
 
 function D:DisplayGameTooltip(frame, Message) --{{{
     GameTooltip_SetDefaultAnchor(GameTooltip, frame);

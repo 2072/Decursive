@@ -941,28 +941,26 @@ function D:Init() --{{{
 
     -- SET MF FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
     -- Set the scale and place the MF container correctly
-    D.MFContainer:Show();
-    D.MFContainer:SetScale(D.profile.DebuffsFrameElemScale);
-    D.MicroUnitF:Place();
-
-    if (D.profile.ShowDebuffsFrame) then
-        D.MFContainer:Show();
+    if D.profile.ShowDebuffsFrame then
+        D.MicroUnitF:Show();
     else
         D.MFContainer:Hide();
     end
     D.MFContainerHandle:EnableMouse(not D.profile.HideMUFsHandle);
+
     -- }}}
+
 
     -- SET THE LIVE_LIST FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
 
-        -- Set poristion and scale
-    DecursiveMainBar:Show();
+    -- Set poristion and scale
     DecursiveMainBar:SetScale(D.profile.LiveListScale);
-    DcrLiveList:Show();
+    DecursiveMainBar:Show();
     DcrLiveList:SetScale(D.profile.LiveListScale);
+    DcrLiveList:Show();
     D:PlaceLL();
 
-    if (D.profile.BarHidden) then
+    if D.profile.BarHidden then
         DecursiveMainBar:Hide();
     else
         DecursiveMainBar:Show();
