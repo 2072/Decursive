@@ -962,7 +962,7 @@ function D:Init() --{{{
     DcrLiveList:SetScale(D.profile.LiveListScale);
     D:PlaceLL();
 
-    if (D.profile.Hidden) then
+    if (D.profile.BarHidden) then
         DecursiveMainBar:Hide();
     else
         DecursiveMainBar:Show();

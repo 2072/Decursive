@@ -35,7 +35,7 @@ Decursive key benefits
 - **Don't waste time:**
 
     -   Your cleansing spell **Cooldown** is displayed to maximize your dispel speed.
-    -   An **automatic blacklist** will prevent you from loosing time on players that cannot be dispelled.  
+    -   An **automatic blacklist** will prevent you from loosing time on players who can't be dispelled.  
 	(player 'out of line of sight' for example).
     -	Decursive choose a **logical cleansing order** depending on your current position in the raid.  
 	(preventing dispel concurrence between players and thus 'nothing to dispel' messages)

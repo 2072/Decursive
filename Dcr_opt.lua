@@ -244,7 +244,7 @@ function D:GetDefaultsSettings()
             ReverseLiveDisplay = false,
 
             -- Hide the "Decursive" bar
-            Hidden = false,
+            BarHidden = true,
 
             -- if true then the live list will show only if the "Decursive" bar is shown
             LiveListTied = false,
@@ -849,7 +849,7 @@ local function GetStaticOptions ()
                     },
                     LiveListScale = {
                         type = 'range',
-                        disabled = function() return D.profile.HideLiveList or D.profile.Hidden end,
+                        disabled = function() return D.profile.HideLiveList or D.profile.BarHidden end,
                         name = L["OPT_LLSCALE"],
                         desc = L["OPT_LLSCALE_DESC"],
                         min = 0.3,
@@ -860,7 +860,7 @@ local function GetStaticOptions ()
                     },
                     AlphaLL = {
                         type = 'range',
-                        disabled = function() return D.profile.HideLiveList or D.profile.Hidden end,
+                        disabled = function() return D.profile.HideLiveList or D.profile.BarHidden end,
                         name = L["OPT_LLALPHA"],
                         desc = L["OPT_LLALPHA_DESC"],
                         get = function() return 1 - D.profile.LiveListAlpha end,
