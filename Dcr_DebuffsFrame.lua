@@ -226,19 +226,19 @@ end -- }}}
 
 -- return the anchor of a given MUF depending on its creation ID
 do
-local Anchor = { "TOPLEFT", x, y, "TOPLEFT" };
-function MicroUnitF:GiveMFAnchor (ID) -- {{{
-    local LineNum = floor( (ID - 1) / D.profile.DebuffsFramePerline);
-    local NumOnLine = fmod( (ID - 1), D.profile.DebuffsFramePerline);
+    local Anchor = { "TOPLEFT", x, y, "TOPLEFT" };
+    function MicroUnitF:GiveMFAnchor (ID) -- {{{
+        local LineNum = floor( (ID - 1) / D.profile.DebuffsFramePerline);
+        local NumOnLine = fmod( (ID - 1), D.profile.DebuffsFramePerline);
 
-    local x = (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0) + NumOnLine * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing);
-    local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
+        local x = (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0) + NumOnLine * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing);
+        local y = (D.profile.DebuffsFrameGrowToTop and -1 or 1) * LineNum * ((-1 * D.profile.DebuffsFrameYSpacing) - DC.MFSIZE);
 
-    Anchor[2] = x; Anchor[3] = y;
-    --Anchor[3] = x; Anchor[2] = y;
+        Anchor[2] = x; Anchor[3] = y;
+        --Anchor[3] = x; Anchor[2] = y;
 
-    return Anchor;
-end
+        return Anchor;
+    end
 end-- }}}
 
 
@@ -401,92 +401,178 @@ end -- }}}
 
 -- Those set the scalling of the MUF container
 -- SACALING FUNCTIONS (MicroUnitF Children) {{{
--- Place the MUFs container according to its scale
-function MicroUnitF:Place () -- {{{
+do
+    local UIScale = 0;
+    local FrameScale = 0;
 
-    if self.UnitShown == 0 or self.DraggingHandle then return end
+    local function TestMUFCorner(x, y, margin) -- {{{
 
-    if InCombatLockdown() then
-        -- if we are fighting, postpone the call
-        D:AddDelayedFunctionCall (
-        "MicroUnitFPlace", self.Place,
-        self);
-        return;
-    end
+        -- if the MUF is not horizontaly outside of the screen
+        if not (x < 0 or x + margin > DC.ScreenWidth) then
+            x = nil;
+        end
+
+        -- if the MUF is not vertically outside of the screen
+        if not (y < 0 or y + margin > DC.ScreenHeight) then
+            y = nil;
+        end
+
+        return x, y;
+    end -- }}}
+
+    function MicroUnitF.prototype:IsOnScreen() -- {{{
+
+        -- frame relative position
+        local left, bottom, width, height = self.Frame:GetRect();
+
+        -- we need to check just one corner (MUFs are fix-sized squares)
+        return TestMUFCorner(left * FrameScale, bottom * FrameScale, width * FrameScale);
+
+    end -- }}}
+
+    -- Place the MUFs container according to its scale
+    function MicroUnitF:Place () -- {{{
+
+        if self.UnitShown == 0 or self.DraggingHandle then return end
+
+        if InCombatLockdown() then
+            -- if we are fighting, postpone the call
+            D:AddDelayedFunctionCall (
+            "MicroUnitFPlace", self.Place,
+            self);
+            return;
+        end
+
+        UIScale       = UIParent:GetEffectiveScale()
+        FrameScale    = self.Frame:GetEffectiveScale();
+
+        DC.ScreenWidth  = UIParent:GetWidth() * UIScale;
+        DC.ScreenHeight = UIParent:GetHeight() * UIScale;
+
+        local x, y = D.profile.DebuffsFrame_x, D.profile.DebuffsFrame_y;
+
+        -- If executed for the very first time, then put it in the top right corner of the screen
+        if (not x or not y) then
+            x =    (UIParent:GetWidth() * UIScale) - (UIParent:GetWidth() * UIScale) / 4;
+            y =  - (UIParent:GetHeight() * UIScale) / 5;
+
+            D.profile.DebuffsFrame_x = x;
+            D.profile.DebuffsFrame_y = y;
+        end
 
 
-    local UIScale       = UIParent:GetEffectiveScale()
-    local FrameScale    = self.Frame:GetEffectiveScale();
-    local x, y = D.profile.DebuffsFrame_x, D.profile.DebuffsFrame_y;
+        -- test and fix handle's position if some MUFs are out of the screen
+        local Handle_x_offset = 0;
+        local Handle_y_offset = 0;
 
-    -- If executed for the very first time, then put it in the top right corner of the screen
-    if (not x or not y) then
-        x =    (UIParent:GetWidth() * UIScale) - (UIParent:GetWidth() * UIScale) / 4;
-        y =  - (UIParent:GetHeight() * UIScale) / 5;
+        local Unit_Array = D.Status.Unit_Array;
+        local x_out_arrays = {};
+        local y_out_arrays = {};
 
-        D.profile.DebuffsFrame_x = x;
-        D.profile.DebuffsFrame_y = y;
-    end
+        -- get a list of all out of screen MUFs
+        for i=1, #Unit_Array do
+            local MF = self.ExistingPerUNIT[ Unit_Array[i] ];
+
+            x_out_arrays[#x_out_arrays + 1], y_out_arrays[#y_out_arrays + 1] = MF:IsOnScreen()
+        end
+
+        -- sort those lists to find the extrems
+        if #x_out_arrays then table.sort(x_out_arrays) end
+        if #y_out_arrays then table.sort(y_out_arrays) end
 
 
-    local FirstLineNum    = 0;
-    local Handle_x_offset = 0;
-    local Handle_y_offset = 0;
+        -- test if there is no solution
+        if x_out_arrays[1] and x_out_arrays[1] < 0 and  x_out_arrays[#x_out_arrays] > DC.ScreenWidth
+        or y_out_arrays[1] and y_out_arrays[1] < 0 and  y_out_arrays[#y_out_arrays] > DC.ScreenHeight then
+            D:Print(D:ColorText("WARNING: Your Micro-Unit-Frames' window is too big to fit entirely on your screen, you should change MUFs display settings (scale and/or disposition)! (Type /Decursive)", "FFFF0000"));
+        end
 
-    -- get the number of max unit per line
-    if self.UnitShown >= D.profile.DebuffsFramePerline then FirstLineNum = D.profile.DebuffsFramePerline; else FirstLineNum = self.UnitShown; end
+        D:Debug(x_out_arrays[1], x_out_arrays[#x_out_arrays], y_out_arrays[1], y_out_arrays[#x_out_arrays]);
 
-    -- get the offset of the handle we need to apply in order to align the MUFs on the right
-    if D.profile.DebuffsFrameStickToRight then
+        -- x
+        if x_out_arrays[1] then
+            if x_out_arrays[1] < 0 then
+                Handle_x_offset = -  x_out_arrays[1];
+            else
+                Handle_x_offset = - (x_out_arrays[#x_out_arrays] + DC.MFSIZE * FrameScale - DC.ScreenWidth)
+            end
+        end
+
+        -- y 
+        if y_out_arrays[1] then
+            if y_out_arrays[1] < 0 then
+                Handle_y_offset = -  y_out_arrays[1];
+            else
+                Handle_y_offset = - (y_out_arrays[#y_out_arrays] + DC.MFSIZE * FrameScale - DC.ScreenHeight)
+            end
+        end
+
+        D:Debug(Handle_x_offset, Handle_y_offset);
+
+        Handle_x_offset = Handle_x_offset - FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+        Handle_y_offset = Handle_y_offset + FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+
+
+        x = x + Handle_x_offset;
+        y = y + Handle_y_offset;
+
+        --[=[ -- oldWay {{{
+        local FirstLineNum    = 0;
+        -- get the number of max unit per line
+        if self.UnitShown >= D.profile.DebuffsFramePerline then FirstLineNum = D.profile.DebuffsFramePerline; else FirstLineNum = self.UnitShown; end
+
+        -- get the offset of the handle we need to apply in order to align the MUFs on the right
+        if D.profile.DebuffsFrameStickToRight then
         Handle_x_offset = -1 * FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing );
-    end
+        end
 
-    Handle_x_offset = Handle_x_offset - FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
-    Handle_y_offset = Handle_y_offset + FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+        Handle_x_offset = Handle_x_offset - FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
+        Handle_y_offset = Handle_y_offset + FrameScale * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
 
-    -- check the right edge so it can't be out of the screen
-    local RightEdge = x + FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing + (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0)) + Handle_x_offset ;
+        -- check the right edge so it can't be out of the screen
+        local RightEdge = x + FrameScale * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing + (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0)) + Handle_x_offset ;
 
-    if (RightEdge > UIParent:GetWidth() * UIScale) then
+        if (RightEdge > UIParent:GetWidth() * UIScale) then
         Handle_x_offset = Handle_x_offset - (RightEdge - UIParent:GetWidth() * UIScale);
         D:Debug("put the MUFs on the screen!!! (Right edge out)");
-    end
+        end
 
-    -- check the left edge so it can't be out of the screen
-    local LeftEdge = x + Handle_x_offset;
-    if (LeftEdge < 0) then
+        -- check the left edge so it can't be out of the screen
+        local LeftEdge = x + Handle_x_offset;
+        if (LeftEdge < 0) then
         Handle_x_offset = Handle_x_offset - LeftEdge;
         D:Debug("put the MUFs on the screen!!! (Left edge out)");
-    end
+        end
 
-    -- check the bottom edge
-    local NumberOfLines = floor( (self.UnitShown - 1) / D.profile.DebuffsFramePerline) + 1;
-    --D:Debug(NumberOfLines);
-    
-    local BottomEdge = y - FrameScale * ((D.profile.DebuffsFrameGrowToTop and 1 or NumberOfLines) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
-    
-    if -BottomEdge > UIParent:GetHeight() * UIScale then
+        -- check the bottom edge
+        local NumberOfLines = floor( (self.UnitShown - 1) / D.profile.DebuffsFramePerline) + 1;
+        --D:Debug(NumberOfLines);
+
+        local BottomEdge = y - FrameScale * ((D.profile.DebuffsFrameGrowToTop and 1 or NumberOfLines) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
+
+        if -BottomEdge > UIParent:GetHeight() * UIScale then
         Handle_y_offset = Handle_y_offset - (BottomEdge + UIParent:GetHeight() * UIScale);
         D:Debug("put the MUFs on the screen!!! (Bottom edge out)");
-    end
+        end
 
-    -- check the top edge
-    local TopEdge = y + FrameScale * (((D.profile.DebuffsFrameGrowToTop and NumberOfLines > 1) and NumberOfLines - 1 or 1) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - ((not D.profile.DebuffsFrameGrowToTop) and 1 or 0) * D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
-     if (TopEdge > 0) then
+        -- check the top edge
+        local TopEdge = y + FrameScale * (((D.profile.DebuffsFrameGrowToTop and NumberOfLines > 1) and NumberOfLines - 1 or 1) * (DC.MFSIZE + D.profile.DebuffsFrameYSpacing) - ((not D.profile.DebuffsFrameGrowToTop) and 1 or 0) * D.profile.DebuffsFrameYSpacing) + Handle_y_offset;
+        if (TopEdge > 0) then
         Handle_y_offset = Handle_y_offset - TopEdge;
         D:Debug("put the MUFs on the screen!!! (Top edge out)");
-    end
+        end
 
-    x = x + Handle_x_offset;
-    y = y + Handle_y_offset;
+        x = x + Handle_x_offset;
+        y = y + Handle_y_offset;
+        --]=] --}}}
 
-   
 
-    -- set to the scaled position
-    self.Frame:ClearAllPoints();
-    self.Frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
-    D:Debug("MUF Window position set");
-end -- }}}
+        -- set to the scaled position
+        self.Frame:ClearAllPoints();
+        self.Frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x/FrameScale , y/FrameScale);
+        D:Debug("MUF Window position set");
+    end -- }}}
+end
 
 -- Save the position of the frame without its scale
 function MicroUnitF:SavePos () -- {{{
@@ -503,7 +589,7 @@ function MicroUnitF:SavePos () -- {{{
 
         -- if we choosed to align the MUF to the right then we have to add the
         -- width of the first line to get the original position of the handle
-        
+
         if D.profile.DebuffsFrameStickToRight then
 
             if self.UnitShown >= D.profile.DebuffsFramePerline then
@@ -514,7 +600,7 @@ function MicroUnitF:SavePos () -- {{{
 
             D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (FirstLineNum * (DC.MFSIZE + D.profile.DebuffsFrameXSpacing) - D.profile.DebuffsFrameXSpacing);
         end
-        
+
         D.profile.DebuffsFrame_x = D.profile.DebuffsFrame_x + self.Frame:GetEffectiveScale() * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
         D.profile.DebuffsFrame_y = D.profile.DebuffsFrame_y - self.Frame:GetEffectiveScale() * (D.profile.DebuffsFrameGrowToTop and DC.MFSIZE or 0);
 
@@ -525,14 +611,12 @@ end -- }}}
 
 -- set the scaling of the MUFs container according to the user settings
 function MicroUnitF:SetScale (NewScale) -- {{{
-    
-    -- save the current position without any scaling
---    self:SavePos ();
+
     -- Setting the new scale
     self.Frame:SetScale(NewScale);
     -- Place the frame adapting its position to the news cale
     self:Place ();
-    
+
 end -- }}}
 -- }}}
 
@@ -603,7 +687,7 @@ function MicroUnitF:OnEnter(frame) -- {{{
 
     MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
     MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
-    
+
     if not Unit then
         return; -- If the user overs the MUF befor it's completely initialized
     end
@@ -698,7 +782,7 @@ function MicroUnitF:OnEnter(frame) -- {{{
             local RefMUF = 1;
 
             if not D.profile.DebuffsFrameGrowToTop then
-               RefMUF = VerticalMUF;
+                RefMUF = VerticalMUF;
             end
 
             DcrDisplay_Tooltip:ClearAllPoints();
@@ -849,53 +933,53 @@ end
 -- }}}
 
 function MicroUnitF.OnPreClick(frame, Button) -- {{{
-        D:Debug("Micro unit Preclicked: ", Button);
+    D:Debug("Micro unit Preclicked: ", Button);
 
-        local Unit = frame.Object.CurrUnit; -- shortcut
+    local Unit = frame.Object.CurrUnit; -- shortcut
 
-        if (frame.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
+    if (frame.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
 
-            D:Println(L["HLP_NOTHINGTOCURE"]);
+        D:Println(L["HLP_NOTHINGTOCURE"]);
 
-        elseif (frame.Object.UnitStatus == AFFLICTED) then
-            local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
-            local RequestedPrio = false;
-            local ButtonsString = "";
+    elseif (frame.Object.UnitStatus == AFFLICTED) then
+        local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
+        local RequestedPrio = false;
+        local ButtonsString = "";
 
-            if IsControlKeyDown() then
-                ButtonsString = "ctrl-";
-            elseif IsAltKeyDown() then
-                ButtonsString = "alt-";
-            elseif IsShiftKeyDown() then
-                ButtonsString = "shift-";
-            end
-
-            if Button == "LeftButton" then
-               ButtonsString = ButtonsString .. "%s1";
-            elseif Button == "RightButton" then
-               ButtonsString = ButtonsString .. "%s2";
-            end
-
-            RequestedPrio = D:tGiveValueIndex(D.db.global.AvailableButtons, ButtonsString);
-
-            if RequestedPrio and NeededPrio ~= RequestedPrio then
-                D:errln(L["HLP_WRONGMBUTTON"]);
-                if NeededPrio and MF_colors[NeededPrio] then
-                    D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[ D.db.global.AvailableButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
-                --@debug@
-                else
-                    D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
-                --@end-debug@
-                end
-
-
-            elseif RequestedPrio and D.Status.HasSpell then
---              D:Print("XXX ClickedMF SET");
-                D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
-                D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
-                D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName);
-            end
+        if IsControlKeyDown() then
+            ButtonsString = "ctrl-";
+        elseif IsAltKeyDown() then
+            ButtonsString = "alt-";
+        elseif IsShiftKeyDown() then
+            ButtonsString = "shift-";
         end
+
+        if Button == "LeftButton" then
+            ButtonsString = ButtonsString .. "%s1";
+        elseif Button == "RightButton" then
+            ButtonsString = ButtonsString .. "%s2";
+        end
+
+        RequestedPrio = D:tGiveValueIndex(D.db.global.AvailableButtons, ButtonsString);
+
+        if RequestedPrio and NeededPrio ~= RequestedPrio then
+            D:errln(L["HLP_WRONGMBUTTON"]);
+            if NeededPrio and MF_colors[NeededPrio] then
+                D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[ D.db.global.AvailableButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
+                --@debug@
+            else
+                D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
+                --@end-debug@
+            end
+
+
+        elseif RequestedPrio and D.Status.HasSpell then
+            --              D:Print("XXX ClickedMF SET");
+            D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
+            D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
+            D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName);
+        end
+    end
 end -- }}}
 
 -- }}}
@@ -908,120 +992,122 @@ end -- }}}
 -- init a new micro frame (Call internally by :new() only)
 function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
-        D:Debug("Initializing MicroUnit object", Unit, "with FrameNum=", FrameNum, " and ID", ID);
+    D:Debug("Initializing MicroUnit object", Unit, "with FrameNum=", FrameNum, " and ID", ID);
 
 
-        -- set object default variables
-        self.Parent             = Container;
-        self.ID                 = ID; -- is set by te roaming updater
-        self.FrameNum           = FrameNum;
-        self.ToPlace            = true;
-        self.Debuffs            = false;
-        self.Debuff1Prio        = false;
-        self.PrevDebuff1Prio    = false;
-        self.IsDebuffed         = false;
-        self.CurrUnit           = false;
-        self.UnitName           = false;
-        self.UnitGUID           = false;
-        self.UnitClass          = false;
-        self.UnitStatus         = 0;
-        self.FirstDebuffType    = 0;
-        self.NormalAlpha        = false;
-        self.BorderAlpha        = false;
-        self.Color              = {};
-        self.IsCharmed          = false;
-        self.UpdateCountDown    = 3;
-        self.LastAttribUpdate   = 0;
-        self.LitTime            = false;
-        self.Chrono             = false;
-        self.PrevChrono         = false;
-        self.Shown              = false; -- Setting this to true will broke the stick to right option
-        self.UpdateCD           = 0;
-        self.RaidTargetIcon     = false;
-        self.PrevRaidTargetIndex= false;
+    -- set object default variables
+    self.Parent             = Container;
+    self.ID                 = ID; -- is set by te roaming updater
+    self.FrameNum           = FrameNum;
+    self.ToPlace            = true;
+    self.Debuffs            = false;
+    self.Debuff1Prio        = false;
+    self.PrevDebuff1Prio    = false;
+    self.IsDebuffed         = false;
+    self.CurrUnit           = false;
+    self.UnitName           = false;
+    self.UnitGUID           = false;
+    self.UnitClass          = false;
+    self.UnitStatus         = 0;
+    self.FirstDebuffType    = 0;
+    self.NormalAlpha        = false;
+    self.BorderAlpha        = false;
+    self.Color              = {};
+    self.IsCharmed          = false;
+    self.UpdateCountDown    = 3;
+    self.LastAttribUpdate   = 0;
+    self.LitTime            = false;
+    self.Chrono             = false;
+    self.PrevChrono         = false;
+    self.Shown              = false; -- Setting this to true will broke the stick to right option
+    self.UpdateCD           = 0;
+    self.RaidTargetIcon     = false;
+    self.PrevRaidTargetIndex= false;
 
-        -- if it's a pet make it a little bit smaller
-        local petminus = 0;
-        if Unit:find("pet") then
-            petminus = 4;
-        end
+    -- if it's a pet make it a little bit smaller
+    local petminus = 0;
+    if Unit:find("pet") then
+        petminus = 4;
+    end
 
-        -- create the frame
-        self.Frame  = CreateFrame ("Button", nil, self.Parent, "DcrMicroUnitTemplateSecure");
-        self.CooldownFrame = CreateFrame ("Cooldown", nil, self.Frame, "DcrMicroUnitCDTemplate");
+    -- create the frame
+    self.Frame  = CreateFrame ("Button", nil, self.Parent, "DcrMicroUnitTemplateSecure");
+    self.CooldownFrame = CreateFrame ("Cooldown", nil, self.Frame, "DcrMicroUnitCDTemplate");
 
-        if petminus ~= 0 then
-            self.Frame:SetWidth(20 - petminus);
-            self.Frame:SetHeight(20 - petminus);
-            self.CooldownFrame:SetWidth(16 - petminus);
-            self.CooldownFrame:SetHeight(16 - petminus);
-        end
+    if petminus ~= 0 then
+        self.Frame:SetWidth(20 - petminus);
+        self.Frame:SetHeight(20 - petminus);
+        self.CooldownFrame:SetWidth(16 - petminus);
+        self.CooldownFrame:SetHeight(16 - petminus);
+    end
 
-        -- outer texture (the class border)
-        -- Bottom side
-        self.OuterTexture1 = self.Frame:CreateTexture(nil, "BORDER");
-        self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
-        self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
+    -- outer texture (the class border)
+    -- Bottom side
+    self.OuterTexture1 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
+    self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
 
-        -- left side
-        self.OuterTexture2 = self.Frame:CreateTexture(nil, "BORDER");
-        self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
-        self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
+    -- left side
+    self.OuterTexture2 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
+    self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
 
-        -- top side
-        self.OuterTexture3 = self.Frame:CreateTexture(nil, "BORDER");
-        self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
-        self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
+    -- top side
+    self.OuterTexture3 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
+    self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 
-        -- right side
-        self.OuterTexture4 = self.Frame:CreateTexture(nil, "BORDER");
-        self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
-        self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
-
-
-        -- global texture
-        self.Texture = self.Frame:CreateTexture(nil, "ARTWORK");
-        self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
-        self.Texture:SetHeight(16 - petminus);
-        self.Texture:SetWidth(16 - petminus);
-
-        -- inner Texture (Charmed special texture)
-        self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY");
-        self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
-        self.InnerTexture:SetHeight(7 - petminus);
-        self.InnerTexture:SetWidth(7 - petminus);
-        self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
-
-        -- Chrono Font string
-        self.ChronoFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
-        self.ChronoFontString:SetFont(DC.NumberFontFileName, 12.2, "THICKOUTLINE, MONOCHROME")
-        self.ChronoFontString:SetPoint("CENTER",self.Frame ,"CENTER",1.6,0)
-        self.ChronoFontString:SetPoint("BOTTOM",self.Frame ,"BOTTOM",0,1)
-        self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
-
-        -- raid target icon
-        self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY");
-        self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
-        self.RaidIconTexture:SetHeight(13 - petminus);
-        self.RaidIconTexture:SetWidth(13 - petminus);
+    -- right side
+    self.OuterTexture4 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
+    self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
 
 
-        -- a reference to this object
-        self.Frame.Object = self;
+    -- global texture
+    self.Texture = self.Frame:CreateTexture(nil, "ARTWORK");
+    self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
+    self.Texture:SetHeight(16 - petminus);
+    self.Texture:SetWidth(16 - petminus);
 
-        -- register events
-        self.Frame:RegisterForClicks("AnyUp");
-        self.Frame:SetFrameStrata("MEDIUM");
+    -- inner Texture (Charmed special texture)
+    self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY");
+    self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
+    self.InnerTexture:SetHeight(7 - petminus);
+    self.InnerTexture:SetWidth(7 - petminus);
+    self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
-        -- set the frame attributes
-        self:UpdateAttributes(Unit);
+    -- Chrono Font string
+    self.ChronoFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
+    self.ChronoFontString:SetFont(DC.NumberFontFileName, 12.2, "THICKOUTLINE, MONOCHROME")
+    self.ChronoFontString:SetPoint("CENTER",self.Frame ,"CENTER",1.6,0)
+    self.ChronoFontString:SetPoint("BOTTOM",self.Frame ,"BOTTOM",0,1)
+    self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
-        -- once the MF frame is set up, schedule an event to show it
-        MicroUnitF:Delayed_MFsDisplay_Update();
+    -- raid target icon
+    self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY");
+    self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
+    self.RaidIconTexture:SetHeight(13 - petminus);
+    self.RaidIconTexture:SetWidth(13 - petminus);
+
+
+    -- a reference to this object
+    self.Frame.Object = self;
+
+    -- register events
+    self.Frame:RegisterForClicks("AnyUp");
+    self.Frame:SetFrameStrata("MEDIUM");
+
+    -- set the frame attributes
+    self:UpdateAttributes(Unit);
+
+    -- once the MF frame is set up, schedule an event to show it
+    MicroUnitF:Delayed_MFsDisplay_Update();
 end -- }}}
 
 
 function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
+
+
 
     local MF = self;
     local ActionsDone = 0;
@@ -1057,7 +1143,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
             D:Debug("Debuff set for ", MF.ID);
             if CheckStealth then
                 D.Stealthed_Units[MF.CurrUnit] = D:CheckUnitStealth(MF.CurrUnit); -- update stealth status
---              D:Debug("MF:Update(): Stealth status checked as requested.");
+                --              D:Debug("MF:Update(): Stealth status checked as requested.");
             end
         end
 
@@ -1108,7 +1194,7 @@ do
             -- UnitToMUF[] can only be set when out of fight so it remains
             -- coherent with what is displayed when groups are changed during a
             -- fight
-            
+
             MicroUnitF.UnitToMUF[Unit] = self;
             self.CurrUnit = Unit;
 
@@ -1203,13 +1289,14 @@ function MicroUnitF.prototype:SetDebuffs() -- {{{
     end
 end -- }}}
 
+-- SetColor and SetClassBorder {{{
 do
     --[=[
-    --      This function is responsible for setting all the textures of a MUF object:
+    --      This closure is responsible for setting all the textures of a MUF object:
     --          - The main color
     --          - Showing/Hiding the charmed alert square
     --          - The Alpha of the center and borders
-    --      This function also set the Status of the MUF that will be used in the tooltip
+    --      This closure also set the Status of the MUF that will be used in the tooltip
     --]=]
     local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged, PrevChrono, Time, Status;
     local profile = {};
@@ -1343,13 +1430,13 @@ do
                         self.LitTime = Time;
                     end
                 end
-                
+
                 self.RaidTargetIcon = GetRaidTargetIndex(Unit);
                 if self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
                     self.RaidIconTexture:SetTexture(self.RaidTargetIcon and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIcon] or nil);
                     self.PrevRaidTargetIndex = self.RaidTargetIcon;
                 end
- 
+
 
                 -- set the status according to RangeStatus
                 if (not RangeStatus or RangeStatus == 0) then
@@ -1404,7 +1491,7 @@ do
 
         -- set the class border color when needed (the class is unknown and the unit exists or the unit name changed)
         --self:SetClassBorder();
-        
+
         -- set the alpha of the border if necessary
         if self.BorderAlpha ~= BorderAlpha then
             self.OuterTexture1:SetAlpha(BorderAlpha);
@@ -1444,7 +1531,7 @@ do
             self.Texture:SetTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
             --self.Texture:SetAlpha(Alpha);
 
-            
+
 
             -- Show the charmed alert square
             if self.IsCharmed then
@@ -1468,7 +1555,7 @@ do
 
     end -- }}}
 
-    function MicroUnitF.prototype:SetClassBorder()
+    function MicroUnitF.prototype:SetClassBorder() -- {{{
         --D:Debug("SetClassBorder called ", D.Status.Unit_Array_UnitToGUID[self.CurrUnit] , self.UnitGUID);
         ReturnValue = false;
         if (D.profile.DebuffsFrameElemBorderShow and (D.Status.Unit_Array_UnitToGUID[self.CurrUnit] ~= self.UnitGUID or (not self.UnitClass and UnitExists(self.CurrUnit)))) then
@@ -1515,10 +1602,13 @@ do
             end
         end
         return ReturnValue;
+    end -- }}}
 
-    end
+end -- }}}
 
-end 
+
+
+
 -- }}}
 
 do
@@ -1571,10 +1661,10 @@ do
                 --sanity check
                 --[[
                 if MicroFrameUpdateIndex ~= MF.ID then  -- XXX to remove for release
-                    D:AddDebugText("DebuffsFrame_Update(): MicroFrameUpdateIndex ~= MF.ID", MicroFrameUpdateIndex, MF.ID, Unit, MF.CurrUnit, "ToPlace:", MF.ToPlace);
+                D:AddDebugText("DebuffsFrame_Update(): MicroFrameUpdateIndex ~= MF.ID", MicroFrameUpdateIndex, MF.ID, Unit, MF.CurrUnit, "ToPlace:", MF.ToPlace);
                 end
                 --]]
-                
+
                 MF.ToPlace = MicroFrameUpdateIndex;
 
                 MF.Frame:SetPoint(unpack(MicroUnitF:GiveMFAnchor(MicroFrameUpdateIndex)));
@@ -1635,33 +1725,33 @@ end -- }}}
 -- Micro Frame Events, useless for now
 
 function MicroUnitF:OnPostClick(frame, button)
---      D:Debug("Micro unit PostClicked");
+    --      D:Debug("Micro unit PostClicked");
 end
 
 function MicroUnitF:OnAttributeChanged(self, name, value)
-        D:Debug("Micro unit", name, "AttributeChanged to", value);
+    D:Debug("Micro unit", name, "AttributeChanged to", value);
 end
 
 
 local MUF_Status = { -- unused
-    [1] = "normal";
-    [2] = "absent";
-    [3] = "far";
-    [4] = "stealthed";
-    [5] = "blacklist";
-    [6] = "afflicted";
-    [7] = "afflicted-far";
-    [8] = "afflicted-charmed";
-    [9] = "afflicted-charmed-far";
+[1] = "normal";
+[2] = "absent";
+[3] = "far";
+[4] = "stealthed";
+[5] = "blacklist";
+[6] = "afflicted";
+[7] = "afflicted-far";
+[8] = "afflicted-charmed";
+[9] = "afflicted-charmed-far";
 }
 
 
 local MF_Textures = { -- unused
-    "Interface/AddOns/Decursive/Textures/BackDrop-red", -- red
-    "Interface/AddOns/Decursive/Textures/BackDrop-blue", -- blue
-    "Interface/AddOns/Decursive/Textures/BackDrop-orange", -- orange
-    ["grey"] = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-grey-medium",
-    ["black"] = "Interface/AddOns/Decursive/Textures/BackDrop",
+"Interface/AddOns/Decursive/Textures/BackDrop-red", -- red
+"Interface/AddOns/Decursive/Textures/BackDrop-blue", -- blue
+"Interface/AddOns/Decursive/Textures/BackDrop-orange", -- orange
+["grey"] = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-grey-medium",
+["black"] = "Interface/AddOns/Decursive/Textures/BackDrop",
 };
 
 
