@@ -575,7 +575,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
             EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
             EnhancedByCheck = function ()
-                return (select(1, GetTalentInfo(2,13))) == DS["TALENT_BODY_AND_SOUL"] and (select(5, GetTalentInfo(2,13))) > 0;
+                return (select(1, GetTalentInfo(2,14))) == DS["TALENT_BODY_AND_SOUL"] and (select(5, GetTalentInfo(2,14))) > 0;
             end,
             Enhancements = {
                 Types = {DC.DISEASE, DC.POISON},

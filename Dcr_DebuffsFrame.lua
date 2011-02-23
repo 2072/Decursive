@@ -814,6 +814,7 @@ function MicroUnitF:OnEnter(frame) -- {{{
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
             if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then
                 DcrDisplay_Tooltip:ClearAllPoints();
+                -- 1 is not ok when not grow to top and more than one line
                 DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or RefMUF]].Frame, "BOTTOMLEFT", 0, -3);
             end
         end
