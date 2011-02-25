@@ -507,7 +507,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             IsBest = 2,
             Pet = false,
 
-            EnhancedBy = DS["TALENT_SACRED_CLEANSING"],
+            EnhancedBy = DS["TALENT_SACRED_CLEANSING"], -- http://www.wowhead.com/talent#srrrdkdz
             EnhancedByCheck = function ()
                 return (select(1, GetTalentInfo(1,14))) == DS["TALENT_SACRED_CLEANSING"] and (select(5, GetTalentInfo(1,14))) > 0;
             end,
@@ -521,7 +521,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             IsBest = 3,
             Pet = false,
 
-            EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"],
+            EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"], -- http://www.wowhead.com/talent#hZZfGdzsk
             EnhancedByCheck = function ()
                 return (select(1, GetTalentInfo(3,12))) == DS["TALENT_IMPROVED_CLEANSE_SPIRIT"] and (select(5, GetTalentInfo(3,12))) > 0;
             end,
@@ -559,7 +559,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             IsBest = 0,
             Pet = false,
 
-            EnhancedBy = DS["TALENT_NATURES_CURE"],
+            EnhancedBy = DS["TALENT_NATURES_CURE"], -- http://www.wowhead.com/talent#0ZZrfuIdfr0o
             EnhancedByCheck = function ()
                 return (select(1, GetTalentInfo(3,17))) == DS["TALENT_NATURES_CURE"] and (select(5, GetTalentInfo(3,17))) > 0;
             end,
@@ -573,7 +573,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             IsBest = 0,
             Pet = false,
 
-            EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
+            EnhancedBy = DS["TALENT_BODY_AND_SOUL"], -- http://www.wowhead.com/talent#bZfurrRoM
             EnhancedByCheck = function ()
                 return (select(1, GetTalentInfo(2,14))) == DS["TALENT_BODY_AND_SOUL"] and (select(5, GetTalentInfo(2,14))) > 0;
             end,
@@ -586,8 +586,8 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             }
         };
 
-        -- Still in WoW 3.5??
-    else
+        -- old WoW 3.5 for compatibilty with China {{{4
+    else 
          -- Priests -- XXX to be removed
         DC.SpellsToUse[DS["SPELL_ABOLISH_DISEASE"]]       = {
             Types = {DC.DISEASE},
@@ -1217,7 +1217,7 @@ function D:GetSpellsTranslations(FromDIAG)
 
     DC.ttest = Spells;
 
-
+    -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (self revelation on 2011-02-25)
 
     local alpha = false;
     --@alpha@
