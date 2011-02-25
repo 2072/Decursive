@@ -50,7 +50,7 @@ local D   = T.Dcr;
 
 local L     = D.L;
 local LC    = D.LC;
-local DC    = DcrC;
+local DC    = T._C;
 local DS    = DC.DS;
 
 
@@ -160,6 +160,30 @@ end
 function MicroUnitF:RegisterMUFcolors ()
     -- MF_colors = D.profile.MF_colors; -- this should be enough but is not because D.profile can change at unexpected times....
     D:tcopy(MF_colors, D.profile.MF_colors);
+end
+
+function MicroUnitF:GetFurtherVerticalMUF()
+    -- "Everything pushes me further away..."
+
+    if D.profile.DebuffsFrameVerticalDisplay then
+
+        if self.UnitShown > D.profile.DebuffsFramePerline then
+            return D.profile.DebuffsFramePerline;
+        else
+            return self.UnitShown;
+        end
+
+    else
+
+        if self.UnitShown > D.profile.DebuffsFramePerline then
+            return floor( self.UnitShown / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline
+            + ((self.UnitShown % D.profile.DebuffsFramePerline ~= 0) and 1 or - D.profile.DebuffsFramePerline + 1);
+        else
+            return 1;
+        end
+
+    end
+
 end
 
 -- defines what is printed when the object is read as a string
@@ -558,21 +582,11 @@ do
 
         -- move the handle to always be above the first MUF
         local RefMUF = 1;
+        local FarthestVerticalMUF = self:GetFurtherVerticalMUF();
+        
+
         if D.profile.DebuffsFrameGrowToTop then
-
-            if not D.profile.DebuffsFrameVerticalDisplay then
-                if self.UnitShown > D.profile.DebuffsFramePerline then
-                    RefMUF = floor( (self.UnitShown ) / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline
-                    + ((self.UnitShown % D.profile.DebuffsFramePerline ~= 0) and 1 or - D.profile.DebuffsFramePerline + 1);
-                end
-            else
-                if self.UnitShown > D.profile.DebuffsFramePerline then
-                    RefMUF = D.profile.DebuffsFramePerline;
-                else
-                    RefMUF = self.UnitShown;
-                end
-            end
-
+            RefMUF = FarthestVerticalMUF;
         end
 
         if self.ExistingPerUNIT[Unit_Array[RefMUF]] then
@@ -582,7 +596,7 @@ do
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
             if floor(D.MFContainerHandle:GetTop() * FrameScale) == floor(UIParent:GetTop() * UIScale) then
                 D.MFContainerHandle:ClearAllPoints();
-                D.MFContainerHandle:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or RefMUF]].Frame, "BOTTOMLEFT");
+                D.MFContainerHandle:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]].Frame, "BOTTOMLEFT");
             end
         end
 
@@ -784,21 +798,10 @@ function MicroUnitF:OnEnter(frame) -- {{{
         end
 
         local RefMUF = 1;
+        local FarthestVerticalMUF = self:GetFurtherVerticalMUF();
+
         if D.profile.DebuffsFrameGrowToTop then
-
-            if not D.profile.DebuffsFrameVerticalDisplay then
-                if self.UnitShown > D.profile.DebuffsFramePerline then
-                    RefMUF = floor( self.UnitShown / D.profile.DebuffsFramePerline ) * D.profile.DebuffsFramePerline
-                    + ((self.UnitShown % D.profile.DebuffsFramePerline ~= 0) and 1 or - D.profile.DebuffsFramePerline + 1);
-                end
-            else
-                if self.UnitShown > D.profile.DebuffsFramePerline then
-                    RefMUF = D.profile.DebuffsFramePerline;
-                else
-                    RefMUF = self.UnitShown;
-                end
-            end
-
+            RefMUF = FarthestVerticalMUF;
         end
 
         local Unit_Array = D.Status.Unit_Array;
@@ -815,7 +818,7 @@ function MicroUnitF:OnEnter(frame) -- {{{
             if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then
                 DcrDisplay_Tooltip:ClearAllPoints();
                 -- 1 is not ok when not grow to top and more than one line
-                DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or RefMUF]].Frame, "BOTTOMLEFT", 0, -3);
+                DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]].Frame, "BOTTOMLEFT", 0, -3);
             end
         end
     end
