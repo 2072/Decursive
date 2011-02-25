@@ -49,7 +49,7 @@ local D = Dcr;
 
 local L = D.L;
 local LC = D.LC;
-local DC = DcrC;
+local DC = T._C;
 local DS = DC.DS;
 local _;
 local _G = _G;

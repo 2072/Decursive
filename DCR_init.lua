@@ -98,7 +98,7 @@ BINDING_HEADER_DECURSIVE = "Decursive";
 
 -- CONSTANTS
 
-local DC = DcrC;
+local DC = T._C;
 
 DC.DS = {};
 

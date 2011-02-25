@@ -44,11 +44,10 @@ if not T._LoadedFiles or not T._LoadedFiles["DCR_init.lua"] then
     return;
 end
 
-local DC = DcrC;
 local D = Dcr;
 local L = D.L;
 local LC = D.LC;
-local DC = DcrC;
+local DC = T._C;
 local DS = DC.DS;
 
 

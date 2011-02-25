@@ -21,13 +21,12 @@
 
 
 local addonName, T = ...;
-DecursiveRootTable = T;
+DecursiveRootTable = T; -- needed until we get rid of the xml based UI.
 
 DecursiveInstallCorrupted     = false;
 
-DcrC = {};  -- needed until we get rid of the xml based UI.
-T._C = DcrC;
-local DC = DcrC;
+T._C = {};
+local DC = T._C;
 
 DC.StartTime = GetTime();
 DC.MyClass = "unknown";

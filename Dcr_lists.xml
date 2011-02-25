@@ -667,7 +667,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_WARRIOR;
+                        self.ClassType = DecursiveRootTable._C.CLASS_WARRIOR;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -690,7 +690,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_PRIEST;
+                        self.ClassType = DecursiveRootTable._C.CLASS_PRIEST;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -713,7 +713,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_MAGE;
+                        self.ClassType = DecursiveRootTable._C.CLASS_MAGE;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -736,7 +736,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_WARLOCK;
+                        self.ClassType = DecursiveRootTable._C.CLASS_WARLOCK;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -759,7 +759,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_HUNTER;
+                        self.ClassType = DecursiveRootTable._C.CLASS_HUNTER;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -782,7 +782,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_ROGUE;
+                        self.ClassType = DecursiveRootTable._C.CLASS_ROGUE;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -805,7 +805,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_DRUID;
+                        self.ClassType = DecursiveRootTable._C.CLASS_DRUID;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -828,7 +828,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_SHAMAN;
+                        self.ClassType = DecursiveRootTable._C.CLASS_SHAMAN;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -851,7 +851,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_PALADIN;
+                        self.ClassType = DecursiveRootTable._C.CLASS_PALADIN;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
@@ -873,7 +873,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self.ClassType = DcrC.CLASS_DEATHKNIGHT;
+                        self.ClassType = DecursiveRootTable._C.CLASS_DEATHKNIGHT;
                         self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>

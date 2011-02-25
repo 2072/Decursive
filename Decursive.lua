@@ -48,7 +48,7 @@ local D = Dcr;
 
 local L = D.L;
 local LC = D.LC;
-local DC = DcrC;
+local DC = T._C;
 local DS = DC.DS;
 -------------------------------------------------------------------------------
 
@@ -422,7 +422,7 @@ do
     -- Variables are declared outside so that Lua doesn't initialize them at each call
     local Name, Type, i, StoredDebuffIndex, CharmFound, IsCharmed;
 
-    local DcrC = DcrC; -- for faster access
+    local DcrC = T._C; -- for faster access
 
     local UnitIsCharmed = _G.UnitIsCharmed;
     local UnitCanAttack = _G.UnitCanAttack;
