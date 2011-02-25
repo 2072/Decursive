@@ -1,5 +1,35 @@
-Decursive 2.6.1 beta 3 by Archarodim (2011-02-06)
+Decursive 2.6.1 beta 4 by Archarodim (2011-02-25)
 =================================================
+
+
+
+Changes from Decursive 2.6.1 beta 3 to Decursive 2.6.1 beta 4 (2011-02-25)
+--------------------------------------------------------------------------
+
+- NEW OPTION: Vertical Display for MUFs (MUFs will grow vertically and columns
+  will be added when the maximum set number of MUFs per row is reached).
+
+- FIX: Talent "Body And Soul" detection for priests was no longer detected
+  since it was moved to tier 5 a few months ago...
+
+- MUFs' positioning system had to be rewrote to implement the above option, as
+  a result MUFs will be reset to their default position upon installation of
+  this version.
+
+- The handle will always be placed above the first MUF regardless of your MUF's
+  display options (Except when the first MUF is at the top of your screen, in
+  this case it will be place beneath last line's first MUF)
+
+- MUFs' Anchoring is now more logical, MUFs' scale tweaking will seem more
+  natural.
+
+- The "Decursive" bar is now hidden by default since it's quite useless once
+  you have chosen its position...
+
+- Added links in main description to [videos][[YoutubeDecursivePlaylist] found on Youtube.
+
+
+[YoutubeDecursivePlaylist]: http://www.youtube.com/view_play_list?p=BAC83C82EDE3FD24
 
 Changes from Decursive 2.6.1 beta 2 to Decursive 2.6.1 beta 3 (2011-02-07)
 --------------------------------------------------------------------------
