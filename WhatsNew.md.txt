@@ -26,7 +26,7 @@ Changes from Decursive 2.6.1 beta 3 to Decursive 2.6.1 beta 4 (2011-02-25)
 - The "Decursive" bar is now hidden by default since it's quite useless once
   you have chosen its position...
 
-- Added links in main description to [videos][[YoutubeDecursivePlaylist] found on Youtube.
+- Added links in main description to [videos][YoutubeDecursivePlaylist] found on Youtube.
 
 
 [YoutubeDecursivePlaylist]: http://www.youtube.com/view_play_list?p=BAC83C82EDE3FD24
@@ -39,7 +39,7 @@ Changes from Decursive 2.6.1 beta 2 to Decursive 2.6.1 beta 3 (2011-02-07)
   If the user checked it, a Lua error would happen at next login.
 
 
-Changes from Decursive 2.6.0.1 to Decursive 2.6.1 (2011-02-06)
+Changes from Decursive 2.6.0.1 to Decursive 2.6.1 beta 1 (2011-02-06)
 --------------------------------------------------------------
 
 - Important fix to charm detection, previously Decursive only reported

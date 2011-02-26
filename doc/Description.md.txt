@@ -70,9 +70,9 @@ In brief, what you get with Decursive is **effectiveness**, *a player using Decu
 - [commands][]
 
  
-******************************************************
-Interesting articles and videos about Decursive usage:
-------------------------------------------------------
+********************************************************
+Interesting articles and videos about Decursive's usage:
+--------------------------------------------------------
 
 - 2010-11-20
 
