@@ -592,7 +592,7 @@ do -- Combat log event handling {{{1
     function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...)
 
         if type(sourceGUID) == "boolean" then
-            HideCaster = true;
+            HideCaster = sourceGUID;
             -- call again skipping sourceGUID
             self:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...)
             return;
@@ -1067,7 +1067,9 @@ do
         end
     end -- }}}
 
+    --@alpha@
     local player_is_almost_alive = false; -- I'm trying to figure out why sometimes talents are not detected while PLAYER_ALIVE event fired
+    --@end-alpha@
     local function PollTalentsAvaibility() -- {{{
         D:Debug("Polling talents...");
         if CheckTalentsAvaibility() then
@@ -1077,6 +1079,7 @@ do
             D:SendMessage("DECURSIVE_TALENTS_AVAILABLE");
             D:Debug("Talents found");
 
+            --@alpha@
             if player_is_almost_alive then
                 D:AddDebugText("StartTalentAvaibilityPolling(): Talents were not available after PLAYER_ALIVE was fired, test was made", player_is_almost_alive, "seconds after PLAYER_ALIVE fired. Sucess happened", GetTime() - T.PLAYER_IS_ALIVE, "secondes after PLAYER_ALIVE fired");
             end
@@ -1084,6 +1087,7 @@ do
             if T.PLAYER_IS_ALIVE and not player_is_almost_alive then
                 player_is_almost_alive = GetTime() - T.PLAYER_IS_ALIVE;
             end
+            --@end-alpha@
         end
     end -- }}}
 
