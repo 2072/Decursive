@@ -45,7 +45,7 @@
         return;
         end
 
-        -- Dcr:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
+        -- DecursiveRootTable.Dcr:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
     </Script>
 
     <Button name="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
@@ -74,7 +74,7 @@
 
             </OnClick>
             <OnEnter>
-                Dcr:DisplayTooltip(Dcr.L["LIST_ENTRY_ACTIONS"], self:GetParent());
+                DecursiveRootTable.Dcr:DisplayTooltip(DecursiveRootTable.Dcr.L["LIST_ENTRY_ACTIONS"], self:GetParent());
             </OnEnter>
             <OnLeave>
                 DcrDisplay_Tooltip:Hide();
@@ -109,14 +109,14 @@
 
         <Scripts>
             <OnEnter>
-                Dcr:DisplayTooltip(self.ListTitle, self);
+                DecursiveRootTable.Dcr:DisplayTooltip(self.ListTitle, self);
             </OnEnter>
             <OnLeave>
                 DcrDisplay_Tooltip:Hide();
             </OnLeave>
             <OnLoad>
                 if DecursiveInstallCorrupted then return end
-                Dcr.ListFrameTemplate_OnLoad(self);
+                DecursiveRootTable.Dcr.ListFrameTemplate_OnLoad(self);
             </OnLoad>
             <OnShow>
                 self.UpdateYourself = true;
@@ -163,7 +163,7 @@
                         self:GetParent().ClearFunction();
                     </OnClick>
                     <OnEnter>
-                        Dcr:DisplayTooltip(self:GetParent().ClearButtonTip, self);
+                        DecursiveRootTable.Dcr:DisplayTooltip(self:GetParent().ClearButtonTip, self);
                     </OnEnter>
                     <OnLeave>
                         DcrDisplay_Tooltip:Hide();
@@ -183,7 +183,7 @@
                         self:GetParent():Hide();
                     </OnClick>
                     <OnEnter>
-                        Dcr:DisplayTooltip(self:GetParent().CloseButtonTip, self);
+                        DecursiveRootTable.Dcr:DisplayTooltip(self:GetParent().CloseButtonTip, self);
                     </OnEnter>
                     <OnLeave>
                         DcrDisplay_Tooltip:Hide();
@@ -202,7 +202,7 @@
                 <Scripts>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["POPULATE"]);
+                        self:SetText(DecursiveRootTable.Dcr.L["POPULATE"]);
                     </OnLoad>
                     <OnClick>
                         DecursivePopulateListFrame.addFunction = self:GetParent().PopulateAddFunction;
@@ -210,7 +210,7 @@
                         DecursivePopulateListFrame:Show();
                     </OnClick>
                     <OnEnter>
-                        Dcr:DisplayTooltip(Dcr.L["POPULATE_LIST"], self);
+                        DecursiveRootTable.Dcr:DisplayTooltip(DecursiveRootTable.Dcr.L["POPULATE_LIST"], self);
                     </OnEnter>
                     <OnLeave>
                         DcrDisplay_Tooltip:Hide();
@@ -242,7 +242,7 @@
 
                     </OnClick>
                     <OnEnter>
-                        Dcr:DisplayTooltip(Dcr.L["BINDING_NAME_DCRPRADD"], self);
+                        DecursiveRootTable.Dcr:DisplayTooltip(DecursiveRootTable.Dcr.L["BINDING_NAME_DCRPRADD"], self);
                     </OnEnter>
                     <OnLeave>
                         DcrDisplay_Tooltip:Hide();
@@ -277,7 +277,7 @@
                         self:GetParent().ScrollUpdateFunc(self)
                     </OnShow>
                     <OnMouseWheel>
-                        Dcr:ListFrameScrollFrameTemplate_OnMouseWheel(self, delta);
+                        DecursiveRootTable.Dcr:ListFrameScrollFrameTemplate_OnMouseWheel(self, delta);
                     </OnMouseWheel>
                 </Scripts>
             </ScrollFrame>
@@ -349,27 +349,27 @@
         <Scripts>
             <OnLoad>
                 if DecursiveInstallCorrupted then return end
-                Dcr.ListFrameTemplate_OnLoad(self);
+                DecursiveRootTable.Dcr.ListFrameTemplate_OnLoad(self);
 
-                self.ScrollUpdateFunc = Dcr.PrioSkipList_ScrollFrame_Update;
+                self.ScrollUpdateFunc = DecursiveRootTable.Dcr.PrioSkipList_ScrollFrame_Update;
 
                 self.Priority = true;
-                self.ListTitle = Dcr.L["PRIORITY_LIST"];
-                _G[self:GetName().."Text"]:SetText(Dcr.L["STR_DCR_PRIO"]);
+                self.ListTitle = DecursiveRootTable.Dcr.L["PRIORITY_LIST"];
+                _G[self:GetName().."Text"]:SetText(DecursiveRootTable.Dcr.L["STR_DCR_PRIO"]);
 
-                self.OnUpdate = Dcr.PrioSkipListFrame_OnUpdate;
+                self.OnUpdate = DecursiveRootTable.Dcr.PrioSkipListFrame_OnUpdate;
 
-                self.ClearButtonText = Dcr.L["CLEAR_PRIO"];
-                self.ClearButtonTip = Dcr.L["BINDING_NAME_DCRPRCLEAR"];
-                self.ClearFunction = Dcr.ClearPriorityList;
+                self.ClearButtonText = DecursiveRootTable.Dcr.L["CLEAR_PRIO"];
+                self.ClearButtonTip = DecursiveRootTable.Dcr.L["BINDING_NAME_DCRPRCLEAR"];
+                self.ClearFunction = DecursiveRootTable.Dcr.ClearPriorityList;
 
-                self.CloseButtonTip = Dcr.L["BINDING_NAME_DCRPRSHOW"];
+                self.CloseButtonTip = DecursiveRootTable.Dcr.L["BINDING_NAME_DCRPRSHOW"];
 
-                self.PopulateAddFunction = Dcr.AddUnitToPriorityList;
-                self.PopulateFrameTitle = Dcr.L["PRIORITY_LIST"];
+                self.PopulateAddFunction = DecursiveRootTable.Dcr.AddUnitToPriorityList;
+                self.PopulateFrameTitle = DecursiveRootTable.Dcr.L["PRIORITY_LIST"];
 
-                self.AddTargetFunc = Dcr.AddTargetToPriorityList;
-                self.EntryOnclick = Dcr.PrioSkipListEntryTemplate_OnClick;
+                self.AddTargetFunc = DecursiveRootTable.Dcr.AddTargetToPriorityList;
+                self.EntryOnclick = DecursiveRootTable.Dcr.PrioSkipListEntryTemplate_OnClick;
 
 
             </OnLoad>
@@ -383,28 +383,28 @@
         <Scripts>
             <OnLoad>
                 if DecursiveInstallCorrupted then return end
-                Dcr.ListFrameTemplate_OnLoad(self);
+                DecursiveRootTable.Dcr.ListFrameTemplate_OnLoad(self);
 
-                self.ScrollUpdateFunc = Dcr.PrioSkipList_ScrollFrame_Update;
+                self.ScrollUpdateFunc = DecursiveRootTable.Dcr.PrioSkipList_ScrollFrame_Update;
 
                 self.Priority = false;
-                self.ListTitle = Dcr.L["SKIP_LIST_STR"];
+                self.ListTitle = DecursiveRootTable.Dcr.L["SKIP_LIST_STR"];
 
-                _G[self:GetName().."Text"]:SetText(Dcr.L["STR_DCR_SKIP"]);
+                _G[self:GetName().."Text"]:SetText(DecursiveRootTable.Dcr.L["STR_DCR_SKIP"]);
 
-                self.OnUpdate = Dcr.PrioSkipListFrame_OnUpdate;
+                self.OnUpdate = DecursiveRootTable.Dcr.PrioSkipListFrame_OnUpdate;
 
-                self.ClearButtonText = Dcr.L["CLEAR_SKIP"];
-                self.ClearButtonTip = Dcr.L["BINDING_NAME_DCRSKCLEAR"];
-                self.ClearFunction = Dcr.ClearSkipList;
+                self.ClearButtonText = DecursiveRootTable.Dcr.L["CLEAR_SKIP"];
+                self.ClearButtonTip = DecursiveRootTable.Dcr.L["BINDING_NAME_DCRSKCLEAR"];
+                self.ClearFunction = DecursiveRootTable.Dcr.ClearSkipList;
 
-                self.CloseButtonTip = Dcr.L["BINDING_NAME_DCRSKSHOW"];
+                self.CloseButtonTip = DecursiveRootTable.Dcr.L["BINDING_NAME_DCRSKSHOW"];
 
-                self.PopulateAddFunction = Dcr.AddUnitToSkipList;
-                self.PopulateFrameTitle = Dcr.L["SKIP_LIST_STR"];
+                self.PopulateAddFunction = DecursiveRootTable.Dcr.AddUnitToSkipList;
+                self.PopulateFrameTitle = DecursiveRootTable.Dcr.L["SKIP_LIST_STR"];
 
-                self.AddTargetFunc = Dcr.AddTargetToSkipList;
-                self.EntryOnclick = Dcr.PrioSkipListEntryTemplate_OnClick;
+                self.AddTargetFunc = DecursiveRootTable.Dcr.AddTargetToSkipList;
+                self.EntryOnclick = DecursiveRootTable.Dcr.PrioSkipListEntryTemplate_OnClick;
 
 
             </OnLoad>
@@ -439,7 +439,7 @@
 
         <Scripts>
             <OnShow>
-                _G[self:GetName().."Title"]:SetText(Dcr.L["STR_QUICK_POP"]);
+                _G[self:GetName().."Title"]:SetText(DecursiveRootTable.Dcr.L["STR_QUICK_POP"]);
             </OnShow>
         </Scripts>
         <Layers>
@@ -480,11 +480,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 1;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '1');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '1');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -503,11 +503,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 2;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '2');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '2');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -526,11 +526,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 3;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '3');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '3');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -549,11 +549,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 4;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '4');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '4');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -572,11 +572,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 5;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '5');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '5');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -595,11 +595,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 6;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '6');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '6');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -618,11 +618,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 7;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '7');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '7');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -641,11 +641,11 @@
                 <Scripts>
                     <OnClick>
                         self.GroupNumber = 8;
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_GROUP"] .. '8');
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '8');
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -663,12 +663,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_WARRIOR;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -686,12 +686,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_PRIEST;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -709,12 +709,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_MAGE;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -732,12 +732,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_WARLOCK;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -755,12 +755,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_HUNTER;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -778,12 +778,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_ROGUE;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -801,12 +801,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_DRUID;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -824,12 +824,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_SHAMAN;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -847,12 +847,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_PALADIN;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -869,12 +869,12 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        Dcr:PopulateButtonPress(self);
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_DEATHKNIGHT;
-                        self:SetText(Dcr:ColorText(Dcr.LC[self.ClassType], "FF"..Dcr:GetClassHexColor(self.ClassType)));
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -896,7 +896,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["STR_CLOSE"]);
+                        self:SetText(DecursiveRootTable.Dcr.L["STR_CLOSE"]);
                     </OnLoad>
                 </Scripts>
             </Button>

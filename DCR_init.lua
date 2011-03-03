@@ -44,7 +44,9 @@ if not T._LoadedFiles or not T._LoadedFiles["enUS.lua"] then
 end
 
 T.Dcr         = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
-Dcr = T.Dcr; -- needed until we get rid of the xml based UI.
+--@debug@
+--Dcr = T.Dcr; -- needed until we get rid of the xml based UI.
+--@end-debug@
 
 local D = T.Dcr;
 
@@ -393,8 +395,8 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         [DC.NOTYPE]     = "AAAAAA";
     }
 
-    -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; Dcr:Configure();
-    -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; Dcr:Configure();
+    -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; DecursiveRootTable.Dcr:Configure();
+    -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; DecursiveRootTable.Dcr:Configure();
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
     DC.SpellsToUse = {
@@ -1317,7 +1319,7 @@ function D:UpdateMacro ()
     local MacroParameters = {
         D.CONF.MACRONAME,
         1, -- icon index
-        next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script Dcr:Println('"..L["NOSPELL"].."')",
+        next(Spells) and string.format("/stopcasting\n/cast [target=mouseover,nomod,exists] %s;  [target=mouseover,exists,mod:ctrl] %s; [target=mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script DecursiveRootTable.Dcr:Println('"..L["NOSPELL"].."')",
         0, -- per account
     };
 

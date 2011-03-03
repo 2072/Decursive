@@ -43,7 +43,7 @@ if not T._LoadedFiles or not T._LoadedFiles["Decursive.xml"] or not T._LoadedFil
     return;
 end
 
-local D = Dcr;
+local D = T.Dcr;
 --D:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
 
 

@@ -92,15 +92,15 @@
 
                 if T._SelfDiagnostic() ~= 2 then
 
-                Dcr:DisplayTooltip(
+                T.Dcr:DisplayTooltip(
                 string.format(
                 "|cFF0055AA%s|r %s by %s|r\n" ..
                 --"|cFF11FF11%s|r: %s\n" ..
                 "|cFF11FF11%s|r / |cFF11FF11%s|r-|cFF11FF11%s|r: %s"
-                , Dcr.name, Dcr.version, Dcr.author,
-                --Dcr.L["HLP_RIGHTCLICK"], Dcr.L["STR_OPTIONS"],
-                Dcr.L["HLP_MIDDLECLICK"], Dcr.L["SHIFT"], Dcr.L["HLP_LEFTCLICK"],
-                Dcr.L["HIDESHOW_BUTTONS"]
+                , T.Dcr.name, T.Dcr.version, T.Dcr.author,
+                --T.Dcr.L["HLP_RIGHTCLICK"], T.Dcr.L["STR_OPTIONS"],
+                T.Dcr.L["HLP_MIDDLECLICK"], T.Dcr.L["SHIFT"], T.Dcr.L["HLP_LEFTCLICK"],
+                T.Dcr.L["HIDESHOW_BUTTONS"]
                 )
                 , self);
                 end
@@ -114,7 +114,7 @@
                 self:StopMovingOrSizing();
                 self.isMoving = false;
                 end
-                Dcr:SaveLLPos();
+                DecursiveRootTable.Dcr:SaveLLPos();
             </OnMouseUp>
             <OnMouseDown>
                 if ( ( ( not self.isLocked ) or ( self.isLocked == 0 ) or IsAltKeyDown()) and ( button == "LeftButton" ) ) then
@@ -122,7 +122,7 @@
                 self.isMoving = true;
                 end
                 if (button == "MiddleButton" or button == "LeftButton" and IsShiftKeyDown()) then
-                Dcr:ShowHideButtons();
+                DecursiveRootTable.Dcr:ShowHideButtons();
                 end
             </OnMouseDown>
             <OnHide>
@@ -159,20 +159,20 @@
                 <Scripts>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["PRIORITY_SHOW"]);
+                        self:SetText(DecursiveRootTable.Dcr.L["PRIORITY_SHOW"]);
                     </OnLoad>
                     <OnClick>
                         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic(true) ~= 2 then
-                        Dcr:ShowHidePriorityListUI();
+                        T.Dcr:ShowHidePriorityListUI();
                         end
                     </OnClick>
                     <OnEnter>
                         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic() ~= 2 then
-                        Dcr:DisplayTooltip(Dcr.L["PRIORITY_LIST"], self);
+                        T.Dcr:DisplayTooltip(T.Dcr.L["PRIORITY_LIST"], self);
                         end
                     </OnEnter>
                     <OnLeave>
@@ -195,20 +195,20 @@
                 <Scripts>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        self:SetText(Dcr.L["SKIP_SHOW"]);
+                        self:SetText(DecursiveRootTable.Dcr.L["SKIP_SHOW"]);
                     </OnLoad>
                     <OnClick>
                         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic(true) ~= 2 then
-                        Dcr:ShowHideSkipListUI();
+                        T.Dcr:ShowHideSkipListUI();
                         end
                     </OnClick>
                     <OnEnter>
                         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic() ~= 2 then
-                        Dcr:DisplayTooltip(Dcr.L["SKIP_LIST_STR"], self);
+                        T.Dcr:DisplayTooltip(T.Dcr.L["SKIP_LIST_STR"], self);
                         end
                     </OnEnter>
                     <OnLeave>
@@ -233,14 +233,14 @@
                         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic(true) ~= 2 then
-                        Dcr:HideBar(false);
+                        T.Dcr:HideBar(false);
                         end
                     </OnClick>
                     <OnEnter>
                         local T = DecursiveRootTable or {};
 
                         if T._SelfDiagnostic() ~= 2 then
-                        Dcr:DisplayTooltip(Dcr.L["HIDE_MAIN"], self);
+                        T.Dcr:DisplayTooltip(T.Dcr.L["HIDE_MAIN"], self);
                         end
                     </OnEnter>
                     <OnLeave>
@@ -309,14 +309,14 @@
                 <Scripts>
 
                     <OnClick>
-                        Dcr.profile.CustomeFrameInsertBottom = (not Dcr.profile.CustomeFrameInsertBottom);
-                        Dcr:ChangeTextFrameDirection(Dcr.profile.CustomeFrameInsertBottom);
+                        DecursiveRootTable.Dcr.profile.CustomeFrameInsertBottom = (not DecursiveRootTable.Dcr.profile.CustomeFrameInsertBottom);
+                        DecursiveRootTable.Dcr:ChangeTextFrameDirection(DecursiveRootTable.Dcr.profile.CustomeFrameInsertBottom);
 
-                        Dcr:Println("|cFFAAAAAATEST");
+                        DecursiveRootTable.Dcr:Println("|cFFAAAAAATEST");
 
                     </OnClick>
                     <OnShow>
-                        Dcr:ThisSetParentText(self, Dcr.L["ANCHOR"]);
+                        DecursiveRootTable.Dcr:ThisSetParentText(self, DecursiveRootTable.Dcr.L["ANCHOR"]);
                     </OnShow>
                 </Scripts>
             </Button>

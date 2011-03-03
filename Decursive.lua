@@ -43,7 +43,7 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_Raid.lua"] then
     return;
 end
 
-local D = Dcr;
+local D = T.Dcr;
 --D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 local L = D.L;
@@ -388,11 +388,16 @@ end
 
 do
 
-    local Name, rank, Texture, Applications, TypeName, Duration, expirationTime;
-    local D = _G.Dcr;
-    local UnitAura = _G.UnitAura;
+    local D                 = D;
 
-    -- This function only returns interesting values of UnitDebuff()
+    local UnitAura          = _G.UnitAura;
+    local UnitIsCharmed     = _G.UnitIsCharmed;
+    local UnitCanAttack     = _G.UnitCanAttack;
+    local GetTime           = _G.GetTime;
+    local IsSpellInRange    = _G.IsSpellInRange;
+
+    -- This local function only sets interesting values of UnitDebuff()
+    local Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime;
     local function GetUnitDebuff  (Unit, i) --{{{
 
         if D.LiveList.TestItemDisplayed and i == 1 and UnitExists(Unit) and Unit ~= "target" and Unit ~= "mouseover" then
@@ -400,19 +405,14 @@ do
             return "Test item", DC.TypeNames[D.Status.ReversedCureOrder[1]], 2, "Interface\\AddOns\\Decursive\\iconON.tga", D.LiveList.TestItemDisplayed + 70;
         end
 
-        --D:Debug("|cFFFF0000Getting debuffs for %s , id = %d|r", Unit, i);
+        --    Name, Rank, Texture, Applications, TypeName, duration, ExpirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
 
-
-        --    Name, rank, Texture, Applications, TypeName, duration, expirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
-
-        local Name, rank, Texture, Applications, TypeName, Duration, expirationTime = UnitAura(Unit, i, "HARMFUL");
-
-        --local Name, rank, Texture, Applications, TypeName, Duration = UnitDebuff(Unit, i);
+        Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime = UnitAura(Unit, i, "HARMFUL");
 
         if Name then
-            return Name, TypeName, Applications, Texture, expirationTime;
+            return true;
         else
-            return false, false, false, false, false;
+            return false;
         end
     end --}}}
 
@@ -420,14 +420,11 @@ do
     local DebuffUnitCache = {};
 
     -- Variables are declared outside so that Lua doesn't initialize them at each call
-    local Name, Type, i, StoredDebuffIndex, CharmFound, IsCharmed;
+    local Type, i, StoredDebuffIndex, CharmFound, IsCharmed;
 
     local DcrC = T._C; -- for faster access
 
-    local UnitIsCharmed = _G.UnitIsCharmed;
-    local UnitCanAttack = _G.UnitCanAttack;
-    local GetTime       = _G.GetTime;
-    local IsSpellInRange    = _G.IsSpellInRange;
+    
 
     local UnTrustedUnitIDs = {
         ['mouseover'] = true,
@@ -453,7 +450,6 @@ do
 
 
         -- test if the unit is mind controlled once
-        --if (UnitIsCharmed(Unit) and (UnitCanAttack("player", Unit) or UnitIsCharmed("player"))) then
         -- The unit is not mouseover or target and it's attackable ---> it's charmed! (A new game's mechanic as been introduced where a player can become hostile but remain in controll...)
         if not UnTrustedUnitIDs[Unit] and UnitCanAttack("player", Unit) then
             IsCharmed = true;
@@ -461,15 +457,9 @@ do
             IsCharmed = false;
         end
 
-        --[=[
-        if D.LiveList.TestItemDisplayed then
-            IsCharmed = true;
-        end
-        --]=]
-
         -- iterate all available debuffs
         while (true) do
-            Name, TypeName, Applications, Texture, expirationTime = GetUnitDebuff(Unit, i);
+            GetUnitDebuff(Unit, i);
 
             if not Name then
                 if not IsCharmed or CharmFound then
@@ -477,7 +467,8 @@ do
                 else
                     Name = "*Charm effect*";
                     Texture = "Interface\\AddOns\\Decursive\\iconON.tga";
-                    expirationTime = false;
+                    ExpirationTime = false;
+                    Duration = false;
                     Applications = 0;
                     --D:AddDebugText("Charm effect without debuff", i);
                 end
@@ -490,32 +481,6 @@ do
             else
                 Type = false;
             end
-
-            -- implement the test for DominateMind I HATE stupid exceptions like this one... so many hours lost because of this :/
-            --[=[
-            if Name == DS["YOGGG_DOMINATE_MIND"] and Type == DC.MAGIC then
-
-                if DC.MyClass == "PALADIN" then
-                    IsCharmed = false;
-                    CharmFound = false;
-                else
-                    IsCharmed = true;
-                end
-
-                if DC.MyClass == "PALADIN" or DC.MyClass == "SHAMAN" then
-
-                    YoggReport = true;
-
-                    D:AddDebugText("|cFFFF9955Decursive Yoggy Debug (try 6):|r", Unit, TypeName, Applications,
-                    "PC:",DC.MyClass,"IsOvering:", self.Status.MouseOveringMUF, "DN",i, "SDi",StoredDebuffIndex,
-                    "UICp:",UnitIsCharmed( "player"), "UICu:",UnitIsCharmed(Unit),
-                    "UCApu:",UnitCanAttack("player", Unit), "IsCharmed:", IsCharmed
-                    -- "UCAup:",UnitCanAttack(Unit, "player"), "UCApu:",UnitCanAttack("player", Unit), "UIFpu:",UnitIsFriend( "player", Unit), "UIEpu:",UnitIsEnemy( "player", Unit)
-                    );
-                end
-
-            end
-            --]=]
 
             -- if the unit is charmed and we didn't took care of this information yet
             if IsCharmed and (not CharmFound or Type == DC.MAGIC) then
@@ -533,17 +498,6 @@ do
                 CharmFound = true;
             end
 
-            --[=[
-            if YoggReport then
-                local IsInRange;
-                if self.Status.CuringSpells[Type] then
-                    IsInRange = IsSpellInRange(self.Status.CuringSpells[Type], Unit)
-                end
-                D:AddDebugText("CharmFound:", CharmFound, "TN:", DC.TypeNames[Type], "ISIR", IsInRange);
-            end
-            --]=]
-
-
             -- If we found a type, register the Debuff
             if (Type) then
                 -- Create a Debuff index entry if necessary
@@ -551,7 +505,8 @@ do
                     ThisUnitDebuffs[StoredDebuffIndex] = {};
                 end
 
-                ThisUnitDebuffs[StoredDebuffIndex].expirationTime = expirationTime;
+                ThisUnitDebuffs[StoredDebuffIndex].Duration       = Duration;
+                ThisUnitDebuffs[StoredDebuffIndex].ExpirationTime = ExpirationTime;
                 ThisUnitDebuffs[StoredDebuffIndex].Texture        = Texture;
                 ThisUnitDebuffs[StoredDebuffIndex].Applications   = Applications;
                 ThisUnitDebuffs[StoredDebuffIndex].TypeName       = TypeName;

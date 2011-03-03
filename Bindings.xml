@@ -21,36 +21,36 @@
 
         
         <Binding name="DCRSHOW" header="DECURSIVE">
-                        Dcr:HideBar(false);
+                        DecursiveRootTable.Dcr:HideBar(false);
         </Binding>
         <Binding name="DCRMUFSHOWHIDE">
-                        Dcr:ShowHideDebuffsFrame ();
+                        DecursiveRootTable.Dcr:ShowHideDebuffsFrame ();
         </Binding>
         <Binding name="DCRSHOWOPTION">
-                        LibStub("AceConfigDialog-3.0"):Open(Dcr.name);
+                        LibStub("AceConfigDialog-3.0"):Open(DecursiveRootTable.Dcr.name);
         </Binding>
         <Binding name="DCRPRSHOW">
-                        Dcr:ShowHidePriorityListUI();
+                        DecursiveRootTable.Dcr:ShowHidePriorityListUI();
         </Binding>
         <Binding name="DCRPRADD">
-                        Dcr:AddTargetToPriorityList();
+                        DecursiveRootTable.Dcr:AddTargetToPriorityList();
         </Binding>
         <Binding name="DCRPRCLEAR">
-                        Dcr:ClearPriorityList();
+                        DecursiveRootTable.Dcr:ClearPriorityList();
         </Binding>
         <!--<Binding name="DCRPRLIST">
-                        Dcr:PrintPriorityList();
+                        DecursiveRootTable.Dcr:PrintPriorityList();
         </Binding>-->
         <Binding name="DCRSKSHOW">
-            Dcr:ShowHideSkipListUI();
+            DecursiveRootTable.Dcr:ShowHideSkipListUI();
         </Binding>
         <Binding name="DCRSKADD">
-                        Dcr:AddTargetToSkipList();
+                        DecursiveRootTable.Dcr:AddTargetToSkipList();
         </Binding>
         <Binding name="DCRSKCLEAR">
-                        Dcr:ClearSkipList();
+                        DecursiveRootTable.Dcr:ClearSkipList();
         </Binding>
         <!--<Binding name="DCRSKLIST">
-            Dcr:PrintSkipList();
+            DecursiveRootTable.Dcr:PrintSkipList();
         </Binding>-->
 </Bindings>

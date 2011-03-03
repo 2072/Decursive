@@ -43,7 +43,7 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_Events.lua"] then
     return;
 end
 
-local D = Dcr;
+local D = T.Dcr;
 --D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 

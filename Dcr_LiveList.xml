@@ -45,7 +45,6 @@
         return;
         end
 
-        -- Dcr:SetDateAndRevision("$Date: 2007-12-02 22:31:14 +0100 (dim., 02 déc. 2007) $", "$Revision: 56465 $");
     </Script>
 
     <Frame name="DcrLiveList" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="false" parent="UIParent"> <!-- {{{ -->
@@ -64,10 +63,10 @@
         </Size>
         <Scripts>
             <OnClick>
-                Dcr.LiveList:Onclick();
+                DecursiveRootTable.Dcr.LiveList:Onclick();
             </OnClick>
             <OnEnter>
-                Dcr.LiveList:DebuffTemplate_OnEnter(self);
+                DecursiveRootTable.Dcr.LiveList:DebuffTemplate_OnEnter(self);
             </OnEnter>
             <OnLeave>
                 DcrDisplay_Tooltip:Hide();

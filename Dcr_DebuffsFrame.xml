@@ -45,7 +45,7 @@
         return;
         end
 
-        -- Dcr:SetDateAndRevision("$Date: 2008-04-10 00:53:55 +0200 (jeu., 10 avr. 2008) $", "$Revision: 68827 $");
+        -- DecursiveRootTable.Dcr:SetDateAndRevision("$Date: 2008-04-10 00:53:55 +0200 (jeu., 10 avr. 2008) $", "$Revision: 68827 $");
     </Script>
 
     <Frame name="DcrMUFsContainer" clampedToScreen="true" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
@@ -85,18 +85,18 @@
                         if ( self.isMoving ) then
                             self:GetParent():StopMovingOrSizing();
                             self.isMoving = false;
-                            Dcr.MicroUnitF.DraggingHandle = false;
-                            Dcr.MicroUnitF:SavePos();
-                            Dcr.MicroUnitF:Place();
-                            Dcr.MicroUnitF:SavePos();
-                        elseif Dcr.Status.MouseOveringCorner then
-                            Dcr:QuickAccess(self, button);
+                            DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = false;
+                            DecursiveRootTable.Dcr.MicroUnitF:SavePos();
+                            DecursiveRootTable.Dcr.MicroUnitF:Place();
+                            DecursiveRootTable.Dcr.MicroUnitF:SavePos();
+                        elseif DecursiveRootTable.Dcr.Status.MouseOveringCorner then
+                            DecursiveRootTable.Dcr:QuickAccess(self, button);
                         end
                     </OnMouseUp>
                     <OnMouseDown>
                         if (   button == "LeftButton" and IsAltKeyDown() ) then
                             self.isMoving = true;
-                            Dcr.MicroUnitF.DraggingHandle = true;
+                            DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = true;
                             self:GetParent():StartMoving();
                         end
                     </OnMouseDown>
@@ -105,17 +105,17 @@
                         if ( self.isMoving ) then
                             self:GetParent():StopMovingOrSizing();
                             self.isMoving = false;
-                            Dcr.MicroUnitF.DraggingHandle = false;
+                            DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = false;
                         end
                     </OnHide>
                     <OnEnter>
-                        Dcr.Status.MouseOveringCorner = true;
-                        Dcr.MicroUnitF:OnCornerEnter(self);
+                        DecursiveRootTable.Dcr.Status.MouseOveringCorner = true;
+                        DecursiveRootTable.Dcr.MicroUnitF:OnCornerEnter(self);
                     </OnEnter>
                     <OnLeave>
-                        Dcr.Status.MouseOveringCorner = false;
+                        DecursiveRootTable.Dcr.Status.MouseOveringCorner = false;
 
-                        if (Dcr.profile.DebuffsFrameShowHelp) then
+                        if (DecursiveRootTable.Dcr.profile.DebuffsFrameShowHelp) then
                         GameTooltip:Hide();
                         end;
                     </OnLeave>
@@ -146,13 +146,13 @@
 
         <Scripts>
             <OnLoad>
-                Dcr.MicroUnitF:OnLoad(self);
+                DecursiveRootTable.Dcr.MicroUnitF:OnLoad(self);
             </OnLoad>
             <OnEnter>
-                Dcr.MicroUnitF:OnEnter(self);
+                DecursiveRootTable.Dcr.MicroUnitF:OnEnter(self);
             </OnEnter>
             <OnLeave>
-                Dcr.MicroUnitF:OnLeave();
+                DecursiveRootTable.Dcr.MicroUnitF:OnLeave();
             </OnLeave>
         </Scripts>
     </Button>

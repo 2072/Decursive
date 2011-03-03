@@ -43,7 +43,7 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_LDB.lua"] then
     return;
 end
 
-local D = Dcr;
+local D = T.Dcr;
 --D:SetDateAndRevision("$Date: 2008-09-16 00:48:59 +0200 (mar., 16 sept. 2008) $", "$Revision: 81756 $");
 
 local L = D.L;
@@ -142,7 +142,6 @@ function D:NumToHexStr(number)
     end
 end
 
-Dcr.UseFormatIfPresent = UseFormatIfPresent;
 
 local function debugStyle(...)
     return "|cFF00AAAADebug:|r", ...;
@@ -175,7 +174,7 @@ function D:ColorPrint (r,g,b, ... ) --XXX
         self:Print(DecursiveTextFrame, ColorHeader, unpack(datas));
     end
 
-    if not Dcr.db then
+    if not self.db then
         self:Print(ColorHeader, unpack(datas));
     end
     
@@ -443,7 +442,6 @@ function D:NiceTime()
 end
 
 local DcrTimers = {};
-Dcr._dcrtimers = DcrTimers; -- Used when debugging is on
 function D:TimerExixts(RefName)
     return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
 end
@@ -554,7 +552,7 @@ end
 
 function D:GetTimersNumber()
     local dcrcount = 0;
-    for RefName, timer in pairs(D._dcrtimers) do
+    for RefName, timer in pairs(DcrTimers) do
         if timer[1] then
             dcrcount = dcrcount + 1;
         end

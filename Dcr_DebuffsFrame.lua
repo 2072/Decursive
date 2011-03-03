@@ -1368,7 +1368,7 @@ do
                 end
 
                 -- update the chrono
-                if profile.DebuffsFrameChrono and self.Debuffs[1].expirationTime then
+                if profile.DebuffsFrameChrono and self.Debuffs[1].ExpirationTime then
                     if self.LitTime then
                         PrevChrono = self.Chrono;
 
@@ -1379,7 +1379,7 @@ do
                                 self.ChronoFontString:SetText( ((self.Chrono < 60) and self.Chrono or (floor(self.Chrono / 60) .. "\'") ));
                             end
                         else
-                            self.Chrono = floor(self.Debuffs[1].expirationTime - Time);
+                            self.Chrono = floor(self.Debuffs[1].ExpirationTime - Time);
 
                             if self.Chrono ~= PrevChrono then
                                 self.ChronoFontString:SetText( ((self.Chrono < 60) and (self.Chrono + 1) or (floor(self.Chrono / 60 + 1) .. "\'") ));

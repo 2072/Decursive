@@ -44,7 +44,7 @@ if not T._LoadedFiles or not T._LoadedFiles["DCR_init.lua"] then
     return;
 end
 
-local D = Dcr;
+local D = T.Dcr;
 local L = D.L;
 local LC = D.LC;
 local DC = T._C;
@@ -72,7 +72,7 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
 local HeadFont;
 local function CreateFonts()
 
-    Dcr:Debug("create font called");
+    D:Debug("create font called");
 
     -- Create the fonts objects we'll use in the tooltip:
     -- New font looking like GameTooltipText
@@ -100,7 +100,7 @@ local function ShowToolTip (frame)
         return;
     end
 
-    --Dcr:Debug("ShowToolTip called");
+    --D:Debug("ShowToolTip called");
 
     if not HeadFont then
         HeadFont = CreateFonts();
@@ -183,7 +183,7 @@ LDB.OnLeave = function(frame)
     LibQTip:Release(frame.tooltip)
     frame.tooltip = nil
 
-    --Dcr:Debug("Releasing tooltip");
+    --D:Debug("Releasing tooltip");
 end
 
 
