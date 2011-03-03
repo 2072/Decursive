@@ -1373,7 +1373,8 @@ do
                         PrevChrono = self.Chrono;
 
                         if not profile.DebuffsFrameTimeLeft then
-                            self.Chrono = floor(Time - self.LitTime);
+                            --self.Chrono = floor(Time - self.LitTime);
+                            self.Chrono = floor(self.Debuffs[1].Duration - (self.Debuffs[1].ExpirationTime - Time));
 
                             if self.Chrono ~= PrevChrono then
                                 self.ChronoFontString:SetText( ((self.Chrono < 60) and self.Chrono or (floor(self.Chrono / 60) .. "\'") ));

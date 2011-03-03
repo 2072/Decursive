@@ -401,8 +401,9 @@ do
     local function GetUnitDebuff  (Unit, i) --{{{
 
         if D.LiveList.TestItemDisplayed and i == 1 and UnitExists(Unit) and Unit ~= "target" and Unit ~= "mouseover" then
-            D:Debug("|cFFFF0000Setting test debuff for %s (debuff %d)|r", Unit, i);
-            return "Test item", DC.TypeNames[D.Status.ReversedCureOrder[1]], 2, "Interface\\AddOns\\Decursive\\iconON.tga", D.LiveList.TestItemDisplayed + 70;
+            Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime = "Test item", 1, "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70);
+            D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime);
+            return true;
         end
 
         --    Name, Rank, Texture, Applications, TypeName, duration, ExpirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
@@ -459,9 +460,7 @@ do
 
         -- iterate all available debuffs
         while (true) do
-            GetUnitDebuff(Unit, i);
-
-            if not Name then
+            if not GetUnitDebuff(Unit, i) then
                 if not IsCharmed or CharmFound then
                     break;
                 else
@@ -499,7 +498,7 @@ do
             end
 
             -- If we found a type, register the Debuff
-            if (Type) then
+            if Type then
                 -- Create a Debuff index entry if necessary
                 if (not ThisUnitDebuffs[StoredDebuffIndex]) then
                     ThisUnitDebuffs[StoredDebuffIndex] = {};
