@@ -340,8 +340,6 @@
 
     <GameTooltip name="DcrDisplay_Tooltip" hidden="true" inherits="GameTooltipTemplate" parent="UIParent" />
 
-    <Frame name="Decursive" />
-
     <Script>
         local T = DecursiveRootTable or {};
 
