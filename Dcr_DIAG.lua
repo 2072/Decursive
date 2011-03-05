@@ -147,8 +147,44 @@ end
 local AddDebugText = T._AddDebugText;
 
 -- The error handler
-local ProperErrorHandler = false;
+
 local IsReporting = false;
+
+
+local type = _G.type;
+function T._onError(event, errorObject)
+    local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1]
+
+    if not IsReporting and (T._CatchAllErrors or (errorm:sub(1,9)):lower() == "decursive") then
+        T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
+        IsReporting = true;
+        AddDebugText(errorObject.counter, type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message, ""));
+        if T.Dcr and T.Dcr.Debug then
+            T.Dcr:Debug("Lua error recorded");
+        end
+        IsReporting = false;
+    end
+
+    if GetCVarBool("scriptErrors") then
+        if not DEBUGLOCALS_LEVEL then
+            LoadAddOn("Blizzard_DebugTools");
+        end
+        DEBUGLOCALS_LEVEL = 1000; -- so stack and locals will be empty in default Blizzard error display
+
+        -- forward the error to the default Blizzad error displayer
+        if _ERRORMESSAGE then
+            if (errorm:lower()):find("blizzard_debugtools") then
+                BasicScriptErrorsText:SetText(errorm:sub(1,120));
+                BasicScriptErrors:Show();
+                return;
+            end
+            _ERRORMESSAGE(type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message, ""));
+        end
+    end
+
+end
+
+local ProperErrorHandler = false;
 
 local version, build, date, tocversion = GetBuildInfo();
 
@@ -195,33 +231,22 @@ function T._DecursiveErrorHandler(err, ...)
 end
 
 function T._HookErrorHandler()
-    if not ProperErrorHandler then
 
-        ---[=[
-        -- seems to be required even in 3.3 because debuglocals, unlike debugstack is sensitive to intermediates so we need to add 1 to its level for each intermediate
-        if GetCVarBool("scriptErrors") and not BugGrabber then
-            -- this whole block is a bad idea, it could create cascading tainting issues if an error occur in a Blizz secured code...
-            -- it is enabled only if the user turned Lua error reporting on otherwise no one cares about debuglocals being useless.
-            T._original_debuglocals = _G.debuglocals;
-            _G.debuglocals = function (level)
-                local ADDLEVEL = 2; -- 2 is for this function and _DecursiveErrorHandler
+    if BugGrabber then
+        local name, _, _, enabled = GetAddOnInfo("BugSack")
 
-                -- test for other add-on that hooks the error handler and increment ADDLEVEL
-                if QuestHelper_Errors then
-                    ADDLEVEL = ADDLEVEL + 1;
-                end
-
-                if Swatter and Swatter.OnError then
-                    ADDLEVEL = ADDLEVEL + 1;
-                end
-
-
-                return T._original_debuglocals(level + ADDLEVEL) or "Sometimes debuglocals() returns nothing, it's one of those times... (FYI: This last sentence (only) is a HotFix from Decursive to prevent a C stack overflow in the new Blizzard error handler and thus giving you the opportunity to send this debug report to the author of the problematic add-on so he/she can fix it)";
-            end; 
+        if name and enabled then
+            T._BugGrabberEmbeded = false;
+            return
         end
-        --]=]
 
+        BugGrabber.RegisterCallback(T, "BugGrabber_BugGrabbed", T._onError)
+        T._BugGrabberEmbeded = true;
+        return
+    end
 
+    -- if no buggrabber is found then use the old way
+    if not ProperErrorHandler then
         ProperErrorHandler = geterrorhandler();
         seterrorhandler(T._DecursiveErrorHandler);
     end

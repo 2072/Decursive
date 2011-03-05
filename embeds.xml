@@ -24,6 +24,9 @@
 
 <Script file="libs\LibQTip-1.0\LibQTip-1.0.lua" />
 
+
+<Include file="Libs\BugGrabber\load.xml" />
+
 <!--@end-no-lib-strip@-->
 
 <Script file="libs\LibDataBroker-1.1\LibDataBroker-1.1.lua" />

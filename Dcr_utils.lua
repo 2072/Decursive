@@ -433,8 +433,10 @@ end
 
 function D:MakeError(something)
     local testlocal = "test local";
-   
-    testErrorCapturing(testlocal);
+    local testbiglocal = D;
+    local errorf = function () testErrorCapturing(testlocal); end;
+
+    errorf();
 end
 
 function D:NiceTime()
