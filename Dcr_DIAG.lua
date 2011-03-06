@@ -155,7 +155,12 @@ local type = _G.type;
 function T._onError(event, errorObject)
     local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1]
 
-    if not IsReporting and (T._CatchAllErrors or (errorm:sub(1,9)):lower() == "decursive") then
+    if not IsReporting
+        and ( T._CatchAllErrors
+        or (errorObject.type == 'error' and (errorm:sub(1,9)):lower() == "decursive")
+        or (errorObject.type == 'event' and (errorm:lower()):find("'decursive'")) 
+        ) then
+
         T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         IsReporting = true;
         AddDebugText(errorObject.counter, type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message, ""));
@@ -241,6 +246,7 @@ function T._HookErrorHandler()
         end
 
         BugGrabber.RegisterCallback(T, "BugGrabber_BugGrabbed", T._onError)
+        BugGrabber.RegisterCallback(T, "BugGrabber_EventGrabbed", T._onError)
         T._BugGrabberEmbeded = true;
         return
     end

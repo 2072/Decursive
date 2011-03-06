@@ -432,6 +432,13 @@ do
 end
 
 function D:MakeError(something)
+
+    if something then
+        -- Make something forbidden
+        TargetUnit('player');
+        return;
+    end
+
     local testlocal = "test local";
     local testbiglocal = D;
     local errorf = function () testErrorCapturing(testlocal); end;
