@@ -32,7 +32,7 @@ externals:
 
 license-output: LICENSE.txt
 
-manual-changelog:
-    filename: WhatsNew.md.txt
-    markup-type: markdown
+#manual-changelog:
+#    filename: WhatsNew.md.txt
+#    markup-type: markdown
 

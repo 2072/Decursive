@@ -74,12 +74,13 @@ local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
 
 
 
-local select    = _G.select;
-local pairs    = _G.pairs;
-local ipairs    = _G.ipairs;
+local select            = _G.select;
+local pairs             = _G.pairs;
+local ipairs            = _G.ipairs;
+local next              = _G.next;
 local InCombatLockdown  = _G.InCombatLockdown;
-local GetTalentInfo  = _G.GetTalentInfo;
-local UnitClass  = _G.UnitClass;
+local GetTalentInfo     = _G.GetTalentInfo;
+local UnitClass         = _G.UnitClass;
 
 
 
@@ -154,9 +155,6 @@ DC.UNKNOWN = UNKNOWNOBJECT;
 
 -- Get the translation for "pet"
 DC.PET = SPELL_TARGET_TYPE8_DESC;
-
--- Holder for 'Rank #' translation
-DC.RANKNUMTRANS = false;
 
 DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage creation
 
@@ -395,39 +393,39 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         [DC.NOTYPE]     = "AAAAAA";
     }
 
-    -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},IsBest = false}; DecursiveRootTable.Dcr:Configure();
-    -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, IsBest = false, Pet = false, Rank = "1 : Pig"}; DecursiveRootTable.Dcr:Configure();
+    -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},Better = false}; DecursiveRootTable.Dcr:Configure();
+    -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, Better = false, Pet = false, Rank = "1 : Pig"}; DecursiveRootTable.Dcr:Configure();
 
     -- SPELL TABLE -- must be parsed after localisation is loaded {{{
     DC.SpellsToUse = {
         -- Priests
         [DS["SPELL_CURE_DISEASE"]]          = {
             Types = {DC.DISEASE},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         },
         -- Priests
         [DS["SPELL_DISPELL_MAGIC"]]         = {
             Types = {DC.MAGIC, DC.ENEMYMAGIC},
-            IsBest = 1,
+            Better = 1,
             Pet = false,
         },
         -- Paladins
         [DS["SPELL_CLEANSE"]]               = {
             Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-            IsBest = 2,
+            Better = 2,
             Pet = false,
         },
         -- Druids
         [DS["SPELL_CYCLONE"]]       = {
             Types = {DC.CHARMED},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         },
         -- Mages and Druids
         [DS["SPELL_REMOVE_CURSE"]]   = {
             Types = {DC.CURSE},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
 
             --[===[ for testing purpose only {{{
@@ -447,53 +445,51 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         -- Mages
         [DS["SPELL_POLYMORPH"]]      = {
             Types = {DC.CHARMED},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
-            Rank = 1,
         },
         
         -- Shaman resto
         [DS["CLEANSE_SPIRIT"]]              = {
             Types = {DC.CURSE, DC.DISEASE, DC.POISON},
-            IsBest = 3,
+            Better = 3,
             Pet = false,
         },
         -- Shamans http://www.wowhead.com/?spell=51514
         [DS["SPELL_HEX"]]    = {
             Types = {DC.CHARMED},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         },
         --[=[ -- disabled because of Korean locals... see below
         -- Shamans
         [DS["SPELL_PURGE"]]                 = {
             Types = {DC.ENEMYMAGIC},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         }, --]=]
         -- Hunters http://www.wowhead.com/?spell=19801
         [DS["SPELL_TRANQUILIZING_SHOT"]]    = {
             Types = {DC.ENEMYMAGIC},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         },
         -- Warlock
         [DS["SPELL_FEAR"]]    = {
             Types = {DC.CHARMED},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
-            Rank = 1,
         },
         -- Warlock
         [DS["PET_FEL_CAST"]]                = {
             Types = {DC.MAGIC, DC.ENEMYMAGIC},
-            IsBest = 1,
+            Better = 1,
             Pet = true,
         },
         -- Warlock
         [DS["PET_DOOM_CAST"]]               = {
             Types = {DC.MAGIC, DC.ENEMYMAGIC},
-            IsBest = 1,
+            Better = 1,
             Pet = true,
         },
     };
@@ -506,7 +502,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         -- Paladins
         DC.SpellsToUse[DS["SPELL_CLEANSE"]]               = {
             Types = {DC.DISEASE, DC.POISON},
-            IsBest = 2,
+            Better = 2,
             Pet = false,
 
             EnhancedBy = DS["TALENT_SACRED_CLEANSING"], -- http://www.wowhead.com/talent#srrrdkdz
@@ -520,7 +516,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         -- Shaman resto
         DC.SpellsToUse[DS["CLEANSE_SPIRIT"]]              = {
             Types = {DC.CURSE},
-            IsBest = 3,
+            Better = 3,
             Pet = false,
 
             EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"], -- http://www.wowhead.com/talent#hZZfGdzsk
@@ -534,31 +530,31 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         -- Warlocks
         DC.SpellsToUse[DS["PET_FEL_CAST"]]              = {
             Types = {DC.ENEMYMAGIC},
-            IsBest = 0,
+            Better = 0,
             Pet = true,
         };
         -- Warlocks
         DC.SpellsToUse[DS["SPELL_SINGE_MAGIC"]]         = {
             Types = {DC.MAGIC},
-            IsBest = 0,
+            Better = 0,
             Pet = true,
         };
         -- Warlock
         DC.SpellsToUse[DS["SPELL_FEAR"]]    = {
             Types = {DC.CHARMED},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         };
         -- Mages
         DC.SpellsToUse[DS["SPELL_POLYMORPH"]]      = {
             Types = {DC.CHARMED},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         };
         -- Druids
         DC.SpellsToUse[DS["SPELL_REMOVE_CORRUPTION"]]      = {
             Types = {DC.POISON, DC.CURSE},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
 
             EnhancedBy = DS["TALENT_NATURES_CURE"], -- http://www.wowhead.com/talent#0ZZrfuIdfr0o
@@ -572,7 +568,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         -- Priests
         DC.SpellsToUse[DS["SPELL_CURE_DISEASE"]]       = {
             Types = {DC.DISEASE},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
 
             EnhancedBy = DS["TALENT_BODY_AND_SOUL"], -- http://www.wowhead.com/talent#bZfurrRoM
@@ -593,7 +589,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
          -- Priests -- XXX to be removed
         DC.SpellsToUse[DS["SPELL_ABOLISH_DISEASE"]]       = {
             Types = {DC.DISEASE},
-            IsBest = 1,
+            Better = 1,
             Pet = false,
 
             EnhancedBy = DS["TALENT_BODY_AND_SOUL"],
@@ -612,27 +608,27 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         -- Druids
         DC.SpellsToUse[DS["SPELL_ABOLISH_POISON"]]        = {
             Types = {DC.POISON},
-            IsBest = 1,
+            Better = 1,
             Pet = false,
         };
 
         -- Shamans
         DC.SpellsToUse[DS["SPELL_CURE_TOXINS"]]           = {
             Types = {DC.POISON, DC.DISEASE},
-            IsBest = 1,
+            Better = 1,
             Pet = false,
         };
 
         -- Druids
         DC.SpellsToUse[DS["SPELL_CURE_POISON"]]           = {
             Types = {DC.POISON},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         };
         -- Paladins
         DC.SpellsToUse[DS["SPELL_PURIFY"]]                = {
             Types = {DC.DISEASE, DC.POISON},
-            IsBest = 1,
+            Better = 1,
             Pet = false,
         };
 
@@ -647,7 +643,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         -- Shamans
         DC.SpellsToUse[DS["SPELL_PURGE"]]                   = {
             Types = {DC.ENEMYMAGIC},
-            IsBest = 0,
+            Better = 0,
             Pet = false,
         };
     end
@@ -994,6 +990,44 @@ function D:Init() --{{{
 
 end --}}}
 
+local function SpellIterator()
+    local currentSpellTable = DC.SpellsToUse;
+    local currentKey = nil;
+    local iter
+
+    iter = function()
+        local ST
+
+        currentKey, ST = next(currentSpellTable, currentKey);
+
+        -- we reached the end of a table
+        if currentKey == nil and currentSpellTable == DC.SpellsToUse then
+            -- it was the base table now use the user defined one
+            currentSpellTable = D.profile.UserSpells;
+            --@debug@
+            D:Debug("|cFF00FF00Shifting to user spells|r");
+            --@end-debug@
+            return iter(); -- continue with the other table
+        end
+
+        -- if the spell is disabled or if it's already defined in the base table, skip it
+        if ST and (ST.Disabled or currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey]) then
+            --@debug@
+            D:Debug("Skipping", currentKey);
+            if currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey] then
+                D:Print("|cFFFF0000Cheating for|r", currentKey);
+            end
+            --@end-debug@
+
+            return iter(); -- aka 'continue'
+        end
+
+        return currentKey, ST;
+    end;
+
+    return iter;
+end
+
 function D:ReConfigure() --{{{
 
     D:Debug("|cFFFF0000D:ReConfigure was called!|r");
@@ -1002,20 +1036,19 @@ function D:ReConfigure() --{{{
         return;
     end
 
-    local Spell, spellName;
     local GetSpellInfo = _G.GetSpellInfo;
 
     local Reconfigure = false;
-    for spellName, Spell in pairs(DC.SpellsToUse) do
+    for spellName, Spell in SpellIterator() do
         -- Do we have that spell?
         if GetSpellInfo(spellName) then -- yes
             -- is it new?
             if not D.Status.FoundSpells[spellName] then -- yes
                 Reconfigure = true;
                 break;
-            elseif DC.SpellsToUse[spellName].EnhancedBy then -- it's not new but there is an enhancement available...
+            elseif Spell.EnhancedBy then -- it's not new but there is an enhancement available...
 
-                if  DC.SpellsToUse[spellName].EnhancedByCheck() then -- we have it now
+                if Spell.EnhancedByCheck() then -- we have it now
                     if not D.Status.FoundSpells[spellName][3] then -- but not then :)
                         Reconfigure = true;
                         break;
@@ -1043,6 +1076,8 @@ function D:ReConfigure() --{{{
 
 end --}}}
 
+
+
 function D:Configure() --{{{
 
     -- first empty out the old "spellbook"
@@ -1058,7 +1093,7 @@ function D:Configure() --{{{
     CuringSpells[DC.DISEASE]    = false;
     CuringSpells[DC.CHARMED]    = false;
 
-    local Spell, spellName, Type, _;
+    local Type, _;
     local GetSpellInfo = _G.GetSpellInfo;
     local Types = {};
     local OnPlayerOnly = false;
@@ -1066,30 +1101,31 @@ function D:Configure() --{{{
 
     self:Debug("Configuring Decursive...");
 
-    for spellName, Spell in pairs(DC.SpellsToUse) do
+    for spellName, spell in SpellIterator() do
+        self:Debug("trying spell", spellName);
         -- Do we have that spell?
         if GetSpellInfo(spellName) then -- yes
-            Types = DC.SpellsToUse[spellName].Types;
+            Types = spell.Types;
             OnPlayerOnly = false;
             IsEnhanced = false;
 
             -- Could it be enhanced by something (a talent for example)?
-            if DC.SpellsToUse[spellName].EnhancedBy then
+            if spell.EnhancedBy then
                 --@alpha@
                 self:Debug("Enhancement for ", spellName);
                 --@end-alpha@
                 
 
-                if DC.SpellsToUse[spellName].EnhancedByCheck() then -- we have the enhancement
+                if spell.EnhancedByCheck() then -- we have the enhancement
                     IsEnhanced = true;
 
-                    Types = DC.SpellsToUse[spellName].Enhancements.Types; -- set the type to scan to the new ones
+                    Types = spell.Enhancements.Types; -- set the type to scan to the new ones
 
-                    if DC.SpellsToUse[spellName].Enhancements.OnPlayerOnly then -- On the 'player' unit only?
+                    if spell.Enhancements.OnPlayerOnly then -- On the 'player' unit only?
                         --@alpha@
                         self:Debug("Enhancement for %s is for player only", spellName);
                         --@end-alpha@
-                        OnPlayerOnly = DC.SpellsToUse[spellName].Enhancements.OnPlayerOnly;
+                        OnPlayerOnly = spell.Enhancements.OnPlayerOnly;
                     end
                 end
             end
@@ -1097,9 +1133,9 @@ function D:Configure() --{{{
             -- register it
             for _, Type in pairs (Types) do
 
-                if not CuringSpells[Type] or DC.SpellsToUse[spellName].IsBest > DC.SpellsToUse[ CuringSpells[Type] ].IsBest then  -- we did not already registered this spell or it's not the best spell for this type
+                if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
 
-                    self.Status.FoundSpells[spellName] = {DC.SpellsToUse[spellName].Pet, (select(2, GetSpellInfo(spellName))), IsEnhanced};
+                    self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better};
                     CuringSpells[Type] = spellName;
 
                     if OnPlayerOnly and OnPlayerOnly[Type] then
@@ -1140,6 +1176,7 @@ function D:GetSpellsTranslations(FromDIAG)
 
     Spells = {
         ["SPELL_POLYMORPH"]             = {     118,                                     },
+        ["SPELL_COUNTERSPELL"]          = {     2139,                                    },
         ["SPELL_CYCLONE"]               = {     33786,                                   },
         ["SPELL_CURE_DISEASE"]          = {     528,                                     },
         ["SPELL_ABOLISH_DISEASE"]       = {     552,                                     },
@@ -1259,11 +1296,6 @@ function D:GetSpellsTranslations(FromDIAG)
 
         end
     end
-
-    -- get a 'Rank #' string exemple (workaround due to the way the
-    -- polymorph spell variants are handled in WoW 2.3)
-
-    DC.RANKNUMTRANS = (select(2, GetSpellInfo(118)));
 
     return ok;
 

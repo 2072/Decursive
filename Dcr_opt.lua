@@ -371,8 +371,20 @@ function D:GetDefaultsSettings()
                 },
                 ["DEATHKNIGHT"] = {
                 }
-            }
+            },
             -- }}}
+        
+        
+            UserSpells = {
+                --Exemple / defaults
+                [DS["SPELL_COUNTERSPELL"]] = {
+                    Types = {DC.CHARMED},
+                    Better = 10,
+                    Pet = false,
+                    Disabled = true,
+                },
+            },
+        
         }
     } -- }}}
 end
@@ -637,7 +649,7 @@ local function GetStaticOptions ()
                         hidden = function() return  #T._DebugTextTable < 1 end,
                         order = 1000
                     },
-                    
+ 
                     GlorfindalMemorium = {
                         type = "execute",
                         name = D:ColorText(L["GLOR1"], "FF" .. D:GetClassHexColor( "WARRIOR" )),
@@ -1362,6 +1374,35 @@ local function GetStaticOptions ()
                         disabled = function() return not D.Status.CuringSpells[DC.CHARMED] end,
                         order = 146
                     },
+                    Title3 = {
+                        type = "header",
+                        name = L["OPT_CUSTOMSPELLS_HEADER"],
+                        order = 150,
+                    },
+                    AddCustomSpell = {
+                        type = 'input',
+                        name = L["OPT_ADD_A_CUSTOM_SPELL"],
+                        get = function() return L["OPT_DROP_SPELL"]; end,
+                        set = function(info, v) D:Print(v); return "OK!"; end,
+                        validate = function(info, v)
+                            if type(v) ~= 'string' or not GetSpellInfo(v) then
+                                D:Debug(v, GetSpellInfo(v));
+                                return L["OPT_INPUT_SPELL_BAD_INPUT"];
+                            end
+                            return 0;
+                        end,
+                        order = 155,
+                        cmdHidden = true,
+                    },
+                    AddedSpells = {
+                        type = "group",
+                        name = L["OPT_ADDED_SPELLS"],
+                        desc = L["OPT_ADDED_SPELLS_DESC"],
+                        order = 160,
+                        cmdHidden = true,
+                        inline = true,
+                        args = {},
+                    },
                 }
             }, -- }}}
 
@@ -1504,6 +1545,8 @@ local function GetOptions()
     options.args.MicroFrameOpt.args.MUFsColors.args = D:CreateDropDownMUFcolorsMenu();
     -- create MUF's mouse buttons configuration menus
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
+    -- create curring spells addition submenus
+    options.args.CureOptions.args.AddedSpells.args = D:CreateAddedSpellsOptionMenu();
 
     -- Create profile options
     options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
@@ -2273,37 +2316,37 @@ do
     local OptionPrototype = {
         -- {{{
         type = "select",
-             name = function (info)
-                 if not retrieveKeyComboNum (info) then return "" end -- needed because when called by command line, info is set to the parent
+        name = function (info)
+            if not retrieveKeyComboNum (info) then return "" end -- needed because when called by command line, info is set to the parent
 
-                 if retrieveKeyComboNum (info) < #D.db.global.AvailableButtons - 1 then
-                     return "";
-                 elseif  retrieveKeyComboNum (info) == #D.db.global.AvailableButtons - 1 then
-                     return L["OPT_MUFTARGETBUTTON"];
-                 else
-                     return L["OPT_MUFFOCUSBUTTON"];
-                 end
-             end,
-             values = GetValues,
-             order = GetOrder,
-             get = function (info)
-                 return retrieveKeyComboNum (info);
-             end,
-             set = function (info, value)
+            if retrieveKeyComboNum (info) < #D.db.global.AvailableButtons - 1 then
+                return "";
+            elseif  retrieveKeyComboNum (info) == #D.db.global.AvailableButtons - 1 then
+                return L["OPT_MUFTARGETBUTTON"];
+            else
+                return L["OPT_MUFFOCUSBUTTON"];
+            end
+        end,
+        values = GetValues,
+        order = GetOrder,
+        get = function (info)
+            return retrieveKeyComboNum (info);
+        end,
+        set = function (info, value)
 
-                 local ThisKeyComboNum = retrieveKeyComboNum (info);
+            local ThisKeyComboNum = retrieveKeyComboNum (info);
 
 
-                 if value ~= ThisKeyComboNum then -- we would destroy the table
+            if value ~= ThisKeyComboNum then -- we would destroy the table
 
-                     D:tSwap(D.db.global.AvailableButtons, ThisKeyComboNum, value);
+                D:tSwap(D.db.global.AvailableButtons, ThisKeyComboNum, value);
 
-                     -- force all MUFs to update their attributes
-                     D.Status.SpellsChanged = GetTime();
-                 end
-             end,
-             style = "dropdown",
-             -- }}}
+                -- force all MUFs to update their attributes
+                D.Status.SpellsChanged = GetTime();
+            end
+        end,
+        style = "dropdown",
+        -- }}}
     };
 
     function D:CreateModifierOptionMenu ()
@@ -2340,6 +2383,29 @@ do
         return key_Combos_Select;
     end
 
+end
+
+do
+
+    local order = 1;
+    local SpellSubOptions = {
+        type = 'group',
+        name = function(info) return info[#info] end,
+        order = function() return order; end,
+        args = {},
+
+    };
+
+    function D:CreateAddedSpellsOptionMenu ()
+        local OptionsTree = {};
+
+        for spellName, spellTable in pairs(self.profile.UserSpells) do
+            OptionsTree[spellName] = SpellSubOptions;
+            order = order + 1;
+        end
+
+        return OptionsTree;
+    end
 end
 
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(D.db.global.MacroBind));
@@ -2481,7 +2547,7 @@ function D:ShowDebugReport()
     D:Debug(GetLocale());
 
     if not DebugHeader then
-        DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f D: %s %s (%s, %s, %s, %s)"):format((self.L) and self.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", DC.MyClass, D:NiceTime(), date(), GetLocale(), GetBuildInfo());
+        DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f D: %s %s %s (%s, %s, %s, %s)"):format((self.L) and self.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", DC.MyClass, D:NiceTime(), date(), GetLocale(), BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", GetBuildInfo());
     end
 
     T._DebugText = DebugHeader .. table.concat(T._DebugTextTable, "");

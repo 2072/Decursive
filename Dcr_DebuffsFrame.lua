@@ -1199,11 +1199,10 @@ do
 
             --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
             -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-            self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
+            self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s",
             ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
             Unit,Unit,
-            Spell,
-            (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
+            Spell));
 
 
             --[[
