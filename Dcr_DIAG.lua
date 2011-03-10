@@ -29,7 +29,6 @@ T._C = {};
 local DC = T._C;
 
 DC.StartTime = GetTime();
-DC.MyClass = "unknown";
 
 T._LoadedFiles = {
     ["Dcr_DIAG.xml"]            = false,
@@ -163,7 +162,7 @@ function T._onError(event, errorObject)
 
         T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         IsReporting = true;
-        AddDebugText(errorObject.counter, type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message, ""));
+        AddDebugText(errorObject.counter, type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message, ""), "\nLOCALS:\n", type(errorObject.locals) == 'string' and errorObject.locals or table.concat(errorObject.locals, ""));
         if T.Dcr and T.Dcr.Debug then
             T.Dcr:Debug("Lua error recorded");
         end
@@ -174,16 +173,20 @@ function T._onError(event, errorObject)
         if not DEBUGLOCALS_LEVEL then
             LoadAddOn("Blizzard_DebugTools");
         end
-        DEBUGLOCALS_LEVEL = 1000; -- so stack and locals will be empty in default Blizzard error display
+        DEBUGLOCALS_LEVEL = 13;
 
         -- forward the error to the default Blizzad error displayer
         if _ERRORMESSAGE then
-            if (errorm:lower()):find("blizzard_debugtools") then
+            local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1];
+            errorm = errorm:sub(1,errorm:find("\n") - 1);
+
+            if (errorm:lower()):find("cursive") then
                 BasicScriptErrorsText:SetText(errorm:sub(1,120));
                 BasicScriptErrors:Show();
                 return;
             end
-            _ERRORMESSAGE(type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message, ""));
+           
+            _ERRORMESSAGE( errorm);
         end
     end
 
