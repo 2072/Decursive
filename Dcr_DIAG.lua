@@ -170,23 +170,24 @@ function T._onError(event, errorObject)
     end
 
     if GetCVarBool("scriptErrors") then
-        if not DEBUGLOCALS_LEVEL then
-            LoadAddOn("Blizzard_DebugTools");
+        if not _G.DEBUGLOCALS_LEVEL then
+            _G.LoadAddOn("Blizzard_DebugTools");
         end
-        DEBUGLOCALS_LEVEL = 13;
+        _G.DEBUGLOCALS_LEVEL = 13;
 
         -- forward the error to the default Blizzad error displayer
-        if _ERRORMESSAGE then
+        if _G._ERRORMESSAGE then
             local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1];
             errorm = errorm:sub(1,errorm:find("\n") - 1);
 
-            if (errorm:lower()):find("cursive") then
-                BasicScriptErrorsText:SetText(errorm:sub(1,120));
-                BasicScriptErrors:Show();
+            -- if the error happened inside blizzard_debugtools, use Blizzards's BasicScriptErrorsText
+            if (errorm:lower()):find("blizzard_debugtools") then
+                _G.BasicScriptErrorsText:SetText(errorm);
+                _G.BasicScriptErrors:Show();
                 return;
             end
            
-            _ERRORMESSAGE( errorm);
+            _G._ERRORMESSAGE( errorm );
         end
     end
 
