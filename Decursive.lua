@@ -122,13 +122,13 @@ function D:HideBar(hide) --{{{
         if (D.profile.LiveListTied) then
             D:ShowHideLiveList(1);
         end
-        D.profile.Hidden = true;
+        D.profile.BarHidden = true;
         DecursiveMainBar:Hide();
     else
         if (D.profile.LiveListTied) then
             D:ShowHideLiveList(0);
         end
-        D.profile.Hidden = false;
+        D.profile.BarHidden = false;
         DecursiveMainBar:Show();
     end
 
