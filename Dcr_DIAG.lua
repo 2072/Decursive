@@ -162,14 +162,14 @@ function T._onError(event, errorObject)
 
         T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         IsReporting = true;
-        AddDebugText(errorObject.counter, type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message, ""), "\nLOCALS:\n", type(errorObject.locals) == 'string' and errorObject.locals or table.concat(errorObject.locals, ""));
+        AddDebugText(type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message or {"errorObject.message is nil"}, ""), "\nLOCALS:\n", type(errorObject.locals) == 'string' and errorObject.locals or table.concat(errorObject.locals or {"errorObject.locals is nil"}, ""));
         if T.Dcr and T.Dcr.Debug then
             T.Dcr:Debug("Lua error recorded");
         end
         IsReporting = false;
     end
 
-    if GetCVarBool("scriptErrors") then
+    if GetCVarBool("scriptErrors") then -- and not buggrabber has display XXX
         if not _G.DEBUGLOCALS_LEVEL then
             _G.LoadAddOn("Blizzard_DebugTools");
         end
@@ -178,7 +178,15 @@ function T._onError(event, errorObject)
         -- forward the error to the default Blizzad error displayer
         if _G._ERRORMESSAGE then
             local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1];
-            errorm = errorm:sub(1,errorm:find("\n") - 1);
+
+            if errorm:find("\n") then
+                errorm = errorm:sub(1,errorm:find("\n") - 1);
+            end
+
+            if type(errorm) ~= 'string' then -- XXX temp test
+                AddDebugText("errorm is not a string O.o:",  type(errorm), tostring(errorm), "errorObject:", unpack(errorObject));
+                return;
+            end
 
             -- if the error happened inside blizzard_debugtools, use Blizzards's BasicScriptErrorsText
             if (errorm:lower()):find("blizzard_debugtools") then
@@ -187,6 +195,7 @@ function T._onError(event, errorObject)
                 return;
             end
            
+            T.Dcr:Debug("Lua error forwarded");
             _G._ERRORMESSAGE( errorm );
         end
     end
@@ -203,7 +212,7 @@ T._tocversion = tocversion;
 function T._DecursiveErrorHandler(err, ...)
 
     -- second blizzard bug HotFix
-    ---[=[
+    --[=[
     if ScriptErrorsFrameScrollFrameText then
         if not ScriptErrorsFrameScrollFrameText.cursorOffset then
             ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
@@ -250,7 +259,9 @@ function T._HookErrorHandler()
         end
 
         BugGrabber.RegisterCallback(T, "BugGrabber_BugGrabbed", T._onError)
+        --BugGrabber.RegisterCallback(T, "BugGrabber_BugGrabbedAgain", T._onError)
         BugGrabber.RegisterCallback(T, "BugGrabber_EventGrabbed", T._onError)
+        --BugGrabber.RegisterCallback(T, "BugGrabber_EventGrabbedAgain", T._onError)
         T._BugGrabberEmbeded = true;
         return
     end
