@@ -89,7 +89,7 @@ local UnitClass         = _G.UnitClass;
 -------------------------------------------------------------------------------
 D.Groups_datas_are_invalid = true;
 -------------------------------------------------------------------------------
--- Internal HARD settings for decursive
+-- Internal HARD settings for Decursive
 D.CONF = {};
 D.CONF.TEXT_LIFETIME = 4.0;
 D.CONF.MAX_LIVE_SLOTS = 10;
@@ -372,26 +372,36 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
 
     DC.TypeNames = {
-        [DC.MAGIC]      = "Magic";
-        [DC.ENEMYMAGIC] = "Magic";
-        [DC.CURSE]      = "Curse";
-        [DC.POISON]     = "Poison";
-        [DC.DISEASE]    = "Disease";
-        [DC.CHARMED]    = "Charm";
+        [DC.MAGIC]      = "Magic",
+        [DC.ENEMYMAGIC] = "Magic",
+        [DC.CURSE]      = "Curse",
+        [DC.POISON]     = "Poison",
+        [DC.DISEASE]    = "Disease",
+        [DC.CHARMED]    = "Charm",
     }
 
     DC.NameToTypes = D:tReverse(DC.TypeNames);
     DC.NameToTypes["Magic"] = DC.MAGIC; -- make sure 'Magic' is set to DC.MAGIC and not to DC.ENEMYMAGIC
 
     DC.TypeColors = {
-        [DC.MAGIC]      = "2222DD";
-        [DC.ENEMYMAGIC] = "2222FF";
-        [DC.CURSE]      = "DD22DD";
-        [DC.POISON]     = "22DD22";
-        [DC.DISEASE]    = "995533";
-        [DC.CHARMED]    = "FF0000";
-        [DC.NOTYPE]     = "AAAAAA";
+        [DC.MAGIC]      = "2222DD",
+        [DC.ENEMYMAGIC] = "2222FF",
+        [DC.CURSE]      = "DD22DD",
+        [DC.POISON]     = "22DD22",
+        [DC.DISEASE]    = "995533",
+        [DC.CHARMED]    = "FF0000",
+        [DC.NOTYPE]     = "AAAAAA",
     }
+
+    DC.TypeToLocalizableTypeNames = {
+        [DC.MAGIC]      = "MAGIC",
+        [DC.ENEMYMAGIC] = "MAGICCHARMED",
+        [DC.CURSE]      = "CURSE",
+        [DC.POISON]     = "POISON",
+        [DC.DISEASE]    = "DISEASE",
+        [DC.CHARMED]    = "CHARM",
+    }
+    DC.LocalizableTypeNamesToTypes = D:tReverse(DC.TypeToLocalizableTypeNames);
 
     -- /script DcrC.SpellsToUse[DcrC.DS["Dampen Magic"]] = {Types = {DcrC.MAGIC, DcrC.DISEASE, DcrC.POISON},Better = false}; DecursiveRootTable.Dcr:Configure();
     -- /script DcrC.SpellsToUse[DcrC.DS["SPELL_POLYMORPH"]] = {  Types = {DcrC.CHARMED}, Better = false, Pet = false, Rank = "1 : Pig"}; DecursiveRootTable.Dcr:Configure();
@@ -1010,8 +1020,8 @@ local function SpellIterator()
             return iter(); -- continue with the other table
         end
 
-        -- if the spell is disabled or if it's already defined in the base table, skip it
-        if ST and (ST.Disabled or currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey]) then
+        -- if it's already defined in the base table, skip it
+        if ST and (currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey]) then
             --@debug@
             D:Debug("Skipping", currentKey);
             if currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey] then
@@ -1039,16 +1049,20 @@ function D:ReConfigure() --{{{
     local GetSpellInfo = _G.GetSpellInfo;
 
     local Reconfigure = false;
-    for spellName, Spell in SpellIterator() do
+    for spellName, spell in SpellIterator() do
         -- Do we have that spell?
         if GetSpellInfo(spellName) then -- yes
-            -- is it new?
-            if not D.Status.FoundSpells[spellName] then -- yes
+            -- We had it but it's been disabled
+            if spell.Disabled and D.Status.FoundSpells[spellName] then
                 Reconfigure = true;
                 break;
-            elseif Spell.EnhancedBy then -- it's not new but there is an enhancement available...
+                -- is it new?
+            elseif not spell.Disabled and not D.Status.FoundSpells[spellName] then -- yes
+                Reconfigure = true;
+                break;
+            elseif spell.EnhancedBy then -- it's not new but there is an enhancement available...
 
-                if Spell.EnhancedByCheck() then -- we have it now
+                if spell.EnhancedByCheck() then -- we have it now
                     if not D.Status.FoundSpells[spellName][3] then -- but not then :)
                         Reconfigure = true;
                         break;
@@ -1082,6 +1096,7 @@ function D:Configure() --{{{
 
     -- first empty out the old "spellbook"
     self.Status.HasSpell = false;
+    self.Status.FoundSpells = {};
 
 
     local CuringSpells = self.Status.CuringSpells;
@@ -1102,56 +1117,58 @@ function D:Configure() --{{{
     self:Debug("Configuring Decursive...");
 
     for spellName, spell in SpellIterator() do
-        self:Debug("trying spell", spellName);
-        -- Do we have that spell?
-        if GetSpellInfo(spellName) then -- yes
-            Types = spell.Types;
-            OnPlayerOnly = false;
-            IsEnhanced = false;
+        if not spell.Disabled then
+            self:Debug("trying spell", spellName);
+            -- Do we have that spell?
+            if GetSpellInfo(spellName) then -- yes
+                Types = spell.Types;
+                OnPlayerOnly = false;
+                IsEnhanced = false;
 
-            -- Could it be enhanced by something (a talent for example)?
-            if spell.EnhancedBy then
-                --@alpha@
-                self:Debug("Enhancement for ", spellName);
-                --@end-alpha@
-                
+                -- Could it be enhanced by something (a talent for example)?
+                if spell.EnhancedBy then
+                    --@alpha@
+                    self:Debug("Enhancement for ", spellName);
+                    --@end-alpha@
 
-                if spell.EnhancedByCheck() then -- we have the enhancement
-                    IsEnhanced = true;
 
-                    Types = spell.Enhancements.Types; -- set the type to scan to the new ones
+                    if spell.EnhancedByCheck() then -- we have the enhancement
+                        IsEnhanced = true;
 
-                    if spell.Enhancements.OnPlayerOnly then -- On the 'player' unit only?
-                        --@alpha@
-                        self:Debug("Enhancement for %s is for player only", spellName);
-                        --@end-alpha@
-                        OnPlayerOnly = spell.Enhancements.OnPlayerOnly;
+                        Types = spell.Enhancements.Types; -- set the type to scan to the new ones
+
+                        if spell.Enhancements.OnPlayerOnly then -- On the 'player' unit only?
+                            --@alpha@
+                            self:Debug("Enhancement for %s is for player only", spellName);
+                            --@end-alpha@
+                            OnPlayerOnly = spell.Enhancements.OnPlayerOnly;
+                        end
                     end
                 end
-            end
 
-            -- register it
-            for _, Type in pairs (Types) do
+                -- register it
+                for _, Type in pairs (Types) do
 
-                if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
+                    if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
 
-                    self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better};
-                    CuringSpells[Type] = spellName;
+                        self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better};
+                        CuringSpells[Type] = spellName;
 
-                    if OnPlayerOnly and OnPlayerOnly[Type] then
-                        --@alpha@
-                        self:Debug("Enhancement for player only for type added",Type);
-                        --@end-alpha@
-                        self.Status.PlayerOnlyTypes[Type] = true;
-                    else
-                        self.Status.PlayerOnlyTypes[Type] = false;
+                        if OnPlayerOnly and OnPlayerOnly[Type] then
+                            --@alpha@
+                            self:Debug("Enhancement for player only for type added",Type);
+                            --@end-alpha@
+                            self.Status.PlayerOnlyTypes[Type] = true;
+                        else
+                            self.Status.PlayerOnlyTypes[Type] = false;
+                        end
+
+                        self:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", spellName, D.Status.FoundSpells[spellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[spellName][1]);
+                        self.Status.HasSpell = true;
                     end
-
-                    self:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", spellName, D.Status.FoundSpells[spellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[spellName][1]);
-                    self.Status.HasSpell = true;
                 end
-            end
 
+            end
         end
     end
 

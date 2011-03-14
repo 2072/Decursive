@@ -284,18 +284,18 @@ function D:GetDefaultsSettings()
             -- Debuffs {{{
             -- those debuffs prevent us from curing the unit
             DebuffsToIgnore = {
-                [DS["Banish"]]                      = true,
-                [DS["Frost Trap Aura"]]             = true,
+                [DS["Banish"]]                  = true,
+                [DS["Frost Trap Aura"]]         = true,
             },
 
             -- thoses debuffs are in fact buffs...
             BuffDebuff = {
-                [DS["DREAMLESSSLEEP"]]      = true,
-                [DS["GDREAMLESSSLEEP"]]     = true,
-                [DS["MDREAMLESSSLEEP"]]     = true,
-                [DS["DCR_LOC_MINDVISION"]]  = true,
-                [DS["MUTATINGINJECTION"]]   = true,
-                [DS["Arcane Blast"]]                = true,
+                [DS["DREAMLESSSLEEP"]]          = true,
+                [DS["GDREAMLESSSLEEP"]]         = true,
+                [DS["MDREAMLESSSLEEP"]]         = true,
+                [DS["DCR_LOC_MINDVISION"]]      = true,
+                [DS["MUTATINGINJECTION"]]       = true,
+                [DS["Arcane Blast"]]            = true,
             },
 
             DebuffAlwaysSkipList = {
@@ -317,57 +317,57 @@ function D:GetDefaultsSettings()
 
             skipByClass = {
                 ["WARRIOR"] = {
-                    [DS["ANCIENTHYSTERIA"]]   = true,
-                    [DS["IGNITE"]]        = true,
-                    [DS["TAINTEDMIND"]]       = true,
-                    [DS["WIDOWSEMBRACE"]]    = true,
-                    [DS["CURSEOFTONGUES"]]   = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["ANCIENTHYSTERIA"]]     = true,
+                    [DS["IGNITE"]]              = true,
+                    [DS["TAINTEDMIND"]]         = true,
+                    [DS["WIDOWSEMBRACE"]]       = true,
+                    [DS["CURSEOFTONGUES"]]      = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["ROGUE"] = {
-                    [DS["DCR_LOC_SILENCE"]]           = true,
-                    [DS["ANCIENTHYSTERIA"]]   = true,
-                    [DS["IGNITE"]]        = true,
-                    [DS["TAINTEDMIND"]]       = true,
-                    [DS["WIDOWSEMBRACE"]]    = true,
-                    [DS["CURSEOFTONGUES"]]   = true,
-                    [DS["SONICBURST"]]        = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["DCR_LOC_SILENCE"]]     = true,
+                    [DS["ANCIENTHYSTERIA"]]     = true,
+                    [DS["IGNITE"]]              = true,
+                    [DS["TAINTEDMIND"]]         = true,
+                    [DS["WIDOWSEMBRACE"]]       = true,
+                    [DS["CURSEOFTONGUES"]]      = true,
+                    [DS["SONICBURST"]]          = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["HUNTER"] = {
-                    [DS["MAGMASHAKLES"]]     = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["MAGMASHAKLES"]]        = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["MAGE"] = {
-                    [DS["MAGMASHAKLES"]]     = true,
-                    [DS["CRIPLES"]]            = true,
-                    [DS["DUSTCLOUD"]]         = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["MAGMASHAKLES"]]        = true,
+                    [DS["CRIPLES"]]             = true,
+                    [DS["DUSTCLOUD"]]           = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["WARLOCK"] = {
-                    [DS["CRIPLES"]]            = true,
-                    [DS["DUSTCLOUD"]]         = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["CRIPLES"]]             = true,
+                    [DS["DUSTCLOUD"]]           = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["DRUID"] = {
-                    [DS["CRIPLES"]]            = true,
-                    [DS["DUSTCLOUD"]]         = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["CRIPLES"]]             = true,
+                    [DS["DUSTCLOUD"]]           = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["PALADIN"] = {
-                    [DS["CRIPLES"]]            = true,
-                    [DS["DUSTCLOUD"]]         = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["CRIPLES"]]             = true,
+                    [DS["DUSTCLOUD"]]           = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["PRIEST"] = {
-                    [DS["CRIPLES"]]            = true,
-                    [DS["DUSTCLOUD"]]         = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["CRIPLES"]]             = true,
+                    [DS["DUSTCLOUD"]]           = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["SHAMAN"] = {
-                    [DS["CRIPLES"]]            = true,
-                    [DS["DUSTCLOUD"]]         = true,
-                    [DS["DELUSIONOFJINDO"]]= true,
+                    [DS["CRIPLES"]]             = true,
+                    [DS["DUSTCLOUD"]]           = true,
+                    [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["DEATHKNIGHT"] = {
                 }
@@ -1281,6 +1281,7 @@ local function GetStaticOptions ()
                 desc = L["OPT_CURINGOPTIONS_DESC"],
                 order = 5,
                 disabled = function() return D.Status.Combat end,
+                --childGroups = 'select',
                 args = {
                     description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description"},
                     DoNot_Blacklist_Prio_List = {
@@ -1382,10 +1383,21 @@ local function GetStaticOptions ()
                     AddCustomSpell = {
                         type = 'input',
                         name = L["OPT_ADD_A_CUSTOM_SPELL"],
-                        get = function() return L["OPT_DROP_SPELL"]; end,
-                        set = function(info, v) D:Print(v); return "OK!"; end,
+                        desc = L["OPT_DROP_SPELL"],
+                        --get = function() return ; end,
+                        set = function(info, v)
+                            if not DC.SpellsToUse[v] then
+                                D.profile.UserSpells[v] = {
+                                    Types = {},
+                                    Better = 10,
+                                    Pet = false,
+                                    Disabled = false,
+                                };
+                                D:Print(v);
+                            end
+                        end,
                         validate = function(info, v)
-                            if type(v) ~= 'string' or not GetSpellInfo(v) then
+                            if type(v) ~= 'string' or not GetSpellInfo(v) or DC.SpellsToUse[v] then
                                 D:Debug(v, GetSpellInfo(v));
                                 return L["OPT_INPUT_SPELL_BAD_INPUT"];
                             end
@@ -1394,15 +1406,7 @@ local function GetStaticOptions ()
                         order = 155,
                         cmdHidden = true,
                     },
-                    AddedSpells = {
-                        type = "group",
-                        name = L["OPT_ADDED_SPELLS"],
-                        desc = L["OPT_ADDED_SPELLS_DESC"],
-                        order = 160,
-                        cmdHidden = true,
-                        inline = true,
-                        args = {},
-                    },
+                    
                 }
             }, -- }}}
 
@@ -1546,7 +1550,7 @@ local function GetOptions()
     -- create MUF's mouse buttons configuration menus
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
     -- create curring spells addition submenus
-    options.args.CureOptions.args.AddedSpells.args = D:CreateAddedSpellsOptionMenu();
+    D:CreateAddedSpellsOptionMenu(options.args.CureOptions.args);
 
     -- Create profile options
     options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
@@ -2185,12 +2189,14 @@ do
 
         elseif (type(ColorReason) == "string") then
 
-            name = L[ColorReason];
 
             if ColorReason == "COLORCHRONOS" then
+                name = L[ColorReason];
                 desc = L["COLORCHRONOS_DESC"];
             else
-                desc = "This is abnormal!";
+                name = "AceConfigCmd-3.0 is bugged";
+                desc = "type /decursive to use the graphical UI";
+                D:Debug("ColorReason:", ColorReason);
             end
         end
 
@@ -2208,6 +2214,7 @@ do
     end
 
     local GetName = function (info)
+        D:Debug(GetNameAndDesc(retrieveColorReason(info))[1]);
         return GetNameAndDesc(retrieveColorReason(info))[1];
     end
 
@@ -2234,7 +2241,7 @@ do
 
         D.MicroUnitF:Delayed_Force_FullUpdate();
 
-        D:Debug("MUF color setting %d changed.", ColorReason);
+        D:Debug("MUF color setting changed:", ColorReason);
     end
 
     local ColorPicker = {
@@ -2387,24 +2394,127 @@ end
 
 do
 
-    local order = 1;
+    local order = 160;
+    local t_insert = _G.table.insert;
+
+
+    local function GetColoredName(spellname)
+        local spell = D.profile.UserSpells[spellname];
+        local color = 'FFFFFFFF';
+
+        if spell.Disabled then
+            color = 'FFAA0000';
+        elseif not D.Status.CuringSpellsPrio[spellname] then
+            color = 'FF909090';
+        else
+            color = 'FF00D000';
+        end
+
+        return D:ColorText(spellname, color);
+
+    end
+
+    local TypeOption = {
+        type = "toggle",
+        name = function(info) return L[info[#info]] end,
+        get = function(info)
+            return D:tcheckforval(D.profile.UserSpells[info[#info-2]].Types,  DC.LocalizableTypeNamesToTypes[info[#info]])
+        end,
+        set = function(info, v)
+            local spellTableTypes = D.profile.UserSpells[info[#info-2]].Types
+            local curetype = DC.LocalizableTypeNamesToTypes[info[#info]]
+            D:Debug("TypeOption: checkingtable named:", info[#info-2], "for", info[#info], "CureType:", curetype);
+
+            if v and not D:tcheckforval(spellTableTypes, curetype) then
+                t_insert(spellTableTypes, curetype)
+            elseif not v then
+                D:tremovebyval(spellTableTypes, curetype);
+            end
+            if not D.profile.UserSpells[info[#info-2]].Disabled then
+                D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 3, D);
+            end
+        end,
+        order = function() return order; end,
+    }
+
     local SpellSubOptions = {
         type = 'group',
-        name = function(info) return info[#info] end,
+        name = function(info) return GetColoredName(info[#info]) end,
         order = function() return order; end,
-        args = {},
+        args = {
+            -- an enable checkbox
+            header = {
+                type = 'header',
+                name = function (info) return GetColoredName(info[#info - 1]); end,
+                order = 0,
+            },
+            enable = {
+                type = "toggle",
+                name = L["OPT_ENABLE_A_CUSTOM_SPELL"],
+                desc = L["OPT_ENABLE_A_CUSTOM_SPELL_DESC"],
+                set = function(info,v)
+                    D.profile.UserSpells[info[#info-1]].Disabled = not v;
+                    D:ReConfigure();
+                end,
+                get = function(info,v)
+                    return not D.profile.UserSpells[info[#info-1]].Disabled;
+                end,
+                order = 100
+            },
+            cureTypes = {
+                type = 'group',
+                name = L["OPT_CUSTOM_SPELL_CURE_TYPES"],
+                order = 105,
+                inline = true,
+                args={},
+            },
+            priority = {
+                type = 'range',
+                name = L["OPT_CUSTOM_SPELL_PRIORITY"],
+                get = function (info) return D.profile.UserSpells[info[#info-1]].Better end,
+                set = function (info, v)
+                    D.profile.UserSpells[info[#info-1]].Better = v;
+                    if not D.profile.UserSpells[info[#info-1]].Disabled then
+                        D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 3, D);
+                    end
+                end,
+                min = 10,
+                max = 30,
+                step = 1,
+                order = 105,
+            },
+            -- a delete button
+            delete = {
+                type = 'execute',
+                name = L["OPT_DELETE_A_CUSTOM_SPELL"],
+                confirm = true,
+                func = function (info)
+                    D.profile.UserSpells[info[#info - 1]] = nil;
+                    D:ReConfigure();
+                end,
+                order = -1,
+            },
+            -- one checkbox per type
+        },
 
     };
 
-    function D:CreateAddedSpellsOptionMenu ()
-        local OptionsTree = {};
+    function D:CreateAddedSpellsOptionMenu (where)
 
-        for spellName, spellTable in pairs(self.profile.UserSpells) do
-            OptionsTree[spellName] = SpellSubOptions;
+        local TypesSelector = {};
+
+        for localizableTypeName, curetype in pairs(DC.LocalizableTypeNamesToTypes) do
+            TypesSelector[localizableTypeName] = TypeOption;
             order = order + 1;
         end
 
-        return OptionsTree;
+        SpellSubOptions.args.cureTypes.args = TypesSelector;
+
+        for spellName, spellTable in pairs(self.profile.UserSpells) do
+            where[spellName] = SpellSubOptions;
+            order = order + 1;
+        end
+
     end
 end
 
