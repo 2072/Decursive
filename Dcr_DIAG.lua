@@ -157,6 +157,7 @@ function T._onError(event, errorObject)
     if not IsReporting
         and ( T._CatchAllErrors
         or (errorObject.type == 'error' and (errorm:sub(1,9)):lower() == "decursive")
+        or (errorObject.type == 'error' and errorm:find(": Decursive:"))
         or (errorObject.type == 'event' and (errorm:lower()):find("'decursive'")) 
         ) then
 
@@ -196,6 +197,19 @@ function T._onError(event, errorObject)
             end
            
             T.Dcr:Debug("Lua error forwarded");
+
+            -- Blizzard bug HotFix
+            ---[=[
+            if ScriptErrorsFrameScrollFrameText then
+                if not ScriptErrorsFrameScrollFrameText.cursorOffset then
+                    ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
+                    if ( GetCVarBool("scriptErrors") ) then
+                        print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
+                    end
+                end
+            end
+            --]=]
+
             _G._ERRORMESSAGE( errorm );
         end
     end
@@ -212,7 +226,7 @@ T._tocversion = tocversion;
 function T._DecursiveErrorHandler(err, ...)
 
     -- second blizzard bug HotFix
-    --[=[
+    ---[=[
     if ScriptErrorsFrameScrollFrameText then
         if not ScriptErrorsFrameScrollFrameText.cursorOffset then
             ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
