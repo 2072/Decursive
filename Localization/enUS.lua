@@ -68,7 +68,7 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_DIAG.xml"] or not T._LoadedFile
 end
 
 
-local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "enUS", true, true);
+local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "enUS", true, false);
 
 if not L then return end;
 
@@ -409,6 +409,18 @@ L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
 L["OPT_MUFSVERTICALDISPLAY"] = "Vertical display"
 L["OPT_MUFSVERTICALDISPLAY_DESC"] = "Set this to make MUFs to grow vertically"
+
+L["OPT_CUSTOMSPELLS"] = "Custom spells";
+L["OPT_CUSTOMSPELLS_DESC"] = "Here you can add spells to extend Decursive's automatic configuration.";
+L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell";
+L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Click here and shift-click on a spell from your spell book. You can also directly write its name or its spell ID.";
+L["OPT_CUSTOM_SPELL_UNAVAILABLE"] = "unavailable";
+L["OPT_ENABLE_A_CUSTOM_SPELL"] = "Enable";
+L["OPT_CUSTOM_SPELL_CURE_TYPES"] = "Affliction types";
+L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority";
+L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred.";
+L["OPT_DELETE_A_CUSTOM_SPELL"] = "Remove";
+
 
 --]==]
 --@end-do-not-package@

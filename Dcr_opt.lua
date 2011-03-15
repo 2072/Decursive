@@ -80,6 +80,16 @@ function D:GetDefaultsSettings()
                 [DC.ENEMYMAGIC] = 5,
                 [DC.CHARMED]    = 6,
             },
+
+            UserSpells = {
+                --Exemple / defaults
+                [DS["SPELL_COUNTERSPELL"]] = {
+                    Types = {DC.CHARMED},
+                    Better = 10,
+                    Pet = false,
+                    Disabled = true,
+                },
+            },
         },
 
         global = {
@@ -375,15 +385,7 @@ function D:GetDefaultsSettings()
             -- }}}
         
         
-            UserSpells = {
-                --Exemple / defaults
-                [DS["SPELL_COUNTERSPELL"]] = {
-                    Types = {DC.CHARMED},
-                    Better = 10,
-                    Pet = false,
-                    Disabled = true,
-                },
-            },
+            
         
         }
     } -- }}}
@@ -1281,7 +1283,7 @@ local function GetStaticOptions ()
                 desc = L["OPT_CURINGOPTIONS_DESC"],
                 order = 5,
                 disabled = function() return D.Status.Combat end,
-                --childGroups = 'select',
+                childGroups = 'tab',
                 args = {
                     description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description"},
                     DoNot_Blacklist_Prio_List = {
@@ -1299,114 +1301,150 @@ local function GetStaticOptions ()
                         order = 133
                     },
 
-                    Title2 = {
-                        type="header",
+                    CureOrder = {
+                        type="group",
                         name = L["OPT_CURINGORDEROPTIONS"],
                         order = 139,
+                        args = {
+                            description = {
+                                type = "description",
+                                name = L["OPT_CURINGOPTIONS_EXPLANATION"],
+                                order = 140,
+                            },
+                            CureMagic = {
+                                type = "toggle",
+                                name = "  "..L["MAGIC"],
+                                desc = L["OPT_MAGICCHECK_DESC"],
+                                get = function() return D:GetCureTypeStatus(DC.MAGIC) end,
+                                set = function()
+                                    D:SetCureOrder (DC.MAGIC);
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.MAGIC] end,
+                                order = 141
+                            },
+                            CureEnemyMagic = {
+                                type = "toggle",
+                                name = "  "..L["MAGICCHARMED"],
+                                desc = L["OPT_MAGICCHARMEDCHECK_DESC"],
+                                get = function() return D:GetCureTypeStatus(DC.ENEMYMAGIC) end,
+                                set = function()
+                                    D:SetCureOrder (DC.ENEMYMAGIC);
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.ENEMYMAGIC] end,
+                                order = 142
+                            },
+                            CurePoison = {
+                                type = "toggle",
+                                name = "  "..L["POISON"],
+                                desc = L["OPT_POISONCHECK_DESC"],
+                                get = function() return D:GetCureTypeStatus(DC.POISON) end,
+                                set = function()
+                                    D:SetCureOrder (DC.POISON);
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.POISON] end,
+                                order = 143
+                            },
+                            CureDisease = {
+                                type = "toggle",
+                                name = "  "..L["DISEASE"],
+                                desc = L["OPT_DISEASECHECK_DESC"],
+                                get = function() return D:GetCureTypeStatus(DC.DISEASE) end,
+                                set = function()
+                                    D:SetCureOrder (DC.DISEASE);
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.DISEASE] end,
+                                order = 144
+                            },
+                            CureCurse = {
+                                type = "toggle",
+                                name = "  "..L["CURSE"],
+                                desc = L["OPT_CURSECHECK_DESC"],
+                                get = function() return D:GetCureTypeStatus(DC.CURSE) end,
+                                set = function()
+                                    D:SetCureOrder (DC.CURSE);
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.CURSE] end,
+                                order = 145
+                            },
+                            CureCharmed = {
+                                type = "toggle",
+                                name = "  "..L["CHARM"],
+                                desc = L["OPT_CHARMEDCHECK_DESC"],
+                                get = function() return D:GetCureTypeStatus(DC.CHARMED) end,
+                                set = function()
+                                    D:SetCureOrder (DC.CHARMED);
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.CHARMED] end,
+                                order = 146
+                            },
+
+                        },
                     },
-                    description = {
-                        type = "description",
-                        name = L["OPT_CURINGOPTIONS_EXPLANATION"],
-                        order = 140,
-                    },
-                    CureMagic = {
-                        type = "toggle",
-                        name = "  "..L["MAGIC"],
-                        desc = L["OPT_MAGICCHECK_DESC"],
-                        get = function() return D:GetCureTypeStatus(DC.MAGIC) end,
-                        set = function()
-                            D:SetCureOrder (DC.MAGIC);
-                        end,
-                        disabled = function() return not D.Status.CuringSpells[DC.MAGIC] end,
-                        order = 141
-                    },
-                    CureEnemyMagic = {
-                        type = "toggle",
-                        name = "  "..L["MAGICCHARMED"],
-                        desc = L["OPT_MAGICCHARMEDCHECK_DESC"],
-                        get = function() return D:GetCureTypeStatus(DC.ENEMYMAGIC) end,
-                        set = function()
-                            D:SetCureOrder (DC.ENEMYMAGIC);
-                        end,
-                        disabled = function() return not D.Status.CuringSpells[DC.ENEMYMAGIC] end,
-                        order = 142
-                    },
-                    CurePoison = {
-                        type = "toggle",
-                        name = "  "..L["POISON"],
-                        desc = L["OPT_POISONCHECK_DESC"],
-                        get = function() return D:GetCureTypeStatus(DC.POISON) end,
-                        set = function()
-                            D:SetCureOrder (DC.POISON);
-                        end,
-                        disabled = function() return not D.Status.CuringSpells[DC.POISON] end,
-                        order = 143
-                    },
-                    CureDisease = {
-                        type = "toggle",
-                        name = "  "..L["DISEASE"],
-                        desc = L["OPT_DISEASECHECK_DESC"],
-                        get = function() return D:GetCureTypeStatus(DC.DISEASE) end,
-                        set = function()
-                            D:SetCureOrder (DC.DISEASE);
-                        end,
-                        disabled = function() return not D.Status.CuringSpells[DC.DISEASE] end,
-                        order = 144
-                    },
-                    CureCurse = {
-                        type = "toggle",
-                        name = "  "..L["CURSE"],
-                        desc = L["OPT_CURSECHECK_DESC"],
-                        get = function() return D:GetCureTypeStatus(DC.CURSE) end,
-                        set = function()
-                            D:SetCureOrder (DC.CURSE);
-                        end,
-                        disabled = function() return not D.Status.CuringSpells[DC.CURSE] end,
-                        order = 145
-                    },
-                    CureCharmed = {
-                        type = "toggle",
-                        name = "  "..L["CHARM"],
-                        desc = L["OPT_CHARMEDCHECK_DESC"],
-                        get = function() return D:GetCureTypeStatus(DC.CHARMED) end,
-                        set = function()
-                            D:SetCureOrder (DC.CHARMED);
-                        end,
-                        disabled = function() return not D.Status.CuringSpells[DC.CHARMED] end,
-                        order = 146
-                    },
-                    Title3 = {
-                        type = "header",
-                        name = L["OPT_CUSTOMSPELLS_HEADER"],
+
+                    CustomSpells = {
+                        type = "group",
+                        name = L["OPT_CUSTOMSPELLS"],
                         order = 150,
+                        args = {
+                            explanation = {
+                                type = 'description',
+                                name = L["OPT_CUSTOMSPELLS_DESC"],
+                                order = 0,
+                            },
+                            AddCustomSpell = {
+                                type = 'input',
+                                name = L["OPT_ADD_A_CUSTOM_SPELL"],
+                                desc = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
+                                set = function(info, v)
+
+                                    if tonumber(v) then
+                                        local spellName, spellRank = GetSpellInfo(v);
+
+                                        if spellRank ~= "" then
+                                            v = ("%s(%s)"):format(spellName, spellRank);
+                                        else
+                                            v = spellName;
+                                        end
+                                    elseif v:find('|Hspell:%d+') then
+                                        v = D:GetSpellFromLink(v)
+                                    end
+
+                                    if not DC.SpellsToUse[v] then
+                                        D.classprofile.UserSpells[v] = {
+                                            Types = {},
+                                            Better = 10,
+                                            Pet = false,
+                                            Disabled = false,
+                                        };
+                                        D:Print(v);
+                                    end
+                                end,
+                                validate = function(info, v)
+                                    if tonumber(v) then
+                                        if GetSpellInfo(v) then
+                                            return 0;
+                                        else
+                                            return 'bad spell id';
+                                        end
+                                    end
+
+                                    if v:find('|Hspell:%d+') then
+                                        return 0;
+                                    end
+
+                                    if type(v) ~= 'string' or not GetSpellInfo(v) or DC.SpellsToUse[v] or D.classprofile.UserSpells[v] then
+                                        D:Debug(v, GetSpellInfo(v));
+                                        return L["OPT_INPUT_SPELL_BAD_INPUT"];
+                                    end
+                                    return 0;
+                                end,
+                                order = 155,
+                                cmdHidden = true,
+                            },
+                        },
                     },
-                    AddCustomSpell = {
-                        type = 'input',
-                        name = L["OPT_ADD_A_CUSTOM_SPELL"],
-                        desc = L["OPT_DROP_SPELL"],
-                        --get = function() return ; end,
-                        set = function(info, v)
-                            if not DC.SpellsToUse[v] then
-                                D.profile.UserSpells[v] = {
-                                    Types = {},
-                                    Better = 10,
-                                    Pet = false,
-                                    Disabled = false,
-                                };
-                                D:Print(v);
-                            end
-                        end,
-                        validate = function(info, v)
-                            if type(v) ~= 'string' or not GetSpellInfo(v) or DC.SpellsToUse[v] then
-                                D:Debug(v, GetSpellInfo(v));
-                                return L["OPT_INPUT_SPELL_BAD_INPUT"];
-                            end
-                            return 0;
-                        end,
-                        order = 155,
-                        cmdHidden = true,
-                    },
-                    
+
+
                 }
             }, -- }}}
 
@@ -1530,12 +1568,12 @@ local function GetOptions()
     local options = GetStaticOptions();
 
     local CureCheckBoxes = {
-        [DC.ENEMYMAGIC]     = options.args.CureOptions.args.CureEnemyMagic,
-        [DC.MAGIC]          = options.args.CureOptions.args.CureMagic,
-        [DC.CURSE]          = options.args.CureOptions.args.CureCurse,
-        [DC.POISON]         = options.args.CureOptions.args.CurePoison,
-        [DC.DISEASE]        = options.args.CureOptions.args.CureDisease,
-        [DC.CHARMED]        = options.args.CureOptions.args.CureCharmed,
+        [DC.ENEMYMAGIC]     = options.args.CureOptions.args.CureOrder.args.CureEnemyMagic,
+        [DC.MAGIC]          = options.args.CureOptions.args.CureOrder.args.CureMagic,
+        [DC.CURSE]          = options.args.CureOptions.args.CureOrder.args.CureCurse,
+        [DC.POISON]         = options.args.CureOptions.args.CureOrder.args.CurePoison,
+        [DC.DISEASE]        = options.args.CureOptions.args.CureOrder.args.CureDisease,
+        [DC.CHARMED]        = options.args.CureOptions.args.CureOrder.args.CureCharmed,
     }
 
     -- Add the green number infront of the checkboxes
@@ -1550,7 +1588,7 @@ local function GetOptions()
     -- create MUF's mouse buttons configuration menus
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
     -- create curring spells addition submenus
-    D:CreateAddedSpellsOptionMenu(options.args.CureOptions.args);
+    D:CreateAddedSpellsOptionMenu(options.args.CureOptions.args.CustomSpells.args);
 
     -- Create profile options
     options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
@@ -2196,7 +2234,7 @@ do
             else
                 name = "AceConfigCmd-3.0 is bugged";
                 desc = "type /decursive to use the graphical UI";
-                D:Debug("ColorReason:", ColorReason);
+                --D:Debug("ColorReason:", ColorReason);
             end
         end
 
@@ -2214,7 +2252,7 @@ do
     end
 
     local GetName = function (info)
-        D:Debug(GetNameAndDesc(retrieveColorReason(info))[1]);
+        --D:Debug(GetNameAndDesc(retrieveColorReason(info))[1]);
         return GetNameAndDesc(retrieveColorReason(info))[1];
     end
 
@@ -2399,7 +2437,7 @@ do
 
 
     local function GetColoredName(spellname)
-        local spell = D.profile.UserSpells[spellname];
+        local spell = D.classprofile.UserSpells[spellname];
         local color = 'FFFFFFFF';
 
         if spell.Disabled then
@@ -2410,6 +2448,11 @@ do
             color = 'FF00D000';
         end
 
+        if not GetSpellInfo(spellname) then
+            spellname = ("(%s) %s"):format(L["OPT_CUSTOM_SPELL_UNAVAILABLE"], spellname);
+            color = 'FF606060';
+        end
+
         return D:ColorText(spellname, color);
 
     end
@@ -2418,10 +2461,10 @@ do
         type = "toggle",
         name = function(info) return L[info[#info]] end,
         get = function(info)
-            return D:tcheckforval(D.profile.UserSpells[info[#info-2]].Types,  DC.LocalizableTypeNamesToTypes[info[#info]])
+            return D:tcheckforval(D.classprofile.UserSpells[info[#info-2]].Types,  DC.LocalizableTypeNamesToTypes[info[#info]])
         end,
         set = function(info, v)
-            local spellTableTypes = D.profile.UserSpells[info[#info-2]].Types
+            local spellTableTypes = D.classprofile.UserSpells[info[#info-2]].Types
             local curetype = DC.LocalizableTypeNamesToTypes[info[#info]]
             D:Debug("TypeOption: checkingtable named:", info[#info-2], "for", info[#info], "CureType:", curetype);
 
@@ -2430,7 +2473,7 @@ do
             elseif not v then
                 D:tremovebyval(spellTableTypes, curetype);
             end
-            if not D.profile.UserSpells[info[#info-2]].Disabled then
+            if not D.classprofile.UserSpells[info[#info-2]].Disabled then
                 D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 3, D);
             end
         end,
@@ -2451,13 +2494,12 @@ do
             enable = {
                 type = "toggle",
                 name = L["OPT_ENABLE_A_CUSTOM_SPELL"],
-                desc = L["OPT_ENABLE_A_CUSTOM_SPELL_DESC"],
                 set = function(info,v)
-                    D.profile.UserSpells[info[#info-1]].Disabled = not v;
+                    D.classprofile.UserSpells[info[#info-1]].Disabled = not v;
                     D:ReConfigure();
                 end,
                 get = function(info,v)
-                    return not D.profile.UserSpells[info[#info-1]].Disabled;
+                    return not D.classprofile.UserSpells[info[#info-1]].Disabled;
                 end,
                 order = 100
             },
@@ -2471,10 +2513,11 @@ do
             priority = {
                 type = 'range',
                 name = L["OPT_CUSTOM_SPELL_PRIORITY"],
-                get = function (info) return D.profile.UserSpells[info[#info-1]].Better end,
+                desc = L["OPT_CUSTOM_SPELL_PRIORITY_DESC"],
+                get = function (info) return D.classprofile.UserSpells[info[#info-1]].Better end,
                 set = function (info, v)
-                    D.profile.UserSpells[info[#info-1]].Better = v;
-                    if not D.profile.UserSpells[info[#info-1]].Disabled then
+                    D.classprofile.UserSpells[info[#info-1]].Better = v;
+                    if not D.classprofile.UserSpells[info[#info-1]].Disabled then
                         D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 3, D);
                     end
                 end,
@@ -2486,10 +2529,10 @@ do
             -- a delete button
             delete = {
                 type = 'execute',
-                name = L["OPT_DELETE_A_CUSTOM_SPELL"],
+                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], info[#info - 1]) end,
                 confirm = true,
                 func = function (info)
-                    D.profile.UserSpells[info[#info - 1]] = nil;
+                    D.classprofile.UserSpells[info[#info - 1]] = nil;
                     D:ReConfigure();
                 end,
                 order = -1,
@@ -2510,7 +2553,7 @@ do
 
         SpellSubOptions.args.cureTypes.args = TypesSelector;
 
-        for spellName, spellTable in pairs(self.profile.UserSpells) do
+        for spellName, spellTable in pairs(self.classprofile.UserSpells) do
             where[spellName] = SpellSubOptions;
             order = order + 1;
         end

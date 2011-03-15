@@ -431,6 +431,29 @@ do
 
 end
 
+function D:GetSpellFromLink(link)
+
+    if link:find('|Hspell:%d+') then
+        local spellID;
+        spellID = link:match('|Hspell:(%d+)');
+
+        local spellName, spellRank = GetSpellInfo(spellID);
+
+        if not spellName then
+            return nil;
+        end
+
+        if spellRank ~= "" then
+            spellName = ("%s(%s)"):format(spellName, spellRank);
+        end
+        D:Debug('Spell link detected:', spellID, spellName, spellRank);
+
+        return spellName;
+    end
+
+    return nil;
+end
+
 function D:MakeError(something)
 
     if something then

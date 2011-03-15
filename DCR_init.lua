@@ -1013,7 +1013,7 @@ local function SpellIterator()
         -- we reached the end of a table
         if currentKey == nil and currentSpellTable == DC.SpellsToUse then
             -- it was the base table now use the user defined one
-            currentSpellTable = D.profile.UserSpells;
+            currentSpellTable = D.classprofile.UserSpells;
             --@debug@
             D:Debug("|cFF00FF00Shifting to user spells|r");
             --@end-debug@
