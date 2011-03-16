@@ -1020,8 +1020,8 @@ local function SpellIterator()
             return iter(); -- continue with the other table
         end
 
-        -- if it's already defined in the base table, skip it
-        if ST and (currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey]) then
+        -- if it's already defined in the base table or if it's hidden, skip it
+        if ST and (currentSpellTable ~= DC.SpellsToUse and (DC.SpellsToUse[currentKey] or currentSpellTable[currentKey].Hidden)) then
             --@debug@
             D:Debug("Skipping", currentKey);
             if currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey] then

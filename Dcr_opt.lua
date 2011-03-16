@@ -88,6 +88,7 @@ function D:GetDefaultsSettings()
                     Better = 10,
                     Pet = false,
                     Disabled = true,
+                    IsDefault = true,
                 },
             },
         },
@@ -1420,22 +1421,37 @@ local function GetStaticOptions ()
                                     end
                                 end,
                                 validate = function(info, v)
+
                                     if tonumber(v) then
                                         if GetSpellInfo(v) then
-                                            return 0;
+                                            local spellName, spellRank = GetSpellInfo(v);
+
+                                            if spellRank ~= "" then
+                                                v = ("%s(%s)"):format(spellName, spellRank);
+                                            else
+                                                v = spellName;
+                                            end
                                         else
-                                            return 'bad spell id';
+                                            return L["OPT_INPUT_SPELL_BAD_INPUT_ID"];
                                         end
+
+                                    elseif v:find('|Hspell:%d+') then
+                                        v = D:GetSpellFromLink(v)
                                     end
 
-                                    if v:find('|Hspell:%d+') then
-                                        return 0;
+                                    if DC.SpellsToUse[v] then
+                                        return L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"];
                                     end
 
-                                    if type(v) ~= 'string' or not GetSpellInfo(v) or DC.SpellsToUse[v] or D.classprofile.UserSpells[v] then
+                                    if type(v) ~= 'string' or not GetSpellInfo(v) then
                                         D:Debug(v, GetSpellInfo(v));
-                                        return L["OPT_INPUT_SPELL_BAD_INPUT"];
+                                        return L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"];
                                     end
+
+                                    if D.classprofile.UserSpells[v] and D.classprofile.UserSpells[v].Types then
+                                        return L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"];
+                                    end
+
                                     return 0;
                                 end,
                                 order = 155,
@@ -2473,8 +2489,8 @@ do
             elseif not v then
                 D:tremovebyval(spellTableTypes, curetype);
             end
-            if not D.classprofile.UserSpells[info[#info-2]].Disabled then
-                D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 3, D);
+            if not D.classprofile.UserSpells[info[#info-2]].Disabled and GetSpellInfo(info[#info-2]) then
+                D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
             end
         end,
         order = function() return order; end,
@@ -2496,7 +2512,9 @@ do
                 name = L["OPT_ENABLE_A_CUSTOM_SPELL"],
                 set = function(info,v)
                     D.classprofile.UserSpells[info[#info-1]].Disabled = not v;
-                    D:ReConfigure();
+                    if GetSpellInfo(info[#info-1]) then
+                        D:ReConfigure();
+                    end
                 end,
                 get = function(info,v)
                     return not D.classprofile.UserSpells[info[#info-1]].Disabled;
@@ -2518,7 +2536,7 @@ do
                 set = function (info, v)
                     D.classprofile.UserSpells[info[#info-1]].Better = v;
                     if not D.classprofile.UserSpells[info[#info-1]].Disabled then
-                        D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 3, D);
+                        D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
                     end
                 end,
                 min = 10,
@@ -2532,8 +2550,17 @@ do
                 name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], info[#info - 1]) end,
                 confirm = true,
                 func = function (info)
-                    D.classprofile.UserSpells[info[#info - 1]] = nil;
-                    D:ReConfigure();
+
+                    if D.classprofile.UserSpells[info[#info - 1]].IsDefault then
+                        D.classprofile.UserSpells[info[#info - 1]].Types = {};
+                        D.classprofile.UserSpells[info[#info - 1]].Hidden = true;
+                    else
+                        D.classprofile.UserSpells[info[#info - 1]] = nil;
+                    end
+
+                    if D.Status.FoundSpells[info[#info - 1]] then
+                        D:Configure();
+                    end
                 end,
                 order = -1,
             },
@@ -2554,8 +2581,10 @@ do
         SpellSubOptions.args.cureTypes.args = TypesSelector;
 
         for spellName, spellTable in pairs(self.classprofile.UserSpells) do
-            where[spellName] = SpellSubOptions;
-            order = order + 1;
+            if not spellTable.Hidden then
+                where[spellName] = SpellSubOptions;
+                order = order + 1;
+            end
         end
 
     end

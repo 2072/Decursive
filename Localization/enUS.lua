@@ -421,6 +421,11 @@ L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority";
 L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred.";
 L["OPT_DELETE_A_CUSTOM_SPELL"] = "Remove";
 
+L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID.";
+L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found.";
+L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive already manage this spell. Shift-click the spell to add a special rank.";
+L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Spell already here.";
+
 
 --]==]
 --@end-do-not-package@
