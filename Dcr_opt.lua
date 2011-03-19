@@ -464,6 +464,14 @@ function D.SetHandler (info, value) -- {{{
     end
 end -- }}}
 
+local CombatWarning = {
+    type = "description",
+    name = D:ColorText(L["OPT_OPTIONS_DISABLED_WHILE_IN_COMBAT"], "FFFF0000"),
+    order = 0,
+    disabled = false,
+    hidden = function() return not D.Status.Combat end,
+};
+
 local function GetStaticOptions ()
     return {
         -- {{{
@@ -1115,6 +1123,7 @@ local function GetStaticOptions ()
                             TransparencyOpts = {
                                 type = 'group',
                                 inline = true,
+                                order = 1,
                                 name = " ",
                                 args = {
                                     DebuffsFrameElemTieTransparency = {
@@ -1168,8 +1177,10 @@ local function GetStaticOptions ()
                                 type = 'group',
                                 inline = true,
                                 name = " ",
+                                order = 2,
                                 disabled = function() return D.Status.Combat end,
                                 args = {
+                                    combatwarning = CombatWarning,
                                     DebuffsFrameTieSpacing = {
                                         type = "toggle",
                                         name = L["OPT_TIEXYSPACING"],
@@ -1221,24 +1232,24 @@ local function GetStaticOptions ()
                         },
                     },
 
-                    MUFsColors = {
-                        type = "group",
-                        name = L["OPT_MUFSCOLORS"],
-                        desc = L["OPT_MUFSCOLORS_DESC"],
-                        order = 3,
-                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
-                        hidden = function () return not D:IsEnabled(); end,
-                        args = {}
-                    },
-
                     MUFsMouseButtons = {
                         type = "group",
                         name = L["OPT_MUFMOUSEBUTTONS"],
                         desc = L["OPT_MUFMOUSEBUTTONS_DESC"],
-                        order = 4,
+                        order = 3,
                         disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
                         hidden = function () return not D:IsEnabled(); end,
                         args = {},
+                    },
+
+                    MUFsColors = {
+                        type = "group",
+                        name = L["OPT_MUFSCOLORS"],
+                        desc = L["OPT_MUFSCOLORS_DESC"],
+                        order = 4,
+                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
+                        hidden = function () return not D:IsEnabled(); end,
+                        args = {}
                     },
 
                     PerfOptions = {
@@ -1283,10 +1294,17 @@ local function GetStaticOptions ()
                 name = D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533"),
                 desc = L["OPT_CURINGOPTIONS_DESC"],
                 order = 5,
-                disabled = function() return D.Status.Combat end,
+                disabled = function(info)
+                    D:Debug(info[#info]);
+                    if info[#info] ~= "CureOptions" then
+                        return D.Status.Combat
+                    else
+                        return false;
+                    end
+                end,
                 childGroups = 'tab',
                 args = {
-                    description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description"},
+                    description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description", disabled = false,},
                     DoNot_Blacklist_Prio_List = {
                         type = "toggle",
                         width = 'full',
@@ -1306,7 +1324,16 @@ local function GetStaticOptions ()
                         type="group",
                         name = L["OPT_CURINGORDEROPTIONS"],
                         order = 139,
+                        disabled = function(info)
+                            D:Debug(info[#info]);
+                            if info[#info] ~= "CureOrder" then
+                                return D.Status.Combat
+                            else
+                                return false;
+                            end
+                        end,
                         args = {
+                            combatwarning = CombatWarning,
                             description = {
                                 type = "description",
                                 name = L["OPT_CURINGOPTIONS_EXPLANATION"],
@@ -1320,7 +1347,7 @@ local function GetStaticOptions ()
                                 set = function()
                                     D:SetCureOrder (DC.MAGIC);
                                 end,
-                                disabled = function() return not D.Status.CuringSpells[DC.MAGIC] end,
+                                disabled = function() return not D.Status.CuringSpells[DC.MAGIC] or D.Status.Combat end,
                                 order = 141
                             },
                             CureEnemyMagic = {
@@ -1331,7 +1358,7 @@ local function GetStaticOptions ()
                                 set = function()
                                     D:SetCureOrder (DC.ENEMYMAGIC);
                                 end,
-                                disabled = function() return not D.Status.CuringSpells[DC.ENEMYMAGIC] end,
+                                disabled = function() return not D.Status.CuringSpells[DC.ENEMYMAGIC] or D.Status.Combat end,
                                 order = 142
                             },
                             CurePoison = {
@@ -1342,7 +1369,7 @@ local function GetStaticOptions ()
                                 set = function()
                                     D:SetCureOrder (DC.POISON);
                                 end,
-                                disabled = function() return not D.Status.CuringSpells[DC.POISON] end,
+                                disabled = function() return not D.Status.CuringSpells[DC.POISON] or D.Status.Combat end,
                                 order = 143
                             },
                             CureDisease = {
@@ -1353,7 +1380,7 @@ local function GetStaticOptions ()
                                 set = function()
                                     D:SetCureOrder (DC.DISEASE);
                                 end,
-                                disabled = function() return not D.Status.CuringSpells[DC.DISEASE] end,
+                                disabled = function() return not D.Status.CuringSpells[DC.DISEASE] or D.Status.Combat end,
                                 order = 144
                             },
                             CureCurse = {
@@ -1364,7 +1391,7 @@ local function GetStaticOptions ()
                                 set = function()
                                     D:SetCureOrder (DC.CURSE);
                                 end,
-                                disabled = function() return not D.Status.CuringSpells[DC.CURSE] end,
+                                disabled = function() return not D.Status.CuringSpells[DC.CURSE] or D.Status.Combat end,
                                 order = 145
                             },
                             CureCharmed = {
@@ -1375,7 +1402,7 @@ local function GetStaticOptions ()
                                 set = function()
                                     D:SetCureOrder (DC.CHARMED);
                                 end,
-                                disabled = function() return not D.Status.CuringSpells[DC.CHARMED] end,
+                                disabled = function() return not D.Status.CuringSpells[DC.CHARMED] or D.Status.Combat end,
                                 order = 146
                             },
 
@@ -1386,11 +1413,21 @@ local function GetStaticOptions ()
                         type = "group",
                         name = L["OPT_CUSTOMSPELLS"],
                         order = 150,
+                        disabled = function(info)
+                            D:Debug(info[#info]);
+                            if info[#info] ~= "CustomSpells" then
+                                return D.Status.Combat
+                            else
+                                return false;
+                            end
+                        end,
                         args = {
+                            combatwarning = CombatWarning,
                             explanation = {
                                 type = 'description',
                                 name = L["OPT_CUSTOMSPELLS_DESC"],
-                                order = 0,
+                                order = 1,
+                                disabled = false,
                             },
                             AddCustomSpell = {
                                 type = 'input',
@@ -2213,7 +2250,7 @@ do
 
         if (type(ColorReason) == "number" and ColorReason <= 6) then
 
-            name = D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[ColorReason] ], D:NumToHexColor(L_MF_colors[ColorReason]));
+            name = D:ColorText(  ("%s (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(ColorReason), DC.AvailableButtonsReadable[D.db.global.AvailableButtons[ColorReason] ])  , D:NumToHexColor(L_MF_colors[ColorReason]));
             desc = (L["COLORALERT"]):format(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[ColorReason] ]);
 
         elseif (type(ColorReason) == "number")      then
@@ -2381,7 +2418,7 @@ do
             if not retrieveKeyComboNum (info) then return "" end -- needed because when called by command line, info is set to the parent
 
             if retrieveKeyComboNum (info) < #D.db.global.AvailableButtons - 1 then
-                return "";
+                return D:ColorText(L["OPT_CURE_PRIORITY_NUM"]:format(retrieveKeyComboNum (info)),  D:NumToHexColor(D.profile.MF_colors[retrieveKeyComboNum (info)]));
             elseif  retrieveKeyComboNum (info) == #D.db.global.AvailableButtons - 1 then
                 return L["OPT_MUFTARGETBUTTON"];
             else

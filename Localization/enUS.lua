@@ -223,19 +223,16 @@ L["OPT_CMD_ENABLED"] = "Enabled"
 L["OPT_CREATE_VIRTUAL_DEBUFF"] = "Create a virtual test affliction"
 L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"] = "Lets you see how it looks like when an affliction is found"
 L["OPT_CUREPETS_DESC"] = "Pets will be managed and cured"
-L["OPT_CURINGOPTIONS"] = "Curing options"
+L["OPT_CURINGOPTIONS"] = "Cure options"
 L["OPT_CURINGOPTIONS_DESC"] = "Set different aspects of the curing process"
-L["OPT_CURINGOPTIONS_EXPLANATION"] = [=[
-Select the types of the afflictions you want to cure, unchecked types will be completely ignored by Decursive.
+L["OPT_CURINGOPTIONS_EXPLANATION"] = [=[Select the types of affliction you want to cure, unchecked types will be completely ignored by Decursive.
 
-The green number determine the priority of the affliction. This priority will affect several aspects:
-- What Decursive shows you first if a player got several types of Debuff.
-- What mouse button you'll have to click to cure the debuff (First spell is Left-Click, second is Right-Click, etc...)
+The green numbers determine the priority of the affliction's type. This priority will affect several aspects:
+- What Decursive shows you first if a player got several afflictions.
+- What will be the MUF's color and thus the mouse button you'll have to click to cure the affliction (First spell is Left-Click, second is Right-Click, etc...)
 
-All of this is explained in the documentation (a must see):
-http://www.wowace.com/addons/decursive/
-]=]
-L["OPT_CURINGORDEROPTIONS"] = "Curing Order Options"
+(To change the order, uncheck all types and check again in the order you want)]=]
+L["OPT_CURINGORDEROPTIONS"] = "Cure Order Options"
 L["OPT_CURSECHECK_DESC"] = "If checked you'll be able to see and cure cursed units"
 L["OPT_DEBCHECKEDBYDEF"] = [=[
 
@@ -302,8 +299,10 @@ L["OPT_MFSETTINGS_DESC"] = "Set the micro units frame window options to suit you
 L["OPT_MUFFOCUSBUTTON"] = "Focusing button:"
 L["OPT_MUFHANDLE_HINT"] = "To move the micro-unit-frames: ALT-click the invisible handle located above the first micro-unit-frame."
 L["OPT_MUFMOUSEBUTTONS"] = "Mouse buttons"
-L["OPT_MUFMOUSEBUTTONS_DESC"] = [=[Set the mouse-buttons you want to use for each Micro-Unit-Frame alert color.
-Before modifying this tab you should check out the '|cFFFF5533Curing options|r'!]=]
+L["OPT_MUFMOUSEBUTTONS_DESC"] = [=[Here you can change cure priorities' default bindings (ex: Red MUFs <-> Left-Click). This is particularly useful if you want to use your mouse's middle button to cure instead of targeting.
+
+You can also alter those bindings by changing the priority of each affliction type, see the 'Cure Order Options' tab of the '|cFFFF5533Cure Options|r' panel.]=]
+
 L["OPT_MUFSCOLORS"] = "Colors"
 L["OPT_MUFSCOLORS_DESC"] = "Change the colors of the Micro Unit Frames."
 L["OPT_MUFTARGETBUTTON"] = "Targeting button:"
@@ -421,11 +420,13 @@ L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority";
 L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred.";
 L["OPT_DELETE_A_CUSTOM_SPELL"] = "Remove";
 
-L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID.";
-L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found.";
-L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive already manage this spell. Shift-click the spell to add a special rank.";
-L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Spell already here.";
+L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID!";
+L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found in your spell book!";
+L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive already manage this spell. Shift-click the spell or type its ID to add a special rank.";
+L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Spell already listed!";
 
+L["OPT_CURE_PRIORITY_NUM"] = "Priority #%d";
+L["OPT_OPTIONS_DISABLED_WHILE_IN_COMBAT"] = "These options are disabled while you are in combat.";
 
 --]==]
 --@end-do-not-package@

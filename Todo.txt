@@ -1,10 +1,7 @@
 TODO:
 
-- add a donators credit section in the About UI
 
-- Add a menu option to choose between available spells. (will also allow to choose other polymorph spells)
--- only useful for polymorphs
--- prefer Nerdling proposition (ticket #78): let the user ADDS spell (won't be able to remove anything)
+- add a donators credit section in the About UI
 
 - Add an option to disable spell stopping when clicking on a MUF
 -- Was never requested
