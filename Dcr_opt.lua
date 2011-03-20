@@ -1295,7 +1295,6 @@ local function GetStaticOptions ()
                 desc = L["OPT_CURINGOPTIONS_DESC"],
                 order = 5,
                 disabled = function(info)
-                    D:Debug(info[#info]);
                     if info[#info] ~= "CureOptions" then
                         return D.Status.Combat
                     else
@@ -1325,7 +1324,6 @@ local function GetStaticOptions ()
                         name = L["OPT_CURINGORDEROPTIONS"],
                         order = 139,
                         disabled = function(info)
-                            D:Debug(info[#info]);
                             if info[#info] ~= "CureOrder" then
                                 return D.Status.Combat
                             else
@@ -1414,7 +1412,6 @@ local function GetStaticOptions ()
                         name = L["OPT_CUSTOMSPELLS"],
                         order = 150,
                         disabled = function(info)
-                            D:Debug(info[#info]);
                             if info[#info] ~= "CustomSpells" then
                                 return D.Status.Combat
                             else
@@ -2579,7 +2576,22 @@ do
                 min = 10,
                 max = 30,
                 step = 1,
-                order = 105,
+                order = 110,
+            },
+            stopcasting = {
+                type = "toggle",
+                name = L["OPT_CUSTOM_SPELL_STOPCASTING"],
+                desc = L["OPT_CUSTOM_SPELL_STOPCASTING_DESC"];
+                set = function(info,v)
+                    D.classprofile.UserSpells[info[#info-1]].Pet = not v;
+                    if GetSpellInfo(info[#info-1]) then
+                        D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
+                    end
+                end,
+                get = function(info,v)
+                    return not D.classprofile.UserSpells[info[#info-1]].Pet;
+                end,
+                order = 115
             },
             -- a delete button
             delete = {
