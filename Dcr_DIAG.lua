@@ -149,10 +149,11 @@ local AddDebugText = T._AddDebugText;
 
 local IsReporting = false;
 
-
+T._NonDecursiveErrors = 0;
 local type = _G.type;
 function T._onError(event, errorObject)
     local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1]
+    local mine = false;
 
     if not IsReporting
         and ( T._CatchAllErrors
@@ -168,9 +169,12 @@ function T._onError(event, errorObject)
             T.Dcr:Debug("Lua error recorded");
         end
         IsReporting = false;
+        mine = true;
+    else
+        T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
     end
 
-    if GetCVarBool("scriptErrors") then -- and not buggrabber has display XXX
+    if not mine and GetCVarBool("scriptErrors") then -- and not buggrabber has display XXX
         if not _G.DEBUGLOCALS_LEVEL then
             _G.LoadAddOn("Blizzard_DebugTools");
         end
@@ -203,15 +207,16 @@ function T._onError(event, errorObject)
             if ScriptErrorsFrameScrollFrameText then
                 if not ScriptErrorsFrameScrollFrameText.cursorOffset then
                     ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
-                    if ( GetCVarBool("scriptErrors") ) then
-                        print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
-                    end
+                    T._BDT_HotFix1_applyed = true;
+                    print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
                 end
             end
             --]=]
 
             _G._ERRORMESSAGE( errorm );
         end
+    else
+        T.Dcr:Debug("Lua error NOT forwarded, mine=", mine);
     end
 
 end

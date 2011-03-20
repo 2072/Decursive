@@ -2766,7 +2766,7 @@ function D:ShowDebugReport()
     D:Debug(GetLocale());
 
     if not DebugHeader then
-        DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f D: %s %s %s (%s, %s, %s, %s)"):format((self.L) and self.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", DC.MyClass, D:NiceTime(), date(), GetLocale(), BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", GetBuildInfo());
+        DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d (%s, %s, %s, %s)"):format((self.L) and self.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", DC.MyClass, D:NiceTime(), date(), GetLocale(), BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", tostring(T._BDT_HotFix1_applyed), T._NonDecursiveErrors, GetBuildInfo());
     end
 
     T._DebugText = DebugHeader .. table.concat(T._DebugTextTable, "");

@@ -416,7 +416,7 @@ do
                     D:GetClassHexColor(class);
                     D:GetClassColor(class);
                 else
-                    RAID_CLASS_COLORS[class] = nil; -- Eat that!
+                    --RAID_CLASS_COLORS[class] = nil; -- Eat that!
                     --@debug@
                     D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class);
                     --@end-debug@
