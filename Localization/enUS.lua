@@ -420,7 +420,7 @@ L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority";
 L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred.";
 L["OPT_DELETE_A_CUSTOM_SPELL"] = "Remove";
 L["OPT_CUSTOM_SPELL_STOPCASTING"] = "/StopCasting";
-L["OPT_CUSTOM_SPELL_STOPCASTING_DESC"] = "Using this spell will interrupt other spells (uncheck that if the spell comes from a pet)";
+L["OPT_CUSTOM_SPELL_STOPCASTING_DESC"] = "Using this spell will interrupt other spells in progress (uncheck that if the spell comes from a pet)";
 
 L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID!";
 L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found in your spell book!";

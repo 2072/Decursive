@@ -1430,6 +1430,7 @@ local function GetStaticOptions ()
                                 type = 'input',
                                 name = L["OPT_ADD_A_CUSTOM_SPELL"],
                                 desc = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
+                                usage = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
                                 set = function(info, v)
 
                                     if tonumber(v) then
@@ -1456,6 +1457,8 @@ local function GetStaticOptions ()
                                 end,
                                 validate = function(info, v)
 
+                                    local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
+
                                     if tonumber(v) then
                                         if GetSpellInfo(v) then
                                             local spellName, spellRank = GetSpellInfo(v);
@@ -1466,7 +1469,7 @@ local function GetStaticOptions ()
                                                 v = spellName;
                                             end
                                         else
-                                            return L["OPT_INPUT_SPELL_BAD_INPUT_ID"];
+                                            return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
                                         end
 
                                     elseif v:find('|Hspell:%d+') then
@@ -1474,16 +1477,16 @@ local function GetStaticOptions ()
                                     end
 
                                     if DC.SpellsToUse[v] then
-                                        return L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"];
+                                        return error(L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"]);
                                     end
 
                                     if type(v) ~= 'string' or not GetSpellInfo(v) then
                                         D:Debug(v, GetSpellInfo(v));
-                                        return L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"];
+                                        return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
                                     end
 
                                     if D.classprofile.UserSpells[v] and D.classprofile.UserSpells[v].Types then
-                                        return L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"];
+                                        return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
                                     end
 
                                     return 0;
