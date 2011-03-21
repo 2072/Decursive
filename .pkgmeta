@@ -22,7 +22,7 @@ externals:
 
 
 
-    libs/LibQTip-1.0:
+    Libs/LibQTip-1.0:
         url: svn://svn.wowace.com/wow/libqtip-1-0/mainline/trunk
     Libs/LibDBIcon-1.0:
         url:  svn://svn.wowace.com/wow/libdbicon-1-0/mainline/trunk/LibDBIcon-1.0
