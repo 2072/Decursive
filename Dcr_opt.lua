@@ -472,6 +472,7 @@ local CombatWarning = {
     hidden = function() return not D.Status.Combat end,
 };
 
+local SpellAssignmentsTexts = {};
 local function GetStaticOptions ()
     return {
         -- {{{
@@ -483,6 +484,7 @@ local function GetStaticOptions ()
         hidden = function () return not D:IsEnabled(); end,
         disabled = function () return not D:IsEnabled(); end,
         args = {
+            -- Command line only {{{
             -- enable and disable
             enable = {
                 type = 'toggle',
@@ -520,12 +522,13 @@ local function GetStaticOptions ()
                 order = -5,
             },
             -- Atticus Ross rules!
+            -- }}}
  
             general = {
                 -- {{{
                 type = 'group',
                 name = L["OPT_GENERAL"],
-                order = 1,
+                order = 0,
                 icon = DC.IconON,
                 args = {
                     version = {
@@ -833,7 +836,7 @@ local function GetStaticOptions ()
                 desc = L["OPT_LIVELIST_DESC"],
                 hidden = function () return not D:IsEnabled() or D.profile.HideLiveList; end,
                 disabled = function () return not D:IsEnabled() or D.profile.HideLiveList; end,
-                order = 2,
+                order = 10,
 
                 args = {
                     description = {
@@ -909,7 +912,7 @@ local function GetStaticOptions ()
                 type = "group",
                 name = D:ColorText(L["OPT_MESSAGES"], "FF229966"),
                 desc = L["OPT_MESSAGES_DESC"],
-                order = 3,
+                order = 20,
                 disabled = function() return  not D.Status.Enabled end,
                 args = {
                     description = {name = L["OPT_MESSAGES_DESC"], order = 1, type = "description"},
@@ -956,7 +959,7 @@ local function GetStaticOptions ()
                 desc = L["OPT_MFSETTINGS_DESC"],
                 disabled = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
                 hidden = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
-                order = 4,
+                order = 30,
                 args = {
                     hint = {
                         type = 'description',
@@ -1249,7 +1252,18 @@ local function GetStaticOptions ()
                         order = 4,
                         disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
                         hidden = function () return not D:IsEnabled(); end,
-                        args = {}
+                        args = {
+                            description = {
+                                type = 'description',
+                                name = L["OPT_MUFSCOLORS_DESC"],
+                                order = 0,
+                            },
+                            separationLine = {
+                                type = 'header',
+                                name = "",
+                                order = 1,
+                            },
+                        },
                     },
 
                     PerfOptions = {
@@ -1293,7 +1307,7 @@ local function GetStaticOptions ()
                 type = "group",
                 name = D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533"),
                 desc = L["OPT_CURINGOPTIONS_DESC"],
-                order = 5,
+                order = 40,
                 disabled = function(info)
                     if info[#info] ~= "CureOptions" then
                         return D.Status.Combat
@@ -1301,7 +1315,7 @@ local function GetStaticOptions ()
                         return false;
                     end
                 end,
-                childGroups = 'tab',
+                --childGroups = 'tab',
                 args = {
                     description = {name = L["OPT_CURINGOPTIONS_DESC"], order = 1, type = "description", disabled = false,},
                     DoNot_Blacklist_Prio_List = {
@@ -1323,6 +1337,7 @@ local function GetStaticOptions ()
                         type="group",
                         name = L["OPT_CURINGORDEROPTIONS"],
                         order = 139,
+                        inline = true,
                         disabled = function(info)
                             if info[#info] ~= "CureOrder" then
                                 return D.Status.Combat
@@ -1407,98 +1422,122 @@ local function GetStaticOptions ()
                         },
                     },
 
-                    CustomSpells = {
-                        type = "group",
-                        name = L["OPT_CUSTOMSPELLS"],
-                        order = 150,
-                        disabled = function(info)
-                            if info[#info] ~= "CustomSpells" then
-                                return D.Status.Combat
-                            else
-                                return false;
-                            end
-                        end,
-                        args = {
-                            combatwarning = CombatWarning,
-                            explanation = {
-                                type = 'description',
-                                name = L["OPT_CUSTOMSPELLS_DESC"],
-                                order = 1,
-                                disabled = false,
-                            },
-                            AddCustomSpell = {
-                                type = 'input',
-                                name = L["OPT_ADD_A_CUSTOM_SPELL"],
-                                desc = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
-                                usage = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
-                                set = function(info, v)
-
-                                    if tonumber(v) then
-                                        local spellName, spellRank = GetSpellInfo(v);
-
-                                        if spellRank ~= "" then
-                                            v = ("%s(%s)"):format(spellName, spellRank);
-                                        else
-                                            v = spellName;
-                                        end
-                                    elseif v:find('|Hspell:%d+') then
-                                        v = D:GetSpellFromLink(v)
-                                    end
-
-                                    if not DC.SpellsToUse[v] then
-                                        D.classprofile.UserSpells[v] = {
-                                            Types = {},
-                                            Better = 10,
-                                            Pet = false,
-                                            Disabled = false,
-                                        };
-                                        D:Print(v);
-                                    end
-                                end,
-                                validate = function(info, v)
-
-                                    local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
-
-                                    if tonumber(v) then
-                                        if GetSpellInfo(v) then
-                                            local spellName, spellRank = GetSpellInfo(v);
-
-                                            if spellRank ~= "" then
-                                                v = ("%s(%s)"):format(spellName, spellRank);
-                                            else
-                                                v = spellName;
-                                            end
-                                        else
-                                            return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
-                                        end
-
-                                    elseif v:find('|Hspell:%d+') then
-                                        v = D:GetSpellFromLink(v)
-                                    end
-
-                                    if DC.SpellsToUse[v] then
-                                        return error(L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"]);
-                                    end
-
-                                    if type(v) ~= 'string' or not GetSpellInfo(v) then
-                                        D:Debug(v, GetSpellInfo(v));
-                                        return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
-                                    end
-
-                                    if D.classprofile.UserSpells[v] and D.classprofile.UserSpells[v].Types then
-                                        return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
-                                    end
-
-                                    return 0;
-                                end,
-                                order = 155,
-                                cmdHidden = true,
-                            },
-                        },
-                    },
 
 
                 }
+            }, -- }}}
+
+            CustomSpells = {
+                -- {{{
+                type = "group",
+                name = D:ColorText(L["OPT_CUSTOMSPELLS"], "FF00DDDD"),
+                order = 50,
+                childGroups = 'tab',
+                cmdHidden = true,
+                disabled = function(info)
+                    if info[#info] ~= "CustomSpells" then
+                        return D.Status.Combat
+                    else
+                        return false;
+                    end
+                end,
+                args = {
+                    combatwarning = CombatWarning,
+                    explanation = {
+                        type = 'description',
+                        name = L["OPT_CUSTOMSPELLS_DESC"],
+                        order = 1,
+                        disabled = false,
+                    },
+
+                    AddCustomSpell = { -- {{{
+                        type = 'input',
+                        name = L["OPT_ADD_A_CUSTOM_SPELL"],
+                        desc = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
+                        usage = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
+                        order = 155,
+                        set = function(info, v)
+
+                            if tonumber(v) then
+                                local spellName, spellRank = GetSpellInfo(v);
+
+                                if spellRank ~= "" then
+                                    v = ("%s(%s)"):format(spellName, spellRank);
+                                else
+                                    v = spellName;
+                                end
+                            elseif v:find('|Hspell:%d+') then
+                                v = D:GetSpellFromLink(v)
+                            end
+
+                            if not DC.SpellsToUse[v] then
+                                D.classprofile.UserSpells[v] = {
+                                    Types = {},
+                                    Better = 10,
+                                    Pet = false,
+                                    Disabled = false,
+                                };
+                                D:Print(v);
+                            end
+                        end,
+                        validate = function(info, v)
+
+                            local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
+
+                            if tonumber(v) then
+                                if GetSpellInfo(v) then
+                                    local spellName, spellRank = GetSpellInfo(v);
+
+                                    if spellRank ~= "" then
+                                        v = ("%s(%s)"):format(spellName, spellRank);
+                                    else
+                                        v = spellName;
+                                    end
+                                else
+                                    return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
+                                end
+
+                            elseif v:find('|Hspell:%d+') then
+                                v = D:GetSpellFromLink(v)
+                            end
+
+                            if DC.SpellsToUse[v] then
+                                return error(L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"]);
+                            end
+
+                            if type(v) ~= 'string' or not GetSpellInfo(v) then
+                                D:Debug(v, GetSpellInfo(v));
+                                return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
+                            end
+
+                            if D.classprofile.UserSpells[v] and D.classprofile.UserSpells[v].Types then
+                                return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
+                            end
+
+                            return 0;
+                        end,
+                    }, -- }}}
+
+                    CurrentAssignments = {
+                        type = 'description',
+                        name = function()
+                            local AvailableButtons = D.db.global.AvailableButtons;
+                             table.wipe(SpellAssignmentsTexts);
+                             SpellAssignmentsTexts[1] = "\n" .. L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"];
+                              for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+                                  SpellAssignmentsTexts[Prio + 1] = str_format("\n%s -> %s", D:ColorText(("%s - %s - (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(Prio), L[DC.TypeToLocalizableTypeNames[D.Status.ReversedCureOrder[Prio]]], DC.AvailableButtonsReadable[AvailableButtons[Prio]]), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell);
+                              end
+                              return table.concat(SpellAssignmentsTexts, "\n");
+                        end,
+                    },
+
+                    CustomSpellsHolder = {
+                        type = 'group',
+                        name = L["OPT_CUSTOMSPELLS"],
+                        order = 160,
+                        args = {},
+                    }
+                },
             }, -- }}}
 
             DebuffSkip = {
@@ -1508,7 +1547,7 @@ local function GetStaticOptions ()
                 disabled = function () return not D:IsEnabled(); end,
                 name = D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"),
                 desc = L["OPT_DEBUFFFILTER_DESC"],
-                order = 6,
+                order = 60,
                 childGroups= "select",
                 args = {}
             }, -- }}}
@@ -1518,7 +1557,7 @@ local function GetStaticOptions ()
                 type = "group",
                 name = D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"),
                 desc = L["OPT_MACROOPTIONS_DESC"],
-                order = 7,
+                order = 70,
                 disabled = function() return  not D.Status.Enabled or D.Status.Combat end,
                 args = {
                     description = {name = L["OPT_MACROOPTIONS_DESC"], order = 1, type = "description"},
@@ -1563,6 +1602,7 @@ local function GetStaticOptions ()
             }, -- }}}
 
             About = {
+                -- {{{
                 type = "group",
                 name = D:ColorText(L["OPT_ABOUT"], "FFFFFFFF"),
                 order = -1,
@@ -1610,8 +1650,8 @@ local function GetStaticOptions ()
                         order = 30,
                     },
                    
-                }
-            }
+                },
+            }, -- }}}
         },
     } -- }}}
 end
@@ -1637,11 +1677,11 @@ local function GetOptions()
     -- create per class filters menus
     options.args.DebuffSkip.args = D:CreateDropDownFiltersMenu();
     -- create MUF color configuration menus
-    options.args.MicroFrameOpt.args.MUFsColors.args = D:CreateDropDownMUFcolorsMenu();
+    D:CreateDropDownMUFcolorsMenu(options.args.MicroFrameOpt.args.MUFsColors.args);
     -- create MUF's mouse buttons configuration menus
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
     -- create curring spells addition submenus
-    D:CreateAddedSpellsOptionMenu(options.args.CureOptions.args.CustomSpells.args);
+    D:CreateAddedSpellsOptionMenu(options.args.CustomSpells.args.CustomSpellsHolder.args);
 
     -- Create profile options
     options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
@@ -1668,6 +1708,7 @@ function D:ExportOptions ()
         [D:ColorText(L["OPT_MESSAGES"], "FF229966")] = "MessageOptions",
         [D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33")] = "MicroFrameOpt",
         [D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533")] = "CureOptions",
+        [D:ColorText(L["OPT_CUSTOMSPELLS"], "FF00DDDD")] = "CustomSpells",
         [D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA")] = "DebuffSkip",
         [D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB")] = "Macro",
         [D:ColorText(L["OPT_ABOUT"], "FFFFFFFF")] = "About",
@@ -2346,10 +2387,9 @@ do
         set = SetColor,
     };
 
-    function D:CreateDropDownMUFcolorsMenu()
+    function D:CreateDropDownMUFcolorsMenu(MUFsColors_args)
         L_MF_colors = D.profile.MF_colors;
 
-        local MUFsColorsSubMenu = {};
 
         for ColorReason, Color in pairs(L_MF_colors) do
 
@@ -2359,20 +2399,18 @@ do
 
             -- add a separator for the different color typs when necessary.
             if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
-                MUFsColorsSubMenu["S" .. ColorReason] = {
+                MUFsColors_args["S" .. ColorReason] = {
                     type = "header",
                     name = "",
                     order = function (info) return GetOrder(info) - 1 end,
                 }
-                --D:Debug("Created space ", "Space" .. ColorReason, "at ", MUFsColorsSubMenu["S" .. ColorReason].order);
+                --D:Debug("Created space ", "Space" .. ColorReason, "at ", MUFsColors_args["S" .. ColorReason].order);
             end
 
 
-            MUFsColorsSubMenu["c"..ColorReason] = ColorPicker;
+            MUFsColors_args["c"..ColorReason] = ColorPicker;
             
         end
-
-        return MUFsColorsSubMenu;
     end
 end
 

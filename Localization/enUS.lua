@@ -78,7 +78,6 @@ if not L then return end;
 ---[==[
 
 -- Used for testing the addon without the packager
-
 L["ABOLISH_CHECK"] = "Check for \"Abolish\" before curing"
 L["ABOUT_AUTHOREMAIL"] = "AUTHOR E-MAIL"
 L["ABOUT_CREDITS"] = "CREDITS"
@@ -161,7 +160,7 @@ L["HIDESHOW_BUTTONS"] = "Hide/Show buttons"
 L["HIDE_LIVELIST"] = "Hide the live-list"
 L["HIDE_MAIN"] = "Hide Decursive Window"
 L["HLP_LEFTCLICK"] = "Left-Click"
-L["HLP_LL_ONCLICK_TEXT"] = [=[Please, read the documentation to learn how to use this add-on. Just search for 'Decursive' on WoWAce.com
+L["HLP_LL_ONCLICK_TEXT"] = [=[The Live-List is not meant to be clicked. Please, read the documentation to learn how to use this add-on. Just search for 'Decursive' on WoWAce.com
 (To move this list move the Decursive bar, /dcrshow and left-alt-click to move)]=]
 L["HLP_MIDDLECLICK"] = "Middle-Click"
 L["HLP_NOTHINGTOCURE"] = "There is nothing to cure!"
@@ -198,6 +197,8 @@ L["OPT_ADDDEBUFFFHIST"] = "Add a recent affliction"
 L["OPT_ADDDEBUFFFHIST_DESC"] = "Add an affliction using the history"
 L["OPT_ADDDEBUFF_DESC"] = "Adds a new affliction to this list"
 L["OPT_ADDDEBUFF_USAGE"] = "<Affliction name>"
+L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell"
+L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Click here and shift-click on a spell from your spell book. You can also directly write its name or its numeric ID."
 L["OPT_ADVDISP"] = "Advance display Options"
 L["OPT_ADVDISP_DESC"] = "Allow to set Transparency of the border and center separately, to set the space between each MUF"
 L["OPT_AFFLICTEDBYSKIPPED"] = "%s afflicted by %s will be skipped"
@@ -221,25 +222,40 @@ L["OPT_CHECKOTHERPLAYERS_DESC"] = "Displays Decursive version among the players 
 L["OPT_CMD_DISBLED"] = "Disabled"
 L["OPT_CMD_ENABLED"] = "Enabled"
 L["OPT_CREATE_VIRTUAL_DEBUFF"] = "Create a virtual test affliction"
-L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"] = "Lets you see how it looks like when an affliction is found"
+L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"] = "Lets you see how Decursive looks when an affliction is found."
 L["OPT_CUREPETS_DESC"] = "Pets will be managed and cured"
-L["OPT_CURINGOPTIONS"] = "Cure options"
-L["OPT_CURINGOPTIONS_DESC"] = "Set different aspects of the curing process"
+L["OPT_CURE_PRIORITY_NUM"] = "Priority #%d"
+L["OPT_CURINGOPTIONS"] = "Curing Options"
+L["OPT_CURINGOPTIONS_DESC"] = "Curing options including options to change priority and spells for each affliction type"
 L["OPT_CURINGOPTIONS_EXPLANATION"] = [=[Select the types of affliction you want to cure, unchecked types will be completely ignored by Decursive.
 
-The green numbers determine the priority of the affliction's type. This priority will affect several aspects:
-- What Decursive shows you first if a player got several afflictions.
-- What will be the MUF's color and thus the mouse button you'll have to click to cure the affliction (First spell is Left-Click, second is Right-Click, etc...)
+The green numbers represent the priority associated to each affliction type. This priority determines the following options:
 
-(To change the order, uncheck all types and check again in the order you want)]=]
-L["OPT_CURINGORDEROPTIONS"] = "Cure Order Options"
+- Which affliction type Decursive shows you first if a player has several afflictions types.
+
+- The color and binding associated with each affliction type.
+
+(To change the priorities, uncheck all the check boxes and then check them in order of the priority you want.)]=]
+L["OPT_CURINGORDEROPTIONS"] = "Affliction types and priorities"
 L["OPT_CURSECHECK_DESC"] = "If checked you'll be able to see and cure cursed units"
+L["OPT_CUSTOMSPELLS"] = "Custom spells"
+L["OPT_CUSTOMSPELLS_DESC"] = [=[Here you can add spells to extend Decursive's automatic configuration.
+Your custom spells always have a higher priority and will override and replace the default spells (if and only if your character can use those spells).
+]=]
+L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"] = "Effective spells assignments:"
+L["OPT_CUSTOM_SPELL_CURE_TYPES"] = "Affliction types"
+L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority"
+L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred."
+L["OPT_CUSTOM_SPELL_STOPCASTING"] = "/StopCasting"
+L["OPT_CUSTOM_SPELL_STOPCASTING_DESC"] = "Using this spell will interrupt other spells in progress (uncheck that if the spell comes from a pet)"
+L["OPT_CUSTOM_SPELL_UNAVAILABLE"] = "unavailable"
 L["OPT_DEBCHECKEDBYDEF"] = [=[
 
 Checked by default]=]
 L["OPT_DEBUFFENTRY_DESC"] = "Select what class should be ignored in combat when afflicted by this affliction"
 L["OPT_DEBUFFFILTER"] = "Affliction filtering"
 L["OPT_DEBUFFFILTER_DESC"] = "Select afflictions to filter out by name and class while you are in combat"
+L["OPT_DELETE_A_CUSTOM_SPELL"] = "Remove"
 L["OPT_DISABLEABOLISH"] = "Do not use 'Abolish' spells"
 L["OPT_DISABLEABOLISH_DESC"] = "If enabled, Decursive will prefer 'Cure Disease' and 'Cure Poison' over their 'Abolish' equivalent."
 L["OPT_DISABLEMACROCREATION"] = "Disable macro creation"
@@ -250,6 +266,7 @@ L["OPT_DONOTBLPRIO_DESC"] = "Prioritized units won't be blacklisted"
 L["OPT_ENABLEDEBUG"] = "Enable Debugging"
 L["OPT_ENABLEDEBUG_DESC"] = "Enable Debugging output"
 L["OPT_ENABLEDECURSIVE"] = "Enable Decursive"
+L["OPT_ENABLE_A_CUSTOM_SPELL"] = "Enable"
 L["OPT_FILTEROUTCLASSES_FOR_X"] = "%q will be ignored on the specified classes while you are in combat."
 L["OPT_GENERAL"] = "General options"
 L["OPT_GROWDIRECTION"] = "Reverse MUFs Display"
@@ -265,6 +282,10 @@ L["OPT_HIDEMUFSHANDLE"] = "Hide the MUFs handle"
 L["OPT_HIDEMUFSHANDLE_DESC"] = [=[Hides the Micro-Unit Frames handle and disables the possibility to move them.
 Use the same command to get it back.]=]
 L["OPT_IGNORESTEALTHED_DESC"] = "Cloaked units will be ignored"
+L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Spell already listed!"
+L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive already manage this spell. Shift-click the spell or type its ID to add a special rank."
+L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID!"
+L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found in your spell book!"
 L["OPT_LIVELIST"] = "Live list"
 L["OPT_LIVELIST_DESC"] = "Options for the live list"
 L["OPT_LLALPHA"] = "Live-list transparency"
@@ -294,17 +315,22 @@ L["OPT_MFREFRESHSPEED"] = "Refresh speed"
 L["OPT_MFREFRESHSPEED_DESC"] = "Number of micro-unit-frames to refresh on a single pass"
 L["OPT_MFSCALE"] = "Scale of the micro-unit-frames"
 L["OPT_MFSCALE_DESC"] = "Set the size of the micro-unit-frames"
-L["OPT_MFSETTINGS"] = "Micro Unit Frame Settings"
-L["OPT_MFSETTINGS_DESC"] = "Set the micro units frame window options to suit your needs"
+L["OPT_MFSETTINGS"] = "Micro Unit Frame Options"
+L["OPT_MFSETTINGS_DESC"] = "Set various MUF and afflictions' type priority related display options"
 L["OPT_MUFFOCUSBUTTON"] = "Focusing button:"
 L["OPT_MUFHANDLE_HINT"] = "To move the micro-unit-frames: ALT-click the invisible handle located above the first micro-unit-frame."
-L["OPT_MUFMOUSEBUTTONS"] = "Mouse buttons"
-L["OPT_MUFMOUSEBUTTONS_DESC"] = [=[Here you can change cure priorities' default bindings (ex: Red MUFs <-> Left-Click). This is particularly useful if you want to use your mouse's middle button to cure instead of targeting.
+L["OPT_MUFMOUSEBUTTONS"] = "Mouse bindings"
+L["OPT_MUFMOUSEBUTTONS_DESC"] = [=[Change the bindings used to cure, target or focus group members via the MUFs.
 
-You can also alter those bindings by changing the priority of each affliction type, see the 'Cure Order Options' tab of the '|cFFFF5533Cure Options|r' panel.]=]
+Each priority number represents a different affliction type as specified in the '|cFFFF5533Curing Options|r' panel.
 
+The spell used for each affliction type is set by default but can be changed in the '|cFF00DDDDCustom Spells|r' panel.]=]
 L["OPT_MUFSCOLORS"] = "Colors"
-L["OPT_MUFSCOLORS_DESC"] = "Change the colors of the Micro Unit Frames."
+L["OPT_MUFSCOLORS_DESC"] = [=[Options to change the color for each affliction type's priority and various MUF statuses.
+
+Each priority represents a different affliction type as specified in the '|cFFFF5533Curing Options|r' panel.]=]
+L["OPT_MUFSVERTICALDISPLAY"] = "Vertical display"
+L["OPT_MUFSVERTICALDISPLAY_DESC"] = "MUFs' window will grow vertically"
 L["OPT_MUFTARGETBUTTON"] = "Targeting button:"
 L["OPT_NEWVERSIONBUGMENOT"] = "New version alerts"
 L["OPT_NEWVERSIONBUGMENOT_DESC"] = "If a newer version of Decursive is detected, a pop-up alert will be displayed once every seven days."
@@ -312,6 +338,7 @@ L["OPT_NOKEYWARN"] = "Warn if no key"
 L["OPT_NOKEYWARN_DESC"] = "Display a warning if no key is mapped."
 L["OPT_NOSTARTMESSAGES"] = "Disable welcome messages"
 L["OPT_NOSTARTMESSAGES_DESC"] = "Remove the three messages Decursive prints to the chat frame at every login."
+L["OPT_OPTIONS_DISABLED_WHILE_IN_COMBAT"] = "These options are disabled while you are in combat."
 L["OPT_PERFOPTIONWARNING"] = "WARNING: Do not change those values unless you know exactly what you are doing. These settings can have a great impact on the game performances. Most users should use the default values of 0.1 and 10."
 L["OPT_PLAYSOUND_DESC"] = "Play a sound if someone get cursed"
 L["OPT_POISONCHECK_DESC"] = "If checked you'll be able to see and cure poisoned units"
@@ -406,29 +433,7 @@ L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
-L["OPT_MUFSVERTICALDISPLAY"] = "Vertical display"
-L["OPT_MUFSVERTICALDISPLAY_DESC"] = "Set this to make MUFs to grow vertically"
 
-L["OPT_CUSTOMSPELLS"] = "Custom spells";
-L["OPT_CUSTOMSPELLS_DESC"] = "Here you can add spells to extend Decursive's automatic configuration.";
-L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell";
-L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Click here and shift-click on a spell from your spell book. You can also directly write its name or its spell ID.";
-L["OPT_CUSTOM_SPELL_UNAVAILABLE"] = "unavailable";
-L["OPT_ENABLE_A_CUSTOM_SPELL"] = "Enable";
-L["OPT_CUSTOM_SPELL_CURE_TYPES"] = "Affliction types";
-L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority";
-L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred.";
-L["OPT_DELETE_A_CUSTOM_SPELL"] = "Remove";
-L["OPT_CUSTOM_SPELL_STOPCASTING"] = "/StopCasting";
-L["OPT_CUSTOM_SPELL_STOPCASTING_DESC"] = "Using this spell will interrupt other spells in progress (uncheck that if the spell comes from a pet)";
-
-L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID!";
-L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found in your spell book!";
-L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive already manage this spell. Shift-click the spell or type its ID to add a special rank.";
-L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Spell already listed!";
-
-L["OPT_CURE_PRIORITY_NUM"] = "Priority #%d";
-L["OPT_OPTIONS_DISABLED_WHILE_IN_COMBAT"] = "These options are disabled while you are in combat.";
 
 --]==]
 --@end-do-not-package@
