@@ -1453,7 +1453,7 @@ local function GetStaticOptions ()
                     AddCustomSpell = { -- {{{
                         type = 'input',
                         name = L["OPT_ADD_A_CUSTOM_SPELL"],
-                        desc = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
+                        --desc = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
                         usage = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
                         order = 155,
                         set = function(info, v)
@@ -1470,14 +1470,17 @@ local function GetStaticOptions ()
                                 v = D:GetSpellFromLink(v)
                             end
 
-                            if not DC.SpellsToUse[v] then
+                            if not DC.SpellsToUse[v] and not D.classprofile.UserSpells[v] then
+                                D:Debug("Adding", v);
                                 D.classprofile.UserSpells[v] = {
                                     Types = {},
                                     Better = 10,
                                     Pet = false,
                                     Disabled = false,
                                 };
-                                D:Print(v);
+                            elseif D.classprofile.UserSpells[v].IsDefault and D.classprofile.UserSpells[v].Hidden then
+                                D:Debug("Reactivating", v);
+                                D.classprofile.UserSpells[v].Hidden = false;
                             end
                         end,
                         validate = function(info, v)
@@ -1510,7 +1513,7 @@ local function GetStaticOptions ()
                                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
                             end
 
-                            if D.classprofile.UserSpells[v] and D.classprofile.UserSpells[v].Types then
+                            if D.classprofile.UserSpells[v] and not D.classprofile.UserSpells[v].Hidden then
                                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
                             end
 
