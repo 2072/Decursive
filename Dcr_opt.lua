@@ -1468,6 +1468,12 @@ local function GetStaticOptions ()
                                 end
                             elseif v:find('|Hspell:%d+') then
                                 v = D:GetSpellFromLink(v)
+                            else
+                                v = (GetSpellInfo(v)); -- get a normalized name since v is not case sensitive
+
+                                if not v then
+                                    return
+                                end
                             end
 
                             if not DC.SpellsToUse[v] and not D.classprofile.UserSpells[v] then
@@ -1512,6 +1518,8 @@ local function GetStaticOptions ()
                                 D:Debug(v, GetSpellInfo(v));
                                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
                             end
+
+                            v = (GetSpellInfo(v)); -- get a normalized name since v is not case sensitive
 
                             if D.classprofile.UserSpells[v] and not D.classprofile.UserSpells[v].Hidden then
                                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
