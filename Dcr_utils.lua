@@ -456,9 +456,12 @@ end
 
 function D:MakeError(something)
 
-    if something then
+    if something==1 then
         -- Make something forbidden
         TargetUnit('player');
+        return;
+    elseif something == 2 then
+        D:Print(L["BAD_LOCAL"]);
         return;
     end
 

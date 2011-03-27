@@ -502,7 +502,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Better = 1,
             Pet = true,
         },
-    };
+    }; -- }}}
 
 
     -- WoW 4.0 changes {{{
@@ -594,7 +594,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             }
         };
 
-        -- old WoW 3.5 for compatibilty with China {{{4
+        -- old WoW 3.5 for compatibilty with China {{{
     else 
          -- Priests -- XXX to be removed
         DC.SpellsToUse[DS["SPELL_ABOLISH_DISEASE"]]       = {
@@ -642,7 +642,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = false,
         };
 
-    end
+    end -- }}}
     
     -- }}}
 
@@ -665,8 +665,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         DC.SpellsToUse[DS["PET_FEL_CAST"]] = nil; -- so we remove PET_FEL_CAST.
     end
     --]=]
-
-    -- // }}}
 
 
     -- New Comm Part used for version checking

@@ -135,7 +135,7 @@ function T._AddDebugText(a1, ...)
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n------\n%.4f (%d-%d-%s): %s -|count: "):format(NiceTime(), select(3, GetNetStats()), GetFramerate(), zone, text) );
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (h%d_w%d-%dfps-%s): %s -|count: "):format(NiceTime(), select(3, GetNetStats()), select(4, GetNetStats()), GetFramerate(), zone, text) );
         table.insert (DebugTextTable, 1);
         Reported[text] = #DebugTextTable;
     else
@@ -152,19 +152,21 @@ local IsReporting = false;
 T._NonDecursiveErrors = 0;
 local type = _G.type;
 function T._onError(event, errorObject)
-    local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1]
+    local errorm = errorObject.message;
     local mine = false;
 
     if not IsReporting
         and ( T._CatchAllErrors
-        or (errorObject.type == 'error' and (errorm:sub(1,9)):lower() == "decursive")
-        or (errorObject.type == 'error' and errorm:find(": Decursive:"))
-        or (errorObject.type == 'event' and (errorm:lower()):find("'decursive'")) 
+        or ( (errorm:sub(1,9)):lower() == "decursive" ) and not (errorm:lower()):find("decursive.libs") -- errors happpening in something located below Decursive's path but not inside \Libs 
+        or ( errorm:find("[\"']Decursive[\"']") ) -- events involving Decursive
+        or ( errorm:find("Decursive:") ) -- libraries error involving Decursive (AceLocal)
+        or ( (errorm:lower()):find("decursive%.")) -- for Aceconfig
         ) then
 
         T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         IsReporting = true;
-        AddDebugText(type(errorObject.message) == 'string' and errorObject.message or table.concat(errorObject.message or {"errorObject.message is nil"}, ""), "\nLOCALS:\n", type(errorObject.locals) == 'string' and errorObject.locals or table.concat(errorObject.locals or {"errorObject.locals is nil"}, ""));
+        AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
+
         if T.Dcr and T.Dcr.Debug then
             T.Dcr:Debug("Lua error recorded");
         end
@@ -174,24 +176,15 @@ function T._onError(event, errorObject)
         T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
     end
 
-    if not mine and GetCVarBool("scriptErrors") then -- and not buggrabber has display XXX
+    if not mine and GetCVarBool("scriptErrors") then
         if not _G.DEBUGLOCALS_LEVEL then
             _G.LoadAddOn("Blizzard_DebugTools");
         end
-        _G.DEBUGLOCALS_LEVEL = 13;
+        _G.DEBUGLOCALS_LEVEL = 12; -- XXX must be set to the right value to get the correct stack and locals
 
         -- forward the error to the default Blizzad error displayer
         if _G._ERRORMESSAGE then
-            local errorm = type(errorObject.message) == 'string' and errorObject.message or errorObject.message[1];
-
-            if errorm:find("\n") then
-                errorm = errorm:sub(1,errorm:find("\n") - 1);
-            end
-
-            if type(errorm) ~= 'string' then -- XXX temp test
-                AddDebugText("errorm is not a string O.o:",  type(errorm), tostring(errorm), "errorObject:", unpack(errorObject));
-                return;
-            end
+            local errorm = errorObject.message;
 
             -- if the error happened inside blizzard_debugtools, use Blizzards's BasicScriptErrorsText
             if (errorm:lower()):find("blizzard_debugtools") then
@@ -235,6 +228,7 @@ function T._DecursiveErrorHandler(err, ...)
     if ScriptErrorsFrameScrollFrameText then
         if not ScriptErrorsFrameScrollFrameText.cursorOffset then
             ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
+            T._BDT_HotFix1_applyed = true;
             if ( GetCVarBool("scriptErrors") ) then
                 print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
             end
@@ -244,7 +238,7 @@ function T._DecursiveErrorHandler(err, ...)
 
     err = tostring(err);
 
-    --Add a check to see if the error is happening inside the Blizzard debug tool himself...
+    --A check to see if the error is happening inside the Blizzard 'debug' tool himself...
     if (err:lower()):find("blizzard_debugtools") then
         if ( GetCVarBool("scriptErrors") ) then
             print (("|cFFFF0000%s|r"):format(err));
@@ -252,22 +246,27 @@ function T._DecursiveErrorHandler(err, ...)
         return;
     end
 
+    local mine = false;
     if not IsReporting and (T._CatchAllErrors or (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\")) then
 	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         IsReporting = true;
-        AddDebugText(err, debugstack(2), ...);
+        AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
         if T.Dcr then
             T.Dcr:Debug("Error recorded");
         end
         IsReporting = false;
+        mine = true;
+    else
+        T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
     end
 
-    if ProperErrorHandler then
+    if ProperErrorHandler and not mine then
         return ProperErrorHandler( err, ... ); -- returning this way prevents this function from appearing in the stack
     end
 end
 
 function T._HookErrorHandler()
+
 
     if BugGrabber then
         local name, _, _, enabled = GetAddOnInfo("BugSack")
@@ -277,15 +276,16 @@ function T._HookErrorHandler()
             return
         end
 
-        BugGrabber.RegisterCallback(T, "BugGrabber_BugGrabbed", T._onError)
-        --BugGrabber.RegisterCallback(T, "BugGrabber_BugGrabbedAgain", T._onError)
-        BugGrabber.RegisterCallback(T, "BugGrabber_EventGrabbed", T._onError)
-        --BugGrabber.RegisterCallback(T, "BugGrabber_EventGrabbedAgain", T._onError)
-        T._BugGrabberEmbeded = true;
+        local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
+        if ok then
+            T._BugGrabberEmbeded = true;
+        else
+            AddDebugText(errorm);
+        end
         return
     end
 
-    -- if no buggrabber is found then use the old way
+    -- if no buggrabber is found then use the old way (no other error catcher is as good as BugGrabber... I can't rely on them)
     if not ProperErrorHandler then
         ProperErrorHandler = geterrorhandler();
         seterrorhandler(T._DecursiveErrorHandler);

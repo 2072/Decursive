@@ -1,2 +1,4 @@
 changelog.txt
 *.swp
+
+/exclude-rsyncptr.txt
