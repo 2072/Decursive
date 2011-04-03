@@ -485,7 +485,7 @@ function LiveList:Update_Display() -- {{{
                                 "MUFs are:", D.profile.ShowDebuffsFrame,
                                 "InCombatLockdown():", InCombatLockdown(),
                                 "UnitID:", UnitID,
-                                "HasSpell", self.Status.HasSpell,
+                                "HasSpell", D.Status.HasSpell,
 
                                 "MAGIC:", D.Status.CuringSpells[DC.MAGIC],
                                 "ENEMYMAGIC:", D.Status.CuringSpells[DC.ENEMYMAGIC],
