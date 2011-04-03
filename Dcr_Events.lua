@@ -586,7 +586,7 @@ do -- Combat log event handling {{{1
         [59868] = "SPELL_DAMAGE", -- Dark Matter ( http://www.wowhead.com/spell=59868 )
     };
 
-    local hideCaster;
+    local HideCaster;
     local type = _G.type;
     
     function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...)

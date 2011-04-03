@@ -340,7 +340,7 @@ do
             ["AceDB-3.0"] = 21,
             ["AceDBOptions-3.0"] = 12,
             ["AceLocale-3.0"] = 2,
-            ["AceComm-3.0"] = 6,
+            ["AceComm-3.0"] = 7,
 
             ["AceGUI-3.0"] = 33,
             ["AceConfig-3.0"] = 2,
