@@ -454,19 +454,24 @@ function D:GetSpellFromLink(link)
     return nil;
 end
 
+local function BadLocalTest (localtest)
+        D:Print(L[localtest]);
+end
+
 function D:MakeError(something)
 
-    if something==1 then
+    local testlocal = "test local";
+    local testbiglocal = D;
+
+    if something == 1 then
         -- Make something forbidden
         TargetUnit('player');
         return;
     elseif something == 2 then
-        D:Print(L["BAD_LOCAL"]);
+        BadLocalTest("Bad local");
         return;
     end
 
-    local testlocal = "test local";
-    local testbiglocal = D;
     local errorf = function () testErrorCapturing(testlocal); end;
 
     errorf();
