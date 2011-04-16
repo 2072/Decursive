@@ -413,8 +413,6 @@ function MicroUnitF:Force_FullUpdate () -- {{{
         return false;
     end
 
-    local MF;--, MF_f;
-
     D.Status.SpellsChanged = GetTime(); -- will force an update of all MUFs attributes
 
     local i = 1;
@@ -830,9 +828,9 @@ function MicroUnitF:OnEnter(frame) -- {{{
             TooltipButtonsInfo = {};
             local AvailableButtons = D.db.global.AvailableButtons;
 
-            for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+            for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE
                 TooltipButtonsInfo[Prio] =
-                str_format("%s: %s", D:ColorText(DC.AvailableButtonsReadable[AvailableButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell);
+                str_format("%s: %s%s", D:ColorText(DC.AvailableButtonsReadable[AvailableButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
             end
 
             t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.AvailableButtonsReadable[AvailableButtons[#AvailableButtons - 1]], L["TARGETUNIT"]));
@@ -933,9 +931,10 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
 
 
         elseif RequestedPrio and D.Status.HasSpell then
-            --              D:Print("XXX ClickedMF SET");
             D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
             D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
+            D.Status.ClickedMF.CastingSpell = (GetSpellInfo(D.Status.CuringSpells[frame.Object.Debuffs[1].Type])); -- store the spell name but without its rank
+            --D:Debug("XXXX stored clicked spell:", D.Status.ClickedMF.CastingSpell);
             D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName);
         end
     end
@@ -1131,6 +1130,7 @@ do
     -- used to tell if we changed something to improve performances.
     -- Each attribute change trigger an event...
     local ReturnValue = false;
+    local tmp;
     -- this updates the sttributes of a MUF's frame object
     function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
 
@@ -1195,23 +1195,25 @@ do
         self.Frame:SetAttribute(str_format(AvailableButtons[#AvailableButtons    ], "macrotext"), str_format("/focus %s", Unit));
 
         -- set the spells attributes using the lookup tables above
-        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE
 
-            --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
-            -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-            self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s",
-            ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
-            Unit,Unit,
-            Spell));
+            if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
 
-
-            --[[
-            D:Debug("XX-> macro: ",str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s%s",
-            ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
-            Unit,Unit,
-            Spell,
-            (DC.SpellsToUse[Spell].Rank and "(" .. (str_sub(DC.RANKNUMTRANS, '%d+', DC.SpellsToUse[Spell].Rank)) .. ")" or "")  ));
-            --]]
+                --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
+                -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
+                self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s",
+                ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
+                Unit,Unit,
+                Spell));
+            else
+                tmp = D.Status.FoundSpells[Spell][5];
+                tmp = tmp:gsub("UNITID", Unit);
+                if tmp:len() < 256 then -- last chance protection, shouldn't happen
+                    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), tmp);
+                else
+                    D:errln("Macro too long for", Unit);
+                end
+            end
 
         end
 

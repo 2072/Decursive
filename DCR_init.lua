@@ -356,6 +356,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     self:RegisterChatCommand("dcrshow"      ,function() D:HideBar(0)                                end, false  );
     self:RegisterChatCommand("dcrhide"      ,function() D:HideBar(1)                                end, false  );
     self:RegisterChatCommand("dcrshoworder" ,function() D:Show_Cure_Order()                         end, false  );
+    self:RegisterChatCommand("dcrreport"    ,function() D:ShowDebugReport()                         end, false  );
     -- }}}
 
     -- Create some useful cache tables
@@ -1018,8 +1019,8 @@ local function SpellIterator()
             return iter(); -- continue with the other table
         end
 
-        -- if it's already defined in the base table or if it's hidden, skip it
-        if ST and (currentSpellTable ~= DC.SpellsToUse and (DC.SpellsToUse[currentKey] or currentSpellTable[currentKey].Hidden)) then
+        -- if it's already defined in the base table (but not editable) or if it's hidden, skip it
+        if ST and (currentSpellTable ~= DC.SpellsToUse and (DC.SpellsToUse[currentKey] and not currentSpellTable[currentKey].MacroText or currentSpellTable[currentKey].Hidden)) then
             --@debug@
             D:Debug("Skipping", currentKey);
             if currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey] then
@@ -1059,6 +1060,12 @@ function D:ReConfigure() --{{{
                 Reconfigure = true;
                 break;
             elseif spell.EnhancedBy then -- it's not new but there is an enhancement available...
+
+                -- Workaround to the fact that function are not serialized upon storage to the DB
+                if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellName] then
+                    spell.EnhancedByCheck = DC.SpellsToUse[spellName].EnhancedByCheck;
+                    D.classprofile.UserSpells[spellName].EnhancedByCheck = spell.EnhancedByCheck;
+                end
 
                 if spell.EnhancedByCheck() then -- we have it now
                     if not D.Status.FoundSpells[spellName][3] then -- but not then :)
@@ -1129,6 +1136,11 @@ function D:Configure() --{{{
                     self:Debug("Enhancement for ", spellName);
                     --@end-alpha@
 
+                    -- Workaround to the fact that function are not serialized upon storage to the DB
+                    if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellName] then
+                        spell.EnhancedByCheck = DC.SpellsToUse[spellName].EnhancedByCheck;
+                        D.classprofile.UserSpells[spellName].EnhancedByCheck = spell.EnhancedByCheck;
+                    end
 
                     if spell.EnhancedByCheck() then -- we have the enhancement
                         IsEnhanced = true;
@@ -1149,7 +1161,7 @@ function D:Configure() --{{{
 
                     if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
 
-                        self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better};
+                        self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better, spell.MacroText};
                         CuringSpells[Type] = spellName;
 
                         if OnPlayerOnly and OnPlayerOnly[Type] then
@@ -1351,7 +1363,7 @@ function D:UpdateMacro ()
 
     -- Get an ordered spell table
     local Spells = {};
-    for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+    for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE
         Spells[Prio] = Spell;
     end
 

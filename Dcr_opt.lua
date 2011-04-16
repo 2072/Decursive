@@ -473,7 +473,59 @@ local CombatWarning = {
 };
 
 local SpellAssignmentsTexts = {};
+local CustomSpellMacroEditingAllowed = false;
 local function GetStaticOptions ()
+
+    local function validateSpellInput(info, v)  -- {{{
+
+        local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
+
+        -- We got a spell ID directly
+        if tonumber(v) then
+            if GetSpellInfo(v) then
+                local spellName, spellRank = GetSpellInfo(v);
+
+                if spellRank ~= "" then
+                    v = ("%s(%s)"):format(spellName, spellRank);
+                else
+                    v = spellName;
+                end
+            else
+                return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
+            end
+
+        elseif v:find('|Hspell:%d+') then
+            -- We got a spell link!
+            v = D:GetSpellFromLink(v)
+        end
+
+        -- Not a string or not a known spell
+        if type(v) ~= 'string' or not GetSpellInfo(v) then
+            D:Debug(v, GetSpellInfo(v));
+            return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
+        end
+
+        -- Normalize the name since spells are not case sensitive
+        if select(2, GetSpellInfo(v)) ~= "" then -- it as a rank!!
+            v = ("%s(%s)"):format(GetSpellInfo(v)); 
+        else
+            v = (GetSpellInfo(v));
+        end
+
+        -- The user is stupid or it's a deleted default spell
+        if D.classprofile.UserSpells[v] and not D.classprofile.UserSpells[v].Hidden then
+            D:Debug(v);
+            return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
+        end
+
+        -- The spell is part of the default set and the user doesn't want to change the macro
+        if DC.SpellsToUse[v] and not CustomSpellMacroEditingAllowed then
+            return error(L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"]);
+        end
+
+        return 0, v;
+    end -- }}}
+
     return {
         -- {{{
         type = "group",
@@ -1431,6 +1483,7 @@ local function GetStaticOptions ()
                 -- {{{
                 type = "group",
                 name = D:ColorText(L["OPT_CUSTOMSPELLS"], "FF00DDDD"),
+                desc = L["OPT_CUSTOMSPELLS_DESC"],
                 order = 50,
                 childGroups = 'tab',
                 cmdHidden = true,
@@ -1449,34 +1502,45 @@ local function GetStaticOptions ()
                         order = 1,
                         disabled = false,
                     },
+                   CurrentAssignments = {
+                        type = 'description',
+                        name = function()
+                            local AvailableButtons = D.db.global.AvailableButtons;
+                             table.wipe(SpellAssignmentsTexts);
+                             SpellAssignmentsTexts[1] = "\n" .. D:ColorText(L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"], "FFEEEE33");
+
+                              for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE ??
+
+                                  local SpellCuredTypes = {};
+                                  for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
+
+                                      if D.Status.CuringSpells[afflictionType] == Spell then
+                                          table.insert(SpellCuredTypes, L[DC.TypeToLocalizableTypeNames[afflictionType]])
+                                      end
+                                  end
+
+                                  SpellCuredTypes = table.concat (SpellCuredTypes, " - ");
+
+                                  SpellAssignmentsTexts[Prio + 1] = str_format("\n    %s -> %s%s", D:ColorText(("%s - %s - (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(Prio), SpellCuredTypes, DC.AvailableButtonsReadable[AvailableButtons[Prio]]), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                              end
+                              return table.concat(SpellAssignmentsTexts, "\n");
+                        end,
+                        order = 2,
+                    },
 
                     AddCustomSpell = { -- {{{
                         type = 'input',
                         name = L["OPT_ADD_A_CUSTOM_SPELL"],
-                        --desc = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
                         usage = L["OPT_ADD_A_CUSTOM_SPELL_DESC"],
                         order = 155,
+                        width = 'double',
                         set = function(info, v)
 
-                            if tonumber(v) then
-                                local spellName, spellRank = GetSpellInfo(v);
+                            local errorn;
+                            errorn, v = validateSpellInput(info, v);
+                            if errorn ~= 0 then D:Debug("XXXX AHHHHHHHHHHHHHHH!!!!!", errorn); return false end
 
-                                if spellRank ~= "" then
-                                    v = ("%s(%s)"):format(spellName, spellRank);
-                                else
-                                    v = spellName;
-                                end
-                            elseif v:find('|Hspell:%d+') then
-                                v = D:GetSpellFromLink(v)
-                            else
-                                v = (GetSpellInfo(v)); -- get a normalized name since v is not case sensitive
-
-                                if not v then
-                                    return
-                                end
-                            end
-
-                            if not DC.SpellsToUse[v] and not D.classprofile.UserSpells[v] then
+                            if not D.classprofile.UserSpells[v] then
                                 D:Debug("Adding", v);
                                 D.classprofile.UserSpells[v] = {
                                     Types = {},
@@ -1484,68 +1548,48 @@ local function GetStaticOptions ()
                                     Pet = false,
                                     Disabled = false,
                                 };
+
+                                if CustomSpellMacroEditingAllowed then
+
+                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [target=UNITID, help][target=UNITID, harm] " .. v;
+
+                                    -- If it's a default spell, then copy the spell settings
+                                    if DC.SpellsToUse[v] then
+                                        D:tcopy(D.classprofile.UserSpells[v].Types, DC.SpellsToUse[v].Types) -- Types is a table, protect the original
+                                        D.classprofile.UserSpells[v].Pet                = DC.SpellsToUse[v].Pet;
+                                        D.classprofile.UserSpells[v].EnhancedBy         = DC.SpellsToUse[v].EnhancedBy;
+                                        D.classprofile.UserSpells[v].EnhancedByCheck    = DC.SpellsToUse[v].EnhancedByCheck;
+                                        D.classprofile.UserSpells[v].Enhancements       = DC.SpellsToUse[v].Enhancements;
+                                    end
+
+                                end
+
                             elseif D.classprofile.UserSpells[v].IsDefault and D.classprofile.UserSpells[v].Hidden then
                                 D:Debug("Reactivating", v);
                                 D.classprofile.UserSpells[v].Hidden = false;
                             end
+
+                            CustomSpellMacroEditingAllowed = false; -- reset macro check box
                         end,
-                        validate = function(info, v)
-
-                            local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
-
-                            if tonumber(v) then
-                                if GetSpellInfo(v) then
-                                    local spellName, spellRank = GetSpellInfo(v);
-
-                                    if spellRank ~= "" then
-                                        v = ("%s(%s)"):format(spellName, spellRank);
-                                    else
-                                        v = spellName;
-                                    end
-                                else
-                                    return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
-                                end
-
-                            elseif v:find('|Hspell:%d+') then
-                                v = D:GetSpellFromLink(v)
-                            end
-
-                            if DC.SpellsToUse[v] then
-                                return error(L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"]);
-                            end
-
-                            if type(v) ~= 'string' or not GetSpellInfo(v) then
-                                D:Debug(v, GetSpellInfo(v));
-                                return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
-                            end
-
-                            v = (GetSpellInfo(v)); -- get a normalized name since v is not case sensitive
-
-                            if D.classprofile.UserSpells[v] and not D.classprofile.UserSpells[v].Hidden then
-                                return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
-                            end
-
-                            return 0;
-                        end,
+                        validate = validateSpellInput,
                     }, -- }}}
 
-                    CurrentAssignments = {
-                        type = 'description',
-                        name = function()
-                            local AvailableButtons = D.db.global.AvailableButtons;
-                             table.wipe(SpellAssignmentsTexts);
-                             SpellAssignmentsTexts[1] = "\n" .. L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"];
-                              for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
-                                  SpellAssignmentsTexts[Prio + 1] = str_format("\n%s -> %s", D:ColorText(("%s - %s - (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(Prio), L[DC.TypeToLocalizableTypeNames[D.Status.ReversedCureOrder[Prio]]], DC.AvailableButtonsReadable[AvailableButtons[Prio]]), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell);
-                              end
-                              return table.concat(SpellAssignmentsTexts, "\n");
-                        end,
+                    IsMacro = {
+                        type = 'toggle',
+                        name = L["OPT_CUSTOM_SPELL_ALLOW_EDITING"],
+                        desc = L["OPT_CUSTOM_SPELL_ALLOW_EDITING_DESC"],
+                        order = 160,
+                        width = 'full',
+                        get = function() return CustomSpellMacroEditingAllowed; end,
+                        set = function(info, v) CustomSpellMacroEditingAllowed = v; end,
                     },
+
+                    
 
                     CustomSpellsHolder = {
                         type = 'group',
                         name = L["OPT_CUSTOMSPELLS"],
-                        order = 160,
+                        order = 165,
                         args = {},
                     }
                 },
@@ -2555,7 +2599,7 @@ do
             color = 'FF606060';
         end
 
-        return D:ColorText(spellname, color);
+        return D:ColorText(spellname .. ((D.classprofile.UserSpells[spellname] and D.classprofile.UserSpells[spellname].MacroText) and "|cFFFF0000*|r" or ""), color);
 
     end
 
@@ -2579,12 +2623,30 @@ do
                 D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
             end
         end,
+        disabled = function (info) -- disable types edition if an enhancement is active (default types are not used in that case)
+            if D.classprofile.UserSpells[info[#info-2]] and D.classprofile.UserSpells[info[#info-2]].EnhancedByCheck then
+
+                return D.classprofile.UserSpells[info[#info-2]].EnhancedByCheck();
+            end
+
+            if DC.SpellsToUse[info[#info-2]] and D:tcheckforval(DC.SpellsToUse[info[#info-2]].Types, DC.LocalizableTypeNamesToTypes[info[#info]]) then
+                return true;
+            end
+
+            return false;
+        end, 
         order = function() return order; end,
     }
 
     local SpellSubOptions = {
         type = 'group',
         name = function(info) return GetColoredName(info[#info]) end,
+        desc = function(info)
+            if DC.SpellsToUse[info[#info]] then
+                return L["OPT_CUSTOM_SPELL_IS_DEFAULT"];
+            end
+            return "";
+        end,
         order = function() return order; end,
         args = {
             -- an enable checkbox
@@ -2598,6 +2660,11 @@ do
                 name = L["OPT_ENABLE_A_CUSTOM_SPELL"],
                 set = function(info,v)
                     D.classprofile.UserSpells[info[#info-1]].Disabled = not v;
+                    if v and DC.SpellsToUse[info[#info-1]] then
+                        D:Configure();
+                        return;
+                    end
+
                     if GetSpellInfo(info[#info-1]) then
                         D:ReConfigure();
                     end
@@ -2612,6 +2679,7 @@ do
                 name = L["OPT_CUSTOM_SPELL_CURE_TYPES"],
                 order = 105,
                 inline = true,
+                
                 args={},
             },
             priority = {
@@ -2643,6 +2711,57 @@ do
                 get = function(info,v)
                     return not D.classprofile.UserSpells[info[#info-1]].Pet;
                 end,
+                hidden = function(info,v) return D.classprofile.UserSpells[info[#info-1]].MacroText end,
+                order = 115
+            },
+            MacroEdition = {
+                type = 'input',
+                name = L["OPT_CUSTOM_SPELL_MACRO_TEXT"],
+                usage = L["OPT_CUSTOM_SPELL_MACRO_TEXT_DESC"],
+                multiline = true,
+                width = 'full',
+                hidden = function(info,v) return not D.classprofile.UserSpells[info[#info-1]].MacroText end,
+
+                get = function(info,v)
+                    return D.classprofile.UserSpells[info[#info-1]].MacroText;
+                end,
+
+                set = function (info,v)
+                    if v:find("UNITID") and (v:gsub("UNITID", "PARTYPET5")):len() < 256 and v:find(info[#info-1]) then
+                        D.classprofile.UserSpells[info[#info-1]].MacroText = v;
+
+                        if D.Status.FoundSpells[info[#info - 1]] then
+                            D.Status.FoundSpells[info[#info-1]][5] = v;
+                            D.Status.SpellsChanged = GetTime(); -- will force an update of all MUFs attributes
+                            D:Debug("Attribute update triggered");
+                        end
+                    end
+                end,
+
+                validate = function (info, v)
+                    local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
+
+                    if type(v) ~= 'string' then -- this should be impossible
+                        return error("What did you do ?!?");
+                    end
+
+                    local length = (v:gsub("UNITID", "PARTYPET5")):len()
+
+                    if length > 255 then
+                        return error((L["OPT_CUSTOM_SPELL_MACRO_TOO_LONG"]):format( length - 255));
+                    end
+
+                    if not v:find("UNITID") then
+                        return error(L["OPT_CUSTOM_SPELL_MACRO_MISSING_UNITID_KEYWORD"]);
+                    end
+
+                    if not v:find(info[#info-1]) then
+                        return error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format(info[#info-1]));
+                    end
+
+                    return 0;
+                end,
+
                 order = 115
             },
             -- a delete button
@@ -2650,6 +2769,7 @@ do
                 type = 'execute',
                 name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], info[#info - 1]) end,
                 confirm = true,
+                width = 'double',
                 func = function (info)
 
                     if D.classprofile.UserSpells[info[#info - 1]].IsDefault then

@@ -121,7 +121,7 @@ Also tell in your report if you noticed any strange behavior of Decursive.
 ]=]
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
 L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = [=[A debug report is available!
-Type |cFFFF0000/dcr general report|r to see it.]=]
+Type |cFFFF0000/DCRREPORT|r to see it.]=]
 L["DECURSIVE_DEBUG_REPORT_SHOW"] = "Debug report available!"
 L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"] = "Show a debug report the author needs to see..."
 L["DEFAULT_MACROKEY"] = "`"
@@ -226,7 +226,7 @@ L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"] = "Lets you see how Decursive looks when an 
 L["OPT_CUREPETS_DESC"] = "Pets will be managed and cured"
 L["OPT_CURE_PRIORITY_NUM"] = "Priority #%d"
 L["OPT_CURINGOPTIONS"] = "Curing Options"
-L["OPT_CURINGOPTIONS_DESC"] = "Curing options including options to change priority and spells for each affliction type"
+L["OPT_CURINGOPTIONS_DESC"] = "Curing options including options to change priority for each affliction type"
 L["OPT_CURINGOPTIONS_EXPLANATION"] = [=[Select the types of affliction you want to cure, unchecked types will be completely ignored by Decursive.
 
 The green numbers represent the priority associated to each affliction type. This priority determines the following options:
@@ -243,7 +243,23 @@ L["OPT_CUSTOMSPELLS_DESC"] = [=[Here you can add spells to extend Decursive's au
 Your custom spells always have a higher priority and will override and replace the default spells (if and only if your character can use those spells).
 ]=]
 L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"] = "Effective spells assignments:"
+L["OPT_CUSTOM_SPELL_ALLOW_EDITING"] = "Allow macro editing (for advanced users only)"
+L["OPT_CUSTOM_SPELL_ALLOW_EDITING_DESC"] = [=[Check this if you want to edit the internal macro Decursive will use for your custom spell.
+
+Note: Checking this allows you to modify spells managed by Decursive.
+(---For advanced users only---)]=]
 L["OPT_CUSTOM_SPELL_CURE_TYPES"] = "Affliction types"
+L["OPT_CUSTOM_SPELL_IS_DEFAULT"] = "This spell is part of Decursive's automatic configuration. If this spell is no longer working correctly, you can remove or disable it to regain default Decursive behaviour."
+L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"] = "The spell %q must be present in the macro."
+L["OPT_CUSTOM_SPELL_MACRO_MISSING_UNITID_KEYWORD"] = "The UNITID keyword is missing."
+L["OPT_CUSTOM_SPELL_MACRO_TEXT"] = "Macro text:"
+L["OPT_CUSTOM_SPELL_MACRO_TEXT_DESC"] = [=[Edit the default macro text.
+Only 2 restrictions:
+
+- You must specify the target using the UNITID keyword which will be automatically replaced by the unit ID of each MUF.
+
+- You may not change the spell used in the macro else Decursive won't be able to track its cooldown or its success/failure. (Decursive looks for this spell's name in the combat log events)]=]
+L["OPT_CUSTOM_SPELL_MACRO_TOO_LONG"] = "Your macro is too long, you need to remove %d characters."
 L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority"
 L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred."
 L["OPT_CUSTOM_SPELL_STOPCASTING"] = "/StopCasting"
@@ -433,7 +449,6 @@ L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
-
 
 --]==]
 --@end-do-not-package@

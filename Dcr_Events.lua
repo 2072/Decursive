@@ -670,7 +670,7 @@ do -- Combat log event handling {{{1
             end
 
             -- SPELL EVENTS {{{2
-        elseif self.Status.ClickedMF and SpellEvents[event] and self.Status.CuringSpellsPrio[arg10] and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  DISPEL_FAILED
+        elseif self.Status.ClickedMF and SpellEvents[event] and self.Status.ClickedMF.CastingSpell == arg10 and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  DISPEL_FAILED
 
             if event == "SPELL_CAST_SUCCESS" then
 
