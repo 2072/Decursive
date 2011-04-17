@@ -803,7 +803,6 @@ function MicroUnitF:OnEnter(frame) -- {{{
         end
 
         local Unit_Array = D.Status.Unit_Array;
-        D:Debug("RefMUF:", RefMUF, self.ExistingPerUNIT[Unit_Array[RefMUF]].CurrUnit);
 
         -- Display the tooltip
         D:DisplayTooltip(TooltipText, self.Frame, "ANCHOR_TOPLEFT");
