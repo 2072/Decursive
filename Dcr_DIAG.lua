@@ -318,8 +318,47 @@ do
 
     local PrintMessage = function (message, ...) if T._DiagStatus ~= 2 then T.Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
-    -- {{{
-    function T._SelfDiagnostic (force, FromCommand)
+
+    function T._ExportActionsConfiguration () -- use pcall with this
+
+        local errorPrefix = function (message)
+            return "_ExportActionsConfiguration: " .. message;
+        end
+
+        local SpellAssignmentsTexts = {};
+        local result = "";
+        local D = T.Dcr;
+
+        if not D then
+            return errorPrefix("T.Dcr not available");
+        end
+
+        local sucess, AvailableButtons = pcall(function ()return D.db.global.AvailableButtons end);
+        
+        if not sucess then
+            return errorPrefix("couldn't get AvailableButtons: " .. AvailableButtons);
+        end
+
+        SpellAssignmentsTexts[1] = "\nSpells assignments:";
+
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+
+            local SpellCuredTypes = {};
+            for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
+
+                if D.Status.CuringSpells[afflictionType] == Spell then
+                    table.insert(SpellCuredTypes, DC.TypeToLocalizableTypeNames[afflictionType])
+                end
+            end
+
+            SpellCuredTypes = table.concat (SpellCuredTypes, " - ");
+
+            SpellAssignmentsTexts[Prio + 1] = string.format("\n    %s -> %s%s", ("%s - %s - (%s)"):format( ("Prio %d:"):format(Prio), SpellCuredTypes, AvailableButtons[Prio]), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and ("\n        MACRO(%d):(%s)"):format(D.Status.FoundSpells[Spell][5]:len(), D.Status.FoundSpells[Spell][5]) or "");
+        end
+        return table.concat(SpellAssignmentsTexts, "\n");
+    end
+
+    function T._SelfDiagnostic (force, FromCommand)    -- {{{
 
         -- will not executes several times unless forced
         if not force and T._DiagStatus then
@@ -339,7 +378,7 @@ do
             ["AceHook-3.0"] = 5,
             ["AceDB-3.0"] = 21,
             ["AceDBOptions-3.0"] = 12,
-            ["AceLocale-3.0"] = 2,
+            ["AceLocale-3.0"] = 5,
             ["AceComm-3.0"] = 7,
 
             ["AceGUI-3.0"] = 33,
@@ -349,7 +388,7 @@ do
             ["AceConfigDialog-3.0"] = 52,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 17,
+            ["LibDBIcon-1.0"] = 18,
             ["LibQTip-1.0"] = 38,
             ["CallbackHandler-1.0"] = 6,
         };
@@ -460,6 +499,10 @@ do
                     PrintMessage("|cFF00FF00Event library functionning properly!|r");
                     PrintMessage("|cFF00FF00Everything seems to be OK.|r");
                     AddDebugText("Event library functionning properly, Everything seems to be OK");
+                    -- get a list of current actions assignments
+                    AddDebugText(pcall(T._ExportActionsConfiguration));
+                    -- open the diagnostic window
+                    T.Dcr:ShowDebugReport();
                     return;
                 else
                     T.Dcr:Debug(OneTimeEvent, "is not", ConfirmOneTimeEventMessage, "and", CustomEventCaught, "is not", ConfirmCustomEventMessage);

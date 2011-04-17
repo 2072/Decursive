@@ -30,6 +30,10 @@ externals:
         url:  git://github.com/tekkub/libdatabroker-1-1.git 
     
 
+
+optional-dependencies:
+    - bug-grabber
+
 license-output: LICENSE.txt
 
 #manual-changelog:

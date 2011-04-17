@@ -1509,7 +1509,7 @@ local function GetStaticOptions ()
                              table.wipe(SpellAssignmentsTexts);
                              SpellAssignmentsTexts[1] = "\n" .. D:ColorText(L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"], "FFEEEE33");
 
-                              for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE ??
+                              for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
                                   local SpellCuredTypes = {};
                                   for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
@@ -1551,7 +1551,7 @@ local function GetStaticOptions ()
 
                                 if CustomSpellMacroEditingAllowed then
 
-                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [target=UNITID, help][target=UNITID, harm] " .. v;
+                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [target=UNITID,help][target=UNITID,harm]" .. v;
 
                                     -- If it's a default spell, then copy the spell settings
                                     if DC.SpellsToUse[v] then
