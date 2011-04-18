@@ -144,7 +144,7 @@ end
 
 
 local function debugStyle(...)
-    return "|cFF00AAAADebug:|r", ...;
+    return "|cFF00AAAADebug:("..D:NiceTime()..")|r", ...;
 end
 
 function D:Println( ... ) --{{{
@@ -268,7 +268,7 @@ function D:tGiveValueIndex(tab, val)
             return k;
         end
     end
-    return false;
+    return nil;
 end
 
 function D:tSortUsingKeys(tab)

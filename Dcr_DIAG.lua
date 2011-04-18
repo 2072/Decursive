@@ -333,10 +333,10 @@ do
             return errorPrefix("T.Dcr not available");
         end
 
-        local sucess, AvailableButtons = pcall(function ()return D.db.global.AvailableButtons end);
+        local sucess, MouseButtons = pcall(function ()return D.db.global.MouseButtons end);
         
         if not sucess then
-            return errorPrefix("couldn't get AvailableButtons: " .. AvailableButtons);
+            return errorPrefix("couldn't get MouseButtons: " .. MouseButtons);
         end
 
         SpellAssignmentsTexts[1] = "\nSpells assignments:";
@@ -353,7 +353,7 @@ do
 
             SpellCuredTypes = table.concat (SpellCuredTypes, " - ");
 
-            SpellAssignmentsTexts[Prio + 1] = string.format("\n    %s -> %s%s", ("%s - %s - (%s)"):format( ("Prio %d:"):format(Prio), SpellCuredTypes, AvailableButtons[Prio]), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and ("\n        MACRO(%d):(%s)"):format(D.Status.FoundSpells[Spell][5]:len(), D.Status.FoundSpells[Spell][5]) or "");
+            SpellAssignmentsTexts[Prio + 1] = string.format("\n    %s -> %s%s", ("%s - %s - (%s)"):format( ("Prio %d:"):format(Prio), SpellCuredTypes, MouseButtons[Prio]), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and ("\n        MACRO(%d):(%s)"):format(D.Status.FoundSpells[Spell][5]:len(), D.Status.FoundSpells[Spell][5]) or "");
         end
         return table.concat(SpellAssignmentsTexts, "\n");
     end

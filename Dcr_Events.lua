@@ -670,7 +670,13 @@ do -- Combat log event handling {{{1
             end
 
             -- SPELL EVENTS {{{2
-        elseif self.Status.ClickedMF and SpellEvents[event] and self.Status.ClickedMF.CastingSpell == arg10 and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  DISPEL_FAILED
+        elseif self.Status.ClickedMF and SpellEvents[event] and (self.Status.ClickCastingWIP or self.Status.ClickedMF.CastingSpell == arg10) and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  SPELL_DISPEL_FAILED
+
+            if self.Status.ClickCastingWIP then
+                self.Status.ClickedMF.CastingSpell = arg10;
+                D:Debug("clickcastWIP caught: ", arg10);
+            end
+
 
             if event == "SPELL_CAST_SUCCESS" then
 
@@ -685,7 +691,7 @@ do -- Combat log event handling {{{1
                         D.Status.ClickedMF = false;
                         if self.debug then D:Debug("ClickedMF to false (sched)"); end
                     end
-                end, 0.1 );
+                end, 0.1 ); -- XXX why wait 0.1s ??????? (probably for SPELL_DISPEL_FAILED and MISSED events)
 
                 self.Status.ClickedMF.SPELL_CAST_SUCCESS = true;
 
@@ -718,6 +724,9 @@ do -- Combat log event handling {{{1
                 D:Println(L["FAILEDCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
                 PlaySoundFile(DC.FailedSound);
                 self.Status.ClickedMF = false;
+                --@alpha@
+                D:AddDebugText("sanitycheck ", event, arg10);
+                --@end-alpha@
             end
             --  }}}
         end

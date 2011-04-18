@@ -124,10 +124,10 @@ local UnitAura          = _G.UnitAura;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 
 
-DC.AvailableButtonsReadable = { -- {{{
-    ["%s1"]         =   L["HLP_LEFTCLICK"], -- left mouse button
-    ["%s2"]         =   L["HLP_RIGHTCLICK"], -- right mouse button
-    ["%s3"]         =   L["HLP_MIDDLECLICK"], -- middle mouse button
+DC.MouseButtonsReadable = { -- {{{
+    ["*%s1"]         =   L["HLP_LEFTCLICK"], -- left mouse button
+    ["*%s2"]         =   L["HLP_RIGHTCLICK"], -- right mouse button
+    ["*%s3"]         =   L["HLP_MIDDLECLICK"], -- middle mouse button
     ["ctrl-%s1"]    =   L["CTRL"]  .. "-" .. L["HLP_LEFTCLICK"],
     ["ctrl-%s2"]    =   L["CTRL"]  .. "-" .. L["HLP_RIGHTCLICK"],
     ["ctrl-%s3"]    =   L["CTRL"]  .. "-" .. L["HLP_MIDDLECLICK"],
@@ -825,15 +825,15 @@ function MicroUnitF:OnEnter(frame) -- {{{
         -- if necessary we will update the help tooltip text
         if (D.Status.SpellsChanged ~= TooltipUpdate) then
             TooltipButtonsInfo = {};
-            local AvailableButtons = D.db.global.AvailableButtons;
+            local MouseButtons = D.db.global.MouseButtons;
 
-            for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE
+            for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
                 TooltipButtonsInfo[Prio] =
-                str_format("%s: %s%s", D:ColorText(DC.AvailableButtonsReadable[AvailableButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                str_format("%s: %s%s", D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
             end
 
-            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.AvailableButtonsReadable[AvailableButtons[#AvailableButtons - 1]], L["TARGETUNIT"]));
-            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.AvailableButtonsReadable[AvailableButtons[#AvailableButtons    ]], L["FOCUSUNIT"]));
+            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
+            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
             TooltipButtonsInfo = table.concat(TooltipButtonsInfo, "\n");
             TooltipUpdate = D.Status.SpellsChanged;
         end
@@ -899,45 +899,77 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
 
     elseif (frame.Object.UnitStatus == AFFLICTED) then
         local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
-        local RequestedPrio = false;
+        local RequestedPrio;
         local ButtonsString = "";
+        local modifier;
 
         if IsControlKeyDown() then
-            ButtonsString = "ctrl-";
+            modifier = "ctrl-";
         elseif IsAltKeyDown() then
-            ButtonsString = "alt-";
+            modifier = "alt-";
         elseif IsShiftKeyDown() then
-            ButtonsString = "shift-";
+            modifier = "shift-";
         end
 
         if Button == "LeftButton" then
-            ButtonsString = ButtonsString .. "%s1";
+            ButtonsString = "*%s1";
         elseif Button == "RightButton" then
-            ButtonsString = ButtonsString .. "%s2";
+            ButtonsString = "*%s2";
+        elseif Button == "MiddleButton" then
+            ButtonsString = "*%s3";
+        else
+            D:Debug("unknown button");
+            return;
         end
 
-        RequestedPrio = D:tGiveValueIndex(D.db.global.AvailableButtons, ButtonsString);
+        RequestedPrio = D:tGiveValueIndex(D.db.global.MouseButtons, modifier and (modifier .. ButtonsString:sub(-3)) or ButtonsString);
+        D:Debug("RequestedPrio:", RequestedPrio);
+
+        -- there is no spell for the requested prio ? (no spell registered to this modifier+mousebutton)
+        if modifier and RequestedPrio and not D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
+
+            D:Debug("No spell registered for", RequestedPrio);
+
+            -- Get the priority that would have been requested without modifiers
+            local RequestedPrioNoMod = D:tGiveValueIndex(D.db.global.MouseButtons, ButtonsString);
+
+            -- Get the spell bond to this priority
+            local NoModSpell = D:tGiveValueIndex(D.Status.CuringSpellsPrio, RequestedPrioNoMod)
+
+            -- If there is one and it's a user customized macro
+            if NoModSpell and D.Status.FoundSpells[NoModSpell][5] then
+                D:Debug("But spell used by", ButtonsString, "is a user nacro");
+                -- let the user use the modifiers he want without yelling at him
+                RequestedPrio = RequestedPrioNoMod;
+            end
+        end
 
         if RequestedPrio and NeededPrio ~= RequestedPrio then
             D:errln(L["HLP_WRONGMBUTTON"]);
             if NeededPrio and MF_colors[NeededPrio] then
-                D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.AvailableButtonsReadable[ D.db.global.AvailableButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
+                D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.MouseButtonsReadable[ D.db.global.MouseButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
                 --@debug@
             else
                 D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                 --@end-debug@
             end
-
-
         elseif RequestedPrio and D.Status.HasSpell then
+            D.Status.ClickCastingWIP = true;
+            D:Debug("ClickCastingWIP")
             D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
             D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
-            D.Status.ClickedMF.CastingSpell = (GetSpellInfo(D.Status.CuringSpells[frame.Object.Debuffs[1].Type])); -- store the spell name but without its rank
-            --D:Debug("XXXX stored clicked spell:", D.Status.ClickedMF.CastingSpell);
+            local spell = D.Status.CuringSpells[frame.Object.Debuffs[1].Type];
+
+            D.Status.ClickedMF.CastingSpell = "notyet" -- (GetSpellInfo(spell)); -- store the spell name but without its rank
             D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName);
         end
     end
 end -- }}}
+
+function MicroUnitF:OnPostClick(frame, button)
+    D:Debug("Micro unit PostClicked");
+    D.Status.ClickCastingWIP = false;
+end
 
 -- }}}
 
@@ -1131,6 +1163,21 @@ do
     local ReturnValue = false;
     local tmp;
     -- this updates the sttributes of a MUF's frame object
+    function MicroUnitF.prototype:SetUnstableAttribute(attribute, value)
+        self.Frame:SetAttribute(attribute, value);
+        self.usedAttributes[attribute] = self.LastAttribUpdate;
+    end
+
+    function MicroUnitF.prototype:CleanDefuncUnstableAttributes()
+        for attribute, lastupdate in pairs(self.usedAttributes) do
+            if lastupdate ~= self.LastAttribUpdate then
+                self.Frame:SetAttribute(attribute, nil);
+                self.usedAttributes[attribute] = nil;
+                D:Debug("Removed defunc attribute", attribute);
+            end
+        end
+    end
+
     function MicroUnitF.prototype:UpdateAttributes(Unit, DoNotDelay)
 
         -- Delay the call if we are fighting
@@ -1144,6 +1191,10 @@ do
         end
 
         ReturnValue = false;
+
+        if not self.usedAttributes then
+            self.usedAttributes = {};
+        end
 
         -- if the unit is not set
         if not self.CurrUnit then
@@ -1170,37 +1221,37 @@ do
 
         if self.LastAttribUpdate == 0 then -- only once
             -- set the mouse left-button actions on all modifiers
-            self.Frame:SetAttribute("type1", "macro");
+            self.Frame:SetAttribute("*type1", "macro");
             self.Frame:SetAttribute("ctrl-type1", "macro");
             self.Frame:SetAttribute("alt-type1", "macro");
             self.Frame:SetAttribute("shift-type1", "macro");
 
             -- set the mouse right-button actions on all modifiers
-            self.Frame:SetAttribute("type2", "macro");
+            self.Frame:SetAttribute("*type2", "macro");
             self.Frame:SetAttribute("ctrl-type2", "macro");
             self.Frame:SetAttribute("alt-type2", "macro");
             self.Frame:SetAttribute("shift-type2", "macro");
 
             -- set the mouse middle-button actions on all modifiers
-            self.Frame:SetAttribute("type3", "macro");
+            self.Frame:SetAttribute("*type3", "macro");
             self.Frame:SetAttribute("ctrl-type3", "macro");
             self.Frame:SetAttribute("alt-type3", "macro");
             self.Frame:SetAttribute("shift-type3", "macro");
         end
 
-        local AvailableButtons = D.db.global.AvailableButtons;
+        local MouseButtons = D.db.global.MouseButtons;
 
-        self.Frame:SetAttribute(str_format(AvailableButtons[#AvailableButtons - 1], "macrotext"), str_format("/target %s", Unit));
-        self.Frame:SetAttribute(str_format(AvailableButtons[#AvailableButtons    ], "macrotext"), str_format("/focus %s", Unit));
+        self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macrotext"), ("/target %s"):format(Unit));
+        self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macrotext"), ("/focus %s"):format(Unit));
 
         -- set the spells attributes using the lookup tables above
-        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
             if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
 
                 --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
                 -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-                self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), str_format("%s/cast [target=%s, help][target=%s, harm] %s",
+                self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/cast [target=%s, help][target=%s, harm] %s"):format(
                 ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
                 Unit,Unit,
                 Spell));
@@ -1208,13 +1259,16 @@ do
                 tmp = D.Status.FoundSpells[Spell][5];
                 tmp = tmp:gsub("UNITID", Unit);
                 if tmp:len() < 256 then -- last chance protection, shouldn't happen
-                    self.Frame:SetAttribute(str_format(AvailableButtons[Prio], "macrotext"), tmp);
+                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), tmp);
                 else
                     D:errln("Macro too long for", Unit);
                 end
             end
 
         end
+
+        -- clean unused attributes...
+        self:CleanDefuncUnstableAttributes();
 
         self.Debuff1Prio = false;
 
@@ -1684,9 +1738,7 @@ end -- }}}
 -- UNUSED STUFF {{{
 -- Micro Frame Events, useless for now
 
-function MicroUnitF:OnPostClick(frame, button)
-    --      D:Debug("Micro unit PostClicked");
-end
+
 
 function MicroUnitF:OnAttributeChanged(self, name, value)
     D:Debug("Micro unit", name, "AttributeChanged to", value);

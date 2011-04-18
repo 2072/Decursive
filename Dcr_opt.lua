@@ -110,9 +110,9 @@ function D:GetDefaultsSettings()
             MacroBind = false,
             NoStartMessages = false,
 
-            AvailableButtons = {
-                "%s1", -- left mouse button
-                "%s2", -- right mouse button
+            MouseButtons = {
+                "*%s1", -- left mouse button
+                "*%s2", -- right mouse button
                 "ctrl-%s1",
                 "ctrl-%s2",
                 "shift-%s1",
@@ -121,7 +121,7 @@ function D:GetDefaultsSettings()
                 "alt-%s1",
                 "alt-%s2",
                 "alt-%s3",
-                "%s3",       -- the last two entries are always target and focus
+                "*%s3",       -- the last two entries are always target and focus
                 "ctrl-%s3",
             },
         },
@@ -1505,7 +1505,7 @@ local function GetStaticOptions ()
                    CurrentAssignments = {
                         type = 'description',
                         name = function()
-                            local AvailableButtons = D.db.global.AvailableButtons;
+                            local MouseButtons = D.db.global.MouseButtons;
                              table.wipe(SpellAssignmentsTexts);
                              SpellAssignmentsTexts[1] = "\n" .. D:ColorText(L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"], "FFEEEE33");
 
@@ -1521,7 +1521,7 @@ local function GetStaticOptions ()
 
                                   SpellCuredTypes = table.concat (SpellCuredTypes, " - ");
 
-                                  SpellAssignmentsTexts[Prio + 1] = str_format("\n    %s -> %s%s", D:ColorText(("%s - %s - (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(Prio), SpellCuredTypes, DC.AvailableButtonsReadable[AvailableButtons[Prio]]), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                                  SpellAssignmentsTexts[Prio + 1] = str_format("\n    %s -> %s%s", D:ColorText(("%s - %s - (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(Prio), SpellCuredTypes, DC.MouseButtonsReadable[MouseButtons[Prio]]), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
                               end
                               return table.concat(SpellAssignmentsTexts, "\n");
                         end,
@@ -2346,8 +2346,8 @@ do
 
         if (type(ColorReason) == "number" and ColorReason <= 6) then
 
-            name = D:ColorText(  ("%s (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(ColorReason), DC.AvailableButtonsReadable[D.db.global.AvailableButtons[ColorReason] ])  , D:NumToHexColor(L_MF_colors[ColorReason]));
-            desc = (L["COLORALERT"]):format(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[ColorReason] ]);
+            name = D:ColorText(  ("%s (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(ColorReason), DC.MouseButtonsReadable[D.db.global.MouseButtons[ColorReason] ])  , D:NumToHexColor(L_MF_colors[ColorReason]));
+            desc = (L["COLORALERT"]):format(DC.MouseButtonsReadable[D.db.global.MouseButtons[ColorReason] ]);
 
         elseif (type(ColorReason) == "number")      then
             local Text = "";
@@ -2488,10 +2488,10 @@ do
         if retrieveKeyComboNum (info) == 1 then
             table.wipe(TempTable);
 
-            for i=1, #D.db.global.AvailableButtons do
-                TempTable[i] = D:ColorText(DC.AvailableButtonsReadable[D.db.global.AvailableButtons[i]],
+            for i=1, #D.db.global.MouseButtons do
+                TempTable[i] = D:ColorText(DC.MouseButtonsReadable[D.db.global.MouseButtons[i]],
                         i < 7 and D:NumToHexColor(D.profile.MF_colors[i]) -- defined priorities
-                        or (i >= #D.db.global.AvailableButtons - 1 and "FFFFFFFF" -- target and focus
+                        or (i >= #D.db.global.MouseButtons - 1 and "FFFFFFFF" -- target and focus
                         or "FFBBBBBB") -- other unused buttons
                     );
             end
@@ -2510,9 +2510,9 @@ do
         name = function (info)
             if not retrieveKeyComboNum (info) then return "" end -- needed because when called by command line, info is set to the parent
 
-            if retrieveKeyComboNum (info) < #D.db.global.AvailableButtons - 1 then
+            if retrieveKeyComboNum (info) < #D.db.global.MouseButtons - 1 then
                 return D:ColorText(L["OPT_CURE_PRIORITY_NUM"]:format(retrieveKeyComboNum (info)),  D:NumToHexColor(D.profile.MF_colors[retrieveKeyComboNum (info)]));
-            elseif  retrieveKeyComboNum (info) == #D.db.global.AvailableButtons - 1 then
+            elseif  retrieveKeyComboNum (info) == #D.db.global.MouseButtons - 1 then
                 return L["OPT_MUFTARGETBUTTON"];
             else
                 return L["OPT_MUFFOCUSBUTTON"];
@@ -2530,7 +2530,7 @@ do
 
             if value ~= ThisKeyComboNum then -- we would destroy the table
 
-                D:tSwap(D.db.global.AvailableButtons, ThisKeyComboNum, value);
+                D:tSwap(D.db.global.MouseButtons, ThisKeyComboNum, value);
 
                 -- force all MUFs to update their attributes
                 D.Status.SpellsChanged = GetTime();
@@ -2554,8 +2554,10 @@ do
                 name = L["OPT_RESETMUFMOUSEBUTTONS"],
                 desc = L["OPT_RESETMUFMOUSEBUTTONS_DESC"],
                 func = function ()
-                    table.wipe(D.db.global.AvailableButtons);
-                    D:tcopy(D.db.global.AvailableButtons, D.defaults.global.AvailableButtons);
+                    table.wipe(D.db.global.MouseButtons);
+                    D:tcopy(D.db.global.MouseButtons, D.defaults.global.MouseButtons);
+                    -- force all MUFs to update their attributes
+                    D.Status.SpellsChanged = GetTime();
                 end,
                 order = -1,
             },
@@ -2567,9 +2569,9 @@ do
         end
 
         -- create choice munu for targeting (it's always the last but one available button)
-        key_Combos_Select["KeyCombo" .. #D.db.global.AvailableButtons - 1] = OptionPrototype;
+        key_Combos_Select["KeyCombo" .. #D.db.global.MouseButtons - 1] = OptionPrototype;
         -- create choice munu for focusing (it's always the last available button)
-        key_Combos_Select["KeyCombo" .. #D.db.global.AvailableButtons] = OptionPrototype;
+        key_Combos_Select["KeyCombo" .. #D.db.global.MouseButtons] = OptionPrototype;
 
         return key_Combos_Select;
     end
@@ -2727,7 +2729,7 @@ do
                 end,
 
                 set = function (info,v)
-                    if v:find("UNITID") and (v:gsub("UNITID", "PARTYPET5")):len() < 256 and v:find(info[#info-1]) then
+                    if v:find("UNITID") and (v:gsub("UNITID", "PARTYPET5")):len() < 256 and v:find(info[#info-1], 0, true) then
                         D.classprofile.UserSpells[info[#info-1]].MacroText = v;
 
                         if D.Status.FoundSpells[info[#info - 1]] then
@@ -2755,7 +2757,7 @@ do
                         return error(L["OPT_CUSTOM_SPELL_MACRO_MISSING_UNITID_KEYWORD"]);
                     end
 
-                    if not v:find(info[#info-1]) then
+                    if not v:find(info[#info-1], 0, true) then
                         return error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format(info[#info-1]));
                     end
 
