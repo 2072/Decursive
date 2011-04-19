@@ -2,7 +2,7 @@
     This file is part of Decursive.
     
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2007-2008-2009 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
+    Copyright (C) 2006-2007-2008-2009-2010-2011 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
     is no longer free software, all rights are reserved to its author (John Wellesz).
@@ -16,6 +16,8 @@
 
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
+    
+    This file was last updated on @file-date-iso@
 --]]
 -------------------------------------------------------------------------------
 
@@ -1759,18 +1761,18 @@ function D:ExportOptions ()
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, D.name, nil, "general");
 
     local SubGroups_ToBlizzOptions = {
-        [D:ColorText(L["OPT_LIVELIST"], "FF22EE33")] = "livelistoptions",
-        [D:ColorText(L["OPT_MESSAGES"], "FF229966")] = "MessageOptions",
-        [D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33")] = "MicroFrameOpt",
-        [D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533")] = "CureOptions",
-        [D:ColorText(L["OPT_CUSTOMSPELLS"], "FF00DDDD")] = "CustomSpells",
-        [D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA")] = "DebuffSkip",
-        [D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB")] = "Macro",
-        [D:ColorText(L["OPT_ABOUT"], "FFFFFFFF")] = "About",
+        { D:ColorText(L["OPT_LIVELIST"], "FF22EE33"), "livelistoptions"},
+        { D:ColorText(L["OPT_MESSAGES"], "FF229966"), "MessageOptions"},
+        { D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"), "MicroFrameOpt"},
+        { D:ColorText(L["OPT_CURINGOPTIONS"], "FFFF5533"), "CureOptions"},
+        { D:ColorText(L["OPT_CUSTOMSPELLS"], "FF00DDDD"), "CustomSpells"},
+        { D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"), "DebuffSkip"},
+        { D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"), "Macro"},
+        { D:ColorText(L["OPT_ABOUT"], "FFFFFFFF"), "About"},
     };
 
-    for key,value in pairs(SubGroups_ToBlizzOptions) do
-        LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, key, D.name, value);
+    for key,values in ipairs(SubGroups_ToBlizzOptions) do
+        LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, values[1], D.name, values[2]);
     end
 end
 
@@ -2314,7 +2316,6 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             set = function(info,value)
                 AddFunc(D:RemoveColor(GetHistoryDebuff()[value])); end,
             order = 100 + num,
-            --validate = DebuffHistTable, --GetHistoryDebuff(),
         };
 
 
@@ -2729,7 +2730,7 @@ do
                 end,
 
                 set = function (info,v)
-                    if v:find("UNITID") and (v:gsub("UNITID", "PARTYPET5")):len() < 256 and v:find(info[#info-1], 0, true) then
+                    if v:find("UNITID") and (v:gsub("UNITID", "PARTYPET5")):len() < 256 then
                         D.classprofile.UserSpells[info[#info-1]].MacroText = v;
 
                         if D.Status.FoundSpells[info[#info - 1]] then
@@ -2758,7 +2759,7 @@ do
                     end
 
                     if not v:find(info[#info-1], 0, true) then
-                        return error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format(info[#info-1]));
+                        StaticPopup_Show("Decursive_Notice_Frame", error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format(info[#info-1])));
                     end
 
                     return 0;
