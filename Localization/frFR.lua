@@ -2,7 +2,7 @@
     This file is part of Decursive.
     
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2007-2008-2009 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/?to=decursive.php )
+    Copyright (C) 2006-2007-2008-2009-2010-2011 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/?to=decursive.php )
 
     This is the continued work of the original Decursive (v1.9.4) by Quu
     "Decursive 1.9.4" is in public domain ( www.quutar.com )

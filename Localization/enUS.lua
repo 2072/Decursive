@@ -2,7 +2,7 @@
     This file is part of Decursive.
     
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2007-2008-2009 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/?to=decursive.php )
+    Copyright (C) 2006-2007-2008-2009-2010-2011 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/?to=decursive.php )
 
     This is the continued work of the original Decursive (v1.9.4) by Quu
     "Decursive 1.9.4" is in public domain ( www.quutar.com )
@@ -250,15 +250,16 @@ Note: Checking this allows you to modify spells managed by Decursive.
 (---For advanced users only---)]=]
 L["OPT_CUSTOM_SPELL_CURE_TYPES"] = "Affliction types"
 L["OPT_CUSTOM_SPELL_IS_DEFAULT"] = "This spell is part of Decursive's automatic configuration. If this spell is no longer working correctly, you can remove or disable it to regain default Decursive behaviour."
-L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"] = "The spell %q must be present in the macro."
+L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"] = "Warning: The spell %q is not present in your macro, range and cooldown information will not match..."
 L["OPT_CUSTOM_SPELL_MACRO_MISSING_UNITID_KEYWORD"] = "The UNITID keyword is missing."
 L["OPT_CUSTOM_SPELL_MACRO_TEXT"] = "Macro text:"
 L["OPT_CUSTOM_SPELL_MACRO_TEXT_DESC"] = [=[Edit the default macro text.
-Only 2 restrictions:
+|cFFFF0000Only 2 restrictions:|r
 
 - You must specify the target using the UNITID keyword which will be automatically replaced by the unit ID of each MUF.
 
-- You may not change the spell used in the macro else Decursive won't be able to track its cooldown or its success/failure. (Decursive looks for this spell's name in the combat log events)]=]
+- Whatever is the spell used in the macro, Decursive will keep using the original name displayed on the left for range and cooldown display/tracking.
+(keep that in mind if you plan on using different spells with conditionals)]=]
 L["OPT_CUSTOM_SPELL_MACRO_TOO_LONG"] = "Your macro is too long, you need to remove %d characters."
 L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority"
 L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred."
@@ -449,6 +450,7 @@ L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
+
 
 --]==]
 --@end-do-not-package@

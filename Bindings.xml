@@ -3,7 +3,7 @@
     This file is part of Decursive.
     
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2007-2008-2009 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
+    Copyright (C) 2006-2007-2008-2009-2010-2011 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
     is no longer free software, all rights are reserved to its author (John Wellesz).
@@ -17,9 +17,10 @@
 
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
+    
+    This file was last updated on @file-date-iso@
 -->
 
-        
         <Binding name="DCRSHOW" header="DECURSIVE">
                         DecursiveRootTable.Dcr:HideBar(false);
         </Binding>
@@ -38,11 +39,8 @@
         <Binding name="DCRPRCLEAR">
                         DecursiveRootTable.Dcr:ClearPriorityList();
         </Binding>
-        <!--<Binding name="DCRPRLIST">
-                        DecursiveRootTable.Dcr:PrintPriorityList();
-        </Binding>-->
         <Binding name="DCRSKSHOW">
-            DecursiveRootTable.Dcr:ShowHideSkipListUI();
+                        DecursiveRootTable.Dcr:ShowHideSkipListUI();
         </Binding>
         <Binding name="DCRSKADD">
                         DecursiveRootTable.Dcr:AddTargetToSkipList();
@@ -50,7 +48,4 @@
         <Binding name="DCRSKCLEAR">
                         DecursiveRootTable.Dcr:ClearSkipList();
         </Binding>
-        <!--<Binding name="DCRSKLIST">
-            DecursiveRootTable.Dcr:PrintSkipList();
-        </Binding>-->
 </Bindings>
