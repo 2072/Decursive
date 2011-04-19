@@ -3,19 +3,15 @@ TODO:
 
 - add a donators credit section in the About UI
 
-- Add an option to disable spell stopping when clicking on a MUF
--- Was never requested
-
 - Add an option to automatically focus sheeped/cycloned units (if no other focus)
+--- can now be done by modifying the internal macro YAY!
 
 - Add a user debuff warning mechanism where you could define debuff names you
   want to be aware of, then Decursive would add a special status, such as a
   little colored triangle in the middle of the MUFs and then you will have to
   create a mouseover macro (using default Blizzard macro interface) and use it on
   the MUF of your choice...
-
--/ when a mind controlled unit is sheepped we should be able to know it without having to target it and look for the sheep debuff
-  (maybe just check for polymorph debuff/buff? on the target and remove the charmed bit if found) ----> or focus it...
+  IE: see http://www.wowace.com/addons/decursive/milestones/custom-affliction-filters/
 
 - Add an option to let the user choose the alert sound.
 -- seldom requested...

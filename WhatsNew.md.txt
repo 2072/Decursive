@@ -1,5 +1,41 @@
-Decursive 2.6.1 by Archarodim (2011-03-04)
-==========================================
+Decursive 2.7.0 beta 1 by Archarodim (2011-04-19)
+=================================================
+
+
+Changes from Decursive 2.6.1 to Decursive 2.7.0 beta 1 (2011-04-19)
+-------------------------------------------------------------------
+
+- **Major new feature:**
+
+    - Custom spells management interface ('Custom Spells' in the option panel).
+        - Add any spell to be used on specific affliction types with different priorities.
+        - Edit MUFs's internal macros associated to each of those spells
+          (internal macros work the same way as other macro).
+
+- **Changes:**
+
+    - Options names and descriptions related to afflictions priorities have
+      been revamped to be more coherent and better reflect the way Decursive
+      works. (Thanks to Nerdling for his input and many suggestions)
+
+      As a result many options have been renamed and descriptions
+      changed or created. If you want to help to localize those changes in your own
+      language, you can do it using the [Localization interface][localization] available on WoWAce.com.
+      (many phrases are requiring review, make sure their translations are accurate)
+
+    - Decursive now embeds and uses BugGrabber to capture errors happening inside its own code base
+        (BugGrabber is still in developpment, the current implementation is not final)
+
+    - MUFs' Mouse-buttons associations are reset to default when installing this version.
+
+- **Bug fixes:**
+
+    - It was no longer possible to resize the live-list or change its opacity.
+
+    - Various small fixes and improvements.
+
+[localization]: http://www.wowace.com/addons/decursive/localization/
+
 
 
 Changes from Decursive 2.6.0.1 to Decursive 2.6.1 (2011-03-04)
