@@ -124,7 +124,7 @@ function LiveList:DisplayItem (ID, UnitID, Debuff) -- {{{
     local LVItem = false;
 
     if ID > self.Number + 1 then
-        return error(("LiveList:DisplayItem: bad argument #1 'ID (= %d)' must be < LiveList.Number + 1 (LiveList.Number = %d)"):format(ID, self.Number),2);
+        return error(("LiveList:DisplayItem: bad argument #1 'ID (= %d)' must be < LiveList.Number + 1 (LiveList.Number = %d) UnitID was %s, Amount_Of_Afflicted 2disp: %d"):format(ID, self.Number, UnitID, D.profile.Amount_Of_Afflicted),2);
     end
 
     if not self.ExistingPerID[ID] then

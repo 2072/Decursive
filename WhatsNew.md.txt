@@ -8,9 +8,9 @@ Changes from Decursive 2.6.1 to Decursive 2.7.0 beta 1 (2011-04-19)
 - **Major new feature:**
 
     - Custom spells management interface ('Custom Spells' in the option panel).
-        - Add any spell to be used on specific affliction types with different priorities.
-        - Edit MUFs's internal macros associated to each of those spells
-          (internal macros work the same way as other macro).
+        - Add any spell you want to be used on specific affliction types with different priorities.
+        - Edit MUFs' internal macros associated to each of those spells
+          (internal macros work the same way as other macros).
 
 - **Changes:**
 
