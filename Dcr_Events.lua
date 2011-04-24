@@ -527,13 +527,13 @@ end
 
 
 do -- Combat log event handling {{{1
-    local bit = _G.bit;
-    local band = bit.band;
-    local bor = bit.bor;
-    local UnitGUID = _G.UnitGUID;
-    local GetTime = _G.GetTime;
-    local GetSpellInfo = _G.GetSpellInfo;
-    local time = _G.time;
+    local bit           = _G.bit;
+    local band          = bit.band;
+    local bor           = bit.bor;
+    local UnitGUID      = _G.UnitGUID;
+    local GetTime       = _G.GetTime;
+    local GetSpellInfo  = _G.GetSpellInfo;
+    local time          = _G.time;
 
     --[=[ useless bitfields {{{2
     -- a friendly player character controled directly by the player that is not an outsider
@@ -557,7 +557,7 @@ do -- Combat log event handling {{{1
     local ME                    = COMBATLOG_OBJECT_AFFILIATION_MINE;
 
 
-    local AuraEvents = { -- check if there are some other rare events...
+    local AuraEvents = {
         ["SPELL_AURA_APPLIED"]      = 1,
         ["SPELL_AURA_APPLIED_DOSE"] = 1,
         ["SPELL_AURA_REMOVED"]      = 0,
@@ -576,11 +576,16 @@ do -- Combat log event handling {{{1
     };
 
     local UnitID;
+    local TOC = T._tocversion;
 
     function D:DummyDebuff (UnitID)
         
         local PLAYER = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  ); -- still used
-        D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
+        if TOC < 40100 then
+            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
+        else
+            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", nil, nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
+        end
     end
 
     local SpecialDebuffs = {
@@ -588,23 +593,17 @@ do -- Combat log event handling {{{1
         [59868] = "SPELL_DAMAGE", -- Dark Matter ( http://www.wowhead.com/spell=59868 )
     };
 
-    local HideCaster;
-    local type = _G.type;
+    local nothing = 'nothing';
     
-    function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...)
+    function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...)
 
-        if type(sourceGUID) == "boolean" then
-            HideCaster = sourceGUID;
+        if TOC < 40100 and hideCaster ~= nothing then
             -- call again skipping sourceGUID
-            self:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...)
-            return;
-        else
-            HideCaster = false;
+            return self:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, nothing, hideCaster, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...);
         end
 
         -- check for exceptions
         if SpecialDebuffs[arg9] and event == SpecialDebuffs[arg9] then
-
             event = "SPELL_AURA_APPLIED";
         end
 
