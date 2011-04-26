@@ -250,7 +250,7 @@ function D:PlaySound (UnitID, Caller) --{{{
             -- good sounds: Sound\\Doodad\\BellTollTribal.wav
             --          Sound\\interface\\AuctionWindowOpen.wav
             --          Sound\\interface\\AlarmClockWarning3.wav
-            PlaySoundFile(self.profile.SoundFile);
+            PlaySoundFile(self.profile.SoundFile, "Master");
             self:Debug("Sound Played! by %s", Caller);
             self.Status.SoundPlayed = true;
         else

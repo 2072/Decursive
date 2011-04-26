@@ -712,7 +712,7 @@ do -- Combat log event handling {{{1
                         self:ScheduleDelayedCall("Dcr_Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.UpdateSkippingSetBuf, self.profile.DebuffsFrameRefreshRate, self.Status.ClickedMF);
                     end
 
-                    PlaySoundFile(DC.FailedSound);
+                    PlaySoundFile(DC.FailedSound, "Master");
                     --[=[
                     elseif arg12 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then
                     self:AddDebugText("ERR_GENERIC_NO_TARGET", "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12); --]=]
@@ -723,7 +723,7 @@ do -- Combat log event handling {{{1
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
                 D:Println(L["FAILEDCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
-                PlaySoundFile(DC.FailedSound);
+                PlaySoundFile(DC.FailedSound, "Master");
                 self.Status.ClickedMF = false;
                 --@alpha@
                 D:AddDebugText("sanitycheck ", event, arg10);
