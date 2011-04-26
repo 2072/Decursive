@@ -1,4 +1,4 @@
-## Interface: 40000
+## Interface: 40100
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@
@@ -11,8 +11,8 @@
 ## Notes-zhCN: @localization(locale="zhCN", key="ABOUT_NOTES")@
 ## Notes-zhTW: @localization(locale="zhTW", key="ABOUT_NOTES")@
 
-## X-Compatible-With: 40000
-## X-Max-Interface: 40000
+## X-Compatible-With: 40100
+## X-Max-Interface: 40100
 ## X-Min-Interface: 30300
 
 ## SavedVariables: DecursiveDB
