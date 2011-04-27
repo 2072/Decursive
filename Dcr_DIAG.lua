@@ -159,7 +159,7 @@ function T._onError(event, errorObject)
 
     if not IsReporting
         and ( T._CatchAllErrors
-        or ( (errorm:sub(1,9)):lower() == "decursive" ) and not (errorm:lower()):find("decursive.libs") -- errors happpening in something located below Decursive's path but not inside \Libs 
+        or ( (errorm:sub(1,9)):lower() == "decursive" ) and not (errorm:lower()):find("\\libs\\") -- errors happpening in something located below Decursive's path but not inside \Libs 
         or ( errorm:find("[\"']Decursive[\"']") ) -- events involving Decursive
         or ( errorm:find("Decursive:") ) -- libraries error involving Decursive (AceLocal)
         or ( (errorm:lower()):find("decursive%.")) -- for Aceconfig
