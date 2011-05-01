@@ -596,6 +596,24 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
                 },
             }
         };
+        -- Priests
+        DC.SpellsToUse[DS["SPELL_DISPELL_MAGIC"]]         = {
+            Types = {DC.MAGIC, DC.ENEMYMAGIC},
+            Better = 1,
+            Pet = false,
+
+            EnhancedBy = DS["SPEC_ABSOLUTION"], -- it's a downgrading actually XXX need to make OnPlayerOnly part of the defaults and add it to the custom spell UI...
+            EnhancedByCheck = function ()
+                return not GetSpellInfo(DS["SPEC_ABSOLUTION"]);
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                OnPlayerOnly = {
+                    [DC.MAGIC] = true,
+                    [DC.ENEMYMAGIC] = false,
+                },
+            }
+        };
 
         -- old WoW 3.5 for compatibilty with China {{{
     else 
@@ -1219,6 +1237,7 @@ function D:GetSpellsTranslations(FromDIAG)
         ["SPELL_REMOVE_CURSE"]          = {     2782,                                    }, -- Druids/Mages
         ['SPELL_TRANQUILIZING_SHOT']    = {     19801,                                   },
         ['SPELL_HEX']                   = {     51514,                                   }, -- shamans
+        ['SPEC_ABSOLUTION']             = {     33167,                                   }, -- Priests
         ["CLEANSE_SPIRIT"]              = {     51886,                                   },
         ["SPELL_PURGE"]                 = {     370, 8012,                               },
         ["PET_FEL_CAST"]                = {     19505, 19731, 19734, 19736, 27276, 27277,},
