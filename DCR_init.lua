@@ -604,7 +604,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
             EnhancedBy = DS["SPEC_ABSOLUTION"], -- it's a downgrading actually XXX need to make OnPlayerOnly part of the defaults and add it to the custom spell UI...
             EnhancedByCheck = function ()
-                return not GetSpellInfo(DS["SPEC_ABSOLUTION"]);
+                return (not GetPrimaryTalentTree() or GetPrimaryTalentTree() == 3);
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
