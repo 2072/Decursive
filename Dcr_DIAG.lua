@@ -225,7 +225,7 @@ T._tocversion = tocversion;
 
 function T._DecursiveErrorHandler(err, ...)
 
-    -- second blizzard bug HotFix
+    -- Blizzard bug HotFix
     ---[=[
     if ScriptErrorsFrameScrollFrameText then
         if not ScriptErrorsFrameScrollFrameText.cursorOffset then
@@ -267,6 +267,17 @@ function T._DecursiveErrorHandler(err, ...)
     end
 end
 
+function T._TooManyErrors()
+
+    if not T.Dcr then
+        return;
+    end
+
+    if T.Dcr and T.Dcr.L and not (#DebugTextTable > 0) then -- if we can and should display the alert
+        T.Dcr:Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
+    end
+end
+
 function T._HookErrorHandler()
 
 
@@ -278,12 +289,23 @@ function T._HookErrorHandler()
             return
         end
 
+        BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true;
+
         local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
+
         if ok then
             T._BugGrabberEmbeded = true;
         else
             AddDebugText(errorm);
         end
+
+        ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_CapturePaused", T._TooManyErrors)
+        if ok then
+            T._BugGrabberThrottleAlert = true;
+        else
+            AddDebugText(errorm);
+        end
+
         return
     end
 
