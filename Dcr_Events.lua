@@ -621,8 +621,8 @@ do -- Combat log event handling {{{1
                     -- call again skipping sourceRaidFlags and destRaidFlags
                     return self:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, --[[destGUID,--]] destName, destFlags, arg10, --[[arg11,--]] arg12, arg13, ...);
                 end
-            else
-                self:Debug("     Compat code called", sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, "ARG10:", arg10, arg11, arg12, arg13, ...);
+                --else
+                --    self:Debug("     Compat code called", sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, "ARG10:", arg10, arg11, arg12, arg13, ...);
             end
             compatibilityPatchApplyed = false;
         end

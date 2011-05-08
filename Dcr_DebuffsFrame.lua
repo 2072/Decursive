@@ -594,10 +594,19 @@ do
             D.MFContainerHandle:ClearAllPoints();
             D.MFContainerHandle:SetPoint("BOTTOMLEFT", self.ExistingPerUNIT[Unit_Array[RefMUF]].Frame, "TOPLEFT");
 
-            -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
+            -- if the handle is at the top of the screen it means it's overlaping the MUF, let's move the handle somewhere else.
             if floor(D.MFContainerHandle:GetTop() * FrameScale) == floor(UIParent:GetTop() * UIScale) then
-                D.MFContainerHandle:ClearAllPoints();
-                D.MFContainerHandle:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]].Frame, "BOTTOMLEFT");
+                if Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF] and self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]] then
+                    D.MFContainerHandle:ClearAllPoints();
+                    D.MFContainerHandle:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]].Frame, "BOTTOMLEFT");
+                    D:Debug("|cff00ff00Handle moved|r");
+                else
+                    -- try again in 2s (a delay exists when a unit appears, is seen and its MUF is created), if a unit leavea and another joina the group at the same time, the unit number won't change but their respective unitID will.
+                    D:ScheduleDelayedCall("Dcr_Delayed_Place", self.Place, 2, self);
+                    --@alpha@
+                    D:Print("|cFFFF0000Place() failed: unitRef#", D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF, "refMUF:", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]], "|r");
+                    --@end-alpha@
+                end
             end
         end
 
