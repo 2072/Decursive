@@ -5,12 +5,13 @@ Decursive 2.7.0.2 by Archarodim (2011-05-08)
 Changes from Decursive 2.7.0.1 to Decursive 2.7.0.2 (2011-05-08)
 ----------------------------------------------------------------
 
-- FIX: Shadow Priests were incorrectly told they could remove magic afflictions off other players.
-  (This changed happened in WoW 4.1 patch)
+- FIX: Shadow Priests were incorrectly told they could remove magic afflictions
+  off other players.  (This change happened in WoW 4.1 patch)
 
-- Fix to the 'BugGrabber is spamming' 'issue'.
+- Fix to the 'BugGrabber is spamming' issue.
 
 - Compatible with future WoW 4.2 patch (current PTR client).
+
 
 Changes from Decursive 2.6.1 to Decursive 2.7.0.1 (2011-04-27)
 --------------------------------------------------------------
@@ -18,7 +19,8 @@ Changes from Decursive 2.6.1 to Decursive 2.7.0.1 (2011-04-27)
 - **Major new feature:**
 
     - Custom spells management interface ('Custom Spells' in the option panel).
-        - Add any spell you want to be used on specific affliction types with different priorities.
+        - Add any spell you want to be used on specific affliction types with
+          different priorities.
         - Edit MUFs' internal macros associated to each of those spells
           (internal macros work the same way as other macros).
 
@@ -30,8 +32,9 @@ Changes from Decursive 2.6.1 to Decursive 2.7.0.1 (2011-04-27)
 
       As a result many options have been renamed and descriptions
       changed or created. If you want to help to localize those changes in your own
-      language, you can do it using the [Localization interface][localization] available on WoWAce.com.
-      (many phrases are requiring review, make sure their translations are accurate)
+      language, you can do it using the [Localization interface][localization]
+      available on WoWAce.com.  (many phrases are requiring review, make sure their
+      translations are accurate)
 
     - Decursive now embeds and uses BugGrabber to capture errors happening inside its own code base
         (BugGrabber is still in developpment, the current implementation is not final)
