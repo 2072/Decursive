@@ -525,6 +525,12 @@ end
 
 --]=]
 
+function D:HOOK_CastSpellByName (spellName, target)
+    if self.Status.ClickCastingWIP and self.Status.ClickedMF then
+        self.Status.ClickedMF.CastingSpell = spellName;
+        self:Debug("HOOK_CastSpellByName:", spellName, target);
+    end
+end
 
 do -- Combat log event handling {{{1
     local bit           = _G.bit;
@@ -582,9 +588,11 @@ do -- Combat log event handling {{{1
         
         local PLAYER = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  ); -- still used
         if TOC < 40100 then
-            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
-        else
-            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", nil, nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
+            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
+        elseif TOC == 40100 then
+            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
+        elseif TOC > 40100 then
+            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, nil, COMBATLOG_OBJECT_NONE, 0, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, 0, "Test item", 0x32, "DEBUFF");
         end
     end
 
@@ -593,17 +601,34 @@ do -- Combat log event handling {{{1
         [59868] = "SPELL_DAMAGE", -- Dark Matter ( http://www.wowhead.com/spell=59868 )
     };
 
-    local nothing = 'nothing';
+    -- local nothing = 'nothing';
+    local compatibilityPatchApplyed = false
+    --    local sourceRaidFlags = false;
+    --    local destRaidFlags = false;
     
-    function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...)
+    function D:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg10, arg11, arg12, arg13, ...)
 
-        if TOC < 40100 and hideCaster ~= nothing then
-            -- call again skipping sourceGUID
-            return self:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, nothing, hideCaster, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12, ...);
+        if TOC ~= 40100 then
+            if not compatibilityPatchApplyed then
+                if TOC < 40100 then
+                    -- call again inserting a fake hideCaster event
+                    compatibilityPatchApplyed = true;
+                    return self:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, false, hideCaster, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg10, arg11, arg12, arg13, ...);
+                else -- > 40100
+                    compatibilityPatchApplyed = true;
+                    --sourceRaidFlags = destGUID;
+                    --destRaidFlags = arg11;
+                    -- call again skipping sourceRaidFlags and destRaidFlags
+                    return self:COMBAT_LOG_EVENT_UNFILTERED(selfevent, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, --[[destGUID,--]] destName, destFlags, arg10, --[[arg11,--]] arg12, arg13, ...);
+                end
+            else
+                self:Debug("     Compat code called", sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, "ARG10:", arg10, arg11, arg12, arg13, ...);
+            end
+            compatibilityPatchApplyed = false;
         end
 
         -- check for exceptions
-        if SpecialDebuffs[arg9] and event == SpecialDebuffs[arg9] then
+        if SpecialDebuffs[arg10] and event == SpecialDebuffs[arg10] then
             event = "SPELL_AURA_APPLIED";
         end
 
@@ -620,13 +645,13 @@ do -- Combat log event handling {{{1
 
             if UnitID then -- (this test is enough, if the unit is grouped we definetely need to scan it, whatever is its status...) {{{3
 
-                if arg12 == "BUFF" and self.profile.Show_Stealthed_Status then
+                if arg13 == "BUFF" and self.profile.Show_Stealthed_Status then
 
-                    if DC.IsStealthBuff[arg10] then
+                    if DC.IsStealthBuff[arg11] then
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units[UnitID] = true;
                         else
-                            if self.debug then D:Debug("STEALTH LOST: ", UnitID, arg10); end
+                            if self.debug then D:Debug("STEALTH LOST: ", UnitID, arg11); end
                             self.Stealthed_Units[UnitID] = false;
                         end
                         self.MicroUnitF:UpdateMUFUnit(UnitID);
@@ -634,7 +659,7 @@ do -- Combat log event handling {{{1
                 else
 
                     --@debug@
-                    if self.debug then D:Debug("Debuff, UnitId: ", UnitID, arg10, event, time() + (GetTime() % 1), timestamp); end
+                    if self.debug then D:Debug("Debuff, UnitId: ", UnitID, arg11, event, time() + (GetTime() % 1), timestamp, "destName:", destName, destFlags, band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET); end
                     --@end-debug@
 
                     if self.profile.ShowDebuffsFrame then
@@ -652,18 +677,18 @@ do -- Combat log event handling {{{1
                 end
             end -- }}}
 
-            if self.Status.TargetExists and band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then -- {{{3
+            if self.Status.TargetExists and band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then -- {{{3 -- warning: this test is not triggered by the dumy debuff
 
-                if self.debug then D:Debug("A Target got something (source=", sourceName, "sFlags:", D:NumToHexStr(sourceFlags), "(dest=|cFF00AA00", destName, "dFlags:", D:NumToHexStr(destFlags), "|r, |cffff0000", event, "|r, |cFF00AAAA", arg10, "|r", arg12); end
+                if self.debug then D:Debug("A Target got something (source=", sourceName, "sFlags:", D:NumToHexStr(sourceFlags), "(dest=|cFF00AA00", destName, "dFlags:", D:NumToHexStr(destFlags), "|r, |cffff0000", event, "|r, |cFF00AAAA", arg11, "|r", arg13); end
 
                 self.LiveList:DelayedGetDebuff("target");
 
-                if arg12 == "BUFF" and self.profile.Show_Stealthed_Status then
-                    if DC.IsStealthBuff[arg10] then
+                if arg13 == "BUFF" and self.profile.Show_Stealthed_Status then
+                    if DC.IsStealthBuff[arg11] then
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units["target"] = true;
                         else
-                            if self.debug then D:Debug("TARGET STEALTH LOST: ", "target", arg10); end
+                            if self.debug then D:Debug("TARGET STEALTH LOST: ", "target", arg11); end
                             self.Stealthed_Units["target"] = false;
                         end
                     end
@@ -671,17 +696,17 @@ do -- Combat log event handling {{{1
             end
 
             -- SPELL EVENTS {{{2
-        elseif self.Status.ClickedMF and SpellEvents[event] and (self.Status.ClickCastingWIP or self.Status.ClickedMF.CastingSpell == arg10) and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  SPELL_DISPEL_FAILED
+        elseif self.Status.ClickedMF and SpellEvents[event] and (self.Status.ClickCastingWIP or self.Status.ClickedMF.CastingSpell == arg11) and band(sourceFlags, ME) ~= 0 then -- SPELL_MISSED  SPELL_CAST_START  SPELL_CAST_FAILED  SPELL_CAST_SUCCESS  SPELL_DISPEL_FAILED
 
             if self.Status.ClickCastingWIP then
-                self.Status.ClickedMF.CastingSpell = arg10;
-                D:Debug("clickcastWIP caught: ", arg10);
+                self.Status.ClickedMF.CastingSpell = arg11;
+                D:Debug("clickcastWIP caught: ", arg11);
             end
 
 
             if event == "SPELL_CAST_SUCCESS" then
 
-                if self.debug then self:Debug(L["SUCCESSCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName)); end
+                if self.debug then self:Debug(L["SUCCESSCAST"], arg11, (select(2, GetSpellInfo(arg10))), D:MakePlayerName(destName)); end
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
                 self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);
@@ -701,9 +726,9 @@ do -- Combat log event handling {{{1
             if event == "SPELL_CAST_FAILED" and not D.Status.ClickedMF.SPELL_CAST_SUCCESS then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                D:Println(L["FAILEDCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
+                D:Println(L["FAILEDCAST"], arg11, (select(2, GetSpellInfo(arg10))), D:MakePlayerName(destName), arg13);
 
-                if (arg12 == SPELL_FAILED_LINE_OF_SIGHT or arg12 == SPELL_FAILED_BAD_TARGETS) then
+                if (arg13 == SPELL_FAILED_LINE_OF_SIGHT or arg13 == SPELL_FAILED_BAD_TARGETS) then
 
                     if not self.profile.DoNot_Blacklist_Prio_List or not self:IsInPriorList(self.Status.Unit_Array_UnitToGUID[self.Status.ClickedMF.CurrUnit]) then
                         self.Status.Blacklisted_Array[self.Status.ClickedMF.CurrUnit] = self.profile.CureBlacklist;
@@ -714,22 +739,30 @@ do -- Combat log event handling {{{1
 
                     PlaySoundFile(DC.FailedSound, "Master");
                     --[=[
-                    elseif arg12 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then
-                    self:AddDebugText("ERR_GENERIC_NO_TARGET", "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg9, arg10, arg11, arg12); --]=]
+                    elseif arg13 == SPELL_FAILED_BAD_IMPLICIT_TARGETS then
+                    self:AddDebugText("ERR_GENERIC_NO_TARGET", "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, arg10, arg11, arg12, arg13); --]=]
                 end
                 self.Status.ClickedMF = false;
 
             elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then -- XXX to test
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                D:Println(L["FAILEDCAST"], arg10, (select(2, GetSpellInfo(arg9))), D:MakePlayerName(destName), arg12);
+                D:Println(L["FAILEDCAST"], arg11, (select(2, GetSpellInfo(arg10))), D:MakePlayerName(destName), arg13);
                 PlaySoundFile(DC.FailedSound, "Master");
                 self.Status.ClickedMF = false;
                 --@alpha@
-                D:AddDebugText("sanitycheck ", event, arg10);
+                D:AddDebugText("sanitycheck ", event, arg11);
                 --@end-alpha@
             end
             --  }}}
+            --@debug@
+        elseif self.debug and event then
+
+            D:Debug("event:", event, "self.Status.ClickedMF.CastingSpell", self.Status.ClickedMF and self.Status.ClickedMF.CastingSpell, "band(sourceFlags, ME) ~= 0", band(sourceFlags, ME) ~= 0, "self.Status.ClickCastingWIP", self.Status.ClickCastingWIP);
+
+
+            --@end-debug@
+
         end
 
     end

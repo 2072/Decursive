@@ -1,6 +1,16 @@
-Decursive 2.7.0.1 by Archarodim (2011-04-27)
+Decursive 2.7.0.2 by Archarodim (2011-05-08)
 ============================================
 
+
+Changes from Decursive 2.7.0.1 to Decursive 2.7.0.2 (2011-05-08)
+----------------------------------------------------------------
+
+- FIX: Shadow Priests were incorrectly told they could remove magic afflictions off other players.
+  (This changed happened in WoW 4.1 patch)
+
+- Fix to the 'BugGrabber is spamming' 'issue'.
+
+- Compatible with future WoW 4.2 patch (current PTR client).
 
 Changes from Decursive 2.6.1 to Decursive 2.7.0.1 (2011-04-27)
 --------------------------------------------------------------

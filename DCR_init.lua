@@ -716,15 +716,18 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
         DecursiveTextFrame:SetFadeDuration(D.CONF.TEXT_LIFETIME / 3);
         DecursiveTextFrame:SetTimeVisible(D.CONF.TEXT_LIFETIME);
 
-        -- hook the load macro thing {{{
-        -- So Decursive will re-update its macro when the macro UI is closed
-        D:SecureHook("ShowMacroFrame", function ()
-            if not D:IsHooked(MacroPopupFrame, "Hide") then
-                D:Debug("Hooking MacroPopupFrame:Hide()");
-                D:SecureHook(MacroPopupFrame, "Hide", function () D:UpdateMacro(); end);
-            end
-        end); -- }}}
     end
+
+    -- hook the load macro thing {{{
+    -- So Decursive will re-update its macro when the macro UI is closed
+    D:SecureHook("ShowMacroFrame", function ()
+        if not D:IsHooked(MacroPopupFrame, "Hide") then
+            D:Debug("Hooking MacroPopupFrame:Hide()");
+            D:SecureHook(MacroPopupFrame, "Hide", function () D:UpdateMacro(); end);
+        end
+    end); -- }}}
+
+    D:SecureHook("CastSpellByName", "HOOK_CastSpellByName");
 
     -- these events are automatically stopped when the addon is disabled by Ace
 

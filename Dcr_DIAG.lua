@@ -289,7 +289,7 @@ function T._HookErrorHandler()
             return
         end
 
-        BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true;
+        --BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true;
 
         local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
 

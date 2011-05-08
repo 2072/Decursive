@@ -11,8 +11,8 @@
 ## Notes-zhCN: @localization(locale="zhCN", key="ABOUT_NOTES")@
 ## Notes-zhTW: @localization(locale="zhTW", key="ABOUT_NOTES")@
 
-## X-Compatible-With: 40100
-## X-Max-Interface: 40100
+## X-Compatible-With: 40200
+## X-Max-Interface: 40200
 ## X-Min-Interface: 30300
 
 ## SavedVariables: DecursiveDB
