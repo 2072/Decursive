@@ -477,9 +477,14 @@ function LiveList:Update_Display() -- {{{
                         RangeStatus = MicroUnitF.UnitToMUF[UnitID].UnitStatus; -- MicroUnitF.UnitToMUF[UnitID] is nil sometimes XXX
                         RangeStatus = (RangeStatus == DC.AFFLICTED or RangeStatus == DC.AFFLICTED_AND_CHARMED) and true or false;
                     else
+                        -- Test if the spell we are going to use is in range
+                        -- Some time can elaps between the instant the debuff is detected and the instant it is shown.
+                        -- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
+                        -- So we test before calling this api that we can still cure this debuff type
                         if D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type] then
                             RangeStatus = IsSpellInRange(D.Status.CuringSpells[D.ManagedDebuffUnitCache[UnitID][1].Type], UnitID);
                         else
+                            --[[
                             D:AddDebugText(
                                 "LiveList:Update_Display(): couldn't get range, DType:", D.ManagedDebuffUnitCache[UnitID][1].Type,
                                 "DTypeName:", D.ManagedDebuffUnitCache[UnitID][1].TypeName,
@@ -496,6 +501,7 @@ function LiveList:Update_Display() -- {{{
                                 "DISEASE:", D.Status.CuringSpells[DC.DISEASE],
                                 "CHARMED:", D.Status.CuringSpells[DC.CHARMED]
                             );
+                            --]]
                             RangeStatus = 0;
                         end
                         RangeStatus = (RangeStatus and RangeStatus ~= 0) and true or false;
