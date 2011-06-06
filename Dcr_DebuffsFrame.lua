@@ -153,10 +153,10 @@ local AvailableModifier = { -- {{{
 function MicroUnitF:Show()
     -- change handle position here depending on reverse display option or in INIT?
     D.MFContainer:SetScale(D.profile.DebuffsFrameElemScale);
-    D.MicroUnitF:Place();
+    self:Place (); -- not strickly necessary but avoid glitches when switching between profiles where the scale is different...
     D.MFContainer:Show();
     D.profile.ShowDebuffsFrame = true;
-    D.MicroUnitF:Delayed_MFsDisplay_Update ();
+    self:ResetAllPositions();
 end
 
 -- Updates the color table
@@ -229,28 +229,38 @@ end -- }}}
 -- this is used when a setting influencing MUF's position is changed
 function MicroUnitF:ResetAllPositions () -- {{{
 
-    if InCombatLockdown() then
-        D:AddDelayedFunctionCall (
-        "ResetAllPositions", self.ResetAllPositions,
-        self);
-        return false;
-    end
+    -- Lua is great...
+    D:ScheduleDelayedCall("Dcr_MicroUnitF_ResetAllPositions", function()
 
-    local MF, i;
-
-    D:Debug("Resetting all MF position");
-
-    self:Delayed_MFsDisplay_Update ();
-
-    local Unit_Array = D.Status.Unit_Array;
-
-    for i=1, #Unit_Array do
-        MF = self.ExistingPerUNIT[ Unit_Array[i] ]
-
-        if MF then
-            MF.Frame:SetPoint(unpack(self:GetMUFAnchor(i)));
+        if InCombatLockdown() then
+            D:AddDelayedFunctionCall (
+            "ResetAllPositions", self.ResetAllPositions,
+            self);
+            return false;
         end
-    end
+
+        if self:MFsDisplay_Update () == false then
+            D:Debug("ResetAllPositions(): |cFFFFAA33We are not ready, let's call ourself back later...|r"); -- LOL
+            self:ResetAllPositions();
+            return false;
+        end
+
+        local Unit_Array = D.Status.Unit_Array;
+
+        D:Debug("Resetting all MF position", 'perRow:', D.profile.DebuffsFramePerline, '#Unit_Array:', #Unit_Array);
+
+        for i=1, #Unit_Array do
+            MF = self.ExistingPerUNIT[ Unit_Array[i] ]
+
+            if MF then
+                MF.Frame:SetPoint(unpack(self:GetMUFAnchor(i)));
+            end
+        end
+
+        self:Place();
+
+    end, 0.5);
+
 end -- }}}
 
 -- return the anchor of a given MUF depending on its creation ID
@@ -288,7 +298,7 @@ end
 function MicroUnitF:MFsDisplay_Update () -- {{{
 
     if (not D.profile.ShowDebuffsFrame) then
-        return false; -- XXX we will have to call this function again when we show the MUFs
+        return;
     end
 
     -- This function cannot do anything if we are fighting
@@ -1686,7 +1696,7 @@ do
 
                 --sanity check
                 --[[
-                if MicroFrameUpdateIndex ~= MF.ID then  -- XXX to remove for release
+                if MicroFrameUpdateIndex ~= MF.ID then
                 D:AddDebugText("DebuffsFrame_Update(): MicroFrameUpdateIndex ~= MF.ID", MicroFrameUpdateIndex, MF.ID, Unit, MF.CurrUnit, "ToPlace:", MF.ToPlace);
                 end
                 --]]

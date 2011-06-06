@@ -868,7 +868,6 @@ function D:SetConfiguration()
     D:AutoHideShowMUFs();
 
 
-    D.MicroUnitF:Delayed_MFsDisplay_Update(); -- schedule an update of the MUFs display (number of MUF)
     D.MicroUnitF:Delayed_Force_FullUpdate(); -- schedule all attributes of exixting MUF to update
 
     D:SetMinimapIcon();
@@ -880,7 +879,6 @@ function D:SetConfiguration()
         D:ClearSkipList();
     end
     
-    D.MicroUnitF:ResetAllPositions (); -- reset all anchors
 
     T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
     D:VersionWarnings();

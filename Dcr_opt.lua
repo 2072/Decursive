@@ -403,11 +403,11 @@ local OptionsPostSetActions = { -- {{{
     ["ReverseLiveDisplay"] = function(v) D.LiveList:RestAllPosition(); end,
     ["LiveListScale"] = function(v) D:SetLLScale(v); end,
     ["AutoHideMUFs"] = function(v) D:AutoHideShowMUFs(); end,
-    ["DebuffsFrameGrowToTop"] = function(v) D.MicroUnitF:SavePos(); D.MicroUnitF:ResetAllPositions (); D.MicroUnitF:Place (); end,
-    ["DebuffsFrameStickToRight"] = function(v) D.MicroUnitF:SavePos(); D.MicroUnitF:Delayed_MFsDisplay_Update(); end, -- XXX ??? why Delayed_MFsDisplay_Update() ??
-    ["DebuffsFrameVerticalDisplay"] = function(v) D.MicroUnitF:ResetAllPositions (); D.MicroUnitF:Place (); end,
-    ["DebuffsFrameMaxCount"] = function(v) D.MicroUnitF.MaxUnit = v; D.MicroUnitF:Delayed_MFsDisplay_Update(); end, -- XXX why not place ?
-    ["DebuffsFramePerline"] = function(v)  D.MicroUnitF:ResetAllPositions (); D.MicroUnitF:Place (); end,
+    ["DebuffsFrameGrowToTop"] = function(v) D.MicroUnitF:SavePos(); D.MicroUnitF:ResetAllPositions (); end,
+    ["DebuffsFrameStickToRight"] = function(v) D.MicroUnitF:SavePos(); D.MicroUnitF:ResetAllPositions (); end,
+    ["DebuffsFrameVerticalDisplay"] = function(v) D.MicroUnitF:ResetAllPositions (); end,
+    ["DebuffsFrameMaxCount"] = function(v) D.MicroUnitF.MaxUnit = v; D.MicroUnitF:Delayed_MFsDisplay_Update(); end, -- just the number of MUFs is changed MFsDisplay_Update() is enough
+    ["DebuffsFramePerline"] = function(v)  D.MicroUnitF:ResetAllPositions (); end,
     ["DebuffsFrameElemScale"] = function(v) D.MicroUnitF:SetScale(D.profile.DebuffsFrameElemScale); end,
     ["DebuffsFrameRefreshRate"] = function(v) D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D); D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v); end,
 
@@ -1261,7 +1261,6 @@ local function GetStaticOptions ()
                                                 D.profile.DebuffsFrameYSpacing = v;
                                             end
                                             D.MicroUnitF:ResetAllPositions ();
-                                            D.MicroUnitF:Place ();
                                         end,
                                         min = 0,
                                         max = 100,
@@ -1276,7 +1275,6 @@ local function GetStaticOptions ()
                                             D.SetHandler(info, v);
 
                                             D.MicroUnitF:ResetAllPositions ();
-                                            D.MicroUnitF:Place ();
                                         end,
                                         disabled = function() return D.Status.Combat or D.profile.DebuffsFrameTieSpacing end,
                                         min = 0,

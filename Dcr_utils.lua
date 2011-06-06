@@ -535,16 +535,16 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
 
         DcrTimers[RefName][1] = self:ScheduleTimer (
         function(arg)
-            FunctionRef(unpack(arg));
             DcrTimers[RefName][1] = false;
+            FunctionRef(unpack(arg));
         end
         , Delay, DcrTimers[RefName][2]
         );
     else
         DcrTimers[RefName][1] = self:ScheduleTimer (
         function(arg)
-            FunctionRef(arg);
             DcrTimers[RefName][1] = false;
+            FunctionRef(arg);
         end
         , Delay, arg1
         );
