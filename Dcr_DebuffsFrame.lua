@@ -1263,7 +1263,7 @@ do
 
                 --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
                 -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-                self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/cast [target=%s, help][target=%s, harm] %s"):format(
+                self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/cast [@%s, help][@%s, harm] %s"):format(
                 ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
                 Unit,Unit,
                 Spell));

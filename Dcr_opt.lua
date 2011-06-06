@@ -1553,7 +1553,7 @@ local function GetStaticOptions ()
 
                                 if CustomSpellMacroEditingAllowed then
 
-                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [target=UNITID,help][target=UNITID,harm]" .. v;
+                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [@UNITID,help][@UNITID,harm]" .. v;
 
                                     -- If it's a default spell, then copy the spell settings
                                     if DC.SpellsToUse[v] then
