@@ -1,5 +1,18 @@
-Decursive 2.7.0.2 by Archarodim (2011-05-08)
+Decursive 2.7.0.3 by Archarodim (2011-07-03)
 ============================================
+
+
+Changes from Decursive 2.7.0.2 to Decursive 2.7.0.3 (2011-07-03)
+----------------------------------------------------------------
+
+- TOC to 40200
+
+- Fix a problem ("LiveList:Update_Display(): couldn't get range") occurring to
+  warlocks when MUFs are disabled.
+
+- FIX: Some MUFs settings were not applied when switching between profiles.
+
+- removed compatibility code for older versions of WoW
 
 
 Changes from Decursive 2.7.0.1 to Decursive 2.7.0.2 (2011-05-08)

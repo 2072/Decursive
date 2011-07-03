@@ -74,9 +74,9 @@ In brief, what you get with Decursive is **effectiveness**, *a player using Decu
 Interesting articles and videos about Decursive's usage:
 --------------------------------------------------------
 
-- 2010-11-20
+- 2010-11-20 (Updated in 2011-06-11)
 
-Article: [http://daritos.apotheosis-now.com/?p=24](http://daritos.apotheosis-now.com/?p=24)
+A complete Decursive guide by @_darista_: [http://daritos.apotheosis-now.com/?p=24](http://daritos.apotheosis-now.com/?p=24)
 
 - 2009-07-15
 

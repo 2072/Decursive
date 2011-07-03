@@ -407,12 +407,12 @@ do
 
             ["AceGUI-3.0"] = 33,
             ["AceConfig-3.0"] = 2,
-            ["AceConfigRegistry-3.0"] = 12,
+            ["AceConfigRegistry-3.0"] = 13,
             ["AceConfigCmd-3.0"] = 12,
-            ["AceConfigDialog-3.0"] = 52,
+            ["AceConfigDialog-3.0"] = 54,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 18,
+            ["LibDBIcon-1.0"] = 19,
             ["LibQTip-1.0"] = 38,
             ["CallbackHandler-1.0"] = 6,
         };

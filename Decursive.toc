@@ -1,4 +1,4 @@
-## Interface: 40100
+## Interface: 40200
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@
@@ -13,7 +13,7 @@
 
 ## X-Compatible-With: 40200
 ## X-Max-Interface: 40200
-## X-Min-Interface: 30300
+## X-Min-Interface: 40200
 
 ## SavedVariables: DecursiveDB
 
