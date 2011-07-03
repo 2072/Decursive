@@ -453,7 +453,7 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 L["TOO_MANY_ERRORS_ALERT"] = [[There are too many Lua errors in your User Interface (%d). Your game experience is currently degraded. Disable or update the failing add-ons to turn off this message and regain a proper frame rate.
 You may want to turn on Lua error reporting ('Help' section of World of Warcraft's interface options) to identify the problematic add-ons.]]
-
+L["DONT_SHOOT_THE_MESSENGER"] = "Decursive is merely reporting the issue. So, don't shoot the messenger and address the actual problem."
 
 --]==]
 --@end-do-not-package@

@@ -275,6 +275,7 @@ function T._TooManyErrors()
 
     if T.Dcr and T.Dcr.L and not (#DebugTextTable > 0) then -- if we can and should display the alert
         T.Dcr:Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
+        T.Dcr:Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
     end
 end
 
