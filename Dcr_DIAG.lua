@@ -47,6 +47,7 @@ T._LoadedFiles = {
     ["koKR.lua"]        = false,
     ["zhCN.lua"]        = false,
     ["ruRU.lua"]        = false,
+    ["ptBR.lua"]        = false,
     
     ["Dcr_opt.lua"]             = false,
     ["Dcr_Events.lua"]          = false,
