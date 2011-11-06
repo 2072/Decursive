@@ -32,6 +32,13 @@ local DC = T._C;
 
 DC.StartTime = GetTime();
 
+if DecursiveInEmbeddedMode == nil then
+    T._EmbeddedMode = "unknown";
+else
+    T._EmbeddedMode = DecursiveInEmbeddedMode;
+    DecursiveInEmbeddedMode = nil;
+end
+
 T._LoadedFiles = {
     ["Dcr_DIAG.xml"]            = false,
     ["Dcr_DIAG.lua"]            = false,

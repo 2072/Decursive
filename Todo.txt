@@ -13,4 +13,5 @@ TODO:
 - Add an option to let the user choose the alert sound.
 -- seldom requested...
 
+- Enhance dcrdiag report adding changes from default options
 
