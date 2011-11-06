@@ -2773,15 +2773,17 @@ do
                 width = 'double',
                 func = function (info)
 
-                    if D.classprofile.UserSpells[info[#info - 1]].IsDefault then
-                        D.classprofile.UserSpells[info[#info - 1]].Types = {};
-                        D.classprofile.UserSpells[info[#info - 1]].Hidden = true;
-                    else
-                        D.classprofile.UserSpells[info[#info - 1]] = nil;
-                    end
+                    if (#info ~= 0) then -- prevent a bug from Ace3 when someone pushes several times on the delete without confirming
+                        if D.classprofile.UserSpells[info[#info - 1]].IsDefault then
+                            D.classprofile.UserSpells[info[#info - 1]].Types = {};
+                            D.classprofile.UserSpells[info[#info - 1]].Hidden = true;
+                        else
+                            D.classprofile.UserSpells[info[#info - 1]] = nil;
+                        end
 
-                    if D.Status.FoundSpells[info[#info - 1]] then
-                        D:Configure();
+                        if D.Status.FoundSpells[info[#info - 1]] then
+                            D:Configure();
+                        end
                     end
                 end,
                 order = -1,
