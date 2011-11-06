@@ -267,20 +267,21 @@ function T._DecursiveErrorHandler(err, ...)
     end
 end
 
+local WarningDisplayed = false;
 function T._TooManyErrors()
 
     if not T.Dcr then
         return;
     end
 
-    if T.Dcr and T.Dcr.L and not (#DebugTextTable > 0) then -- if we can and should display the alert
+    if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0) then -- if we can and should display the alert
         T.Dcr:Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
         T.Dcr:Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
+        WarningDisplayed = true;
     end
 end
 
 function T._HookErrorHandler()
-
 
     if BugGrabber then
         local name, _, _, enabled = GetAddOnInfo("BugSack")
@@ -290,7 +291,7 @@ function T._HookErrorHandler()
             return
         end
 
-        --BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true;
+        BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true; -- for people using an older version of BugGrabber. There is no way to know...
 
         local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
 
