@@ -1,4 +1,4 @@
-## Interface: 40200
+## Interface: 40300
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@

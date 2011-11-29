@@ -1,5 +1,17 @@
-Decursive 2.7.0.3 by Archarodim (2011-07-03)
+Decursive 2.7.0.4 by Archarodim (2011-11-29)
 ============================================
+
+
+Changes from Decursive 2.7.0.3 to Decursive 2.7.0.4 (2011-11-29)
+----------------------------------------------------------------
+
+- TOC to 40300
+
+- Reimplemented support for people using an old version of BugGrabber, should
+  spam less when they are using rusty add-ons.
+
+- Added support for ptBR localization, you can contribute using the
+  [Localization interface][localization]
 
 
 Changes from Decursive 2.7.0.2 to Decursive 2.7.0.3 (2011-07-03)
