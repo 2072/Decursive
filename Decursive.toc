@@ -12,8 +12,7 @@
 ## Notes-zhTW: @localization(locale="zhTW", key="ABOUT_NOTES")@
 ## Notes-ptBR: @localization(locale="ptBR", key="ABOUT_NOTES")@
 
-## X-Compatible-With: 40200
-## X-Max-Interface: 40200
+## X-Max-Interface: 40300
 ## X-Min-Interface: 40200
 
 ## SavedVariables: DecursiveDB

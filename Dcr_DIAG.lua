@@ -405,14 +405,14 @@ do
 
         --LibStub:GetLibrary
         local UseLibStub = {
-            ["AceAddon-3.0"] = 10,
+            ["AceAddon-3.0"] = 11,
             ["AceConsole-3.0"] = 7,
             ["AceEvent-3.0"] = 3,
-            ["AceTimer-3.0"] = 5,
+            ["AceTimer-3.0"] = 6,
             ["AceHook-3.0"] = 5,
-            ["AceDB-3.0"] = 21,
+            ["AceDB-3.0"] = 22,
             ["AceDBOptions-3.0"] = 12,
-            ["AceLocale-3.0"] = 5,
+            ["AceLocale-3.0"] = 6,
             ["AceComm-3.0"] = 7,
 
             ["AceGUI-3.0"] = 33,
@@ -422,7 +422,7 @@ do
             ["AceConfigDialog-3.0"] = 54,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 19,
+            ["LibDBIcon-1.0"] = 24, --not updated for WoW 4.3
             ["LibQTip-1.0"] = 38,
             ["CallbackHandler-1.0"] = 6,
         };
