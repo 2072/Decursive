@@ -40,21 +40,22 @@ else
 end
 
 T._LoadedFiles = {
+    ["Load.xml"]                = false,
     ["Dcr_DIAG.xml"]            = false,
     ["Dcr_DIAG.lua"]            = false,
     ["DCR_init.lua"]            = false,
     ["Dcr_LDB.lua"]             = false,
     ["Dcr_utils.lua"]           = false,
 
-    ["enUS.lua"]        = false,
-    ["frFR.lua"]        = false,
-    ["deDE.lua"]        = false,
-    ["zhTW.lua"]        = false,
-    ["esES.lua"]        = false,
-    ["koKR.lua"]        = false,
-    ["zhCN.lua"]        = false,
-    ["ruRU.lua"]        = false,
-    ["ptBR.lua"]        = false,
+    ["enUS.lua"]                = false,
+    ["frFR.lua"]                = false,
+    ["deDE.lua"]                = false,
+    ["zhTW.lua"]                = false,
+    ["esES.lua"]                = false,
+    ["koKR.lua"]                = false,
+    ["zhCN.lua"]                = false,
+    ["ruRU.lua"]                = false,
+    ["ptBR.lua"]                = false,
     
     ["Dcr_opt.lua"]             = false,
     ["Dcr_Events.lua"]          = false,
