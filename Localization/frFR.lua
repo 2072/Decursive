@@ -75,7 +75,7 @@ if not L then
     return;
 end
 
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="frFR", format="lua_additive_table", handle-unlocalized="ignore")@
 
 
 T._LoadedFiles["frFR.lua"] = "@project-version@";
