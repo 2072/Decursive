@@ -1099,7 +1099,7 @@ do
             D:SendMessage("DECURSIVE_TALENTS_AVAILABLE");
             D:Debug("Talents found");
 
-            --@alpha@
+            --@debug@
             if player_is_almost_alive then
                 D:AddDebugText("StartTalentAvaibilityPolling(): Talents were not available after PLAYER_ALIVE was fired, test was made", player_is_almost_alive, "seconds after PLAYER_ALIVE fired. Sucess happened", GetTime() - T.PLAYER_IS_ALIVE, "secondes after PLAYER_ALIVE fired");
             end
@@ -1107,7 +1107,7 @@ do
             if T.PLAYER_IS_ALIVE and not player_is_almost_alive then
                 player_is_almost_alive = GetTime() - T.PLAYER_IS_ALIVE;
             end
-            --@end-alpha@
+            --@end-debug@
         end
     end -- }}}
 
