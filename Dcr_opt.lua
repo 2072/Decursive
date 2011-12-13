@@ -2953,8 +2953,8 @@ function D:ShowDebugReport()
     D:Debug(GetLocale());
 
     if not DebugHeader then
-        DebugHeader = ("%s\n@project-version@  %s  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s (%s, %s, %s, %s)"):format((self.L) and self.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", -- "%s\n
-        DC.MyClass, D:NiceTime(), date(), GetLocale(), -- %s  CT: %0.4f D: %s %s
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s (%s, %s, %s, %s)"):format((self.L) and self.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", -- "%s\n
+        DC.MyClass, tostring(UnitLevel("player") or "??"), D:NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
         T._NonDecursiveErrors, -- nDrE: %d
