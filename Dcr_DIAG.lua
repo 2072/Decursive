@@ -429,7 +429,7 @@ do
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
-        local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your add-ons properly.\nIf that doesn't work, install the add-ons BugGrabber and BugSack in order to detect other errors preventing Decursive to load.";
+        local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your add-ons properly.\nIf that doesn't work, install the add-ons BugGrabber and BugSack in order to detect other errors preventing Decursive to load properly.\n|cFFD0D000Remember that the WoW client must not be running while you install add-ons.|r";
 
         local ErrorFound = false;
         local Errors = {};
