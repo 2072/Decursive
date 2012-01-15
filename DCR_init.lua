@@ -54,7 +54,7 @@ local D = T.Dcr;
 
 D.name = "Decursive";
 D.version = "@project-version@";
-D.author = "Archarodim";
+D.author = "John Wellesz";
 
 D.L         = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 

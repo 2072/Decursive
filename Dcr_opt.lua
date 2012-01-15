@@ -1674,7 +1674,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"
                                 ):format(
-                                    "@project-version@", "@project-author@", ("@project-date-iso@"):sub(1,10),
+                                    "@project-version@", "John Wellesz", ("@project-date-iso@"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License"),
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds"),
