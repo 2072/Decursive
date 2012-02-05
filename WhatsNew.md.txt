@@ -1,5 +1,21 @@
-Decursive 2.7.0.4 by Archarodim (2011-11-29)
+Decursive 2.7.0.5 by Archarodim (2012-02-05)
 ============================================
+
+
+Changes from Decursive 2.7.0.4 to Decursive 2.7.0.5 (2012-02-05)
+----------------------------------------------------------------
+
+- Changed author's name to a real name (Why should we use nicknames?).
+
+- Localization updates. Brazilian Portuguese still needs a lot of work, if you
+  want to help: you can contribute using the [Localization interface][localization]
+
+- Update to self diagnostic error messages to tell people that they must close WoW
+  while updating add-ons.
+
+- Decursive now prints an educational message in the chat and disables
+  its internal error handler once a thousand Lua errors have been
+  intercepted. (Applicable when BugGrabber is not present)
 
 
 Changes from Decursive 2.7.0.3 to Decursive 2.7.0.4 (2011-11-29)

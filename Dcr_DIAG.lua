@@ -161,6 +161,8 @@ local AddDebugText = T._AddDebugText;
 local IsReporting = false;
 
 T._NonDecursiveErrors = 0;
+T._ErrorLimitStripped = false;
+
 local type = _G.type;
 function T._onError(event, errorObject)
     local errorm = errorObject.message;
@@ -234,6 +236,10 @@ T._tocversion = tocversion;
 
 function T._DecursiveErrorHandler(err, ...)
 
+    if T._ErrorLimitStripped then
+        return;
+    end
+
     -- Blizzard bug HotFix
     ---[=[
     if ScriptErrorsFrameScrollFrameText then
@@ -269,6 +275,11 @@ function T._DecursiveErrorHandler(err, ...)
         mine = true;
     else
         T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
+
+        if T._NonDecursiveErrors > 999 then
+            T._ErrorLimitStripped = true;
+            T._TooManyErrors();
+        end
     end
 
     if ProperErrorHandler and not mine then
