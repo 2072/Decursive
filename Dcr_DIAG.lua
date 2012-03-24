@@ -87,6 +87,7 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     whileDead = 1,
     hideOnEscape = false,
     showAlert = 1,
+    preferredIndex = 3,
     }; -- }}}
 T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 
@@ -353,6 +354,7 @@ StaticPopupDialogs["Decursive_Notice_Frame"] = {
     whileDead = 1,
     hideOnEscape = false,
     showAlert = 1,
+    preferredIndex = 3,
 }; -- }}}
 
 
@@ -429,9 +431,9 @@ do
 
             ["AceGUI-3.0"] = 33,
             ["AceConfig-3.0"] = 2,
-            ["AceConfigRegistry-3.0"] = 13,
-            ["AceConfigCmd-3.0"] = 12,
-            ["AceConfigDialog-3.0"] = 54,
+            ["AceConfigRegistry-3.0"] = 14,
+            ["AceConfigCmd-3.0"] = 13,
+            ["AceConfigDialog-3.0"] = 56,
 
             ["LibDataBroker-1.1"] = 4,
             ["LibDBIcon-1.0"] = 24, --not updated for WoW 4.3
