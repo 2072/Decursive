@@ -750,14 +750,13 @@ function MicroUnitF:OnEnter(frame) -- {{{
         return; -- If the user overs the MUF befor it's completely initialized
     end
 
-    --Test for unstable affliction
+    --Test for unstable affliction like spells
     if MF.Debuffs then
         for i, Debuff in ipairs(MF.Debuffs) do
             if Debuff.Type then
-                -- Create a warning if the Unstable Affliction is detected
-                if Debuff.Name == DS["Unstable Affliction"] then
-                    --if Debuff.Name == "Malédiction de Stalvan" then -- to test easily
-                    D:Println("|cFFFF0000 ==> %s !!|r (%s)", DS["Unstable Affliction"], D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
+                -- Create a warning if an Unstable Affliction like spell is detected XXX not very pretty will be integrated along with the filtering system comming 'soon'(tm)
+                if Debuff.Name == DS["Unstable Affliction"] or Debuff.Name == DS["Flame Shock"] or Debuff.Name == DS["Vampiric Touch"] then
+                    D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                     PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav", "Master");
                 end
             end

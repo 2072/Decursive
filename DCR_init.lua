@@ -1273,6 +1273,8 @@ function D:GetSpellsTranslations(FromDIAG)
         ['Lesser Invisibility']         = {     7870,                                    },
         ['Ice Armor']                   = {     7302, 7320, 10219, 10220, 27124,         },
         ['Unstable Affliction']         = {     30108, 30404, 30405,                     },
+        ['Vampiric Touch']              = {     34914,                                   },
+        ['Flame Shock']                 = {     8050,                                    },
         ['Dampen Magic']                = {     604,                                     },
         ['Amplify Magic']               = {     1008,                                    },
         ['TALENT_BODY_AND_SOUL']        = {     64129, 65081,                            },
