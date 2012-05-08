@@ -722,14 +722,14 @@ do -- Combat log event handling {{{1
                 end
                 self.Status.ClickedMF = false;
 
-            elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then -- XXX to test
+            elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
                 D:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), D:MakePlayerName(destName), auraTYPE_failTYPE);
                 PlaySoundFile(DC.FailedSound, "Master");
                 self.Status.ClickedMF = false;
                 --@alpha@
-                D:AddDebugText("sanitycheck ", event, spellNAME);
+                -- D:AddDebugText("sanitycheck ", event, spellNAME); -- It works!
                 --@end-alpha@
             end
             --  }}}
