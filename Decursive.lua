@@ -842,7 +842,7 @@ end --}}}
 D.Stealthed_Units = {};
 
 do
-    local Stealthed = {DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"]}; --, DS["Ice Armor"],};
+    local Stealthed = {DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"]}; --, DS["Ice Armor"],};
 
     DC.IsStealthBuff = D:tReverse(Stealthed);
 

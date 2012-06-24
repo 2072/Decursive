@@ -1268,6 +1268,7 @@ function D:GetSpellsTranslations(FromDIAG)
         ['Arcane Blast']                = {     30451,                                   },
         ['Prowl']                       = {     5215, 6783, 9913, 24450,                 },
         ['Stealth']                     = {     1784, 1785, 1786, 1787,                  },
+        ['Camouflage']                  = {     51755,                                   },
         ['Shadowmeld']                  = {     58984,                                   },
         ['Invisibility']                = {     66,                                      },
         ['Lesser Invisibility']         = {     7870,                                    },
