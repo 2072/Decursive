@@ -574,7 +574,7 @@ function D:PopulateButtonPress(frame) --{{{
     end
 
 
-    local max = GetNumRaidMembers();
+    local max = DC.MOP and _G.GetNumGroupMembers() or _G.GetNumRaidMembers();
 
     if (IsShiftKeyDown() and frame.GroupNumber and max > 0) then
         D:Debug("Finding raid units with a macthing group number");

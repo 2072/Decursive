@@ -30,6 +30,11 @@ DecursiveInstallCorrupted     = false;
 T._C = {};
 local DC = T._C;
 
+do
+    local _, _, _, interface = GetBuildInfo();
+    DC.MOP = (interface >= 50000);
+end
+
 DC.StartTime = GetTime();
 
 if DecursiveInEmbeddedMode == nil then

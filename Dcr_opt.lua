@@ -62,8 +62,8 @@ local str_format        = _G.string.format;
 local str_gsub          = _G.string.gsub;
 local str_sub           = _G.string.sub;
 local abs               = _G.math.abs;
-local GetNumRaidMembers         = _G.GetNumRaidMembers;
-local GetNumPartyMembers        = _G.GetNumPartyMembers;
+local GetNumRaidMembers = DC.MOP and _G.GetNumGroupMembers or _G.GetNumRaidMembers;
+local GetNumPartyMembers= DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local _;
 -- Default values for the option
@@ -1677,11 +1677,11 @@ local function GetStaticOptions ()
                                 ):format(
                                     "@project-version@", "John Wellesz", ("@project-date-iso@"):sub(1,10),
                                     L["ABOUT_NOTES"],
-                                    L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License"),
-                                    L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds"),
-                                    L["ABOUT_OFFICIALWEBSITE"], GetAddOnMetadata("Decursive", "X-Website"),
-                                    L["ABOUT_AUTHOREMAIL"],     GetAddOnMetadata("Decursive", "X-eMail"),
-                                    L["ABOUT_CREDITS"],         GetAddOnMetadata("Decursive", "X-Credits")
+                                    L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'MoP is buggy',
+                                    L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds") or 'MoP is buggy',
+                                    L["ABOUT_OFFICIALWEBSITE"], GetAddOnMetadata("Decursive", "X-Website") or 'MoP is buggy',
+                                    L["ABOUT_AUTHOREMAIL"],     GetAddOnMetadata("Decursive", "X-eMail") or 'MoP is buggy',
+                                    L["ABOUT_CREDITS"],         GetAddOnMetadata("Decursive", "X-Credits") or 'MoP is buggy'
                                 ),
                         order = 0,
                     },

@@ -73,7 +73,8 @@ local table             = _G.table;
 local UnitCreatureFamily= _G.UnitCreatureFamily;
 local UnitFactionGroup  = _G.UnitFactionGroup;
 local IsInInstance      = _G.IsInInstance;
-local GetNumRaidMembers = _G.GetNumRaidMembers;
+local GetNumRaidMembers = DC.MOP and _G.GetNumGroupMembers or _G.GetNumRaidMembers;
+local GetNumPartyMembers= DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
 local GetGuildInfo      = _G.GetGuildInfo;
 local InCombatLockdown  = _G.InCombatLockdown;
 local PlaySoundFile     = _G.PlaySoundFile;
@@ -920,8 +921,8 @@ do
     -- Warning this part is not very optimized, fortunately it's just sugar, I'm probably the only one using it :p
 
     local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
-    local GetNumRaidMembers = _G.GetNumRaidMembers;
-    local GetNumPartyMembers = _G.GetNumPartyMembers;
+    local GetNumRaidMembers = GetNumRaidMembers;
+    local GetNumPartyMembers = GetNumPartyMembers;
     local GetRaidRosterInfo = _G.GetRaidRosterInfo;
 
     local Name_To_Unit = {};
@@ -1033,33 +1034,45 @@ end
 
 do
 
+    local UnitLevel          = _G.UnitLevel;
     local GetNumTalentPoints = _G.GetNumTalentPoints;
-    local GetUnspentTalentPoints = _G.GetUnspentTalentPoints;
-    local UnitLevel = _G.UnitLevel;
+    --local GetNumTalentPoints = DC.MOP and function () return math.floor(UnitLevel("player") / 15) end or _G.GetNumTalentPoints;
 
-    --@alpha@
-    local GetTalentInfo = _G.GetTalentInfo;
-    -- Sanity check, to make sure GetTalentInfo() and GetNumTalentPoints() agree
-    local function CheckTalentsAvaibility_thebadway() -- {{{
-        local talentfound = 0;
+    local GetTalentInfo      = _G.GetTalentInfo;
 
-        -- let's check the five first talents of each tree
-        for tree=1,3 do
-            for talent=1,5 do
-                talentfound = (select(5, GetTalentInfo(tree,talent)));
-                if talentfound ~=0 then  return true end
+    local function CheckTalentsAvaibility_MOP() -- {{{
+        local playerLevel = UnitLevel("player");
+
+        -- no talents before level 15, so if we know the level (>0) and it's
+        -- <15, we know there is no talent.
+        if playerLevel > 0 and playerLevel < 15 then
+            return true;
+        end
+
+        -- if we know that there are unspet talents, it means we can check for
+        -- for them
+        if GetNumUnspentTalents() then
+            return true;
+        end
+
+        -- else, let's check for the first 3 talents, one of them ought to be
+        -- 'available' (6th returned value of GetTalentInfo) if not selected.
+        for talent=1,3 do
+            if (select(6, GetTalentInfo(talent))) then
+                return true;
             end
         end
 
+        -- then, if none of the above succeeded, talents aren't ready to be
+        -- polled.
         return false;
-    end --}}}
-    --@end-alpha@
 
-    local function CheckTalentsAvaibility() -- {{{
+    end -- }}}
 
-        local unspentTalentPoints = GetUnspentTalentPoints();
-        local totalTalentPoints = GetNumTalentPoints();
+    local function CheckTalentsAvaibility_preMOP() -- {{{
+
         local playerLevel = UnitLevel("player");
+        local totalTalentPoints = GetNumTalentPoints();
 
         if playerLevel > 0 and playerLevel < 10 then
             return true;
@@ -1067,40 +1080,33 @@ do
 
         if totalTalentPoints ~= 0 then
             -- Talents are available
-            --@alpha@
-            if totalTalentPoints ~= unspentTalentPoints and not CheckTalentsAvaibility_thebadway() then
-                -- no talent detected by GetTalentInfo() --> sanity check failed
-                D:AddDebugText("CheckTalentsAvaibility(): Sanity check failed: GetNumTalentPoints() said 'yes' but GetNumTalentPoints() said 'no', totalTalentPoints=", totalTalentPoints, "unspentTalentPoints=", unspentTalentPoints);
-            end
-            --@end-alpha@
-
             return true;
         else
             -- Talents are not available
-            --@alpha@
-            if CheckTalentsAvaibility_thebadway() then
-                -- talents detected by GetTalentInfo() --> sanity check failed
-                D:AddDebugText("CheckTalentsAvaibility(): Sanity check failed: GetNumTalentPoints() said 'no' but GetNumTalentPoints() said 'yes', totalTalentPoints=", totalTalentPoints, "unspentTalentPoints=", unspentTalentPoints);
-            end
-            --@end-alpha@
-
             return false;
         end
     end -- }}}
 
+
+    local CheckTalentsAvaibility = DC.MOP and CheckTalentsAvaibility_MOP or CheckTalentsAvaibility_preMOP;
+
     --@alpha@
     local player_is_almost_alive = false; -- I'm trying to figure out why sometimes talents are not detected while PLAYER_ALIVE event fired
     --@end-alpha@
+ 
     local function PollTalentsAvaibility() -- {{{
+
         D:Debug("Polling talents...");
+
         if CheckTalentsAvaibility() then
+
+            D:Debug("Talents found");
             -- remove the timer
             D:CancelDelayedCall("PollTalents");
             -- dispatch event
             D:SendMessage("DECURSIVE_TALENTS_AVAILABLE");
-            D:Debug("Talents found");
 
-            --@debug@
+            --@alpha@
             if player_is_almost_alive then
                 D:AddDebugText("StartTalentAvaibilityPolling(): Talents were not available after PLAYER_ALIVE was fired, test was made", player_is_almost_alive, "seconds after PLAYER_ALIVE fired. Sucess happened", GetTime() - T.PLAYER_IS_ALIVE, "secondes after PLAYER_ALIVE fired");
             end
@@ -1108,7 +1114,7 @@ do
             if T.PLAYER_IS_ALIVE and not player_is_almost_alive then
                 player_is_almost_alive = GetTime() - T.PLAYER_IS_ALIVE;
             end
-            --@end-debug@
+            --@end-alpha@
         end
     end -- }}}
 

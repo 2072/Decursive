@@ -559,7 +559,7 @@ do
             D:Print(D:ColorText("WARNING: Your Micro-Unit-Frames' window is too big to fit entirely on your screen, you should change MUFs display settings (scale and/or disposition)! (Type /Decursive)", "FFFF0000"));
         end
 
-        D:Debug(x_out_arrays[1], x_out_arrays[#x_out_arrays], y_out_arrays[1], y_out_arrays[#x_out_arrays]);
+        --D:Debug("MicroUnitF:Place(), outliers:", x_out_arrays[1], x_out_arrays[#x_out_arrays], y_out_arrays[1], y_out_arrays[#x_out_arrays]);
 
         -- x
         if x_out_arrays[1] then
@@ -579,7 +579,7 @@ do
             end
         end
 
-        D:Debug(Handle_x_offset, Handle_y_offset);
+        --D:Debug("MicroUnitF:Place(), handle offset:", Handle_x_offset, Handle_y_offset);
 
 
 
