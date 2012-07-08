@@ -501,7 +501,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = true,
         },
         -- Warlock
-        [DS["PET_DOOM_CAST"]]               = {
+        [DS["PET_DOOM_CAST"]]               = { -- WARNING this will be overwritten by priests' dispel magic
             Types = {DC.MAGIC, DC.ENEMYMAGIC},
             Better = 1,
             Pet = true,
@@ -509,10 +509,97 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     }; -- }}}
 
 
-    -- WoW 4.0 changes {{{
 
-    --https://docs.google.com/document/pub?id=13GLsRWUA4pMQ0EAV2FWkmJvDNQTeIcivO8XtP0iZ-tA
-    if T._tocversion >= 40000 then
+    if T._tocversion >= 50000 then
+
+        -- Paladins
+        DC.SpellsToUse[DS["SPELL_CLEANSE"]]               = {
+            Types = {DC.DISEASE, DC.POISON},
+            Better = 2,
+            Pet = false,
+
+            EnhancedBy = DS["PASSIVE_SACRED_CLEANSING"], -- http://www.wowhead.com/talent#srrrdkdz
+            EnhancedByCheck = function ()
+                return (GetSpellBookItemInfo(DS["PASSIVE_SACRED_CLEANSING"])) and true or false;
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+            }
+            
+        };
+        -- Shaman
+        DC.SpellsToUse[DS["CLEANSE_SPIRIT"]]              = {
+            Types = {DC.CURSE},
+            Better = 3,
+            Pet = false,
+        };
+
+        -- Shaman resto
+        DC.SpellsToUse[DS["PURIFY_SPIRIT"]]              = {
+            -- BUG in MOP BETA (2012-07-08): /spew GetSpellBookItemInfo('Purify Spirit') == nil while /spew (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
+            Types = {DC.CURSE, DC.MAGIC},
+            Better = 4,
+            Pet = false,
+        };
+
+        -- Warlocks (Imp)
+        DC.SpellsToUse[DS["SPELL_SINGE_MAGIC"]]         = {
+            Types = {DC.MAGIC},
+            Better = 0,
+            Pet = true,
+        };
+
+        -- Warlock
+        DC.SpellsToUse[DS["SPELL_FEAR"]]    = {
+            Types = {DC.CHARMED},
+            Better = 0,
+            Pet = false,
+        };
+        -- Warlocks
+        DC.SpellsToUse[DS["PET_FEL_CAST"]]              = {
+            Types = {DC.ENEMYMAGIC},
+            Better = 0,
+            Pet = true,
+        };
+        -- Mages
+        DC.SpellsToUse[DS["SPELL_POLYMORPH"]]      = {
+            Types = {DC.CHARMED},
+            Better = 0,
+            Pet = false,
+        };
+
+        -- Druids (Balance Feral Guardian)
+        DC.SpellsToUse[DS["SPELL_REMOVE_CORRUPTION"]]      = {
+            Types = {DC.POISON, DC.CURSE},
+            Better = 0,
+            Pet = false,
+
+        };
+
+        -- Druids (Restoration)
+        DC.SpellsToUse[DS["SPELL_NATURES_CURE"]]      = {
+            Types = {DC.MAGIC, DC.POISON, DC.CURSE},
+            Better = 1,
+            Pet = false,
+        };
+
+        -- Priests (global)
+        DC.SpellsToUse[DS["SPELL_DISPELL_MAGIC"]]         = {
+            Types = {DC.ENEMYMAGIC},
+            Better = 0,
+            Pet = false,
+        };
+
+        -- Priests (Discipline, Holy)
+        DC.SpellsToUse[DS["SPELL_PURIFY"]]         = {
+            Types = {DC.MAGIC, DC.DISEASE},
+            Better = 0,
+            Pet = false,
+        };
+
+    -- WoW 4.0 changes {{{
+        --https://docs.google.com/document/pub?id=13GLsRWUA4pMQ0EAV2FWkmJvDNQTeIcivO8XtP0iZ-tA
+    elseif T._tocversion >= 40000  then
         -- Paladins
         DC.SpellsToUse[DS["SPELL_CLEANSE"]]               = {
             Types = {DC.DISEASE, DC.POISON},
@@ -617,7 +704,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         };
 
         -- old WoW 3.5 for compatibilty with China {{{
-    else 
+    elseif T._tocversion < 40000 then
          -- Priests -- XXX to be removed
         DC.SpellsToUse[DS["SPELL_ABOLISH_DISEASE"]]       = {
             Types = {DC.DISEASE},
@@ -1068,12 +1155,13 @@ function D:ReConfigure() --{{{
         return;
     end
 
+    local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
     local GetSpellInfo = _G.GetSpellInfo;
 
     local Reconfigure = false;
     for spellName, spell in SpellIterator() do
         -- Do we have that spell?
-        if GetSpellInfo(spellName) then -- yes
+        if (not spell.Pet and GetSpellInfo(spellName)) or (spell.Pet and GetSpellBookItemInfo(spellName)) then -- yes
             -- We had it but it's been disabled
             if spell.Disabled and D.Status.FoundSpells[spellName] then
                 Reconfigure = true;
@@ -1137,6 +1225,7 @@ function D:Configure() --{{{
     CuringSpells[DC.CHARMED]    = false;
 
     local Type, _;
+    local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
     local GetSpellInfo = _G.GetSpellInfo;
     local Types = {};
     local OnPlayerOnly = false;
@@ -1148,7 +1237,7 @@ function D:Configure() --{{{
         if not spell.Disabled then
             self:Debug("trying spell", spellName);
             -- Do we have that spell?
-            if GetSpellInfo(spellName) then -- yes
+            if (not spell.Pet and GetSpellInfo(spellName)) or (spell.Pet and GetSpellBookItemInfo(spellName)) then -- yes (both API because of MOP bug with Purify Spirit)
                 Types = spell.Types;
                 OnPlayerOnly = false;
                 IsEnhanced = false;
@@ -1223,6 +1312,7 @@ function D:GetSpellsTranslations(FromDIAG)
 
     local Spells = {};
 
+    -- /spew DecursiveRootTable._C.DS
 
     Spells = {
         ["SPELL_POLYMORPH"]             = {     118,                                     },
@@ -1232,23 +1322,22 @@ function D:GetSpellsTranslations(FromDIAG)
         ["SPELL_ABOLISH_DISEASE"]       = {     552,                                     },
         ["SPELL_PURIFY"]                = {     1152,                                    }, -- paladins
         ["SPELL_CLEANSE"]               = {     4987,                                    },
-        ["SPELL_DISPELL_MAGIC"]         = {     527, 988,                                },
+        ["SPELL_DISPELL_MAGIC"]         = {     527,                                     },
         ["SPELL_CURE_TOXINS"]           = {     526,                                     }, -- shamans
         ["SPELL_CURE_POISON"]           = {     8946,                                    },
         ["SPELL_ABOLISH_POISON"]        = {     2893,                                    }, -- removed in WoW 4.0
-        ["SPELL_REMOVE_LESSER_CURSE"]   = {     475,                                     }, -- Mages
         ["SPELL_REMOVE_CURSE"]          = {     2782,                                    }, -- Druids/Mages
         ['SPELL_TRANQUILIZING_SHOT']    = {     19801,                                   },
         ['SPELL_HEX']                   = {     51514,                                   }, -- shamans
         ['SPEC_ABSOLUTION']             = {     33167,                                   }, -- Priests
         ["CLEANSE_SPIRIT"]              = {     51886,                                   },
-        ["SPELL_PURGE"]                 = {     370, 8012,                               },
-        ["PET_FEL_CAST"]                = {     19505, 19731, 19734, 19736, 27276, 27277,},
+        ["SPELL_PURGE"]                 = {     370,                                     },
+        ["PET_FEL_CAST"]                = {     19505,                                   },
         ["SPELL_FEAR"]                  = {     5782                                     },
-        ["PET_DOOM_CAST"]               = {     527, 988,                                },
-        ["CURSEOFTONGUES"]              = {     1714, 11719,                             },
+        ["PET_DOOM_CAST"]               = {     527,                                     },
+        ["CURSEOFTONGUES"]              = {     1714,                                    },
         ["DCR_LOC_SILENCE"]             = {     15487,                                   },
-        ["DCR_LOC_MINDVISION"]          = {     2096, 10909,                             },
+        ["DCR_LOC_MINDVISION"]          = {     2096,                                    },
         ["DREAMLESSSLEEP"]              = {     15822,                                   },
         ["GDREAMLESSSLEEP"]             = {     24360,                                   },
         ["MDREAMLESSSLEEP"]             = {     28504,                                   },
@@ -1263,17 +1352,17 @@ function D:GetSpellsTranslations(FromDIAG)
         ["DELUSIONOFJINDO"]             = {     24306,                                   },
         ["MUTATINGINJECTION"]           = {     28169,                                   },
         ['Phase Shift']                 = {     4511,                                    },
-        ['Banish']                      = {     710, 18647,                              },
+        ['Banish']                      = {     710,                                     },
         ['Frost Trap Aura']             = {     13810,                                   },
         ['Arcane Blast']                = {     30451,                                   },
-        ['Prowl']                       = {     5215, 6783, 9913, 24450,                 },
-        ['Stealth']                     = {     1784, 1785, 1786, 1787,                  },
+        ['Prowl']                       = {     5215,   24450,                           },
+        ['Stealth']                     = {     1784,                                    },
         ['Camouflage']                  = {     51755,                                   },
         ['Shadowmeld']                  = {     58984,                                   },
         ['Invisibility']                = {     66,                                      },
         ['Lesser Invisibility']         = {     7870,                                    },
-        ['Ice Armor']                   = {     7302, 7320, 10219, 10220, 27124,         },
-        ['Unstable Affliction']         = {     30108, 30404, 30405,                     },
+        ['Ice Armor']                   = {     7302,                                    },
+        ['Unstable Affliction']         = {     30108,                                   },
         ['Vampiric Touch']              = {     34914,                                   },
         ['Flame Shock']                 = {     8050,                                    },
         ['Dampen Magic']                = {     604,                                     },
@@ -1285,7 +1374,7 @@ function D:GetSpellsTranslations(FromDIAG)
         --['STALVAN_CURSE']             = {     3105,                                    }, --temp to test
     };
 
-    -- WoW 4.0 compatibility fix
+    -- WoW 4.0 compatibility fixes
     if T._tocversion >= 40000 then
         Spells["SPELL_REMOVE_CURSE"]         = {     475,                                   }; -- Druids/Mages
         Spells["SPELL_REMOVE_CORRUPTION"]    = {     2782,                                  };
@@ -1308,10 +1397,31 @@ function D:GetSpellsTranslations(FromDIAG)
         
     end
 
+    if T._tocversion >= 50000 then
+        Spells["SPEC_ABSOLUTION"]       = nil;
+        Spells["CURSEOFTONGUES"]        = nil;
+        Spells["SPELL_PURIFY"]          = {527}; -- = Spells["SPELL_DISPELL_MAGIC"];
+        Spells["SPELL_DISPELL_MAGIC"]   = {528}; -- = Spells["SPELL_CURE_DISEASE"];
+        Spells["SPELL_CURE_DISEASE"]    = nil;
+        Spells["PET_DOOM_CAST"]         = nil; -- disappeared a long time ago
+        Spells["PURIFY_SPIRIT"]         = {77130}; -- resto shaman
+        Spells["TALENT_IMPROVED_CLEANSE_SPIRIT"] = nil; -- resto shaman
+        Spells["TALENT_SACRED_CLEANSING"]    = nil;
+        Spells["PASSIVE_SACRED_CLEANSING"]    = {53551};
+        Spells["TALENT_NATURES_CURE"]    = nil;
+        Spells["SPELL_NATURES_CURE"]    = {88423};
+
+        DS["SPELL_CURE_DISEASE"]        = '_LOST SPELL_';
+        DS["PET_DOOM_CAST"]             = '_LOST SPELL_';
+    end    
+
     DC.ttest = Spells;
 
     -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (self revelation on 2011-02-25)
 
+    --@debug@
+    local dubs = {};
+    --@end-debug@
     local alpha = false;
     --@alpha@
     alpha = true;
@@ -1323,9 +1433,18 @@ function D:GetSpellsTranslations(FromDIAG)
 
             if _ == 1 then
                 DS[Sname] = (GetSpellInfo(Sid));
+                --@debug@
+                if FromDIAG and DS[Sname] then
+                    if not dubs[DS[Sname]] then
+                        dubs[DS[Sname]] = {Sname};
+                    else
+                        dubs[DS[Sname]][#dubs[DS[Sname]] + 1] = Sname;
+                    end
+                end
+                --@end-debug@
                 if not DS[Sname] then
                     if random (1, 15000) == 2323 or FromDIAG then
-                        D:AddDebugText("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
+                        D:AddDebugText("SpellID:|cffff0000", Sid, "no longer exists.|r This was supposed to represent the spell", Sname);
                         D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
                     end
                     DS[Sname] = "_LOST SPELL_";
@@ -1333,16 +1452,16 @@ function D:GetSpellsTranslations(FromDIAG)
             elseif FromDIAG then
                 if (GetSpellInfo(Sid)) and DS[Sname] ~= (GetSpellInfo(Sid)) then
 
-                    D:AddDebugText("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
+                    D:AddDebugText("|cffff0000Spell IDs", Sids[1] , "and", Sid, "have different translations:|r", DS[Sname], "and", (GetSpellInfo(Sid)) );
 
                     D:errln("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
 
                     D:errln("Please report this to ARCHARODIM+DcrReport@teaser.fr");
 
                     ok = false;
-                elseif not DS[Sname] then
+                elseif not (GetSpellInfo(Sid)) then
 
-                    D:AddDebugText("SpellID:", Sid, "no longer exist. This was supposed to represent the spell", Sname);
+                    D:AddDebugText("SpellID:|cffff0000", Sid, "no longer exist.|r This was supposed to represent the spell", Sname);
 
                     D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
                 end
@@ -1350,6 +1469,21 @@ function D:GetSpellsTranslations(FromDIAG)
 
         end
     end
+
+    --@debug@
+    if FromDIAG then
+        for spell, ids in pairs(dubs) do
+            if #ids > 1 then
+                local dub = "";
+
+                for _, id in ipairs(ids) do
+                    dub = dub .. ", " .. id;
+                end
+                D:AddDebugText("|cffffAA22dubs found for", spell, ':|r ', dub);
+            end
+        end
+    end
+    --@end-debug@
 
     return ok;
 

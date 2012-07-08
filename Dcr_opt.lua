@@ -324,7 +324,6 @@ function D:GetDefaultsSettings()
                 DS["CRIPLES"],
                 DS["DUSTCLOUD"],
                 DS["WIDOWSEMBRACE"],
-                DS["CURSEOFTONGUES"],
                 DS["SONICBURST"],
                 DS["DELUSIONOFJINDO"]
             },
@@ -335,7 +334,6 @@ function D:GetDefaultsSettings()
                     [DS["IGNITE"]]              = true,
                     [DS["TAINTEDMIND"]]         = true,
                     [DS["WIDOWSEMBRACE"]]       = true,
-                    [DS["CURSEOFTONGUES"]]      = true,
                     [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["ROGUE"] = {
@@ -344,7 +342,6 @@ function D:GetDefaultsSettings()
                     [DS["IGNITE"]]              = true,
                     [DS["TAINTEDMIND"]]         = true,
                     [DS["WIDOWSEMBRACE"]]       = true,
-                    [DS["CURSEOFTONGUES"]]      = true,
                     [DS["SONICBURST"]]          = true,
                     [DS["DELUSIONOFJINDO"]]     = true,
                 },
