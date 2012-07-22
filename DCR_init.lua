@@ -831,9 +831,15 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
 
     -- Raid/Group changes events
-    self:RegisterEvent("PARTY_MEMBERS_CHANGED", D.GroupChanged, D);
     self:RegisterEvent("PARTY_LEADER_CHANGED", D.GroupChanged, D);
-    self:RegisterEvent("RAID_ROSTER_UPDATE", D.GroupChanged, D);
+
+    if DC.MOP then
+        self:RegisterEvent("GROUP_ROSTER_UPDATE", D.GroupChanged, D);
+    else
+        self:RegisterEvent("PARTY_MEMBERS_CHANGED", D.GroupChanged, D);
+        self:RegisterEvent("RAID_ROSTER_UPDATE", D.GroupChanged, D);
+    end
+
     self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 
     -- Player pet detection event (used to find pet spells)

@@ -9,8 +9,8 @@ Documentation:
 [Decursive usage][user-actions] - [Micro Unit Frames documentation][MUFs] - [Decursive Macro documentation][mouse-over macro] - [Frequently Asked Questions][FAQ] - [commands][]
 
 
-MoP Beta compatible version
-------------------------------------
+MoP Beta compatible version available
+-------------------------------------
 ![MoP Panda][mop] 
 For a *Mist of Pandaria* compatible version of Decursive, use the latest alpha releases which can be found [here][dev]
 
