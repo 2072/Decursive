@@ -419,7 +419,7 @@
     <!-- DecursivePopulateListFrame {{{ -->
     <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
         <Size>
-            <AbsDimension x="168" y="265" />
+            <AbsDimension x="168" y="285" />
         </Size>
 
         <Anchors>
@@ -877,6 +877,28 @@
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self.ClassType = DecursiveRootTable._C.CLASS_DEATHKNIGHT;
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
+                    </OnLoad>
+                </Scripts>
+            </Button>
+            <Button name="$parentMonk" inherits="GameMenuButtonTemplate" text="Monk">
+                <Size>
+                    <AbsDimension x="80" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentPaladin">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                    </OnClick>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        self.ClassType = DecursiveRootTable._C.CLASS_MONK;
                         self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>

@@ -71,7 +71,9 @@ local select                = _G.select;
 local UnitIsFriend          = _G.UnitIsFriend;
 local UnitCanAttack         = _G.UnitCanAttack;
 local GetNumRaidMembers     = DC.MOP and _G.GetNumGroupMembers or _G.GetNumRaidMembers;
+
 local GetNumPartyMembers    = DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
+
 local GetRaidRosterInfo     = _G.GetRaidRosterInfo;
 local random                = _G.random;
 local UnitIsUnit            = _G.UnitIsUnit;
@@ -122,6 +124,7 @@ DC.ClassNumToLName = {
     [18]        = LC[DC.CLASS_WARLOCK],
     [19]        = LC[DC.CLASS_WARRIOR],
     [20]        = LC[DC.CLASS_DEATHKNIGHT],
+    [21]        = LC[DC.CLASS_MONK],
 }
 
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
@@ -137,6 +140,7 @@ DC.ClassNumToUName = {
     [18]        = DC.CLASS_WARLOCK,
     [19]        = DC.CLASS_WARRIOR,
     [20]        = DC.CLASS_DEATHKNIGHT,
+    [21]        = DC.CLASS_MONK,
 }
 
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);

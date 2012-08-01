@@ -381,6 +381,8 @@ function D:GetDefaultsSettings()
                     [DS["DELUSIONOFJINDO"]]     = true,
                 },
                 ["DEATHKNIGHT"] = {
+                },
+                ["MONK"] = {
                 }
             },
             -- }}}
