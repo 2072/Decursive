@@ -1,5 +1,13 @@
-Decursive 2.7.0.5 by Archarodim (2012-02-05)
-============================================
+Decursive 2.7.1 beta 1 by Archarodim (2012-08-05)
+=================================================
+
+Changes from Decursive 2.7.0.5 to Decursive 2.7.1 beta 1 (2012-02-05)
+---------------------------------------------------------------------
+
+- Compatible with Mists of Pandaria
+- Added a warning when the afflicted unit is afflicted by 'Vampiric Touch' or
+  'Flame Shock' (just like with 'Unstable Affliction')
+- Miscellaneous unnoticeable changes.
 
 
 Changes from Decursive 2.7.0.4 to Decursive 2.7.0.5 (2012-02-05)

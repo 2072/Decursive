@@ -320,14 +320,16 @@ do
           4 --> Pets
 
           - 8 groups with 5 persons maximum per group
-          - 10 classes with 80 persons max for each class (Pets may be counted)
+          - 11 classes with 80 persons max for each class (Pets may be counted)
           - 80 persons for default (including possible pets)
 
-          Priority list:    1,000,000 till 100,000,000
+          Priority list:    10^6 till 10^8
           Group indexes:    10,000, 20,000, 30,000, till 80,000
           class indexes:    1,000, 2,000, 3,000, till 10,000
           default indexes:  100 to 800 (player's index will be 900)
           pet indexes:      Same as above but * -1
+
+          prio formula: Sigma[val(i)*10^(1 + prio(i))] 
 
           We make additions, exemple:
             - Our current group is the group 7

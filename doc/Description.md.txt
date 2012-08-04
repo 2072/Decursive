@@ -12,7 +12,7 @@ Documentation:
 MoP Beta compatible version available
 -------------------------------------
 ![MoP Panda][mop] 
-For a *Mist of Pandaria* compatible version of Decursive, use the latest alpha releases which can be found [here][dev]
+For a *Mists of Pandaria* compatible version of Decursive, use the latest alpha or beta release which can be found [here][dev]
 
 Decursive key benefits
 ----------------------
