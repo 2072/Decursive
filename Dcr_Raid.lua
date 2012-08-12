@@ -127,6 +127,10 @@ DC.ClassNumToLName = {
     [21]        = LC[DC.CLASS_MONK],
 }
 
+if not DC.MOP then
+    DC.ClassNumToLName[21] = nil;
+end
+
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
 
 DC.ClassNumToUName = {
@@ -143,6 +147,9 @@ DC.ClassNumToUName = {
     [21]        = DC.CLASS_MONK,
 }
 
+if not DC.MOP then
+    DC.ClassNumToUName[21] = nil;
+end
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
 
 

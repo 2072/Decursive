@@ -894,10 +894,15 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                        if DecursiveRootTable._C.MOP then
+                            DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                        end
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
+                        if not DecursiveRootTable._C.MOP then
+                            return;
+                        end
                         self.ClassType = DecursiveRootTable._C.CLASS_MONK;
                         self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
