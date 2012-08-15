@@ -70,8 +70,7 @@ local type                  = _G.type;
 local select                = _G.select;
 local UnitIsFriend          = _G.UnitIsFriend;
 local UnitCanAttack         = _G.UnitCanAttack;
-local GetNumRaidMembers     = DC.MOP and _G.GetNumGroupMembers or _G.GetNumRaidMembers;
-
+local GetNumRaidMembers     = DC.GetNumRaidMembers;
 local GetNumPartyMembers    = DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
 
 local GetRaidRosterInfo     = _G.GetRaidRosterInfo;

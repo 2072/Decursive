@@ -574,10 +574,10 @@ function D:PopulateButtonPress(frame) --{{{
     end
 
 
-    local max = DC.MOP and _G.GetNumGroupMembers() or _G.GetNumRaidMembers();
+    local max = DC.GetNumRaidMembers();
 
     if (IsShiftKeyDown() and frame.GroupNumber and max > 0) then
-        D:Debug("Finding raid units with a macthing group number");
+        D:Debug("Finding raid units with a matching group number");
         for i = 1, max do
             _, _, pgroup, _, _, pclass = GetRaidRosterInfo(i);
 

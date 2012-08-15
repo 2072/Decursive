@@ -62,7 +62,7 @@ local str_format        = _G.string.format;
 local str_gsub          = _G.string.gsub;
 local str_sub           = _G.string.sub;
 local abs               = _G.math.abs;
-local GetNumRaidMembers = DC.MOP and _G.GetNumGroupMembers or _G.GetNumRaidMembers;
+local GetNumRaidMembers = DC.GetNumRaidMembers;
 local GetNumPartyMembers= DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local _;

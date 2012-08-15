@@ -1,5 +1,11 @@
-Decursive 2.7.1 beta 1 by Archarodim (2012-08-05)
+Decursive 2.7.1 beta 2 by Archarodim (2012-08-16)
 =================================================
+
+Changes from Decursive 2.7.1 beta 1 to Decursive 2.7.1 beta 2 (2012-08-16)
+---------------------------------------------------------------------
+
+- Fix group detection issues for MoP.
+- Fix class color management for non-MoP.
 
 Changes from Decursive 2.7.0.5 to Decursive 2.7.1 beta 1 (2012-02-05)
 ---------------------------------------------------------------------
