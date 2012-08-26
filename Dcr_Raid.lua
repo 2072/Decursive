@@ -322,31 +322,29 @@ do
           0 --> PriorityList
           1 --> Group
           2 --> Class
-          3 --> Default (Decursive "natural" order: our group, groups after, groups before)
-          4 --> Pets
+          3 --> Default (Decursive "natural" order: current player, our group, groups after, groups before)
+          4 --> our pet, Pets
 
           - 8 groups with 5 persons maximum per group
           - 11 classes with 80 persons max for each class (Pets may be counted)
           - 80 persons for default (including possible pets)
 
-          Priority list:    10^6 till 10^8
-          Group indexes:    10,000, 20,000, 30,000, till 80,000
-          class indexes:    1,000, 2,000, 3,000, till 10,000
-          default indexes:  100 to 800 (player's index will be 900)
+          default indexes:  100 to 840 (player's index will be 900)
+          class indexes:    1,000, 2,000, 3,000, till 11,000
+          Group indexes:    12,000, 24,000, 36,000, till 96,000
+          Priority list:    10^5 till 10^7
           pet indexes:      Same as above but * -1
 
-          prio formula: Sigma[val(i)*10^(1 + prio(i))] 
-
-          We make additions, exemple:
-            - Our current group is the group 7
+          We make additions, example:
+            - Our current group is group 7
             - The resulting default groups priorities are:
                 7:800 8: 700, 1:600, 2: 500, 3: 400, 4: 300, 5: 200, 6:100
             - Archarodim, Mage from Group 5 (23rd unit of the raid)
-            - Unit Archarodim priority is 223
+            - Unit Archarodim default priority is 223
             - Class Mage priority is 4000
-            - Group 5 priority is 20000
+            - Group 5 priority is 24000
 
-            --> Archarodim priority is 200 + 23 + 4000 + 20000 = 24223
+            --> Archarodim priority is 200 + 23 + 4000 + 24000 = 28223
         **************************************************************************** }}} ]=]
 
         -- Get Decursive's natural default priority of the unit
@@ -354,12 +352,12 @@ do
 
         -- Get the class priority if available
         if ( UNClass and ClassPrio[ DC.ClassUNameToNum [UNClass] ] ) then
-            UnitPriority = UnitPriority + ( 10 + 1 - ClassPrio[DC.ClassUNameToNum [UNClass]]) * 1000; -- XXX 10 (Deathknight) is no good
+            UnitPriority = UnitPriority + ( 11 + 1 - ClassPrio[DC.ClassUNameToNum [UNClass]]) * 1000; -- previous max is 900
         end
 
         -- Get the group priority if available
         if (UnitGroup and GroupsPrio[UnitGroup]) then
-            UnitPriority = UnitPriority + (8 + 1 - GroupsPrio[UnitGroup]) * 10000;
+            UnitPriority = UnitPriority + (8 + 1 - GroupsPrio[UnitGroup]) * 12000; -- previous max is 11,840
         end
 
         -- Get the priority list index if available
@@ -382,8 +380,8 @@ do
             end
 
 
-            if ( PrioListIndex < 100) then
-                UnitPriority = UnitPriority + (100 + 1 - PrioListIndex) * 1000000;
+            if ( PrioListIndex ~= 100) then
+                UnitPriority = UnitPriority + (100 + 1 - PrioListIndex) * 100000; -- previous max is 96,840
             end
         end
 

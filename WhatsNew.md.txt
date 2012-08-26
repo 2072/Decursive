@@ -1,8 +1,13 @@
-Decursive 2.7.1 beta 2 by Archarodim (2012-08-16)
+Decursive 2.7.1 beta 3 by Archarodim (2012-08-27)
 =================================================
 
+Changes from Decursive 2.7.1 beta 2 to Decursive 2.7.1 beta 3 (2012-08-27)
+--------------------------------------------------------------------------
+
+- Fix multi-criteria priority list sorting which could have some issues with Monks
+
 Changes from Decursive 2.7.1 beta 1 to Decursive 2.7.1 beta 2 (2012-08-16)
----------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 - Fix group detection issues for MoP.
 - Fix class color management for non-MoP.
