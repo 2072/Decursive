@@ -8,12 +8,6 @@ Documentation:
 
 [Decursive usage][user-actions] - [Micro Unit Frames documentation][MUFs] - [Decursive Macro documentation][mouse-over macro] - [Frequently Asked Questions][FAQ] - [commands][]
 
-
-MoP Beta compatible version available
--------------------------------------
-![MoP Panda][mop] 
-For a *Mists of Pandaria* compatible version of Decursive, use the latest alpha or beta release which can be found [here][dev]
-
 Decursive key benefits
 ----------------------
 

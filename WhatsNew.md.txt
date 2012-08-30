@@ -1,25 +1,20 @@
-Decursive 2.7.1 beta 3 by Archarodim (2012-08-27)
-=================================================
+Decursive 2.7.1 (2012-08-30)
+============================
 
-Changes from Decursive 2.7.1 beta 2 to Decursive 2.7.1 beta 3 (2012-08-27)
---------------------------------------------------------------------------
-
-- Fix multi-criteria priority list sorting which could have some issues with Monks
-
-Changes from Decursive 2.7.1 beta 1 to Decursive 2.7.1 beta 2 (2012-08-16)
---------------------------------------------------------------------------
-
-- Fix group detection issues for MoP.
-- Fix class color management for non-MoP.
-
-Changes from Decursive 2.7.0.5 to Decursive 2.7.1 beta 1 (2012-02-05)
----------------------------------------------------------------------
+Changes from Decursive 2.7.0.5 to Decursive 2.7.1 (2012-08-30)
+--------------------------------------------------------------
 
 - Compatible with Mists of Pandaria
-- Added a warning when the afflicted unit is afflicted by 'Vampiric Touch' or
-  'Flame Shock' (just like with 'Unstable Affliction')
-- Miscellaneous unnoticeable changes.
 
+- Added a warning when the unit your about to cleanse is afflicted by 'Vampiric
+  Touch' or 'Flame Shock' (just like with 'Unstable Affliction')
+
+- Added support for Italian localization, you can contribute using the
+  [Localization interface][localization].
+
+- Other locals updated (Thanks to contributors!)
+
+- Miscellaneous unnoticeable changes.
 
 Changes from Decursive 2.7.0.4 to Decursive 2.7.0.5 (2012-02-05)
 ----------------------------------------------------------------
