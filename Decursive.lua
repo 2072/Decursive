@@ -844,6 +844,10 @@ D.Stealthed_Units = {};
 do
     local Stealthed = {DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"]}; --, DS["Ice Armor"],};
 
+    if DC.MOP then
+        table.insert(Stealthed, DS["SHROUD_OF_CONCEALMENT"])
+    end
+
     DC.IsStealthBuff = D:tReverse(Stealthed);
 
     function D:CheckUnitStealth(Unit)
