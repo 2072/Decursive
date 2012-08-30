@@ -56,6 +56,7 @@ T._LoadedFiles = {
     ["zhCN.lua"]                = false,
     ["ruRU.lua"]                = false,
     ["ptBR.lua"]                = false,
+    ["itIT.lua"]                = false,
     
     ["Dcr_opt.lua"]             = false,
     ["Dcr_Events.lua"]          = false,
@@ -447,10 +448,10 @@ do
             ["AceConfig-3.0"] = 2,
             ["AceConfigRegistry-3.0"] = 14,
             ["AceConfigCmd-3.0"] = 13,
-            ["AceConfigDialog-3.0"] = 56,
+            ["AceConfigDialog-3.0"] = 57,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 24, --not updated for WoW 4.3
+            ["LibDBIcon-1.0"] = 25, --not updated for WoW 4.3
             ["LibQTip-1.0"] = 38,
             ["CallbackHandler-1.0"] = 6,
         };

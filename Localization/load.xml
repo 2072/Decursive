@@ -11,6 +11,7 @@
     <Script file="zhCN.lua"/>
     <Script file="zhTW.lua"/>
     <Script file="ptBR.lua"/>
+    <Script file="itIT.lua"/>
 
     <Script>
         local T = DecursiveRootTable or {};

@@ -11,6 +11,7 @@
 ## Notes-zhCN: @localization(locale="zhCN", key="ABOUT_NOTES")@
 ## Notes-zhTW: @localization(locale="zhTW", key="ABOUT_NOTES")@
 ## Notes-ptBR: @localization(locale="ptBR", key="ABOUT_NOTES")@
+## Notes-itIT: @localization(locale="itIT", key="ABOUT_NOTES")@
 
 ## X-Max-Interface: 50001
 ## X-Min-Interface: 40200
