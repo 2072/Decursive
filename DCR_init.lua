@@ -513,6 +513,23 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
 
     if T._tocversion >= 50000 then
 
+        -- Monks
+        DC.SpellsToUse[DS["SPELL_DETOX"]]               = {
+            Types = {DC.DISEASE, DC.POISON},
+            Better = 2,
+            Pet = false,
+        };
+
+        -- Monks
+        DC.SpellsToUse[DS["SPELL_DIFFUSEMAGIC"]]               = {
+            Types = {DC.MAGIC},
+            Better = 2,
+            Pet = false,
+            OnPlayerOnly = {
+                [DC.MAGIC]  = true,
+            },
+        };
+
         -- Paladins
         DC.SpellsToUse[DS["SPELL_CLEANSE"]]               = {
             Types = {DC.DISEASE, DC.POISON},
@@ -1275,6 +1292,10 @@ function D:Configure() --{{{
                     end
                 end
 
+                if spell.OnPlayerOnly then
+                    OnPlayerOnly = spell.OnPlayerOnly;
+                end
+
                 -- register it
                 for _, Type in pairs (Types) do
 
@@ -1417,12 +1438,13 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["PASSIVE_SACRED_CLEANSING"]    = {53551};
         Spells["TALENT_NATURES_CURE"]    = nil;
         Spells["SPELL_NATURES_CURE"]    = {88423};
+        Spells["SHROUD_OF_CONCEALMENT"]    = {115834}; -- rogue
+        Spells["SPELL_DETOX"]    = {115450}; -- monk
+        Spells["SPELL_DIFFUSEMAGIC"]    = {122783}; -- monk
 
         DS["SPELL_CURE_DISEASE"]        = '_LOST SPELL_';
         DS["PET_DOOM_CAST"]             = '_LOST SPELL_';
     end    
-
-    DC.ttest = Spells;
 
     -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (self revelation on 2011-02-25)
 
