@@ -518,12 +518,20 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Types = {DC.DISEASE, DC.POISON},
             Better = 2,
             Pet = false,
+
+            EnhancedBy = DS["PASSIVE_INTERNAL_MEDICINE"],
+            EnhancedByCheck = function ()
+                return (GetSpellBookItemInfo(DS["PASSIVE_INTERNAL_MEDICINE"])) and true or false;
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+            }
         };
 
         -- Monks
         DC.SpellsToUse[DS["SPELL_DIFFUSEMAGIC"]]               = {
             Types = {DC.MAGIC},
-            Better = 2,
+            Better = 0,
             Pet = false,
             OnPlayerOnly = {
                 [DC.MAGIC]  = true,
@@ -1436,6 +1444,7 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["TALENT_IMPROVED_CLEANSE_SPIRIT"] = nil; -- resto shaman
         Spells["TALENT_SACRED_CLEANSING"]    = nil;
         Spells["PASSIVE_SACRED_CLEANSING"]    = {53551};
+        Spells["PASSIVE_INTERNAL_MEDICINE"]    = {115451};
         Spells["TALENT_NATURES_CURE"]    = nil;
         Spells["SPELL_NATURES_CURE"]    = {88423};
         Spells["SHROUD_OF_CONCEALMENT"]    = {115834}; -- rogue
