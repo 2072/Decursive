@@ -397,7 +397,6 @@ do
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;
     local GetTime           = _G.GetTime;
-    local IsSpellInRange    = _G.IsSpellInRange;
 
     -- This local function only sets interesting values of UnitDebuff()
     local Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime;

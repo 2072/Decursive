@@ -1337,7 +1337,7 @@ do
     local profile = {};
 
     -- global access optimization
-    local IsSpellInRange    = _G.IsSpellInRange;
+    local IsSpellInRange    = D.IsSpellInRange;
     local UnitClass         = _G.UnitClass;
     local UnitExists        = _G.UnitExists;
     local UnitIsVisible     = _G.UnitIsVisible;
