@@ -1,5 +1,20 @@
-Decursive 2.7.1 (2012-08-30)
-============================
+Decursive 2.7.1.1 (2012-09-02)
+==============================
+
+
+Changes from Decursive 2.7.1 to Decursive 2.7.1.1 (2012-09-02)
+--------------------------------------------------------------
+
+- Enhancement to the debug reports.
+
+- Removed the 'Flame Shock' warning as 'Lava Flows' is gone. I leave the
+  'Vampiric Touch' warning for now since there is 'Sin and Punishment' (a Tier
+  6 Shadow priest talent).
+
+- Implemented a workaround for range detection until Blizzard fixes the API.
+
+- MoP: Detect 'Internal Medicine' talent for Monks
+
 
 Changes from Decursive 2.7.0.5 to Decursive 2.7.1 (2012-08-30)
 --------------------------------------------------------------
@@ -15,6 +30,7 @@ Changes from Decursive 2.7.0.5 to Decursive 2.7.1 (2012-08-30)
 - Other locals updated (Thanks to contributors!)
 
 - Miscellaneous unnoticeable changes.
+
 
 Changes from Decursive 2.7.0.4 to Decursive 2.7.0.5 (2012-02-05)
 ----------------------------------------------------------------
