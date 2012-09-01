@@ -123,6 +123,10 @@ L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please report the content of this window
 |cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r
 Also tell in your report if you noticed any strange behavior of Decursive.
 ]=]
+L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"] = [=[|cFF11FF33Decursive crashed but fear not! A NEW version of Decursive has been detected (%s). You simply need to update. Go to curse.com and search for 'Decursive' or use Curse's client, it'll update automatically all your beloved add-ons.|r
+|cFFFF1133So don't waste your time reporting this bug as it's probably been fixed already. Just update Decursive to get rid of this problem!|r
+|cFF11FF33Thanks for reading this!|r
+]=]
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
 L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = [=[A debug report is available!
 Type |cFFFF0000/DCRREPORT|r to see it.]=]

@@ -2941,32 +2941,79 @@ function D:QuickAccess (CallingObject, button) -- {{{
 
 end -- }}}
 
+do
+    local DebugHeader = false;
+    local HeaderFailOver = "|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
 
-local DebugHeader = false;
-function D:ShowDebugReport()
+    local function GetAddonListAsString ()
+        local addonCount = GetNumAddOns();
+        local loadedAddonList = {};
 
-    if DC.DevVersionExpired then
-        self:VersionWarnings();
-        return;
+        for addonID=1, addonCount do
+            local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(addonID)
+            if security == 'INSECURE' and IsAddOnLoaded(addonID) then
+                local version = GetAddOnMetadata(addonID, "Version");
+
+                table.insert(loadedAddonList, ("%s (%s)"):format(name, version or 'N/A'));
+
+            end
+        end
+
+        return table.concat(loadedAddonList, "\n");
     end
 
-    D:Debug(GetLocale());
+    local function setReportHeader()
 
-    if not DebugHeader then
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s (%s, %s, %s, %s)"):format((self.L) and self.L["DEBUG_REPORT_HEADER"] or "X|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n", -- "%s\n
+        local instructionsHeader;
+
+        if not D.db.global.NewerVersionName then
+            instructionsHeader = D.L and D.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
+        else
+            instructionsHeader = D.L and ((D.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(D.db.global.NewerVersionName)) or HeaderFailOver;
+            -- disable bug me not since the user _clearly_ took the wrong decision
+            D.db.global.NewVersionsBugMeNot = false;
+        end
+
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         DC.MyClass, tostring(UnitLevel("player") or "??"), D:NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
         T._NonDecursiveErrors, -- nDrE: %d
         tostring(T._EmbeddedMode), -- Embeded: %s
+        IsWindowsClient() and 1 or 0,
         GetBuildInfo()); --  (%s, %s, %s, %s)
     end
 
-    T._DebugText = DebugHeader .. table.concat(T._DebugTextTable, "");
-    _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
+    function D:ShowDebugReport()
 
-    _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
-    _G.DecursiveDebuggingFrame:Show();
+        if DC.DevVersionExpired then
+            self:VersionWarnings();
+            return;
+        end
+
+        local yourWastingMyTime = "";
+        if self.db.global.NewerVersionName then
+            yourWastingMyTime = L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"];
+        end
+
+        local headerSucess, hederGenErrorm;
+        -- D:Debug(GetLocale());
+        if not DebugHeader then
+            headerSucess, hederGenErrorm = pcall(setReportHeader);
+        else
+            headerSucess = true;
+        end
+
+        -- get running add-ons list
+
+        local success, errorm, loadedAddonList = pcall (GetAddonListAsString);
+
+        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm);
+        _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
+
+        _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
+        _G.DecursiveDebuggingFrame:Show();
+    end
 end
 
 T._LoadedFiles["Dcr_opt.lua"] = "@project-version@";
