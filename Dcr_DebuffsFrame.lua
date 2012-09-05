@@ -716,6 +716,7 @@ end
 -- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnLoad, OnPreClick) {{{
 -- It's outside the function to avoid creating and discarding this table at each call
 local UnitGUID = _G.UnitGUID;
+local GetSpellInfo = _G.GetSpellInfo;
 local TooltipButtonsInfo = {}; -- help tooltip text table
 local TooltipUpdate = 0; -- help tooltip change update check
 -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
@@ -851,7 +852,7 @@ function MicroUnitF:OnEnter(frame) -- {{{
 
             for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
                 TooltipButtonsInfo[Prio] =
-                str_format("%s: %s%s", D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                str_format("%s: %s%s", D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), (GetSpellInfo(Spell)), (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
             end
 
             t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));

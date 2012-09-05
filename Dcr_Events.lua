@@ -193,7 +193,7 @@ function D:UpdatePlayerPet () -- {{{
         if (curr_petType) then D:Debug ("|cFF0066FFPet name changed:",curr_petType,"|r"); else D:Debug ("|cFF0066FFNo more pet!|r"); end; -- debug info only
 
         last_petType = curr_petType;
-        D:Configure();
+        D:ReConfigure(); -- might no longer be required in MoP since spell changed event is more reliable
     else
         D:Debug ("|cFFAA66FFNo change in Pet Type",curr_petType,"|r");
     end
@@ -396,7 +396,7 @@ end
 
 function D:SPELLS_CHANGED()
     D:Debug("|cFFFF0000Spells were changed, scheduling a reconfiguration check|r");
-    self:ScheduleDelayedCall("Dcr_ReConfigureSlow", self.ReConfigure, 15, self);
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self); -- used to be 15s changed to 4 to be more reaactive for warlocks
 end
 
 function D:PLAYER_TALENT_UPDATE()

@@ -575,6 +575,21 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
             Pet = true,
         };
 
+        -- Warlocks (Imp singe magic ability when used with Grimoire of Sacrifice)
+        DC.SpellsToUse[DS["SPELL_COMMAND_DEMON"]]         = {
+            Types = {}, -- does nothing by default
+            Better = 1, -- the Imp takes time to disappear when sacrificed, during that interlude, Singe Magic is still there
+            Pet = false,
+
+            EnhancedBy = true,
+            EnhancedByCheck = function ()
+                return (GetSpellInfo(DS["SPELL_COMMAND_DEMON"]) == DS["SPELL_SINGE_MAGIC"]);
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC},
+            }
+        };
+
         -- Warlock
         DC.SpellsToUse[DS["SPELL_FEAR"]]    = {
             Types = {DC.CHARMED},
@@ -1196,10 +1211,12 @@ function D:ReConfigure() --{{{
         if (not spell.Pet and GetSpellInfo(spellName)) or (spell.Pet and GetSpellBookItemInfo(spellName)) then -- yes
             -- We had it but it's been disabled
             if spell.Disabled and D.Status.FoundSpells[spellName] then
+                D:Debug("D:ReConfigure:", spellName, 'has been disabled');
                 Reconfigure = true;
                 break;
                 -- is it new?
             elseif not spell.Disabled and not D.Status.FoundSpells[spellName] then -- yes
+                D:Debug("D:ReConfigure:", spellName, 'is new');
                 Reconfigure = true;
                 break;
             elseif spell.EnhancedBy then -- it's not new but there is an enhancement available...
@@ -1212,11 +1229,13 @@ function D:ReConfigure() --{{{
 
                 if spell.EnhancedByCheck() then -- we have it now
                     if not D.Status.FoundSpells[spellName][3] then -- but not then :)
+                        D:Debug("D:ReConfigure:", spellName, 'has an enhancement that was not available b4');
                         Reconfigure = true;
                         break;
                     end
                 else -- we do no not
                     if D.Status.FoundSpells[spellName][3] then -- but we used to :'(
+                        D:Debug("D:ReConfigure:", spellName, 'had an enhancement that is no longer available');
                         Reconfigure = true;
                         break;
                     end
@@ -1224,6 +1243,7 @@ function D:ReConfigure() --{{{
             end
 
         elseif D.Status.FoundSpells[spellName] then -- we don't have it anymore...
+            D:Debug("D:ReConfigure:", spellName, 'is no longer available');
             Reconfigure = true;
             break;
         end
@@ -1267,7 +1287,7 @@ function D:Configure() --{{{
 
     for spellName, spell in SpellIterator() do
         if not spell.Disabled then
-            self:Debug("trying spell", spellName);
+            -- self:Debug("trying spell", spellName);
             -- Do we have that spell?
             if (not spell.Pet and GetSpellInfo(spellName)) or (spell.Pet and GetSpellBookItemInfo(spellName)) then -- yes (both API because of MOP bug with Purify Spirit)
                 Types = spell.Types;
@@ -1305,11 +1325,11 @@ function D:Configure() --{{{
                 end
 
                 -- register it
+                self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better, spell.MacroText};
                 for _, Type in pairs (Types) do
 
                     if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
 
-                        self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better, spell.MacroText};
                         CuringSpells[Type] = spellName;
 
                         if OnPlayerOnly and OnPlayerOnly[Type] then
@@ -1450,6 +1470,8 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["SHROUD_OF_CONCEALMENT"]    = {115834}; -- rogue
         Spells["SPELL_DETOX"]    = {115450}; -- monk
         Spells["SPELL_DIFFUSEMAGIC"]    = {122783}; -- monk
+
+        Spells["SPELL_COMMAND_DEMON"]    = {119898}; -- warlock
 
         DS["SPELL_CURE_DISEASE"]        = '_LOST SPELL_';
         DS["PET_DOOM_CAST"]             = '_LOST SPELL_';
