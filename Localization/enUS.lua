@@ -271,8 +271,8 @@ L["OPT_CUSTOM_SPELL_MACRO_TEXT_DESC"] = [=[Edit the default macro text.
 L["OPT_CUSTOM_SPELL_MACRO_TOO_LONG"] = "Your macro is too long, you need to remove %d characters."
 L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority"
 L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred."
-L["OPT_CUSTOM_SPELL_STOPCASTING"] = "/StopCasting"
-L["OPT_CUSTOM_SPELL_STOPCASTING_DESC"] = "Using this spell will interrupt other spells in progress (uncheck that if the spell comes from a pet)"
+L["OPT_CUSTOM_SPELL_ISPET"] = "Pet ability"
+L["OPT_CUSTOM_SPELL_ISPET_DESC"] = "Check this if this is an ability belonging to one of your pets so Decursive can detect and cast it properly."
 L["OPT_CUSTOM_SPELL_UNAVAILABLE"] = "unavailable"
 L["OPT_DEBCHECKEDBYDEF"] = [=[
 

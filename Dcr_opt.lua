@@ -2701,21 +2701,22 @@ do
                 step = 1,
                 order = 110,
             },
-            stopcasting = {
+            
+            isPet = {
                 type = "toggle",
-                name = L["OPT_CUSTOM_SPELL_STOPCASTING"],
-                desc = L["OPT_CUSTOM_SPELL_STOPCASTING_DESC"];
+                name = L["OPT_CUSTOM_SPELL_ISPET"],
+                desc = L["OPT_CUSTOM_SPELL_ISPET_DESC"];
                 set = function(info,v)
-                    D.classprofile.UserSpells[info[#info-1]].Pet = not v;
+                    D.classprofile.UserSpells[info[#info-1]].Pet = v;
                     if GetSpellInfo(info[#info-1]) then
                         D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
                     end
                 end,
                 get = function(info,v)
-                    return not D.classprofile.UserSpells[info[#info-1]].Pet;
+                    return D.classprofile.UserSpells[info[#info-1]].Pet;
                 end,
-                hidden = function(info,v) return D.classprofile.UserSpells[info[#info-1]].MacroText end,
-                order = 115
+                -- hidden = function(info,v) return D.classprofile.UserSpells[info[#info-1]].MacroText end,
+                order = 112
             },
             MacroEdition = {
                 type = 'input',
