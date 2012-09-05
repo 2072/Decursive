@@ -106,8 +106,8 @@ L["BINDING_NAME_DCRSKADD"] = "Add target to skip list"
 L["BINDING_NAME_DCRSKCLEAR"] = "Clear the skip list"
 L["BINDING_NAME_DCRSKLIST"] = "Print the skip list"
 L["BINDING_NAME_DCRSKSHOW"] = "Show or hide the skip list"
-L["BLACKLISTED"] = "Black-listed"
 L["BLACK_LENGTH"] = "Seconds on the blacklist : "
+L["BLACKLISTED"] = "Black-listed"
 L["CHARM"] = "Charm"
 L["CLASS_HUNTER"] = "Hunter"
 L["CLEAR_PRIO"] = "C"
@@ -123,11 +123,11 @@ L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please report the content of this window
 |cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r
 Also tell in your report if you noticed any strange behavior of Decursive.
 ]=]
+L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
 L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"] = [=[|cFF11FF33Decursive crashed but fear not! A NEW version of Decursive has been detected (%s). You simply need to update. Go to curse.com and search for 'Decursive' or use Curse's client, it'll update automatically all your beloved add-ons.|r
 |cFFFF1133So don't waste your time reporting this bug as it's probably been fixed already. Just update Decursive to get rid of this problem!|r
 |cFF11FF33Thanks for reading this!|r
 ]=]
-L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
 L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = [=[A debug report is available!
 Type |cFFFF0000/DCRREPORT|r to see it.]=]
 L["DECURSIVE_DEBUG_REPORT_SHOW"] = "Debug report available!"
@@ -147,6 +147,7 @@ L["DISABLEWARNING"] = [=[Decursive has been disabled!
 To enable it again, type |cFFFFAA44/DCR ENABLE|r]=]
 L["DISEASE"] = "Disease"
 L["DONOT_BL_PRIO"] = "Don't blacklist priority list names"
+L["DONT_SHOOT_THE_MESSENGER"] = "Decursive is merely reporting the issue. So, don't shoot the messenger and address the actual problem."
 L["FAILEDCAST"] = [=[|cFF22FFFF%s %s|r |cFFAA0000failed on|r %s
 |cFF00AAAA%s|r]=]
 L["FOCUSUNIT"] = "Focus Unit"
@@ -164,9 +165,9 @@ He was in life as he was in game, selfless, generous, dedicated to his friends a
 He left us at the age of 38 leaving behind him not just anonymous players in a virtual world but, a group of true friends who will miss him forever.]=]
 L["GLOR5"] = "He will always be remembered..."
 L["HANDLEHELP"] = "Drag all the Micro-UnitFrames (MUFs)"
-L["HIDESHOW_BUTTONS"] = "Hide/Show buttons"
 L["HIDE_LIVELIST"] = "Hide the live-list"
 L["HIDE_MAIN"] = "Hide Decursive Window"
+L["HIDESHOW_BUTTONS"] = "Hide/Show buttons"
 L["HLP_LEFTCLICK"] = "Left-Click"
 L["HLP_LL_ONCLICK_TEXT"] = [=[The Live-List is not meant to be clicked. Please, read the documentation to learn how to use this add-on. Just search for 'Decursive' on WoWAce.com
 (To move this list move the Decursive bar, /dcrshow and left-alt-click to move)]=]
@@ -197,16 +198,15 @@ Go to |cFFFF0000WoWAce.com|r to get it!
 --------]=]
 L["NORMAL"] = "Normal"
 L["NOSPELL"] = "No spell available"
-L["OPTION_MENU"] = "Decursive Options Menu"
 L["OPT_ABOLISHCHECK_DESC"] = "select whether units with an active 'Abolish' spell are shown and cured"
 L["OPT_ABOUT"] = "About"
-L["OPT_ADDDEBUFF"] = "Add a custom affliction"
-L["OPT_ADDDEBUFFFHIST"] = "Add a recent affliction"
-L["OPT_ADDDEBUFFFHIST_DESC"] = "Add an affliction using the history"
-L["OPT_ADDDEBUFF_DESC"] = "Adds a new affliction to this list"
-L["OPT_ADDDEBUFF_USAGE"] = "<Affliction name>"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell"
 L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Click here and shift-click on a spell from your spell book. You can also directly write its name or its numeric ID."
+L["OPT_ADDDEBUFF"] = "Add a custom affliction"
+L["OPT_ADDDEBUFF_DESC"] = "Adds a new affliction to this list"
+L["OPT_ADDDEBUFFFHIST"] = "Add a recent affliction"
+L["OPT_ADDDEBUFFFHIST_DESC"] = "Add an affliction using the history"
+L["OPT_ADDDEBUFF_USAGE"] = "<Affliction name>"
 L["OPT_ADVDISP"] = "Advance display Options"
 L["OPT_ADVDISP_DESC"] = "Allow to set Transparency of the border and center separately, to set the space between each MUF"
 L["OPT_AFFLICTEDBYSKIPPED"] = "%s afflicted by %s will be skipped"
@@ -246,11 +246,6 @@ The green numbers represent the priority associated to each affliction type. Thi
 (To change the priorities, uncheck all the check boxes and then check them in order of the priority you want.)]=]
 L["OPT_CURINGORDEROPTIONS"] = "Affliction types and priorities"
 L["OPT_CURSECHECK_DESC"] = "If checked you'll be able to see and cure cursed units"
-L["OPT_CUSTOMSPELLS"] = "Custom spells"
-L["OPT_CUSTOMSPELLS_DESC"] = [=[Here you can add spells to extend Decursive's automatic configuration.
-Your custom spells always have a higher priority and will override and replace the default spells (if and only if your character can use those spells).
-]=]
-L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"] = "Effective spells assignments:"
 L["OPT_CUSTOM_SPELL_ALLOW_EDITING"] = "Allow macro editing (for advanced users only)"
 L["OPT_CUSTOM_SPELL_ALLOW_EDITING_DESC"] = [=[Check this if you want to edit the internal macro Decursive will use for your custom spell.
 
@@ -258,6 +253,8 @@ Note: Checking this allows you to modify spells managed by Decursive.
 (---For advanced users only---)]=]
 L["OPT_CUSTOM_SPELL_CURE_TYPES"] = "Affliction types"
 L["OPT_CUSTOM_SPELL_IS_DEFAULT"] = "This spell is part of Decursive's automatic configuration. If this spell is no longer working correctly, you can remove or disable it to regain default Decursive behaviour."
+L["OPT_CUSTOM_SPELL_ISPET"] = "Pet ability"
+L["OPT_CUSTOM_SPELL_ISPET_DESC"] = "Check this if this is an ability belonging to one of your pets so Decursive can detect and cast it properly."
 L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"] = "Warning: The spell %q is not present in your macro, range and cooldown information will not match..."
 L["OPT_CUSTOM_SPELL_MACRO_MISSING_UNITID_KEYWORD"] = "The UNITID keyword is missing."
 L["OPT_CUSTOM_SPELL_MACRO_TEXT"] = "Macro text:"
@@ -270,9 +267,16 @@ L["OPT_CUSTOM_SPELL_MACRO_TEXT_DESC"] = [=[Edit the default macro text.
 (keep that in mind if you plan on using different spells with conditionals)]=]
 L["OPT_CUSTOM_SPELL_MACRO_TOO_LONG"] = "Your macro is too long, you need to remove %d characters."
 L["OPT_CUSTOM_SPELL_PRIORITY"] = "Spell priority"
-L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = "When several spells can cure the same affliction types, those with a higher priority will be preferred."
-L["OPT_CUSTOM_SPELL_ISPET"] = "Pet ability"
-L["OPT_CUSTOM_SPELL_ISPET_DESC"] = "Check this if this is an ability belonging to one of your pets so Decursive can detect and cast it properly."
+L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = [=[When several spells can cure the same affliction types, those with a higher priority will be preferred.
+
+Note that default abilities managed by Decursive have a priority ranging from 0 to 9.
+
+Thus, if you give your custom spell a negative priority, it will only be chosen if the default ability is not available.]=]
+L["OPT_CUSTOMSPELLS"] = "Custom spells"
+L["OPT_CUSTOMSPELLS_DESC"] = [=[Here you can add spells to extend Decursive's automatic configuration.
+Your custom spells always have a higher priority and will override and replace the default spells (if and only if your character can use those spells).
+]=]
+L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"] = "Effective spells assignments:"
 L["OPT_CUSTOM_SPELL_UNAVAILABLE"] = "unavailable"
 L["OPT_DEBCHECKEDBYDEF"] = [=[
 
@@ -288,10 +292,10 @@ L["OPT_DISABLEMACROCREATION_DESC"] = "Decursive macro will no longer be created 
 L["OPT_DISEASECHECK_DESC"] = "If checked you'll be able to see and cure diseased units"
 L["OPT_DISPLAYOPTIONS"] = "Display options"
 L["OPT_DONOTBLPRIO_DESC"] = "Prioritized units won't be blacklisted"
+L["OPT_ENABLE_A_CUSTOM_SPELL"] = "Enable"
 L["OPT_ENABLEDEBUG"] = "Enable Debugging"
 L["OPT_ENABLEDEBUG_DESC"] = "Enable Debugging output"
 L["OPT_ENABLEDECURSIVE"] = "Enable Decursive"
-L["OPT_ENABLE_A_CUSTOM_SPELL"] = "Enable"
 L["OPT_FILTEROUTCLASSES_FOR_X"] = "%q will be ignored on the specified classes while you are in combat."
 L["OPT_GENERAL"] = "General options"
 L["OPT_GROWDIRECTION"] = "Reverse MUFs Display"
@@ -311,6 +315,7 @@ L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Spell already listed!"
 L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive already manage this spell. Shift-click the spell or type its ID to add a special rank."
 L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID!"
 L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found in your spell book!"
+L["OPTION_MENU"] = "Decursive Options Menu"
 L["OPT_LIVELIST"] = "Live list"
 L["OPT_LIVELIST_DESC"] = "Options for the live list"
 L["OPT_LLALPHA"] = "Live-list transparency"
@@ -394,30 +399,30 @@ L["OPT_SCANLENGTH_DESC"] = "Defines the time between each scan"
 L["OPT_SHOWBORDER"] = "Show the class-colored borders"
 L["OPT_SHOWBORDER_DESC"] = "A colored border will be displayed around the MUFs representing the unit's class"
 L["OPT_SHOWCHRONO"] = "Show chronometers"
+L["OPT_SHOWCHRONO_DESC"] = "The number of seconds elapsed since a unit has been afflicted is displayed"
 L["OPT_SHOWCHRONOTIMElEFT"] = "Time left"
 L["OPT_SHOWCHRONOTIMElEFT_DESC"] = "Display time left instead of time elapsed."
-L["OPT_SHOWCHRONO_DESC"] = "The number of seconds elapsed since a unit has been afflicted is displayed"
 L["OPT_SHOWHELP"] = "Show help"
 L["OPT_SHOWHELP_DESC"] = "Shows an detailed tooltip when you mouse-over a micro-unit-frame"
 L["OPT_SHOWMFS"] = "Show the Micro Units Frame"
 L["OPT_SHOWMFS_DESC"] = "This must be enabled if you want to cure by clicking"
 L["OPT_SHOWMINIMAPICON"] = "Minimap Icon"
 L["OPT_SHOWMINIMAPICON_DESC"] = "Toggle the minimap icon."
-L["OPT_SHOWTOOLTIP_DESC"] = "Shows a detailed tooltips about curses in the live-list and on the MUFs"
 L["OPT_SHOW_STEALTH_STATUS"] = "Show stealth status"
 L["OPT_SHOW_STEALTH_STATUS_DESC"] = "When a player is stealthed, his MUF will take a special color"
+L["OPT_SHOWTOOLTIP_DESC"] = "Shows a detailed tooltips about curses in the live-list and on the MUFs"
 L["OPT_STICKTORIGHT"] = "Align MUF window to the right"
 L["OPT_STICKTORIGHT_DESC"] = "The MUF window will grow from right to left, the handle will be moved as necessary."
 L["OPT_TESTLAYOUT"] = "Test Layout"
-L["OPT_TESTLAYOUTUNUM"] = "Unit number"
-L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create."
 L["OPT_TESTLAYOUT_DESC"] = [=[Create fake units so you can test the display layout.
 (Wait a few seconds after clicking)]=]
+L["OPT_TESTLAYOUTUNUM"] = "Unit number"
+L["OPT_TESTLAYOUTUNUM_DESC"] = "Set the number of fake units to create."
 L["OPT_TIECENTERANDBORDER"] = "Tie center and border transparency"
 L["OPT_TIECENTERANDBORDER_OPT"] = "The transparency of the border is half the center transparency when checked"
+L["OPT_TIE_LIVELIST_DESC"] = "The live-list display is tied to \"Decursive\" bar display"
 L["OPT_TIEXYSPACING"] = "Tie horizontal and vertical spacing"
 L["OPT_TIEXYSPACING_DESC"] = "The horizontal and vertical space between MUFs are the same"
-L["OPT_TIE_LIVELIST_DESC"] = "The live-list display is tied to \"Decursive\" bar display"
 L["OPT_UNITPERLINES"] = "Number of units per row"
 L["OPT_UNITPERLINES_DESC"] = "Defines the max number of micro-unit-frames to display per row"
 L["OPT_USERDEBUFF"] = "This affliction is not part of Decursive's default afflictions"
@@ -456,12 +461,11 @@ L["SUCCESSCAST"] = "|cFF22FFFF%s %s|r |cFF00AA00succeeded on|r %s"
 L["TARGETUNIT"] = "Target Unit"
 L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
+L["TOO_MANY_ERRORS_ALERT"] = [=[There are too many Lua errors in your User Interface (%d). Your game experience is currently degraded. Disable or update the failing add-ons to turn off this message and regain a proper frame rate.
+You may want to turn on Lua error reporting ('Help' section of World of Warcraft's interface options) to identify the problematic add-ons.]=]
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
 
-L["TOO_MANY_ERRORS_ALERT"] = [[There are too many Lua errors in your User Interface (%d). Your game experience is currently degraded. Disable or update the failing add-ons to turn off this message and regain a proper frame rate.
-You may want to turn on Lua error reporting ('Help' section of World of Warcraft's interface options) to identify the problematic add-ons.]]
-L["DONT_SHOOT_THE_MESSENGER"] = "Decursive is merely reporting the issue. So, don't shoot the messenger and address the actual problem."
 
 --]==]
 --@end-do-not-package@

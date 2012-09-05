@@ -2694,8 +2694,6 @@ do
                         D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
                     end
                 end,
-                softMin = 10,
-                softMax = 30,
                 min = -10,
                 max = 30,
                 step = 1,
