@@ -1755,7 +1755,8 @@ function D:ExportOptions ()
     LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  GetOptions, 'dcr');
 
     
-    
+    -- Don't feed the interface option panel until Blizz fixes the taint issue...
+    --[=[ 
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, D.name, nil, "general");
 
     local SubGroups_ToBlizzOptions = {
@@ -1772,6 +1773,7 @@ function D:ExportOptions ()
     for key,values in ipairs(SubGroups_ToBlizzOptions) do
         LibStub("AceConfigDialog-3.0"):AddToBlizOptions(D.name, values[1], D.name, values[2]);
     end
+    --]=]
 end
 
 
