@@ -624,12 +624,14 @@ function D:GetTimersNumber()
             dcrcount = dcrcount + 1;
         end
     end
-    local acetimercount = 0;
-    local Acetimer = LibStub("AceTimer-3.0");
-    for table in pairs(Acetimer.selfs[D]) do
-        acetimercount = acetimercount + 1;
+    local timercount = 0;
+    local ShefkiTimer = LibStub("LibShefkiTimer-1.0");
+    --local Acetimer = LibStub("AceTimer-3.0");
+    for table in pairs(ShefkiTimer.selfs[D]) do
+        timercount = timercount + 1;
     end
-    return "Dcr says: " .. dcrcount .. ", AceTimers says: " .. acetimercount;
+    return "Dcr says: " .. dcrcount .. ", LibShefkiTimer says: " .. timercount;
+    --return "Dcr says: " .. dcrcount .. ", AceTimers says: " .. timercount;
 end
 
 -- /echo LibStub("AceTimer-3.0").selfs[Dcr]

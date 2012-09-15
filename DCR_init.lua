@@ -46,7 +46,7 @@ if not T._LoadedFiles or not T._LoadedFiles["enUS.lua"] then
     return;
 end
 
-T.Dcr         = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
+T.Dcr         = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "LibShefkiTimer-1.0", "AceHook-3.0");
 --@debug@
 --Dcr = T.Dcr; -- needed until we get rid of the xml based UI.
 --@end-debug@
