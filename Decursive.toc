@@ -23,7 +23,7 @@
 
 ## X-License: All Rights Reserved
 
-## OptionalDeps: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
+## OptionalDeps: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, LibShefkiTimer-1.0, !BugGrabber
 
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Class: Mage, Priest, Paladin, Druid, Hunter, Warlock, Shaman
