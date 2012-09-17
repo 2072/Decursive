@@ -1041,6 +1041,12 @@ do
     local GetTalentInfo      = _G.GetTalentInfo;
 
     local function CheckTalentsAvaibility_MOP() -- {{{
+
+
+        if not (UnitGUID("player")) then
+            return false;
+        end
+
         local playerLevel = UnitLevel("player");
 
         -- no talents before level 15, so if we know the level (>0) and it's
@@ -1050,7 +1056,7 @@ do
         end
 
         -- if we know that there are unspet talents, it means we can check for
-        -- for them
+        -- them
         if GetNumUnspentTalents() then
             return true;
         end
