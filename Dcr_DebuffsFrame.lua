@@ -124,7 +124,6 @@ local fmod              = _G.math.fmod;
 local UnitIsUnit        = _G.UnitIsUnit;
 local str_upper         = _G.string.upper;
 local InCombatLockdown  = _G.InCombatLockdown;
-local UnitAura          = _G.UnitAura;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 
 
@@ -251,7 +250,7 @@ function MicroUnitF:ResetAllPositions () -- {{{
         D:Debug("Resetting all MF position", 'perRow:', D.profile.DebuffsFramePerline, '#Unit_Array:', #Unit_Array);
 
         for i=1, #Unit_Array do
-            MF = self.ExistingPerUNIT[ Unit_Array[i] ]
+            local MF = self.ExistingPerUNIT[ Unit_Array[i] ]
 
             if MF then
                 MF.Frame:SetPoint(unpack(self:GetMUFAnchor(i)));
