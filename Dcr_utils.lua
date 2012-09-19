@@ -235,8 +235,7 @@ function D:tremovebyval(tab, val) -- {{{
 end -- }}}
 
 function D:tcheckforval(tab, val) -- {{{
-    local k;
-    local v;
+    local k, v;
     if tab then
         for k,v in pairs(tab) do
             if v==val then

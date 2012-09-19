@@ -393,7 +393,7 @@ do
 
     local D                 = D;
 
-    local UnitAura          = _G.UnitAura;
+    local UnitDebuff        = _G.UnitDebuff;
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;
     local GetTime           = _G.GetTime;
@@ -410,7 +410,7 @@ do
 
         --    Name, Rank, Texture, Applications, TypeName, duration, ExpirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
 
-        Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime = UnitAura(Unit, i, "HARMFUL");
+        Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime = UnitDebuff (Unit, i);
 
         if Name then
             return true;
@@ -705,6 +705,9 @@ do
     local Debuffs               = {}; local IsCharmed = false; local Unit; local MUF; local IsDebuffed = false; local IsMUFDebuffed = false; local CheckStealth = false;
     local NoScanStatuses        = false;
     local band                  = _G.bit.band;
+    --@debug@
+    --local debugprofilestop = _G.debugprofilestop;
+    --@end-debug@
     function D:ScanEveryBody()
 
         if not NoScanStatuses then
@@ -715,7 +718,7 @@ do
         local CheckStealth = self.profile.Show_Stealthed_Status;
 
         --@debug@
-        local start = GetTime();
+        --local start = debugprofilestop();
         --@end-debug@
 
         while UnitArray[i] do
@@ -753,7 +756,7 @@ do
             i = i + 1;
         end
         --@debug@
-        --D:Debug("|cFF777777Scanning everybody...", i - 1, "units scanned in ", GetTime() - start, "seconds|r");
+        --D:Debug("|cFF777777Scanning everybody...", i - 1, "units scanned in ", debugprofilestop() - start, "miliseconds|r");
         --@end-debug@
     end
 
@@ -782,60 +785,33 @@ do
 
 end
 
-local UnitBuffsCache    = {};
+--local UnitBuffsCache    = {};
 
--- this function returns true if one of the debuff(s) passed to it is found on the specified unit
-function D:CheckUnitForBuffs(Unit, BuffNamesToCheck) --{{{
+do
+    local UnitBuff = _G.UnitBuff;
 
-    -- --[=[
-    if (not UnitBuffsCache[Unit]) then
-        UnitBuffsCache[Unit] = {};
-    end
+    -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
+    function D:CheckUnitForBuffs(unit, BuffNamesToCheck) --{{{
 
-    local UnitBuffs     = UnitBuffsCache[Unit];
-    local i             = 1;
-    local buff_name     = "";
 
-    -- Get all the unit's buffs
-    while true do
+        if type(BuffNamesToCheck) == "string" then
 
-        buff_name = UnitBuff(Unit, i)
-
-        if not buff_name then
-            break;
-        end
-
-        UnitBuffs[i] = buff_name;
-        i = i + 1;
-    end
-
-    while UnitBuffs[i] do -- clean the rest of the cache
-        UnitBuffs[i] = false;
-        i = i + 1;
-    end
-    --]=]
-
-    if type(BuffNamesToCheck) ~= "table" then
-
-        if self:tcheckforval(UnitBuffs, BuffNamesToCheck) then
-            return true;
+            return (UnitBuff(unit, BuffNamesToCheck)) and true or false;
+         
         else
-            return false;
-        end
-    else
-        local Buff;
-        for _, Buff in pairs(BuffNamesToCheck) do
+            for buff in pairs(BuffNamesToCheck) do
 
-            if self:tcheckforval(UnitBuffs, Buff) then
-                return true;
+                if UnitBuff(unit, buff) then
+                    return true;
+                end
+
             end
-
         end
-    end
 
-    return false;
+        return false;
 
-end --}}}
+    end --}}}
+end
 
 
 D.Stealthed_Units = {};
@@ -845,12 +821,13 @@ do
 
     if DC.MOP then
         table.insert(Stealthed, DS["SHROUD_OF_CONCEALMENT"])
+        table.insert(Stealthed, DS['Greater Invisibility'])
     end
 
     DC.IsStealthBuff = D:tReverse(Stealthed);
 
-    function D:CheckUnitStealth(Unit)
-        if self:CheckUnitForBuffs(Unit, Stealthed) then
+    function D:CheckUnitStealth(unit)
+        if self:CheckUnitForBuffs(unit, DC.IsStealthBuff) then
             --      self:Debug("Sealth found !");
             return true;
         end

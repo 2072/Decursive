@@ -897,7 +897,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     self:RegisterMessage("DECURSIVE_TALENTS_AVAILABLE");
 
-    D:ScheduleRepeatedCall("ScheduledTasks", D.ScheduledTasks, 0.2, D);
+    D:ScheduleRepeatedCall("ScheduledTasks", D.ScheduledTasks, 0.3, D);
 
     -- Configure specific profile dependent data
     D:SetConfiguration();
@@ -925,6 +925,7 @@ function D:SetConfiguration()
     D.DcrFullyInitialized = false;
     D:CancelDelayedCall("Dcr_LLupdate");
     D:CancelDelayedCall("Dcr_MUFupdate");
+    D:CancelDelayedCall("Dcr_ScanEverybody");
 
     D.Groups_datas_are_invalid = true;
     D.Status = {};
@@ -996,6 +997,7 @@ function D:SetConfiguration()
 
     if D.profile.ShowDebuffsFrame then
         self:ScheduleRepeatedCall("Dcr_MUFupdate", self.DebuffsFrame_Update, self.profile.DebuffsFrameRefreshRate, self);
+        self:ScheduleRepeatedCall("Dcr_ScanEverybody", self.ScanEveryBody, 1, self);
     end
 
     D.DcrFullyInitialized = true; -- everything should be OK
@@ -1472,6 +1474,7 @@ function D:GetSpellsTranslations(FromDIAG)
         Spells["SPELL_DIFFUSEMAGIC"]    = {122783}; -- monk
 
         Spells["SPELL_COMMAND_DEMON"]    = {119898}; -- warlock
+        Spells['Greater Invisibility']         = {110959};
 
         DS["SPELL_CURE_DISEASE"]        = '_LOST SPELL_';
         DS["PET_DOOM_CAST"]             = '_LOST SPELL_';

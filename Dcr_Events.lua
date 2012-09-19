@@ -250,29 +250,31 @@ local LastScanAllTime = 0;
 D.Status.MaxConcurentUpdateDebuff = 0;
 function D:ScheduledTasks() -- {{{
 
-    if not D.DcrFullyInitialized then
-        D:Debug("|cFFFF0000D:ScheduledTasks aborted, init uncomplete!|r");
+    if not self.DcrFullyInitialized then
+        self:Debug("|cFFFF0000D:ScheduledTasks aborted, init uncomplete!|r");
         return;
     end
 
+    local status = self.Status;
+
     -- clean up the blacklist
-    for unit in pairs(self.Status.Blacklisted_Array) do
-        self.Status.Blacklisted_Array[unit] = self.Status.Blacklisted_Array[unit] - 0.1;
-        if (self.Status.Blacklisted_Array[unit] < 0) then
-            self.Status.Blacklisted_Array[unit] = nil; -- remove it from the BL
+    for unit in pairs(status.Blacklisted_Array) do
+        status.Blacklisted_Array[unit] = status.Blacklisted_Array[unit] - 0.3;
+        if (status.Blacklisted_Array[unit] < 0) then
+            status.Blacklisted_Array[unit] = nil; -- remove it from the BL
         end
     end
 
-    if (self.Status.Combat and not InCombatLockdown()) then -- just in case...
-        D:LeaveCombat();
+    if status.Combat and not InCombatLockdown() then -- just in case...
+        self:LeaveCombat();
     end
 
-    if (not InCombatLockdown() and self.Status.DelayedFunctionCallsCount > 0) then
-        for Id, FuncAndArgs in pairs (self.Status.DelayedFunctionCalls) do
-            D:Debug("Running post combat command", Id);
+    if (not InCombatLockdown() and status.DelayedFunctionCallsCount > 0) then
+        for Id, FuncAndArgs in pairs (status.DelayedFunctionCalls) do
+            self:Debug("Running post combat command", Id);
             local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
-            self.Status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
-            self.Status.DelayedFunctionCallsCount = self.Status.DelayedFunctionCallsCount - 1;
+            status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
+            status.DelayedFunctionCallsCount = status.DelayedFunctionCallsCount - 1;
             if (DidSmth) then
                 break;
             end
@@ -280,17 +282,20 @@ function D:ScheduledTasks() -- {{{
     end
 
 
-    if D.DebuffUpdateRequest > D.Status.MaxConcurentUpdateDebuff then
-        D.Status.MaxConcurentUpdateDebuff = D.DebuffUpdateRequest;
+    if self.DebuffUpdateRequest > status.MaxConcurentUpdateDebuff then
+        status.MaxConcurentUpdateDebuff = self.DebuffUpdateRequest;
     end
 
+    self.DebuffUpdateRequest = 0;
+
     -- Rescan all only if the MUF are used else we don't care at all...
+    --[=[
     if self.profile.ShowDebuffsFrame and GetTime() - LastScanAllTime > 1 then
         self:ScanEveryBody();
         LastScanAllTime =  GetTime();
     end
+    --]=]
 
-    D.DebuffUpdateRequest = 0;
 
 end --}}}
 
@@ -433,7 +438,7 @@ local SeenUnitEventsCOMBAT = {};
 
 do
     local FAR           = DC.FAR;
-    local UnitAura      = _G.UnitAura;
+    local UnitDebuff    = _G.UnitDebuff;
     local UnitGUID      = _G.UnitGUID;
     local UnitIsCharmed = _G.UnitIsCharmed;
     local time          = _G.time;
@@ -508,7 +513,7 @@ do
                 end
 
                 -- get out of here if this is just about a fucking buff, combat log event manager handles those... unless there is no debuff because the last was removed
-                if not UnitAura(UnitID, 1, "HARMFUL") and not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed then
+                if not UnitDebuff(UnitID, 1) and not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed then
                     --self:Debug(UnitID, " |cFFFF7711has no debuff|r (UNIT_AURA)");
                     return;
                 end
@@ -630,7 +635,7 @@ do -- Combat log event handling {{{1
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units[UnitID] = true;
                         else
-                            if self.debug then D:Debug("STEALTH LOST: ", UnitID, spellNAME); end
+                            if self.debug then self:Debug("STEALTH LOST: ", UnitID, spellNAME); end
                             self.Stealthed_Units[UnitID] = false;
                         end
                         self.MicroUnitF:UpdateMUFUnit(UnitID);
@@ -638,14 +643,14 @@ do -- Combat log event handling {{{1
                 else
 
                     --@debug@
-                    if self.debug then D:Debug("Debuff, UnitId: ", UnitID, spellNAME, event, time() + (GetTime() % 1), timestamp, "destName:", destName, destFlags, band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET); end
+                    if self.debug then self:Debug("Debuff, UnitId: ", UnitID, spellNAME, event, time() + (GetTime() % 1), timestamp, "destName:", destName, destFlags, band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET); end
                     --@end-debug@
 
                     if self.profile.ShowDebuffsFrame then
                         self.MicroUnitF:UpdateMUFUnit(UnitID);
 
                     elseif not self.profile.HideLiveList then
-                        if self.debug then D:Debug("(LiveList) Registering delayed GetDebuff for ", destName); end
+                        if self.debug then self:Debug("(LiveList) Registering delayed GetDebuff for ", destName); end
                         self.LiveList:DelayedGetDebuff(UnitID);
                     end
 
@@ -658,7 +663,7 @@ do -- Combat log event handling {{{1
 
             if self.Status.TargetExists and band (destFlags, FRIENDLY_TARGET) == FRIENDLY_TARGET then -- {{{3 -- warning: this test is not triggered by the dumy debuff
 
-                if self.debug then D:Debug("A Target got something (source=", sourceName, "sFlags:", D:NumToHexStr(sourceFlags), "(dest=|cFF00AA00", destName, "dFlags:", D:NumToHexStr(destFlags), "|r, |cffff0000", event, "|r, |cFF00AAAA", spellNAME, "|r", auraTYPE_failTYPE); end
+                if self.debug then self:Debug("A Target got something (source=", sourceName, "sFlags:", self:NumToHexStr(sourceFlags), "(dest=|cFF00AA00", destName, "dFlags:", self:NumToHexStr(destFlags), "|r, |cffff0000", event, "|r, |cFF00AAAA", spellNAME, "|r", auraTYPE_failTYPE); end
 
                 self.LiveList:DelayedGetDebuff("target");
 
@@ -667,7 +672,7 @@ do -- Combat log event handling {{{1
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units["target"] = true;
                         else
-                            if self.debug then D:Debug("TARGET STEALTH LOST: ", "target", spellNAME); end
+                            if self.debug then self:Debug("TARGET STEALTH LOST: ", "target", spellNAME); end
                             self.Stealthed_Units["target"] = false;
                         end
                     end
@@ -679,13 +684,13 @@ do -- Combat log event handling {{{1
 
             if self.Status.ClickCastingWIP then
                 self.Status.ClickedMF.CastingSpell = spellNAME;
-                D:Debug("clickcastWIP caught: ", spellNAME);
+                self:Debug("clickcastWIP caught: ", spellNAME);
             end
 
 
             if event == "SPELL_CAST_SUCCESS" then
 
-                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), D:MakePlayerName(destName)); end
+                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), self:MakePlayerName(destName)); end
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
                 self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);
@@ -702,10 +707,10 @@ do -- Combat log event handling {{{1
 
             end
 
-            if event == "SPELL_CAST_FAILED" and not D.Status.ClickedMF.SPELL_CAST_SUCCESS then
+            if event == "SPELL_CAST_FAILED" and not self.Status.ClickedMF.SPELL_CAST_SUCCESS then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                D:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), D:MakePlayerName(destName), auraTYPE_failTYPE);
+                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), self:MakePlayerName(destName), auraTYPE_failTYPE);
 
                 if (auraTYPE_failTYPE == SPELL_FAILED_LINE_OF_SIGHT or auraTYPE_failTYPE == SPELL_FAILED_BAD_TARGETS) then
 
@@ -726,18 +731,18 @@ do -- Combat log event handling {{{1
             elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                D:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), D:MakePlayerName(destName), auraTYPE_failTYPE);
+                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), self:MakePlayerName(destName), auraTYPE_failTYPE);
                 PlaySoundFile(DC.FailedSound, "Master");
                 self.Status.ClickedMF = false;
                 --@alpha@
-                -- D:AddDebugText("sanitycheck ", event, spellNAME); -- It works!
+                -- self:AddDebugText("sanitycheck ", event, spellNAME); -- It works!
                 --@end-alpha@
             end
             --  }}}
             --@debug@
         elseif self.debug and event then
 
-            --D:Debug("event:", event, "self.Status.ClickedMF.CastingSpell", self.Status.ClickedMF and self.Status.ClickedMF.CastingSpell, "band(sourceFlags, ME) ~= 0", band(sourceFlags, ME) ~= 0, "self.Status.ClickCastingWIP", self.Status.ClickCastingWIP);
+            --self:Debug("event:", event, "self.Status.ClickedMF.CastingSpell", self.Status.ClickedMF and self.Status.ClickedMF.CastingSpell, "band(sourceFlags, ME) ~= 0", band(sourceFlags, ME) ~= 0, "self.Status.ClickCastingWIP", self.Status.ClickCastingWIP);
 
 
             --@end-debug@

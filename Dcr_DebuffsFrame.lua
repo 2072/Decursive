@@ -1151,7 +1151,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
         if (not SkipDebuffs) then
             -- get the manageable debuffs of this unit
             MF:SetDebuffs();
-            D:Debug("Debuff set for ", MF.ID);
+            --D:Debug("Debuff set for ", MF.ID);
             if CheckStealth then
                 D.Stealthed_Units[MF.CurrUnit] = D:CheckUnitStealth(MF.CurrUnit); -- update stealth status
                 --              D:Debug("MF:Update(): Stealth status checked as requested.");

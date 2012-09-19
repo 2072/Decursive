@@ -1974,8 +1974,10 @@ function D:ShowHideDebuffsFrame ()
 
     if (not D.profile.ShowDebuffsFrame) then
         D:CancelDelayedCall("Dcr_MUFupdate");
+        D:CancelDelayedCall("Dcr_ScanEverybody");
     else
         D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
+        self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, 1, D);
     end
 
     -- set Icon
