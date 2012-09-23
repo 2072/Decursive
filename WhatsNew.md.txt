@@ -1,5 +1,46 @@
-Decursive 2.7.1.1 (2012-09-02)
-==============================
+Decursive 2.7.2 (2012-09-23)
+============================
+
+
+I would like to dedicate this release of Decursive to the memory of Patrick Bohnet
+who passed away on the 29th of July. He was better known as Quu and was
+the original author and maintainer of Decursive from 2005 till April 2006.
+
+I want to thank him for the great opportunity he gave me to work on Decursive, a 
+program still useful to hundreds of thousands of people today.
+
+A thread dedicated to his memory can be found here: http://us.battle.net/wow/en/forum/topic/6232743291
+
+
+Changes from Decursive 2.7.1.1 to Decursive 2.7.2 (2012-09-23)
+--------------------------------------------------------------
+
+
+- Decursive no longer adds its settings to Blizzard's Interface Options UI (in
+  order to avoid the massive UI tainting it caused...). I've made a (useless?)
+  bug report on the EU MoP beta forum that might need a bump: http://eu.battle.net/wow/en/forum/topic/5300140681#1
+
+  So until Blizzard fixes this bug you can still access Decursive's option
+  through the MUF's handle or by typing /Decursive
+
+- Added automatic management of the 'Command Demon' Warlock's spell that can be
+  used to cast 'Singe Magic' using 'Grimmoire of Sacrifice' on the Imp.
+
+- Renamed the 'Stop casting' check box in the customs spells' options to 'Pet
+  ability' as it's what it really is. Prior MoP, adding /StopCasting or not at
+  the top of the macro was the only effect of this option (hence its former name)
+  but now, Decursive needs to know where to look for the spell in order to detect
+  it properly.
+
+- Allow the user to change the priority of her custom spells from -10 to +30
+  (this possibility is no longer restricted to 10-30). This allows the user to
+  configure spells that will only take over when a default ability is not
+  available (default abilities having a priority between 0 and 10).
+
+- Replaced AceTimer-3.0 with LibShefkiTimer-1.0 to fix random 'Script ran too
+  long' issues happening with AceTimer's current implementation.
+
+- Minors fixes and optimizations.
 
 
 Changes from Decursive 2.7.1 to Decursive 2.7.1.1 (2012-09-02)
