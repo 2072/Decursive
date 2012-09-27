@@ -22,15 +22,33 @@
 -------------------------------------------------------------------------------
 
 
+
+
+local _G                = _G;
+local GetFramerate      = _G.GetFramerate;
+local GetNetStats       = _G.GetNetStats;
+local GetRealZoneText   = _G.GetRealZoneText;
+local tostring          = _G.tostring;
+local tonumber          = _G.tonumber;
+local select            = _G.select;
+local table             = _G.table;
+local GetTime           = _G.GetTime;
+local strjoin           = _G.strjoin;
+local GetCVarBool       = _G.GetCVarBool;
+
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI.
 
 DecursiveInstallCorrupted     = false;
 
-T._C = {};
-local DC = T._C;
+T._C                    = {};
+T._DebugTextTable       = {};
+T._DebugText            = "";
 
-DC.StartTime = GetTime();
+local DC                = T._C;
+local DebugTextTable    =  T._DebugTextTable;
+local Reported          = {};
+
 
 if DecursiveInEmbeddedMode == nil then
     T._EmbeddedMode = "unknown";
@@ -73,6 +91,7 @@ T._LoadedFiles = {
     
 };
 
+
 -- This self diagnostic functionality is here to give clear instructions to the
 -- user when something goes wrong with the Ace shared libraries or when a
 -- Decursive file could not be loaded.
@@ -91,6 +110,8 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     preferredIndex = 3,
     }; -- }}}
 T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+
+DC.StartTime = GetTime();
 
 -- Decursive LUA error manager and debug reporting functions {{{
 
@@ -112,7 +133,6 @@ local function tostring_args(a1, ...)
         return tostring(a1), tostring_args(...)
 end
 
-T._DebugText = "";
 -- inspired from BugSack
 function T._DebugFrameOnTextChanged(frame)
     if frame:GetText() ~= T._DebugText then
@@ -126,13 +146,8 @@ function T._DebugFrameOnTextChanged(frame)
     end
 end
 
-T._DebugTextTable = {};
-local  _G =  _G;
-local DebugTextTable = T._DebugTextTable;
-local Reported = {};
-local GetFramerate = _G.GetFramerate;
-local GetNetStats = _G.GetNetStats;
-local GetRealZoneText = _G.GetRealZoneText;
+
+
 function T._AddDebugText(a1, ...)
 
     if T.Dcr.Debug then
@@ -161,16 +176,14 @@ local AddDebugText = T._AddDebugText;
 
 -- The error handler
 
+-- used to prevent loops if our own error handler crashes
 local IsReporting = false;
 
 T._NonDecursiveErrors = 0;
 T._TaintingAccusations = 0;
 T._ErrorLimitStripped = false;
 
--- ADDON_ACTION_FORBIDDEN
--- ADDON_ACTION_BLOCKED
 local InCombatLockdown  = _G.InCombatLockdown;
-local type = _G.type;
 function T._onError(event, errorObject)
     local errorm = errorObject.message;
     local mine = false;
@@ -202,7 +215,7 @@ function T._onError(event, errorObject)
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
             T._TaintingAccusations = T._TaintingAccusations + 1;
             T.Dcr:Debug("False tainting accusation put under the carpet");
-            return; -- bury it under the carpet since it's blaming the wrong add-ons and mislead the users.
+            return; -- bury it under the carpet since it's blaming the wrong add-on and misleading the users.
         end
     else
         T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
@@ -216,11 +229,9 @@ function T._onError(event, errorObject)
                 if T.Dcr.AddDelayedFunctionCall then
                     T.Dcr:AddDelayedFunctionCall('Load_Blizzard_DebugTools', _G.LoadAddOn, 'Blizzard_DebugTools');
 
-                    --@alpha@
                     T.Dcr:Debug("Blizzard_DebugTools load has been delayed because InCombatLockdown");
                 else
                     T.Dcr:Debug("Blizzard_DebugTools load has been cancelled because InCombatLockdown");
-                    --@end-alpha@
                 end
                 return;
             end
@@ -250,7 +261,7 @@ end
 
 local ProperErrorHandler = false;
 
-local version, build, date, tocversion = GetBuildInfo();
+local _, _, _, tocversion = GetBuildInfo();
 
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
@@ -323,6 +334,8 @@ function T._TooManyErrors()
         T.Dcr:Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
         WarningDisplayed = true;
     end
+
+    T.Dcr:Debug("Error handler disabled");
 end
 
 function T._HookErrorHandler()

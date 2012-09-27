@@ -15,7 +15,7 @@ A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en
 Changes from Decursive 2.7.2 to Decursive 2.7.2.1 (2012-09-27)
 --------------------------------------------------------------
 
-- Don't generate debug reports when Decursive is blamed for taint issues it is not causing.
+- Decursive no longer generates debug reports when it is blamed for taint issues it is not causing.
   Usually this happens because Decursive embeds LibDBIcon which is then used by
   other add-ons to display their settings and thus triggering the [months old massive taint issue Blizzard did not fix](http://eu.battle.net/wow/en/forum/topic/5300140681#1).
   If you have access to the [US bug report forum](http://us.battle.net/wow/en/forum/1012660/) then do not hesitate
