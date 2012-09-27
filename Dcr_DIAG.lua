@@ -132,6 +132,7 @@ function T._DebugFrameOnTextChanged(frame)
 end
 
 T._DebugTextTable = {};
+local  _G =  _G;
 local DebugTextTable = T._DebugTextTable;
 local Reported = {};
 local GetFramerate = _G.GetFramerate;
@@ -173,7 +174,7 @@ T._ErrorLimitStripped = false;
 
 -- ADDON_ACTION_FORBIDDEN
 -- ADDON_ACTION_BLOCKED
-
+local InCombatLockdown  = _G.InCombatLockdown;
 local type = _G.type;
 function T._onError(event, errorObject)
     local errorm = errorObject.message;
@@ -214,7 +215,19 @@ function T._onError(event, errorObject)
 
     if not mine and GetCVarBool("scriptErrors") then
         if not _G.DEBUGLOCALS_LEVEL then
-            _G.LoadAddOn("Blizzard_DebugTools");
+            if not InCombatLockdown() then
+                _G.LoadAddOn("Blizzard_DebugTools");
+            else
+                if T.Dcr.AddDelayedFunctionCall then
+                    T.Dcr:AddDelayedFunctionCall('Load_Blizzard_DebugTools', _G.LoadAddOn, 'Blizzard_DebugTools');
+                    --@alpha@
+                    T.Dcr:Debug("Blizzard_DebugTools load has been delayed because InCombatLockdown");
+                else
+                    T.Dcr:Debug("Blizzard_DebugTools load has been cancelled because InCombatLockdown");
+                    --@end-alpha@
+                end
+                return;
+            end
         end
         _G.DEBUGLOCALS_LEVEL = 12; -- XXX must be set to the right value to get the correct stack and locals
 
@@ -237,7 +250,9 @@ function T._onError(event, errorObject)
                 if not ScriptErrorsFrameScrollFrameText.cursorOffset then
                     ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
                     T._BDT_HotFix1_applyed = true;
+                    --@alpha@
                     print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
+                    --@end-alpha@
                 end
             end
             --]=]
@@ -283,9 +298,11 @@ function T._DecursiveErrorHandler(err, ...)
         if not ScriptErrorsFrameScrollFrameText.cursorOffset then
             ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
             T._BDT_HotFix1_applyed = true;
-            if ( GetCVarBool("scriptErrors") ) then
+            --@alpha@
+            if GetCVarBool("scriptErrors") then
                 print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
             end
+            --@end-alpha@
         end
     end
     --]=]
@@ -294,9 +311,11 @@ function T._DecursiveErrorHandler(err, ...)
 
     --A check to see if the error is happening inside the Blizzard 'debug' tool himself...
     if (err:lower()):find("blizzard_debugtools") then
+        --@alpha@
         if ( GetCVarBool("scriptErrors") ) then
             print (("|cFFFF0000%s|r"):format(err));
         end
+        --@end-alpha@
         return;
     end
 
