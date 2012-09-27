@@ -92,11 +92,6 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     }; -- }}}
 T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 
-local Alpha = false;
---@alpha@
-Alpha = true;
---@end-alpha@
-
 -- Decursive LUA error manager and debug reporting functions {{{
 
 local function NiceTime()
@@ -193,7 +188,7 @@ function T._onError(event, errorObject)
             taintingAccusation = true;
         end
 
-        if not taintingAccusation or Alpha then
+        if not taintingAccusation or T._EmbeddedMode == false then -- if we are having this while we're not emebedding anything then it does matters
             T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
             IsReporting = true;
             AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
@@ -220,6 +215,7 @@ function T._onError(event, errorObject)
             else
                 if T.Dcr.AddDelayedFunctionCall then
                     T.Dcr:AddDelayedFunctionCall('Load_Blizzard_DebugTools', _G.LoadAddOn, 'Blizzard_DebugTools');
+
                     --@alpha@
                     T.Dcr:Debug("Blizzard_DebugTools load has been delayed because InCombatLockdown");
                 else
