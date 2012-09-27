@@ -240,19 +240,6 @@ function T._onError(event, errorObject)
            
             T.Dcr:Debug("Lua error forwarded");
 
-            -- Blizzard bug HotFix
-            ---[=[
-            if ScriptErrorsFrameScrollFrameText then
-                if not ScriptErrorsFrameScrollFrameText.cursorOffset then
-                    ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
-                    T._BDT_HotFix1_applyed = true;
-                    --@alpha@
-                    print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
-                    --@end-alpha@
-                end
-            end
-            --]=]
-
             _G._ERRORMESSAGE( errorm );
         end
     else
@@ -287,21 +274,6 @@ function T._DecursiveErrorHandler(err, ...)
     if T._ErrorLimitStripped then
         return;
     end
-
-    -- Blizzard bug HotFix
-    ---[=[
-    if ScriptErrorsFrameScrollFrameText then
-        if not ScriptErrorsFrameScrollFrameText.cursorOffset then
-            ScriptErrorsFrameScrollFrameText.cursorOffset = 0;
-            T._BDT_HotFix1_applyed = true;
-            --@alpha@
-            if GetCVarBool("scriptErrors") then
-                print("Decursive |cFF00FF00HotFix to Blizzard_DebugTools:|r |cFFFF0000ScriptErrorsFrameScrollFrameText.cursorOffset was nil (check for Lua errors using BugGrabber and BugSack)|r");
-            end
-            --@end-alpha@
-        end
-    end
-    --]=]
 
     err = tostring(err);
 
