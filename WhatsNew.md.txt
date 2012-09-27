@@ -1,5 +1,5 @@
-Decursive 2.7.2 (2012-09-23)
-============================
+Decursive 2.7.2.1 (2012-09-27)
+==============================
 
 
 I would like to dedicate this release of Decursive to the memory of Patrick Bohnet
@@ -9,7 +9,22 @@ the original author and maintainer of Decursive from 2005 till April 2006.
 I want to thank him for the great opportunity he gave me to work on Decursive, a 
 program still useful to hundreds of thousands of people today.
 
-A thread dedicated to his memory can be found here: http://us.battle.net/wow/en/forum/topic/6232743291
+A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
+
+
+Changes from Decursive 2.7.2 to Decursive 2.7.2.1 (2012-09-27)
+--------------------------------------------------------------
+
+- Don't generate debug reports when Decursive is blamed for taint issues it is not causing.
+  Usually this happens because Decursive embeds LibDBIcon which is then used by
+  other add-ons to display their settings and thus triggering the [months old massive taint issue Blizzard did not fix](http://eu.battle.net/wow/en/forum/topic/5300140681#1).
+  If you have access to the [US bug report forum](http://us.battle.net/wow/en/forum/1012660/) then do not hesitate
+  to use this incredible chance (non-US players are denied the right to file bug reports...).
+
+- Decursive won't display its nagging message about other buggy add-ons when
+  the error throttle limit is triggered by the aforementioned issue (usually
+  when you open and close your UI option panel for the first time while you are
+  in combat)
 
 
 Changes from Decursive 2.7.1.1 to Decursive 2.7.2 (2012-09-23)
@@ -18,7 +33,7 @@ Changes from Decursive 2.7.1.1 to Decursive 2.7.2 (2012-09-23)
 
 - Decursive no longer adds its settings to Blizzard's Interface Options UI (in
   order to avoid the massive UI tainting it caused...). I've made a (useless?)
-  bug report on the EU MoP beta forum that might need a bump: http://eu.battle.net/wow/en/forum/topic/5300140681#1
+  bug report on the EU MoP beta forum that might need a bump: [http://eu.battle.net/wow/en/forum/topic/5300140681#1](http://eu.battle.net/wow/en/forum/topic/5300140681#1)
 
   So until Blizzard fixes this bug you can still access Decursive's option
   through the MUF's handle or by typing /Decursive
