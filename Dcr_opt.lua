@@ -2949,6 +2949,7 @@ end -- }}}
 do
     local DebugHeader = false;
     local HeaderFailOver = "|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
+    local LoadedAddonNum = 0;
 
     local function GetAddonListAsString ()
         local addonCount = GetNumAddOns();
@@ -2964,6 +2965,7 @@ do
             end
         end
 
+        LoadedAddonNum = #loadedAddonList;
         return table.concat(loadedAddonList, "\n");
     end
 
@@ -2979,13 +2981,15 @@ do
             D.db.global.NewVersionsBugMeNot = false;
         end
 
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         DC.MyClass, tostring(UnitLevel("player") or "??"), D:NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
         T._NonDecursiveErrors, -- nDrE: %d
         tostring(T._EmbeddedMode), -- Embeded: %s
-        IsWindowsClient() and 1 or 0,
+        IsWindowsClient() and 1 or 0, -- W: %d
+        LoadedAddonNum, -- LA: %d
+        T._TaintingAccusations, -- TA: %d
         GetBuildInfo()); --  (%s, %s, %s, %s)
     end
 
@@ -3001,17 +3005,17 @@ do
             yourWastingMyTime = L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"];
         end
 
+        -- get running add-ons list
+        local success, errorm, loadedAddonList;
+        success, errorm, loadedAddonList = pcall (GetAddonListAsString);
+
         local headerSucess, hederGenErrorm;
-        -- D:Debug(GetLocale());
         if not DebugHeader then
             headerSucess, hederGenErrorm = pcall(setReportHeader);
         else
             headerSucess = true;
         end
 
-        -- get running add-ons list
-
-        local success, errorm, loadedAddonList = pcall (GetAddonListAsString);
 
         T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm);
         _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
