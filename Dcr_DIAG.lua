@@ -92,6 +92,11 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     }; -- }}}
 T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 
+local Alpha = false;
+--@alpha@
+Alpha = true;
+--@end-alpha@
+
 -- Decursive LUA error manager and debug reporting functions {{{
 
 local function NiceTime()
@@ -163,12 +168,17 @@ local AddDebugText = T._AddDebugText;
 local IsReporting = false;
 
 T._NonDecursiveErrors = 0;
+T._TaintingAccusations = 0;
 T._ErrorLimitStripped = false;
+
+-- ADDON_ACTION_FORBIDDEN
+-- ADDON_ACTION_BLOCKED
 
 local type = _G.type;
 function T._onError(event, errorObject)
     local errorm = errorObject.message;
     local mine = false;
+    local taintingAccusation = false;
 
     if not IsReporting
         and ( T._CatchAllErrors
@@ -178,15 +188,26 @@ function T._onError(event, errorObject)
         or ( (errorm:lower()):find("decursive%.")) -- for Aceconfig
         ) then
 
-        T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
-        IsReporting = true;
-        AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
-
-        if T.Dcr and T.Dcr.Debug then
-            T.Dcr:Debug("Lua error recorded");
+        if errorm:find("ADDON_ACTION_FORBIDDEN") or errorm:find("ADDON_ACTION_BLOCKED") then
+            taintingAccusation = true;
         end
-        IsReporting = false;
-        mine = true;
+
+        if not taintingAccusation or Alpha then
+            T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
+            IsReporting = true;
+            AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
+
+            if T.Dcr and T.Dcr.Debug then
+                T.Dcr:Debug("Lua error recorded");
+            end
+            IsReporting = false;
+            mine = true;
+        else
+            T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
+            T._TaintingAccusations = T._TaintingAccusations + 1;
+            T.Dcr:Debug("False tainting accusation put under the carpet");
+            return; -- bury it under the carpet since it's blaming the wrong add-ons and mislead the users.
+        end
     else
         T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
     end
@@ -310,7 +331,7 @@ function T._TooManyErrors()
         return;
     end
 
-    if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0) then -- if we can and should display the alert
+    if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
         T.Dcr:Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
         T.Dcr:Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
         WarningDisplayed = true;
