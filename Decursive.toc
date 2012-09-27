@@ -30,7 +30,7 @@
 ## X-LoadOn-Slash: /decursive, /dcr
 
 
-## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
+## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, LibShefkiTimer-1.0, !BugGrabber
 
 ## X-ReleaseDate: "@project-date-iso@"
 ## X-Category: Combat
