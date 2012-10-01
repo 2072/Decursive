@@ -251,8 +251,27 @@ function D:PlaySound (UnitID, Caller) --{{{
             -- good sounds: Sound\\Doodad\\BellTollTribal.wav
             --          Sound\\interface\\AuctionWindowOpen.wav
             --          Sound\\interface\\AlarmClockWarning3.wav
-            PlaySoundFile(self.profile.SoundFile, "Master");
-            self:Debug("Sound Played! by %s", Caller);
+            local testTime;
+
+            if self.debug then
+                testTime = debugprofilestop();
+            end
+
+            -- Play the sound on a special update execution context to avoid
+            -- crashing and leaving the program in an unknown state if WoW fails
+            -- to play the sound fast enough... ('script ran too long' add-on
+            -- breaker thingy of which I had a few report failing on the
+            -- PlaySoundFile call)
+
+            self:ScheduleDelayedCall('PlaySoundFile', PlaySoundFile, 0.1, self.profile.SoundFile, "Master");
+            -- self:ScheduleTimer(function() print('test2') end, 0, self);
+            
+            --PlaySoundFile(self.profile.SoundFile, "Master");
+
+            if self.debug then
+                self:Debug("x Sound Played! by", Caller, 'it took:', (debugprofilestop() - testTime), ' ms' );
+            end
+
             self.Status.SoundPlayed = true;
         else
             self.UnitDebuffed[UnitID] = false;
