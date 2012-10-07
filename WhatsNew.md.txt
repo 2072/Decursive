@@ -1,4 +1,4 @@
-Decursive 2.7.2.1 (2012-09-27)
+Decursive 2.7.2.2 (2012-10-07)
 ==============================
 
 
@@ -10,6 +10,23 @@ I want to thank him for the great opportunity he gave me to work on Decursive, a
 program still useful to hundreds of thousands of people today.
 
 A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
+
+
+Changes from Decursive 2.7.2.1 to Decursive 2.7.2.2 (2012-10-07)
+----------------------------------------------------------------
+
+- Fix for "Dcr_DebuffsFrame.lua:854: bad argument #3 to 'str_format' (string
+  expected, got nil)".
+
+- Only generate reports for taint issues blaming Decursive when Decursive is not
+  embedding libraries.
+
+- Decursive will no longer generate a debug report if its alert sound takes too
+  long to play (strange issue happening to some users, probably hardware
+  related).
+
+- Fix a "script ran too long" issue that could happen if another add-on
+  generated a Lua exception for the first time during combat.
 
 
 Changes from Decursive 2.7.2 to Decursive 2.7.2.1 (2012-09-27)
