@@ -75,6 +75,7 @@ local band              = _G.bit.band;
 local GetTime           = _G.GetTime;
 local IsSpellInRange    = _G.IsSpellInRange;
 local UnitInRange       = _G.UnitInRange;
+local debugprofilestop  = _G.debugprofilestop;
 
 if DC.MOP then
     -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells)
@@ -170,9 +171,7 @@ function D:NumToHexStr(number)
 end
 
 
-local function debugStyle(...)
-    return "|cFF00AAAADebug:("..D:NiceTime()..")|r", ...;
-end
+
 
 function D:Println( ... ) --{{{
 
@@ -214,10 +213,17 @@ function D:errln( ... ) --{{{
     end
 end --}}}
 
+do
+    local timerStart = debugprofilestop();
 
-function D:Debug(...)
-    if self.debug then
-        self:Print(debugStyle(UseFormatIfPresent(...)));
+    local function debugStyle(...)
+        return ("|cFF00AAAADebug:(%0.3f)|r"):format((debugprofilestop() - timerStart) / 1000), ...;
+    end
+
+    function D:Debug(...)
+        if self.debug then
+            self:Print(debugStyle(UseFormatIfPresent(...)));
+        end
     end
 end
 
