@@ -1,5 +1,6 @@
 TODO:
 
+- replace select(2, UnitClass(unit)) by a function of my own to void the select...
 
 - add a donators credit section in the About UI
 
