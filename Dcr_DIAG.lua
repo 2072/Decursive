@@ -221,7 +221,7 @@ function T._onError(event, errorObject)
         T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
     end
 
-    if not mine and GetCVarBool("scriptErrors") then
+    if not mine and not T._BugSackLoaded and GetCVarBool("scriptErrors") then
         if not _G.DEBUGLOCALS_LEVEL then
             if not InCombatLockdown() then
                 _G.LoadAddOn("Blizzard_DebugTools");
@@ -236,7 +236,7 @@ function T._onError(event, errorObject)
                 return;
             end
         end
-        _G.DEBUGLOCALS_LEVEL = 12; -- XXX must be set to the right value to get the correct stack and locals
+        _G.DEBUGLOCALS_LEVEL = 12; -- XXX must be set to the right value to get the correct stack and locals. This is why we need to load Blizzard_DebugTools ourselves... That sucks... 
 
         -- forward the error to the default Blizzad error displayer
         if _G._ERRORMESSAGE then
@@ -344,8 +344,9 @@ function T._HookErrorHandler()
         local name, _, _, enabled = GetAddOnInfo("BugSack")
 
         if name and enabled then
-            T._BugGrabberEmbeded = false;
-            return
+            T._BugSackLoaded = true;
+        else
+            T._BugSackLoaded = false;
         end
 
         BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true; -- for people using an older version of BugGrabber. There is no way to know...
