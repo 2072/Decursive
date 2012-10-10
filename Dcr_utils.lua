@@ -647,5 +647,50 @@ function D:GetOPtionPath(info)
     return table.concat(info, "->");
 end -- }}}
 
+do
+    local PlaySoundFile = _G.PlaySoundFile;
+    T._PlayingASound = false;
+
+    --@debug@
+    local function CrashTest(path, chanel)
+        local start = debugprofilestop();
+
+        repeat
+        until debugprofilestop() - start == 1000;
+
+        return 'blah1', 'blah2';
+
+    end
+    --@end-debug@
+
+    -- Play sounda on a special update execution context to avoid
+    -- crashing and leaving the program in an unknown state if WoW fails
+    -- to play the sound fast enough... ('script ran too long' add-on
+    -- breaker thingy of which I had a few report failing on the
+    -- PlaySoundFile() call)
+
+    local testTime;
+
+    local function SafePlaySoundFile(path)
+
+        if D.debug then
+            testTime = debugprofilestop();
+        end
+
+        T._PlayingASound = GetTime();
+        -- local r1, r2 = CrashTest(path, "Master");
+        local r1, r2 = PlaySoundFile(path, "Master");
+        T._PlayingASound = false;
+
+        if D.debug then
+            D:Debug('Sound played:', path, r1, r2, 'it took:', ('%0.3fms'):format(debugprofilestop() - testTime));
+        end
+    end
+
+    function D:SafePlaySoundFile(path)
+        self:ScheduleDelayedCall('PlaySoundFile', SafePlaySoundFile, 0.1, path);
+    end
+end
+
 
 T._LoadedFiles["Dcr_utils.lua"] = "@project-version@";

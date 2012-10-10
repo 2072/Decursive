@@ -60,7 +60,6 @@ local ipairs            = _G.ipairs;
 local type              = _G.type;
 local table             = _G.table;
 local t_sort            = _G.table.sort;
-local PlaySoundFile     = _G.PlaySoundFile;
 local UnitName          = _G.UnitName;
 local UnitDebuff        = _G.UnitDebuff;
 local UnitBuff          = _G.UnitBuff;
@@ -251,25 +250,14 @@ function D:PlaySound (UnitID, Caller) --{{{
             -- good sounds: Sound\\Doodad\\BellTollTribal.wav
             --          Sound\\interface\\AuctionWindowOpen.wav
             --          Sound\\interface\\AlarmClockWarning3.wav
-            local testTime;
+            
 
-            if self.debug then
-                testTime = debugprofilestop();
-            end
+            self:SafePlaySoundFile(self.profile.SoundFile);
 
-            --PlaySoundFile(self.profile.SoundFile, "Master");
-
-            -- Play the sound on a special update execution context to avoid
-            -- crashing and leaving the program in an unknown state if WoW fails
-            -- to play the sound fast enough... ('script ran too long' add-on
-            -- breaker thingy of which I had a few report failing on the
-            -- PlaySoundFile call)
-
-            self:ScheduleDelayedCall('PlaySoundFile', PlaySoundFile, 0.1, self.profile.SoundFile, "Master");
             self.Status.SoundPlayed = true;
 
             if self.debug then
-                self:Debug("x Sound Played! by", Caller, 'it took:', (debugprofilestop() - testTime), ' ms' );
+                self:Debug("Sound scheduled by", Caller);
             end
 
         else

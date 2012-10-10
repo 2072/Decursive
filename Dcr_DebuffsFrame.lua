@@ -109,7 +109,6 @@ local select            = _G.select;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
 local GetTime           = _G.GetTime;
-local PlaySoundFile     = _G.PlaySoundFile;
 local IsControlKeyDown  = _G.IsControlKeyDown;
 local floor             = _G.math.floor;
 local table             = _G.table;
@@ -757,7 +756,7 @@ function MicroUnitF:OnEnter(frame) -- {{{
                 -- Create a warning if an Unstable Affliction like spell is detected XXX not very pretty will be integrated along with the filtering system comming 'soon'(tm)
                 if Debuff.Name == DS["Unstable Affliction"] or Debuff.Name == DS["Vampiric Touch"] then
                     D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
-                    PlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav", "Master");
+                    D:SafePlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
                 end
             end
         end

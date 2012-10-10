@@ -133,6 +133,21 @@ local function tostring_args(a1, ...)
         return tostring(a1), tostring_args(...)
 end
 
+local function PlaySoundFile_RanTooLongheck(message)
+
+    -- test for PlaySoundFile() API call failure, this exception bubles in the
+    -- dispatcher so eat all errors happenning in the same refresh event (while
+    -- GetTime() stays the same)
+
+    if T._PlayingASound and T._PlayingASound == GetTime() and message:find("ran too long") then
+        T.Dcr:Debug('"Script ran too long" while playing sound eaten');
+        T.Dcr:Print("|cffff0000*DING!*|r (Decursive failed to play a sound)");
+        return true;
+    end
+    
+    return false;
+end
+
 -- inspired from BugSack
 function T._DebugFrameOnTextChanged(frame)
     if frame:GetText() ~= T._DebugText then
@@ -188,6 +203,11 @@ function T._onError(event, errorObject)
     local errorm = errorObject.message;
     local mine = false;
     local taintingAccusation = false;
+
+    -- test for PlaySoundFile() API call failure
+    if PlaySoundFile_RanTooLongheck(errorm) then
+        return;
+    end
 
     if not IsReporting
         and ( T._CatchAllErrors
@@ -298,9 +318,14 @@ function T._DecursiveErrorHandler(err, ...)
         return;
     end
 
+    if PlaySoundFile_RanTooLongheck(err) then
+        return;
+    end
+
     local mine = false;
     if not IsReporting and (T._CatchAllErrors or (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\")) then
 	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
+
         IsReporting = true;
         AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
         if T.Dcr then

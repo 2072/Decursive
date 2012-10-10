@@ -77,7 +77,6 @@ local GetNumRaidMembers = DC.GetNumRaidMembers;
 local GetNumPartyMembers= DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
 local GetGuildInfo      = _G.GetGuildInfo;
 local InCombatLockdown  = _G.InCombatLockdown;
-local PlaySoundFile     = _G.PlaySoundFile;
 local UnitExists        = _G.UnitExists;
 local UnitCanAttack     = _G.UnitCanAttack;
 local UnitName          = _G.UnitName;
@@ -721,7 +720,7 @@ do -- Combat log event handling {{{1
                         self:ScheduleDelayedCall("Dcr_Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.UpdateSkippingSetBuf, self.profile.DebuffsFrameRefreshRate, self.Status.ClickedMF);
                     end
 
-                    PlaySoundFile(DC.FailedSound, "Master");
+                    self:SafePlaySoundFile(DC.FailedSound);
                     --[=[
                     elseif auraTYPE_failTYPE == SPELL_FAILED_BAD_IMPLICIT_TARGETS then
                     self:AddDebugText("ERR_GENERIC_NO_TARGET", "Unit:", self.Status.ClickedMF.CurrUnit, "UE:", UnitExists(self.Status.ClickedMF.CurrUnit), "UiF:",  UnitIsFriend("player",self.Status.ClickedMF.CurrUnit), "CBEs:", timestamp, event, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE); --]=]
@@ -732,7 +731,7 @@ do -- Combat log event handling {{{1
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
                 self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))), self:MakePlayerName(destName), auraTYPE_failTYPE);
-                PlaySoundFile(DC.FailedSound, "Master");
+                self:SafePlaySoundFile(DC.FailedSound);
                 self.Status.ClickedMF = false;
                 --@alpha@
                 -- self:AddDebugText("sanitycheck ", event, spellNAME); -- It works!
