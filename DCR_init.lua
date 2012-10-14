@@ -904,7 +904,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     if FirstEnable and not D.db.global.NoStartMessages then
         D:ColorPrint(0.3, 0.5, 1, L["IS_HERE_MSG"]);
-        D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
+        -- D:ColorPrint(0.3, 0.5, 1, L["SHOW_MSG"]);
     end
 
     FirstEnable = false;
