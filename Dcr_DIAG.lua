@@ -536,8 +536,10 @@ do
             FatalOccured = true;
         end
 
+        local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 50001); -- once GetAddOnMetadata() was bugged and returned nil...
+        
         -- test if Decursive is backward compatible with the client's version
-        if tocversion < tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface")) then
+        if tocversion < DcrMinTOC then
             table.insert(Errors, ("Your World of Warcraft client version (%d) is too old to run this version of Decursive.\n"):format(tocversion));
             GenericErrorMessage2 = "You need to install an older version of Decursive.";
             FatalOccured = true;

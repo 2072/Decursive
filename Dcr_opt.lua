@@ -99,7 +99,8 @@ function D:GetDefaultsSettings()
 
         global = {
             debug = false,
-            NonRealease = false,
+            NonRelease = false,
+            TocExpiredDetection = false,
             LastExpirationAlert = 0,
             NewerVersionDetected = D.VersionTimeStamp,
             NewerVersionName = false,
@@ -107,7 +108,7 @@ function D:GetDefaultsSettings()
             NewVersionsBugMeNot = false,
             LastVersionAnnounce = 0,
             --@debug@
-            LastChekOutAlert = 0,
+            LastUnpackagedAlert = 0,
             --@end-debug@
 
             -- the key to bind the macro to
@@ -2997,7 +2998,7 @@ do
     function D:ShowDebugReport()
 
         if DC.DevVersionExpired then
-            self:VersionWarnings();
+            self:VersionWarnings(true);
             return;
         end
 

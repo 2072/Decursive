@@ -466,7 +466,12 @@ L["TOO_MANY_ERRORS_ALERT"] = [=[There are too many Lua errors in your User Inter
 You may want to turn on Lua error reporting ('Help' section of World of Warcraft's interface options) to identify the problematic add-ons.]=]
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
+L["TOC_VERSION_EXPIRED"] = [=[Your Decursive's version is outdated. This version of Decursive was released before the version of World of Warcraft you are using.
+You need to update Decursive to fix potential incompatibilities and runtime errors.
 
+Go to curse.com and search for 'Decursive' or use Curse's client to update all your add-ons at once.
+
+This notice will be displayed again in 2 days.]=]
 
 --]==]
 --@end-do-not-package@

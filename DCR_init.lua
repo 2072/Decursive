@@ -85,6 +85,7 @@ local next              = _G.next;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetTalentInfo     = _G.GetTalentInfo;
 local UnitClass         = _G.UnitClass;
+local time              = _G.time;
 
 
 
@@ -237,13 +238,37 @@ function D:AddDebugText(a1, ...)
     T._AddDebugText(a1, ...);
 end
 
-function D:VersionWarnings()
+function D:VersionWarnings(forceDisplay)
 
     local alpha = false;
     local fromCheckOut = false;
     --@alpha@
     alpha = true;
     --@end-alpha@
+
+
+    -- test if WoW's TOC version is superior to Decursive's, wait 40 days and warn the users that this version has expired
+    local DcrMaxTOC = tonumber(GetAddOnMetadata("Decursive", "X-Max-Interface") or math.huge); -- once GetAddOnMetadata() was bugged and returned nil...
+    if DcrMaxTOC < T._tocversion then
+
+        -- store the detection of this problem
+        if not self.db.global.TocExpiredDetection then
+            self.db.global.TocExpiredDetection = time();
+
+        elseif time() - self.db.global.TocExpiredDetection > 3600 * 24 * 40 then -- if more than 40 days elapsed since the detection
+
+            DC.DevVersionExpired = true; -- disable error reports
+
+            if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
+
+                StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
+
+                self.db.global.LastExpirationAlert = time();
+            end
+        end
+    else
+        self.db.global.TocExpiredDetection = false;
+    end
 
     if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or ("@project-version@"):find("Candidate") or alpha then
 
@@ -257,7 +282,7 @@ function D:VersionWarnings()
             if time() > D.VersionTimeStamp + VersionLifeTime then
                 DC.DevVersionExpired = true;
                 -- Display the expiration notice only once evry 48 hours
-                if time() - self.db.global.LastExpirationAlert > 48 * 3600  then
+                if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
                     StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
 
                     self.db.global.LastExpirationAlert = time();
@@ -268,15 +293,16 @@ function D:VersionWarnings()
 
         end
 
-        if self.db.global.NonRealease ~= "@project-version@" then
-            self.db.global.NonRealease = "@project-version@";
+        -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
+        if self.db.global.NonRelease ~= "@project-version@" then
+            self.db.global.NonRelease = "@project-version@";
             StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
         end
     end
 
     --@debug@
     fromCheckOut = true;
-    if time() - self.db.global.LastChekOutAlert > 24 * 3600  then
+    if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
         StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. 
         [[
         |cFFFF0000You're using an unpackaged version of Decursive.|r
@@ -292,7 +318,7 @@ function D:VersionWarnings()
         ]]
         .. "|r");
 
-        self.db.global.LastChekOutAlert = time();
+        self.db.global.LastUnpackagedAlert = time();
     end
     --@end-debug@
 
