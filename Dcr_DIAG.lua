@@ -285,18 +285,12 @@ local _, _, _, tocversion = GetBuildInfo();
 
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
-DC.MOP = (tocversion >= 50000);
+--DC.MOP = (tocversion >= 50000);
 
--- MOP compatibility layer functions
-local IsInRaid;
-local GetNumGroupMembers;
-if not DC.MOP then
-    IsInRaid = function() return GetNumRaidMembers() and true; end
-else
-    IsInRaid = _G.IsInRaid;
-    GetNumGroupMembers = _G.GetNumGroupMembers;
-end
-DC.GetNumRaidMembers = (not DC.MOP) and _G.GetNumRaidMembers or function()
+local IsInRaid = _G.IsInRaid;
+local GetNumGroupMembers = _G.GetNumGroupMembers;
+
+DC.GetNumRaidMembers = function()
     return IsInRaid() and GetNumGroupMembers() or 0;
 end
 

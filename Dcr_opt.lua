@@ -63,7 +63,7 @@ local str_gsub          = _G.string.gsub;
 local str_sub           = _G.string.sub;
 local abs               = _G.math.abs;
 local GetNumRaidMembers = DC.GetNumRaidMembers;
-local GetNumPartyMembers= DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
+local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local _;
 -- Default values for the option

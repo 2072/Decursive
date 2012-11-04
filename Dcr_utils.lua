@@ -77,28 +77,25 @@ local IsSpellInRange    = _G.IsSpellInRange;
 local UnitInRange       = _G.UnitInRange;
 local debugprofilestop  = _G.debugprofilestop;
 
-if DC.MOP then
-    -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells)
-    D.IsSpellInRange = function (spellName, unit)
-        local range = IsSpellInRange(spellName, unit);
+-- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells)
+D.IsSpellInRange = function (spellName, unit)
+    local range = IsSpellInRange(spellName, unit);
 
-        if range ~= nil then
-            return range;
+    if range ~= nil then
+        return range;
+    else
+        --@debug@
+        D:Debug('IsSpellInRange() returned nil for', spellName, unit);
+        --@end-debug@
+        if unit == 'player' or unit == 'pet' then
+            return 1;
         else
-            --@debug@
-            D:Debug('IsSpellInRange() returned nil for', spellName, unit);
-            --@end-debug@
-            if unit == 'player' or unit == 'pet' then
-                return 1;
-            else
-                return (UnitInRange(unit)) and 1 or 0;
-            end
+            return (UnitInRange(unit)) and 1 or 0;
         end
-
     end
-else
-    D.IsSpellInRange = IsSpellInRange;
+
 end
+
 
 function D:ColorText (text, color) --{{{
     return "|c".. color .. text .. "|r";

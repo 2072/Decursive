@@ -74,7 +74,7 @@ local UnitCreatureFamily= _G.UnitCreatureFamily;
 local UnitFactionGroup  = _G.UnitFactionGroup;
 local IsInInstance      = _G.IsInInstance;
 local GetNumRaidMembers = DC.GetNumRaidMembers;
-local GetNumPartyMembers= DC.MOP and _G.GetNumSubgroupMembers or _G.GetNumPartyMembers;
+local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local GetGuildInfo      = _G.GetGuildInfo;
 local InCombatLockdown  = _G.InCombatLockdown;
 local UnitExists        = _G.UnitExists;
@@ -591,15 +591,9 @@ do -- Combat log event handling {{{1
     local TOC = T._tocversion;
 
     function D:DummyDebuff (UnitID)
-        
         local PLAYER = bit.bor (COMBATLOG_OBJECT_CONTROL_PLAYER   , COMBATLOG_OBJECT_TYPE_PLAYER  , COMBATLOG_OBJECT_REACTION_FRIENDLY  ); -- still used
-        if TOC < 40100 then
-            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
-        elseif TOC == 40100 then
-            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, nil, COMBATLOG_OBJECT_NONE, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, "Test item", 0x32, "DEBUFF");
-        elseif TOC > 40100 then
-            D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, nil, COMBATLOG_OBJECT_NONE, 0, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, 0, "Test item", 0x32, "DEBUFF");
-        end
+        
+        D:COMBAT_LOG_EVENT_UNFILTERED("COMBAT_LOG_EVENT_UNFILTERED", 0, "SPELL_AURA_APPLIED", false, nil, nil, COMBATLOG_OBJECT_NONE, 0, UnitGUID(UnitID), (UnitName(UnitID)), PLAYER, 0, 0, "Test item", 0x32, "DEBUFF");
     end
 
     local SpecialDebuffs = {
@@ -1040,11 +1034,10 @@ do
 
     local UnitLevel          = _G.UnitLevel;
     local GetNumTalentPoints = _G.GetNumTalentPoints;
-    --local GetNumTalentPoints = DC.MOP and function () return math.floor(UnitLevel("player") / 15) end or _G.GetNumTalentPoints;
 
     local GetTalentInfo      = _G.GetTalentInfo;
 
-    local function CheckTalentsAvaibility_MOP() -- {{{
+    local function CheckTalentsAvaibility() -- {{{
 
 
         if not (UnitGUID("player")) then
@@ -1078,27 +1071,6 @@ do
         return false;
 
     end -- }}}
-
-    local function CheckTalentsAvaibility_preMOP() -- {{{
-
-        local playerLevel = UnitLevel("player");
-        local totalTalentPoints = GetNumTalentPoints();
-
-        if playerLevel > 0 and playerLevel < 10 then
-            return true;
-        end
-
-        if totalTalentPoints ~= 0 then
-            -- Talents are available
-            return true;
-        else
-            -- Talents are not available
-            return false;
-        end
-    end -- }}}
-
-
-    local CheckTalentsAvaibility = DC.MOP and CheckTalentsAvaibility_MOP or CheckTalentsAvaibility_preMOP;
 
     --@alpha@
     local player_is_almost_alive = false; -- I'm trying to figure out why sometimes talents are not detected while PLAYER_ALIVE event fired
