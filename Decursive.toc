@@ -1,4 +1,6 @@
 ## Interface: 50001
+## X-Max-Interface: 50100
+## X-Min-Interface: 50001
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@
@@ -13,8 +15,6 @@
 ## Notes-ptBR: @localization(locale="ptBR", key="ABOUT_NOTES")@
 ## Notes-itIT: @localization(locale="itIT", key="ABOUT_NOTES")@
 
-## X-Max-Interface: 50100
-## X-Min-Interface: 50001
 
 ## SavedVariables: DecursiveDB
 

@@ -1,6 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     http://wowprogramming.com/FrameXML/UI.xsd">
 
+    <Script>
+        local T = DecursiveRootTable or {};
+
+        T._LoadedFiles["load.xml"] = false;
+    </Script>
+
     <Script file="enUS.lua"/>
     <Script file="deDE.lua"/>
     <Script file="esES.lua"/>
@@ -16,7 +22,7 @@
     <Script>
         local T = DecursiveRootTable or {};
 
-        T._LoadedFiles["Load.xml"] = "@project-version@";
+        T._LoadedFiles["load.xml"] = "@project-version@";
     </Script>
 
 </Ui>

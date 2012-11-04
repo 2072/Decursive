@@ -49,46 +49,60 @@ local DC                = T._C;
 local DebugTextTable    =  T._DebugTextTable;
 local Reported          = {};
 
+T._LoadedFiles = {};
+T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
 
 if DecursiveInEmbeddedMode == nil then
     T._EmbeddedMode = "unknown";
 else
     T._EmbeddedMode = DecursiveInEmbeddedMode;
     DecursiveInEmbeddedMode = nil;
+
+    T._LoadedFiles["embeds.xml"] = DecursiveEmbedsxmlCheck;
+    DecursiveEmbedsxmlCheck = nil;
 end
 
-T._LoadedFiles = {
-    ["Load.xml"]                = false,
-    ["Dcr_DIAG.xml"]            = false,
-    ["Dcr_DIAG.lua"]            = false,
-    ["DCR_init.lua"]            = false,
-    ["Dcr_LDB.lua"]             = false,
-    ["Dcr_utils.lua"]           = false,
 
-    ["enUS.lua"]                = false,
-    ["frFR.lua"]                = false,
-    ["deDE.lua"]                = false,
-    ["zhTW.lua"]                = false,
-    ["esES.lua"]                = false,
-    ["koKR.lua"]                = false,
-    ["zhCN.lua"]                = false,
-    ["ruRU.lua"]                = false,
-    ["ptBR.lua"]                = false,
-    ["itIT.lua"]                = false,
-    
-    ["Dcr_opt.lua"]             = false,
-    ["Dcr_Events.lua"]          = false,
-    ["Dcr_Raid.lua"]            = false,
-    ["Decursive.lua"]           = false,
-    ["Dcr_lists.lua"]           = false,
-    ["Dcr_DebuffsFrame.lua"]    = false,
-    ["Dcr_LiveList.lua"]        = false,
+T._LoadOrderedFiles = {
+    "embeds.xml",
 
-    ["Dcr_DebuffsFrame.xml"]    = false,
-    ["Dcr_lists.xml"]           = false,
-    ["Dcr_LiveList.xml"]        = false,
-    ["Decursive.xml"]           = false,
+    "Dcr_DIAG.xml",
+    "Dcr_DIAG.lua",
+
+    "load.xml",
+
+    "enUS.lua",
+    "deDE.lua",
+    "esES.lua",
+    "esMX.lua",
+    "frFR.lua",
+    "koKR.lua",
+    "ruRU.lua",
+    "zhCN.lua",
+    "zhTW.lua",
+    "ptBR.lua",
+    "itIT.lua",
     
+    "DCR_init.lua",
+    "Dcr_LDB.lua",
+    "Dcr_utils.lua",
+
+    "Dcr_opt.lua",
+    "Dcr_Events.lua",
+
+    "Dcr_Raid.lua",
+    
+    "Decursive.lua",
+    "Decursive.xml",
+
+    "Dcr_lists.lua",
+    "Dcr_lists.xml",
+
+    "Dcr_DebuffsFrame.lua",
+    "Dcr_DebuffsFrame.xml",
+
+    "Dcr_LiveList.lua",
+    "Dcr_LiveList.xml",
 };
 
 
@@ -522,20 +536,31 @@ do
             FatalOccured = true;
         end
 
+        -- test if Decursive is backward compatible with the client's version
+        if tocversion < tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface")) then
+            table.insert(Errors, ("Your World of Warcraft client version (%d) is too old to run this version of Decursive.\n"):format(tocversion));
+            GenericErrorMessage2 = "You need to install an older version of Decursive.";
+            FatalOccured = true;
+        end
 
         -- check if all Decursive files are loaded
+        --local mixedFileVersionsdetection = {};
         local mixedFileVersionsdetection = {};
         local MixedVersionsCount = 0;
         if not FatalOccured then
-            for k,v in pairs (T._LoadedFiles) do
-                if v and v ~= "@pro" .. "ject-version@" and not mixedFileVersionsdetection[v] then
-                    mixedFileVersionsdetection[v] = k;
+            for order, fileName in ipairs (T._LoadOrderedFiles) do
+
+                local version = T._LoadedFiles[fileName];
+
+                if version and version ~= "@pro" .. "ject-version@" and not mixedFileVersionsdetection[version] then
+                    mixedFileVersionsdetection[version] = fileName;
                     MixedVersionsCount = MixedVersionsCount + 1;
                 end
 
-                if not v then
-                    table.insert(Errors, ("The Decursive file |cFF00FF00%s|r could not be loaded!\n"):format(k));
+                if not version then
+                    table.insert(Errors, ("The Decursive file |cFF00FF00%s|r could not be loaded! (%s)\n"):format(fileName, version == nil and 'missing' or 'runtime error'));
                     FatalOccured = true;
+                    break;
                 end
             end
         end
@@ -552,7 +577,7 @@ do
         end
 
         if #Errors > 0 then
-            local ErrorString = ("|cFFFF0000%d error(s)|r found while loading Decursive:\n\n"):format(#Errors);
+            local ErrorString = ("|cFFFF0000%d %s(s)|r found while loading Decursive:\n\n"):format(#Errors, FatalOccured and 'fatal error' or 'error');
 
             for k, v in pairs (Errors) do
                 ErrorString = ErrorString .. v;

@@ -47,6 +47,7 @@
 
 
 local addonName, T = ...;
+T._LoadedFiles["enUS.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -

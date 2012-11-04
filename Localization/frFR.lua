@@ -45,6 +45,7 @@
 --]=]
 
 local addonName, T = ...;
+T._LoadedFiles["frFR.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -80,4 +81,3 @@ end
 
 
 T._LoadedFiles["frFR.lua"] = "@project-version@";
-

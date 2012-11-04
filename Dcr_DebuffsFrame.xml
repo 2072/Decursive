@@ -24,6 +24,7 @@
     <Script>
 
         local T = DecursiveRootTable or {};
+        T._LoadedFiles["Dcr_DebuffsFrame.xml"] = false;
 
         -- big ugly scary fatal error message display function {{{
         if not T._FatalError then
