@@ -111,10 +111,9 @@ function LiveList:Create() -- {{{
         return false;
     end
 
+    self.ExistingPerID[self.Number + 1] = self:new(DcrLiveList, self.Number + 1);
+
     self.Number = self.Number + 1;
-
-    self.ExistingPerID[self.Number] = self:new(DcrLiveList, self.Number);
-
 
     return self.ExistingPerID[self.Number];
 
@@ -166,9 +165,6 @@ function LiveList.prototype:GiveAnchor() -- {{{
 
     local ItemHeight = self.Frame:GetHeight();
 
-    if D.profile.ReverseLiveDisplay then
-    end
-
     if self.ID == 1 then
         if D.profile.ReverseLiveDisplay then
             return "BOTTOMLEFT", DecursiveMainBar, "BOTTOMLEFT", 5, -1 * (ItemHeight + 1) * D.profile.Amount_Of_Afflicted;
@@ -179,7 +175,7 @@ function LiveList.prototype:GiveAnchor() -- {{{
         if D.profile.ReverseLiveDisplay then
             return "BOTTOMLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "TOPLEFT", 0, 1;
         else
-            return "TOPLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "BOTTOMLEFT", 0, -1; -- XXX index is nil error received in a report by mail on 2012-11-02
+            return "TOPLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "BOTTOMLEFT", 0, -1; -- TODO index is nil error received in a report by mail on 2012-11-02
         end
     end
 
