@@ -81,7 +81,6 @@ local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
 -- Init object factory defaults
 --MicroUnitF.ExistingPerID          = {};
 MicroUnitF.ExistingPerUNIT          = {};
--- MicroUnitF.ExistingPerNum           = {};
 MicroUnitF.UnitToMUF                = {};
 MicroUnitF.Number                   = 0;
 MicroUnitF.UnitShown                = 0;
@@ -210,12 +209,12 @@ function MicroUnitF:Create(Unit, ID) -- {{{
         return self.ExistingPerUNIT[Unit];
     end
 
-    self.Number = self.Number + 1;
 
     -- create a new MUF object
-    self.ExistingPerUNIT[Unit] = self:new(D.MFContainer, Unit, self.Number, ID);
+    self.ExistingPerUNIT[Unit] = self:new(D.MFContainer, Unit, self.Number + 1, ID);
 
---    self.ExistingPerNum[self.Number] = self.ExistingPerUNIT[Unit];
+    self.Number = self.Number + 1;
+
 
     return self.ExistingPerUNIT[Unit];
 end -- }}}
@@ -834,9 +833,9 @@ function MicroUnitF:OnEnter(frame) -- {{{
             DcrDisplay_Tooltip:SetPoint("BOTTOMLEFT", self.ExistingPerUNIT[Unit_Array[RefMUF]].Frame, "TOPLEFT", 0, 3);
 
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
-            if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then
+            if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) and Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF] then
                 DcrDisplay_Tooltip:ClearAllPoints();
-                -- 1 is not ok when not grow to top and more than one line -- XXX nil error issue reported once on the line below
+                -- 1 is not ok when not grow to top and more than one line -- XXX TODO nil error issue reported once on the line below
                 DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]].Frame, "BOTTOMLEFT", 0, -3);
             end
         end
