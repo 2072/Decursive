@@ -44,6 +44,7 @@ DecursiveInstallCorrupted     = false;
 T._C                    = {};
 T._DebugTextTable       = {};
 T._DebugText            = "";
+T._DebugTimerRefName    = "";
 
 local DC                = T._C;
 local DebugTextTable    =  T._DebugTextTable;
@@ -193,7 +194,7 @@ function T._AddDebugText(a1, ...)
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (h%d_w%d-%dfps-%s): %s -|count: "):format(NiceTime(), select(3, GetNetStats()), select(4, GetNetStats()), GetFramerate(), zone, text) );
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(NiceTime(), tostring(T._DebugTimerRefName), select(3, GetNetStats()), select(4, GetNetStats()), GetFramerate(), zone, text) );
         table.insert (DebugTextTable, 1);
         Reported[text] = #DebugTextTable;
     else
@@ -613,7 +614,12 @@ do
             T.Dcr:RegisterMessage(CustomEvent, function(message, DiagTestArg1) CustomEventCaught = DiagTestArg1; T.Dcr:Debug("CustomEvent callback executed"); end);
 
             -- Schedule a function call in 0.5s
-            T.Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent", function(DiagTestArg2) OneTimeEvent = DiagTestArg2; T.Dcr:Debug("OneTimeEvent callback executed"); end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
+            T.Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent",
+            function(DiagTestArg2)
+                OneTimeEvent = DiagTestArg2;
+                T.Dcr:Debug("OneTimeEvent callback executed");
+                AddDebugText('delayed call executed');
+            end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
 
             -- Set a repeating function call that will check for other test event completion
             T.Dcr:ScheduleRepeatedCall("DcrDiagRepeat",

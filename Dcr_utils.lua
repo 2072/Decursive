@@ -563,16 +563,20 @@ function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
 
         DcrTimers[RefName][1] = self:ScheduleTimer (
         function(arg)
+            T._DebugTimerRefName = RefName;
             DcrTimers[RefName][1] = false;
             FunctionRef(unpack(arg));
+            T._DebugTimerRefName = "";
         end
         , Delay, DcrTimers[RefName][2]
         );
     else
         DcrTimers[RefName][1] = self:ScheduleTimer (
         function(arg)
+            T._DebugTimerRefName = RefName;
             DcrTimers[RefName][1] = false;
             FunctionRef(arg);
+            T._DebugTimerRefName = "";
         end
         , Delay, arg1
         );
