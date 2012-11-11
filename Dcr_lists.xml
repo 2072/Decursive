@@ -49,7 +49,6 @@
         return;
         end
 
-        -- DecursiveRootTable.Dcr:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
     </Script>
 
     <Button name="DcrSimpleTextOnlyButton" hidden="true" virtual="true">
@@ -895,15 +894,11 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        if DecursiveRootTable._C.MOP then
-                            DecursiveRootTable.Dcr:PopulateButtonPress(self);
-                        end
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        if not DecursiveRootTable._C.MOP then
-                            return;
-                        end
+                        
                         self.ClassType = DecursiveRootTable._C.CLASS_MONK;
                         self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
