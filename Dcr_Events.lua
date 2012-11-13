@@ -623,7 +623,7 @@ do -- Combat log event handling {{{1
 
                 if auraTYPE_failTYPE == "BUFF" and self.profile.Show_Stealthed_Status then
 
-                    if DC.IsStealthBuff[spellNAME] then
+                    if DC.IS_STEALTH_BUFF[spellNAME] then
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units[UnitID] = true;
                         else
@@ -660,7 +660,7 @@ do -- Combat log event handling {{{1
                 self.LiveList:DelayedGetDebuff("target");
 
                 if auraTYPE_failTYPE == "BUFF" and self.profile.Show_Stealthed_Status then
-                    if DC.IsStealthBuff[spellNAME] then
+                    if DC.IS_STEALTH_BUFF[spellNAME] then
                         if AuraEvents[event] == 1 then
                             self.Stealthed_Units["target"] = true;
                         else
