@@ -47,7 +47,6 @@
 
 
 local addonName, T = ...;
-T._LoadedFiles["enUS.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -71,6 +70,7 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_DIAG.xml"] or not T._LoadedFile
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["enUS.lua"] = false;
 
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "enUS", true, false);

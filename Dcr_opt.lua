@@ -22,7 +22,6 @@
 -------------------------------------------------------------------------------
 
 local addonName, T = ...;
-T._LoadedFiles["Dcr_opt.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -46,14 +45,16 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_utils.lua"] then
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["Dcr_opt.lua"] = false;
 
 local D = T.Dcr;
 
 local L  = D.L;
 local LC = D.LC;
 local DC = T._C;
-local DS = DC.DS;
+T._CatchAllErrors = "LibDBIcon";
 local icon = LibStub("LibDBIcon-1.0", true)
+T._CatchAllErrors = false;
 
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
@@ -69,9 +70,10 @@ local InCombatLockdown  = _G.InCombatLockdown;
 local _;
 -- Default values for the option
 
-D:GetSpellsTranslations(false); -- Register spell translations
 
 function D:GetDefaultsSettings()
+    local DS = DC.DS;
+
     return {
         -- default settings {{{
         class = {
@@ -714,7 +716,7 @@ local function GetStaticOptions ()
                         func = function ()
                             LibStub("AceConfigDialog-3.0"):Close(D.name);
                             GameTooltip:Hide();
-                            D:ShowDebugReport();
+                            T._ShowDebugReport();
                         end,
                         hidden = function() return  #T._DebugTextTable < 1 end,
                         order = 1000
@@ -1754,7 +1756,9 @@ end
 function D:ExportOptions ()
     -- Export the option table to Blizz option UI and to Ace3 option UI
 
+    T._CatchAllErrors = "ExportOptions"; 
     LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  GetOptions, 'dcr');
+    T._CatchAllErrors = false; 
 
     
     -- Don't feed the interface option panel until Blizz fixes the taint issue...
@@ -2948,84 +2952,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 
 end -- }}}
 
-do
-    local DebugHeader = false;
-    local HeaderFailOver = "|cFF11FF33Please report the content of this window to Archarodim@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
-    local LoadedAddonNum = 0;
-
-    local function GetAddonListAsString ()
-        local addonCount = GetNumAddOns();
-        local loadedAddonList = {};
-
-        for addonID=1, addonCount do
-            local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(addonID)
-            if security == 'INSECURE' and IsAddOnLoaded(addonID) then
-                local version = GetAddOnMetadata(addonID, "Version");
-
-                table.insert(loadedAddonList, ("%s (%s)"):format(name, version or 'N/A'));
-
-            end
-        end
-
-        LoadedAddonNum = #loadedAddonList;
-        return table.concat(loadedAddonList, "\n");
-    end
-
-    local function setReportHeader()
-
-        local instructionsHeader;
-
-        if not D.db.global.NewerVersionName then
-            instructionsHeader = D.L and D.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
-        else
-            instructionsHeader = D.L and ((D.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(D.db.global.NewerVersionName)) or HeaderFailOver;
-            -- disable bug me not since the user _clearly_ took the wrong decision
-            D.db.global.NewVersionsBugMeNot = false;
-        end
-
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
-        DC.MyClass, tostring(UnitLevel("player") or "??"), D:NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
-        BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
-        tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
-        T._NonDecursiveErrors, -- nDrE: %d
-        tostring(T._EmbeddedMode), -- Embeded: %s
-        IsWindowsClient() and 1 or 0, -- W: %d
-        LoadedAddonNum, -- LA: %d
-        T._TaintingAccusations, -- TA: %d
-        GetBuildInfo()); --  (%s, %s, %s, %s)
-    end
-
-    function D:ShowDebugReport()
-
-        if DC.DevVersionExpired then
-            self:VersionWarnings(true);
-            return;
-        end
-
-        local yourWastingMyTime = "";
-        if self.db.global.NewerVersionName then
-            yourWastingMyTime = L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"];
-        end
-
-        -- get running add-ons list
-        local success, errorm, loadedAddonList;
-        success, errorm, loadedAddonList = pcall (GetAddonListAsString);
-
-        local headerSucess, hederGenErrorm;
-        if not DebugHeader then
-            headerSucess, hederGenErrorm = pcall(setReportHeader);
-        else
-            headerSucess = true;
-        end
-
-
-        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
-        _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
-
-        _G.DecursiveDEBUGtext:SetText(L["DECURSIVE_DEBUG_REPORT"]);
-        _G.DecursiveDebuggingFrame:Show();
-    end
-end
 
 T._LoadedFiles["Dcr_opt.lua"] = "@project-version@";
 

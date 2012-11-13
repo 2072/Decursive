@@ -20,7 +20,6 @@
 -------------------------------------------------------------------------------
 
 local addonName, T = ...;
-T._LoadedFiles["Dcr_lists.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -44,15 +43,14 @@ if not T._LoadedFiles or not T._LoadedFiles["Decursive.xml"] or not T._LoadedFil
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["Dcr_lists.lua"] = false;
 
 local D = T.Dcr;
---D:SetDateAndRevision("$Date: 2008-08-12 04:50:10 +0200 (mar., 12 août 2008) $", "$Revision: 80230 $");
 
 
 local L = D.L;
 local LC = D.LC;
 local DC = T._C;
-local DS = DC.DS;
 local _;
 local _G = _G;
 

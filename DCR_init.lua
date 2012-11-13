@@ -22,7 +22,6 @@
 -------------------------------------------------------------------------------
 
 local addonName, T = ...;
-T._LoadedFiles["DCR_init.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
     -- the beautiful error popup : {{{ -
@@ -46,362 +45,127 @@ if not T._LoadedFiles or not T._LoadedFiles["enUS.lua"] then
     DecursiveInstallCorrupted = true;
     return;
 end
-
-T.Dcr         = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "LibShefkiTimer-1.0", "AceHook-3.0");
---@debug@
---Dcr = T.Dcr; -- needed until we get rid of the xml based UI.
---@end-debug@
-
-local D = T.Dcr;
-
-D.name = "Decursive";
-D.version = "@project-version@";
-D.author = "John Wellesz";
-
-D.L         = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
-
-D.LC        = _G.LOCALIZED_CLASS_NAMES_MALE;
-
-if not D.LC then
-    T._AddDebugText("DCR_init.lua: Couldn't get LOCALIZED_CLASS_NAMES_MALE!");
-    D.LC = {};
-end
-
-D.DcrFullyInitialized = false;
-
-local L = D.L;
-local LC = D.LC;
-
-local BOOKTYPE_PET      = BOOKTYPE_PET;
-local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
-
-
-
-
-local select            = _G.select;
-local pairs             = _G.pairs;
-local ipairs            = _G.ipairs;
-local next              = _G.next;
-local InCombatLockdown  = _G.InCombatLockdown;
-local GetTalentInfo     = _G.GetTalentInfo;
-local UnitClass         = _G.UnitClass;
-local time              = _G.time;
-
-
-
--------------------------------------------------------------------------------
--- variables {{{
--------------------------------------------------------------------------------
-D.Groups_datas_are_invalid = true;
--------------------------------------------------------------------------------
--- Internal HARD settings for Decursive
-D.CONF = {};
-D.CONF.TEXT_LIFETIME = 4.0;
-D.CONF.MAX_LIVE_SLOTS = 10;
-D.CONF.MACRONAME = "Decursive";
-D.CONF.MACROCOMMAND = string.format("MACRO %s", D.CONF.MACRONAME);
-
-BINDING_HEADER_DECURSIVE = "Decursive";
-
-
--- CONSTANTS
-
-local DC = T._C;
-
-DC.DS = {};
-
-local DS = DC.DS;
-
-DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.ogg";
-DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.ogg";
---DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
-
-DC.IconON = "Interface\\AddOns\\Decursive\\iconON.tga";
-DC.IconOFF = "Interface\\AddOns\\Decursive\\iconOFF.tga";
-
-DC.CLASS_DRUID       = 'DRUID';
-DC.CLASS_HUNTER      = 'HUNTER';
-DC.CLASS_MAGE        = 'MAGE';
-DC.CLASS_PALADIN     = 'PALADIN';
-DC.CLASS_PRIEST      = 'PRIEST';
-DC.CLASS_ROGUE       = 'ROGUE';
-DC.CLASS_SHAMAN      = 'SHAMAN';
-DC.CLASS_WARLOCK     = 'WARLOCK';
-DC.CLASS_WARRIOR     = 'WARRIOR';
-DC.CLASS_DEATHKNIGHT = 'DEATHKNIGHT';
-DC.CLASS_MONK        = 'MONK';
-
-DC.MyClass = "NOCLASS";
-DC.MyName = "NONAME";
-DC.MyGUID = "NONE";
-
-DC.MAGIC        = 1;
-DC.ENEMYMAGIC   = 2;
-DC.CURSE        = 4;
-DC.POISON       = 8;
-DC.DISEASE      = 16;
-DC.CHARMED      = 32;
-DC.NOTYPE       = 64;
-
-
-DC.NORMAL                   = 8;
-DC.ABSENT                   = 16;
-DC.FAR                      = 32;
-DC.STEALTHED                = 64;
-DC.BLACKLISTED              = 128;
-DC.AFFLICTED                = 256;
-DC.AFFLICTED_NIR            = 512;
-DC.CHARMED_STATUS           = 1024;
-DC.AFFLICTED_AND_CHARMED = bit.bor(DC.AFFLICTED, DC.CHARMED_STATUS);
-
-DC.MFSIZE = 20;
-
--- This value is returned by UnitName when the name of a unit is not available yet
-DC.UNKNOWN = UNKNOWNOBJECT;
-
--- Get the translation for "pet"
-DC.PET = SPELL_TARGET_TYPE8_DESC;
-
-DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage creation
-
-DC.DevVersionExpired = false;
-
--- Create MUFs number fontinstance
-DC.NumberFontFileName = _G.NumberFont_Shadow_Small:GetFont();
-
-DC.RAID_ICON_LIST = _G.ICON_LIST;
-if not DC.RAID_ICON_LIST then
-    T._AddDebugText("DCR_init.lua: Couldn't get Raid Target Icon List!");
-    DC.RAID_ICON_LIST = {};
-end
-
-DC.RAID_ICON_TEXTURE_LIST = {};
-
-for i,v in ipairs(DC.RAID_ICON_LIST) do
-    DC.RAID_ICON_TEXTURE_LIST[i] = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_" .. i;
-end
-
-
-
-D.DebuffHistory = {};
-
-D.MFContainer = false;
-D.LLContainer = false;
-
-D.profile = {};
-D.classprofile = {};
-
-D.Status = {};
-
-D.Status.CuringSpells = {};
-D.Status.CuringSpellsPrio = {};
-D.Status.DelayedFunctionCalls = {};
-D.Status.DelayedFunctionCallsCount = 0;
-
-D.Status.Blacklisted_Array = {};
-D.Status.UnitNum = 0;
-
-D.Status.PrioChanged = true;
-
-D.Status.last_focus_GUID = false;
-D.Status.UpdateCooldown = 0;
-
-D.Status.GroupUpdatedOn = 0;
-D.Status.GroupUpdateEvent = 0;
-
-D.Status.TestLayout = false;
-D.Status.TestLayoutUNum = 25;
-
--- An acces the debuff table
-D.ManagedDebuffUnitCache = {};
--- A table UnitID=>IsDebuffed (boolean)
-D.UnitDebuffed = {};
-
--- // }}}
--------------------------------------------------------------------------------
-
-
--- D.Initialized = false;
--------------------------------------------------------------------------------
-
--- add support for FuBar
-D.independentProfile    = true; -- for Fubar
-D.hasIcon               = DC.IconOFF;
-D.hasNoColor            = true;
-D.overrideMenu          = true;
-D.defaultMinimapPosition = 250;
-D.hideWithoutStandby    = true;
-D.defaultPosition       = "LEFT";
-D.hideMenuTitle         = true;
-
-function D:AddDebugText(a1, ...)
-    T._AddDebugText(a1, ...);
-end
-
-function D:VersionWarnings(forceDisplay)
-
-    local alpha = false;
-    local fromCheckOut = false;
-    --@alpha@
-    alpha = true;
-    --@end-alpha@
-
-
-    -- test if WoW's TOC version is superior to Decursive's, wait 40 days and warn the users that this version has expired
-    local DcrMaxTOC = tonumber(GetAddOnMetadata("Decursive", "X-Max-Interface") or math.huge); -- once GetAddOnMetadata() was bugged and returned nil...
-    if DcrMaxTOC < T._tocversion then
-
-        -- store the detection of this problem
-        if not self.db.global.TocExpiredDetection then
-            self.db.global.TocExpiredDetection = time();
-
-        elseif time() - self.db.global.TocExpiredDetection > 3600 * 24 * 40 then -- if more than 40 days elapsed since the detection
-
-            DC.DevVersionExpired = true; -- disable error reports
-
-            if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
-
-                StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
-
-                self.db.global.LastExpirationAlert = time();
-            end
-        end
-    else
-        self.db.global.TocExpiredDetection = false;
-    end
-
-    if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or ("@project-version@"):find("Candidate") or alpha then
-
-        D.RunningADevVersion = true;
-
-        -- check for expiration of this dev version
-        if D.VersionTimeStamp ~= 0 then
-
-            local VersionLifeTime  = 3600 * 24 * 30; -- 30 days
-
-            if time() > D.VersionTimeStamp + VersionLifeTime then
-                DC.DevVersionExpired = true;
-                -- Display the expiration notice only once evry 48 hours
-                if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
-                    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
-
-                    self.db.global.LastExpirationAlert = time();
-                end
-
-                return;
-            end
-
-        end
-
-        -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
-        if self.db.global.NonRelease ~= "@project-version@" then
-            self.db.global.NonRelease = "@project-version@";
-            StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
-        end
-    end
+T._LoadedFiles["DCR_init.lua"] = false;
+
+local D;
+local function RegisterDecursive_Once() -- {{{
+    T.Dcr = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "LibShefkiTimer-1.0", "AceHook-3.0");
+    D     = T.Dcr;
 
     --@debug@
-    fromCheckOut = true;
-    if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
-        StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. 
-        [[
-        |cFFFF0000You're using an unpackaged version of Decursive.|r
-        Decursive is not meant to be used this way.
-        Annoying and invasive debugging messages will be displayed.
-        More resources (memory and CPU) will be used due to debug routines and sanity test code being executed.
-        Localisation is not working and English text may be wrong.
-
-        Using Decursive in this state will bring you nothing but troubles.
-
-        |cFF00FF00Alpha versions of Decursive are automatically packaged. You should use those instead.|r
-
-        ]]
-        .. "|r");
-
-        self.db.global.LastUnpackagedAlert = time();
-    end
+    --Dcr = T.Dcr;
     --@end-debug@
 
-    -- re-enable new version pop-up alerts when a newer version is installed
-    if D.db.global.NewVersionsBugMeNot and D.db.global.NewVersionsBugMeNot < D.VersionTimeStamp then
-        D.db.global.NewVersionsBugMeNot = false;
+    D.name = "Decursive";
+    D.version = "@project-version@";
+    D.author = "John Wellesz";
+
+    D.DcrFullyInitialized = false;
+
+    RegisterDecursive_Once = nil;
+
+end -- }}}
+
+local function RegisterLocals_Once() -- {{{
+
+    D.L         = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
+
+    D.LC        = _G.LOCALIZED_CLASS_NAMES_MALE;
+
+    if not D.LC then
+        T._AddDebugText("DCR_init.lua: Couldn't get LOCALIZED_CLASS_NAMES_MALE!");
+        D.LC = {};
     end
 
+    RegisterLocals_Once = nil;
+end -- }}}
 
-    -- Prevent time travelers from blocking the system
-    if D.db.global.NewerVersionDetected > time() then
-        D.db.global.NewerVersionDetected = D.VersionTimeStamp;
-        D.db.global.NewerVersionName = false;
-        D.db.global.NewerVersionAlert = 0;
-        D:Debug("|cFFFF0000TIME TRAVELER DETECTED!|r");
+local function SetBasicConstants_Once() -- these are constants that may be used at parsing time in other .lua and .xml {{{
+    
+    local DC = T._C;
+    
+    DC.IconON = "Interface\\AddOns\\Decursive\\iconON.tga";
+    DC.IconOFF = "Interface\\AddOns\\Decursive\\iconOFF.tga";
+
+    DC.MFSIZE = 20;
+
+    -- This value is returned by UnitName when the name of a unit is not available yet
+    DC.UNKNOWN = UNKNOWNOBJECT;
+
+    -- Get the translation for "pet"
+    DC.PET = SPELL_TARGET_TYPE8_DESC;
+
+    DC.DevVersionExpired = false; -- may be used early by the debugger
+
+    DC.MAGIC        = 1;
+    DC.ENEMYMAGIC   = 2;
+    DC.CURSE        = 4;
+    DC.POISON       = 8;
+    DC.DISEASE      = 16;
+    DC.CHARMED      = 32;
+    DC.NOTYPE       = 64;
+
+    DC.CLASS_DRUID       = 'DRUID';
+    DC.CLASS_HUNTER      = 'HUNTER';
+    DC.CLASS_MAGE        = 'MAGE';
+    DC.CLASS_PALADIN     = 'PALADIN';
+    DC.CLASS_PRIEST      = 'PRIEST';
+    DC.CLASS_ROGUE       = 'ROGUE';
+    DC.CLASS_SHAMAN      = 'SHAMAN';
+    DC.CLASS_WARLOCK     = 'WARLOCK';
+    DC.CLASS_WARRIOR     = 'WARRIOR';
+    DC.CLASS_DEATHKNIGHT = 'DEATHKNIGHT';
+    DC.CLASS_MONK        = 'MONK';
+
+    DC.MyClass = "NOCLASS";
+    DC.MyName = "NONAME";
+    DC.MyGUID = "NONE";
+
+    DC.NORMAL                   = 8;
+    DC.ABSENT                   = 16;
+    DC.FAR                      = 32;
+    DC.STEALTHED                = 64;
+    DC.BLACKLISTED              = 128;
+    DC.AFFLICTED                = 256;
+    DC.AFFLICTED_NIR            = 512;
+    DC.CHARMED_STATUS           = 1024;
+    DC.AFFLICTED_AND_CHARMED    = bit.bor(DC.AFFLICTED, DC.CHARMED_STATUS);
+
+    DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.ogg";
+    DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.ogg";
+    --DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
+
+    SetBasicConstants_Once = nil;
+end -- }}}
+
+local function SetRuntimeConstants_Once () -- {{{
+
+    BINDING_HEADER_DECURSIVE = "Decursive"; -- XXX --> when loaded
+
+    D.CONF = {}; -- this table is only used in dcr opt through a function
+    D.CONF.TEXT_LIFETIME = 4.0;
+    D.CONF.MAX_LIVE_SLOTS = 10;
+    D.CONF.MACRONAME = "Decursive";
+    D.CONF.MACROCOMMAND = "MACRO " .. D.CONF.MACRONAME;
+
+    local DC = T._C;
+
+    DC.DebuffHistoryLength = 40; -- we use a rather high value to avoid garbage creation
+
+    -- Create MUFs number fontinstance
+    DC.NumberFontFileName = _G.NumberFont_Shadow_Small:GetFont(); -- XXX only used during MUFs creation
+
+    DC.RAID_ICON_LIST = _G.ICON_LIST;
+    if not DC.RAID_ICON_LIST then
+        T._AddDebugText("DCR_init.lua: Couldn't get Raid Target Icon List!");
+        DC.RAID_ICON_LIST = {};
     end
 
-    -- if not fromCheckOut then -- this version is properly packaged
-    if D.db.global.NewerVersionName then -- a new version was detected some time ago
-        if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
-            if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 4 then -- it's been more than 4 days since the new version alert was shown
-                if not D.db.global.NewVersionsBugMeNot then -- the user did not disable new version alerts
-                    StaticPopup_Show ("Decursive_Notice_Frame", "|cff55ff55Decursive version: @project-version@|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
-                    D.db.global.NewerVersionAlert = time();
-                end
-            end
-        else
-            D.db.global.NewerVersionDetected = D.VersionTimeStamp;
-            D.db.global.NewerVersionName = false;
-        end
+    DC.RAID_ICON_TEXTURE_LIST = {};
+
+    for i,v in ipairs(DC.RAID_ICON_LIST) do
+        DC.RAID_ICON_TEXTURE_LIST[i] = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_" .. i;
     end
---    end
-
-end
-
-
-function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
-
-    if T._SelfDiagnostic() == 2 then
-        return false;
-    end
-
-    T._HookErrorHandler();
-    T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
-
-    D:LocalizeBindings ();
-    D.defaults = D:GetDefaultsSettings();
-
-    self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
-
-    self.db.RegisterCallback(self, "OnProfileChanged", "SetConfiguration")
-    self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
-    self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
-
-
-    -- Register slashes command {{{
-    self:RegisterChatCommand("dcrdiag"      ,function() T._SelfDiagnostic(true, true)               end         );
-    self:RegisterChatCommand("decursive"    ,function() LibStub("AceConfigDialog-3.0"):Open(D.name) end         );
-    self:RegisterChatCommand("dcrpradd"     ,function() D:AddTargetToPriorityList()                 end, false  );
-    self:RegisterChatCommand("dcrprclear"   ,function() D:ClearPriorityList()                       end, false  );
-    self:RegisterChatCommand("dcrprshow"    ,function() D:ShowHidePriorityListUI()                  end, false  );
-    self:RegisterChatCommand("dcrskadd"     ,function() D:AddTargetToSkipList()                     end, false  );
-    self:RegisterChatCommand("dcrskclear"   ,function() D:ClearSkipList()                           end, false  );
-    self:RegisterChatCommand("dcrskshow"    ,function() D:ShowHideSkipListUI()                      end, false  );
-    self:RegisterChatCommand("dcrreset"     ,function() D:ResetWindow()                             end, false  );
-    self:RegisterChatCommand("dcrshow"      ,function() D:HideBar(0)                                end, false  );
-    self:RegisterChatCommand("dcrhide"      ,function() D:HideBar(1)                                end, false  );
-    self:RegisterChatCommand("dcrshoworder" ,function() D:Show_Cure_Order()                         end, false  );
-    self:RegisterChatCommand("dcrreport"    ,function() D:ShowDebugReport()                         end, false  );
-    -- }}}
-
-    -- Create some useful cache tables
-    D:CreateClassColorTables();
-
-
-    D.MFContainer = DcrMUFsContainer;
-    D.MFContainerHandle = DcrMUFsContainerDragButton;
-    D.MicroUnitF.Frame = D.MFContainer;
-
-
-    D.LLContainer = DcrLiveList;
-    D.LiveList.Frame = DcrLiveList;
-
 
     DC.TypeNames = {
         [DC.MAGIC]      = "Magic",
@@ -435,7 +199,13 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
     }
     DC.LocalizableTypeNamesToTypes = D:tReverse(DC.TypeToLocalizableTypeNames);
 
-    -- SPELL TABLE -- must be parsed after localisation is loaded {{{
+    -- Create some useful cache tables
+
+    local DS = T._C.DS;
+
+    DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
+
+    -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
     DC.SpellsToUse = {
         -- Druids
         [DS["SPELL_CYCLONE"]] = {
@@ -595,6 +365,239 @@ function D:OnInitialize() -- Called on ADDON_LOADED -- {{{
         };
     end
 
+    D:CreateClassColorTables();
+
+    SetRuntimeConstants_Once = nil;
+
+end -- }}}
+
+local function InitVariables_Once() -- {{{
+
+
+    D.MFContainer = false;
+    D.LLContainer = false;
+
+    D.Status = {}; -- might be used by some script in xml files
+
+    -- An acces the debuff table
+    D.ManagedDebuffUnitCache = {};
+    -- A table UnitID=>IsDebuffed (boolean)
+    D.UnitDebuffed = {};
+
+    D.Revision = "@project-abbreviated-hash@"; -- not used here but some other add-on may request it from outside
+    D.date = "@project-date-iso@";
+    D.version = "@project-version@";
+
+    if D.date ~= "@project".."-date-iso@" then
+        -- @project-timestamp@ doesn't work
+
+        --local example =  "2008-05-01T12:34:56Z";
+
+        local year, month, day, hour, min, sec = string.match( D.date, "(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)");
+        local projectDate = {["year"] = year, ["month"] = month, ["day"] = day, ["hour"] = hour, ["min"] = min, ["sec"] = sec, ["isdst"] = false };
+
+        D.VersionTimeStamp = time(projectDate);
+    else
+        D.VersionTimeStamp = 0;
+    end
+
+    InitVariables_Once = nil;
+end -- }}}
+
+-- Basic initialization functions, if they fail nothing will work. T._CatchAllErrors allows the debugger to also grab errors happening in libraries
+T._CatchAllErrors = "RegisterDecursive_Once";   RegisterDecursive_Once();
+T._CatchAllErrors = "RegisterLocals_Once";      RegisterLocals_Once();
+
+T._CatchAllErrors = "SetBasicConstants_Once";   SetBasicConstants_Once();
+T._CatchAllErrors = "InitVariables_Once";       InitVariables_Once();
+
+-- Upvalues for faster access
+local L  = D.L;
+local LC = D.LC;
+local DC = T._C;
+
+local BOOKTYPE_PET      = BOOKTYPE_PET;
+local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
+
+local select            = _G.select;
+local pairs             = _G.pairs;
+local ipairs            = _G.ipairs;
+local next              = _G.next;
+local InCombatLockdown  = _G.InCombatLockdown;
+local GetTalentInfo     = _G.GetTalentInfo;
+local UnitClass         = _G.UnitClass;
+local time              = _G.time;
+
+function D:AddDebugText(a1, ...)
+    T._AddDebugText(a1, ...);
+end
+
+function D:VersionWarnings(forceDisplay) -- {{{
+
+    local alpha = false;
+    local fromCheckOut = false;
+    --@alpha@
+    alpha = true;
+    --@end-alpha@
+
+
+    -- test if WoW's TOC version is superior to Decursive's, wait 40 days and warn the users that this version has expired
+    local DcrMaxTOC = tonumber(GetAddOnMetadata("Decursive", "X-Max-Interface") or math.huge); -- once GetAddOnMetadata() was bugged and returned nil...
+    if DcrMaxTOC < T._tocversion then
+
+        -- store the detection of this problem
+        if not self.db.global.TocExpiredDetection then
+            self.db.global.TocExpiredDetection = time();
+
+        elseif time() - self.db.global.TocExpiredDetection > 3600 * 24 * 40 then -- if more than 40 days elapsed since the detection
+
+            DC.DevVersionExpired = true; -- disable error reports
+
+            if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
+
+                StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
+
+                self.db.global.LastExpirationAlert = time();
+            end
+        end
+    else
+        self.db.global.TocExpiredDetection = false;
+    end
+
+    if (("@project-version@"):lower()):find("beta") or ("@project-version@"):find("RC") or ("@project-version@"):find("Candidate") or alpha then
+
+        D.RunningADevVersion = true;
+
+        -- check for expiration of this dev version
+        if D.VersionTimeStamp ~= 0 then
+
+            local VersionLifeTime  = 3600 * 24 * 30; -- 30 days
+
+            if time() > D.VersionTimeStamp + VersionLifeTime then
+                DC.DevVersionExpired = true;
+                -- Display the expiration notice only once evry 48 hours
+                if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
+                    StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+
+                    self.db.global.LastExpirationAlert = time();
+                end
+
+                return;
+            end
+
+        end
+
+        -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
+        if self.db.global.NonRelease ~= "@project-version@" then
+            self.db.global.NonRelease = "@project-version@";
+            StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+        end
+    end
+
+    --@debug@
+    fromCheckOut = true;
+    if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
+        StaticPopup_Show ("Decursive_Notice_Frame", "|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. 
+        [[
+        |cFFFF0000You're using an unpackaged version of Decursive.|r
+        Decursive is not meant to be used this way.
+        Annoying and invasive debugging messages will be displayed.
+        More resources (memory and CPU) will be used due to debug routines and sanity test code being executed.
+        Localisation is not working and English text may be wrong.
+
+        Using Decursive in this state will bring you nothing but troubles.
+
+        |cFF00FF00Alpha versions of Decursive are automatically packaged. You should use those instead.|r
+
+        ]]
+        .. "|r");
+
+        self.db.global.LastUnpackagedAlert = time();
+    end
+    --@end-debug@
+
+    -- re-enable new version pop-up alerts when a newer version is installed
+    if D.db.global.NewVersionsBugMeNot and D.db.global.NewVersionsBugMeNot < D.VersionTimeStamp then
+        D.db.global.NewVersionsBugMeNot = false;
+    end
+
+
+    -- Prevent time travelers from blocking the system
+    if D.db.global.NewerVersionDetected > time() then
+        D.db.global.NewerVersionDetected = D.VersionTimeStamp;
+        D.db.global.NewerVersionName = false;
+        D.db.global.NewerVersionAlert = 0;
+        D:Debug("|cFFFF0000TIME TRAVELER DETECTED!|r");
+    end
+
+    -- if not fromCheckOut then -- this version is properly packaged
+    if D.db.global.NewerVersionName then -- a new version was detected some time ago
+        if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
+            if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 4 then -- it's been more than 4 days since the new version alert was shown
+                if not D.db.global.NewVersionsBugMeNot then -- the user did not disable new version alerts
+                    StaticPopup_Show ("Decursive_Notice_Frame", "|cff55ff55Decursive version: @project-version@|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
+                    D.db.global.NewerVersionAlert = time();
+                end
+            end
+        else
+            D.db.global.NewerVersionDetected = D.VersionTimeStamp;
+            D.db.global.NewerVersionName = false;
+        end
+    end
+--    end
+
+end -- }}}
+
+
+function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
+
+    if T._SelfDiagnostic() == 2 then
+        return false;
+    end
+
+    T._CatchAllErrors = "OnInitialize"; -- During init we catch all the errors else, if a library fails we won't know it.
+
+    D:LocalizeBindings ();
+
+    D:SetSpellsTranslations(false); -- Register spell translations
+
+    D.defaults = D:GetDefaultsSettings();
+
+    self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
+
+    self.db.RegisterCallback(self, "OnProfileChanged", "SetConfiguration")
+    self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
+    self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
+
+
+    -- Register slashes command {{{
+    self:RegisterChatCommand("dcrdiag"      ,function() T._SelfDiagnostic(true, true)               end         );
+    self:RegisterChatCommand("decursive"    ,function() LibStub("AceConfigDialog-3.0"):Open(D.name) end         );
+    self:RegisterChatCommand("dcrpradd"     ,function() D:AddTargetToPriorityList()                 end, false  );
+    self:RegisterChatCommand("dcrprclear"   ,function() D:ClearPriorityList()                       end, false  );
+    self:RegisterChatCommand("dcrprshow"    ,function() D:ShowHidePriorityListUI()                  end, false  );
+    self:RegisterChatCommand("dcrskadd"     ,function() D:AddTargetToSkipList()                     end, false  );
+    self:RegisterChatCommand("dcrskclear"   ,function() D:ClearSkipList()                           end, false  );
+    self:RegisterChatCommand("dcrskshow"    ,function() D:ShowHideSkipListUI()                      end, false  );
+    self:RegisterChatCommand("dcrreset"     ,function() D:ResetWindow()                             end, false  );
+    self:RegisterChatCommand("dcrshow"      ,function() D:HideBar(0)                                end, false  );
+    self:RegisterChatCommand("dcrhide"      ,function() D:HideBar(1)                                end, false  );
+    self:RegisterChatCommand("dcrshoworder" ,function() D:Show_Cure_Order()                         end, false  );
+    self:RegisterChatCommand("dcrreport"    ,function() T._ShowDebugReport()                         end, false  );
+    -- }}}
+
+
+    -- Shortcuts to xml created objects
+    D.MFContainer       = DcrMUFsContainer;
+    D.MFContainerHandle = DcrMUFsContainerDragButton;
+    D.MicroUnitF.Frame  = D.MFContainer;
+    D.LLContainer       = DcrLiveList;
+    D.LiveList.Frame    = DcrLiveList;
+
+    D.DebuffHistory = {};
+
+    SetRuntimeConstants_Once(); 
+
     LibStub("AceComm-3.0"):RegisterComm("DecursiveVersion", D.OnCommReceived);
 
     T._CatchAllErrors = false;
@@ -607,7 +610,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     if T._SelfDiagnostic() == 2 then
         return false;
     end
-    T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
+    T._CatchAllErrors = "OnEnable"; -- During init we catch all the errors else, if a library fails we won't know it.
     D.debug = D.db.global.debug;
 
 
@@ -683,12 +686,12 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
 end -- // }}}
 
-function D:SetConfiguration()
+function D:SetConfiguration() -- {{{
 
     if T._SelfDiagnostic() == 2 then
         return false;
     end
-    T._CatchAllErrors = true; -- During init we catch all the errors else, if a library fails we won't know it.
+    T._CatchAllErrors = "SetConfiguration"; -- During init we catch all the errors else, if a library fails we won't know it.
 
     D.DcrFullyInitialized = false;
     D:CancelDelayedCall("Dcr_LLupdate");
@@ -720,6 +723,7 @@ function D:SetConfiguration()
     D.Status.InternalPrioList = {};
     D.Status.InternalSkipList = {};
     
+    D.Stealthed_Units = {};
 
     -- if we log in and we are already fighting...
     if InCombatLockdown() then
@@ -787,9 +791,9 @@ function D:SetConfiguration()
 
     T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
     D:VersionWarnings();
-end
+end -- }}}
 
-function D:OnDisable() -- When the addon is disabled by Ace
+function D:OnDisable() -- When the addon is disabled by Ace -- {{{
     D.Status.Enabled = false;
     D.DcrFullyInitialized = false;
     
@@ -818,43 +822,7 @@ function D:OnDisable() -- When the addon is disabled by Ace
 
     LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
     StaticPopup_Show("Decursive_OnDisableWarning");
-end
-
--- A list of some people I personally have problems with. Decursive will not function for them.
--- I don't want this kind of people benefiting from my hard work.
--- Those [Insert appropriate word here] are players you really don't want to meet. Ignorance is just not enough for them...
--- This list will only be used to disable Decursive for them, nothing else will ever happen.
-local BADPLAYERS = {
-    {"|A|r|a|d|o|s", "|C|o|n|s|e|i|l| |d|e|s| |O|m|b|r|e|s|", "|P|A|L|A|D|I|N|"}, -- This one gave me the most horrible experience I ever had in a pickup-group (At the Oculus). He is a terrible leader ; the kind of incompetent person who will accuse you of his own failures. All of this in a perverse and insidious way so he can turn others against you.
-
-
-    --{"|A|r|c|h|a|r|o|d|i|m|", "|L|e|s| |S|e|n|t|i|n|e|l|l|e|s|", "|M|A|G|E|"}, -- so I can test if it works.
-};
-local BADPLAYERS_READABLE = false;
-local GetRealmName = _G.GetRealmName;
-function D:CheckPlayer()
-
-    if not BADPLAYERS_READABLE then
-        BADPLAYERS_READABLE = {};
-        D:tcopycallback(BADPLAYERS_READABLE, BADPLAYERS, function (data) return (data:gsub("|", "")) end);
-        BADPLAYERS = nil;
-    end
-
-    for i=1, #BADPLAYERS_READABLE do
-        --D:Debug("TEST 1");
-        if BADPLAYERS_READABLE[i][1] == (self:UnitName("player")) then
-            --D:Debug("TEST 2 name ");
-            if BADPLAYERS_READABLE[i][2] == GetRealmName() then
-                --D:Debug("TEST 3 realmname");
-                if BADPLAYERS_READABLE[i][3] == (select(2, UnitClass("player"))) then
-                    --D:Debug("TEST 4 unitclass");
-                    D:Disable();
-                    break;
-                end
-            end
-        end
-    end
-end
+end -- }}}
 
 -------------------------------------------------------------------------------
 -- init functions and configuration functions {{{
@@ -926,7 +894,7 @@ function D:Init() --{{{
 
 end --}}}
 
-local function SpellIterator()
+local function SpellIterator() -- {{{
     local currentSpellTable = DC.SpellsToUse;
     local currentKey = nil;
     local iter
@@ -962,7 +930,7 @@ local function SpellIterator()
     end;
 
     return iter;
-end
+end -- }}}
 
 function D:ReConfigure() --{{{
 
@@ -1133,10 +1101,18 @@ function D:Configure() --{{{
 
 end --}}}
 
-function D:GetSpellsTranslations(FromDIAG)
+function D:SetSpellsTranslations(FromDIAG) -- {{{
     local GetSpellInfo = _G.GetSpellInfo;
 
     local Spells = {};
+
+    if not T._C.DS then
+        T._C.DS = {};
+    end
+
+    local DS = T._C.DS;
+
+
 
     -- /spew DecursiveRootTable._C.DS
 
@@ -1266,21 +1242,13 @@ function D:GetSpellsTranslations(FromDIAG)
 
     return ok;
 
-end
+end -- }}}
 
 
 -- Create the macro for Decursive
 -- This macro will cast the first spell (priority)
 
--- NEW SetBindingMacro("KEY", "macroname"|macroid)
--- UPDATED name,texture,body,isLocal = GetMacroInfo(id|"name") - Now takes ID or name
--- UPDATED DeleteMacro() -- as above
--- UPDATED EditMacro() -- as above
--- UPDATED PickupMacro() -- as above
--- CreateMacro("name", icon, "body", local)
-
-
-function D:UpdateMacro ()
+function D:UpdateMacro () -- {{{
 
 
     if D.profile.DisableMacroCreation then
@@ -1322,6 +1290,9 @@ function D:UpdateMacro ()
         0, -- per account
     };
 
+    local catchAllErrorBackup = T._CatchAllErrors;
+    T._CatchAllErrors = false; -- the API calls below fire some WoW events (UPDATE_MACRO), we don't want to catch errors done by bugged handlers
+
     --D:PrintLiteral(GetMacroIndexByName(D.CONF.MACRONAME));
     if GetMacroIndexByName(D.CONF.MACRONAME) ~= 0 then
 	if not D.profile.AllowMacroEdit then
@@ -1334,38 +1305,23 @@ function D:UpdateMacro ()
         CreateMacro(unpack(MacroParameters));
     else
         D:errln("Too many macros exist, Decursive cannot create its macro");
+        T._CatchAllErrors = catchAllErrorBackup;
         return false;
     end
 
 
     D:SetMacroKey(D.db.global.MacroBind);
 
+    T._CatchAllErrors = catchAllErrorBackup;
     return true;
 
-end
+end -- }}}
 
 
 
 -- }}}
 
-function D:SetDateAndRevision (Date, Revision)
-    if not D.TextVersion then
-        D.TextVersion = GetAddOnMetadata("Decursive", "Version");
-        D.Revision = 0;
-    end
-
-    local Rev = tonumber((string.gsub(Revision, "%$Revision: (%d+) %$", "%1")));
-
-    if  Rev and D.Revision < Rev then
-        D.Revision = Rev;
-        D.date = Date:gsub("%$Date: (.-) %$", "%1");
-        D.version = string.format("%s (|cFF11CCAARevision: %d|r)", D.TextVersion, Rev);
-    end
-end
-
---D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
-
-function D:LocalizeBindings ()
+function D:LocalizeBindings () -- {{{
 
     BINDING_NAME_DCRSHOW    = L["BINDING_NAME_DCRSHOW"];
     BINDING_NAME_DCRMUFSHOWHIDE = L["BINDING_NAME_DCRMUFSHOWHIDE"];
@@ -1379,28 +1335,9 @@ function D:LocalizeBindings ()
     BINDING_NAME_DCRSKSHOW  = L["BINDING_NAME_DCRSKSHOW"];
     BINDING_NAME_DCRSHOWOPTION = L["BINDING_NAME_DCRSHOWOPTION"];
 
-end
+end -- }}}
 
-D.Revision = "@project-abbreviated-hash@";
-D.date = "@project-date-iso@";
-D.version = "@project-version@";
-do
 
-    if D.date ~= "@project".."-date-iso@" then
-
-        -- get a fucking table of D.date so we can get a fucking timestamp with time() because @project-timestamp@ doesn't fucking work :/ FUCK!!
-
-        --local example =  "2008-05-01T12:34:56Z";
-
-        local year, month, day, hour, min, sec = string.match( D.date, "(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)");
-        local projectDate = {["year"] = year, ["month"] = month, ["day"] = day, ["hour"] = hour, ["min"] = min, ["sec"] = sec, ["isdst"] = false };
-
-        D.VersionTimeStamp = time(projectDate);
-    else
-        D.VersionTimeStamp = 0;
-    end
-
-end
 
 T._LoadedFiles["DCR_init.lua"] = "@project-version@";
 

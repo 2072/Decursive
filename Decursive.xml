@@ -24,7 +24,6 @@
     <Script>
 
         local T = DecursiveRootTable or {};
-        T._LoadedFiles["Decursive.xml"] = false;
 
         -- big ugly scary fatal error message display function {{{
         if not T._FatalError then
@@ -47,6 +46,7 @@
         if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Decursive.lua not loaded)"); end;
         DecursiveInstallCorrupted = true;
         end
+        T._LoadedFiles["Decursive.xml"] = false;
 
     </Script>
 

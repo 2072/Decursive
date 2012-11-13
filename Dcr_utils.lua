@@ -22,7 +22,6 @@
 -------------------------------------------------------------------------------
 
 local addonName, T = ...;
-T._LoadedFiles["Dcr_utils.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -46,14 +45,13 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_LDB.lua"] then
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["Dcr_utils.lua"] = false;
 
 local D = T.Dcr;
---D:SetDateAndRevision("$Date: 2008-09-16 00:48:59 +0200 (mar., 16 sept. 2008) $", "$Revision: 81756 $");
 
 local L = D.L;
 local LC = D.LC;
 local DC = T._C;
-local DS = DC.DS;
 
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
@@ -633,15 +631,12 @@ function D:GetTimersNumber()
     end
     local timercount = 0;
     local ShefkiTimer = LibStub("LibShefkiTimer-1.0");
-    --local Acetimer = LibStub("AceTimer-3.0");
     for table in pairs(ShefkiTimer.selfs[D]) do
         timercount = timercount + 1;
     end
     return "Dcr says: " .. dcrcount .. ", LibShefkiTimer says: " .. timercount;
-    --return "Dcr says: " .. dcrcount .. ", AceTimers says: " .. timercount;
 end
 
--- /echo LibStub("AceTimer-3.0").selfs[Dcr]
 
 
 -- function D:GetOPtionPath(info) {{{

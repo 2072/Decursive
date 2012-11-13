@@ -5,6 +5,8 @@
         local T = DecursiveRootTable or {};
 
         T._LoadedFiles["load.xml"] = false;
+        T._CatchAllErrors = "locals...";
+        
     </Script>
 
     <Script file="enUS.lua"/>
@@ -22,6 +24,7 @@
     <Script>
         local T = DecursiveRootTable or {};
 
+        T._CatchAllErrors = false;
         T._LoadedFiles["load.xml"] = "@project-version@";
     </Script>
 

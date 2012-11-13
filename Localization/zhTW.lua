@@ -46,7 +46,6 @@
 --]=]
 
 local addonName, T = ...;
-T._LoadedFiles["zhTW.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -70,6 +69,7 @@ if not T._LoadedFiles or not T._LoadedFiles["enUS.lua"] then
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["zhTW.lua"] = false;
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhTW");
 

@@ -46,6 +46,12 @@ T._DebugTextTable       = {};
 T._DebugText            = "";
 T._DebugTimerRefName    = "";
 
+-- fail safes, T.Dcr will be replaced by AceAddon in normal conditions
+-- Just add this so that diag functions can work even in the most dramatic events
+T.Dcr = {};
+
+
+
 local DC                = T._C;
 local DebugTextTable    =  T._DebugTextTable;
 local Reported          = {};
@@ -129,6 +135,17 @@ T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", T
 DC.StartTime = GetTime();
 
 -- Decursive LUA error manager and debug reporting functions {{{
+local function _Debug (...)
+    if T.Dcr and T.Dcr.Debug then
+        T.Dcr.Debug(...);
+    end
+end
+
+local function _Print (...)
+    if T.Dcr and T.Dcr.Print then
+        T.Dcr.Print(...);
+    end
+end
 
 local function NiceTime()
     return tonumber(("%.4f"):format(GetTime() - DC.StartTime));
@@ -155,8 +172,8 @@ local function PlaySoundFile_RanTooLongheck(message)
     -- GetTime() stays the same)
 
     if T._PlayingASound and T._PlayingASound == GetTime() and message:find("ran too long") then
-        T.Dcr:Debug('"Script ran too long" while playing sound eaten');
-        T.Dcr:Print("|cffff0000*DING!*|r (Decursive failed to play a sound)");
+        _Debug('"Script ran too long" while playing sound eaten');
+        _Print("|cffff0000*DING!*|r (Decursive failed to play a sound)");
         return true;
     end
     
@@ -180,9 +197,8 @@ end
 
 function T._AddDebugText(a1, ...)
 
-    if T.Dcr.Debug then
-        T.Dcr:Debug("Error processed");
-    end
+    _Debug("Error processed");
+
     local text = "";
 
     if select('#', ...) > 0 then
@@ -194,12 +210,19 @@ function T._AddDebugText(a1, ...)
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(NiceTime(), tostring(T._DebugTimerRefName), select(3, GetNetStats()), select(4, GetNetStats()), GetFramerate(), zone, text) );
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(NiceTime(), tostring(T._DebugTimerRefName), tostring(T._CatchAllErrors), select(3, GetNetStats()), select(4, GetNetStats()), GetFramerate(), zone, text) );
         table.insert (DebugTextTable, 1);
         Reported[text] = #DebugTextTable;
     else
         DebugTextTable[Reported[text]] = DebugTextTable[Reported[text]] + 1;
     end
+
+    -- if an error is caught while Decursive is being loaded, there is a good chance it will cancel loading alltogether.
+    -- So just display what we caught straight away.
+    if not T.Dcr.DcrFullyInitialized then
+        T._ShowDebugReport();
+    end
+
 end
 
 local AddDebugText = T._AddDebugText;
@@ -237,19 +260,18 @@ function T._onError(event, errorObject)
         end
 
         if not taintingAccusation or T._EmbeddedMode == false then -- if we are having this while we're not emebedding anything then it does matters
-            T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
             IsReporting = true;
             AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
+            T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
 
-            if T.Dcr and T.Dcr.Debug then
-                T.Dcr:Debug("Lua error recorded");
-            end
+            _Debug("Lua error recorded");
+
             IsReporting = false;
             mine = true;
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
             T._TaintingAccusations = T._TaintingAccusations + 1;
-            T.Dcr:Debug("False tainting accusation put under the carpet");
+            _Debug("False tainting accusation put under the carpet");
             return; -- bury it under the carpet since it's blaming the wrong add-on and misleading the users.
         end
     else
@@ -264,9 +286,9 @@ function T._onError(event, errorObject)
                 if T.Dcr.AddDelayedFunctionCall then
                     T.Dcr:AddDelayedFunctionCall('Load_Blizzard_DebugTools', _G.LoadAddOn, 'Blizzard_DebugTools');
 
-                    T.Dcr:Debug("Blizzard_DebugTools load has been delayed because InCombatLockdown");
+                    _Debug("Blizzard_DebugTools load has been delayed because InCombatLockdown");
                 else
-                    T.Dcr:Debug("Blizzard_DebugTools load has been cancelled because InCombatLockdown");
+                    _Debug("Blizzard_DebugTools load has been cancelled because InCombatLockdown");
                 end
                 return;
             end
@@ -284,12 +306,12 @@ function T._onError(event, errorObject)
                 return;
             end
            
-            T.Dcr:Debug("Lua error forwarded");
+            _Debug("Lua error forwarded");
 
             _G._ERRORMESSAGE( errorm );
         end
     else
-        T.Dcr:Debug("Lua error NOT forwarded, mine=", mine);
+        _Debug("Lua error NOT forwarded, mine=", mine);
     end
 
 end
@@ -300,7 +322,6 @@ local _, _, _, tocversion = GetBuildInfo();
 
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
---DC.MOP = (tocversion >= 50000);
 
 local IsInRaid = _G.IsInRaid;
 local GetNumGroupMembers = _G.GetNumGroupMembers;
@@ -333,13 +354,11 @@ function T._DecursiveErrorHandler(err, ...)
 
     local mine = false;
     if not IsReporting and (T._CatchAllErrors or (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\")) then
-	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
 
         IsReporting = true;
         AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
-        if T.Dcr then
-            T.Dcr:Debug("Error recorded");
-        end
+	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
+        _Debug("Error recorded");
         IsReporting = false;
         mine = true;
     else
@@ -359,17 +378,13 @@ end
 local WarningDisplayed = false;
 function T._TooManyErrors()
 
-    if not T.Dcr then
-        return;
-    end
-
     if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
-        T.Dcr:Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
-        T.Dcr:Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
+        _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
+        _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
         WarningDisplayed = true;
     end
 
-    T.Dcr:Debug("Error handler disabled");
+    _Debug("Error handler disabled");
 end
 
 function T._HookErrorHandler()
@@ -435,7 +450,7 @@ StaticPopupDialogs["Decursive_Notice_Frame"] = {
 do
     T._DiagStatus = false;
 
-    local PrintMessage = function (message, ...) if T._DiagStatus ~= 2 then T.Dcr:Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
+    local PrintMessage = function (message, ...) if T._DiagStatus ~= 2 then _Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
 
     function T._ExportActionsConfiguration () -- use pcall with this
@@ -448,8 +463,8 @@ do
         local result = "";
         local D = T.Dcr;
 
-        if not D then
-            return errorPrefix("T.Dcr not available");
+        if not D.Status then
+            return errorPrefix("D.Status not available");
         end
 
         local sucess, MouseButtons = pcall(function ()return D.db.global.MouseButtons end);
@@ -598,7 +613,7 @@ do
             PrintMessage("|cFF00FF00No problem found in shared libraries or Decursive files!|r");
 
             PrintMessage("Now checking spell translations...");
-            if T.Dcr:GetSpellsTranslations(true) then
+            if T.Dcr:SetSpellsTranslations(true) then
                 PrintMessage("|cFF00FF00No error found in spell translations!|r");
             end
 
@@ -611,13 +626,13 @@ do
             local ConfirmCustomEventMessage = "I was really caught!";
 
             -- Register a curstom event
-            T.Dcr:RegisterMessage(CustomEvent, function(message, DiagTestArg1) CustomEventCaught = DiagTestArg1; T.Dcr:Debug("CustomEvent callback executed"); end);
+            T.Dcr:RegisterMessage(CustomEvent, function(message, DiagTestArg1) CustomEventCaught = DiagTestArg1; _Debug("CustomEvent callback executed"); end);
 
             -- Schedule a function call in 0.5s
             T.Dcr:ScheduleDelayedCall("DcrDiagOneTimeEvent",
             function(DiagTestArg2)
                 OneTimeEvent = DiagTestArg2;
-                T.Dcr:Debug("OneTimeEvent callback executed");
+                _Debug("OneTimeEvent callback executed");
                 AddDebugText('delayed call executed');
             end, ReapeatingEventRate / 2, ConfirmOneTimeEventMessage);
 
@@ -640,10 +655,10 @@ do
                     -- get a list of current actions assignments
                     AddDebugText(pcall(T._ExportActionsConfiguration));
                     -- open the diagnostic window
-                    T.Dcr:ShowDebugReport();
+                    T._ShowDebugReport();
                     return;
                 else
-                    T.Dcr:Debug(OneTimeEvent, "is not", ConfirmOneTimeEventMessage, "and", CustomEventCaught, "is not", ConfirmCustomEventMessage);
+                    _Debug(OneTimeEvent, "is not", ConfirmOneTimeEventMessage, "and", CustomEventCaught, "is not", ConfirmCustomEventMessage);
                 end
 
                 -- cast the custom event
@@ -674,5 +689,85 @@ do
     end -- }}}
 end
 
+do -- DEBUG REPORT WINDOW {{{
+    local DebugHeader = false;
+    local HeaderFailOver = "|cFF11FF33Please report the content of this window to archarodim+DcrReport@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
+    local LoadedAddonNum = 0;
+
+    local function GetAddonListAsString ()
+        local addonCount = GetNumAddOns();
+        local loadedAddonList = {};
+
+        for addonID=1, addonCount do
+            local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(addonID)
+            if security == 'INSECURE' and IsAddOnLoaded(addonID) then
+                local version = GetAddOnMetadata(addonID, "Version");
+
+                table.insert(loadedAddonList, ("%s (%s)"):format(name, version or 'N/A'));
+
+            end
+        end
+
+        LoadedAddonNum = #loadedAddonList;
+        return table.concat(loadedAddonList, "\n");
+    end
+
+    local function setReportHeader()
+
+        local instructionsHeader;
+
+        if not T.Dcr.db or not T.Dcr.db.global.NewerVersionName then
+            instructionsHeader = T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
+        else
+            instructionsHeader = T.Dcr.L and ((T.Dcr.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(T.Dcr.db.global.NewerVersionName)) or HeaderFailOver;
+            -- disable bug me not since the user _clearly_ took the wrong decision
+            T.Dcr.db.global.NewVersionsBugMeNot = false;
+        end
+
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
+        BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
+        tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
+        T._NonDecursiveErrors, -- nDrE: %d
+        tostring(T._EmbeddedMode), -- Embeded: %s
+        IsWindowsClient() and 1 or 0, -- W: %d
+        LoadedAddonNum, -- LA: %d
+        T._TaintingAccusations, -- TA: %d
+        GetBuildInfo()); --  (%s, %s, %s, %s)
+    end
+
+    function T._ShowDebugReport()
+
+        if DC.DevVersionExpired and T.Dcr.VersionWarnings then
+            T.Dcr:VersionWarnings(true);
+            return;
+        end
+
+        local yourWastingMyTime = "";
+        if T.Dcr.db and T.Dcr.db.global.NewerVersionName then
+            yourWastingMyTime = L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"];
+        end
+
+        -- get running add-ons list
+        local success, errorm, loadedAddonList;
+        success, errorm, loadedAddonList = pcall(GetAddonListAsString);
+
+        local headerSucess, hederGenErrorm;
+        if not DebugHeader then
+            headerSucess, hederGenErrorm = pcall(setReportHeader);
+        else
+            headerSucess = true;
+        end
+
+
+        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
+        _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
+
+        _G.DecursiveDEBUGtext:SetText(T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****");
+        _G.DecursiveDebuggingFrame:Show();
+    end
+end -- }}}
+
+T._HookErrorHandler();
 
 T._LoadedFiles["Dcr_DIAG.lua"] = "@project-version@";

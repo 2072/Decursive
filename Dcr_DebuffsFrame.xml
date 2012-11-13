@@ -24,7 +24,6 @@
     <Script>
 
         local T = DecursiveRootTable or {};
-        T._LoadedFiles["Dcr_DebuffsFrame.xml"] = false;
 
         -- big ugly scary fatal error message display function {{{
         if not T._FatalError then
@@ -48,8 +47,8 @@
         DecursiveInstallCorrupted = true;
         return;
         end
+        T._LoadedFiles["Dcr_DebuffsFrame.xml"] = false;
 
-        -- DecursiveRootTable.Dcr:SetDateAndRevision("$Date: 2008-04-10 00:53:55 +0200 (jeu., 10 avr. 2008) $", "$Revision: 68827 $");
     </Script>
 
     <Frame name="DcrMUFsContainer" clampedToScreen="true" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">

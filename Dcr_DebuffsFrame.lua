@@ -23,7 +23,6 @@
 -------------------------------------------------------------------------------
 
 local addonName, T = ...;
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = false;
 
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
@@ -49,6 +48,7 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_lists.xml"] or not T._LoadedFil
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = false;
 
 local D   = T.Dcr;
 
@@ -56,7 +56,6 @@ local D   = T.Dcr;
 local L     = D.L;
 local LC    = D.LC;
 local DC    = T._C;
-local DS    = DC.DS;
 
 
 -- NS def
@@ -754,7 +753,7 @@ function MicroUnitF:OnEnter(frame) -- {{{
         for i, Debuff in ipairs(MF.Debuffs) do
             if Debuff.Type then
                 -- Create a warning if an Unstable Affliction like spell is detected XXX not very pretty will be integrated along with the filtering system comming 'soon'(tm)
-                if Debuff.Name == DS["Unstable Affliction"] or Debuff.Name == DS["Vampiric Touch"] then
+                if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
                     D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                     D:SafePlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
                 end

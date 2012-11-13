@@ -22,7 +22,6 @@
 -------------------------------------------------------------------------------
 
 local addonName, T = ...;
-T._LoadedFiles["Dcr_LDB.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -46,19 +45,21 @@ if not T._LoadedFiles or not T._LoadedFiles["DCR_init.lua"] then
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["Dcr_LDB.lua"] = false;
 
 local D = T.Dcr;
 local L = D.L;
 local LC = D.LC;
 local DC = T._C;
-local DS = DC.DS;
 
-
+T._CatchAllErrors = 'LibDBIcon';
 local icon    = LibStub("LibDBIcon-1.0");
 
+T._CatchAllErrors = 'LibQTip';
 local LibQTip = LibStub('LibQTip-1.0');
 
 
+T._CatchAllErrors = 'LibDataBroker';
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
         type = "launcher",
         OnClick = function(Frame, button)
@@ -71,6 +72,7 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
         icon = DC.IconOFF,
 });
 
+T._CatchAllErrors = false;
 
 local HeadFont;
 local function CreateFonts()

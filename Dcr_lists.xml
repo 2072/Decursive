@@ -24,7 +24,6 @@
     <Script>
 
         local T = DecursiveRootTable or {};
-        T._LoadedFiles["Dcr_lists.xml"] = false;
 
         -- big ugly scary fatal error message display function {{{
         if not T._FatalError then
@@ -48,6 +47,7 @@
         DecursiveInstallCorrupted = true;
         return;
         end
+        T._LoadedFiles["Dcr_lists.xml"] = false;
 
     </Script>
 

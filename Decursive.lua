@@ -22,7 +22,6 @@
 -------------------------------------------------------------------------------
 
 local addonName, T = ...;
-T._LoadedFiles["Decursive.lua"] = false;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
 -- the beautiful error popup : {{{ -
@@ -46,14 +45,13 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_Raid.lua"] then
     DecursiveInstallCorrupted = true;
     return;
 end
+T._LoadedFiles["Decursive.lua"] = false;
 
 local D = T.Dcr;
---D:SetDateAndRevision("$Date: 2008-09-16 00:25:13 +0200 (mar., 16 sept. 2008) $", "$Revision: 81755 $");
 
 local L = D.L;
 local LC = D.LC;
 local DC = T._C;
-local DS = DC.DS;
 -------------------------------------------------------------------------------
 
 local pairs             = _G.pairs;
@@ -821,20 +819,13 @@ do
 end
 
 
-D.Stealthed_Units = {};
 
-do
-    local Stealthed = {DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']}; --, DS["Ice Armor"],};
-
-    DC.IsStealthBuff = D:tReverse(Stealthed);
-
-    function D:CheckUnitStealth(unit)
-        if self:CheckUnitForBuffs(unit, DC.IsStealthBuff) then
-            --      self:Debug("Sealth found !");
-            return true;
-        end
-        return false;
+function D:CheckUnitStealth(unit)
+    if self:CheckUnitForBuffs(unit, DC.IS_STEALTH_BUFF) then
+        --      self:Debug("Sealth found !");
+        return true;
     end
+    return false;
 end
 -- }}}
 
