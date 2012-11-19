@@ -82,6 +82,8 @@ end -- }}}
 
 local function SetBasicConstants_Once() -- these are constants that may be used at parsing time in other .lua and .xml {{{
     
+    BINDING_HEADER_DECURSIVE = "Decursive";
+
     local DC = T._C;
     
     DC.IconON = "Interface\\AddOns\\Decursive\\iconON.tga";
@@ -139,8 +141,6 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
 end -- }}}
 
 local function SetRuntimeConstants_Once () -- {{{
-
-    BINDING_HEADER_DECURSIVE = "Decursive"; -- XXX --> when loaded
 
     D.CONF = {}; -- this table is only used in dcr opt through a function
     D.CONF.TEXT_LIFETIME = 4.0;
