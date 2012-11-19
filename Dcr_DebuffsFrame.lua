@@ -353,7 +353,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
                 MF.ToPlace = true;
                 Updated = Updated + 1;
 
-                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * Updated, MF);
+                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + Updated / D.profile.DebuffsFramePerUPdate), MF);
                 --D:Debug("|cFF88AA00Show schedule for MUF", Unit, "UnitShown:", self.UnitShown);
             end
         else
@@ -388,7 +388,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
                 self.UnitShown = self.UnitShown - 1;
                 --D:Debug("|cFF88AA00Hiding %d (%s), scheduling update in %f|r", i, MF.CurrUnit, D.profile.DebuffsFrameRefreshRate * i);
                 Updated = Updated + 1;
-                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * Updated, MF);
+                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (0.9 + Updated / D.profile.DebuffsFramePerUPdate), MF);
                 MF.Frame:Hide();
             end
 
@@ -435,7 +435,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
         MF.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
-        D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * i, MF);
+        D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + i / D.profile.DebuffsFramePerUPdate), MF);
         i = i + 1;
     end
 end -- }}}
@@ -699,7 +699,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
         -- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
         if (not D:DelayedCallExixts("Dcr_Update"..unit)) then
             D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-            D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.profile.DebuffsFrameRefreshRate * (1 + floor(D.DebuffUpdateRequest / (D.profile.DebuffsFramePerUPdate / 2))), MF);
+            D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.profile.DebuffsFrameRefreshRate * (0.9 + D.DebuffUpdateRequest / D.profile.DebuffsFramePerUPdate), MF);
             D:Debug("Update scheduled for, ", unit, MF.ID);
 
             return true; -- return value used to aknowledge that the function actually did something
