@@ -891,7 +891,7 @@ local function GetStaticOptions ()
                 -- {{{
                 type = "group",
                 name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
-                desc = L["OPT_LIVELIST_DESC"],
+                desc = L["OPT_LIVELIST_DESC"] .. "\n",
                 hidden = function () return not D:IsEnabled() or D.profile.HideLiveList; end,
                 disabled = function () return not D:IsEnabled() or D.profile.HideLiveList; end,
                 order = 10,
@@ -901,6 +901,21 @@ local function GetStaticOptions ()
                         type = "description",
                         name = L["OPT_LIVELIST_DESC"],
                         order = 0,
+                    },
+                    TestItemDisplayed = {
+                        type = "toggle",
+                        name = L["OPT_CREATE_VIRTUAL_DEBUFF"],
+                        desc = L["OPT_CREATE_VIRTUAL_DEBUFF_DESC"],
+                        get = function() return  D.LiveList.TestItemDisplayed end,
+                        set = function()
+                            if not D.LiveList.TestItemDisplayed then
+                                D.LiveList:DisplayTestItem();
+                            else
+                                D.LiveList:HideTestItem();
+                            end
+                        end,
+                        disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell or not D.Status.Enabled end,
+                        order = -1
                     },
                     LV_OnlyInRange = {
                         type = "toggle",

@@ -168,7 +168,7 @@ L["GLOR5"] = "He will always be remembered..."
 L["HANDLEHELP"] = "Drag all the Micro-UnitFrames (MUFs)"
 L["HIDE_LIVELIST"] = "Hide the live-list"
 L["HIDE_MAIN"] = "Hide Decursive Window"
-L["HIDESHOW_BUTTONS"] = "Hide/Show buttons"
+L["HIDESHOW_BUTTONS"] = "Hide/Show buttons and lock/Unlock Decursive's bar"
 L["HLP_LEFTCLICK"] = "Left-Click"
 L["HLP_LL_ONCLICK_TEXT"] = [=[The Live-List is not meant to be clicked. Please, read the documentation to learn how to use this add-on. Just search for 'Decursive' on WoWAce.com
 (To move this list move the Decursive bar, /dcrshow and left-alt-click to move)]=]
@@ -318,7 +318,12 @@ L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID!"
 L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found in your spell book!"
 L["OPTION_MENU"] = "Decursive Options Menu"
 L["OPT_LIVELIST"] = "Live list"
-L["OPT_LIVELIST_DESC"] = "Options for the live list"
+L["OPT_LIVELIST_DESC"] = [[These are the settings concerning the list of afflicted units displayed beneath the "Decursive" bar.
+
+To move this list you need to move the little "Decursive" frame. Some of the settings below are available only when this frame is displayed. You can display it by typing |cff20CC20/DCRSHOW|r in your chat window.
+
+Once you have set the position, scale and transparency of the live-list you can safely hide Decursive's frame by typing |cff20CC20/DCRHIDE|r.
+]]
 L["OPT_LLALPHA"] = "Live-list transparency"
 L["OPT_LLALPHA_DESC"] = "Changes Decursive main bar and live-list transparency (Main bar must be displayed)"
 L["OPT_LLSCALE"] = "Scale of the Live-list"

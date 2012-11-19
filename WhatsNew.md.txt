@@ -2,9 +2,9 @@ Decursive 2.7.2.2 (2012-10-07)
 ==============================
 
 
-I would like to dedicate this release of Decursive to the memory of Patrick Bohnet
-who passed away on the 29th of July. He was better known as Quu and was
-the original author and maintainer of Decursive from 2005 till April 2006.
+I would like to dedicate the 2.7.2.x release of Decursive to the memory of
+Patrick Bohnet who passed away on the 29th of July. He was better known as Quu
+and was the original author and maintainer of Decursive from 2005 till April 2006.
 
 I want to thank him for the great opportunity he gave me to work on Decursive, a 
 program still useful to hundreds of thousands of people today.
