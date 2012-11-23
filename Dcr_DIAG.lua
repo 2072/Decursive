@@ -38,7 +38,24 @@ local GetCVarBool       = _G.GetCVarBool;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI.
-
+-- big ugly scary fatal error message display function - only used when nothing else works {{{
+if not T._FatalError then
+-- the beautiful error popup : {{{ -
+StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+    text = "|cFFFF0000Decursive Error:|r\n%s",
+    button1 = "OK",
+    OnAccept = function()
+        return false;
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1,
+    showAlert = 1,
+    preferredIndex = 3,
+    }; -- }}}
+T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+end
+-- }}}
 DecursiveInstallCorrupted     = false;
 
 T._C                    = {};
@@ -136,14 +153,14 @@ DC.StartTime = GetTime();
 
 -- Decursive LUA error manager and debug reporting functions {{{
 local function _Debug (...)
-    if T.Dcr and T.Dcr.Debug then
-        T.Dcr.Debug(...);
+    if T.Dcr and T.Dcr.Debug and T.Dcr.debug then
+        T.Dcr:Debug(...);
     end
 end
 
 local function _Print (...)
     if T.Dcr and T.Dcr.Print then
-        T.Dcr.Print(...);
+        T.Dcr:Print(...);
     end
 end
 
@@ -262,12 +279,10 @@ function T._onError(event, errorObject)
         if not taintingAccusation or T._EmbeddedMode == false then -- if we are having this while we're not emebedding anything then it does matters
             IsReporting = true;
             AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
-            T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
-
-            _Debug("Lua error recorded");
-
             IsReporting = false;
+            T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
             mine = true;
+            _Debug("Lua error recorded");
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
             T._TaintingAccusations = T._TaintingAccusations + 1;
@@ -275,7 +290,11 @@ function T._onError(event, errorObject)
             return; -- bury it under the carpet since it's blaming the wrong add-on and misleading the users.
         end
     else
-        T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
+        if IsReporting then
+            IsReporting = false;
+        else
+            T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
+        end
     end
 
     if not mine and not T._BugSackLoaded and GetCVarBool("scriptErrors") then
@@ -357,16 +376,21 @@ function T._DecursiveErrorHandler(err, ...)
 
         IsReporting = true;
         AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
-	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
-        _Debug("Error recorded");
         IsReporting = false;
+	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         mine = true;
+        _Debug("Error recorded");
     else
-        T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
-        if T._NonDecursiveErrors > 999 then
-            T._ErrorLimitStripped = true;
-            T._TooManyErrors();
+        if IsReporting then -- then it means there is a bug insiede AddDebugText...
+            IsReporting = false;
+        else
+            T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
+
+            if T._NonDecursiveErrors > 999 then
+                T._ErrorLimitStripped = true;
+                T._TooManyErrors();
+            end
         end
     end
 
@@ -400,19 +424,27 @@ function T._HookErrorHandler()
 
         BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true; -- for people using an older version of BugGrabber. There is no way to know...
 
+
+        -- force BG to load callbackhandler since it relies on other add-ons to embeded it.
+        if not BugGrabber.RegisterCallback and BugGrabber.setupCallbacks then
+            BugGrabber.setupCallbacks();
+        else
+           -- we're fucked. I'll have to implement registration of these after PLAYER_LOGIN missing all potential errors happening before :/
+        end
+
         local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
 
         if ok then
             T._BugGrabberEmbeded = true;
         else
-            AddDebugText(errorm);
+            AddDebugText("pcall hook 1: "..errorm, BugGrabber);
         end
 
         ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_CapturePaused", T._TooManyErrors)
         if ok then
             T._BugGrabberThrottleAlert = true;
         else
-            AddDebugText(errorm);
+            AddDebugText("pcall hook 2: "..errorm);
         end
 
         return
@@ -761,10 +793,15 @@ do -- DEBUG REPORT WINDOW {{{
 
 
         T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
-        _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
 
-        _G.DecursiveDEBUGtext:SetText(T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****");
-        _G.DecursiveDebuggingFrame:Show();
+        if _G.DecursiveDebuggingFrameText then
+            _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
+
+            _G.DecursiveDEBUGtext:SetText(T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****");
+            _G.DecursiveDebuggingFrame:Show();
+        else
+            T._FatalError(T._DebugText);
+        end
     end
 end -- }}}
 
