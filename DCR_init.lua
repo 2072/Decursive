@@ -610,6 +610,14 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     if T._SelfDiagnostic() == 2 then
         return false;
     end
+
+    -- call _HookErrorHandler() a second time because of BugGrabber versions anerior to the
+    -- alpha of 2012-11-23 which fail to make their callback available for
+    -- registration b4 PLAYER_LOGIN...
+    if not T._HookErrorHandler() then
+        T._AddDebugText("BG's callbacks were not available after PLAYER_LOGIN");
+    end
+
     T._CatchAllErrors = "OnEnable"; -- During init we catch all the errors else, if a library fails we won't know it.
     D.debug = D.db.global.debug;
 

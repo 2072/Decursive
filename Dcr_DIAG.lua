@@ -411,6 +411,31 @@ function T._TooManyErrors()
     _Debug("Error handler disabled");
 end
 
+function T._RegisterBugGrabberCallBacks()
+
+    if not BugGrabber.RegisterCallback then
+        return;
+    end
+
+    local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
+
+    if ok then
+        T._BugGrabberEmbeded = true;
+    else
+        T._BugGrabberEmbeded = false;
+        AddDebugText("pcall hook 1: "..errorm, BugGrabber);
+    end
+
+    ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_CapturePaused", T._TooManyErrors)
+    if ok then
+        T._BugGrabberThrottleAlert = true;
+    else
+        AddDebugText("pcall hook 2: "..errorm);
+    end
+
+    return T._BugGrabberEmbeded;
+end
+
 function T._HookErrorHandler()
 
     if BugGrabber then
@@ -428,26 +453,9 @@ function T._HookErrorHandler()
         -- force BG to load callbackhandler since it relies on other add-ons to embeded it.
         if not BugGrabber.RegisterCallback and BugGrabber.setupCallbacks then
             BugGrabber.setupCallbacks();
-        else
-           -- we're fucked. I'll have to implement registration of these after PLAYER_LOGIN missing all potential errors happening before :/
         end
 
-        local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
-
-        if ok then
-            T._BugGrabberEmbeded = true;
-        else
-            AddDebugText("pcall hook 1: "..errorm, BugGrabber);
-        end
-
-        ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_CapturePaused", T._TooManyErrors)
-        if ok then
-            T._BugGrabberThrottleAlert = true;
-        else
-            AddDebugText("pcall hook 2: "..errorm);
-        end
-
-        return
+        return T._RegisterBugGrabberCallBacks();
     end
 
     -- if no buggrabber is found then use the old way (no other error catcher is as good as BugGrabber... I can't rely on them)
