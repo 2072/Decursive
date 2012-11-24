@@ -109,9 +109,7 @@ function D:GetDefaultsSettings()
             NewerVersionAlert = 0,
             NewVersionsBugMeNot = false,
             LastVersionAnnounce = 0,
-            --@debug@
             LastUnpackagedAlert = 0,
-            --@end-debug@
 
             -- the key to bind the macro to
             MacroBind = false,
