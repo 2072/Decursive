@@ -463,6 +463,9 @@ function T._HookErrorHandler()
         ProperErrorHandler = geterrorhandler();
         seterrorhandler(T._DecursiveErrorHandler);
     end
+
+    return true;
+
 end
 
 --}}}
