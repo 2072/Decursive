@@ -205,6 +205,18 @@ local function SetRuntimeConstants_Once () -- {{{
 
     DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
 
+
+    -- special meta table to handle Druid's Symbiosis
+    local Enhancements_mt = {
+        __index = function (self, key)
+            if key == 'Types' then
+                return DC.SpellsToUse[(GetSpellInfo(DS["SPELL_SYMBIOSIS"]))].Types;
+            else
+                return nil;
+            end
+        end
+    }
+
     -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
     DC.SpellsToUse = {
         -- Druids
@@ -308,6 +320,22 @@ local function SetRuntimeConstants_Once () -- {{{
             Enhancements = {
                 Types = {DC.MAGIC},
             }
+        },
+        [DS["SPELL_SYMBIOSIS"]] = {
+            Types = {}, -- does nothing by default
+            Better = 1,
+            Pet = false,
+
+            EnhancedBy = true,
+            EnhancedByCheck = function ()
+                if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and DC.SpellsToUse[(GetSpellInfo(DS["SPELL_SYMBIOSIS"]))] then
+                    DC.SpellsToUse[DS["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, Enhancements_mt);
+                    return true;
+                else
+                    return false;
+                end
+            end,
+            Enhancements = {}
         },
         -- Warlock
         [DS["SPELL_FEAR"]] = {
@@ -1177,6 +1205,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
         ["SPELL_DETOX"]                 = {     115450              }, -- monk
         ["SPELL_DIFFUSEMAGIC"]          = {     122783              }, -- monk
         ["SPELL_COMMAND_DEMON"]         = {     119898              }, -- warlock
+        ["SPELL_SYMBIOSIS"]             = {     110309              }, -- multi class
         ['Greater Invisibility']        = {     110959              },
     };
 
