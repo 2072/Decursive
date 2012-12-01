@@ -38,24 +38,29 @@ local GetCVarBool       = _G.GetCVarBool;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI.
+
 -- big ugly scary fatal error message display function - only used when nothing else works {{{
-if not T._FatalError then
--- the beautiful error popup : {{{ -
-StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
-    text = "|cFFFF0000Decursive Error:|r\n%s",
-    button1 = "OK",
-    OnAccept = function()
-        return false;
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = 1,
-    showAlert = 1,
-    preferredIndex = 3,
-    }; -- }}}
-T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError)
+
+    if not StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] then
+        StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+            text = "|cFFFF0000Decursive Fatal Error:|r\n%s",
+            button1 = "OK",
+            OnAccept = function()
+                return false;
+            end,
+            timeout = 0,
+            whileDead = 1,
+            hideOnEscape = 1,
+            showAlert = 1,
+            preferredIndex = 3,
+        };
+    end
+
+    StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError);
 end
 -- }}}
+
 DecursiveInstallCorrupted     = false;
 
 T._C                    = {};
@@ -134,21 +139,6 @@ T._LoadOrderedFiles = {
 -- user when something goes wrong with the Ace shared libraries or when a
 -- Decursive file could not be loaded.
     
--- the beautiful error popup : {{{ -
-StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
-    text = "|cFFFF0000Decursive Error:|r\n%s",
-    button1 = "OK",
-    OnAccept = function()
-        return false;
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = false,
-    showAlert = 1,
-    preferredIndex = 3,
-    }; -- }}}
-T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
-
 DC.StartTime = GetTime();
 
 -- Decursive LUA error manager and debug reporting functions {{{
@@ -470,25 +460,28 @@ end
 
 --}}}
 
+T._ShowNotice = function (notice)
 
--- Dev version usage warning {{{
--- the beautiful beta notice popup : {{{ -
-StaticPopupDialogs["Decursive_Notice_Frame"] = {
-    text = "|cFFFF0000Decursive Notice:|r\n%s",
-    button1 = "OK",
-    OnAccept = function()
-        return false;
-    end,
-    timeout = 0,
-    whileDead = 1,
-    hideOnEscape = false,
-    showAlert = 1,
-    preferredIndex = 3,
-}; -- }}}
+    if not StaticPopupDialogs["DECURSIVE_NOTICE_FRAME"] then
+        -- the beautiful notice popup : {{{ -
+        StaticPopupDialogs["DECURSIVE_NOTICE_FRAME"] = {
+            text = "|cFFFF0000Decursive Notice:|r\n%s",
+            button1 = "OK",
+            OnAccept = function()
+                return false;
+            end,
+            timeout = 0,
+            whileDead = 1,
+            hideOnEscape = false,
+            showAlert = 1,
+            preferredIndex = 3,
+        }; -- }}}
+    end
+
+    StaticPopup_Show ("DECURSIVE_NOTICE_FRAME", notice);
+end
 
 
-
--- }}}
 
 do
     T._DiagStatus = false;

@@ -2780,7 +2780,7 @@ do
                     end
 
                     if not v:find(info[#info-1], 0, true) then
-                        StaticPopup_Show("Decursive_Notice_Frame", error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format(info[#info-1])));
+                        T._ShowNotice(error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format(info[#info-1])));
                     end
 
                     return 0;
