@@ -639,6 +639,9 @@ do
 
             ErrorString = ErrorString .. "\n\n" .. GenericErrorMessage2;
 
+            if _G.DecursiveDebuggingFrame then
+               _G.DecursiveDebuggingFrame:Hide();
+            end
             T._FatalError(ErrorString);
             T._DiagStatus = FatalOccured and 2 or 1;
         end
