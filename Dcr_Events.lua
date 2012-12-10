@@ -754,18 +754,17 @@ do -- Communication event handling and broadcasting {{{1
     alpha = true;
     --@end-alpha@
 
+
     local function GetDistributionChanel()
-        local inInstance, InstanceType = IsInInstance();
-
-        --  "PARTY", "RAID", "GUILD", "BATTLEGROUND". As of 2.1, "WHISPER"
-
-        if InstanceType == "pvp" then
-            return "BATTLEGROUND";
+       
+        -- if we are in a battle ground or a LFG/R instance
+        if GetNumGroupMembers(LE_PARTY_CATEGORY_INSTANCE) > 0 then
+            return "INSTANCE_CHAT";
         end
 
-        if GetNumRaidMembers() ~= 0 then
+        if IsInRaid() then
             return "RAID";
-        elseif GetNumPartyMembers() ~= 0 then
+        elseif GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) > 0 then
             return "PARTY";
         elseif GetGuildInfo("player") then
             return "GUILD";
