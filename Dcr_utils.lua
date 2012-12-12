@@ -52,7 +52,7 @@ local D = T.Dcr;
 local L = D.L;
 local LC = D.LC;
 local DC = T._C;
-
+local _G                = _G;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
 local type              = _G.type;
@@ -509,135 +509,197 @@ function D:NiceTime()
     return tonumber(("%.4f"):format(GetTime() - DC.StartTime));
 end
 
-local DcrTimers = {};
-function D:TimerExixts(RefName)
-    return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
-end
+do
+    local DcrTimers = {};
+    local argCount = 0;
 
-function D:DelayedCallExixts(RefName)
-    return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
-end
+    local Yields = 0;
+    local CurrentRefreshID = 0;
+    local CurrentRefreshElapsed = 0;
+    local CurrentRefreshStart = 0;
+    local CurrentNumInARow = 0;
 
-local ObjectWithArgs = {["obj"]=false, ["arg"]=false,};
-local argCount = 0;
-function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
+    local LongestExecBesidesYields = 0;
+    local LargestBatch = 0;
 
-    if DcrTimers[RefName] and DcrTimers[RefName][1] then -- a timer with the same refname still exists
-        argCount = select('#', ...);
-        -- we test up to two arguments to avoid the cancellation->re-creation of the timer (AceTimers doesn't remove them right away)
-        if (argCount == 0 or argCount == 1 and  select(1, ...) == DcrTimers[RefName][2][2]) and arg1 == DcrTimers[RefName][2][1] then
-            --@debug@
-            D:Debug("Timer |cFF0000DDcancellation-creation canceled|r for", RefName, "Arg:", arg1, "indargcount:", argCount);
-            --@end-debug@
-            return;
-            --@debug@
+    local TimersTotalExecs = 0;
+
+    local Time = 0;
+
+    local function Yielding ()
+        Time = GetTime(); -- get an ID of the current refresg we're in. (GetTime() value is cached on OnUpdate)
+
+        TimersTotalExecs = TimersTotalExecs + 1;
+
+        if Time == CurrentRefreshID then -- if we are still in the same OnUpdate
+            CurrentNumInARow = CurrentNumInARow + 1;
+
+            -- do some stats to display when debugging
+            if CurrentNumInARow > LargestBatch then
+                LargestBatch = CurrentNumInARow;
+            end
+
+            CurrentRefreshElapsed = CurrentRefreshElapsed + (debugprofilestop() - CurrentRefreshStart); -- compute how much time has elapsed
+
+            if CurrentRefreshElapsed > 50 then -- if we've been doing things for more than 50ms then yield
+                Yields = Yields + 1;
+                return true;
+            end
+
+            -- do some stats to display when debugging
+            if CurrentRefreshElapsed > LongestExecBesidesYields then
+                LongestExecBesidesYields = CurrentRefreshElapsed;
+            end
+
+        else -- it's the first time we do something on this OnUpdate so initialize our status
+            CurrentRefreshID = Time; -- set the RefreshID
+            CurrentRefreshElapsed = 0;
+            CurrentNumInARow    = 0;
+            CurrentRefreshStart = debugprofilestop();
+        end
+
+        return false;
+    end
+
+    function D:TimerExixts(RefName)
+        return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
+    end
+
+    function D:DelayedCallExixts(RefName)
+        return DcrTimers[RefName] and DcrTimers[RefName][1] or false;
+    end
+
+
+    function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
+
+        if DcrTimers[RefName] and DcrTimers[RefName][1] then -- a timer with the same refname still exists
+            argCount = select('#', ...);
+            -- we test up to two arguments to avoid the cancellation->re-creation of the timer (AceTimers doesn't remove them right away)
+            if (argCount == 0 or argCount == 1 and  select(1, ...) == DcrTimers[RefName][2][2]) and arg1 == DcrTimers[RefName][2][1] then
+                --@debug@
+                D:Debug("Timer |cFF0000DDcancellation-creation canceled|r for", RefName, "Arg:", arg1, "indargcount:", argCount);
+                --@end-debug@
+                return;
+                --@debug@
+            else
+                D:Debug("Timer |cFF0066DD-replaced-|r for", RefName, "argcount:", argCount);
+                --@end-debug@
+            end
+            if not self:CancelTimer(DcrTimers[RefName][1]) then
+                self:AddDebugText("Timer cancellation failed in ScheduleDelayedCall() for", RefName);
+            end
+        end
+
+
+        if Delay > 30 then
+            self:AddDebugText("A delayed call for", RefName, "was requested with a very large timer:", Delay);
+        end
+
+        if not DcrTimers[RefName] then
+            DcrTimers[RefName] = {};
+        end
+
+        -- arg table
+        DcrTimers[RefName][2] = {arg1};
+
+        if select('#', ...) > 0 then
+
+            local i;
+            for i = 1, select('#', ...) do
+                DcrTimers[RefName][2][i + 1] = (select(i, ...));
+            end
+
+            DcrTimers[RefName][1] = self:ScheduleTimer (
+            function(arg)
+                T._DebugTimerRefName = RefName;
+                DcrTimers[RefName][1] = false;
+
+                if not Yielding() then -- check if we still got time to run this call
+                    FunctionRef(unpack(arg));
+                else -- we reschedule the event ASAP
+                    self:ScheduleDelayedCall(RefName, FunctionRef, 0.01, unpack(arg));
+                end
+
+                T._DebugTimerRefName = "";
+            end
+            , Delay, DcrTimers[RefName][2]
+            );
         else
-            D:Debug("Timer |cFF0066DD-replaced-|r for", RefName, "argcount:", argCount);
-            --@end-debug@
+            DcrTimers[RefName][1] = self:ScheduleTimer (
+            function(arg)
+                T._DebugTimerRefName = RefName;
+                DcrTimers[RefName][1] = false;
+
+                if not Yielding() then -- check if we still got time to run this call
+                    FunctionRef(arg);
+                else -- we reschedule the event ASAP
+                    self:ScheduleDelayedCall(RefName, FunctionRef, 0.01, arg1);
+                end
+
+                T._DebugTimerRefName = "";
+            end
+            , Delay, arg1
+            );
         end
-        if not self:CancelTimer(DcrTimers[RefName][1]) then
-            self:AddDebugText("Timer cancellation failed in ScheduleDelayedCall() for", RefName);
+
+        return DcrTimers[RefName][1];
+    end
+
+    function D:ScheduleRepeatedCall(RefName, FunctionRef, Delay, arg)
+        if DcrTimers[RefName] and DcrTimers[RefName][1] then
+            if not self:CancelTimer(DcrTimers[RefName][1]) then
+                self:AddDebugText("Timer cancellation failed in ScheduleRepeatedCall() for", RefName);
+            end
+        end
+
+        if not DcrTimers[RefName] then
+            DcrTimers[RefName] = {};
+        end
+
+        DcrTimers[RefName][1] = self:ScheduleRepeatingTimer(FunctionRef, Delay, arg);
+
+        return DcrTimers[RefName][1];
+    end
+
+    function D:CancelDelayedCall(RefName)
+        local success = false;
+        if DcrTimers[RefName] and DcrTimers[RefName][1] then
+            local cancelHandle = DcrTimers[RefName][1];
+            success = self:CancelTimer(cancelHandle);
+
+            if success then
+                DcrTimers[RefName][1] = false;
+            else
+                self:AddDebugText("Timer cancellation failed in CancelDelayedCall() for", RefName);
+            end
+
+            return success;
+        end
+        return 0;
+    end
+
+    function D:CancelAllTimedCalls()
+        for RefName in pairs(DcrTimers) do
+            self:CancelDelayedCall(RefName);
         end
     end
 
-
-    if Delay > 30 then
-        self:AddDebugText("A delayed call for", RefName, "was requested with a very large timer:", Delay);
+    function D:GetTimersInfo()
+        local dcrCount = 0;
+        for RefName, timer in pairs(DcrTimers) do
+            if timer[1] then
+                dcrCount = dcrCount + 1;
+            end
+        end
+        local libTimerCount = 0;
+        local ShefkiTimer = LibStub("LibShefkiTimer-1.0");
+        for table in pairs(ShefkiTimer.selfs[D]) do
+            libTimerCount = libTimerCount + 1;
+        end
+        return dcrCount, libTimerCount, Yields, LongestExecBesidesYields, LargestBatch, TimersTotalExecs;
     end
 
-    if not DcrTimers[RefName] then
-        DcrTimers[RefName] = {};
-    end
-
-    -- arg table
-    DcrTimers[RefName][2] = {arg1};
-
-    if select('#', ...) > 0 then
-
-        local i;
-        for i = 1, select('#', ...) do
-            DcrTimers[RefName][2][i + 1] = (select(i, ...));
-        end
-
-        DcrTimers[RefName][1] = self:ScheduleTimer (
-        function(arg)
-            T._DebugTimerRefName = RefName;
-            DcrTimers[RefName][1] = false;
-            FunctionRef(unpack(arg));
-            T._DebugTimerRefName = "";
-        end
-        , Delay, DcrTimers[RefName][2]
-        );
-    else
-        DcrTimers[RefName][1] = self:ScheduleTimer (
-        function(arg)
-            T._DebugTimerRefName = RefName;
-            DcrTimers[RefName][1] = false;
-            FunctionRef(arg);
-            T._DebugTimerRefName = "";
-        end
-        , Delay, arg1
-        );
-    end
-
-    return DcrTimers[RefName][1];
 end
-
-function D:ScheduleRepeatedCall(RefName, FunctionRef, Delay, arg)
-    if DcrTimers[RefName] and DcrTimers[RefName][1] then
-        if not self:CancelTimer(DcrTimers[RefName][1]) then
-            self:AddDebugText("Timer cancellation failed in ScheduleRepeatedCall() for", RefName);
-        end
-    end
-
-    if not DcrTimers[RefName] then
-        DcrTimers[RefName] = {};
-    end
-
-    DcrTimers[RefName][1] = self:ScheduleRepeatingTimer(FunctionRef, Delay, arg);
-
-    return DcrTimers[RefName][1];
-end
-
-function D:CancelDelayedCall(RefName)
-    local success = false;
-    if DcrTimers[RefName] and DcrTimers[RefName][1] then
-        local cancelHandle = DcrTimers[RefName][1];
-        success = self:CancelTimer(cancelHandle);
-
-        if success then
-            DcrTimers[RefName][1] = false;
-        else
-            self:AddDebugText("Timer cancellation failed in CancelDelayedCall() for", RefName);
-        end
-
-        return success;
-    end
-    return 0;
-end
-
-function D:CancelAllTimedCalls()
-    for RefName in pairs(DcrTimers) do
-        self:CancelDelayedCall(RefName);
-    end
-end
-
-function D:GetTimersNumber()
-    local dcrcount = 0;
-    for RefName, timer in pairs(DcrTimers) do
-        if timer[1] then
-            dcrcount = dcrcount + 1;
-        end
-    end
-    local timercount = 0;
-    local ShefkiTimer = LibStub("LibShefkiTimer-1.0");
-    for table in pairs(ShefkiTimer.selfs[D]) do
-        timercount = timercount + 1;
-    end
-    return "Dcr says: " .. dcrcount .. ", LibShefkiTimer says: " .. timercount;
-end
-
-
 
 -- function D:GetOPtionPath(info) {{{
 function D:GetOPtionPath(info)

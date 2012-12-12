@@ -841,7 +841,7 @@ function D:OnDisable() -- When the addon is disabled by Ace -- {{{
     end
 
     D:CancelAllTimedCalls();
-    D:Debug(D:GetTimersNumber());
+    D:Debug(D:GetTimersInfo());
 
     -- the disable warning popup : {{{ -
     StaticPopupDialogs["Decursive_OnDisableWarning"] = {

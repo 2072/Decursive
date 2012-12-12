@@ -153,7 +153,7 @@ local function ShowToolTip (frame)
 
         tooltip:AddLine("Max Concurrent update events:", D.Status.MaxConcurentUpdateDebuff);
         
-        tooltip:AddLine("Live timers:", D:GetTimersNumber());
+        tooltip:AddLine("Live timers:", ("Dcr: |cf0d09000%d|r, Lib: |cf0d09000%d|r, Yields: |cf0f06000%d|r, Longest batch: |cf0e07000%dms|r, Largest batch: |cf0d07000%d|r, TotalRun: |cf0d07000%u|r"):format(D:GetTimersInfo()));
 
         tooltip:AddLine("Version annouces received:", T.VersionAnnounceReceived);
 

@@ -694,7 +694,7 @@ do
                     -- get a list of current actions assignments
                     AddDebugText(pcall(T._ExportActionsConfiguration));
                     -- open the diagnostic window
-                    T._ShowDebugReport();
+                    T._ShowDebugReport(true);
                     return;
                 else
                     _Debug(OneTimeEvent, "is not", ConfirmOneTimeEventMessage, "and", CustomEventCaught, "is not", ConfirmCustomEventMessage);
@@ -751,11 +751,11 @@ do -- DEBUG REPORT WINDOW {{{
         return table.concat(loadedAddonList, "\n");
     end
 
-    local function setReportHeader()
+    local function setReportHeader(fromDiag)
 
         local instructionsHeader;
 
-        if not T.Dcr.db or not T.Dcr.db.global.NewerVersionName then
+        if fromDiag or not T.Dcr.db or not T.Dcr.db.global.NewerVersionName then
             instructionsHeader = T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
         else
             instructionsHeader = T.Dcr.L and ((T.Dcr.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(T.Dcr.db.global.NewerVersionName)) or HeaderFailOver;
@@ -763,7 +763,12 @@ do -- DEBUG REPORT WINDOW {{{
             T.Dcr.db.global.NewVersionsBugMeNot = false;
         end
 
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        local TIandBI = {T.Dcr:GetTimersInfo()};
+        TIandBI[#TIandBI + 1], TIandBI[#TIandBI + 2], TIandBI[#TIandBI + 3], TIandBI[#TIandBI + 4] = GetBuildInfo();
+        _Debug(unpack(TIandBI));
+
+
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -772,19 +777,16 @@ do -- DEBUG REPORT WINDOW {{{
         IsWindowsClient() and 1 or 0, -- W: %d
         LoadedAddonNum, -- LA: %d
         T._TaintingAccusations, -- TA: %d
-        GetBuildInfo()); --  (%s, %s, %s, %s)
+        unpack(TIandBI));
+       -- T.Dcr:GetTimersInfo(), -- TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] 
+       -- GetBuildInfo()); --  (%s, %s, %s, %s)
     end
 
-    function T._ShowDebugReport()
+    function T._ShowDebugReport(fromDiag)
 
-        if DC.DevVersionExpired and T.Dcr.VersionWarnings then
+        if not fromDiag and DC.DevVersionExpired and T.Dcr.VersionWarnings then
             T.Dcr:VersionWarnings(true);
             return;
-        end
-
-        local yourWastingMyTime = "";
-        if T.Dcr.db and T.Dcr.db.global.NewerVersionName then
-            yourWastingMyTime = L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"];
         end
 
         -- get running add-ons list
@@ -793,7 +795,7 @@ do -- DEBUG REPORT WINDOW {{{
 
         local headerSucess, hederGenErrorm;
         if not DebugHeader then
-            headerSucess, hederGenErrorm = pcall(setReportHeader);
+            headerSucess, hederGenErrorm = pcall(setReportHeader, fromDiag);
         else
             headerSucess = true;
         end
