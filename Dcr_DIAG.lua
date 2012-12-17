@@ -310,8 +310,10 @@ function T._onError(event, errorObject)
 
             -- if the error happened inside blizzard_debugtools, use Blizzards's BasicScriptErrorsText
             if (errorm:lower()):find("blizzard_debugtools") then
+                --@alpha@
                 _G.BasicScriptErrorsText:SetText(errorm);
                 _G.BasicScriptErrors:Show();
+                --@end-alpha@
                 return;
             end
            
