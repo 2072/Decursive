@@ -21,9 +21,6 @@
 --]]
 -------------------------------------------------------------------------------
 
-
-
-
 local _G                = _G;
 local GetFramerate      = _G.GetFramerate;
 local GetNetStats       = _G.GetNetStats;
@@ -35,6 +32,8 @@ local table             = _G.table;
 local GetTime           = _G.GetTime;
 local strjoin           = _G.strjoin;
 local GetCVarBool       = _G.GetCVarBool;
+local IsAddOnLoaded     = _G.IsAddOnLoaded;
+local GetAddOnMetadata  = _G.GetAddOnMetadata;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI.
@@ -72,8 +71,6 @@ T._DebugTimerRefName    = "";
 -- Just add this so that diag functions can work even in the most dramatic events
 T.Dcr = {};
 
-
-
 local DC                = T._C;
 local DebugTextTable    =  T._DebugTextTable;
 local Reported          = {};
@@ -91,8 +88,8 @@ else
     DecursiveEmbedsxmlCheck = nil;
 end
 
-
-T._LoadOrderedFiles = {
+-- a list of all source files part of Decursive sort in loading order
+T._LoadOrderedFiles = { -- {{{
     "embeds.xml",
 
     "Dcr_DIAG.xml",
@@ -132,16 +129,12 @@ T._LoadOrderedFiles = {
 
     "Dcr_LiveList.lua",
     "Dcr_LiveList.xml",
-};
+}; -- }}}
 
 
--- This self diagnostic functionality is here to give clear instructions to the
--- user when something goes wrong with the Ace shared libraries or when a
--- Decursive file could not be loaded.
-    
 DC.StartTime = GetTime();
 
--- Decursive LUA error manager and debug reporting functions {{{
+-- local utility functions {{{
 local function _Debug (...)
     if T.Dcr and T.Dcr.Debug and T.Dcr.debug then
         T.Dcr:Debug(...);
@@ -171,38 +164,11 @@ local function tostring_args(a1, ...)
         end
         return tostring(a1), tostring_args(...)
 end
+-- }}}
 
-local function PlaySoundFile_RanTooLongheck(message)
-
-    -- test for PlaySoundFile() API call failure, this exception bubles in the
-    -- dispatcher so eat all errors happenning in the same refresh event (while
-    -- GetTime() stays the same)
-
-    if T._PlayingASound and T._PlayingASound == GetTime() and message:find("ran too long") then
-        _Debug('"Script ran too long" while playing sound eaten');
-        _Print("|cffff0000*DING!*|r (Decursive failed to play a sound)");
-        return true;
-    end
-    
-    return false;
-end
-
--- inspired from BugSack
-function T._DebugFrameOnTextChanged(frame)
-    if frame:GetText() ~= T._DebugText then
-        frame:SetText(T._DebugText)
-    end
-    frame:GetParent():UpdateScrollChildRect()
-    local _, m = DecursiveDebuggingFrameScrollScrollBar:GetMinMaxValues()
-    if m > 0 and frame.max ~= m then
-        frame.max = m
-        DecursiveDebuggingFrameScrollScrollBar:SetValue(0)
-    end
-end
-
-
-
-function T._AddDebugText(a1, ...)
+ -- DEBUG REPORTING {{{
+ 
+function T._AddDebugText(a1, ...) -- {{{
 
     _Debug("Error processed");
 
@@ -230,7 +196,123 @@ function T._AddDebugText(a1, ...)
         T._ShowDebugReport();
     end
 
+end -- }}}
+
+function T._DebugFrameOnTextChanged(frame) -- {{{
+    -- inspired from BugSack
+    if frame:GetText() ~= T._DebugText then
+        frame:SetText(T._DebugText)
+    end
+    frame:GetParent():UpdateScrollChildRect()
+    local _, m = DecursiveDebuggingFrameScrollScrollBar:GetMinMaxValues()
+    if m > 0 and frame.max ~= m then
+        frame.max = m
+        DecursiveDebuggingFrameScrollScrollBar:SetValue(0)
+    end
+end -- }}}
+
+do
+    local DebugHeader = false;
+    local HeaderFailOver = "|cFF11FF33Please report the content of this window to archarodim+DcrReport@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
+    local LoadedAddonNum = 0;
+
+    local function GetAddonListAsString ()
+        local addonCount = GetNumAddOns();
+        local loadedAddonList = {};
+
+        for addonID=1, addonCount do
+            local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(addonID)
+            if security == 'INSECURE' and IsAddOnLoaded(addonID) then
+                local version = GetAddOnMetadata(addonID, "Version");
+
+                table.insert(loadedAddonList, ("%s (%s)"):format(name, version or 'N/A'));
+
+            end
+        end
+
+        LoadedAddonNum = #loadedAddonList;
+        return table.concat(loadedAddonList, "\n");
+    end
+
+    local function setReportHeader(fromDiag)
+
+        local instructionsHeader;
+
+        if fromDiag or not T.Dcr.db or not T.Dcr.db.global.NewerVersionName then
+            instructionsHeader = T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
+        else
+            instructionsHeader = T.Dcr.L and ((T.Dcr.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(T.Dcr.db.global.NewerVersionName)) or HeaderFailOver;
+            -- disable bug me not since the user _clearly_ took the wrong decision
+            T.Dcr.db.global.NewVersionsBugMeNot = false;
+        end
+
+        local TIandBI = {T.Dcr:GetTimersInfo()};
+        TIandBI[#TIandBI + 1], TIandBI[#TIandBI + 2], TIandBI[#TIandBI + 3], TIandBI[#TIandBI + 4] = GetBuildInfo();
+        _Debug(unpack(TIandBI));
+
+
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
+        BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
+        tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
+        T._NonDecursiveErrors, -- nDrE: %d
+        tostring(T._EmbeddedMode), -- Embeded: %s
+        IsWindowsClient() and 1 or 0, -- W: %d
+        LoadedAddonNum, -- LA: %d
+        T._TaintingAccusations, -- TA: %d
+        unpack(TIandBI));
+       -- T.Dcr:GetTimersInfo(), -- TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] 
+       -- GetBuildInfo()); --  (%s, %s, %s, %s)
+    end
+
+    function T._ShowDebugReport(fromDiag)
+
+        if not fromDiag and DC.DevVersionExpired and T.Dcr.VersionWarnings then
+            T.Dcr:VersionWarnings(true);
+            return;
+        end
+
+        -- get running add-ons list
+        local success, errorm, loadedAddonList;
+        success, errorm, loadedAddonList = pcall(GetAddonListAsString);
+
+        local headerSucess, hederGenErrorm;
+        if not DebugHeader then
+            headerSucess, hederGenErrorm = pcall(setReportHeader, fromDiag);
+        else
+            headerSucess = true;
+        end
+
+
+        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
+
+        if _G.DecursiveDebuggingFrameText then
+            _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
+
+            _G.DecursiveDEBUGtext:SetText(T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****");
+            _G.DecursiveDebuggingFrame:Show();
+        else
+            T._FatalError(T._DebugText);
+        end
+    end
+end -- }}}
+
+-- Decursive LUA error manager and debug reporting functions {{{
+local function PlaySoundFile_RanTooLongheck(message)
+
+    -- test for PlaySoundFile() API call failure, this exception bubles in the
+    -- dispatcher so eat all errors happenning in the same refresh event (while
+    -- GetTime() stays the same)
+
+    if T._PlayingASound and T._PlayingASound == GetTime() and message:find("ran too long") then
+        _Debug('"Script ran too long" while playing sound eaten');
+        _Print("|cffff0000*DING!*|r (Decursive failed to play a sound)");
+        return true;
+    end
+    
+    return false;
 end
+
 
 local AddDebugText = T._AddDebugText;
 
@@ -254,13 +336,18 @@ function T._onError(event, errorObject)
         return;
     end
 
+    local errorml = errorm:lower();
+
     if not IsReporting
-        and ( T._CatchAllErrors
-        or ( (errorm:sub(1,9)):lower() == "decursive" ) and not (errorm:lower()):find("\\libs\\") -- errors happpening in something located below Decursive's path but not inside \Libs 
+        and ( T._CatchAllErrors or (
+        errorml:find("decursive") and -- first, make a general test to see if it's worth looking further
+        (
+           ( errorml:sub(1,9) == "decursive" ) and not errorml:find("\\libs\\") -- errors happpening in something located below Decursive's path but not inside \Libs 
         or ( errorm:find("[\"']Decursive[\"']") ) -- events involving Decursive
         or ( errorm:find("Decursive:") ) -- libraries error involving Decursive (AceLocal)
-        or ( (errorm:lower()):find("decursive%.")) -- for Aceconfig
-        ) then
+        or ( errorml:find("decursive%.")) -- for Aceconfig
+        )
+        )) then
 
         if errorm:find("ADDON_ACTION_FORBIDDEN") or errorm:find("ADDON_ACTION_BLOCKED") then
             taintingAccusation = true;
@@ -334,12 +421,7 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
-local IsInRaid = _G.IsInRaid;
-local GetNumGroupMembers = _G.GetNumGroupMembers;
 
-DC.GetNumRaidMembers = function()
-    return IsInRaid() and GetNumGroupMembers() or 0;
-end
 
 function T._DecursiveErrorHandler(err, ...)
 
@@ -484,14 +566,14 @@ T._ShowNotice = function (notice)
 end
 
 
-
+-- SELF DIAGNOSTIC {{{
 do
     T._DiagStatus = false;
 
     local PrintMessage = function (message, ...) if T._DiagStatus ~= 2 then _Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
 
-    function T._ExportActionsConfiguration () -- use pcall with this
+    function T._ExportActionsConfiguration () -- (use pcall with this) -- {{{
 
         local errorPrefix = function (message)
             return "_ExportActionsConfiguration: " .. message;
@@ -528,7 +610,7 @@ do
             SpellAssignmentsTexts[Prio + 1] = string.format("\n    %s -> %s%s", ("%s - %s - (%s)"):format( ("Prio %d:"):format(Prio), SpellCuredTypes, MouseButtons[Prio]), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and ("\n        MACRO(%d):(%s)"):format(D.Status.FoundSpells[Spell][5]:len(), D.Status.FoundSpells[Spell][5]) or "");
         end
         return table.concat(SpellAssignmentsTexts, "\n");
-    end
+    end -- }}}
 
     function T._SelfDiagnostic (force, FromCommand)    -- {{{
 
@@ -728,94 +810,17 @@ do
 
 
     end -- }}}
-end
-
-do -- DEBUG REPORT WINDOW {{{
-    local DebugHeader = false;
-    local HeaderFailOver = "|cFF11FF33Please report the content of this window to archarodim+DcrReport@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
-    local LoadedAddonNum = 0;
-
-    local function GetAddonListAsString ()
-        local addonCount = GetNumAddOns();
-        local loadedAddonList = {};
-
-        for addonID=1, addonCount do
-            local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(addonID)
-            if security == 'INSECURE' and IsAddOnLoaded(addonID) then
-                local version = GetAddOnMetadata(addonID, "Version");
-
-                table.insert(loadedAddonList, ("%s (%s)"):format(name, version or 'N/A'));
-
-            end
-        end
-
-        LoadedAddonNum = #loadedAddonList;
-        return table.concat(loadedAddonList, "\n");
-    end
-
-    local function setReportHeader(fromDiag)
-
-        local instructionsHeader;
-
-        if fromDiag or not T.Dcr.db or not T.Dcr.db.global.NewerVersionName then
-            instructionsHeader = T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
-        else
-            instructionsHeader = T.Dcr.L and ((T.Dcr.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(T.Dcr.db.global.NewerVersionName)) or HeaderFailOver;
-            -- disable bug me not since the user _clearly_ took the wrong decision
-            T.Dcr.db.global.NewVersionsBugMeNot = false;
-        end
-
-        local TIandBI = {T.Dcr:GetTimersInfo()};
-        TIandBI[#TIandBI + 1], TIandBI[#TIandBI + 2], TIandBI[#TIandBI + 3], TIandBI[#TIandBI + 4] = GetBuildInfo();
-        _Debug(unpack(TIandBI));
-
-
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
-        tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
-        BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
-        tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
-        T._NonDecursiveErrors, -- nDrE: %d
-        tostring(T._EmbeddedMode), -- Embeded: %s
-        IsWindowsClient() and 1 or 0, -- W: %d
-        LoadedAddonNum, -- LA: %d
-        T._TaintingAccusations, -- TA: %d
-        unpack(TIandBI));
-       -- T.Dcr:GetTimersInfo(), -- TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] 
-       -- GetBuildInfo()); --  (%s, %s, %s, %s)
-    end
-
-    function T._ShowDebugReport(fromDiag)
-
-        if not fromDiag and DC.DevVersionExpired and T.Dcr.VersionWarnings then
-            T.Dcr:VersionWarnings(true);
-            return;
-        end
-
-        -- get running add-ons list
-        local success, errorm, loadedAddonList;
-        success, errorm, loadedAddonList = pcall(GetAddonListAsString);
-
-        local headerSucess, hederGenErrorm;
-        if not DebugHeader then
-            headerSucess, hederGenErrorm = pcall(setReportHeader, fromDiag);
-        else
-            headerSucess = true;
-        end
-
-
-        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
-
-        if _G.DecursiveDebuggingFrameText then
-            _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
-
-            _G.DecursiveDEBUGtext:SetText(T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****");
-            _G.DecursiveDebuggingFrame:Show();
-        else
-            T._FatalError(T._DebugText);
-        end
-    end
 end -- }}}
 
+
 T._HookErrorHandler();
+
+do
+    local IsInRaid = _G.IsInRaid;
+    local GetNumGroupMembers = _G.GetNumGroupMembers;
+    DC.GetNumRaidMembers = function()
+        return IsInRaid() and GetNumGroupMembers() or 0;
+    end
+end
 
 T._LoadedFiles["Dcr_DIAG.lua"] = "@project-version@";
