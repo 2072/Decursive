@@ -251,7 +251,7 @@ do
         _Debug(unpack(TIandBI));
 
 
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -260,6 +260,8 @@ do
         IsWindowsClient() and 1 or 0, -- W: %d
         LoadedAddonNum, -- LA: %d
         T._TaintingAccusations, -- TA: %d
+        T._NDRTaintingAccusations, -- NDRTA: %d
+        T._BlizzardUIErrors, -- BUIE: %d
         unpack(TIandBI));
        -- T.Dcr:GetTimersInfo(), -- TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] 
        -- GetBuildInfo()); --  (%s, %s, %s, %s)
@@ -323,6 +325,8 @@ local IsReporting = false;
 
 T._NonDecursiveErrors = 0;
 T._TaintingAccusations = 0;
+T._NDRTaintingAccusations = 0;
+T._BlizzardUIErrors = 0;
 T._ErrorLimitStripped = false;
 
 local InCombatLockdown  = _G.InCombatLockdown;
@@ -349,7 +353,7 @@ function T._onError(event, errorObject)
         )
         )) then
 
-        if errorm:find("ADDON_ACTION_FORBIDDEN") or errorm:find("ADDON_ACTION_BLOCKED") then
+        if errorm:find("ADDON_ACTION_") then
             taintingAccusation = true;
         end
 
@@ -371,6 +375,13 @@ function T._onError(event, errorObject)
             IsReporting = false;
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
+
+            if errorm:find("ADDON_ACTION_") then
+                T._NDRTaintingAccusations = T._NDRTaintingAccusations + 1;
+            elseif errorm:find("FrameXML") then
+                T._BlizzardUIErrors = T._BlizzardUIErrors + 1;
+            end
+
         end
     end
 
@@ -461,7 +472,13 @@ function T._DecursiveErrorHandler(err, ...)
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
-            if T._NonDecursiveErrors > 999 then
+            if err:find("ADDON_ACTION_") then
+                T._NDRTaintingAccusations = T._NDRTaintingAccusations + 1;
+            elseif err:find("FrameXML") then
+                T._BlizzardUIErrors = T._BlizzardUIErrors + 1;
+            end
+
+            if (T._NonDecursiveErrors - T._NDRTaintingAccusations - T._BlizzardUIErrors) > 999 then
                 T._ErrorLimitStripped = true;
                 T._TooManyErrors();
             end
@@ -476,10 +493,17 @@ end
 local WarningDisplayed = false;
 function T._TooManyErrors()
 
-    if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
-        _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
-        _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
-        WarningDisplayed = true;
+    -- T._NDRTaintingAccusations
+
+    -- if tainting accusation and Blizzard's UI errors represent more than 90% of errors then yield and don't display anything
+    if not ((T._NDRTaintingAccusations + T._BlizzardUIErrors) > T._NonDecursiveErrors * 0.9) then
+        if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
+            _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
+            _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
+            WarningDisplayed = true;
+        end
+    else
+        _Debug("_TooManyErrors()'s message not displayed NDR-TA being predominent...");
     end
 
     _Debug("Error handler disabled");
