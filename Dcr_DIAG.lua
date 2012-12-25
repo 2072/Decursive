@@ -72,7 +72,7 @@ T._DebugTimerRefName    = "";
 T.Dcr = {};
 
 local DC                = T._C;
-local DebugTextTable    =  T._DebugTextTable;
+local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 T._LoadedFiles = {};
@@ -225,10 +225,12 @@ do
             if security == 'INSECURE' and IsAddOnLoaded(addonID) then
                 local version = GetAddOnMetadata(addonID, "Version");
 
-                table.insert(loadedAddonList, ("%s (%s)"):format(name, version or 'N/A'));
+                table.insert(loadedAddonList, ("%s (%s)[%d]"):format(name, version or 'N/A', addonID));
 
             end
         end
+
+        table.sort(loadedAddonList);
 
         LoadedAddonNum = #loadedAddonList;
         return table.concat(loadedAddonList, "\n");
@@ -238,12 +240,16 @@ do
 
         local instructionsHeader;
 
-        if fromDiag or not T.Dcr.db or not T.Dcr.db.global.NewerVersionName then
+        if fromDiag or not T.Dcr.db or not T.Dcr.db.global.NewerVersionName or T._HHTDErrors ~= 0 then
             instructionsHeader = T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
         else
             instructionsHeader = T.Dcr.L and ((T.Dcr.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(T.Dcr.db.global.NewerVersionName)) or HeaderFailOver;
             -- disable bug me not since the user _clearly_ took the wrong decision
             T.Dcr.db.global.NewVersionsBugMeNot = false;
+        end
+
+        if T._HHTDErrors ~= 0 then
+            instructionsHeader = instructionsHeader:gsub('ecursive', 'ecursive / Healers Have To Die');
         end
 
         local TIandBI = {T.Dcr:GetTimersInfo()};
@@ -269,7 +275,7 @@ do
 
     function T._ShowDebugReport(fromDiag)
 
-        if not fromDiag and DC.DevVersionExpired and T.Dcr.VersionWarnings then
+        if T._HHTDErrors == 0 and not fromDiag and DC.DevVersionExpired and T.Dcr.VersionWarnings then
             T.Dcr:VersionWarnings(true);
             return;
         end
@@ -278,20 +284,26 @@ do
         local success, errorm, loadedAddonList;
         success, errorm, loadedAddonList = pcall(GetAddonListAsString);
 
-        local headerSucess, hederGenErrorm;
+        local headerSucess, headerGenErrorm;
         if not DebugHeader then
-            headerSucess, hederGenErrorm = pcall(setReportHeader, fromDiag);
+            headerSucess, headerGenErrorm = pcall(setReportHeader, fromDiag);
         else
             headerSucess = true;
         end
 
 
-        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (hederGenErrorm and hederGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
+        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
 
         if _G.DecursiveDebuggingFrameText then
             _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
 
-            _G.DecursiveDEBUGtext:SetText(T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****");
+            local title = T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****";
+
+            if T._HHTDErrors ~= 0 then
+                title = title:gsub('ecursive', 'ecursive/HHTD');
+            end
+
+            _G.DecursiveDEBUGtext:SetText(title);
             _G.DecursiveDebuggingFrame:Show();
         else
             T._FatalError(T._DebugText);
@@ -315,6 +327,21 @@ local function PlaySoundFile_RanTooLongheck(message)
     return false;
 end
 
+local function CheckHHTD_Error(errorm, errorml)
+    if errorml:find("healers%-have%-to%-die") and -- first, make a general test to see if it's worth looking further
+        (
+        not errorml:find("\\libs\\")
+        --or ( errorm:find("[\"']healers%-have%-to%-die[\"']") ) -- events
+        --or ( errorm:find("healers%-have%-to%-die:") ) -- libraries error (AceLocal)
+        --or ( errorml:find("healers%-have%-to%-die%.")) -- Aceconfig
+        ) then
+        _Debug("CheckHHTD_Error()", true);
+        return true;
+    end
+
+    return false;
+end
+
 
 local AddDebugText = T._AddDebugText;
 
@@ -328,6 +355,7 @@ T._TaintingAccusations = 0;
 T._NDRTaintingAccusations = 0;
 T._BlizzardUIErrors = 0;
 T._ErrorLimitStripped = false;
+T._HHTDErrors = 0;
 
 local InCombatLockdown  = _G.InCombatLockdown;
 function T._onError(event, errorObject)
@@ -370,13 +398,19 @@ function T._onError(event, errorObject)
             _Debug("False tainting accusation put under the carpet");
             return; -- bury it under the carpet since it's blaming the wrong add-on and misleading the users.
         end
-    else
+    else -- not a Decursive error
         if IsReporting then
             IsReporting = false;
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
-            if errorm:find("ADDON_ACTION_") then
+            if CheckHHTD_Error(errorm, errorml) then
+                IsReporting = true;
+                AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
+                IsReporting = false;
+                T._HHTDErrors = T._HHTDErrors + 1;
+                mine = true;
+            elseif errorm:find("ADDON_ACTION_") then
                 T._NDRTaintingAccusations = T._NDRTaintingAccusations + 1;
             elseif errorm:find("FrameXML") then
                 T._BlizzardUIErrors = T._BlizzardUIErrors + 1;
@@ -441,9 +475,10 @@ function T._DecursiveErrorHandler(err, ...)
     end
 
     err = tostring(err);
+    errl = err:lower();
 
     --A check to see if the error is happening inside the Blizzard 'debug' tool himself...
-    if (err:lower()):find("blizzard_debugtools") then
+    if errl:find("blizzard_debugtools") then
         --@alpha@
         if ( GetCVarBool("scriptErrors") ) then
             print (("|cFFFF0000%s|r"):format(err));
@@ -457,7 +492,7 @@ function T._DecursiveErrorHandler(err, ...)
     end
 
     local mine = false;
-    if not IsReporting and (T._CatchAllErrors or (err:lower()):find("decursive") and not (err:lower()):find("\\libs\\")) then
+    if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("\\libs\\")) then
 
         IsReporting = true;
         AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
@@ -472,7 +507,13 @@ function T._DecursiveErrorHandler(err, ...)
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
-            if err:find("ADDON_ACTION_") then
+            if CheckHHTD_Error(err, errl) then
+                IsReporting = true;
+                AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
+                IsReporting = false;
+                T._HHTDErrors = T._HHTDErrors + 1;
+                mine = true;
+            elseif err:find("ADDON_ACTION_") then
                 T._NDRTaintingAccusations = T._NDRTaintingAccusations + 1;
             elseif err:find("FrameXML") then
                 T._BlizzardUIErrors = T._BlizzardUIErrors + 1;
