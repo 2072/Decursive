@@ -1,5 +1,5 @@
-Decursive 2.7.2.4 beta 1 (2012-12-12)
-=====================================
+Decursive 2.7.2.4 (2012-12-25)
+==============================
 
 
 I would like to dedicate the 2.7.2.x release of Decursive to the memory of
@@ -12,17 +12,23 @@ program still useful to hundreds of thousands of people today.
 A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
 
 
-Changes from Decursive 2.7.2.3 to Decursive 2.7.2.4 beta 1 (2012-12-12)
------------------------------------------------------------------------
+Changes from Decursive 2.7.2.3 to Decursive 2.7.2.4 (2012-12-25)
+----------------------------------------------------------------
 
 - Added automatic support for Druid's Symbiosis spell, Decursive should detect
   any useful cleansing spell gained through the use of Symbiosis. Previously
   you had to add Symbiosis as a custom spell yourself and configure it.
  
+- Better performances for people playing in very low FPS conditions.
+
 - Fix automatic version announcement related Lua error due to wrong
   communication channel.
 
-- Better performances for people playing in very low FPS conditions.
+- Miscellaneous enhancements to the error handler and debug report feature:
+    - Decursive will no longer tell the user to check his/her add-ons when more
+      than 90% of the errors comes from tainting issues or Blizzard own UI code.
+    - Decursive will also create reports for errors happening in
+      Healers-Have-To-Die (instructions are changed accordingly)
 
 - The 'Check other players' button in the about panel had disappeared.
 
