@@ -571,9 +571,13 @@ do
 
 
     function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
+        --@debug@
+        D:Debug('|cFFFF0000SDC:|r|cFF00FFAA', RefName, Delay, arg1, unpack({...}));
+        --@end-debug@
+
+        argCount = select('#', ...);
 
         if DcrTimers[RefName] and DcrTimers[RefName][1] then -- a timer with the same refname still exists
-            argCount = select('#', ...);
             -- we test up to two arguments to avoid the cancellation->re-creation of the timer (AceTimers doesn't remove them right away)
             if (argCount == 0 or argCount == 1 and  select(1, ...) == DcrTimers[RefName][2][2]) and arg1 == DcrTimers[RefName][2][1] then
                 --@debug@
@@ -602,10 +606,10 @@ do
         -- arg table
         DcrTimers[RefName][2] = {arg1};
 
-        if select('#', ...) > 0 then
+        if argCount > 0 then
 
             local i;
-            for i = 1, select('#', ...) do
+            for i = 1, argCount do
                 DcrTimers[RefName][2][i + 1] = (select(i, ...));
             end
 
@@ -642,6 +646,9 @@ do
             );
         end
 
+        --@debug@
+        D:Debug('|cFFFF0000SDC:|r ACEID:|cFF00FFAA', DcrTimers[RefName][1]);
+        --@end-debug@
         return DcrTimers[RefName][1];
     end
 
@@ -685,16 +692,25 @@ do
     end
 
     function D:GetTimersInfo()
+        local AceTimer = LibStub("AceTimer-3.0");
+
         local dcrCount = 0;
         for RefName, timer in pairs(DcrTimers) do
             if timer[1] then
                 dcrCount = dcrCount + 1;
+                --@debug@
+                self:Debug("|cff00AA00TimerRef:|r ", RefName, "ARGS:",timer[2] and unpack (timer[2]) or 'NONE', 'ACEID: |cffaa8833', timer[1], '|r', AceTimer.activeTimers[timer[1]] and 'active' or 'UNKNOWN');
+                --@end-debug@
             end
         end
         local libTimerCount = 0;
-        local ShefkiTimer = LibStub("LibShefkiTimer-1.0");
-        for table in pairs(ShefkiTimer.selfs[D]) do
-            libTimerCount = libTimerCount + 1;
+        for id,timer in pairs(AceTimer.activeTimers) do
+            if timer.object == D then
+                libTimerCount = libTimerCount + 1;
+                --@debug@
+                self:Debug("|cff00AA00AceRef:", id,'|r');
+                --@end-debug@
+            end
         end
         return dcrCount, libTimerCount, Yields, LongestExecBesidesYields, LargestBatch, TimersTotalExecs;
     end

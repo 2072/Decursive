@@ -8,9 +8,7 @@ externals:
     Libs/AceConsole-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceConsole-3.0
     Libs/AceEvent-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceEvent-3.0
 
-#    Libs/AceTimer-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceTimer-3.0
-
-    Libs/LibShefkiTimer-1.0: git://git.wowace.com/wow/libshefkitimer-1-0/mainline.git
+    Libs/AceTimer-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceTimer-3.0
 
     Libs/AceHook-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceHook-3.0
     Libs/AceDB-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceDB-3.0
@@ -40,7 +38,7 @@ optional-dependencies:
 
 license-output: LICENSE.txt
 
-manual-changelog:
-    filename: WhatsNew.md.txt
-    markup-type: markdown
+#manual-changelog:
+#    filename: WhatsNew.md.txt
+#    markup-type: markdown
 

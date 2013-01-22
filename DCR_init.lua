@@ -50,7 +50,7 @@ T._LoadedFiles["DCR_init.lua"] = false;
 local D;
 local function RegisterDecursive_Once() -- {{{
 
-    T.Dcr = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "LibShefkiTimer-1.0", "AceHook-3.0");
+    T.Dcr = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
     D     = T.Dcr;
 
     --@debug@
