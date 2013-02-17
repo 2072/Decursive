@@ -6,6 +6,9 @@ Decursive for World of Warcraft
 Documentation:
 --------------
 
+**NOTE: Type /DECURSIVE to open the onfiguration panel.**
+*Decursive's options are not directly available in the "Interface" panel due to ongoing tainting issues Blizzard is not willing to fix.*
+
 [Decursive usage][user-actions] - [Micro Unit Frames documentation][MUFs] - [Decursive Macro documentation][mouse-over macro] - [Frequently Asked Questions][FAQ] - [commands][]
 
 Decursive key benefits
