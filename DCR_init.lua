@@ -1,6 +1,6 @@
 --[[
     This file is part of Decursive.
-    
+
     Decursive (v @project-version@) add-on for World of Warcraft UI
     Copyright (C) 2006-2007-2008-2009-2010-2011-2012 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
@@ -9,7 +9,7 @@
 
     The only official and allowed distribution means are www.2072productions.com, www.wowace.com and curse.com.
     To distribute Decursive through other means a special authorization is required.
-    
+
 
     Decursive is inspired from the original "Decursive v1.9.4" by Patrick Bohnet (Quu).
     The original "Decursive 1.9.4" is in public domain ( www.quutar.com )
@@ -82,11 +82,11 @@ local function RegisterLocals_Once() -- {{{
 end -- }}}
 
 local function SetBasicConstants_Once() -- these are constants that may be used at parsing time in other .lua and .xml {{{
-    
+
     BINDING_HEADER_DECURSIVE = "Decursive";
 
     local DC = T._C;
-    
+
     DC.IconON = "Interface\\AddOns\\Decursive\\iconON.tga";
     DC.IconOFF = "Interface\\AddOns\\Decursive\\iconOFF.tga";
 
@@ -526,7 +526,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
     --@debug@
     fromCheckOut = true;
     if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
-        T._ShowNotice ("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. 
+        T._ShowNotice ("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" ..
         [[
         |cFFFF0000You're using an unpackaged version of Decursive.|r
         Decursive is not meant to be used this way.
@@ -625,7 +625,7 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
 
     D.DebuffHistory = {};
 
-    SetRuntimeConstants_Once(); 
+    SetRuntimeConstants_Once();
 
     LibStub("AceComm-3.0"):RegisterComm("DecursiveVersion", D.OnCommReceived);
 
@@ -688,7 +688,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("PARTY_LEADER_CHANGED", D.GroupChanged, D);
 
     self:RegisterEvent("GROUP_ROSTER_UPDATE", D.GroupChanged, D);
-   
+
     self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 
     -- Player pet detection event (used to find pet spells)
@@ -697,7 +697,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("UNIT_AURA");
 
     self:RegisterEvent("PLAYER_TARGET_CHANGED");
-    
+
     self:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -759,7 +759,7 @@ function D:SetConfiguration() -- {{{
     D.Status.Unit_Array = {};
     D.Status.InternalPrioList = {};
     D.Status.InternalSkipList = {};
-    
+
     D.Stealthed_Units = {};
 
     -- if we log in and we are already fighting...
@@ -824,7 +824,7 @@ function D:SetConfiguration() -- {{{
         D:ClearPriorityList();
         D:ClearSkipList();
     end
-    
+
 
     T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
     D:VersionWarnings();
@@ -833,7 +833,7 @@ end -- }}}
 function D:OnDisable() -- When the addon is disabled by Ace -- {{{
     D.Status.Enabled = false;
     D.DcrFullyInitialized = false;
-    
+
     D:SetIcon("Interface\\AddOns\\Decursive\\iconOFF.tga");
 
     if ( D.profile.ShowDebuffsFrame) then
@@ -1141,74 +1141,70 @@ end --}}}
 function D:SetSpellsTranslations(FromDIAG) -- {{{
     local GetSpellInfo = _G.GetSpellInfo;
 
-    local Spells = {};
 
     if not T._C.DS then
         T._C.DS = {};
+        T._C.DSI = {
+            ["SPELL_POLYMORPH"]             =  118,
+            ["SPELL_COUNTERSPELL"]          =  2139,
+            ["SPELL_CYCLONE"]               =  33786,
+            ["SPELL_CLEANSE"]               =  4987,
+            ['SPELL_TRANQUILIZING_SHOT']    =  19801,
+            ['SPELL_HEX']                   =  51514, -- shamans
+            ["CLEANSE_SPIRIT"]              =  51886,
+            ["SPELL_PURGE"]                 =  370,
+            ["PET_FEL_CAST"]                =  19505,
+            ["SPELL_FEAR"]                  =  5782,
+            ["DCR_LOC_SILENCE"]             =  15487,
+            ["DCR_LOC_MINDVISION"]          =  2096,
+            ["DREAMLESSSLEEP"]              =  15822,
+            ["GDREAMLESSSLEEP"]             =  24360,
+            ["MDREAMLESSSLEEP"]             =  28504,
+            ["ANCIENTHYSTERIA"]             =  19372,
+            ["IGNITE"]                      =  19659,
+            ["TAINTEDMIND"]                 =  16567,
+            ["MAGMASHAKLES"]                =  19496,
+            ["CRIPLES"]                     =  33787,
+            ["DUSTCLOUD"]                   =  26072,
+            ["WIDOWSEMBRACE"]               =  28732,
+            ["SONICBURST"]                  =  39052,
+            ["DELUSIONOFJINDO"]             =  24306,
+            ["MUTATINGINJECTION"]           =  28169,
+            ['Banish']                      =  710,
+            ['Frost Trap Aura']             =  13810,
+            ['Arcane Blast']                =  30451,
+            ['Prowl']                       =  5215,
+            ['Stealth']                     =  1784,
+            ['Camouflage']                  =  51755,
+            ['Shadowmeld']                  =  58984,
+            ['Invisibility']                =  66,
+            ['Lesser Invisibility']         =  7870,
+            ['Ice Armor']                   =  7302,
+            ['Unstable Affliction']         =  30108,
+            ['Vampiric Touch']              =  34914,
+            ['Flame Shock']                 =  8050,
+            ["SPELL_REMOVE_CURSE"]          =  475, -- Druids/Mages
+            ["SPELL_REMOVE_CORRUPTION"]     =  2782,
+            ["SPELL_SINGE_MAGIC"]           =  89808, -- Warlock imp
+            ["SPELL_PURIFY"]                =  527,
+            ["SPELL_DISPELL_MAGIC"]         =  528,
+            ["PURIFY_SPIRIT"]               =  77130, -- resto shaman
+            ["PASSIVE_SACRED_CLEANSING"]    =  53551,
+            ["PASSIVE_INTERNAL_MEDICINE"]   =  115451,
+            ["SPELL_NATURES_CURE"]          =  88423,
+            ["SHROUD_OF_CONCEALMENT"]       =  115834, -- rogue
+            ["SPELL_DETOX"]                 =  115450, -- monk
+            ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
+            ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
+            ["SPELL_SYMBIOSIS"]             =  110309, -- multi class
+            ['Greater Invisibility']        =  110959,
+        };
     end
 
-    local DS = T._C.DS;
-
-
+    local DS  = T._C.DS;
+    local DSI = T._C.DSI;
 
     -- /spew DecursiveRootTable._C.DS
-
-    Spells = {
-        ["SPELL_POLYMORPH"]             = {     118,                },
-        ["SPELL_COUNTERSPELL"]          = {     2139,               },
-        ["SPELL_CYCLONE"]               = {     33786,              },
-        ["SPELL_CLEANSE"]               = {     4987,               },
-        ['SPELL_TRANQUILIZING_SHOT']    = {     19801,              },
-        ['SPELL_HEX']                   = {     51514,              }, -- shamans
-        ["CLEANSE_SPIRIT"]              = {     51886,              },
-        ["SPELL_PURGE"]                 = {     370,                },
-        ["PET_FEL_CAST"]                = {     19505,              },
-        ["SPELL_FEAR"]                  = {     5782                },
-        ["DCR_LOC_SILENCE"]             = {     15487,              },
-        ["DCR_LOC_MINDVISION"]          = {     2096,               },
-        ["DREAMLESSSLEEP"]              = {     15822,              },
-        ["GDREAMLESSSLEEP"]             = {     24360,              },
-        ["MDREAMLESSSLEEP"]             = {     28504,              },
-        ["ANCIENTHYSTERIA"]             = {     19372,              },
-        ["IGNITE"]                      = {     19659,              },
-        ["TAINTEDMIND"]                 = {     16567,              },
-        ["MAGMASHAKLES"]                = {     19496,              },
-        ["CRIPLES"]                     = {     33787,              },
-        ["DUSTCLOUD"]                   = {     26072,              },
-        ["WIDOWSEMBRACE"]               = {     28732,              },
-        ["SONICBURST"]                  = {     39052,              },
-        ["DELUSIONOFJINDO"]             = {     24306,              },
-        ["MUTATINGINJECTION"]           = {     28169,              },
-        ['Banish']                      = {     710,                },
-        ['Frost Trap Aura']             = {     13810,              },
-        ['Arcane Blast']                = {     30451,              },
-        ['Prowl']                       = {     5215,   24450,      },
-        ['Stealth']                     = {     1784,               },
-        ['Camouflage']                  = {     51755,              },
-        ['Shadowmeld']                  = {     58984,              },
-        ['Invisibility']                = {     66,                 },
-        ['Lesser Invisibility']         = {     7870,               },
-        ['Ice Armor']                   = {     7302,               },
-        ['Unstable Affliction']         = {     30108,              },
-        ['Vampiric Touch']              = {     34914,              },
-        ['Flame Shock']                 = {     8050,               },
-        ['TALENT_BODY_AND_SOUL']        = {     64129, 65081,       },
-        ["SPELL_REMOVE_CURSE"]          = {     475,                }, -- Druids/Mages
-        ["SPELL_REMOVE_CORRUPTION"]     = {     2782,               },
-        ["SPELL_SINGE_MAGIC"]           = {     89808,              }, -- Warlock imp
-        ["SPELL_PURIFY"]                = {     527                 },
-        ["SPELL_DISPELL_MAGIC"]         = {     528                 },
-        ["PURIFY_SPIRIT"]               = {     77130               }, -- resto shaman
-        ["PASSIVE_SACRED_CLEANSING"]    = {     53551               },
-        ["PASSIVE_INTERNAL_MEDICINE"]   = {     115451              },
-        ["SPELL_NATURES_CURE"]          = {     88423               },
-        ["SHROUD_OF_CONCEALMENT"]       = {     115834              }, -- rogue
-        ["SPELL_DETOX"]                 = {     115450              }, -- monk
-        ["SPELL_DIFFUSEMAGIC"]          = {     122783              }, -- monk
-        ["SPELL_COMMAND_DEMON"]         = {     119898              }, -- warlock
-        ["SPELL_SYMBIOSIS"]             = {     110309              }, -- multi class
-        ['Greater Invisibility']        = {     110959              },
-    };
 
     -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (epiphany on 2011-02-25)
 
@@ -1219,45 +1215,24 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
     --@end-alpha@
     local Sname, Sids, Sid, _, ok;
     ok = true;
-    for Sname, Sids in pairs(Spells) do
-        for _, Sid in ipairs(Sids) do
+    for Sname, Sid in pairs(DSI) do
 
-            if _ == 1 then
-                DS[Sname] = (GetSpellInfo(Sid));
+        DS[Sname] = (GetSpellInfo(Sid));
 
-                if FromDIAG and DS[Sname] then
-                    if not dubs[DS[Sname]] then
-                        dubs[DS[Sname]] = {Sname};
-                    else
-                        dubs[DS[Sname]][#dubs[DS[Sname]] + 1] = Sname;
-                    end
-                end
-
-                if not DS[Sname] then
-                    if random (1, 15000) == 2323 or FromDIAG then
-                        D:AddDebugText("SpellID:|cffff0000", Sid, "no longer exists.|r This was supposed to represent the spell", Sname);
-                        D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
-                    end
-                    DS[Sname] = "_LOST SPELL_";
-                end
-            elseif FromDIAG then
-                if (GetSpellInfo(Sid)) and DS[Sname] ~= (GetSpellInfo(Sid)) then
-
-                    D:AddDebugText("|cffff0000Spell IDs", Sids[1] , "and", Sid, "have different translations:|r", DS[Sname], "and", (GetSpellInfo(Sid)) );
-
-                    D:errln("Spell IDs", Sids[1] , "and", Sid, "have different translations:", DS[Sname], "and", (GetSpellInfo(Sid)) );
-
-                    D:errln("Please report this to ARCHARODIM+DcrReport@teaser.fr");
-
-                    ok = false;
-                elseif not (GetSpellInfo(Sid)) then
-
-                    D:AddDebugText("SpellID:|cffff0000", Sid, "no longer exist.|r This was supposed to represent the spell", Sname);
-
-                    D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
-                end
+        if FromDIAG and DS[Sname] then
+            if not dubs[DS[Sname]] then
+                dubs[DS[Sname]] = {Sname};
+            else
+                dubs[DS[Sname]][#dubs[DS[Sname]] + 1] = Sname;
             end
+        end
 
+        if not DS[Sname] then
+            if random (1, 15000) == 2323 or FromDIAG then
+                D:AddDebugText("SpellID:|cffff0000", Sid, "no longer exists.|r This was supposed to represent the spell", Sname);
+                D:errln("SpellID:", Sid, "no longer exists. This was supposed to represent the spell", Sname);
+            end
+            DS[Sname] = "_LOST SPELL_";
         end
     end
 
@@ -1418,6 +1393,6 @@ Simple replacements
     Turns into an approximate version of the project. The tag name if on a tag, otherwise it's up to the repo.
     :SVN returns something like "r1234"
     :Git returns something like "v0.1-873fc1"
-    :Mercurial returns something like "r1234". 
+    :Mercurial returns something like "r1234".
 
 --]======]
