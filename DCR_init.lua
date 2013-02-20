@@ -1210,11 +1210,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
         ['Greater Invisibility']        = {     110959              },
     };
 
-    -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (self revelation on 2011-02-25)
+    -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (epiphany on 2011-02-25)
 
-    --@debug@
     local dubs = {};
-    --@end-debug@
     local alpha = false;
     --@alpha@
     alpha = true;
@@ -1226,7 +1224,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
             if _ == 1 then
                 DS[Sname] = (GetSpellInfo(Sid));
-                --@debug@
+
                 if FromDIAG and DS[Sname] then
                     if not dubs[DS[Sname]] then
                         dubs[DS[Sname]] = {Sname};
@@ -1234,7 +1232,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                         dubs[DS[Sname]][#dubs[DS[Sname]] + 1] = Sname;
                     end
                 end
-                --@end-debug@
+
                 if not DS[Sname] then
                     if random (1, 15000) == 2323 or FromDIAG then
                         D:AddDebugText("SpellID:|cffff0000", Sid, "no longer exists.|r This was supposed to represent the spell", Sname);
@@ -1263,7 +1261,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
         end
     end
 
-    --@debug@
     if FromDIAG then
         for spell, ids in pairs(dubs) do
             if #ids > 1 then
@@ -1276,7 +1273,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             end
         end
     end
-    --@end-debug@
 
     return ok;
 
