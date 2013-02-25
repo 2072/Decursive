@@ -163,7 +163,7 @@ function MicroUnitF:RegisterMUFcolors ()
     D:tcopy(MF_colors, D.profile.MF_colors);
 end
 
-function MicroUnitF:GetFurtherVerticalMUF()
+function MicroUnitF:GetFarthestVerticalMUF()
     -- "Everything pushes me further away..."
 
     if D.profile.DebuffsFrameVerticalDisplay then
@@ -283,6 +283,26 @@ do
 
         return Anchor;
     end
+
+
+    function MicroUnitF:GetHelperAnchor (atBottom)
+
+        if atBottom then
+            -- set Anchor table
+            self:GetMUFAnchor(D.profile.DebuffsFrameGrowToTop and 1 or self:GetFarthestVerticalMUF());
+            Anchor[3] = Anchor[3] - (D.profile.DebuffsFrameYSpacing + DC.MFSIZE);
+
+            return "TOPLEFT", self.Frame, Anchor[2], Anchor[3], "BOTTOMLEFT";
+        else
+            -- set Anchor table
+            self:GetMUFAnchor(D.profile.DebuffsFrameGrowToTop and self:GetFarthestVerticalMUF() or 1);
+            Anchor[3] = Anchor[3] + (D.profile.DebuffsFrameYSpacing + DC.MFSIZE);
+
+            return "BOTTOMLEFT", self.Frame, Anchor[2], Anchor[3], "BOTTOMLEFT";
+        end
+
+    end
+
 end-- }}}
 
 
@@ -368,7 +388,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
         for Unit, MF in  pairs(self.ExistingPerUNIT) do -- see all the MUF we ever created and show or hide them if there corresponding unit exists
 
-            -- show/hide
+            -- hide
             if MF.Shown and (not Unit_Array_UnitToGUID[Unit] or MF.ID > NumToShow ) then -- we don't have this unit but its MUF is shown
 
                 -- clear debuff before hiding to avoid leaving 'ghosts' behind...
@@ -588,35 +608,18 @@ do
         self.Frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", saved_x/FrameScale , saved_y/FrameScale);
         D:Debug("MUF Window position set");
 
+        D.MFContainerHandle:ClearAllPoints();
+        D.MFContainerHandle:SetPoint(self:GetHelperAnchor());
 
-        -- move the handle to always be above the first MUF
-        local RefMUF = 1;
-        local FarthestVerticalMUF = self:GetFurtherVerticalMUF();
-        
+        -- if the handle is at the top of the screen it means it's overlaping the MUF, let's move the handle somewhere else.
+        if floor(D.MFContainerHandle:GetTop() * FrameScale) == floor(UIParent:GetTop() * UIScale) then -- if at top
 
-        if D.profile.DebuffsFrameGrowToTop then
-            RefMUF = FarthestVerticalMUF;
-        end
-
-        if self.ExistingPerUNIT[Unit_Array[RefMUF]] then
             D.MFContainerHandle:ClearAllPoints();
-            D.MFContainerHandle:SetPoint("BOTTOMLEFT", self.ExistingPerUNIT[Unit_Array[RefMUF]].Frame, "TOPLEFT");
+            D.MFContainerHandle:SetPoint(self:GetHelperAnchor(true));
 
-            -- if the handle is at the top of the screen it means it's overlaping the MUF, let's move the handle somewhere else.
-            if floor(D.MFContainerHandle:GetTop() * FrameScale) == floor(UIParent:GetTop() * UIScale) then
-                if Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF] and self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]] then
-                    D.MFContainerHandle:ClearAllPoints();
-                    D.MFContainerHandle:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]].Frame, "BOTTOMLEFT");
-                    D:Debug("|cff00ff00Handle moved|r");
-                else
-                    -- try again in 2s (a delay exists when a unit appears, is seen and its MUF is created), if a unit leavea and another joina the group at the same time, the unit number won't change but their respective unitID will.
-                    D:ScheduleDelayedCall("Dcr_Delayed_Place", self.Place, 2, self);
-                    --@alpha@
-                    D:Print("|cFFFF0000Place() failed: unitRef#", D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF, "refMUF:", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]], "|r");
-                    --@end-alpha@
-                end
+            D:Debug("|cff00ff00Handle moved|r");
+
             end
-        end
 
 
     end -- }}}
@@ -815,30 +818,18 @@ function MicroUnitF:OnEnter(frame) -- {{{
             end
         end
 
-        local RefMUF = 1;
-        local FarthestVerticalMUF = self:GetFurtherVerticalMUF();
-
-        if D.profile.DebuffsFrameGrowToTop then
-            RefMUF = FarthestVerticalMUF;
-        end
-
-        local Unit_Array = D.Status.Unit_Array;
-
         -- Display the tooltip
         D:DisplayTooltip(TooltipText, self.Frame, "ANCHOR_TOPLEFT");
 
-        if self.ExistingPerUNIT[Unit_Array[RefMUF]] then
             DcrDisplay_Tooltip:ClearAllPoints();
-            DcrDisplay_Tooltip:SetPoint("BOTTOMLEFT", self.ExistingPerUNIT[Unit_Array[RefMUF]].Frame, "TOPLEFT", 0, 3);
+            DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor());
 
-            -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip somewhere else.
-            if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) and Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF] then
+            -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
+            if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then -- if at top
                 DcrDisplay_Tooltip:ClearAllPoints();
-                -- 1 is not ok when not grow to top and more than one line -- XXX TODO nil error issue reported once on the line below
-                DcrDisplay_Tooltip:SetPoint("TOPLEFT", self.ExistingPerUNIT[Unit_Array[D.profile.DebuffsFrameGrowToTop and 1 or FarthestVerticalMUF]].Frame, "BOTTOMLEFT", 0, -3);
+                DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor(true));
             end
         end
-    end
 
     -- show a help text in the Game default tooltip
     if D.profile.DebuffsFrameShowHelp then
@@ -1702,6 +1693,7 @@ do
                 MF.ToPlace = MicroFrameUpdateIndex;
 
                 MF.Frame:SetPoint(unpack(MicroUnitF:GetMUFAnchor(MicroFrameUpdateIndex)));
+
                 if MF.Shown then
                     MF.Frame:Show();
                 end
