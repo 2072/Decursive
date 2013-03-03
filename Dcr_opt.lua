@@ -67,6 +67,9 @@ local abs               = _G.math.abs;
 local GetNumRaidMembers = DC.GetNumRaidMembers;
 local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
+local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
+local GetSpellInfo      = _G.GetSpellInfo;
+local IsSpellKnown      = _G.IsSpellKnown;
 local _;
 -- Default values for the option
 
@@ -89,7 +92,7 @@ function D:GetDefaultsSettings()
 
             UserSpells = {
                 --Exemple / defaults
-                [DS["SPELL_COUNTERSPELL"]] = {
+                [T._C.DSI["SPELL_COUNTERSPELL"]] = {
                     Types = {DC.CHARMED},
                     Better = 10,
                     Pet = false,
@@ -486,35 +489,38 @@ local function GetStaticOptions ()
 
         -- We got a spell ID directly
         if tonumber(v) then
-            if GetSpellInfo(v) then
-                local spellName, spellRank = GetSpellInfo(v);
-
-                if spellRank ~= "" then
-                    v = ("%s(%s)"):format(spellName, spellRank);
-                else
-                    v = spellName;
-                end
-            else
+            v = tonumber(v);
+            -- test if it's valid
+            if not (GetSpellInfo(v)) then
                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
             end
 
         elseif v:find('|Hspell:%d+') then
             -- We got a spell link!
-            v = D:GetSpellFromLink(v)
+            v = D:GetSpellFromLink(v);
+        elseif type(v) == 'string' and (GetSpellBookItemInfo(v)) then -- not a number, not a spell link, then a spell name?
+            local _;
+            _, v = GetSpellBookItemInfo(v);
+        else
+            return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
         end
 
+        --[=[
         -- Not a string or not a known spell
         if type(v) ~= 'string' or not GetSpellInfo(v) then
             D:Debug(v, GetSpellInfo(v));
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
         end
+        --]=]
 
+        --[=[
         -- Normalize the name since spells are not case sensitive
         if select(2, GetSpellInfo(v)) ~= "" then -- it as a rank!!
             v = ("%s(%s)"):format(GetSpellInfo(v)); 
         else
             v = (GetSpellInfo(v));
         end
+        --]=]
 
         -- The user is stupid or it's a deleted default spell
         if D.classprofile.UserSpells[v] and not D.classprofile.UserSpells[v].Hidden then
@@ -1568,7 +1574,7 @@ local function GetStaticOptions ()
 
                                 if CustomSpellMacroEditingAllowed then
 
-                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [@UNITID,help][@UNITID,harm]" .. v;
+                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [@UNITID,help][@UNITID,harm]" .. (GetSpellInfo(v));
 
                                     -- If it's a default spell, then copy the spell settings
                                     if DC.SpellsToUse[v] then
@@ -2603,26 +2609,34 @@ do
 
     local order = 160;
     local t_insert = _G.table.insert;
+    local tonumber = _G.tonumber;
+    local TN = function(string) return tonumber(string) or nil; end;
 
+    local function GetColoredName(spellID)
+        local spell = D.classprofile.UserSpells[spellID];
 
-    local function GetColoredName(spellname)
-        local spell = D.classprofile.UserSpells[spellname];
+        if not spell then
+            D:AddDebugText('GetColoredName(): invalid spellID:', spellID);
+            return tostring(spellID);
+        end
+
+        local spellName = GetSpellInfo(spellID);
         local color = 'FFFFFFFF';
 
         if spell.Disabled then
             color = 'FFAA0000';
-        elseif not D.Status.CuringSpellsPrio[spellname] then
+        elseif not D.Status.CuringSpellsPrio[spellName] then
             color = 'FF909090';
         else
             color = 'FF00D000';
         end
 
-        if not GetSpellInfo(spellname) then
-            spellname = ("(%s) %s"):format(L["OPT_CUSTOM_SPELL_UNAVAILABLE"], spellname);
+        if not IsSpellKnown(spellID, spell.Pet) then
+            spellName = ("(%s) %s"):format(L["OPT_CUSTOM_SPELL_UNAVAILABLE"], spellName);
             color = 'FF606060';
         end
 
-        return D:ColorText(spellname .. ((D.classprofile.UserSpells[spellname] and D.classprofile.UserSpells[spellname].MacroText) and "|cFFFF0000*|r" or ""), color);
+        return D:ColorText(spellName .. ((D.classprofile.UserSpells[spellID] and D.classprofile.UserSpells[spellID].MacroText) and "|cFFFF0000*|r" or ""), color);
 
     end
 
@@ -2630,10 +2644,10 @@ do
         type = "toggle",
         name = function(info) return L[info[#info]] end,
         get = function(info)
-            return D:tcheckforval(D.classprofile.UserSpells[info[#info-2]].Types,  DC.LocalizableTypeNamesToTypes[info[#info]])
+            return D:tcheckforval(D.classprofile.UserSpells[TN(info[#info-2])].Types,  DC.LocalizableTypeNamesToTypes[info[#info]])
         end,
         set = function(info, v)
-            local spellTableTypes = D.classprofile.UserSpells[info[#info-2]].Types
+            local spellTableTypes = D.classprofile.UserSpells[TN(info[#info-2])].Types
             local curetype = DC.LocalizableTypeNamesToTypes[info[#info]]
             D:Debug("TypeOption: checkingtable named:", info[#info-2], "for", info[#info], "CureType:", curetype);
 
@@ -2642,17 +2656,17 @@ do
             elseif not v then
                 D:tremovebyval(spellTableTypes, curetype);
             end
-            if not D.classprofile.UserSpells[info[#info-2]].Disabled and GetSpellInfo(info[#info-2]) then
+            if not D.classprofile.UserSpells[TN(info[#info-2])].Disabled and IsSpellKnown(TN(info[#info-2]), D.classprofile.UserSpells[TN(info[#info-2])].Pet) then
                 D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
             end
         end,
         disabled = function (info) -- disable types edition if an enhancement is active (default types are not used in that case)
-            if D.classprofile.UserSpells[info[#info-2]] and D.classprofile.UserSpells[info[#info-2]].EnhancedByCheck then
+            if D.classprofile.UserSpells[TN(info[#info-2])] and D.classprofile.UserSpells[TN(info[#info-2])].EnhancedByCheck then
 
-                return D.classprofile.UserSpells[info[#info-2]].EnhancedByCheck();
+                return D.classprofile.UserSpells[TN(info[#info-2])].EnhancedByCheck();
             end
 
-            if DC.SpellsToUse[info[#info-2]] and D:tcheckforval(DC.SpellsToUse[info[#info-2]].Types, DC.LocalizableTypeNamesToTypes[info[#info]]) then
+            if DC.SpellsToUse[TN(info[#info-2])] and D:tcheckforval(DC.SpellsToUse[TN(info[#info-2])].Types, DC.LocalizableTypeNamesToTypes[info[#info]]) then
                 return true;
             end
 
@@ -2663,9 +2677,9 @@ do
 
     local SpellSubOptions = {
         type = 'group',
-        name = function(info) return GetColoredName(info[#info]) end,
+        name = function(info) return GetColoredName(TN(info[#info])) end,
         desc = function(info)
-            if DC.SpellsToUse[info[#info]] then
+            if DC.SpellsToUse[TN(info[#info])] then
                 return L["OPT_CUSTOM_SPELL_IS_DEFAULT"];
             end
             return "";
@@ -2675,25 +2689,25 @@ do
             -- an enable checkbox
             header = {
                 type = 'header',
-                name = function (info) return GetColoredName(info[#info - 1]); end,
+                name = function (info) return GetColoredName(TN(info[#info - 1])); end,
                 order = 0,
             },
             enable = {
                 type = "toggle",
                 name = L["OPT_ENABLE_A_CUSTOM_SPELL"],
                 set = function(info,v)
-                    D.classprofile.UserSpells[info[#info-1]].Disabled = not v;
-                    if v and DC.SpellsToUse[info[#info-1]] then
+                    D.classprofile.UserSpells[TN(info[#info-1])].Disabled = not v;
+                    if v and DC.SpellsToUse[TN(info[#info-1])] then
                         D:Configure();
                         return;
                     end
 
-                    if GetSpellInfo(info[#info-1]) then
+                    if IsSpellKnown(TN(info[#info-1]), D.classprofile.UserSpells[TN(info[#info-1])].Pet or nil) then
                         D:ReConfigure();
                     end
                 end,
                 get = function(info,v)
-                    return not D.classprofile.UserSpells[info[#info-1]].Disabled;
+                    return not D.classprofile.UserSpells[TN(info[#info-1])].Disabled;
                 end,
                 order = 100
             },
@@ -2709,10 +2723,10 @@ do
                 type = 'range',
                 name = L["OPT_CUSTOM_SPELL_PRIORITY"],
                 desc = L["OPT_CUSTOM_SPELL_PRIORITY_DESC"],
-                get = function (info) return D.classprofile.UserSpells[info[#info-1]].Better end,
+                get = function (info) return D.classprofile.UserSpells[TN(info[#info-1])].Better end,
                 set = function (info, v)
-                    D.classprofile.UserSpells[info[#info-1]].Better = v;
-                    if not D.classprofile.UserSpells[info[#info-1]].Disabled then
+                    D.classprofile.UserSpells[TN(info[#info-1])].Better = v;
+                    if not D.classprofile.UserSpells[TN(info[#info-1])].Disabled then
                         D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
                     end
                 end,
@@ -2727,15 +2741,15 @@ do
                 name = L["OPT_CUSTOM_SPELL_ISPET"],
                 desc = L["OPT_CUSTOM_SPELL_ISPET_DESC"];
                 set = function(info,v)
-                    D.classprofile.UserSpells[info[#info-1]].Pet = v;
-                    if GetSpellInfo(info[#info-1]) then
+                    D.classprofile.UserSpells[TN(info[#info-1])].Pet = v;
+                    if IsSpellKnown(TN(info[#info-1]), v or nil) then
                         D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
                     end
                 end,
                 get = function(info,v)
-                    return D.classprofile.UserSpells[info[#info-1]].Pet;
+                    return D.classprofile.UserSpells[TN(info[#info-1])].Pet;
                 end,
-                -- hidden = function(info,v) return D.classprofile.UserSpells[info[#info-1]].MacroText end,
+                -- hidden = function(info,v) return D.classprofile.UserSpells[TN(info[#info-1])].MacroText end,
                 order = 112
             },
             MacroEdition = {
@@ -2744,18 +2758,18 @@ do
                 usage = L["OPT_CUSTOM_SPELL_MACRO_TEXT_DESC"],
                 multiline = true,
                 width = 'full',
-                hidden = function(info,v) return not D.classprofile.UserSpells[info[#info-1]].MacroText end,
+                hidden = function(info,v) return not D.classprofile.UserSpells[TN(info[#info-1])].MacroText end,
 
                 get = function(info,v)
-                    return D.classprofile.UserSpells[info[#info-1]].MacroText;
+                    return D.classprofile.UserSpells[TN(info[#info-1])].MacroText;
                 end,
 
                 set = function (info,v)
                     if v:find("UNITID") and (v:gsub("UNITID", "PARTYPET5")):len() < 256 then
-                        D.classprofile.UserSpells[info[#info-1]].MacroText = v;
+                        D.classprofile.UserSpells[TN(info[#info-1])].MacroText = v;
 
-                        if D.Status.FoundSpells[info[#info - 1]] then
-                            D.Status.FoundSpells[info[#info-1]][5] = v;
+                        if D.Status.FoundSpells[GetSpellInfo(TN(info[#info - 1]))] then
+                            D.Status.FoundSpells[GetSpellInfo(TN(info[#info-1]))][5] = v;
                             D.Status.SpellsChanged = GetTime(); -- will force an update of all MUFs attributes
                             D:Debug("Attribute update triggered");
                         end
@@ -2779,8 +2793,8 @@ do
                         return error(L["OPT_CUSTOM_SPELL_MACRO_MISSING_UNITID_KEYWORD"]);
                     end
 
-                    if not v:find(info[#info-1], 0, true) then
-                        T._ShowNotice(error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format(info[#info-1])));
+                    if not v:find(GetSpellInfo(TN(info[#info-1])), 0, true) then
+                        T._ShowNotice(error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format((GetSpellInfo(TN(info[#info-1]))))));
                     end
 
                     return 0;
@@ -2791,20 +2805,20 @@ do
             -- a delete button
             delete = {
                 type = 'execute',
-                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], info[#info - 1]) end,
+                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], GetSpellInfo(TN(info[#info - 1]))) end,
                 confirm = true,
                 width = 'double',
                 func = function (info)
 
                     if (#info ~= 0) then -- prevent a bug from Ace3 when someone pushes several times on the delete without confirming
-                        if D.classprofile.UserSpells[info[#info - 1]].IsDefault then
-                            D.classprofile.UserSpells[info[#info - 1]].Types = {};
-                            D.classprofile.UserSpells[info[#info - 1]].Hidden = true;
+                        if D.classprofile.UserSpells[TN(info[#info - 1])].IsDefault then
+                            D.classprofile.UserSpells[TN(info[#info - 1])].Types = {};
+                            D.classprofile.UserSpells[TN(info[#info - 1])].Hidden = true;
                         else
-                            D.classprofile.UserSpells[info[#info - 1]] = nil;
+                            D.classprofile.UserSpells[TN(info[#info - 1])] = nil;
                         end
 
-                        if D.Status.FoundSpells[info[#info - 1]] then
+                        if D.Status.FoundSpells[GetSpellInfo(TN(info[#info - 1]))] then
                             D:Configure();
                         end
                     end
@@ -2827,9 +2841,9 @@ do
 
         SpellSubOptions.args.cureTypes.args = TypesSelector;
 
-        for spellName, spellTable in pairs(self.classprofile.UserSpells) do
+        for spellID, spellTable in pairs(self.classprofile.UserSpells) do
             if not spellTable.Hidden then
-                where[spellName] = SpellSubOptions;
+                where[tostring(spellID)] = SpellSubOptions;
                 order = order + 1;
             end
         end

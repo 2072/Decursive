@@ -275,7 +275,7 @@ Changes from Decursive 2.6.0.1 to Decursive 2.6.1 (2011-03-04)
 
     - The handle will always be placed above the first MUF regardless of your MUF's
       display options (Except when the first MUF is at the top of your screen, in
-      this case it will be place beneath last line's first MUF)
+      this case it will be placed beneath last line's first MUF)
 
     - MUFs' Anchoring is now more logical, MUFs' scale tweaking will seem more
       natural.

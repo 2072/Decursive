@@ -463,7 +463,7 @@ function D:GetSpellFromLink(link)
 
     if link:find('|Hspell:%d+') then
         local spellID;
-        spellID = link:match('|Hspell:(%d+)');
+        spellID = tonumber(link:match('|Hspell:(%d+)'));
 
         local spellName, spellRank = GetSpellInfo(spellID);
 
@@ -476,7 +476,8 @@ function D:GetSpellFromLink(link)
         end
         D:Debug('Spell link detected:', spellID, spellName, spellRank);
 
-        return spellName;
+        --return spellName;
+        return spellID;
     end
 
     return nil;

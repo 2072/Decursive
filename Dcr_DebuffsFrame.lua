@@ -619,7 +619,7 @@ do
 
             D:Debug("|cff00ff00Handle moved|r");
 
-            end
+        end
 
 
     end -- }}}

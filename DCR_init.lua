@@ -48,6 +48,11 @@ end
 T._LoadedFiles["DCR_init.lua"] = false;
 
 local D;
+local select                = _G.select;
+local GetSpellBookItemInfo  = _G.GetSpellBookItemInfo;
+local GetSpellInfo          = _G.GetSpellInfo;
+local IsSpellKnown          = _G.IsSpellKnown;
+
 local function RegisterDecursive_Once() -- {{{
 
     T.Dcr = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
@@ -203,6 +208,8 @@ local function SetRuntimeConstants_Once () -- {{{
     -- Create some useful cache tables
 
     local DS = T._C.DS;
+    local DSI = T._C.DSI;
+    local IsSpellKnown = _G.IsSpellKnown;
 
     DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
 
@@ -211,7 +218,7 @@ local function SetRuntimeConstants_Once () -- {{{
     local Enhancements_mt = {
         __index = function (self, key)
             if key == 'Types' then
-                return DC.SpellsToUse[(GetSpellInfo(DS["SPELL_SYMBIOSIS"]))].Types;
+                return DC.SpellsToUse[select(2, GetSpellBookItemInfo(DS["SPELL_SYMBIOSIS"]))].Types;
             else
                 return nil;
             end
@@ -221,52 +228,52 @@ local function SetRuntimeConstants_Once () -- {{{
     -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
     DC.SpellsToUse = {
         -- Druids
-        [DS["SPELL_CYCLONE"]] = {
+        [DSI["SPELL_CYCLONE"]] = {
             Types = {DC.CHARMED},
             Better = 0,
             Pet = false,
         },
         -- Mages and Druids
-        [DS["SPELL_REMOVE_CURSE"]] = {
+        [DSI["SPELL_REMOVE_CURSE"]] = {
             Types = {DC.CURSE},
             Better = 0,
             Pet = false,
         },
         -- Shamans http://www.wowhead.com/?spell=51514
-        [DS["SPELL_HEX"]] = {
+        [DSI["SPELL_HEX"]] = {
             Types = {DC.CHARMED},
             Better = 0,
             Pet = false,
         },
         --[=[ -- disabled because of Korean locals... see below
         -- Shamans
-        [DS["SPELL_PURGE"]] = {
+        [DSI["SPELL_PURGE"]] = {
         Types = {DC.ENEMYMAGIC},
         Better = 0,
         Pet = false,
         }, --]=]
         -- Hunters http://www.wowhead.com/?spell=19801
-        [DS["SPELL_TRANQUILIZING_SHOT"]] = {
+        [DSI["SPELL_TRANQUILIZING_SHOT"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = false,
         },
         -- Monks
-        [DS["SPELL_DETOX"]] = {
+        [DSI["SPELL_DETOX"]] = {
             Types = {DC.DISEASE, DC.POISON},
             Better = 2,
             Pet = false,
 
             EnhancedBy = DS["PASSIVE_INTERNAL_MEDICINE"],
             EnhancedByCheck = function ()
-                return (GetSpellBookItemInfo(DS["PASSIVE_INTERNAL_MEDICINE"])) and true or false;
+                return (IsSpellKnown(DSI["PASSIVE_INTERNAL_MEDICINE"])) and true or false;
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
             }
         },
         -- Monks
-        [DS["SPELL_DIFFUSEMAGIC"]] = {
+        [DSI["SPELL_DIFFUSEMAGIC"]] = {
             Types = {DC.MAGIC},
             Better = 0,
             Pet = false,
@@ -275,14 +282,14 @@ local function SetRuntimeConstants_Once () -- {{{
             },
         },
         -- Paladins
-        [DS["SPELL_CLEANSE"]] = {
+        [DSI["SPELL_CLEANSE"]] = {
             Types = {DC.DISEASE, DC.POISON},
             Better = 2,
             Pet = false,
 
             EnhancedBy = DS["PASSIVE_SACRED_CLEANSING"], -- http://www.wowhead.com/talent#srrrdkdz
             EnhancedByCheck = function ()
-                return (GetSpellBookItemInfo(DS["PASSIVE_SACRED_CLEANSING"])) and true or false;
+                return (IsSpellKnown(DSI["PASSIVE_SACRED_CLEANSING"])) and true or false;
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
@@ -290,26 +297,32 @@ local function SetRuntimeConstants_Once () -- {{{
 
         },
         -- Shaman
-        [DS["CLEANSE_SPIRIT"]] = {
+        [DSI["CLEANSE_SPIRIT"]] = { -- same name as PURIFY_SPIRIT in ruRU XXX
             Types = {DC.CURSE},
             Better = 3,
             Pet = false,
+            -- detect resto spec and enhance this spell
         },
+
+        --[=[
+        i=1; while GetSpellBookItemInfo(i, 'spell') do if (select(2, GetSpellBookItemInfo(i, 'spell'))) == 77130 then print(i) end; i = i + 1; end
+        --]=]
+
         -- Shaman resto
-        [DS["PURIFY_SPIRIT"]] = {
-            -- BUG in MOP BETA (2012-07-08): /spew GetSpellBookItemInfo('Purify Spirit') == nil while /spew (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
+        [DSI["PURIFY_SPIRIT"]] = { -- same name as CLEANSE_SPIRIT in ruRU XXX -- actually this spell doesn't really exist it's just a renamed version of CLEANSE_SPIRIT
+            -- BUG in MOP BETA and 5.2 (2012-07-08): /dump GetSpellBookItemInfo('Purify Spirit') == nil while /dump (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
             Types = {DC.CURSE, DC.MAGIC},
             Better = 4,
             Pet = false,
         },
         -- Warlocks (Imp)
-        [DS["SPELL_SINGE_MAGIC"]] = {
+        [DSI["SPELL_SINGE_MAGIC"]] = {
             Types = {DC.MAGIC},
             Better = 0,
             Pet = true,
         },
         -- Warlocks (Imp singe magic ability when used with Grimoire of Sacrifice)
-        [DS["SPELL_COMMAND_DEMON"]] = {
+        [DSI["SPELL_COMMAND_DEMON"]] = {
             Types = {}, -- does nothing by default
             Better = 1, -- the Imp takes time to disappear when sacrificed, during that interlude, Singe Magic is still there
             Pet = false,
@@ -322,77 +335,66 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.MAGIC},
             }
         },
-        [DS["SPELL_SYMBIOSIS"]] = {
+        [DSI["SPELL_SYMBIOSIS"]] = {
             Types = {}, -- does nothing by default
             Better = 1,
             Pet = false,
 
             EnhancedBy = true,
             EnhancedByCheck = function ()
-                if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and DC.SpellsToUse[(GetSpellInfo(DS["SPELL_SYMBIOSIS"]))] then
-                    DC.SpellsToUse[DS["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, Enhancements_mt);
+                if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and DC.SpellsToUse[select(2, GetSpellBookItemInfo((DS["SPELL_SYMBIOSIS"])))] then
+                    DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, Enhancements_mt);
                     return true;
                 else
                     return false;
                 end
             end,
-            Enhancements = {}
+            Enhancements = {}, -- placeholder, replaced by a metatable when active
         },
         -- Warlock
-        [DS["SPELL_FEAR"]] = {
+        [DSI["SPELL_FEAR"]] = {
             Types = {DC.CHARMED},
             Better = 0,
             Pet = false,
         },
         -- Warlocks
-        [DS["PET_FEL_CAST"]] = {
+        [DSI["PET_FEL_CAST"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = true,
         },
         -- Mages
-        [DS["SPELL_POLYMORPH"]] = {
+        [DSI["SPELL_POLYMORPH"]] = {
             Types = {DC.CHARMED},
             Better = 0,
             Pet = false,
         },
         -- Druids (Balance Feral Guardian)
-        [DS["SPELL_REMOVE_CORRUPTION"]] = {
+        [DSI["SPELL_REMOVE_CORRUPTION"]] = {
             Types = {DC.POISON, DC.CURSE},
             Better = 0,
             Pet = false,
 
         },
         -- Druids (Restoration)
-        [DS["SPELL_NATURES_CURE"]] = {
+        [DSI["SPELL_NATURES_CURE"]] = {
             Types = {DC.MAGIC, DC.POISON, DC.CURSE},
             Better = 1,
             Pet = false,
         },
         -- Priests (global)
-        [DS["SPELL_DISPELL_MAGIC"]] = {
+        [DSI["SPELL_DISPELL_MAGIC"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = false,
         },
         -- Priests (Discipline, Holy)
-        [DS["SPELL_PURIFY"]] = {
+        [DSI["SPELL_PURIFY"]] = {
             Types = {DC.MAGIC, DC.DISEASE},
             Better = 0,
             Pet = false,
         },
     }; -- }}}
-
-    -- Thanks to Korean localization team of WoW we have to make an exception....
-    -- They found the way to call two different spells the same (Shaman PURGE and Paladin CLEANSE... (both are called "정화") )
-    if ((select(2, UnitClass("player"))) == "SHAMAN") then
-        -- Shamans
-        DC.SpellsToUse[DS["SPELL_PURGE"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = false,
-        };
-    end
 
     D:CreateClassColorTables();
 
@@ -770,6 +772,50 @@ function D:SetConfiguration() -- {{{
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
 
+
+    do -- Upgrade layer for versions of Decursive prior to 2013-03-03
+        local toUpgrade = D.classprofile.oldUserSpells or D.classprofile.UserSpells;
+
+        local toUpgradeEmpty = true;
+        for spell, spellData in pairs(toUpgrade) do
+            toUpgradeEmpty = false;
+
+            if type(spell) == 'string' then
+
+                -- save the old table
+                if not D.classprofile.oldUserSpells then
+                    D.classprofile.oldUserSpells = {};
+                    D:tcopy(D.classprofile.oldUserSpells, D.classprofile.UserSpells);
+                elseif toUpgrade ~= D.classprofile.oldUserSpells then
+                    D:AddDebugText('Sanity check error: oldUserSpells exists but strings remain in UserSpells');
+                elseif tonumber(spell) then
+                    toUpgrade[spell] = nil;
+                    D:AddDebugText('Sanity check error: string-number (',spell,') found in ', (toUpgrade == D.classprofile.oldUserSpells) and 'oldUserSpells' or 'UserSpells' );
+                end
+
+                D.classprofile.UserSpells[spell] = nil; -- strings are not authorised in there.
+
+                local _, spellId = GetSpellBookItemInfo(spell); -- attempt to get the spell id from the name
+
+                if spellId then -- the spell is known to the player
+                    toUpgrade[spell] = nil; -- remove it from its origin (useless if origin is UserSpells but it could be OldUserSpells)
+
+                    if not D.classprofile.UserSpells[spellId] then
+                        D.classprofile.UserSpells[spellId] = spellData
+                    end
+                end
+            elseif toUpgrade == D.classprofile.oldUserSpells then
+                toUpgrade[spell] = nil;
+            end 
+
+        end
+
+        if toUpgradeEmpty and toUpgrade == D.classprofile.oldUserSpells then
+            D.classprofile.oldUserSpells = nil;
+        end
+
+    end -- end upgrade layer
+
     if type (D.profile.OutputWindow) == "string" then
         D.Status.OutputWindow = _G[D.profile.OutputWindow];
     end
@@ -977,48 +1023,49 @@ function D:ReConfigure() --{{{
         return;
     end
 
-    local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
-    local GetSpellInfo = _G.GetSpellInfo;
+    local SpellName = "";
 
     local Reconfigure = false;
-    for spellName, spell in SpellIterator() do
+    for spellID, spell in SpellIterator() do
         -- Do we have that spell?
-        if (not spell.Pet and GetSpellInfo(spellName)) or (spell.Pet and GetSpellBookItemInfo(spellName)) then -- yes
+        if IsSpellKnown(spellID, spell.Pet) then
+            SpellName = GetSpellInfo(spellID);
+
             -- We had it but it's been disabled
-            if spell.Disabled and D.Status.FoundSpells[spellName] then
-                D:Debug("D:ReConfigure:", spellName, 'has been disabled');
+            if spell.Disabled and D.Status.FoundSpells[SpellName] then
+                D:Debug("D:ReConfigure:", SpellName, 'has been disabled');
                 Reconfigure = true;
                 break;
                 -- is it new?
-            elseif not spell.Disabled and not D.Status.FoundSpells[spellName] then -- yes
-                D:Debug("D:ReConfigure:", spellName, 'is new');
+            elseif not spell.Disabled and not D.Status.FoundSpells[SpellName] then -- yes
+                D:Debug("D:ReConfigure:", SpellName, 'is new');
                 Reconfigure = true;
                 break;
             elseif spell.EnhancedBy then -- it's not new but there is an enhancement available...
 
                 -- Workaround to the fact that function are not serialized upon storage to the DB
-                if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellName] then
-                    spell.EnhancedByCheck = DC.SpellsToUse[spellName].EnhancedByCheck;
-                    D.classprofile.UserSpells[spellName].EnhancedByCheck = spell.EnhancedByCheck;
+                if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellID] then
+                    spell.EnhancedByCheck = DC.SpellsToUse[spellID].EnhancedByCheck;
+                    D.classprofile.UserSpells[spellID].EnhancedByCheck = spell.EnhancedByCheck;
                 end
 
                 if spell.EnhancedByCheck() then -- we have it now
-                    if not D.Status.FoundSpells[spellName][3] then -- but not then :)
-                        D:Debug("D:ReConfigure:", spellName, 'has an enhancement that was not available b4');
+                    if not D.Status.FoundSpells[SpellName][3] then -- but not then :)
+                        D:Debug("D:ReConfigure:", SpellName, 'has an enhancement that was not available b4');
                         Reconfigure = true;
                         break;
                     end
                 else -- we do no not
-                    if D.Status.FoundSpells[spellName][3] then -- but we used to :'(
-                        D:Debug("D:ReConfigure:", spellName, 'had an enhancement that is no longer available');
+                    if D.Status.FoundSpells[SpellName][3] then -- but we used to :'(
+                        D:Debug("D:ReConfigure:", SpellName, 'had an enhancement that is no longer available');
                         Reconfigure = true;
                         break;
                     end
                 end
             end
 
-        elseif D.Status.FoundSpells[spellName] then -- we don't have it anymore...
-            D:Debug("D:ReConfigure:", spellName, 'is no longer available');
+        elseif D.Status.FoundSpells[SpellName] then -- we don't have it anymore...
+            D:Debug("D:ReConfigure:", SpellName, 'is no longer available');
             Reconfigure = true;
             break;
         end
@@ -1054,17 +1101,20 @@ function D:Configure() --{{{
     local Type, _;
     local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
     local GetSpellInfo = _G.GetSpellInfo;
+    local IsSpellKnown = _G.IsSpellKnown;
     local Types = {};
     local OnPlayerOnly = false;
     local IsEnhanced = false;
+    local SpellName = "";
 
     self:Debug("Configuring Decursive...");
 
-    for spellName, spell in SpellIterator() do
+    for spellID, spell in SpellIterator() do
         if not spell.Disabled then
-            -- self:Debug("trying spell", spellName);
+            -- self:Debug("trying spell", spellID);
             -- Do we have that spell?
-            if (not spell.Pet and GetSpellInfo(spellName)) or (spell.Pet and GetSpellBookItemInfo(spellName)) then -- yes (both API because of MOP bug with Purify Spirit)
+            if IsSpellKnown(spellID, spell.Pet) then
+                SpellName = GetSpellInfo(spellID);
                 Types = spell.Types;
                 OnPlayerOnly = false;
                 IsEnhanced = false;
@@ -1072,13 +1122,13 @@ function D:Configure() --{{{
                 -- Could it be enhanced by something (a talent for example)?
                 if spell.EnhancedBy then
                     --@alpha@
-                    self:Debug("Enhancement for ", spellName);
+                    self:Debug("Enhancement for ", SpellName);
                     --@end-alpha@
 
                     -- Workaround to the fact that function are not serialized upon storage to the DB
-                    if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellName] then
-                        spell.EnhancedByCheck = DC.SpellsToUse[spellName].EnhancedByCheck;
-                        D.classprofile.UserSpells[spellName].EnhancedByCheck = spell.EnhancedByCheck;
+                    if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellID] then
+                        spell.EnhancedByCheck = DC.SpellsToUse[spellID].EnhancedByCheck;
+                        D.classprofile.UserSpells[spellID].EnhancedByCheck = spell.EnhancedByCheck;
                     end
 
                     if spell.EnhancedByCheck() then -- we have the enhancement
@@ -1088,7 +1138,7 @@ function D:Configure() --{{{
 
                         if spell.Enhancements.OnPlayerOnly then -- On the 'player' unit only?
                             --@alpha@
-                            self:Debug("Enhancement for %s is for player only", spellName);
+                            self:Debug("Enhancement for %s is for player only", SpellName);
                             --@end-alpha@
                             OnPlayerOnly = spell.Enhancements.OnPlayerOnly;
                         end
@@ -1100,12 +1150,12 @@ function D:Configure() --{{{
                 end
 
                 -- register it
-                self.Status.FoundSpells[spellName] = {spell.Pet, "", IsEnhanced, spell.Better, spell.MacroText};
+                self.Status.FoundSpells[SpellName] = {spell.Pet, "", IsEnhanced, spell.Better, spell.MacroText};
                 for _, Type in pairs (Types) do
 
                     if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
 
-                        CuringSpells[Type] = spellName;
+                        CuringSpells[Type] = SpellName;
 
                         if OnPlayerOnly and OnPlayerOnly[Type] then
                             --@alpha@
@@ -1116,7 +1166,7 @@ function D:Configure() --{{{
                             self.Status.PlayerOnlyTypes[Type] = false;
                         end
 
-                        self:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", spellName, D.Status.FoundSpells[spellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[spellName][1]);
+                        self:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", SpellName, D.Status.FoundSpells[SpellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[SpellName][1]);
                         self.Status.HasSpell = true;
                     end
                 end
