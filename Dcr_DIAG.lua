@@ -703,7 +703,7 @@ do
             ["AceAddon-3.0"] = 11,
             ["AceConsole-3.0"] = 7,
             ["AceEvent-3.0"] = 3,
-            ["AceTimer-3.0"] = 15,
+            ["AceTimer-3.0"] = 16,
             --["LibShefkiTimer-1.0"] = 3,
             ["AceHook-3.0"] = 5,
             ["AceDB-3.0"] = 22,

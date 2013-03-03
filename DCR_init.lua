@@ -302,6 +302,13 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 3,
             Pet = false,
             -- detect resto spec and enhance this spell
+            EnhancedBy = 'resto',
+            EnhancedByCheck = function ()
+                return (GetSpecialization() == 3) and true or false; -- restoration?
+            end,
+            Enhancements = {
+                Types = {DC.CURSE, DC.MAGIC}, -- see PURIFY_SPIRIT
+            }
         },
 
         --[=[
@@ -309,7 +316,7 @@ local function SetRuntimeConstants_Once () -- {{{
         --]=]
 
         -- Shaman resto
-        [DSI["PURIFY_SPIRIT"]] = { -- same name as CLEANSE_SPIRIT in ruRU XXX -- actually this spell doesn't really exist it's just a renamed version of CLEANSE_SPIRIT
+        [DSI["PURIFY_SPIRIT"]] = { -- same name as CLEANSE_SPIRIT in ruRU XXX -- IsSpellKnown(DSI["PURIFY_SPIRIT"]) actually fails in all situaions...
             -- BUG in MOP BETA and 5.2 (2012-07-08): /dump GetSpellBookItemInfo('Purify Spirit') == nil while /dump (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
             Types = {DC.CURSE, DC.MAGIC},
             Better = 4,
