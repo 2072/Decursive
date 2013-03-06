@@ -1,4 +1,4 @@
-Decursive 2.7.2.4 (2012-12-25)
+Decursive 2.7.2.5 (2013-03-06)
 ==============================
 
 
@@ -10,6 +10,23 @@ I want to thank him for the great opportunity he gave me to work on Decursive, a
 program still useful to hundreds of thousands of people today.
 
 A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
+
+
+Changes from Decursive 2.7.2.4 to Decursive 2.7.2.5 (2013-03-06)
+----------------------------------------------------------------
+
+
+- Decursive's master spell table is now indexed by spell-IDs instead of
+  localized spell-names this will fix localization related name collision issues.
+  These collision were preventing auto-configuration to work correctly for some
+  locals (such as Russian Paladins).
+
+
+- Fixed a rare 'index is nil' Lua error happening is some race conditions when
+  mouse-hovering the MUFs. The same race conditions could cause the MUFs' handle
+  to be displayed in an unexpected position...
+
+- Switched back to AceTimer-3.0 which is reliable again now.
 
 
 Changes from Decursive 2.7.2.3 to Decursive 2.7.2.4 (2012-12-25)
