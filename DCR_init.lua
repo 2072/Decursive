@@ -233,7 +233,7 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
-        -- Mages and Druids
+        -- Mages
         [DSI["SPELL_REMOVE_CURSE"]] = {
             Types = {DC.CURSE},
             Better = 0,
@@ -779,49 +779,57 @@ function D:SetConfiguration() -- {{{
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
 
+    -- Upgrade layer for versions of Decursive prior to 2013-03-03
+    for spell, spellData in pairs(D.classprofile.UserSpells) do
+        if type(spell) == 'string' then
 
-    do -- Upgrade layer for versions of Decursive prior to 2013-03-03
-        local toUpgrade = D.classprofile.oldUserSpells or D.classprofile.UserSpells;
+            if not D.classprofile.oldUserSpells then
+                D.classprofile.oldUserSpells = {};
+            end
 
-        local toUpgradeEmpty = true;
-        for spell, spellData in pairs(toUpgrade) do
-            toUpgradeEmpty = false;
+            -- store the string-indexed in the old spell table
+            D.classprofile.oldUserSpells[spell] = spellData;
 
-            if type(spell) == 'string' then
+            -- remove it from its original location
+            D.classprofile.UserSpells[spell] = nil;
+        end
+    end
 
-                -- save the old table
-                if not D.classprofile.oldUserSpells then
-                    D.classprofile.oldUserSpells = {};
-                    D:tcopy(D.classprofile.oldUserSpells, D.classprofile.UserSpells);
-                elseif toUpgrade ~= D.classprofile.oldUserSpells then
-                    D:AddDebugText('Sanity check error: oldUserSpells exists but strings remain in UserSpells');
-                elseif tonumber(spell) then
-                    toUpgrade[spell] = nil;
-                    D:AddDebugText('Sanity check error: string-number (',spell,') found in ', (toUpgrade == D.classprofile.oldUserSpells) and 'oldUserSpells' or 'UserSpells' );
-                end
+    if D.classprofile.oldUserSpells then
+        local itemNum = 0;
 
-                D.classprofile.UserSpells[spell] = nil; -- strings are not authorised in there.
+        for spell, spellData in pairs(D.classprofile.oldUserSpells) do
+
+            itemNum = itemNum + 1;
+
+            if tonumber(spell) then
+                D.classprofile.oldUserSpells[spell] = nil;
+                D:AddDebugText('Sanity check error: string-number (',spell,') found in ', 'oldUserSpells' );
+
+            elseif type(spell) == 'string' then -- necessary due to fuck up in previous release
 
                 local _, spellId = GetSpellBookItemInfo(spell); -- attempt to get the spell id from the name
 
                 if spellId then -- the spell is known to the player
-                    toUpgrade[spell] = nil; -- remove it from its origin (useless if origin is UserSpells but it could be OldUserSpells)
 
                     if not D.classprofile.UserSpells[spellId] then
-                        D.classprofile.UserSpells[spellId] = spellData
+                        D.classprofile.UserSpells[spellId] = spellData;
+                    else
+                        D.classprofile.oldUserSpells[spell] = nil; -- remove it from its origin
                     end
                 end
-            elseif toUpgrade == D.classprofile.oldUserSpells then
-                toUpgrade[spell] = nil;
-            end 
+            else
+                D.classprofile.oldUserSpells[spell] = nil; -- remove it since it's already a numbered spell
+            end
 
         end
 
-        if toUpgradeEmpty and toUpgrade == D.classprofile.oldUserSpells then
+        if itemNum == 0 then
             D.classprofile.oldUserSpells = nil;
         end
 
-    end -- end upgrade layer
+    end
+    
 
     if type (D.profile.OutputWindow) == "string" then
         D.Status.OutputWindow = _G[D.profile.OutputWindow];

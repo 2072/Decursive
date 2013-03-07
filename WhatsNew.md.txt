@@ -1,4 +1,4 @@
-Decursive 2.7.2.5 (2013-03-06)
+Decursive 2.7.2.6 (2013-03-07)
 ==============================
 
 
@@ -10,6 +10,13 @@ I want to thank him for the great opportunity he gave me to work on Decursive, a
 program still useful to hundreds of thousands of people today.
 
 A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
+
+
+Changes from Decursive 2.7.2.5 to Decursive 2.7.2.6 (2013-03-07)
+----------------------------------------------------------------
+
+- Fix the custom spell upgrade system that could error out when logging in on a
+  character for the first few times (the upgrade did go through though).
 
 
 Changes from Decursive 2.7.2.4 to Decursive 2.7.2.5 (2013-03-06)
