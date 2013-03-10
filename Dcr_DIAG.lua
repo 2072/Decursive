@@ -38,6 +38,8 @@ local GetAddOnMetadata  = _G.GetAddOnMetadata;
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI.
 
+T._FatalError_Diaplayed = false;
+
 -- big ugly scary fatal error message display function - only used when nothing else works {{{
 T._FatalError = function (TheError)
 
@@ -46,6 +48,7 @@ T._FatalError = function (TheError)
             text = "|cFFFF0000Decursive Fatal Error:|r\n%s",
             button1 = "OK",
             OnAccept = function()
+                T._FatalError_Diaplayed = false;
                 return false;
             end,
             timeout = 0,
@@ -56,7 +59,12 @@ T._FatalError = function (TheError)
         };
     end
 
-    StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError);
+    if not T._FatalError_Diaplayed then
+        StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError);
+        if T._DiagStatus then
+            T._FatalError_Diaplayed = true;
+        end
+    end
 end
 -- }}}
 
@@ -252,7 +260,7 @@ do
             instructionsHeader = instructionsHeader:gsub('ecursive', 'ecursive / Healers Have To Die');
         end
 
-        local TIandBI = {T.Dcr:GetTimersInfo()};
+        local TIandBI = T.Dcr.GetTimersInfo and {T.Dcr:GetTimersInfo()} or {-1,-1,-1,-1,-1,0};
         TIandBI[#TIandBI + 1], TIandBI[#TIandBI + 2], TIandBI[#TIandBI + 3], TIandBI[#TIandBI + 4] = GetBuildInfo();
         _Debug(unpack(TIandBI));
 
@@ -274,6 +282,12 @@ do
     end
 
     function T._ShowDebugReport(fromDiag)
+
+        local diagStatus, PBCK = T._SelfDiagnostic();
+
+        if PBCK then
+            return;
+        end
 
         if T._HHTDErrors == 0 and not fromDiag and DC.DevVersionExpired and T.Dcr.VersionWarnings then
             T.Dcr:VersionWarnings(true);
@@ -687,11 +701,16 @@ do
         return table.concat(SpellAssignmentsTexts, "\n");
     end -- }}}
 
+    local LibraryIssues = false; -- always a PBCK
+    local Incompatible = false; -- always a PBCK
+    local MixedInstall = false; -- always a PBCK
+    local MissingFile = false; -- always a PBCK
+    local IncompleteLoad = false; -- NOT always a PBCK
     function T._SelfDiagnostic (force, FromCommand)    -- {{{
 
         -- will not executes several times unless forced
         if not force and T._DiagStatus then
-            return T._DiagStatus;
+            return T._DiagStatus, LibraryIssues or Incompatible or MixedInstall or MissingFile;
         end
 
         T._DiagStatus = 0; -- will be set to 1 if the diagnostic fails
@@ -723,8 +742,8 @@ do
             ["CallbackHandler-1.0"] = 6,
         };
 
-        local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00AceLibrary or LibStub|r) could not be found.\n";
-        local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your add-ons properly.\nIf that doesn't work, install the add-ons BugGrabber and BugSack in order to detect other errors preventing Decursive to load properly.\n|cFFD0D000Remember that the WoW client must not be running while you install add-ons.|r";
+        local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00LibStub|r) could not be found.\n";
+        local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your add-ons properly.\nIf that doesn't work, install the add-ons BugGrabber and BugSack in order to detect other errors preventing Decursive to load properly.\n|cFFF000F0Remember that the WoW client must _NOT_ be running while you install add-ons.|r";
 
         local ErrorFound = false;
         local Errors = {};
@@ -736,15 +755,18 @@ do
                 if LibStub:GetLibrary(k, true) then
                     if (select(2, LibStub:GetLibrary(k))) < v then
                         table.insert(Errors, ("The shared library |cFF00FF00%s|r is out-dated, revision |cFF0077FF%s|r at least is required. You have |cFF0077DD%s|r\n"):format(k, tostring(v), select(2, LibStub:GetLibrary(k))));
+                        LibraryIssues = true;
                     end
                 else
                     table.insert(Errors, ("The shared library |cFF00FF00%s|r could not be found!!!\n"):format(k));
                     FatalOccured = true;
+                    LibraryIssues = true;
                 end
             end
         else
             table.insert(Errors, GenericErrorMessage1);
             FatalOccured = true;
+            LibraryIssues = true;
         end
 
         local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 50001); -- once GetAddOnMetadata() was bugged and returned nil...
@@ -754,6 +776,7 @@ do
             table.insert(Errors, ("Your World of Warcraft client version (%d) is too old to run this version of Decursive.\n"):format(tocversion));
             GenericErrorMessage2 = "You need to install an older version of Decursive.";
             FatalOccured = true;
+            Incompatible = true;
         end
 
         -- check if all Decursive files are loaded
@@ -773,6 +796,8 @@ do
                 if not version then
                     table.insert(Errors, ("The Decursive file |cFF00FF00%s|r could not be loaded! (%s)\n"):format(fileName, version == nil and 'missing' or 'runtime error'));
                     FatalOccured = true;
+                    IncompleteLoad = true;
+                    MissingFile = version == nil;
                     break;
                 end
             end
@@ -787,6 +812,7 @@ do
 
             table.insert(Errors, ("Decursive installation is corrupted, mixed versions detected!\n\n%s\n"):format(MixedDetails));
             FatalOccured = true;
+            MixedInstall = true;
         end
 
         if #Errors > 0 then
@@ -881,7 +907,7 @@ do
             DecursiveInstallCorrupted = nil;
         end
 
-        return T._DiagStatus;
+        return T._DiagStatus, LibraryIssues or Incompatible or MixedInstall or MissingFile;
 
 
     end -- }}}
