@@ -833,9 +833,15 @@ function D:SetConfiguration() -- {{{
 
             itemNum = itemNum + 1;
 
-            if type(spell) == 'string' and tonumber(spell) then -- XXX also test for 2139
+            if type(spell) == 'string' and tonumber(spell) then
                 D.classprofile.oldUserSpells[spell] = nil;
+
+                if tonumber(spell) ~= 2139 and not D.classprofile.UserSpells[tonumber(spell)] then
+                    D.classprofile.UserSpells[tonumber(spell)] = spellData;
+                end
+                --@alpha@
                 D:AddDebugText('Sanity check error: string-number (',spell,') found in ', 'oldUserSpells' );
+                --@end-alpha@
 
             elseif type(spell) == 'string' then -- necessary due to fuck up in previous release
 
