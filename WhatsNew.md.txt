@@ -1,4 +1,4 @@
-Decursive 2.7.2.6 (2013-03-07)
+Decursive 2.7.2.7 (2013-03-10)
 ==============================
 
 
@@ -10,6 +10,20 @@ I want to thank him for the great opportunity he gave me to work on Decursive, a
 program still useful to hundreds of thousands of people today.
 
 A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
+
+
+Changes from Decursive 2.7.2.6 to Decursive 2.7.2.7 (2013-03-10)
+----------------------------------------------------------------
+
+- Fix Symbiosis support: Decursive now correctly detects "Cleanse" and "Purge"
+  for Druids and "Cyclone" for Priests.
+
+- Decursive will no longer show its "send this debug report to the author"
+  window if the self diagnostic detects a PBCK issue (missing or outdated
+  library, missing file, incompatible TOC, mixed file versions).
+
+- Emphasized in the corrupted installation pop-up that the WoW client must
+  _NOT_ be running while installing add-ons.
 
 
 Changes from Decursive 2.7.2.5 to Decursive 2.7.2.6 (2013-03-07)
