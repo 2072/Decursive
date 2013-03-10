@@ -55,7 +55,7 @@ local IsSpellKnown          = _G.IsSpellKnown;
 
 local function RegisterDecursive_Once() -- {{{
 
-    T.Dcr = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0");
+    T.Dcr = LibStub("AceAddon-3.0"):NewAddon("Decursive", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0"); -- XXX test this when a library is missing
     D     = T.Dcr;
 
     --@debug@
@@ -214,21 +214,33 @@ local function SetRuntimeConstants_Once () -- {{{
     DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
 
 
+    local SymbiosisNamesToIDs = {
+        [DS["SPELL_CYCLONE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"],
+        [DS["SPELL_PURGE_FROM_SYMBIOSIS"]]      =  DSI["SPELL_PURGE_FROM_SYMBIOSIS"],
+        [DS["SPELL_CLEANSE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"],
+    }
     -- special meta table to handle Druid's Symbiosis
-    local Enhancements_mt = {
+    local SymbiosisEnhancement_mt = {
         __index = function (self, key)
-            if key == 'Types' then
-                return DC.SpellsToUse[select(2, GetSpellBookItemInfo(DS["SPELL_SYMBIOSIS"]))].Types;
+            if key == 'Types' and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
+                return DC.SpellsToUse[SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])]].Types;
             else
-                return nil;
+                return {};
             end
         end
     }
+
 
     -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
     DC.SpellsToUse = {
         -- Druids
         [DSI["SPELL_CYCLONE"]] = {
+            Types = {DC.CHARMED},
+            Better = 0,
+            Pet = false,
+        },
+        -- Priests
+        [DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"]] = {
             Types = {DC.CHARMED},
             Better = 0,
             Pet = false,
@@ -296,6 +308,18 @@ local function SetRuntimeConstants_Once () -- {{{
             }
 
         },
+        -- Druids
+        [DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"]] = {
+            Types = {DC.DISEASE, DC.POISON},
+            Better = 2,
+            Pet = false,
+        },
+        -- Druids
+        [DSI["SPELL_PURGE_FROM_SYMBIOSIS"]] = {
+            Types = {DC.ENEMYMAGIC},
+            Better = 2,
+            Pet = false,
+        },
         -- Shaman
         [DSI["CLEANSE_SPIRIT"]] = { -- same name as PURIFY_SPIRIT in ruRU XXX
             Types = {DC.CURSE},
@@ -342,6 +366,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.MAGIC},
             }
         },
+        -- Druids (copied for Priests see after table declaration)
         [DSI["SPELL_SYMBIOSIS"]] = {
             Types = {}, -- does nothing by default
             Better = 1,
@@ -349,8 +374,9 @@ local function SetRuntimeConstants_Once () -- {{{
 
             EnhancedBy = true,
             EnhancedByCheck = function ()
-                if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and DC.SpellsToUse[select(2, GetSpellBookItemInfo((DS["SPELL_SYMBIOSIS"])))] then
-                    DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, Enhancements_mt);
+                if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
+                      --  DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
+                      --  DC.SpellsToUse[DSI["SPELL_SYMBIOSIS_PRIEST"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
                     return true;
                 else
                     return false;
@@ -386,7 +412,7 @@ local function SetRuntimeConstants_Once () -- {{{
         -- Druids (Restoration)
         [DSI["SPELL_NATURES_CURE"]] = {
             Types = {DC.MAGIC, DC.POISON, DC.CURSE},
-            Better = 1,
+            Better = 3,
             Pet = false,
         },
         -- Priests (global)
@@ -401,7 +427,12 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
-    }; -- }}}
+    };
+    
+    DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
+    DC.SpellsToUse[DSI["SPELL_SYMBIOSIS_PRIEST"]] = DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]];
+
+    -- }}}
 
     D:CreateClassColorTables();
 
@@ -802,7 +833,7 @@ function D:SetConfiguration() -- {{{
 
             itemNum = itemNum + 1;
 
-            if tonumber(spell) then
+            if type(spell) == 'string' and tonumber(spell) then -- XXX also test for 2139
                 D.classprofile.oldUserSpells[spell] = nil;
                 D:AddDebugText('Sanity check error: string-number (',spell,') found in ', 'oldUserSpells' );
 
@@ -1214,6 +1245,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
             ["SPELL_CLEANSE"]               =  4987,
+            ["SPELL_CLEANSE_FROM_SYMBIOSIS"]=  122288,
+            ["SPELL_PURGE_FROM_SYMBIOSIS"]  =  110802,
+            ["SPELL_CYCLONE_FROM_SYMBIOSIS"]=  113506,
             ['SPELL_TRANQUILIZING_SHOT']    =  19801,
             ['SPELL_HEX']                   =  51514, -- shamans
             ["CLEANSE_SPIRIT"]              =  51886,
@@ -1261,7 +1295,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_DETOX"]                 =  115450, -- monk
             ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
             ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
-            ["SPELL_SYMBIOSIS"]             =  110309, -- multi class
+            -- ["SPELL_SYMBIOSIS_MAGE"]        =  110499, -- mage - this is the slot available on mages --XXX add each class
+            ["SPELL_SYMBIOSIS"]             =  110309, -- this is the Druid ability
+            ["SPELL_SYMBIOSIS_PRIEST"]      =  110502, -- this is the Priest ability
             ['Greater Invisibility']        =  110959,
         };
     end
