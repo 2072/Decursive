@@ -289,8 +289,8 @@ local function SetRuntimeConstants_Once () -- {{{
             Types = {DC.MAGIC},
             Better = 0,
             Pet = false,
-            OnPlayerOnly = {
-                [DC.MAGIC]  = true,
+            UnitFiltering = {
+                [DC.MAGIC]  = 1,
             },
         },
         -- Paladins
@@ -305,6 +305,23 @@ local function SetRuntimeConstants_Once () -- {{{
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+            }
+
+        },
+        [DSI["SPELL_HAND_OF_SACRIFICE"]] = {
+            Types = {},
+            Better = 1,
+            Pet = false,
+
+            EnhancedBy = DS["PASSIVE_ABSOLVE"], -- http://www.wowhead.com/talent#srrrdkdz
+            EnhancedByCheck = function ()
+                return (IsSpellKnown(DSI["PASSIVE_ABSOLVE"])) and true or false;
+            end,
+            Enhancements = {
+                Types = {DC.MAGIC},
+                UnitFiltering = {
+                    [DC.MAGIC]  = 2, -- on raid/party only
+                },
             }
 
         },
@@ -778,7 +795,7 @@ function D:SetConfiguration() -- {{{
     D.Groups_datas_are_invalid = true;
     D.Status = {};
     D.Status.FoundSpells = {};
-    D.Status.PlayerOnlyTypes = {};
+    D.Status.UnitFilteringTypes = {};
     D.Status.CuringSpells = {};
     D.Status.CuringSpellsPrio = {};
     D.Status.Blacklisted_Array = {};
@@ -1155,7 +1172,8 @@ function D:Configure() --{{{
     local GetSpellInfo = _G.GetSpellInfo;
     local IsSpellKnown = _G.IsSpellKnown;
     local Types = {};
-    local OnPlayerOnly = false;
+    local UnitFiltering = false;
+    local PermanentUnitFiltering = false;
     local IsEnhanced = false;
     local SpellName = "";
 
@@ -1168,7 +1186,7 @@ function D:Configure() --{{{
             if IsSpellKnown(spellID, spell.Pet) then
                 SpellName = GetSpellInfo(spellID);
                 Types = spell.Types;
-                OnPlayerOnly = false;
+                UnitFiltering = false;
                 IsEnhanced = false;
 
                 -- Could it be enhanced by something (a talent for example)?
@@ -1188,39 +1206,65 @@ function D:Configure() --{{{
 
                         Types = spell.Enhancements.Types; -- set the type to scan to the new ones
 
-                        if spell.Enhancements.OnPlayerOnly then -- On the 'player' unit only?
+                        if spell.Enhancements.UnitFiltering then -- On the 'player' unit only?
                             --@alpha@
                             self:Debug("Enhancement for %s is for player only", SpellName);
                             --@end-alpha@
-                            OnPlayerOnly = spell.Enhancements.OnPlayerOnly;
+                            UnitFiltering = spell.Enhancements.UnitFiltering;
                         end
                     end
                 end
 
-                if spell.OnPlayerOnly then
-                    OnPlayerOnly = spell.OnPlayerOnly;
+                if spell.UnitFiltering then
+                    UnitFiltering = spell.UnitFiltering;
                 end
+
 
                 -- register it
                 self.Status.FoundSpells[SpellName] = {spell.Pet, "", IsEnhanced, spell.Better, spell.MacroText};
-                for _, Type in pairs (Types) do
+                for _, Type in ipairs (Types) do
 
                     if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
 
                         CuringSpells[Type] = SpellName;
 
-                        if OnPlayerOnly and OnPlayerOnly[Type] then
+                        if UnitFiltering and UnitFiltering[Type] then
                             --@alpha@
                             self:Debug("Enhancement for player only for type added",Type);
                             --@end-alpha@
-                            self.Status.PlayerOnlyTypes[Type] = true;
+                            self.Status.UnitFilteringTypes[Type] = UnitFiltering[Type];
                         else
-                            self.Status.PlayerOnlyTypes[Type] = false;
+                            self.Status.UnitFilteringTypes[Type] = false;
                         end
 
                         self:Debug("Spell \"%s\" (%s) registered for type %d ( %s ), PetSpell: ", SpellName, D.Status.FoundSpells[SpellName][2], Type, DC.TypeNames[Type], D.Status.FoundSpells[SpellName][1]);
                         self.Status.HasSpell = true;
                     end
+                end
+                
+                if UnitFiltering then
+                    local filteredTypeCount = 0;
+                    local lastfilter = false;
+                    -- check if the filters are identical for every type
+                    for _, filter in pairs(UnitFiltering) do
+
+                        if not lastfilter then
+                            lastfilter = filter;
+                        elseif lastfilter ~= filter then
+                            lastfilter = false;
+                            break;
+                        end
+
+                        filteredTypeCount = filteredTypeCount + 1;
+                    end
+
+                    if lastfilter and filteredTypeCount == #Types then -- we have the same filter everywhere and all the types managed by this spell are affected
+                        D.Status.FoundSpells[SpellName][6] = lastfilter;
+                        --@alpha@
+                        self:Debug("permanent filter added for spell",SpellName, lastfilter);
+                        --@end-alpha@
+                    end
+
                 end
 
             end
@@ -1251,6 +1295,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
             ["SPELL_CLEANSE"]               =  4987,
+            ["SPELL_HAND_OF_SACRIFICE"]     =  6940,
+            ["PASSIVE_ABSOLVE"]             =  140333,
             ["SPELL_CLEANSE_FROM_SYMBIOSIS"]=  122288,
             ["SPELL_PURGE_FROM_SYMBIOSIS"]  =  110802,
             ["SPELL_CYCLONE_FROM_SYMBIOSIS"]=  113506,

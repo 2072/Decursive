@@ -1260,12 +1260,14 @@ do
 
             if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
 
-                --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
-                -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-                self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/cast [@%s, help][@%s, harm] %s"):format(
-                ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
-                Unit,Unit,
-                Spell));
+                if not D.UnitFilteringTest (Unit, D.Status.FoundSpells[Spell][6]) then
+                    --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
+                    -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
+                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/cast [@%s, help][@%s, harm] %s"):format(
+                    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
+                    Unit,Unit,
+                    Spell));
+                end
             else
                 tmp = D.Status.FoundSpells[Spell][5];
                 tmp = tmp:gsub("UNITID", Unit);

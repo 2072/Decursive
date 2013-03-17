@@ -549,17 +549,41 @@ do
 
 
     local D = D;
-    local _ = false;
+    local _;
     local CureOrder;
     local sorting = function (a, b)
 
-        CureOrder = D.classprofile.CureOrder; -- LUA is too simple, lets do the access optimization...
+        CureOrder = D.classprofile.CureOrder;
 
-        local cura = (a.Type and CureOrder[a.Type] and CureOrder[a.Type] > 0) and CureOrder[a.Type] or 1024;
-        local curb = (b.Type and CureOrder[b.Type] and CureOrder[b.Type] > 0) and CureOrder[b.Type] or 1024;
+        -- local cura = (a.Type and CureOrder[a.Type] and CureOrder[a.Type] > 0) and CureOrder[a.Type] or 1024;
+        -- local curb = (b.Type and CureOrder[b.Type] and CureOrder[b.Type] > 0) and CureOrder[b.Type] or 1024;
 
-        return cura < curb;
+        return ((a.Type and CureOrder[a.Type] and CureOrder[a.Type] > 0) and CureOrder[a.Type] or 1024) < ((b.Type and CureOrder[b.Type] and CureOrder[b.Type] > 0) and CureOrder[b.Type] or 1024);
     end
+
+    local NotRaidOrParty = {
+        ["player"]      = true,
+        ["target"]      = true,
+        ["focus"]       = true,
+        ["mouseover"]   = true,
+    };
+    local function UnitFilteringTest(unit, filterValue)
+
+        D:Debug("UnitFilteringTest:", unit, filterValue);
+
+        if not filterValue then
+            return nil;
+        end
+
+        if filterValue==1 and unit ~= 'player' then -- for personal spells
+            return true;
+        elseif filterValue==2 and NotRaidOrParty[unit] then -- for spells that can't be used on oneself
+            return true;
+        end
+
+    end
+
+    D.UnitFilteringTest = UnitFilteringTest; -- I need this function elsewhere
 
     -- This function will return a table containing only the Debuffs we can cure excepts the one we have to ignore
     -- in different conditions.
@@ -601,8 +625,8 @@ do
             continue_ = true;
 
             -- test if we have to ignore this debuf  {{{ --
-            
-            if self.Status.PlayerOnlyTypes[Debuff.Type] and Unit ~= "player" then -- if this type is curable on the player only
+           
+            if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then
                 continue_ = false;
             end
             

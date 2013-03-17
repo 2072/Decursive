@@ -331,14 +331,6 @@ function D:tReverse(tab)
     return ReversedTable;
 end
 
-function D:Pack(...)
-    local args = {};
-    for i=1,select("#",...), 1 do
-        args[i]=select(i, ...);
-    end
-    return args;
-end
-
 function D:tSwap(t, i1, i2)
 
     if i1 == i2 then
