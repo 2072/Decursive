@@ -36,7 +36,7 @@ local IsAddOnLoaded     = _G.IsAddOnLoaded;
 local GetAddOnMetadata  = _G.GetAddOnMetadata;
 
 local addonName, T = ...;
-DecursiveRootTable = T; -- needed until we get rid of the xml based UI.
+DecursiveRootTable = T; -- needed until we get rid of the xml based UI. -- Also used by HHTD from 2013-04-05
 
 T._FatalError_Diaplayed = false;
 

@@ -1,4 +1,4 @@
-Decursive 2.7.2.7 (2013-03-10)
+Decursive 2.7.2.8 (2013-04-14)
 ==============================
 
 
@@ -10,6 +10,17 @@ I want to thank him for the great opportunity he gave me to work on Decursive, a
 program still useful to hundreds of thousands of people today.
 
 A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
+
+
+Changes from Decursive 2.7.2.7 to Decursive 2.7.2.8 (2013-04-14)
+----------------------------------------------------------------
+
+- Added support for Hands of Sacrifice which can dispel magical effects on
+  party/raid members for retribution Paladins.
+
+- Enhanced the internal mechanism for unit exclusion (this concerns spell only
+  usable on the player or on party/raid members): it now also works for MUFs'
+  buttons assignments.
 
 
 Changes from Decursive 2.7.2.6 to Decursive 2.7.2.7 (2013-03-10)
