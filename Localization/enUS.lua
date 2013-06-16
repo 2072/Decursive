@@ -166,7 +166,8 @@ He was in life as he was in game, selfless, generous, dedicated to his friends a
 He left us at the age of 38 leaving behind him not just anonymous players in a virtual world but, a group of true friends who will miss him forever.]=]
 L["GLOR5"] = "He will always be remembered..."
 L["HANDLEHELP"] = "Drag all the Micro-UnitFrames (MUFs)"
-L["HIDE_LIVELIST"] = "Hide the live-list"
+L["OPT_ENABLE_LIVELIST"] = "Enable the live-list"
+L["OPT_ENABLE_LIVELIST_DESC"] = "Displays an informative list of afflicted people.\n\nYou can move this list by moving the Decursive bar (type /DCRSHOW to display that bar)."
 L["HIDE_MAIN"] = "Hide Decursive Window"
 L["HIDESHOW_BUTTONS"] = "Hide/Show buttons and lock/Unlock Decursive's bar"
 L["HLP_LEFTCLICK"] = "Left-Click"
@@ -301,7 +302,6 @@ L["OPT_FILTEROUTCLASSES_FOR_X"] = "%q will be ignored on the specified classes w
 L["OPT_GENERAL"] = "General options"
 L["OPT_GROWDIRECTION"] = "Reverse MUFs Display"
 L["OPT_GROWDIRECTION_DESC"] = "The MUFs will be displayed from bottom to top"
-L["OPT_HIDELIVELIST_DESC"] = "If not hidden, displays an informative list of cursed people"
 L["OPT_HIDEMFS_GROUP"] = "in solo or in party"
 L["OPT_HIDEMFS_GROUP_DESC"] = "Hide the MUF's window when you are not in a raid."
 L["OPT_HIDEMFS_NEVER"] = "Never auto-hide"

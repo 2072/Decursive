@@ -625,8 +625,8 @@ local function GetStaticOptions ()
                     },
                     HideLiveList = {
                         type = "toggle",
-                        name = L["HIDE_LIVELIST"],
-                        desc = L["OPT_HIDELIVELIST_DESC"],
+                        name = L["OPT_ENABLE_LIVELIST"],
+                        desc = L["OPT_ENABLE_LIVELIST_DESC"],
                         set = function()
                             D:ShowHideLiveList()
                             if D.profile.HideLiveList and not D.profile.ShowDebuffsFrame or not D.Status.HasSpell then
@@ -635,6 +635,7 @@ local function GetStaticOptions ()
                                 D:SetIcon(DC.IconON);
                             end
                         end,
+                        get = function () return not D.profile.HideLiveList end,
                         order = 7,
                     },
                     PlaySound = {
