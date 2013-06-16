@@ -195,10 +195,8 @@ function D:GetDefaultsSettings()
 
             DebuffsFrameVerticalDisplay = false,
 
-            -- display chronometer on MUFs
-            DebuffsFrameChrono = true,
-
-            DebuffsFrameTimeLeft = true,
+            -- Center text displayed on MUFs, defaults to time left
+            CenterTextDisplay = '1_TLEFT',
 
             -- this is wether or not to show the live-list  
             HideLiveList = false,
@@ -570,9 +568,8 @@ local function GetStaticOptions ()
                 type = 'toggle',
                 name = L["OPT_HIDEMUFSHANDLE"],
                 desc = L["OPT_HIDEMUFSHANDLE_DESC"],
-                guiHidden   = true,
+                guiHidden = true,
                 disabled = function() return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
-                
                 get = function(info) return not D.MFContainerHandle:IsMouseEnabled(); end,
                 order = -4,
             },
@@ -1081,19 +1078,13 @@ local function GetStaticOptions ()
                                 desc = L["OPT_SHOWBORDER_DESC"],
                                 order = 1350,
                             },
-                            DebuffsFrameChrono = {
-                                type = "toggle",
-                                name = L["OPT_SHOWCHRONO"],
-                                desc = L["OPT_SHOWCHRONO_DESC"],
+                            CenterTextDisplay = {
+                                type = "select",
+                                style = "dropdown",
+                                name = L["OPT_CENTERTEXT"],
+                                desc = L["OPT_CENTERTEXT_DESC"],
+                                values = {["1_TLEFT"] = L["OPT_CENTERTEXT_TIMELEFT"], ["2_TELAPSED"] = L["OPT_CENTERTEXT_ELAPSED"], ["3_STACKS"] = L["OPT_CENTERTEXT_STACKS"], ["4_NONE"] = L["OPT_CENTERTEXT_DISABLED"]},
                                 order = 1360,
-                                disabled = false,
-                            },
-                            DebuffsFrameTimeLeft = {
-                                type = "toggle",
-                                disabled = function () return not D.profile.DebuffsFrameChrono end,
-                                name = L["OPT_SHOWCHRONOTIMElEFT"],
-                                desc = L["OPT_SHOWCHRONOTIMElEFT_DESC"],
-                                order = 1365,
                             },
                             Show_Stealthed_Status = {
                                 type = "toggle",

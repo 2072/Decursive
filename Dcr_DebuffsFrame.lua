@@ -103,10 +103,12 @@ local AFFLICTED_AND_CHARMED = DC.AFFLICTED_AND_CHARMED;
 -- Those are the different colors used for the MUFs main texture
 local MF_colors = { };
 
+local _G                = _G;
 local unpack            = _G.unpack;
 local select            = _G.select;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
+local bit               = _G.bit;
 local GetTime           = _G.GetTime;
 local IsControlKeyDown  = _G.IsControlKeyDown;
 local floor             = _G.math.floor;
@@ -123,6 +125,7 @@ local UnitIsUnit        = _G.UnitIsUnit;
 local str_upper         = _G.string.upper;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
+local CreateFrame       = _G.CreateFrame;
 
 
 DC.MouseButtonsReadable = { -- {{{
@@ -453,7 +456,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
             MF.UnitStatus = 0; -- reset status to force SetColor to update
         end
 
-        MF.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
+        MF.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
         D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + i / D.profile.DebuffsFramePerUPdate), MF);
         i = i + 1;
@@ -504,6 +507,8 @@ do
             self);
             return;
         end
+
+        local UIParent = UIParent;
 
         UIScale       = UIParent:GetEffectiveScale()
         FrameScale    = self.Frame:GetEffectiveScale();
@@ -714,112 +719,119 @@ end
 
 -- Event management functions
 -- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnLoad, OnPreClick) {{{
--- It's outside the function to avoid creating and discarding this table at each call
-local UnitGUID = _G.UnitGUID;
-local GetSpellInfo = _G.GetSpellInfo;
-local TooltipButtonsInfo = {}; -- help tooltip text table
-local TooltipUpdate = 0; -- help tooltip change update check
--- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
--- it also handles Unstable Affliction detection and warning.
-function MicroUnitF:OnEnter(frame) -- {{{
-    D.Status.MouseOveringMUF = true;
+do
+    local UnitGUID = _G.UnitGUID;
+    local GetSpellInfo = _G.GetSpellInfo;
+    local TooltipButtonsInfo = {}; -- help tooltip text table
+    local TooltipUpdate = 0; -- help tooltip change update check
+    local DcrDisplay_Tooltip = _G.DcrDisplay_Tooltip;
+    local GameTooltip_SetDefaultAnchor = _G.GameTooltip_SetDefaultAnchor;
+    local GameTooltip = _G.GameTooltip;
+    -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
+    -- it also handles Unstable Affliction detection and warning.
+    function MicroUnitF:OnEnter(frame) -- {{{
+        D.Status.MouseOveringMUF = true;
 
-    local MF = frame.Object;
-    local Status;
+        local MF = frame.Object;
+        local Status;
 
-    local Unit = MF.CurrUnit; -- shortcut
-    local TooltipText = "";
+        local Unit = MF.CurrUnit; -- shortcut
+        local TooltipText = "";
 
 
-    local GUIDwasFixed = false;
-    local unitguid = UnitGUID(Unit);
+        local GUIDwasFixed = false;
+        local unitguid = UnitGUID(Unit);
 
-    if unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid] then
+        if unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid] then
 
-        if unitguid then
-            D.Status.Unit_Array_UnitToGUID[Unit] = unitguid;
-            D.Status.Unit_Array_GUIDToUnit[unitguid] = Unit;
-            GUIDwasFixed = true;
-        end
-
-    end
-
-    MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
-    MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
-
-    if not Unit then
-        return; -- If the user overs the MUF befor it's completely initialized
-    end
-
-    --Test for unstable affliction like spells
-    if MF.Debuffs then
-        for i, Debuff in ipairs(MF.Debuffs) do
-            if Debuff.Type then
-                -- Create a warning if an Unstable Affliction like spell is detected XXX not very pretty will be integrated along with the filtering system comming 'soon'(tm)
-                if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
-                    D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
-                    D:SafePlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
-                end
+            if unitguid then
+                D.Status.Unit_Array_UnitToGUID[Unit] = unitguid;
+                D.Status.Unit_Array_GUIDToUnit[unitguid] = Unit;
+                GUIDwasFixed = true;
             end
-        end
-    end
 
-    if D.profile.AfflictionTooltips then
-
-        -- removes the CHARMED_STATUS bit from Status, we don't need it
-        Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
-
-        -- First, write the name of the unit in its class color
-        if UnitExists(MF.CurrUnit) then
-            TooltipText =
-            ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or ""  ) ..
-            -- Colored unit name
-            D:ColorText(            (D:PetUnitName(       Unit, true    ))
-            , "FF" .. ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
-        else
-            TooltipText = MF.CurrUnit;
         end
 
+        MF:Update(false, false, true); -- will reset the color early and set the current status of the MUF
+        MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
-        -- set UnitStatus text
-        local StatusText = "";
-
-        -- set the status text, just translate the bitfield to readable text
-        if Status == NORMAL then
-            StatusText = L["NORMAL"];
-
-        elseif Status == ABSENT then
-            StatusText = str_format(L["ABSENT"], Unit);
-
-        elseif Status == FAR then
-            StatusText = L["TOOFAR"];
-
-        elseif Status == BLACKLISTED then
-            StatusText = L["BLACKLISTED"];
-
-        elseif MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
-            local DebuffType = MF.Debuffs[1].Type;
-            StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[str_upper(DC.TypeNames[DebuffType])], "FF" .. DC.TypeColors[DebuffType]) );
-
-        elseif Status == STEALTHED then
-            StatusText = L["STEALTHED"];
+        if not Unit then
+            return; -- If the user overs the MUF befor it's completely initialized
         end
 
-        -- Unit Status
-        TooltipText = TooltipText .. "\n" .. StatusText;
-
-        -- list the debuff(s) names
+        --Test for unstable affliction like spells
         if MF.Debuffs then
             for i, Debuff in ipairs(MF.Debuffs) do
                 if Debuff.Type then
-                    local DebuffApps = Debuff.Applications;
-                    TooltipText = TooltipText .. "\n" .. str_format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and str_format(" (%d)", DebuffApps) or "");
+                    -- Create a warning if an Unstable Affliction like spell is detected XXX not very pretty will be integrated along with the filtering system comming 'soon'(tm)
+                    if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
+                        D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
+                        D:SafePlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
+                    end
                 end
             end
+
+            -- TODO: scan here for fluidity buff/debuff and alert
+            -- http://www.wowhead.com/search?q=Ionization#npc-abilities
+            -- http://www.wowhead.com/search?q=+Fluidity#spells
         end
 
-        -- Display the tooltip
-        D:DisplayTooltip(TooltipText, self.Frame, "ANCHOR_TOPLEFT");
+        if D.profile.AfflictionTooltips then
+
+            -- removes the CHARMED_STATUS bit from Status, we don't need it
+            Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
+
+            -- First, write the name of the unit in its class color
+            if UnitExists(MF.CurrUnit) then
+                TooltipText =
+                ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or ""  ) ..
+                -- Colored unit name
+                D:ColorText(            (D:PetUnitName(       Unit, true    ))
+                , "FF" .. ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
+            else
+                TooltipText = MF.CurrUnit;
+            end
+
+
+            -- set UnitStatus text
+            local StatusText = "";
+
+            -- set the status text, just translate the bitfield to readable text
+            if Status == NORMAL then
+                StatusText = L["NORMAL"];
+
+            elseif Status == ABSENT then
+                StatusText = str_format(L["ABSENT"], Unit);
+
+            elseif Status == FAR then
+                StatusText = L["TOOFAR"];
+
+            elseif Status == BLACKLISTED then
+                StatusText = L["BLACKLISTED"];
+
+            elseif MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
+                local DebuffType = MF.Debuffs[1].Type;
+                StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[str_upper(DC.TypeNames[DebuffType])], "FF" .. DC.TypeColors[DebuffType]) );
+
+            elseif Status == STEALTHED then
+                StatusText = L["STEALTHED"];
+            end
+
+            -- Unit Status
+            TooltipText = TooltipText .. "\n" .. StatusText;
+
+            -- list the debuff(s) names
+            if MF.Debuffs then
+                for i, Debuff in ipairs(MF.Debuffs) do
+                    if Debuff.Type then
+                        local DebuffApps = Debuff.Applications;
+                        TooltipText = TooltipText .. "\n" .. str_format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and str_format(" (%d)", DebuffApps) or "");
+                    end
+                end
+            end
+
+            -- Display the tooltip
+            D:DisplayTooltip(TooltipText, self.Frame, "ANCHOR_TOPLEFT");
 
             DcrDisplay_Tooltip:ClearAllPoints();
             DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor());
@@ -831,41 +843,42 @@ function MicroUnitF:OnEnter(frame) -- {{{
             end
         end
 
-    -- show a help text in the Game default tooltip
-    if D.profile.DebuffsFrameShowHelp then
-        -- if necessary we will update the help tooltip text
-        if (D.Status.SpellsChanged ~= TooltipUpdate) then
-            TooltipButtonsInfo = {};
-            local MouseButtons = D.db.global.MouseButtons;
+        -- show a help text in the Game default tooltip
+        if D.profile.DebuffsFrameShowHelp then
+            -- if necessary we will update the help tooltip text
+            if (D.Status.SpellsChanged ~= TooltipUpdate) then
+                TooltipButtonsInfo = {};
+                local MouseButtons = D.db.global.MouseButtons;
 
-            for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
-                TooltipButtonsInfo[Prio] =
-                str_format("%s: %s%s", D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), (GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+                    TooltipButtonsInfo[Prio] =
+                    str_format("%s: %s%s", D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), (GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                end
+
+                t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
+                t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
+                TooltipButtonsInfo = table.concat(TooltipButtonsInfo, "\n");
+                TooltipUpdate = D.Status.SpellsChanged;
             end
 
-            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
-            t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
-            TooltipButtonsInfo = table.concat(TooltipButtonsInfo, "\n");
-            TooltipUpdate = D.Status.SpellsChanged;
+            GameTooltip_SetDefaultAnchor(GameTooltip, frame);
+            GameTooltip:SetText(TooltipButtonsInfo);
+            GameTooltip:Show();
+
         end
 
-        GameTooltip_SetDefaultAnchor(GameTooltip, frame);
-        GameTooltip:SetText(TooltipButtonsInfo);
-        GameTooltip:Show();
+    end -- }}}
 
-    end
+    function MicroUnitF:OnLeave() -- {{{
+        D.Status.MouseOveringMUF = false;
+        --D:Debug("Micro unit Hidden");
+        DcrDisplay_Tooltip:Hide();
 
-end -- }}}
-
-function MicroUnitF:OnLeave() -- {{{
-    D.Status.MouseOveringMUF = false;
-    --D:Debug("Micro unit Hidden");
-    DcrDisplay_Tooltip:Hide();
-
-    if (D.profile.DebuffsFrameShowHelp) then
-        GameTooltip:Hide();
-    end
-end -- }}}
+        if (D.profile.DebuffsFrameShowHelp) then
+            GameTooltip:Hide();
+        end
+    end -- }}}
+end
 
 
 function D.MicroUnitF:OnCornerEnter(frame)
@@ -1016,9 +1029,8 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.IsCharmed          = false;
     self.UpdateCountDown    = 3;
     self.LastAttribUpdate   = 0;
-    self.LitTime            = false;
-    self.Chrono             = false;
-    self.PrevChrono         = false;
+    self.CenterText         = false;
+    self.PrevCenterText     = false;
     self.Shown              = false; -- Setting this to true will broke the stick to right option
     self.UpdateCD           = 0;
     self.RaidTargetIcon     = false;
@@ -1076,12 +1088,12 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.InnerTexture:SetWidth(7 - petminus);
     self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
-    -- Chrono Font string
-    self.ChronoFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
-    self.ChronoFontString:SetFont(DC.NumberFontFileName, 12.2, "THICKOUTLINE, MONOCHROME")
-    self.ChronoFontString:SetPoint("CENTER",self.Frame ,"CENTER",1.6,0)
-    self.ChronoFontString:SetPoint("BOTTOM",self.Frame ,"BOTTOM",0,1)
-    self.ChronoFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
+    -- CenterText Font string
+    self.CenterFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
+    self.CenterFontString:SetFont(DC.NumberFontFileName, 12.2, "THICKOUTLINE, MONOCHROME")
+    self.CenterFontString:SetPoint("CENTER",self.Frame ,"CENTER",1.6,0)
+    self.CenterFontString:SetPoint("BOTTOM",self.Frame ,"BOTTOM",0,1)
+    self.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
     -- raid target icon
     self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY");
@@ -1324,7 +1336,7 @@ do
     --          - The Alpha of the center and borders
     --      This closure also set the Status of the MUF that will be used in the tooltip
     --]=]
-    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged, PrevChrono, Time, Status;
+    local DebuffType, Unit, PreviousStatus, BorderAlpha, Class, ClassColor, ReturnValue, RangeStatus, Alpha, PrioChanged, Time, Status;
     local profile = {};
 
     -- global access optimization
@@ -1364,9 +1376,9 @@ do
             if PreviousStatus ~= ABSENT then
                 self.Color = MF_colors[ABSENT];
                 self.UnitStatus = ABSENT;
-                if self.LitTime then
-                    self.LitTime = false;
-                    self.ChronoFontString:SetText(" ");
+                if self.CenterText then
+                    self.CenterText = false;
+                    self.CenterFontString:SetText(" ");
                 end
             end
 
@@ -1375,9 +1387,9 @@ do
             if PreviousStatus ~= FAR then
                 self.Color = MF_colors[FAR];
                 self.UnitStatus = FAR;
-                if self.LitTime then
-                    self.LitTime = false;
-                    self.ChronoFontString:SetText(" ");
+                if self.CenterText then
+                    self.CenterText = false;
+                    self.CenterFontString:SetText(" ");
 
                 end
             end
@@ -1388,9 +1400,9 @@ do
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
                     self.UnitStatus = STEALTHED;
-                    if self.LitTime then
-                        self.LitTime = false;
-                        self.ChronoFontString:SetText(" ");
+                    if self.CenterText then
+                        self.CenterText = false;
+                        self.CenterFontString:SetText(" ");
 
                     end
                 end
@@ -1400,9 +1412,9 @@ do
                 if PreviousStatus ~= BLACKLISTED then
                     self.Color = MF_colors[BLACKLISTED];
                     self.UnitStatus = BLACKLISTED;
-                    if self.LitTime then
-                        self.LitTime = false;
-                        self.ChronoFontString:SetText(" ");
+                    if self.CenterText then
+                        self.CenterText = false;
+                        self.CenterFontString:SetText(" ");
 
                     end
                 end
@@ -1434,28 +1446,40 @@ do
                     self.UpdateCD = Time;
                 end
 
-                -- update the chrono
-                if profile.DebuffsFrameChrono and self.Debuffs[1].ExpirationTime then
-                    if self.LitTime then
-                        PrevChrono = self.Chrono;
+                -- update the CenterText
+                --if profile.DebuffsFrameChrono and self.Debuffs[1].ExpirationTime then
+                if profile.CenterTextDisplay ~= '4_NONE' then
 
-                        if not profile.DebuffsFrameTimeLeft then
-                            --self.Chrono = floor(Time - self.LitTime);
-                            self.Chrono = floor(self.Debuffs[1].Duration - (self.Debuffs[1].ExpirationTime - Time));
+                    self.PrevCenterText = self.CenterText;
 
-                            if self.Chrono ~= PrevChrono then
-                                self.ChronoFontString:SetText( ((self.Chrono < 60) and self.Chrono or (floor(self.Chrono / 60) .. "\'") ));
+                    if profile.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime then
+
+                        if profile.CenterTextDisplay == '2_TELAPSED' then
+                            --self.CenterText = floor(Time - self.CenterText);
+                            self.CenterText = floor(self.Debuffs[1].Duration - (self.Debuffs[1].ExpirationTime - Time));
+
+                            if self.CenterText ~= self.PrevCenterText then -- do not unecessarily compute the final displayed string
+                                --D:Debug('center text update');
+                                self.CenterFontString:SetText( ((self.CenterText < 60) and self.CenterText or (floor(self.CenterText / 60) .. "\'") ));
                             end
                         else
-                            self.Chrono = floor(self.Debuffs[1].ExpirationTime - Time);
+                            self.CenterText = floor(self.Debuffs[1].ExpirationTime - Time);
 
-                            if self.Chrono ~= PrevChrono then
-                                self.ChronoFontString:SetText( ((self.Chrono < 60) and (self.Chrono + 1) or (floor(self.Chrono / 60 + 1) .. "\'") ));
+                            if self.CenterText ~= self.PrevCenterText then
+                                self.CenterFontString:SetText( ((self.CenterText < 60) and (self.CenterText + 1) or (floor(self.CenterText / 60 + 1) .. "\'") ));
                             end
                         end
+
                     else
-                        self.LitTime = Time;
+
+                        self.CenterText = self.Debuffs[1].Applications;
+
+                        if self.CenterText ~= self.PrevCenterText then
+                            self.CenterFontString:SetText(self.CenterText or '');
+                        end
+
                     end
+
                 end
 
                 self.RaidTargetIcon = GetRaidTargetIndex(Unit);
@@ -1484,9 +1508,9 @@ do
                 -- the unit has nothing special, set the status to normal
                 self.Color = MF_colors[NORMAL];
                 self.UnitStatus = NORMAL;
-                if self.LitTime then
-                    self.LitTime = false;
-                    self.ChronoFontString:SetText(" ");
+                if self.CenterText then
+                    self.CenterText = false;
+                    self.CenterFontString:SetText(" ");
                 end
 
                 if self.RaidTargetIcon then

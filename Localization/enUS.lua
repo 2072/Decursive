@@ -478,6 +478,16 @@ Go to curse.com and search for 'Decursive' or use Curse's client to update all y
 
 This notice will be displayed again in 2 days.]=]
 
+
+
+L["OPT_CENTERTEXT"] = "Center counter:"
+L["OPT_CENTERTEXT_DESC"] = "Displays information about the topmost (according to your priorities) affliction in each MUF's center.\n\nEither:\n- Time remaining before natural expiry\n- Time elapsed since the affliction hit\n- Number of stacks"
+L["OPT_CENTERTEXT_TIMELEFT"] = "Time left"
+L["OPT_CENTERTEXT_ELAPSED"] = "Time elapsed"
+L["OPT_CENTERTEXT_STACKS"] = "Number of stacks"
+L["OPT_CENTERTEXT_DISABLED"] = "Disabled"
+
+
 --]==]
 --@end-do-not-package@
 
