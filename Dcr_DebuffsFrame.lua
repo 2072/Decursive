@@ -1475,7 +1475,7 @@ do
                         self.CenterText = self.Debuffs[1].Applications;
 
                         if self.CenterText ~= self.PrevCenterText then
-                            self.CenterFontString:SetText(self.CenterText or '');
+                            self.CenterFontString:SetText(self.CenterText > 1 or '');
                         end
 
                     end
