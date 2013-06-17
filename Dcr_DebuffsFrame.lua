@@ -763,10 +763,11 @@ do
         if MF.Debuffs then
             for i, Debuff in ipairs(MF.Debuffs) do
                 if Debuff.Type then
-                    -- Create a warning if an Unstable Affliction like spell is detected XXX not very pretty will be integrated along with the filtering system comming 'soon'(tm)
-                    if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
+                    -- Create a warning if an Unstable Affliction like spell is detected XXX will be integrated along with the filtering system comming 'soon'(tm)
+                    if DC.IS_HARMFULL_DEBUFF[Debuff.Name] then
+                    -- if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
                         D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
-                        D:SafePlaySoundFile("Sound\\Doodad\\G_NecropolisWound.wav");
+                        D:SafePlaySoundFile(DC.DeadlyDebuffAlert);
                     end
                 end
             end

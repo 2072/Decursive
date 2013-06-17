@@ -141,6 +141,7 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
 
     DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.ogg";
     DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.ogg";
+    DC.DeadlyDebuffAlert = "Interface\\AddOns\\Decursive\\Sounds\\G_NecropolisWound-fast.ogg";
     --DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
 
     SetBasicConstants_Once = nil;
@@ -213,6 +214,7 @@ local function SetRuntimeConstants_Once () -- {{{
 
     DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
 
+    DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
 
     local SymbiosisNamesToIDs = {
         [DS["SPELL_CYCLONE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"],
@@ -1332,6 +1334,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Lesser Invisibility']         =  7870,
             ['Ice Armor']                   =  7302,
             ['Unstable Affliction']         =  30108,
+            ['Fluidity']                    =  138002,
             ['Vampiric Touch']              =  34914,
             ['Flame Shock']                 =  8050,
             ["SPELL_REMOVE_CURSE"]          =  475, -- Druids/Mages

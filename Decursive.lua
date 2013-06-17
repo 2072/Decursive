@@ -569,7 +569,7 @@ do
     };
     local function UnitFilteringTest(unit, filterValue)
 
-        D:Debug("UnitFilteringTest:", unit, filterValue);
+        --D:Debug("UnitFilteringTest:", unit, filterValue);
 
         if not filterValue then
             return nil;
