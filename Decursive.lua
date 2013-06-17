@@ -404,18 +404,18 @@ do
     local GetTime           = _G.GetTime;
 
     -- This local function only sets interesting values of UnitDebuff()
-    local Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime;
+    local Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID;
     local function GetUnitDebuff  (Unit, i) --{{{
 
         if D.LiveList.TestItemDisplayed and i == 1 and UnitExists(Unit) and Unit ~= "target" and Unit ~= "mouseover" then
-            Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime = "Test item", 1, "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70);
+            Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, SpellID = "Test item", 1, "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70), 0;
             D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime);
             return true;
         end
 
         --    Name, Rank, Texture, Applications, TypeName, duration, ExpirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
 
-        Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime = UnitDebuff (Unit, i);
+        Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID = UnitDebuff (Unit, i);
 
         if Name then
             return true;
@@ -525,6 +525,12 @@ do
             end
 
             i = i + 1;
+
+            -- if a deadly debuff has been found, just forget everything...
+            if DC.IS_DEADLY_DEBUFF[SpellID] then
+                StoredDebuffIndex = 1;
+                break;
+            end
         end
 
         -- erase remaining unused entries without freeing the memory (less garbage)
