@@ -54,11 +54,13 @@ local LC = D.LC;
 local DC = T._C;
 -------------------------------------------------------------------------------
 
+local _G                = _G;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
 local type              = _G.type;
 local table             = _G.table;
 local t_sort            = _G.table.sort;
+local t_wipe            = _G.table.wipe;
 local UnitName          = _G.UnitName;
 local UnitDebuff        = _G.UnitDebuff;
 local UnitBuff          = _G.UnitBuff;
@@ -407,10 +409,14 @@ do
     local Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID;
     local function GetUnitDebuff  (Unit, i) --{{{
 
-        if D.LiveList.TestItemDisplayed and i == 1 and UnitExists(Unit) and Unit ~= "target" and Unit ~= "mouseover" then
-            Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, SpellID = "Test item", 1, "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70), 0;
-            D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime);
-            return true;
+        if D.LiveList.TestItemDisplayed and UnitExists(Unit) and Unit ~= "target" and Unit ~= "mouseover" then
+            if i == 1 then
+                Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, SpellID = "Test item", 1, "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70), 0;
+                D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime);
+                return true;
+            else
+                i = i - 1;
+            end
         end
 
         --    Name, Rank, Texture, Applications, TypeName, duration, ExpirationTime, unitCaster, isStealable = UnitAura("unit", index or ["name", "rank"][, "filter"])
@@ -561,10 +567,7 @@ do
 
         CureOrder = D.classprofile.CureOrder;
 
-        -- local cura = (a.Type and CureOrder[a.Type] and CureOrder[a.Type] > 0) and CureOrder[a.Type] or 1024;
-        -- local curb = (b.Type and CureOrder[b.Type] and CureOrder[b.Type] > 0) and CureOrder[b.Type] or 1024;
-
-        return ((a.Type and CureOrder[a.Type] and CureOrder[a.Type] > 0) and CureOrder[a.Type] or 1024) < ((b.Type and CureOrder[b.Type] and CureOrder[b.Type] > 0) and CureOrder[b.Type] or 1024);
+        return CureOrder[a.Type] * 10000 - a.Applications < CureOrder[b.Type] * 10000 - b.Applications;
     end
 
     local NotRaidOrParty = {
@@ -617,7 +620,7 @@ do
 
         --self:Debug("Debuffs were found");
 
-        local DebuffNum = 1; -- number of found debuff (used for indexing)
+        t_wipe(ManagedDebuffs);
 
         local continue_ = true; -- if we have to ignore a debuff, this will become false
 
@@ -633,10 +636,10 @@ do
             -- test if we have to ignore this debuf  {{{ --
            
             if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then
-                continue_ = false;
+                continue_ = false; -- == skip this debuff
             end
-            
-            if (self.profile.DebuffsToIgnore[Debuff.Name]) then
+           
+            if (self.profile.DebuffsToIgnore[Debuff.Name]) then -- XXX not sure it has any actual use nowadays (2013-06-18)
                 -- these are the BAD ones... the ones that make the target immune... abort this unit
                 --D:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
                 break; -- exit here
@@ -644,7 +647,7 @@ do
 
             if (self.profile.BuffDebuff[Debuff.Name]) then
                 -- these are just ones you don't care about (sleepless deam etc...)
-                continue_ = false;
+                continue_ = false; -- == skip this debuff
                 --D:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
             end
 
@@ -694,18 +697,10 @@ do
 
                         -- self:Debug("It's managed");
 
-                        -- create an entry for this debuff index if necessary
-                        if (not ManagedDebuffs[DebuffNum]) then
-                            ManagedDebuffs[DebuffNum] = {};
-                        end
-
-                        -- copy the debuff information to this table.
-                        self:tcopy(ManagedDebuffs[DebuffNum], Debuff);
-
-                        DebuffNum = DebuffNum + 1;
+                        ManagedDebuffs[#ManagedDebuffs + 1] = Debuff;
 
                         -- the live-list only reports the first debuf found and set JustOne to true
-                        if (JustOne) then
+                        if JustOne then
                             break;
                         end
                     end
@@ -713,22 +708,13 @@ do
             end
         end -- for END
 
-        -- erase unused entries without freeing the memory (less garbage)
-        if (not JustOne or DebuffNum == 1)  then -- if JustOne is set don't clear anything except if we found nothing
-            while (ManagedDebuffs[DebuffNum]) do
-                ManagedDebuffs[DebuffNum].Type = false;
-                -- ManagedDebuffs[DebuffNum].TimeStamp = false;
-                DebuffNum = DebuffNum + 1;
-            end
-        end
+        if (ManagedDebuffs[1]) then
 
-        -- sort the table only if it's not 'empty' and only if there is at least two debuffs
-        if (ManagedDebuffs[1] and ManagedDebuffs[1].Type) then
-
-            -- order Debuffs according to type priority order
-            if (not JustOne and ManagedDebuffs[2] and ManagedDebuffs[2].Type) then
-                t_sort(ManagedDebuffs, sorting); -- uses memory..
+            -- sort the table only if it contains more than 1 debuff
+            if (#ManagedDebuffs > 1) then
+                t_sort(ManagedDebuffs, sorting);
             end
+
             return ManagedDebuffs, IsCharmed;
         else
             return false, IsCharmed;
