@@ -82,6 +82,7 @@ local UnitCanAttack     = _G.UnitCanAttack;
 local UnitName          = _G.UnitName;
 local UnitGUID          = _G.UnitGUID;
 local GetTime           = _G.GetTime;
+local IsShiftKeyDown    = _G.IsShiftKeyDown;
 
 -- GroupChanged(reason) {{{
 do
@@ -117,7 +118,7 @@ do
         end
 
         if reason ~= "UNIT_PET" then
-            if GetNumRaidMembers() ~= 0 or GetNumPartyMembers() ~= 0 then
+            if GetNumRaidMembers() ~= 0 or GetNumPartyMembers() ~= 0 then -- TO FIX
                 Grouped = true;
                 D:Debug("|cFF007700Grouped!!|r", Grouped);
             else
@@ -279,6 +280,17 @@ function D:ScheduledTasks() -- {{{
             end
         end
     end
+
+
+   if IsShiftKeyDown() then
+       if self.profile.CenterTextDisplay ~= "3_STACKS" then
+           self.Status.CenterTextDisplay  = "3_STACKS";
+       else
+           self.Status.CenterTextDisplay  = '1_TLEFT';
+       end
+   else
+       self.Status.CenterTextDisplay = self.profile.CenterTextDisplay;
+   end
 
 
     if self.DebuffUpdateRequest > status.MaxConcurentUpdateDebuff then

@@ -1453,9 +1453,9 @@ do
 
                     self.PrevCenterText = self.CenterText;
 
-                    if profile.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime then
+                    if Status.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime then
 
-                        if profile.CenterTextDisplay == '2_TELAPSED' then
+                        if Status.CenterTextDisplay == '2_TELAPSED' then
                             --self.CenterText = floor(Time - self.CenterText);
                             self.CenterText = floor(self.Debuffs[1].Duration - (self.Debuffs[1].ExpirationTime - Time));
 
