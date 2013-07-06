@@ -261,8 +261,6 @@ function D:PlaySound (UnitID, Caller) --{{{
                 self:Debug("Sound scheduled by", Caller);
             end
 
-        else
-            self.UnitDebuffed[UnitID] = false;
         end
     end
 end --}}}
@@ -610,6 +608,7 @@ do
         local AllUnitDebuffs, IsCharmed = self:GetUnitDebuffAll(Unit); -- always return a table, may be empty though
 
         if not (AllUnitDebuffs[1] and AllUnitDebuffs[1].Type ) then -- if there is no curable debuff (a debuff with a type)
+            D.UnitDebuffed[Unit] = false;
             return false, IsCharmed;
         end
 
@@ -714,9 +713,11 @@ do
             if (#ManagedDebuffs > 1) then
                 t_sort(ManagedDebuffs, sorting);
             end
+            D.UnitDebuffed[Unit] = true;
 
             return ManagedDebuffs, IsCharmed;
         else
+            D.UnitDebuffed[Unit] = false;
             return false, IsCharmed;
         end
 

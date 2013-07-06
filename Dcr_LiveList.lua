@@ -75,7 +75,7 @@ local MicroUnitF = D.MicroUnitF;
 LiveList.ExistingPerID      = {};
 LiveList.Number             = 0;
 LiveList.NumberShown        = 0;
-D.ForLLDebuffedUnitsNum     = 0;
+D.ForLLDebuffedUnitsNum     = 0; -- this counts the number of displayed debuffed units. Used to know if the alert sound should/has been played
 
 -- temporary variables often used in function
 local Debuff, Debuffs, IsCharmed, MF, i, Index, RangeStatus;
@@ -95,6 +95,7 @@ local UnitGUID          = _G.UnitGUID;
 local floor             = _G.math.floor;
 local str_upper         = _G.string.upper;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
+local t_wipe            = _G.table.wipe;
 
 
 -- defines what is printed when the object is read as a string
@@ -332,11 +333,10 @@ end -- }}}
 function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
-    --D:Debug("(LiveList) Getting Debuff for ", UnitID);
     if (UnitID == "target" or UnitID == "mouseover") and not UnitIsFriend(UnitID, "player") then
-        if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] and D.ManagedDebuffUnitCache[UnitID][1].Type then
-            D.ManagedDebuffUnitCache[UnitID][1].Type = false; -- clear target/mouseover debuff
-            D.UnitDebuffed[UnitID] = false; -- XXX changed from 'target' to UnitID on 2010-06-08
+        if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] then
+            t_wipe(D.ManagedDebuffUnitCache[UnitID]); -- clear target/mouseover debufs, else it would stay on
+            D.UnitDebuffed[UnitID] = false;
         end
         --D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile or gone.", UnitID);
         return false;
@@ -345,10 +345,12 @@ function LiveList:GetDebuff(UnitID) -- {{{
     -- decrease the total debuff number if the MUFs system isn't already doing it and if it's not the mouseover or target unit
     if not D.profile.ShowDebuffsFrame and D.UnitDebuffed[UnitID] and UnitID ~= "mouseover" and UnitID ~= "target" then
         D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+            --D:Debug("(LiveList) |cffff0000Decreased|r  D.ForLLDebuffedUnitsNum:",  D.ForLLDebuffedUnitsNum);
     end
 
     -- Get the unit Debuffs
     if not D.profile.ShowDebuffsFrame or not MicroUnitF.UnitToMUF[UnitID] or UnitID == "mouseover" or UnitID == "target" then
+        --D:Debug("(|cff00ff00LiveList|r) Getting Debuff for ", UnitID, Debuffs, IsCharmed);
         Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID);
         --Debuffs, IsCharmed = D:UnitCurableDebuffs(UnitID, true);
     else -- The MUFs are active and Unit is not mouseover and is not target
@@ -363,18 +365,15 @@ function LiveList:GetDebuff(UnitID) -- {{{
         end
     end
 
-    if (Debuffs and Debuffs[1] and Debuffs[1].Type) then -- there is a Debuff
-
-        D.UnitDebuffed[UnitID] = true; -- register that this unit is debuffed
+    if Debuffs then -- there is a Debuff
 
         -- increase the total debuff number
         if not D.profile.ShowDebuffsFrame and UnitID ~= "mouseover" and UnitID ~= "target" then
 
             D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
+            --D:Debug("(LiveList) |cff00ff00Increased|  D.ForLLDebuffedUnitsNum:",  D.ForLLDebuffedUnitsNum);
 
         end
-    else
-        D.UnitDebuffed[UnitID] = false; -- unregister this unit
     end
 
     return D.UnitDebuffed[UnitID];

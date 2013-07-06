@@ -394,13 +394,12 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
             -- hide
             if MF.Shown and (not Unit_Array_UnitToGUID[Unit] or MF.ID > NumToShow ) then -- we don't have this unit but its MUF is shown
 
-                -- clear debuff before hiding to avoid leaving 'ghosts' behind...
+                -- clear debuff before hiding to avoid leaving 'ghosts' behind... that would reappear briefly when the unit comes back
                 if D.UnitDebuffed[MF.CurrUnit] then
                     D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
                 end
 
                 MF.Debuffs                      = false;
-                MF.IsDebuffed                   = false;
                 MF.Debuff1Prio                  = false;
                 MF.PrevDebuff1Prio              = false;
                 D.UnitDebuffed[MF.CurrUnit]     = false; -- used by the live-list only
@@ -452,7 +451,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
     local i = 1;
     for Unit, MF in  pairs(self.ExistingPerUNIT) do
 
-        if not MF.IsDebuffed then
+        if not MF.Debuffs then
             MF.UnitStatus = 0; -- reset status to force SetColor to update
         end
 
@@ -922,7 +921,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
 
         D:Println(L["HLP_NOTHINGTOCURE"]);
 
-    elseif (frame.Object.UnitStatus == AFFLICTED) then
+    elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs) then
         local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
         local RequestedPrio;
         local ButtonsString = "";
@@ -1017,7 +1016,6 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.Debuffs            = false;
     self.Debuff1Prio        = false;
     self.PrevDebuff1Prio    = false;
-    self.IsDebuffed         = false;
     self.CurrUnit           = false;
     self.UnitName           = false;
     self.UnitGUID           = false;
@@ -1305,26 +1303,21 @@ do
 end -- }}}
 
 function MicroUnitF.prototype:SetDebuffs() -- {{{
-    self.Debuffs, self.IsCharmed = D:UnitCurableDebuffs(self.CurrUnit);
 
     if D.UnitDebuffed[self.CurrUnit] then
         D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
     end
 
-    if (self.Debuffs and self.Debuffs[1] and self.Debuffs[1].Type) then
-        --D:Debug("A debuff was found"); -- XXX
-        self.IsDebuffed = true;
+    self.Debuffs, self.IsCharmed = D:UnitCurableDebuffs(self.CurrUnit);
+
+    if self.Debuffs then
         self.Debuff1Prio = D:GiveSpellPrioNum( self.Debuffs[1].Type );
 
-        D.UnitDebuffed[self.CurrUnit] = true;
         D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
 
     else
-        --D:Debug("No debuff found"); -- XXX
-        self.IsDebuffed                 = false;
         self.Debuff1Prio                = false;
         self.PrevDebuff1Prio            = false;
-        D.UnitDebuffed[self.CurrUnit] = false; -- used by the live-list only
     end
 end -- }}}
 
@@ -1397,7 +1390,7 @@ do
 
         else
             -- If the Unit is invisible
-            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.IsDebuffed then
+            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.Debuffs then
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
                     self.UnitStatus = STEALTHED;
@@ -1421,7 +1414,7 @@ do
                 end
 
                 -- if the unit has some debuffs we can handle
-            elseif self.IsDebuffed then
+            elseif self.Debuffs then
                 DebuffType = self.Debuffs[1].Type;
 
                 if self.PrevDebuff1Prio ~= self.Debuff1Prio then
@@ -1738,10 +1731,10 @@ do
 
             -- update the MUF attributes and its colors -- this is done by an event handler now (buff/debuff received...) except when the unit has a debuff and is in range
             if MF and MicroFrameUpdateIndex <= NumToShow then
-                if not (MF.IsDebuffed or MF.IsCharmed) and MF.UpdateCountDown ~= 0 then
+                if not (MF.Debuffs or MF.IsCharmed) and MF.UpdateCountDown ~= 0 then
                     MF.UpdateCountDown = MF.UpdateCountDown - 1;
-                else -- if MF.IsDebuffed or MF.IsCharmed or MF.UpdateCountDown == 0
-                    ActionsDone = ActionsDone + MF:Update(false, true);--, not ((MF.IsDebuffed or MF.IsCharmed) and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range XXX useless now since we rescan everyone every second
+                else -- if MF.Debuffs or MF.IsCharmed or MF.UpdateCountDown == 0
+                    ActionsDone = ActionsDone + MF:Update(false, true);--, not ((MF.Debuffs or MF.IsCharmed) and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range XXX useless now since we rescan everyone every second
                     MF.UpdateCountDown = 3;
                 end
             end
