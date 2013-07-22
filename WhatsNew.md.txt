@@ -1,15 +1,31 @@
-Decursive 2.7.2.9 (2013-05-21)
-==============================
+Decursive 2.7.3 beta 1 (2013-07-22)
+===================================
 
 
-I would like to dedicate the 2.7.2.x release of Decursive to the memory of
-Patrick Bohnet who passed away on the 29th of July. He was better known as Quu
-and was the original author and maintainer of Decursive from 2005 till April 2006.
+Changes from Decursive 2.7.2.9 to Decursive 2.7.3 beta 1 (2013-07-22)
+---------------------------------------------------------------------
 
-I want to thank him for the great opportunity he gave me to work on Decursive, a 
-program still useful to hundreds of thousands of people today.
+- New feature: Decursive can display the number of stacks for the topmost
+  affliction in the center of each MUF. The counter still defaults to time
+  left, this can be changed in the MUF's options. If you set your counter to
+  time-elapsed in the past, it will be reset to time-left with this release.
 
-A thread dedicated to his memory can be found here: [http://us.battle.net/wow/en/forum/topic/6232743291](http://us.battle.net/wow/en/forum/topic/6232743291)
+- Maintaining the 'Shift' key will now change MUF's center counter in the following
+  ways: if the Time-Left or Time-Elapsed option is set then it will switch to
+  displaying the stacks number ; if the stacks display option is set, then it
+  will switch to displaying the time left.
+
+- Added an exception for when 'Fluidity' is detected on a unit, Decursive will
+  ignore all afflictions on that unit. (other similar afflictions can be added
+  easily, this should be turned into a configurable option later. In the mean
+  time you can create a ticket if you want other anti-cleansing afflictions to be
+  added).
+
+- Important code optimizations and improvements.
+
+- Change the live-list display option to be opt-in rather than opt-out.
+
+- Remove the silence at the start of the 'Unstable Affliction/Vampiric touch' warning sound.
 
 
 Changes from Decursive 2.7.2.8 to Decursive 2.7.2.9 (2013-05-21)
