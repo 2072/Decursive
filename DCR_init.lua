@@ -144,6 +144,9 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.DeadlyDebuffAlert = "Interface\\AddOns\\Decursive\\Sounds\\G_NecropolisWound-fast.ogg";
     --DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
 
+    DC.EMPTY_TABLE = {};
+
+
     SetBasicConstants_Once = nil;
 end -- }}}
 

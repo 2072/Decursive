@@ -1,19 +1,24 @@
-Decursive 2.7.3 beta 1 (2013-07-22)
+Decursive 2.7.3 beta 2 (2013-07-24)
 ===================================
+
+Changes from Decursive 2.7.3 beta 1 to Decursive 2.7.3 beta 2 (2013-07-23)
+--------------------------------------------------------------------------
+
+- Fix a Lua error introduced in 2.7.3 beta 1
 
 
 Changes from Decursive 2.7.2.9 to Decursive 2.7.3 beta 1 (2013-07-22)
 ---------------------------------------------------------------------
 
 - New feature: Decursive can display the number of stacks for the topmost
-  affliction in the center of each MUF. The counter still defaults to time
-  left, this can be changed in the MUF's options. If you set your counter to
+  affliction in the center of each MUF. The counter still defaults to time-left,
+  this can be changed in the MUF's options. If you set your counter to
   time-elapsed in the past, it will be reset to time-left with this release.
 
-- Maintaining the 'Shift' key will now change MUF's center counter in the following
-  ways: if the Time-Left or Time-Elapsed option is set then it will switch to
-  displaying the stacks number ; if the stacks display option is set, then it
-  will switch to displaying the time left.
+- Maintaining the 'Shift' key will now change MUF's center counters in the
+  following ways: if the Time-Left or Time-Elapsed option is set then it will
+  switch to displaying the stacks number ; if the stacks display option is set,
+  then it will switch to displaying the time left.
 
 - Added an exception for when 'Fluidity' is detected on a unit, Decursive will
   ignore all afflictions on that unit. (other similar afflictions can be added
@@ -25,7 +30,8 @@ Changes from Decursive 2.7.2.9 to Decursive 2.7.3 beta 1 (2013-07-22)
 
 - Change the live-list display option to be opt-in rather than opt-out.
 
-- Remove the silence at the start of the 'Unstable Affliction/Vampiric touch' warning sound.
+- Remove the silence at the start of the 'Unstable Affliction/Vampiric touch'
+  warning sound.
 
 
 Changes from Decursive 2.7.2.8 to Decursive 2.7.2.9 (2013-05-21)

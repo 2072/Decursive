@@ -365,7 +365,7 @@ function LiveList:GetDebuff(UnitID) -- {{{
         end
     end
 
-    if Debuffs then -- there is a Debuff
+    if Debuffs[1] then -- there is a Debuff
 
         -- increase the total debuff number
         if not D.profile.ShowDebuffsFrame and UnitID ~= "mouseover" and UnitID ~= "target" then

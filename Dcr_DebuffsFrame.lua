@@ -98,7 +98,7 @@ local AFFLICTED             = DC.AFFLICTED;
 local AFFLICTED_NIR         = DC.AFFLICTED_NIR;
 local CHARMED_STATUS        = DC.CHARMED_STATUS;
 local AFFLICTED_AND_CHARMED = DC.AFFLICTED_AND_CHARMED;
-
+local EMPTY_TABLE           = DC.EMPTY_TABLE;
 
 -- Those are the different colors used for the MUFs main texture
 local MF_colors = { };
@@ -399,7 +399,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
                     D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
                 end
 
-                MF.Debuffs                      = false;
+                MF.Debuffs                      = EMPTY_TABLE;
                 MF.Debuff1Prio                  = false;
                 MF.PrevDebuff1Prio              = false;
                 D.UnitDebuffed[MF.CurrUnit]     = false; -- used by the live-list only
@@ -451,11 +451,12 @@ function MicroUnitF:Force_FullUpdate () -- {{{
     local i = 1;
     for Unit, MF in  pairs(self.ExistingPerUNIT) do
 
-        if not MF.Debuffs then
+        if not MF.Debuffs[1] then
             MF.UnitStatus = 0; -- reset status to force SetColor to update
         end
 
         MF.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
+        MF.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
 
         D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + i / D.profile.DebuffsFramePerUPdate), MF);
         i = i + 1;
@@ -759,7 +760,7 @@ do
         end
 
         --Test for unstable affliction like spells
-        if MF.Debuffs then
+        if MF.Debuffs[1] then
             for i, Debuff in ipairs(MF.Debuffs) do
                 if Debuff.Type then
                     -- Create a warning if an Unstable Affliction like spell is detected XXX will be integrated along with the filtering system comming 'soon'(tm)
@@ -809,7 +810,7 @@ do
             elseif Status == BLACKLISTED then
                 StatusText = L["BLACKLISTED"];
 
-            elseif MF.Debuffs and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
+            elseif MF.Debuffs[1] and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
                 local DebuffType = MF.Debuffs[1].Type;
                 StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[str_upper(DC.TypeNames[DebuffType])], "FF" .. DC.TypeColors[DebuffType]) );
 
@@ -821,7 +822,7 @@ do
             TooltipText = TooltipText .. "\n" .. StatusText;
 
             -- list the debuff(s) names
-            if MF.Debuffs then
+            if MF.Debuffs[1] then
                 for i, Debuff in ipairs(MF.Debuffs) do
                     if Debuff.Type then
                         local DebuffApps = Debuff.Applications;
@@ -921,7 +922,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
 
         D:Println(L["HLP_NOTHINGTOCURE"]);
 
-    elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs) then
+    elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs[1]) then
         local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
         local RequestedPrio;
         local ButtonsString = "";
@@ -1013,7 +1014,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.ID                 = ID; -- is set by te roaming updater
     self.FrameNum           = FrameNum;
     self.ToPlace            = true;
-    self.Debuffs            = false;
+    self.Debuffs            = EMPTY_TABLE;
     self.Debuff1Prio        = false;
     self.PrevDebuff1Prio    = false;
     self.CurrUnit           = false;
@@ -1054,35 +1055,35 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
     -- outer texture (the class border)
     -- Bottom side
-    self.OuterTexture1 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture1 = self.Frame:CreateTexture(nil, "BORDER", nil, 1);
     self.OuterTexture1:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMLEFT", 0, 0);
     self.OuterTexture1:SetPoint("TOPRIGHT", self.Frame, "BOTTOMRIGHT",  0, 2);
 
     -- left side
-    self.OuterTexture2 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture2 = self.Frame:CreateTexture(nil, "BORDER", nil, 1);
     self.OuterTexture2:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, -2);
     self.OuterTexture2:SetPoint("BOTTOMRIGHT", self.Frame, "BOTTOMLEFT", 2, 2);
 
     -- top side
-    self.OuterTexture3 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture3 = self.Frame:CreateTexture(nil, "BORDER", nil, 1);
     self.OuterTexture3:SetPoint("TOPLEFT", self.Frame, "TOPLEFT", 0, 0);
     self.OuterTexture3:SetPoint("BOTTOMRIGHT", self.Frame, "TOPRIGHT", 0, -2);
 
     -- right side
-    self.OuterTexture4 = self.Frame:CreateTexture(nil, "BORDER");
+    self.OuterTexture4 = self.Frame:CreateTexture(nil, "BORDER", nil, 1);
     self.OuterTexture4:SetPoint("TOPRIGHT", self.Frame, "TOPRIGHT", 0, -2);
     self.OuterTexture4:SetPoint("BOTTOMLEFT", self.Frame, "BOTTOMRIGHT", -2, 2);
 
 
     -- global texture
-    self.Texture = self.Frame:CreateTexture(nil, "ARTWORK");
+    self.Texture = self.Frame:CreateTexture(nil, "BACKGROUND", nil, 2);
     self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
     self.Texture:SetHeight(16 - petminus);
     self.Texture:SetWidth(16 - petminus);
 
     -- inner Texture (Charmed special texture)
-    self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY");
-    self.InnerTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
+    self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY", nil, 6);
+    self.InnerTexture:SetPoint("TOPRIGHT",self.Frame ,"TOPRIGHT",0,0);
     self.InnerTexture:SetHeight(7 - petminus);
     self.InnerTexture:SetWidth(7 - petminus);
     self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
@@ -1095,7 +1096,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
     -- raid target icon
-    self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY");
+    self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY", nil, 5);
     self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
     self.RaidIconTexture:SetHeight(13 - petminus);
     self.RaidIconTexture:SetWidth(13 - petminus);
@@ -1310,7 +1311,7 @@ function MicroUnitF.prototype:SetDebuffs() -- {{{
 
     self.Debuffs, self.IsCharmed = D:UnitCurableDebuffs(self.CurrUnit);
 
-    if self.Debuffs then
+    if self.Debuffs[1] then
         self.Debuff1Prio = D:GiveSpellPrioNum( self.Debuffs[1].Type );
 
         D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
@@ -1320,6 +1321,13 @@ function MicroUnitF.prototype:SetDebuffs() -- {{{
         self.PrevDebuff1Prio            = false;
     end
 end -- }}}
+
+
+function MicroUnitF.prototype:IsDebuffed()
+     -- due to deffered calls the unit debuffs table to which .Debuffs refers
+     -- might be emptied before it's actually used.
+    return self.Debuffs[1] and true or false;
+end
 
 -- SetColor and SetClassBorder {{{
 do
@@ -1390,7 +1398,7 @@ do
 
         else
             -- If the Unit is invisible
-            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.Debuffs then
+            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.Debuffs[1] then
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
                     self.UnitStatus = STEALTHED;
@@ -1414,7 +1422,7 @@ do
                 end
 
                 -- if the unit has some debuffs we can handle
-            elseif self.Debuffs then
+            elseif self.Debuffs[1] then
                 DebuffType = self.Debuffs[1].Type;
 
                 if self.PrevDebuff1Prio ~= self.Debuff1Prio then
@@ -1731,7 +1739,7 @@ do
 
             -- update the MUF attributes and its colors -- this is done by an event handler now (buff/debuff received...) except when the unit has a debuff and is in range
             if MF and MicroFrameUpdateIndex <= NumToShow then
-                if not (MF.Debuffs or MF.IsCharmed) and MF.UpdateCountDown ~= 0 then
+                if not (MF.Debuffs[1] or MF.IsCharmed) and MF.UpdateCountDown ~= 0 then
                     MF.UpdateCountDown = MF.UpdateCountDown - 1;
                 else -- if MF.Debuffs or MF.IsCharmed or MF.UpdateCountDown == 0
                     ActionsDone = ActionsDone + MF:Update(false, true);--, not ((MF.Debuffs or MF.IsCharmed) and MF.UnitStatus ~= AFFLICTED)); -- we rescan debuffs if the unit is not in spell range XXX useless now since we rescan everyone every second
