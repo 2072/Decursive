@@ -1,10 +1,17 @@
 Decursive 2.7.3 beta 2 (2013-07-24)
 ===================================
 
-Changes from Decursive 2.7.3 beta 1 to Decursive 2.7.3 beta 2 (2013-07-23)
+Changes from Decursive 2.7.3 beta 1 to Decursive 2.7.3 beta 2 (2013-07-24)
 --------------------------------------------------------------------------
 
-- Fix a Lua error introduced in 2.7.3 beta 1
+- Fix a Lua error introduced in 2.7.3 beta 1.
+
+- The charm status green centered square is now displayed in the top-right of a
+  MUF so that the center counter can be read.
+
+- The aforementioned charm status square can now be tested by putting 'Charm'
+  as first priority and checking "Create a virtual test affliction" in
+  Decursive's general option panel.
 
 
 Changes from Decursive 2.7.2.9 to Decursive 2.7.3 beta 1 (2013-07-22)
