@@ -396,7 +396,12 @@ function T._onError(event, errorObject)
         )) then
 
         if errorml:find("dcr_diag.lua") and errorml:find("script ran too long") then
-            -- don't creaate report for these 'errors'...
+            -- don't create report for these 'errors'...
+            return;
+        end
+
+        -- Ignore errors caused by corrupted savedVariables files
+        if errorm:find("SavedVariables") then
             return;
         end
 
@@ -514,9 +519,15 @@ function T._DecursiveErrorHandler(err, ...)
     if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("\\libs\\")) then
 
         if errl:find("dcr_diag.lua") and errl:find("script ran too long") then
-            -- don't creaate report for these 'errors'...
+            -- don't create report for these 'errors'...
             return;
         end
+
+        -- Ignore errors caused by corrupted savedVariables files
+        if err:find("SavedVariables") then
+            return;
+        end
+
 
         IsReporting = true;
         AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);

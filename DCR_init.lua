@@ -1547,8 +1547,10 @@ Simple replacements
     Turns into the last changed date (by UTC) of the entire project in a readable integer fashion. e.g. 2008050123456
 @file-timestamp@
     Turns into the last changed date (by UTC) of the file in POSIX timestamp. e.g. 1209663296
+    Note: does not work for git
 @project-timestamp@
     Turns into the last changed date (by UTC) of the entire project in POSIX timestamp. e.g. 1209663296
+    Note: does not work for git
 @project-version@
     Turns into an approximate version of the project. The tag name if on a tag, otherwise it's up to the repo.
     :SVN returns something like "r1234"
