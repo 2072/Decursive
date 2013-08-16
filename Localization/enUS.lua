@@ -248,7 +248,7 @@ The green numbers represent the priority associated to each affliction type. Thi
 (To change the priorities, uncheck all the check boxes and then check them in order of the priority you want.)]=]
 L["OPT_CURINGORDEROPTIONS"] = "Affliction types and priorities"
 L["OPT_CURSECHECK_DESC"] = "If checked you'll be able to see and cure cursed units"
-L["OPT_CUSTOM_SPELL_ALLOW_EDITING"] = "Allow macro editing (for advanced users only)"
+L["OPT_CUSTOM_SPELL_ALLOW_EDITING"] = "Allow internal macro editing (for advanced users only)"
 L["OPT_CUSTOM_SPELL_ALLOW_EDITING_DESC"] = [=[Check this if you want to edit the internal macro Decursive will use for your custom spell.
 
 Note: Checking this allows you to modify spells managed by Decursive.
@@ -337,7 +337,7 @@ L["OPT_MACROBIND_DESC"] = [=[Defines the key on which the 'Decursive' macro will
 
 Press the key and hit your 'Enter' keyboard key to save the new assignment (with your mouse cursor over the edit field)]=]
 L["OPT_MACROOPTIONS"] = "Macro options"
-L["OPT_MACROOPTIONS_DESC"] = "Set the behaviour of the macro created by Decursive"
+L["OPT_MACROOPTIONS_DESC"] = "Set the behaviour of the 'mousover' macro created by Decursive"
 L["OPT_MAGICCHARMEDCHECK_DESC"] = "If checked you'll be able to see and cure magic-charmed units"
 L["OPT_MAGICCHECK_DESC"] = "If checked you'll be able to see and cure magic afflicted units"
 L["OPT_MAXMFS"] = "Max units shown"
