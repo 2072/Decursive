@@ -569,7 +569,7 @@ local function GetStaticOptions ()
                 name = L["OPT_HIDEMUFSHANDLE"],
                 desc = L["OPT_HIDEMUFSHANDLE_DESC"],
                 guiHidden = true,
-                disabled = function() return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
+                disabled = function() return not D:IsEnabled() or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                 get = function(info) return not D.MFContainerHandle:IsMouseEnabled(); end,
                 order = -4,
             },
@@ -637,7 +637,7 @@ local function GetStaticOptions ()
                     },
                     PlaySound = {
                         type = "toggle",
-                        disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
+                        disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1 or not D:IsEnabled(); end,
                         name = L["PLAY_SOUND"],
                         desc = L["OPT_PLAYSOUND_DESC"],
                         
@@ -645,7 +645,7 @@ local function GetStaticOptions ()
                     },
                     AfflictionTooltips = {
                         type = "toggle",
-                        disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame or not D:IsEnabled(); end,
+                        disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1 or not D:IsEnabled(); end,
                         name = L["SHOW_TOOLTIP"],
                         desc = L["OPT_SHOWTOOLTIP_DESC"],
                         order = 20,
@@ -1032,8 +1032,8 @@ local function GetStaticOptions ()
                 childGroups = "tab",
                 name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
                 desc = L["OPT_MFSETTINGS_DESC"],
-                disabled = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
-                hidden = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
+                disabled = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
+                hidden = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                 order = 30,
                 args = {
                     hint = {
@@ -1046,7 +1046,7 @@ local function GetStaticOptions ()
                         name = L["OPT_DISPLAYOPTIONS"],
                         desc = L["OPT_MFSETTINGS_DESC"],
                         handler = {
-                            ["disabled"] = function () return D.Status.Combat or not D:IsEnabled() or not D.profile.ShowDebuffsFrame; end,
+                            ["disabled"] = function () return D.Status.Combat; end,
                         },
                         order = 1,
                         args = {
@@ -1097,7 +1097,7 @@ local function GetStaticOptions ()
                                 type = "toggle",
                                 name = L["SHOW_TOOLTIP"],
                                 desc = L["OPT_SHOWTOOLTIP_DESC"],
-                                disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame end,
+                                disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1 end,
                                 order = 1400,
                             },
                             DebuffsFrameShowHelp = {
@@ -1147,7 +1147,7 @@ local function GetStaticOptions ()
                                     D.SetHandler(info, 1 - v);
                                     D.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
                                 end,
-                                disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D.profile.DebuffsFrameElemTieTransparency end,
+                                disabled = function() return D.Status.Combat or not D.profile.DebuffsFrameElemTieTransparency end,
                                 min = 0,
                                 max = 1,
                                 step = 0.01,
@@ -1307,7 +1307,7 @@ local function GetStaticOptions ()
                         name = L["OPT_MUFMOUSEBUTTONS"],
                         desc = L["OPT_MUFMOUSEBUTTONS_DESC"],
                         order = 3,
-                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
+                        disabled = function() return D.Status.Combat end,
                         hidden = function () return not D:IsEnabled(); end,
                         args = {},
                     },
@@ -1317,7 +1317,7 @@ local function GetStaticOptions ()
                         name = L["OPT_MUFSCOLORS"],
                         desc = L["OPT_MUFSCOLORS_DESC"],
                         order = 4,
-                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame or not D:IsEnabled() end,
+                        disabled = function() return D.Status.Combat end,
                         hidden = function () return not D:IsEnabled(); end,
                         args = {
                             description = {
@@ -1629,7 +1629,7 @@ local function GetStaticOptions ()
                 name = D:ColorText(L["OPT_MACROOPTIONS"], "FFCC99BB"),
                 desc = L["OPT_MACROOPTIONS_DESC"],
                 order = 70,
-                disabled = function() return  not D.Status.Enabled or D.Status.Combat end,
+                disabled = function() return not D.Status.Enabled or D.Status.Combat end,
                 args = {
                     description = {name = L["OPT_MACROOPTIONS_DESC"], order = 1, type = "description"},
                     SetKey = {
