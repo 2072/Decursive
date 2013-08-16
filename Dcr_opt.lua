@@ -1555,7 +1555,7 @@ local function GetStaticOptions ()
                             errorn, v = validateSpellInput(info, v);
                             if errorn ~= 0 then D:Debug("XXXX AHHHHHHHHHHHHHHH!!!!!", errorn); return false end
 
-                            if not D.classprofile.UserSpells[v] then
+                            if not D.classprofile.UserSpells[v] or D.classprofile.UserSpells[v].Hidden and CustomSpellMacroEditingAllowed then
                                 D:Debug("Adding", v);
                                 D.classprofile.UserSpells[v] = {
                                     Types = {},
@@ -1582,6 +1582,7 @@ local function GetStaticOptions ()
                             elseif D.classprofile.UserSpells[v].IsDefault and D.classprofile.UserSpells[v].Hidden then
                                 D:Debug("Reactivating", v);
                                 D.classprofile.UserSpells[v].Hidden = false;
+                                D.classprofile.UserSpells[v].MacroText = nil;
                             end
 
                             CustomSpellMacroEditingAllowed = false; -- reset macro check box
