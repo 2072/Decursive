@@ -894,8 +894,11 @@ local function GetStaticOptions ()
                 type = "group",
                 name = D:ColorText(L["OPT_LIVELIST"], "FF22EE33"),
                 desc = L["OPT_LIVELIST_DESC"] .. "\n",
-                hidden = function () return not D:IsEnabled() or D.profile.HideLiveList; end,
-                disabled = function () return not D:IsEnabled() or D.profile.HideLiveList; end,
+                hidden = function () return not D:IsEnabled(); end,
+                disabled = function () return not D:IsEnabled(); end,
+                handler = {
+                    ["disabled"] = function() return D.profile.HideLiveList; end,
+                },
                 order = 10,
 
                 args = {
@@ -923,6 +926,7 @@ local function GetStaticOptions ()
                         type = "toggle",
                         name = L["OPT_LVONLYINRANGE"],
                         desc = L["OPT_LVONLYINRANGE_DESC"],
+                        disabled = "disabled",
                         order = 100
                     },
                     Amount_Of_Afflicted = {
@@ -932,6 +936,7 @@ local function GetStaticOptions ()
                         min = 1,
                         max = D.CONF.MAX_LIVE_SLOTS,
                         step = 1,
+                        disabled = "disabled",
                         order = 104,
                     },
                     ScanTime = {
@@ -941,12 +946,14 @@ local function GetStaticOptions ()
                         min = 0.1,
                         max = 1,
                         step = 0.1,
+                        disabled = "disabled",
                         order = 106,
                     },
                     ReverseLiveDisplay = {
                         type = "toggle",
                         name = L["REVERSE_LIVELIST"],
                         desc = L["OPT_REVERSE_LIVELIST_DESC"],
+                        disabled = "disabled",
                         order = 107
                     },
                     LiveListScale = {
@@ -1032,8 +1039,8 @@ local function GetStaticOptions ()
                 childGroups = "tab",
                 name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
                 desc = L["OPT_MFSETTINGS_DESC"],
-                disabled = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
-                hidden = function () return not D:IsEnabled() or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
+                disabled = function () return not D:IsEnabled(); end,
+                hidden = function () return not D:IsEnabled() end,
                 order = 30,
                 args = {
                     hint = {
@@ -1049,6 +1056,7 @@ local function GetStaticOptions ()
                             ["disabled"] = function () return D.Status.Combat; end,
                         },
                         order = 1,
+                        disabled = function () return not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                         args = {
                             -- {{{
                             DebuffsFrameGrowToTop = {
@@ -1163,7 +1171,7 @@ local function GetStaticOptions ()
                                     D.Status.TestLayout = v;
                                     D:GroupChanged("Test Layout");
                                 end,
-                                disabled = "disabled",
+                                disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
                                 order = 1950,
                             },
                             TestLayoutUNum = {
@@ -1190,6 +1198,7 @@ local function GetStaticOptions ()
                         name = L["OPT_ADVDISP"],
                         desc = L["OPT_ADVDISP_DESC"],
                         order = 2,
+                        disabled = function () return not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                         args = {
                             -- {{{
                             TransparencyOpts = {
@@ -1307,7 +1316,7 @@ local function GetStaticOptions ()
                         name = L["OPT_MUFMOUSEBUTTONS"],
                         desc = L["OPT_MUFMOUSEBUTTONS_DESC"],
                         order = 3,
-                        disabled = function() return D.Status.Combat end,
+                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1;end,
                         hidden = function () return not D:IsEnabled(); end,
                         args = {},
                     },
@@ -1317,7 +1326,7 @@ local function GetStaticOptions ()
                         name = L["OPT_MUFSCOLORS"],
                         desc = L["OPT_MUFSCOLORS_DESC"],
                         order = 4,
-                        disabled = function() return D.Status.Combat end,
+                        disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1;end,
                         hidden = function () return not D:IsEnabled(); end,
                         args = {
                             description = {
@@ -1336,9 +1345,8 @@ local function GetStaticOptions ()
                     PerfOptions = {
                         type = "group",
                         name = L["OPT_MFPERFOPT"],
-                        --desc = L["OPT_ADVDISP_DESC"],
                         order = 5,
-                        --disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame end,
+                        disabled = function () return not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                         args = {
                             -- {{{
                             Warning = {
