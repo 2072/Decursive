@@ -2003,6 +2003,7 @@ function D:ShowHideDebuffsFrame ()
     else
         D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
         self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, 1, D);
+        D.MicroUnitF:Force_FullUpdate();
     end
 
     -- set Icon
