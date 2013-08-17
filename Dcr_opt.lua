@@ -2000,6 +2000,10 @@ function D:ShowHideDebuffsFrame ()
     if (not D.profile.ShowDebuffsFrame) then
         D:CancelDelayedCall("Dcr_MUFupdate");
         D:CancelDelayedCall("Dcr_ScanEverybody");
+        if D.profile.HideLiveList then
+            D.Status.SoundPlayed = false;
+            D:Debug("ShowHideDebuffsFrame(): sound re-enabled");
+        end
     else
         D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
         self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, 1, D);

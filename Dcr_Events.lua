@@ -395,6 +395,10 @@ function D:PLAYER_TARGET_CHANGED()
     else
         D.Status.TargetExists = false;
         self.Stealthed_Units["target"] = false;
+        if D.UnitDebuffed["target"] then
+            D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+            D.UnitDebuffed["target"] = false;
+        end
     end
 end
 

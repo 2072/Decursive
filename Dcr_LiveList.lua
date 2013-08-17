@@ -333,19 +333,16 @@ end -- }}}
 function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
-    if (UnitID == "target" or UnitID == "mouseover") and not UnitIsFriend(UnitID, "player") then
+    if (UnitID == "target" or UnitID == "mouseover") and (not UnitIsFriend(UnitID, "player") or not UnitExists(UnitID)) then
         if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] then
             t_wipe(D.ManagedDebuffUnitCache[UnitID]); -- clear target/mouseover debufs, else it would stay on
-            D.UnitDebuffed[UnitID] = false;
+            if D.UnitDebuffed[UnitID] then
+                D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+                D.UnitDebuffed[UnitID] = false;
+            end
         end
         --D:Debug("(LiveList) GetDebuff() |cFF00DDDDcanceled|r, unit %s is hostile or gone.", UnitID);
         return false;
-    end
-
-    -- decrease the total debuff number if the MUFs system isn't already doing it and if it's not the mouseover or target unit
-    if not D.profile.ShowDebuffsFrame and D.UnitDebuffed[UnitID] and UnitID ~= "mouseover" and UnitID ~= "target" then
-        D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
-            --D:Debug("(LiveList) |cffff0000Decreased|r  D.ForLLDebuffedUnitsNum:",  D.ForLLDebuffedUnitsNum);
     end
 
     -- Get the unit Debuffs
@@ -357,22 +354,6 @@ function LiveList:GetDebuff(UnitID) -- {{{
         MF = MicroUnitF.UnitToMUF[UnitID];
         if MF then
             Debuffs = MF.Debuffs;
-            --[=[
-        else -- (ticket #6)
-            D:AddDebugText("Sanity check failed in LiveList:GetDebuff() no MUF for unit", UnitID, "MUFs are", D.profile.ShowDebuffsFrame, "MUFnum:", MicroUnitF.Number, "MUFshown:", MicroUnitF.UnitShown, "UnitNum:", D.Status.UnitNum, "UnitExists:", UnitExists(UnitID), "Auto MUF show/hide:", D.profile.AutoHideMUFs, "InCombatLockdown():", InCombatLockdown());
-            D:AddDebugText("Stack:\n", debugstack(2));
-            --]=]
-        end
-    end
-
-    if Debuffs[1] then -- there is a Debuff
-
-        -- increase the total debuff number
-        if not D.profile.ShowDebuffsFrame and UnitID ~= "mouseover" and UnitID ~= "target" then
-
-            D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
-            --D:Debug("(LiveList) |cff00ff00Increased|  D.ForLLDebuffedUnitsNum:",  D.ForLLDebuffedUnitsNum);
-
         end
     end
 
@@ -396,13 +377,6 @@ function LiveList:Update_Display() -- {{{
         return;
     end
 
-    -- Update the unit array
-    --[[
-    if (D.Groups_datas_are_invalid) then
-        D:GetUnitArray();
-    end
-    --]]
-
     Index = 0;
 
     if D.profile.ShowDebuffsFrame and D.profile.LV_OnlyInRange then -- The MUFs are here and we test for range
@@ -419,7 +393,9 @@ function LiveList:Update_Display() -- {{{
         self:DisplayItem(Index, "target");
         --D:Debug("frenetic target update");
 
-        DebuffedUnitsNumber = DebuffedUnitsNumber + 1;
+        if D.profile.ShowDebuffsFrame and D.profile.LV_OnlyInRange then
+            DebuffedUnitsNumber = DebuffedUnitsNumber + 1;
+        end
 
         if not D.Status.SoundPlayed then
             D:PlaySound ("target", "LV target" );
@@ -432,7 +408,9 @@ function LiveList:Update_Display() -- {{{
         self:DisplayItem(Index, "mouseover");
         --D:Debug("frenetic mouseover update");
 
-        DebuffedUnitsNumber = DebuffedUnitsNumber + 1;
+        if D.profile.ShowDebuffsFrame and D.profile.LV_OnlyInRange then
+            DebuffedUnitsNumber = DebuffedUnitsNumber + 1;
+        end
 
         if not D.Status.SoundPlayed then
             D:PlaySound ("mouseover", "LV mouseover" );
@@ -440,8 +418,9 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- the sound played status is reset here because the live list is able to display target and mouseover units and far away ones...
-    if DebuffedUnitsNumber == 0 then
+    if DebuffedUnitsNumber == 0 and D.Status.SoundPlayed then
         D.Status.SoundPlayed = false;
+        D:Debug("LiveList:Update_Display(): sound re-enabled");
     end
 
     IndexOffset = Index;

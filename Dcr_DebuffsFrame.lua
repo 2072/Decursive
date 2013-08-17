@@ -396,13 +396,13 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
                 -- clear debuff before hiding to avoid leaving 'ghosts' behind... that would reappear briefly when the unit comes back
                 if D.UnitDebuffed[MF.CurrUnit] then
+                    D.UnitDebuffed[MF.CurrUnit] = false; -- used by the live-list only
                     D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
                 end
 
                 MF.Debuffs                      = EMPTY_TABLE;
                 MF.Debuff1Prio                  = false;
                 MF.PrevDebuff1Prio              = false;
-                D.UnitDebuffed[MF.CurrUnit]     = false; -- used by the live-list only
                 D.Stealthed_Units[MF.CurrUnit]  = false;
 
 
@@ -448,12 +448,13 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
     D.Status.SpellsChanged = GetTime(); -- will force an update of all MUFs attributes
 
+    D.MicroUnitF.UnitsDebuffedInRange = 0; -- reset this now since we are no longer able to maintain it.
     local i = 1;
     for Unit, MF in  pairs(self.ExistingPerUNIT) do
 
-        if not MF.Debuffs[1] then
+        --if not MF.Debuffs[1] then
             MF.UnitStatus = 0; -- reset status to force SetColor to update
-        end
+        --end
 
         MF.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
         MF.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
@@ -1305,17 +1306,10 @@ end -- }}}
 
 function MicroUnitF.prototype:SetDebuffs() -- {{{
 
-    if D.UnitDebuffed[self.CurrUnit] then
-        D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
-    end
-
     self.Debuffs, self.IsCharmed = D:UnitCurableDebuffs(self.CurrUnit);
 
     if self.Debuffs[1] then
         self.Debuff1Prio = D:GiveSpellPrioNum( self.Debuffs[1].Type );
-
-        D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
-
     else
         self.Debuff1Prio                = false;
         self.PrevDebuff1Prio            = false;
@@ -1356,6 +1350,7 @@ do
     local GetSpellCooldown = _G.GetSpellCooldown;
     local GetRaidTargetIndex= _G.GetRaidTargetIndex;
     local bor = _G.bit.bor;
+    local band = _G.bit.band;
 
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -1397,7 +1392,7 @@ do
             end
 
         else
-            -- If the Unit is invisible
+            -- If the Unit is visible
             if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.Debuffs[1] then
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
@@ -1499,12 +1494,6 @@ do
                     Alpha = 1;
                     self.UnitStatus = AFFLICTED;
                     BorderAlpha = 1;
-
-                    MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange + 1;
-
-                    if (not Status.SoundPlayed) then
-                        D:PlaySound (self.CurrUnit, "SetColor()" );
-                    end
                 end
             elseif PreviousStatus ~= NORMAL then
                 -- the unit has nothing special, set the status to normal
@@ -1525,15 +1514,6 @@ do
                 if PreviousStatus == FAR then
                     D.MicroUnitF:UpdateMUFUnit(self.CurrUnit, true); -- this is able to deal when a lot of update queries
                 end
-            end
-        end
-
-        if PreviousStatus == AFFLICTED or PreviousStatus == AFFLICTED_AND_CHARMED  then
-            MicroUnitF.UnitsDebuffedInRange = MicroUnitF.UnitsDebuffedInRange - 1;
-
-            if MicroUnitF.UnitsDebuffedInRange == 0 and profile.HideLiveList then
-                D:Debug("SetColor(): No more unit, sound re-enabled");
-                Status.SoundPlayed = false;
             end
         end
 
@@ -1576,7 +1556,27 @@ do
         --      The MUF status changed
         --      The user changed the defaultAlpha
         --      The priority (and thus the color) of the first affliction changed
-        if (self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= profile.DebuffsFrameElemAlpha or PrioChanged) then-- or self.FirstDebuffType ~= DebuffType) then
+        if self.UnitStatus ~= PreviousStatus or self.NormalAlpha ~= profile.DebuffsFrameElemAlpha or PrioChanged then-- or self.FirstDebuffType ~= DebuffType) then
+
+
+            if band(PreviousStatus, AFFLICTED)~=0 then
+                MicroUnitF.UnitsDebuffedInRange =  MicroUnitF.UnitsDebuffedInRange - 1;
+                D:Debug("SetColor(): UnitsDebuffedInRange decreased:",  MicroUnitF.UnitsDebuffedInRange);
+
+                if MicroUnitF.UnitsDebuffedInRange == 0 and profile.HideLiveList then
+                    D:Debug("SetColor(): No more unit, sound re-enabled");
+                    Status.SoundPlayed = false;
+                end
+            end
+            
+            if band(self.UnitStatus, AFFLICTED)~=0 then
+                MicroUnitF.UnitsDebuffedInRange =  MicroUnitF.UnitsDebuffedInRange + 1;
+                D:Debug("SetColor(): UnitsDebuffedInRange INCREASED:",  MicroUnitF.UnitsDebuffedInRange);
+
+                if not Status.SoundPlayed then
+                    D:PlaySound (self.CurrUnit, "SetColor()" .. MicroUnitF.UnitsDebuffedInRange );
+                end
+            end
 
             if PrioChanged then PrioChanged = false; end
 
