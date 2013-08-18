@@ -1420,8 +1420,8 @@ do
             elseif self.Debuffs[1] then
                 DebuffType = self.Debuffs[1].Type;
 
+                self.Color = MF_colors[self.Debuff1Prio]; -- so people can play with the color settings (don't put it after the if).
                 if self.PrevDebuff1Prio ~= self.Debuff1Prio then
-                    self.Color = MF_colors[self.Debuff1Prio];
                     self.PrevDebuff1Prio = self.Debuff1Prio;
                     PrioChanged = true;
                 end

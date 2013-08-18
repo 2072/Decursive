@@ -712,9 +712,12 @@ do
                 D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum + 1;
             end
 
-        elseif D.UnitDebuffed[Unit] then
-            D.UnitDebuffed[Unit] = false;
-            D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+        else
+            if D.UnitDebuffed[Unit] then
+                D.UnitDebuffed[Unit] = false;
+                D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+            end
+            return DC.EMPTY_TABLE, false; -- avoid race conditions
         end
 
         return ManagedDebuffs, IsCharmed;
