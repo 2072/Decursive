@@ -1,5 +1,14 @@
-Decursive 2.7.3 beta 3 (2013-08-16)
+Decursive 2.7.3 beta 4 (2013-08-18)
 ===================================
+
+
+Changes from Decursive 2.7.3 beta 3 to Decursive 2.7.3 beta 4 (2013-08-18)
+--------------------------------------------------------------------------
+
+- Small improvements and bug fixes.
+
+- Decursive no longer dynamically hides option panels when the related features
+  are disabled. Instead, the panels' content is greyed out.
 
 
 Changes from Decursive 2.7.3 beta 2 to Decursive 2.7.3 beta 3 (2013-08-16)
