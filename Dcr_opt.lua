@@ -1984,7 +1984,7 @@ end
 
 function D:ShowHideDebuffsFrame ()
 
-    if InCombatLockdown() or not D.DcrFullyInitialized then
+    if InCombatLockdown() or not D.DcrFullyInitialized or D.Status.TestLayout then
         return
     end
 
