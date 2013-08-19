@@ -608,6 +608,10 @@ local function GetStaticOptions ()
                         desc = L["OPT_SHOWMFS_DESC"],
                         set = function()
                             D:ShowHideDebuffsFrame ();
+                            if D.profile.AutoHideMUFs ~= 1 then
+                                D.profile.AutoHideMUFs = 1;
+                                D:ColorPrint(1, 0, 0, L["OPT_AUTOHIDEMFS"] .. " -> " .. L["OPT_HIDEMFS_NEVER"]);
+                            end
                         end,
                         disabled = function() return D.Status.Combat end,
                         order = 5,
