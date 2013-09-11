@@ -1,44 +1,10 @@
-Decursive 2.7.3 beta 4 (2013-08-18)
-===================================
+Decursive 2.7.3 (2013-09-11)
+============================
 
 
-Changes from Decursive 2.7.3 beta 3 to Decursive 2.7.3 beta 4 (2013-08-18)
---------------------------------------------------------------------------
+Changes from Decursive 2.7.2.9 to Decursive 2.7.3 (2013-09-11)
+--------------------------------------------------------------
 
-- Small improvements and bug fixes.
-
-- Decursive no longer dynamically hides option panels when the related features
-  are disabled. Instead, the panels' content is greyed out.
-
-
-Changes from Decursive 2.7.3 beta 2 to Decursive 2.7.3 beta 3 (2013-08-16)
---------------------------------------------------------------------------
-
-- Fix: it was impossible to edit the internal macro for default custom spells.
-
-- The MUFs' related options are no longer hidden when MUFs' window hiding is
-  conditional.
-
-- Localization updates by Ananhaid (zhCN) and Yllelder (esES). Some phrases
-  were modified to clarify some settings. I've updated the French translations
-  but eight other languages are needing some attention.
-
-
-Changes from Decursive 2.7.3 beta 1 to Decursive 2.7.3 beta 2 (2013-07-24)
---------------------------------------------------------------------------
-
-- Fix a Lua error introduced in 2.7.3 beta 1.
-
-- The charm status green centered square is now displayed in the top-right of a
-  MUF so that the center counter can be read.
-
-- The aforementioned charm status square can now be tested by putting 'Charm'
-  as first priority and checking "Create a virtual test affliction" in
-  Decursive's general option panel.
-
-
-Changes from Decursive 2.7.2.9 to Decursive 2.7.3 beta 1 (2013-07-22)
----------------------------------------------------------------------
 
 - New feature: Decursive can display the number of stacks for the topmost
   affliction in the center of each MUF. The counter still defaults to time-left,
@@ -50,15 +16,33 @@ Changes from Decursive 2.7.2.9 to Decursive 2.7.3 beta 1 (2013-07-22)
   switch to displaying the stacks number ; if the stacks display option is set,
   then it will switch to displaying the time left.
 
+- Important code optimizations and improvements.
+
 - Added an exception for when 'Fluidity' is detected on a unit, Decursive will
   ignore all afflictions on that unit. (other similar afflictions can be added
   easily, this should be turned into a configurable option later. In the mean
   time you can create a ticket if you want other anti-cleansing afflictions to be
   added).
 
-- Important code optimizations and improvements.
+- Decursive no longer dynamically hides option panels when the related features
+  are disabled. Instead, the panels' content is greyed out.
+
+- Fix: it was impossible to edit the internal macro for default custom spells.
 
 - Change the live-list display option to be opt-in rather than opt-out.
+
+- Clarified several options settings (option names and related tool tips)
+
+- The charm status green centered square is now displayed in the top-right of
+  MUFs so that the center counter can be read.
+
+- The aforementioned charm status square can now be tested by putting 'Charm'
+  as first priority and checking "Create a virtual test affliction" in
+  Decursive's general option panel.
+
+- Localization updates by Ananhaid (zhCN) and Yllelder (esES). Some phrases
+  were modified to clarify some settings. I've updated the French translations
+  but eight other languages are needing some attention.
 
 - Remove the silence at the start of the 'Unstable Affliction/Vampiric touch'
   warning sound.
