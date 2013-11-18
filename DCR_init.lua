@@ -263,13 +263,12 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
-        --[=[ -- disabled because of Korean locals... see below
         -- Shamans
         [DSI["SPELL_PURGE"]] = {
-        Types = {DC.ENEMYMAGIC},
-        Better = 0,
-        Pet = false,
-        }, --]=]
+            Types = {DC.ENEMYMAGIC},
+            Better = 0,
+            Pet = false,
+        },
         -- Hunters http://www.wowhead.com/?spell=19801
         [DSI["SPELL_TRANQUILIZING_SHOT"]] = {
             Types = {DC.ENEMYMAGIC},
