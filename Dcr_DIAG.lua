@@ -388,7 +388,7 @@ function T._onError(event, errorObject)
         and ( T._CatchAllErrors or (
         errorml:find("decursive") and -- first, make a general test to see if it's worth looking further
         (
-           ( errorml:sub(1,9) == "decursive" ) and not errorml:find("\\libs\\") -- errors happpening in something located below Decursive's path but not inside \Libs 
+           ( not errorml:find("\\libs\\") ) -- errors happpening in something located below Decursive's path but not inside \Libs 
         or ( errorm:find("[\"']Decursive[\"']") ) -- events involving Decursive
         or ( errorm:find("Decursive:") ) -- libraries error involving Decursive (AceLocal)
         or ( errorml:find("decursive%.")) -- for Aceconfig
