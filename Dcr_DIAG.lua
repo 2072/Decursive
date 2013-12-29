@@ -83,6 +83,9 @@ local DC                = T._C;
 local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
+local UNPACKAGED = "@pro" .. "ject-version@";
+local VERSION = "@project-version@";
+
 T._LoadedFiles = {};
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
 
@@ -716,12 +719,13 @@ do
     local Incompatible = false; -- always a PBCK
     local MixedInstall = false; -- always a PBCK
     local MissingFile = false; -- always a PBCK
+    local RestartNeeded = false; -- always a PBCK
     local IncompleteLoad = false; -- NOT always a PBCK
     function T._SelfDiagnostic (force, FromCommand)    -- {{{
 
         -- will not executes several times unless forced
         if not force and T._DiagStatus then
-            return T._DiagStatus, LibraryIssues or Incompatible or MixedInstall or MissingFile;
+            return T._DiagStatus, LibraryIssues or Incompatible or MixedInstall or MissingFile or RestartNeeded;
         end
 
         T._DiagStatus = 0; -- will be set to 1 if the diagnostic fails
@@ -789,8 +793,15 @@ do
             Incompatible = true;
         end
 
-        -- TODO test if TOC version is the same as this file's version in order
-        -- to catch people updating add-ons while WoW is running.
+        -- Catch people updating add-ons while WoW is running before they post "it doesn't work!!!!" comments.
+        local versionInTOC = GetAddOnMetadata("Decursive", "Version");
+
+        if versionInTOC and versionInTOC ~= VERSION and versionInTOC ~= UNPACKAGED and VERSION ~= UNPACKAGED then
+            table.insert(Errors, "You have updated Decursive while WoW was still running in the background.");
+            GenericErrorMessage2 = "You need to restart WoW completely or you might experience various issues with your add-ons until you do.";
+            FatalOccured = true;
+            RestartNeeded = true;
+        end
 
         -- check if all Decursive files are loaded
         --local mixedFileVersionsdetection = {};
@@ -920,7 +931,7 @@ do
             DecursiveInstallCorrupted = nil;
         end
 
-        return T._DiagStatus, LibraryIssues or Incompatible or MixedInstall or MissingFile;
+        return T._DiagStatus, LibraryIssues or Incompatible or MixedInstall or MissingFile or RestartNeeded;
 
 
     end -- }}}
