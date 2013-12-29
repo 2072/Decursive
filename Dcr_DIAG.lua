@@ -730,26 +730,25 @@ do
 
         --LibStub:GetLibrary
         local UseLibStub = {
-            ["AceAddon-3.0"] = 11,
-            ["AceConsole-3.0"] = 7,
-            ["AceEvent-3.0"] = 3,
-            ["AceTimer-3.0"] = 16,
-            --["LibShefkiTimer-1.0"] = 3,
-            ["AceHook-3.0"] = 5,
-            ["AceDB-3.0"] = 22,
-            ["AceDBOptions-3.0"] = 12,
-            ["AceLocale-3.0"] = 6,
+            ["AceAddon-3.0"] = 12,
             ["AceComm-3.0"] = 7,
+            ["AceConsole-3.0"] = 7,
+            ["AceDB-3.0"] = 23,
+            ["AceDBOptions-3.0"] = 14,
+            ["AceEvent-3.0"] = 3,
+            ["AceHook-3.0"] = 7,
+            ["AceLocale-3.0"] = 6,
+            ["AceTimer-3.0"] = 16,
 
-            ["AceGUI-3.0"] = 33,
+            ["AceGUI-3.0"] = 34,
             ["AceConfig-3.0"] = 2,
-            ["AceConfigRegistry-3.0"] = 14,
             ["AceConfigCmd-3.0"] = 13,
-            ["AceConfigDialog-3.0"] = 57,
+            ["AceConfigDialog-3.0"] = 58,
+            ["AceConfigRegistry-3.0"] = 15,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 25, --not updated for WoW 4.3
-            ["LibQTip-1.0"] = 38,
+            ["LibDBIcon-1.0"] = 34,
+            ["LibQTip-1.0"] = 42,
             ["CallbackHandler-1.0"] = 6,
         };
 
@@ -789,6 +788,9 @@ do
             FatalOccured = true;
             Incompatible = true;
         end
+
+        -- TODO test if TOC version is the same as this file's version in order
+        -- to catch people updating add-ons while WoW is running.
 
         -- check if all Decursive files are loaded
         --local mixedFileVersionsdetection = {};
