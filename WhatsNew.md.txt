@@ -1,5 +1,12 @@
-Decursive 2.7.3 (2013-09-11)
-============================
+Decursive 2.7.3.1 (2014-02-03)
+==============================
+
+
+Changes from Decursive 2.7.3 to Decursive 2.7.3.1 (2014-02-03)
+--------------------------------------------------------------
+
+- Re-added Shamans' PURGE as a default spell. It disappeared by accident some
+  time ago... Thanks to TazRulez for pointing this out!
 
 
 Changes from Decursive 2.7.2.9 to Decursive 2.7.3 (2013-09-11)
