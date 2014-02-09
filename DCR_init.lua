@@ -449,6 +449,21 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
+        -- Deakth Knights
+        [DSI["SPELL_ICY_TOUCH"]] = {
+            Types = {},
+            Better = 1,
+            Pet = false,
+
+            EnhancedBy = DS["GLYPH_OF_ICY_TOUCH"],
+            EnhancedByCheck = function ()
+                return (IsPlayerSpell(DSI["GLYPH_OF_ICY_TOUCH"])) and true or false;
+            end,
+            Enhancements = {
+                Types = {DC.ENEMYMAGIC},
+            }
+
+        },
     };
     
     DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
@@ -1357,6 +1372,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_SYMBIOSIS"]             =  110309, -- this is the Druid ability
             ["SPELL_SYMBIOSIS_PRIEST"]      =  110502, -- this is the Priest ability
             ['Greater Invisibility']        =  110959,
+            ['GLYPH_OF_ICY_TOUCH']          =  58631, --DK
+            ['SPELL_ICY_TOUCH']             =  45477, --DK
         };
     end
 
