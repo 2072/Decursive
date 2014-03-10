@@ -59,7 +59,6 @@ local ipairs            = _G.ipairs;
 local UnitGUID          = _G.UnitGUID;
 local table             = _G.table;
 local str_format        = _G.string.format;
-local str_sub           = _G.string.gsub;
 local t_insert          = _G.table.insert;
 
 -- Dcr_ListFrameTemplate specific internal functions {{{

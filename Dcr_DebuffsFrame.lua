@@ -115,7 +115,6 @@ local floor             = _G.math.floor;
 local table             = _G.table;
 local t_insert          = _G.table.insert;
 local str_format        = _G.string.format;
-local str_sub           = _G.string.gsub;
 local table             = _G.table;
 local string            = _G.string;
 local UnitExists        = _G.UnitExists;
