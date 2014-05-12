@@ -617,7 +617,7 @@ do
         D.MFContainerHandle:SetPoint(self:GetHelperAnchor());
 
         -- if the handle is at the top of the screen it means it's overlaping the MUF, let's move the handle somewhere else.
-        if floor(D.MFContainerHandle:GetTop() * FrameScale) == floor(UIParent:GetTop() * UIScale) then -- if at top
+        if floor(D.MFContainerHandle:GetTop() * FrameScale + 0.5) == floor(UIParent:GetTop() * UIScale + 0.5) then -- if at top
 
             D.MFContainerHandle:ClearAllPoints();
             D.MFContainerHandle:SetPoint(self:GetHelperAnchor(true));
@@ -838,7 +838,7 @@ do
             DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor());
 
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
-            if floor(DcrDisplay_Tooltip:GetTop()) == floor(UIParent:GetTop()) then -- if at top
+            if floor(DcrDisplay_Tooltip:GetTop() + 0.5) == floor(UIParent:GetTop() + 0.5) then -- if at top
                 DcrDisplay_Tooltip:ClearAllPoints();
                 DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor(true));
             end
