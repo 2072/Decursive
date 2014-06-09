@@ -1,5 +1,20 @@
-Decursive 2.7.3.1 (2014-02-03)
+Decursive 2.7.3.2 (2014-06-09)
 ==============================
+
+
+Changes from Decursive 2.7.3 to Decursive 2.7.3.2 (2014-06-09)
+--------------------------------------------------------------
+
+- Added automatic support for DK's Icy touch (when its namesake glyph is
+  available).
+
+- Fix rounding issues preventing the MUFs' handle and the help tool-tip from
+  being repositioned properly when at the top of the screen and the UI scale is
+  not set to exactly 100%.
+
+- Chinese localization updates by Ananhaid.
+
+- Add the fact that Symbiosis is supported in the features list.
 
 
 Changes from Decursive 2.7.3 to Decursive 2.7.3.1 (2014-02-03)
