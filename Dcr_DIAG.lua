@@ -492,6 +492,7 @@ local _, _, _, tocversion = GetBuildInfo();
 
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
+DC.WOD = (tocversion >= 60000);
 
 
 

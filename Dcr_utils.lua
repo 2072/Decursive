@@ -62,6 +62,7 @@ local str_sub           = _G.string.sub;
 local str_upper         = _G.string.upper;
 local str_lower         = _G.string.lower;
 local str_format        = _G.string.format;
+local str_split         = _G.strsplit;
 local table             = _G.table;
 local t_remove          = _G.table.remove;
 local t_insert          = _G.table.insert;
@@ -113,6 +114,12 @@ function D:UnitIsPet (Unit)
     local GUID = UnitGUID(Unit);
 
     if not GUID then return end
+
+    if DC.WOD then
+        -- D:Debug("UnitGUID(",Unit,"):", GUID, (str_split(':', GUID)), (str_split(':', GUID)) == 'Pet');
+        return (str_split(':', GUID)) == 'Pet';
+    end
+
 
     if band(tonumber(GUID:sub(0,5), 16), 0x00f)==0x004 then
         return true;
@@ -565,7 +572,7 @@ do
 
     function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
         --@debug@
-        D:Debug('|cFFFF0000SDC:|r|cFF00FFAA', RefName, Delay, arg1, unpack({...}));
+    --  D:Debug('|cFFFF0000SDC:|r|cFF00FFAA', RefName, Delay, arg1, unpack({...}));
         --@end-debug@
 
         argCount = select('#', ...);
@@ -640,7 +647,7 @@ do
         end
 
         --@debug@
-        D:Debug('|cFFFF0000SDC:|r ACEID:|cFF00FFAA', DcrTimers[RefName][1]);
+    --  D:Debug('|cFFFF0000SDC:|r ACEID:|cFF00FFAA', DcrTimers[RefName][1]);
         --@end-debug@
         return DcrTimers[RefName][1];
     end
