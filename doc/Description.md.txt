@@ -1,6 +1,8 @@
 Decursive for World of Warcraft
 ===============================
 
+[![Gratipay and Bitcoin donation options](http://img.shields.io/gratipay/2072.svg)](https://www.gratipay.com/2072/)
+
 *Decursive is a cleansing mod intended to make affliction removal easy, effective and fun for all the classes having this ability.*
 
 Documentation:
@@ -112,6 +114,7 @@ Unless you want to help testing unstable code you should download the versions c
 
 **Do not forget to rate Decursive!**
 
+Bitcoin donation address: **1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX**
 
 ![stats](http://www.2072productions.com/to/dcrcursedisplaystat.gif)
 
