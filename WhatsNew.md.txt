@@ -2,7 +2,7 @@ Decursive 2.7.3.2 (2014-06-09)
 ==============================
 
 
-Changes from Decursive 2.7.3 to Decursive 2.7.3.2 (2014-06-09)
+Changes from Decursive 2.7.3.1 to Decursive 2.7.3.2 (2014-06-09)
 --------------------------------------------------------------
 
 - Added automatic support for DK's Icy touch (when its namesake glyph is
