@@ -220,33 +220,12 @@ local function SetRuntimeConstants_Once () -- {{{
     DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
     DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
 
-    local SymbiosisNamesToIDs = {
-        [DS["SPELL_CYCLONE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"],
-        [DS["SPELL_PURGE_FROM_SYMBIOSIS"]]      =  DSI["SPELL_PURGE_FROM_SYMBIOSIS"],
-        [DS["SPELL_CLEANSE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"],
-    }
-    -- special meta table to handle Druid's Symbiosis
-    local SymbiosisEnhancement_mt = {
-        __index = function (self, key)
-            if key == 'Types' and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
-                return DC.SpellsToUse[SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])]].Types;
-            else
-                return {};
-            end
-        end
-    }
-
+    
 
     -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
     DC.SpellsToUse = {
         -- Druids
         [DSI["SPELL_CYCLONE"]] = {
-            Types = {DC.CHARMED},
-            Better = 0,
-            Pet = false,
-        },
-        -- Priests
-        [DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"]] = {
             Types = {DC.CHARMED},
             Better = 0,
             Pet = false,
@@ -330,18 +309,6 @@ local function SetRuntimeConstants_Once () -- {{{
             }
 
         },
-        -- Druids
-        [DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"]] = {
-            Types = {DC.DISEASE, DC.POISON},
-            Better = 2,
-            Pet = false,
-        },
-        -- Druids
-        [DSI["SPELL_PURGE_FROM_SYMBIOSIS"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 2,
-            Pet = false,
-        },
         -- Shaman
         [DSI["CLEANSE_SPIRIT"]] = { -- same name as PURIFY_SPIRIT in ruRU XXX
             Types = {DC.CURSE},
@@ -387,24 +354,6 @@ local function SetRuntimeConstants_Once () -- {{{
             Enhancements = {
                 Types = {DC.MAGIC},
             }
-        },
-        -- Druids (copied for Priests see after table declaration)
-        [DSI["SPELL_SYMBIOSIS"]] = {
-            Types = {}, -- does nothing by default
-            Better = 1,
-            Pet = false,
-
-            EnhancedBy = true,
-            EnhancedByCheck = function ()
-                if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
-                      --  DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
-                      --  DC.SpellsToUse[DSI["SPELL_SYMBIOSIS_PRIEST"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
-                    return true;
-                else
-                    return false;
-                end
-            end,
-            Enhancements = {}, -- placeholder, replaced by a metatable when active
         },
         -- Warlock
         [DSI["SPELL_FEAR"]] = {
@@ -465,9 +414,61 @@ local function SetRuntimeConstants_Once () -- {{{
 
         },
     };
-    
-    DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
-    DC.SpellsToUse[DSI["SPELL_SYMBIOSIS_PRIEST"]] = DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]];
+
+    -- implement Symbiosis support for pre-WoD
+    if not DC.WOD then
+
+        local SymbiosisNamesToIDs = {
+            [DS["SPELL_CYCLONE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"],
+            [DS["SPELL_PURGE_FROM_SYMBIOSIS"]]      =  DSI["SPELL_PURGE_FROM_SYMBIOSIS"],
+            [DS["SPELL_CLEANSE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"],
+        }
+        -- special meta table to handle Druid's Symbiosis
+        local SymbiosisEnhancement_mt = {
+            __index = function (self, key)
+                if key == 'Types' and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
+                    return DC.SpellsToUse[SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])]].Types;
+                else
+                    return {};
+                end
+            end
+        }
+
+        DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]]= {
+            Types = {}, -- does nothing by default
+            Better = 1,
+            Pet = false,
+
+            EnhancedBy = true,
+            EnhancedByCheck = function ()
+                if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
+                    return true;
+                else
+                    return false;
+                end
+            end,
+            Enhancements = setmetatable({}, SymbiosisEnhancement_mt),
+        };
+        DC.SpellsToUse[DSI["SPELL_SYMBIOSIS_PRIEST"]] = DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]];
+        -- Druids
+        DC.SpellsToUse[DSI["SPELL_PURGE_FROM_SYMBIOSIS"]] = {
+            Types = {DC.ENEMYMAGIC},
+            Better = 2,
+            Pet = false,
+        };
+        -- Druids
+        DC.SpellsToUse[DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"]] = {
+            Types = {DC.DISEASE, DC.POISON},
+            Better = 2,
+            Pet = false,
+        };
+        -- Priests
+        DC.SpellsToUse[DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"]] = {
+            Types = {DC.CHARMED},
+            Better = 0,
+            Pet = false,
+        };
+    end
 
     -- }}}
 
@@ -1317,9 +1318,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_CLEANSE"]               =  4987,
             ["SPELL_HAND_OF_SACRIFICE"]     =  6940,
             ["PASSIVE_ABSOLVE"]             =  140333,
-            ["SPELL_CLEANSE_FROM_SYMBIOSIS"]=  122288,
-            ["SPELL_PURGE_FROM_SYMBIOSIS"]  =  110802,
-            ["SPELL_CYCLONE_FROM_SYMBIOSIS"]=  113506,
             ['SPELL_TRANQUILIZING_SHOT']    =  19801,
             ['SPELL_HEX']                   =  51514, -- shamans
             ["CLEANSE_SPIRIT"]              =  51886,
@@ -1368,13 +1366,18 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_DETOX"]                 =  115450, -- monk
             ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
             ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
-            -- ["SPELL_SYMBIOSIS_MAGE"]        =  110499, -- mage - this is the slot available on mages --XXX add each class
-            ["SPELL_SYMBIOSIS"]             =  110309, -- this is the Druid ability
-            ["SPELL_SYMBIOSIS_PRIEST"]      =  110502, -- this is the Priest ability
             ['Greater Invisibility']        =  110959,
             ['GLYPH_OF_ICY_TOUCH']          =  58631, --DK
             ['SPELL_ICY_TOUCH']             =  45477, --DK
         };
+    end
+
+    if not DC.WOD then
+        T._C.DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"]=  122288;
+        T._C.DSI["SPELL_PURGE_FROM_SYMBIOSIS"]  =  110802;
+        T._C.DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"]=  113506;
+        T._C.DSI["SPELL_SYMBIOSIS"]             =  110309; -- this is the Druid ability
+        T._C.DSI["SPELL_SYMBIOSIS_PRIEST"]      =  110502;
     end
 
     local DS  = T._C.DS;
