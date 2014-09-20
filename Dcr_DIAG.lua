@@ -230,9 +230,14 @@ do
     local function GetAddonListAsString ()
         local addonCount = GetNumAddOns();
         local loadedAddonList = {};
+        local name, security, _;
 
         for addonID=1, addonCount do
-            local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(addonID)
+            if not DC.WOD then
+                name, _, _, _, _, _, security = GetAddOnInfo(addonID)
+            else
+                name, _, _, _, _, security, _ = GetAddOnInfo(addonID)
+            end
             if security == 'INSECURE' and IsAddOnLoaded(addonID) then
                 local version = GetAddOnMetadata(addonID, "Version");
 
@@ -617,7 +622,7 @@ end
 function T._HookErrorHandler()
 
     if BugGrabber then
-        local name, _, _, enabled = GetAddOnInfo("BugSack")
+        local name, _, _, enabled = GetAddOnInfo("BugSack") -- enabled becomes isLoaded in WoD
 
         if name and enabled then
             T._BugSackLoaded = true;
