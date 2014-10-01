@@ -7,7 +7,7 @@ Changes from Decursive 2.7.3.2 to Decursive 2.7.3.3 (2014-09-20)
 
 - Compatibility fixes for WoD
 
-- Add new donation options ([Gratipay](https://gratipay.com/2072/) and [Bitcoin](https://blockchain.info/address/1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX)) on Curse and WowAce.
+- Add new [Gratipay](https://gratipay.com/2072/) and [Bitcoin](https://blockchain.info/address/1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX) donation options on Curse and WowAce.
 
 
 Changes from Decursive 2.7.3.1 to Decursive 2.7.3.2 (2014-06-09)

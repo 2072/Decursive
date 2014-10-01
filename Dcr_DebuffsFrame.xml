@@ -129,7 +129,7 @@
     </Frame>
 
     <!-- Templates -->
-    <Cooldown name="DcrMicroUnitCDTemplate" virtual="true" hidden="true" setAllPoints="false">
+    <Cooldown name="DcrMicroUnitCDTemplate" inherits="CooldownFrameTemplate" virtual="true" hidden="true" setAllPoints="false">
         <Size>
             <AbsDimension x="16" y="16"/>
         </Size>
