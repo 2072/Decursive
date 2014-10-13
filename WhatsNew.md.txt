@@ -1,15 +1,13 @@
-Decursive 2.7.3.3 beta 2 (2014-10-12)
-=====================================
+Decursive 2.7.3.3 (2014-10-13)
+==============================
 
 
-Changes from Decursive 2.7.3.2 to Decursive 2.7.3.3 (2014-09-20)
+Changes from Decursive 2.7.3.2 to Decursive 2.7.3.3 (2014-10-13)
 ----------------------------------------------------------------
 
 - Compatibility fixes for WoD:
     - Cooldown animation on MUFs had stop working with WoW 6.0
     - Fix several Lua errors caused by API changes
-
-- Note that this beta is still compatible with the current live version of WoW
 
 - Add new [Gratipay](https://gratipay.com/2072/) and [Bitcoin](https://blockchain.info/address/1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX) donation options on Curse and WowAce.
 

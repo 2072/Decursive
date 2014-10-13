@@ -18,7 +18,7 @@ Decursive key benefits
 
 - **Ease of use:**
 
-    -	Decursive supports **all classes with cleansing abilities (Symbiosis' links included)** and configures itself **automatically**,
+    -	Decursive supports **all classes with cleansing abilities** and configures itself **automatically**,
         *it works straight out of the box*, no configuration is required.
     -	Intuitive interface and detailed options, Decursive is suitable for simple usage and power users.
 
@@ -143,6 +143,4 @@ Bitcoin donation address: **1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX**
 
 [youtubeplaylist]: http://www.youtube.com/view_play_list?p=BAC83C82EDE3FD24
 [GoodYoutube1]: http://www.youtube.com/watch?v=Q0OqxD3Svqo
-
-[mop]: http://www.2072productions.com/images/ah-mop-75x75-11-4-11.jpg "Mist of Pandaria Beta"
 
