@@ -260,9 +260,9 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 2,
             Pet = false,
 
-            EnhancedBy = DS["PASSIVE_INTERNAL_MEDICINE"],
+            EnhancedBy = 'mistweather',
             EnhancedByCheck = function ()
-                return (IsSpellKnown(DSI["PASSIVE_INTERNAL_MEDICINE"])) and true or false;
+                return (GetSpecialization() == 2) and true or false; -- mist?
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
@@ -283,9 +283,9 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 2,
             Pet = false,
 
-            EnhancedBy = DS["PASSIVE_SACRED_CLEANSING"], -- http://www.wowhead.com/talent#srrrdkdz
+            EnhancedBy = 'holy',
             EnhancedByCheck = function ()
-                return (IsSpellKnown(DSI["PASSIVE_SACRED_CLEANSING"])) and true or false;
+                return (GetSpecialization() == 1) and true or false; -- holy?
             end,
             Enhancements = {
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
@@ -297,9 +297,9 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 1,
             Pet = false,
 
-            EnhancedBy = DS["PASSIVE_ABSOLVE"], -- http://www.wowhead.com/talent#srrrdkdz
+            EnhancedBy = 'retribution',
             EnhancedByCheck = function ()
-                return (IsSpellKnown(DSI["PASSIVE_ABSOLVE"])) and true or false;
+                return (GetSpecialization() == 3) and true or false; -- ret?
             end,
             Enhancements = {
                 Types = {DC.MAGIC},
@@ -1262,7 +1262,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_CYCLONE"]               =  33786,
             ["SPELL_CLEANSE"]               =  4987,
             ["SPELL_HAND_OF_SACRIFICE"]     =  6940,
-            ["PASSIVE_ABSOLVE"]             =  140333,
             ['SPELL_TRANQUILIZING_SHOT']    =  19801,
             ['SPELL_HEX']                   =  51514, -- shamans
             ["CLEANSE_SPIRIT"]              =  51886,
@@ -1304,8 +1303,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_PURIFY"]                =  527,
             ["SPELL_DISPELL_MAGIC"]         =  528,
             ["PURIFY_SPIRIT"]               =  77130, -- resto shaman
-            ["PASSIVE_SACRED_CLEANSING"]    =  53551,
-            ["PASSIVE_INTERNAL_MEDICINE"]   =  115451,
             ["SPELL_NATURES_CURE"]          =  88423,
             ["SHROUD_OF_CONCEALMENT"]       =  115834, -- rogue
             ["SPELL_DETOX"]                 =  115450, -- monk
