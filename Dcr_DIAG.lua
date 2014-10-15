@@ -737,19 +737,19 @@ do
         --LibStub:GetLibrary
         local UseLibStub = {
             ["AceAddon-3.0"] = 12,
-            ["AceComm-3.0"] = 7,
+            ["AceComm-3.0"] = 9,
             ["AceConsole-3.0"] = 7,
-            ["AceDB-3.0"] = 23,
+            ["AceDB-3.0"] = 25,
             ["AceDBOptions-3.0"] = 14,
             ["AceEvent-3.0"] = 3,
-            ["AceHook-3.0"] = 7,
+            ["AceHook-3.0"] = 8,
             ["AceLocale-3.0"] = 6,
-            ["AceTimer-3.0"] = 16,
+            ["AceTimer-3.0"] = 17,
 
             ["AceGUI-3.0"] = 34,
             ["AceConfig-3.0"] = 2,
             ["AceConfigCmd-3.0"] = 13,
-            ["AceConfigDialog-3.0"] = 58,
+            ["AceConfigDialog-3.0"] = 59,
             ["AceConfigRegistry-3.0"] = 15,
 
             ["LibDataBroker-1.1"] = 4,
