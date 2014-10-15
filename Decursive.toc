@@ -1,6 +1,6 @@
 ## Interface: 60000
 ## X-Max-Interface: 60000
-## X-Min-Interface: 50001
+## X-Min-Interface: 60000
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@

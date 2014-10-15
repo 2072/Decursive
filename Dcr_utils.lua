@@ -111,21 +111,7 @@ function D:MakePlayerName (name) --{{{
 end --}}}
 
 function D:UnitIsPet (Unit)
-    local GUID = UnitGUID(Unit);
-
-    if not GUID then return end
-
-    if DC.WOD then
-        -- D:Debug("UnitGUID(",Unit,"):", GUID, (str_split(':', GUID)), (str_split(':', GUID)) == 'Pet');
-        return (str_split(':', GUID)) == 'Pet';
-    end
-
-
-    if band(tonumber(GUID:sub(0,5), 16), 0x00f)==0x004 then
-        return true;
-    end
-    return false;
-
+    return (Unit:find('pet')) ~= nil;
 end
 
 function D:PetUnitName (Unit, Check) -- {{{
@@ -136,8 +122,8 @@ function D:PetUnitName (Unit, Check) -- {{{
         D:Debug("PetUnitName(): Name of %s is unknown", Unit);
     end
 
-    if not Check or (self:UnitIsPet(Unit)) then
-        Name =  ("%s-%s"):format (DC.PET,Name);
+    if not Check or self:UnitIsPet(Unit) then
+        Name = ("%s-%s"):format(DC.PET, Name);
     end
     
     return Name;

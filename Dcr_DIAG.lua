@@ -233,11 +233,8 @@ do
         local name, security, _;
 
         for addonID=1, addonCount do
-            if not DC.WOD then
-                name, _, _, _, _, _, security = GetAddOnInfo(addonID)
-            else
-                name, _, _, _, _, security, _ = GetAddOnInfo(addonID)
-            end
+            name, _, _, _, _, security, _ = GetAddOnInfo(addonID)
+
             if security == 'INSECURE' and IsAddOnLoaded(addonID) then
                 local version = GetAddOnMetadata(addonID, "Version");
 
@@ -497,7 +494,6 @@ local _, _, _, tocversion = GetBuildInfo();
 
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
-DC.WOD = (tocversion >= 60000);
 
 
 
@@ -789,7 +785,7 @@ do
             LibraryIssues = true;
         end
 
-        local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 50001); -- once GetAddOnMetadata() was bugged and returned nil...
+        local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 60000); -- once GetAddOnMetadata() was bugged and returned nil...
         
         -- test if Decursive is backward compatible with the client's version
         if tocversion < DcrMinTOC then

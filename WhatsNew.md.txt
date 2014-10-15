@@ -1,8 +1,8 @@
-Decursive 2.7.3.3 (2014-10-13)
+Decursive 2.7.3.4 (2014-10-14)
 ==============================
 
 
-Changes from Decursive 2.7.3.2 to Decursive 2.7.3.3 (2014-10-13)
+Changes from Decursive 2.7.3.2 to Decursive 2.7.3.4 (2014-10-14)
 ----------------------------------------------------------------
 
 - Compatibility fixes for WoD:
