@@ -1458,12 +1458,16 @@ do
                                 --D:Debug('center text update');
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and self.CenterText or (floor(self.CenterText / 60) .. "\'") ));
                             end
-                        else
+                        elseif self.Debuffs[1].ExpirationTime > 0 then
+
                             self.CenterText = floor(self.Debuffs[1].ExpirationTime - Time);
 
                             if self.CenterText ~= self.PrevCenterText then
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and (self.CenterText + 1) or (floor(self.CenterText / 60 + 1) .. "\'") ));
                             end
+                        elseif self.PrevCenterText then
+                            self.CenterText = false;
+                            self.CenterFontString:SetText(" ");
                         end
 
                     else
