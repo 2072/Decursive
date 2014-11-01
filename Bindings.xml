@@ -21,31 +21,31 @@
     This file was last updated on @file-date-iso@
 -->
 
-        <Binding name="DCRSHOW" header="DECURSIVE">
+        <Binding name="DCRSHOW" header="DECURSIVE" category="ADDONS">
                         DecursiveRootTable.Dcr:HideBar(false);
         </Binding>
-        <Binding name="DCRMUFSHOWHIDE">
+        <Binding name="DCRMUFSHOWHIDE" category="ADDONS">
                         DecursiveRootTable.Dcr:ShowHideDebuffsFrame ();
         </Binding>
-        <Binding name="DCRSHOWOPTION">
+        <Binding name="DCRSHOWOPTION" category="ADDONS">
                         LibStub("AceConfigDialog-3.0"):Open(DecursiveRootTable.Dcr.name);
         </Binding>
-        <Binding name="DCRPRSHOW">
+        <Binding name="DCRPRSHOW" category="ADDONS">
                         DecursiveRootTable.Dcr:ShowHidePriorityListUI();
         </Binding>
-        <Binding name="DCRPRADD">
+        <Binding name="DCRPRADD" category="ADDONS">
                         DecursiveRootTable.Dcr:AddTargetToPriorityList();
         </Binding>
-        <Binding name="DCRPRCLEAR">
+        <Binding name="DCRPRCLEAR" category="ADDONS">
                         DecursiveRootTable.Dcr:ClearPriorityList();
         </Binding>
-        <Binding name="DCRSKSHOW">
+        <Binding name="DCRSKSHOW" category="ADDONS">
                         DecursiveRootTable.Dcr:ShowHideSkipListUI();
         </Binding>
-        <Binding name="DCRSKADD">
+        <Binding name="DCRSKADD" category="ADDONS">
                         DecursiveRootTable.Dcr:AddTargetToSkipList();
         </Binding>
-        <Binding name="DCRSKCLEAR">
+        <Binding name="DCRSKCLEAR" category="ADDONS">
                         DecursiveRootTable.Dcr:ClearSkipList();
         </Binding>
 </Bindings>
