@@ -1,14 +1,22 @@
-Decursive 2.7.3.5 (2014-10-15)
+Decursive 2.7.3.6 (2014-11-09)
 ==============================
+
+
+Changes from Decursive 2.7.3.5 to Decursive 2.7.3.6 (2014-11-09)
+----------------------------------------------------------------
+
+- Fixed countdown display issue on MUFs with debuffs without expiry.
+
+- Moved bindings to the "Addons" category.
 
 
 Changes from Decursive 2.7.3.2 to Decursive 2.7.3.5 (2014-10-15)
 ----------------------------------------------------------------
 
 - Compatibility fixes for WoD:
-    - Cooldown animation on MUFs had stop working with WoW 6.0
-    - Fix several Lua errors caused by API changes
-    - Fix magic curing ability detection for Paldins and Monks
+    - Cooldown animations on MUFs had stop working with WoW 6.0.
+    - Fix several Lua errors caused by API changes.
+    - Fix magic curing ability detection for Paladins and Monks.
 
 - Add new [Gratipay](https://gratipay.com/2072/) and [Bitcoin](https://blockchain.info/address/1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX) donation options on Curse and WowAce.
 
