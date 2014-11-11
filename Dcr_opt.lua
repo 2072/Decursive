@@ -1700,15 +1700,17 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
-                                    "\n\n|cFFDDDD00 %s|r:\n   %s"
+                                    "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
                                     "@project-version@", "John Wellesz", ("@project-date-iso@"):sub(1,10),
                                     L["ABOUT_NOTES"],
-                                    L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'MoP is buggy',
-                                    L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds") or 'MoP is buggy',
-                                    L["ABOUT_OFFICIALWEBSITE"], GetAddOnMetadata("Decursive", "X-Website") or 'MoP is buggy',
-                                    L["ABOUT_AUTHOREMAIL"],     GetAddOnMetadata("Decursive", "X-eMail") or 'MoP is buggy',
-                                    L["ABOUT_CREDITS"],         GetAddOnMetadata("Decursive", "X-Credits") or 'MoP is buggy'
+                                    L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
+                                    L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
+                                    L["ABOUT_OFFICIALWEBSITE"], GetAddOnMetadata("Decursive", "X-Website") or 'GetAddOnMetadata() failure',
+                                    L["ABOUT_AUTHOREMAIL"],     GetAddOnMetadata("Decursive", "X-eMail")   or 'GetAddOnMetadata() failure',
+                                    L["ABOUT_CREDITS"]
+                                    ,    "Decursive is inspired from the original \"Decursive v1.9.4\" released in 2006 by Patrick Bohnet (Quutar of Earthen Ring (US))"
+                                    ,    GetAddOnMetadata("Decursive", "X-Credits") or 'GetAddOnMetadata() failure'
                                 ),
                         order = 0,
                     },
