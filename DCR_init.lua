@@ -48,6 +48,7 @@ end
 T._LoadedFiles["DCR_init.lua"] = false;
 
 local D;
+local _G                    = _G;
 local select                = _G.select;
 local GetSpellBookItemInfo  = _G.GetSpellBookItemInfo;
 local GetSpellInfo          = _G.GetSpellInfo;
@@ -468,8 +469,8 @@ local L  = D.L;
 local LC = D.LC;
 local DC = T._C;
 
-local BOOKTYPE_PET      = BOOKTYPE_PET;
-local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
+local BOOKTYPE_PET      = _G.BOOKTYPE_PET;
+local BOOKTYPE_SPELL    = _G.BOOKTYPE_SPELL;
 
 local select            = _G.select;
 local pairs             = _G.pairs;
@@ -1370,6 +1371,8 @@ end -- }}}
 -- Create the macro for Decursive
 -- This macro will cast the first spell (priority)
 
+local MAX_ACCOUNT_MACROS = _G.MAX_ACCOUNT_MACROS;
+
 function D:UpdateMacro () -- {{{
 
 
@@ -1422,7 +1425,7 @@ function D:UpdateMacro () -- {{{
 	else
 	    D:Debug("Macro not updated due to AllowMacroEdit");
 	end
-    elseif (GetNumMacros()) < 36 then
+    elseif (GetNumMacros()) < MAX_ACCOUNT_MACROS then
         CreateMacro(unpack(MacroParameters));
     else
         D:errln("Too many macros exist, Decursive cannot create its macro");
