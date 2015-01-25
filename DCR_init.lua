@@ -704,6 +704,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     self:RegisterEvent("SPELLS_CHANGED");
     self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     self:RegisterEvent("BAG_UPDATE_DELAYED");
+    self:RegisterEvent("GET_ITEM_INFO_RECEIVED");
     self:RegisterEvent("PLAYER_TALENT_UPDATE");
     self:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -788,6 +789,7 @@ function D:SetConfiguration() -- {{{
     D.Status.Unit_Array = {};
     D.Status.InternalPrioList = {};
     D.Status.InternalSkipList = {};
+    D.Status.WaitingForSpellInfo = false;
 
     D.Stealthed_Units = {};
 
@@ -1067,9 +1069,16 @@ function D:ReConfigure() --{{{
     local SpellName = "";
 
     local Reconfigure = false;
-    for spellID, spell in SpellIterator() do
+    for spellID, spell in SpellIterator() do repeat
 
         SpellName = D.GetSpellOrItemInfo(spellID);
+
+        -- if item info not available yet
+        if spell.IsItem and not SpellName then
+            self.Status.WaitingForSpellInfo = -1 * spellID;
+            self:Debug("Item name not available yet");
+            break;
+        end
 
         -- Do we have that spell?
         if not spell.IsItem and IsSpellKnown(spellID, spell.Pet)
@@ -1113,7 +1122,7 @@ function D:ReConfigure() --{{{
             Reconfigure = true;
             break;
         end
-    end
+    break until true if Reconfigure then break end end -- a continue statement would have been nice in Lua...
 
     if Reconfigure == true then
         D:Debug("D:ReConfigure RECONFIGURATION!");
@@ -1153,7 +1162,7 @@ function D:Configure() --{{{
 
     self:Debug("Configuring Decursive...");
 
-    for spellID, spell in SpellIterator() do
+    for spellID, spell in SpellIterator() do repeat
         if not spell.Disabled then
             -- self:Debug("trying spell", spellID);
             -- Do we have that spell?
@@ -1161,6 +1170,13 @@ function D:Configure() --{{{
                 or spell.IsItem and D:isItemUsable(-1 * spellID) then
 
                 SpellName = D.GetSpellOrItemInfo(spellID);
+
+                -- if item info not available yet
+                if spell.IsItem and not SpellName then
+                    self.Status.WaitingForSpellInfo = -1 * spellID;
+                    self:Debug("Item name not available yet");
+                    break;
+                end
 
                 Types = spell.Types;
                 UnitFiltering = false;
@@ -1195,7 +1211,6 @@ function D:Configure() --{{{
                 if spell.UnitFiltering then
                     UnitFiltering = spell.UnitFiltering;
                 end
-
 
                 -- register it
                 self.Status.FoundSpells[SpellName] = {spell.Pet, spellID, IsEnhanced, spell.Better, spell.MacroText, nil};
@@ -1246,7 +1261,7 @@ function D:Configure() --{{{
 
             end
         end
-    end
+    break until true end
 
     -- Verify the cure order list (if it was damaged)
     self:CheckCureOrder ();

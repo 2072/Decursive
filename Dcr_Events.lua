@@ -421,12 +421,20 @@ end
 
 function D:PLAYER_EQUIPMENT_CHANGED()
     D:Debug("|cFFFF0000Equipment changed, scheduling a reconfiguration check|r");
-    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self); -- used to be 15s changed to 4 to be more reaactive for warlocks
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
 end
 
 function D:BAG_UPDATE_DELAYED()
     D:Debug("|cFFFF0000Bag changed, scheduling a reconfiguration check|r");
-    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self); -- used to be 15s changed to 4 to be more reaactive for warlocks
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
+end
+
+function D:GET_ITEM_INFO_RECEIVED()
+    if self.Status.WaitingForSpellInfo and GetItemInfo(self.Status.WaitingForSpellInfo) then
+        self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
+        self.Status.WaitingForSpellInfo = false;
+        D:Debug("|cFFFF0000Missing itemInfo received, scheduling a reconfiguration check|r");
+    end
 end
 
 function D:PLAYER_TALENT_UPDATE()
