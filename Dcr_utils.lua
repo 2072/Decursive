@@ -76,8 +76,9 @@ local GetTime           = _G.GetTime;
 local IsSpellInRange    = _G.IsSpellInRange;
 local UnitInRange       = _G.UnitInRange;
 local debugprofilestop  = _G.debugprofilestop;
+local GetSpellInfo      = _G.GetSpellInfo;
 
--- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells)
+-- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
 D.IsSpellInRange = function (spellName, unit)
     local range = IsSpellInRange(spellName, unit);
 
@@ -468,8 +469,53 @@ function D:GetSpellFromLink(link)
     return nil;
 end
 
+
+local IsUsableItem      = _G.IsUsableItem;
+local IsEquippableItem  = _G.IsEquippableItem;
+local IsEquippedItem    = _G.IsEquippedItem;
+function D:isItemUsable(itemIDorName)
+    if IsEquippableItem(itemIDorName) and not IsEquippedItem(itemIDorName) then
+        return false;
+    end
+
+    return IsUsableItem(itemIDorName);
+end
+
+function D:GetItemFromLink(link)
+    -- GetItemInfo (only if item seen)
+    -- GetItemCooldown
+    -- IsUsableItem (ignores cooldowms and petty conditions)
+    -- IsItemInRange(itemID, "unit")
+    -- GetItemCount(itemId, includeBank, includeCharges)
+
+    if link:find('|Hitem:%d+') then
+        local itemID;
+        itemID = tonumber(link:match('|Hitem:(%d+)'));
+
+        local name = GetItemInfo(itemID);
+
+        if not name then
+            return nil;
+        end
+
+        D:Debug('Item link detected:', itemID, name);
+
+        return itemID;
+    end
+
+    return nil;
+end
+
+function D.GetSpellOrItemInfo(spellID)
+    if spellID > 0 then
+        return GetSpellInfo(spellID);
+    else
+        return GetItemInfo(spellID * -1);
+    end
+end
+
 local function BadLocalTest (localtest)
-        D:Print(L[localtest]);
+    D:Print(L[localtest]);
 end
 
 function D:MakeError(something)

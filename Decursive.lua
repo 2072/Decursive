@@ -415,7 +415,7 @@ do
         if D.LiveList.TestItemDisplayed and UnitExists(Unit) then -- and not UnTrustedUnitIDs[Unit] then
             if i == 1 then
                 Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime, SpellID = "Test item", 1, "Interface\\AddOns\\Decursive\\iconON.tga", 2, DC.TypeNames[D.Status.ReversedCureOrder[1]], 70, (D.LiveList.TestItemDisplayed + 70), 0;
-                D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime);
+                -- D:Debug("|cFFFF0000Setting test debuff for ", Unit, " (debuff ", i, ")|r");--, Name, Rank, Texture, Applications, TypeName, Duration, ExpirationTime);
                 return true;
             else
                 i = i - 1;

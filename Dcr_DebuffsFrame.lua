@@ -985,7 +985,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
             D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
             local spell = D.Status.CuringSpells[frame.Object.Debuffs[1].Type];
 
-            D.Status.ClickedMF.CastingSpell = "notyet" -- (GetSpellInfo(spell)); -- store the spell name but without its rank
+            D.Status.ClickedMF.CastingSpell = "notyet";
             D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName);
         end
     end
@@ -1275,8 +1275,9 @@ do
                 if not D.UnitFilteringTest (Unit, D.Status.FoundSpells[Spell][6]) then
                     --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
                     -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/cast [@%s, help][@%s, harm] %s"):format(
-                    ((not D.Status.FoundSpells[Spell][1]) and "/stopcasting\n" or ""),
+                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/%s [@%s, help][@%s, harm] %s"):format(
+                    not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
+                    D.Status.FoundSpells[Spell][2] > 0 and "cast" or "use", -- item test
                     Unit,Unit,
                     Spell));
                 end
@@ -1336,6 +1337,8 @@ do
 
     -- global access optimization
     local IsSpellInRange    = D.IsSpellInRange;
+    local IsItemInRange     = _G.IsItemInRange;
+    local IsUsableItem      = _G.IsUsableItem;
     local UnitClass         = _G.UnitClass;
     local UnitExists        = _G.UnitExists;
     local UnitIsVisible     = _G.UnitIsVisible;
@@ -1346,10 +1349,12 @@ do
     local floor             = _G.math.floor;
     local fmod              = _G.math.fmod;
     local CooldownFrame_SetTimer = _G.CooldownFrame_SetTimer;
-    local GetSpellCooldown = _G.GetSpellCooldown;
+    local GetSpellCooldown  = _G.GetSpellCooldown;
+    local GetItemCooldown   = _G.GetItemCooldown;
     local GetRaidTargetIndex= _G.GetRaidTargetIndex;
-    local bor = _G.bit.bor;
-    local band = _G.bit.band;
+    local bor               = _G.bit.bor;
+    local band              = _G.bit.band;
+    local SpellID;
 
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -1425,12 +1430,14 @@ do
                     PrioChanged = true;
                 end
 
+                SpellID = Status.FoundSpells[Status.CuringSpells[DebuffType]][2];
+
                 -- Test if the spell we are going to use is in range
                 -- Some time can elaps between the instant the debuff is detected and the instant it is shown.
                 -- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
                 -- So we test before calling this api that we can still cure this debuff type
                 if Status.CuringSpells[DebuffType] then
-                    RangeStatus = IsSpellInRange(Status.CuringSpells[DebuffType], Unit);
+                    RangeStatus = SpellID > 0 and IsSpellInRange(Status.CuringSpells[DebuffType], Unit) or D:isItemUsable(-1 * SpellID) and IsItemInRange(-1 * SpellID, Unit);
                 else
                     RangeStatus = false;
                 end
@@ -1438,7 +1445,11 @@ do
                 Time = GetTime();
 
                 if RangeStatus and self.UpdateCD < Status.UpdateCooldown then
-                    CooldownFrame_SetTimer (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]) );
+                    if SpellID > 0 then
+                        CooldownFrame_SetTimer (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
+                    else
+                        CooldownFrame_SetTimer (self.CooldownFrame, GetItemCooldown(-1 * SpellID));
+                    end
                     self.UpdateCD = Time;
                 end
 

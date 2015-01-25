@@ -202,8 +202,8 @@ L["NORMAL"] = "Normal"
 L["NOSPELL"] = "No spell available"
 L["OPT_ABOLISHCHECK_DESC"] = "select whether units with an active 'Abolish' spell are shown and cured"
 L["OPT_ABOUT"] = "About"
-L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell"
-L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Click here and shift-click on a spell from your spell book. You can also directly write its name or its numeric ID."
+L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell / item"
+L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Drag and drop a spell or usable item here. You can also directly write its name, its numeric ID or use shift-click."
 L["OPT_ADDDEBUFF"] = "Add a custom affliction"
 L["OPT_ADDDEBUFF_DESC"] = "Adds a new affliction to this list"
 L["OPT_ADDDEBUFFFHIST"] = "Add a recent affliction"
@@ -276,7 +276,7 @@ L["OPT_CUSTOM_SPELL_PRIORITY_DESC"] = [=[When several spells can cure the same a
 Note that default abilities managed by Decursive have a priority ranging from 0 to 9.
 
 Thus, if you give your custom spell a negative priority, it will only be chosen if the default ability is not available.]=]
-L["OPT_CUSTOMSPELLS"] = "Custom spells"
+L["OPT_CUSTOMSPELLS"] = "Custom spells / items"
 L["OPT_CUSTOMSPELLS_DESC"] = [=[Here you can add spells to extend Decursive's automatic configuration.
 Your custom spells always have a higher priority and will override and replace the default spells (if and only if your character can use those spells).
 ]=]

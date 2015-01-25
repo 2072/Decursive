@@ -53,6 +53,8 @@ local select                = _G.select;
 local GetSpellBookItemInfo  = _G.GetSpellBookItemInfo;
 local GetSpellInfo          = _G.GetSpellInfo;
 local IsSpellKnown          = _G.IsSpellKnown;
+local GetSpecialization     = _G.GetSpecialization;
+local IsPlayerSpell         = _G.IsPlayerSpell;
 
 local function RegisterDecursive_Once() -- {{{
 
@@ -214,7 +216,6 @@ local function SetRuntimeConstants_Once () -- {{{
 
     local DS = T._C.DS;
     local DSI = T._C.DSI;
-    local IsSpellKnown = _G.IsSpellKnown;
 
     DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
 
@@ -694,12 +695,15 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     end); -- }}}
 
     D:SecureHook("CastSpellByName", "HOOK_CastSpellByName");
+    D:SecureHook("UseItemByName",   "HOOK_UseItemByName");
 
     -- these events are automatically stopped when the addon is disabled by Ace
 
     -- Spell changes events
     self:RegisterEvent("LEARNED_SPELL_IN_TAB");
     self:RegisterEvent("SPELLS_CHANGED");
+    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+    self:RegisterEvent("BAG_UPDATE_DELAYED");
     self:RegisterEvent("PLAYER_TALENT_UPDATE");
     self:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
     self:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -762,6 +766,7 @@ function D:SetConfiguration() -- {{{
     D.Groups_datas_are_invalid = true;
     D.Status = {};
     D.Status.FoundSpells = {};
+    --FoundSpells is {1: Pet?, 2: spellID, 3: IsEnhanced, 4: spell prio, 5: user MacroText, 6: unit filter};
     D.Status.UnitFilteringTypes = {};
     D.Status.CuringSpells = {};
     D.Status.CuringSpellsPrio = {};
@@ -1063,9 +1068,12 @@ function D:ReConfigure() --{{{
 
     local Reconfigure = false;
     for spellID, spell in SpellIterator() do
+
+        SpellName = D.GetSpellOrItemInfo(spellID);
+
         -- Do we have that spell?
-        if IsSpellKnown(spellID, spell.Pet) then
-            SpellName = GetSpellInfo(spellID);
+        if not spell.IsItem and IsSpellKnown(spellID, spell.Pet)
+            or spell.IsItem and D:isItemUsable(-1 * spellID) then
 
             -- We had it but it's been disabled
             if spell.Disabled and D.Status.FoundSpells[SpellName] then
@@ -1101,7 +1109,7 @@ function D:ReConfigure() --{{{
             end
 
         elseif D.Status.FoundSpells[SpellName] then -- we don't have it anymore...
-            D:Debug("D:ReConfigure:", SpellName, 'is no longer available');
+            D:Debug("D:ReConfigure:", SpellName, 'is no longer available', spellID);
             Reconfigure = true;
             break;
         end
@@ -1136,7 +1144,6 @@ function D:Configure() --{{{
 
     local Type, _;
     local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
-    local GetSpellInfo = _G.GetSpellInfo;
     local IsSpellKnown = _G.IsSpellKnown;
     local Types = {};
     local UnitFiltering = false;
@@ -1150,8 +1157,11 @@ function D:Configure() --{{{
         if not spell.Disabled then
             -- self:Debug("trying spell", spellID);
             -- Do we have that spell?
-            if IsSpellKnown(spellID, spell.Pet) then
-                SpellName = GetSpellInfo(spellID);
+            if not spell.IsItem and IsSpellKnown(spellID, spell.Pet)
+                or spell.IsItem and D:isItemUsable(-1 * spellID) then
+
+                SpellName = D.GetSpellOrItemInfo(spellID);
+
                 Types = spell.Types;
                 UnitFiltering = false;
                 IsEnhanced = false;
@@ -1188,10 +1198,10 @@ function D:Configure() --{{{
 
 
                 -- register it
-                self.Status.FoundSpells[SpellName] = {spell.Pet, "", IsEnhanced, spell.Better, spell.MacroText};
+                self.Status.FoundSpells[SpellName] = {spell.Pet, spellID, IsEnhanced, spell.Better, spell.MacroText, nil};
                 for _, Type in ipairs (Types) do
 
-                    if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already registered this spell or it's not the best spell for this type
+                    if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already register this spell or it's not the best spell for this type
 
                         CuringSpells[Type] = SpellName;
 

@@ -419,6 +419,16 @@ function D:SPELLS_CHANGED()
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self); -- used to be 15s changed to 4 to be more reaactive for warlocks
 end
 
+function D:PLAYER_EQUIPMENT_CHANGED()
+    D:Debug("|cFFFF0000Equipment changed, scheduling a reconfiguration check|r");
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self); -- used to be 15s changed to 4 to be more reaactive for warlocks
+end
+
+function D:BAG_UPDATE_DELAYED()
+    D:Debug("|cFFFF0000Bag changed, scheduling a reconfiguration check|r");
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self); -- used to be 15s changed to 4 to be more reaactive for warlocks
+end
+
 function D:PLAYER_TALENT_UPDATE()
     D:Debug("|cFFFF0000Talents were changed, scheduling a reconfiguration check|r");
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
@@ -553,6 +563,20 @@ function D:HOOK_CastSpellByName (spellName, target)
     end
 end
 
+local GetItemSpell = _G.GetItemSpell;
+local GetItemCount = _G.GetItemCount;
+local GetItemInfo  = _G.GetItemInfo;
+function D:HOOK_UseItemByName (itemName, target)
+    if self.Status.ClickCastingWIP and self.Status.ClickedMF then
+        self.Status.ClickedMF.CastingSpell = GetItemSpell(itemName);
+
+        if (select(8, GetItemInfo(itemName))) > 1 and GetItemCount(itemName, false, true) < 2 then
+            self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
+        end
+
+        self:Debug("HOOK_UseItemByName:", itemName, target, 'left:', GetItemCount(itemName), (select(8, GetItemInfo(itemName))));
+    end
+end
 do -- Combat log event handling {{{1
     local bit           = _G.bit;
     local band          = bit.band;
@@ -580,8 +604,11 @@ do -- Combat log event handling {{{1
     local HOSTILE_OUTSIDER      = bit.bor (COMBATLOG_OBJECT_AFFILIATION_OUTSIDER, COMBATLOG_OBJECT_REACTION_HOSTILE);
     -- }}} ]=]
 
-    local FRIENDLY_TARGET       = bit.bor (COMBATLOG_OBJECT_TARGET, COMBATLOG_OBJECT_REACTION_FRIENDLY);
-    local ME                    = COMBATLOG_OBJECT_AFFILIATION_MINE;
+    local SPELL_FAILED_LINE_OF_SIGHT = _G.SPELL_FAILED_LINE_OF_SIGHT;
+    local SPELL_FAILED_BAD_TARGETS =   _G.SPELL_FAILED_BAD_TARGETS;
+
+    local FRIENDLY_TARGET       = bit.bor (_G.COMBATLOG_OBJECT_TARGET, _G.COMBATLOG_OBJECT_REACTION_FRIENDLY);
+    local ME                    = _G.COMBATLOG_OBJECT_AFFILIATION_MINE;
 
 
     local AuraEvents = {

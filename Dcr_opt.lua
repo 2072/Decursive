@@ -69,7 +69,6 @@ local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
 local GetSpellInfo      = _G.GetSpellInfo;
-local IsSpellKnown      = _G.IsSpellKnown;
 local _;
 -- Default values for the option
 
@@ -98,6 +97,7 @@ function D:GetDefaultsSettings()
                     Pet = false,
                     Disabled = true,
                     IsDefault = true,
+                    IsItem = false,
                 },
             },
         },
@@ -485,42 +485,42 @@ local function GetStaticOptions ()
 
         local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
 
+        local isItem = nil;
+
         -- We got a spell ID directly
         if tonumber(v) then
             v = tonumber(v);
             -- test if it's valid
-            if not (GetSpellInfo(v)) then
+            if not (GetSpellInfo(v)) and not (GetItemInfo(v)) then
                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
             end
+
+            isItem = not (GetSpellInfo(v));
 
         elseif v:find('|Hspell:%d+') then
             -- We got a spell link!
             v = D:GetSpellFromLink(v);
+        elseif v:find('|Hitem:%d+') then
+            -- We got a item link!
+            isItem = true;
+            v = D:GetItemFromLink(v);
         elseif type(v) == 'string' and (GetSpellBookItemInfo(v)) then -- not a number, not a spell link, then a spell name?
-            local _;
-            _, v = GetSpellBookItemInfo(v);
+            -- We got a spell name!
+            v = select(2, GetSpellBookItemInfo(v));
+        elseif type(v) == 'string' and (GetItemInfo(v)) then
+            -- We got an item name!
+            isItem = true;
+            v = D:GetItemFromLink(select(2, GetItemInfo(v)));
         else
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
         end
 
-        --[=[
-        -- Not a string or not a known spell
-        if type(v) ~= 'string' or not GetSpellInfo(v) then
-            D:Debug(v, GetSpellInfo(v));
-            return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
+        -- avoid spellID/itemID collisions
+        if isItem then
+            v = -1 * v;
         end
-        --]=]
 
-        --[=[
-        -- Normalize the name since spells are not case sensitive
-        if select(2, GetSpellInfo(v)) ~= "" then -- it as a rank!!
-            v = ("%s(%s)"):format(GetSpellInfo(v)); 
-        else
-            v = (GetSpellInfo(v));
-        end
-        --]=]
-
-        -- The user is stupid or it's a deleted default spell
+        -- It's a deleted default spell
         if D.classprofile.UserSpells[v] and not D.classprofile.UserSpells[v].Hidden then
             D:Debug(v);
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"]);
@@ -531,7 +531,7 @@ local function GetStaticOptions ()
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"]);
         end
 
-        return 0, v;
+        return 0, v, isItem;
     end -- }}}
 
     return {
@@ -1563,8 +1563,8 @@ local function GetStaticOptions ()
                         width = 'double',
                         set = function(info, v)
 
-                            local errorn;
-                            errorn, v = validateSpellInput(info, v);
+                            local errorn, isItem;
+                            errorn, v, isItem = validateSpellInput(info, v);
                             if errorn ~= 0 then D:Debug("XXXX AHHHHHHHHHHHHHHH!!!!!", errorn); return false end
 
                             if not D.classprofile.UserSpells[v] or D.classprofile.UserSpells[v].Hidden and CustomSpellMacroEditingAllowed then
@@ -1574,11 +1574,15 @@ local function GetStaticOptions ()
                                     Better = 10,
                                     Pet = false,
                                     Disabled = false,
+                                    IsItem = isItem,
                                 };
 
                                 if CustomSpellMacroEditingAllowed then
 
-                                    D.classprofile.UserSpells[v].MacroText = "/stopcasting\n/cast [@UNITID,help][@UNITID,harm]" .. (GetSpellInfo(v));
+                                    D.classprofile.UserSpells[v].MacroText = ("/stopcasting\n/%s [@UNITID,help][@UNITID,harm]%s"):format(
+                                        isItem and "use" or "cast",
+                                        D.GetSpellOrItemInfo(v)
+                                    );
 
                                     -- If it's a default spell, then copy the spell settings
                                     if DC.SpellsToUse[v] then
@@ -2619,10 +2623,24 @@ end
 
 do
 
+    local t_insert      = _G.table.insert;
+    local tonumber      = _G.tonumber;
+    local IsSpellKnown  = _G.IsSpellKnown;
+    local TN            = function(string) return tonumber(string) or nil; end;
+
     local order = 160;
-    local t_insert = _G.table.insert;
-    local tonumber = _G.tonumber;
-    local TN = function(string) return tonumber(string) or nil; end;
+
+    local function isSpellUSable (spellID)
+
+        local spell = D.classprofile.UserSpells[spellID];
+
+        if not spell.IsItem then
+            return IsSpellKnown(spellID, spell.Pet)
+        else
+            return D:isItemUsable(spellID * -1)
+        end
+    end
+
 
     local function GetColoredName(spellID)
         local spell = D.classprofile.UserSpells[spellID];
@@ -2632,23 +2650,23 @@ do
             return tostring(spellID);
         end
 
-        local spellName = GetSpellInfo(spellID);
+        local name = D.GetSpellOrItemInfo(spellID);
         local color = 'FFFFFFFF';
 
         if spell.Disabled then
             color = 'FFAA0000';
-        elseif not D.Status.CuringSpellsPrio[spellName] then
+        elseif not D.Status.CuringSpellsPrio[name] then
             color = 'FF909090';
         else
             color = 'FF00D000';
         end
 
-        if not IsSpellKnown(spellID, spell.Pet) then
-            spellName = ("(%s) %s"):format(L["OPT_CUSTOM_SPELL_UNAVAILABLE"], spellName);
+        if not isSpellUSable(spellID) then
+            name = ("(%s) %s"):format(L["OPT_CUSTOM_SPELL_UNAVAILABLE"], name);
             color = 'FF606060';
         end
 
-        return D:ColorText(spellName .. ((D.classprofile.UserSpells[spellID] and D.classprofile.UserSpells[spellID].MacroText) and "|cFFFF0000*|r" or ""), color);
+        return D:ColorText(name .. ((spell and spell.MacroText) and "|cFFFF0000*|r" or ""), color);
 
     end
 
@@ -2668,7 +2686,7 @@ do
             elseif not v then
                 D:tremovebyval(spellTableTypes, curetype);
             end
-            if not D.classprofile.UserSpells[TN(info[#info-2])].Disabled and IsSpellKnown(TN(info[#info-2]), D.classprofile.UserSpells[TN(info[#info-2])].Pet) then
+            if not D.classprofile.UserSpells[TN(info[#info-2])].Disabled and isSpellUSable(TN(info[#info-2])) then
                 D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
             end
         end,
@@ -2714,7 +2732,7 @@ do
                         return;
                     end
 
-                    if IsSpellKnown(TN(info[#info-1]), D.classprofile.UserSpells[TN(info[#info-1])].Pet or nil) then
+                    if isSpellUSable(TN(info[#info-1])) then
                         D:ReConfigure();
                     end
                 end,
@@ -2753,15 +2771,17 @@ do
                 name = L["OPT_CUSTOM_SPELL_ISPET"],
                 desc = L["OPT_CUSTOM_SPELL_ISPET_DESC"];
                 set = function(info,v)
+
                     D.classprofile.UserSpells[TN(info[#info-1])].Pet = v;
-                    if IsSpellKnown(TN(info[#info-1]), v or nil) then
+
+                    if isSpellUSable(TN(info[#info-1])) then
                         D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
                     end
                 end,
                 get = function(info,v)
                     return D.classprofile.UserSpells[TN(info[#info-1])].Pet;
                 end,
-                -- hidden = function(info,v) return D.classprofile.UserSpells[TN(info[#info-1])].MacroText end,
+                hidden = function (info) return D.classprofile.UserSpells[TN(info[#info-1])].IsItem end,
                 order = 112
             },
             MacroEdition = {
@@ -2780,8 +2800,8 @@ do
                     if v:find("UNITID") and (v:gsub("UNITID", "PARTYPET5")):len() < 256 then
                         D.classprofile.UserSpells[TN(info[#info-1])].MacroText = v;
 
-                        if D.Status.FoundSpells[GetSpellInfo(TN(info[#info - 1]))] then
-                            D.Status.FoundSpells[GetSpellInfo(TN(info[#info-1]))][5] = v;
+                        if D.Status.FoundSpells[D.GetSpellOrItemInfo(TN(info[#info - 1]))] then
+                            D.Status.FoundSpells[D.GetSpellOrItemInfo(TN(info[#info-1]))][5] = v;
                             D.Status.SpellsChanged = GetTime(); -- will force an update of all MUFs attributes
                             D:Debug("Attribute update triggered");
                         end
@@ -2805,8 +2825,8 @@ do
                         return error(L["OPT_CUSTOM_SPELL_MACRO_MISSING_UNITID_KEYWORD"]);
                     end
 
-                    if not v:find(GetSpellInfo(TN(info[#info-1])), 0, true) then
-                        T._ShowNotice(error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format((GetSpellInfo(TN(info[#info-1]))))));
+                    if not v:find(D.GetSpellOrItemInfo(TN(info[#info-1])), 0, true) then
+                        T._ShowNotice(error((L["OPT_CUSTOM_SPELL_MACRO_MISSING_NOMINAL_SPELL"]):format((D.GetSpellOrItemInfo(TN(info[#info-1]))))));
                     end
 
                     return 0;
@@ -2817,7 +2837,7 @@ do
             -- a delete button
             delete = {
                 type = 'execute',
-                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], GetSpellInfo(TN(info[#info - 1]))) end,
+                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], D.GetSpellOrItemInfo(TN(info[#info - 1]))) end,
                 confirm = true,
                 width = 'double',
                 func = function (info)
@@ -2830,7 +2850,7 @@ do
                             D.classprofile.UserSpells[TN(info[#info - 1])] = nil;
                         end
 
-                        if D.Status.FoundSpells[GetSpellInfo(TN(info[#info - 1]))] then
+                        if D.Status.FoundSpells[D.GetSpellOrItemInfo(TN(info[#info - 1]))] then
                             D:Configure();
                         end
                     end

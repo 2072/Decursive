@@ -1,5 +1,21 @@
-Decursive 2.7.3.6 (2014-11-09)
-==============================
+Decursive 2.7.4 (2015-01-25)
+============================
+
+Changes from Decursive 2.7.3.6 to Decursive 2.7.4 (2014-01-25)
+--------------------------------------------------------------
+
+- Items are now directly usable in the "Custom spells" interface with
+  the same feature set as standard spells.
+
+  As with standard spells you can have several items with a different priority
+  for the same affliction type(s). Decursive will reconfigure itself
+  automatically when an item usability changes.
+
+- Fix a non fatal error message concerning macro creation when the user had
+  more than 36 macros.
+
+- Add Patrick Bohnet to the Credits section of the 'About' option tab (He was
+  only credited in the source files).
 
 
 Changes from Decursive 2.7.3.5 to Decursive 2.7.3.6 (2014-11-09)
