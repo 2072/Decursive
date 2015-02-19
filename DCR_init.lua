@@ -338,7 +338,13 @@ local function SetRuntimeConstants_Once () -- {{{
             Pet = false,
         },
         -- Warlocks (Imp)
-        [DSI["SPELL_SINGE_MAGIC"]] = {
+        [DSI["PET_SINGE_MAGIC"]] = {
+            Types = {DC.MAGIC},
+            Better = 0,
+            Pet = true,
+        },
+         -- Warlocks (Fel-Imp)
+        [DSI["PET_SEAR_MAGIC"]] = {
             Types = {DC.MAGIC},
             Better = 0,
             Pet = true,
@@ -351,7 +357,7 @@ local function SetRuntimeConstants_Once () -- {{{
 
             EnhancedBy = true,
             EnhancedByCheck = function ()
-                return (GetSpellInfo(DS["SPELL_COMMAND_DEMON"]) == DS["SPELL_SINGE_MAGIC"]);
+                return (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SINGE_MAGIC"] or (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SEAR_MAGIC"];
             end,
             Enhancements = {
                 Types = {DC.MAGIC},
@@ -364,7 +370,12 @@ local function SetRuntimeConstants_Once () -- {{{
             Pet = false,
         },
         -- Warlocks
-        [DSI["PET_FEL_CAST"]] = {
+        [DSI["PET_DEVOUR_MAGIC"]] = {
+            Types = {DC.ENEMYMAGIC},
+            Better = 0,
+            Pet = true,
+        },
+        [DSI["PET_CLONE_MAGIC"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = true,
@@ -1292,7 +1303,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_HEX']                   =  51514, -- shamans
             ["CLEANSE_SPIRIT"]              =  51886,
             ["SPELL_PURGE"]                 =  370,
-            ["PET_FEL_CAST"]                =  19505,
+            ["PET_DEVOUR_MAGIC"]            =  19505,
+            ["PET_CLONE_MAGIC"]             =  115284,
             ["SPELL_FEAR"]                  =  5782,
             ["DCR_LOC_SILENCE"]             =  15487,
             ["DCR_LOC_MINDVISION"]          =  2096,
@@ -1325,7 +1337,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Flame Shock']                 =  8050,
             ["SPELL_REMOVE_CURSE"]          =  475, -- Druids/Mages
             ["SPELL_REMOVE_CORRUPTION"]     =  2782,
-            ["SPELL_SINGE_MAGIC"]           =  89808, -- Warlock imp
+            ["PET_SINGE_MAGIC"]             =  89808, -- Warlock imp
+            ["PET_SEAR_MAGIC"]              =  115276, -- Warlock Fel imp
             ["SPELL_PURIFY"]                =  527,
             ["SPELL_DISPELL_MAGIC"]         =  528,
             ["PURIFY_SPIRIT"]               =  77130, -- resto shaman

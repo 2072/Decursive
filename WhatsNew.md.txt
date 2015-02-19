@@ -1,8 +1,8 @@
-Decursive 2.7.4 beta 1 (2015-01-25)
-===================================
+Decursive 2.7.4 (2015-02-19)
+============================
 
-Changes from Decursive 2.7.3.6 to Decursive 2.7.4 beta 1 (2014-01-25)
----------------------------------------------------------------------
+Changes from Decursive 2.7.3.6 to Decursive 2.7.4 (2014-02-19)
+--------------------------------------------------------------
 
 - Items are now directly usable in the "Custom spells" interface with
   the same feature set as standard spells.
@@ -10,6 +10,8 @@ Changes from Decursive 2.7.3.6 to Decursive 2.7.4 beta 1 (2014-01-25)
   As with standard spells you can have several items with a different priority
   for the same affliction type(s). Decursive will reconfigure itself
   automatically when an item usability changes.
+
+- Update Warlock Support (Add Fel Imp's Sear Magic and Observer's Clone Magic)
 
 - Fix a non fatal error message concerning macro creation when the user had
   more than 36 macros.
