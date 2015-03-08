@@ -1077,6 +1077,14 @@ function D:ReConfigure() --{{{
         return;
     end
 
+    if InCombatLockdown() then
+        D:Debug("|cFFFF0000D:ReConfigure postponed, in combat!|r");
+        D:AddDelayedFunctionCall (
+        "Configure", self.ReConfigure,
+        self);
+        return;
+    end
+
     local SpellName = "";
 
     local Reconfigure = false;
@@ -1147,6 +1155,15 @@ end --}}}
 
 
 function D:Configure() --{{{
+
+
+    if InCombatLockdown() then
+        D:Debug("|cFFFF0000D:Configure postponed, in combat!|r");
+        D:AddDelayedFunctionCall (
+        "Configure", self.Configure,
+        self);
+        return;
+    end
 
     -- first empty out the old "spellbook"
     self.Status.HasSpell = false;
