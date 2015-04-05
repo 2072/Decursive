@@ -1,5 +1,13 @@
-Decursive 2.7.4.1 (2015-02-26)
+Decursive 2.7.4.2 (2015-04-05)
 ==============================
+
+Changes from Decursive 2.7.4.1 to Decursive 2.7.4.2 (2014-04-05)
+----------------------------------------------------------------
+
+- Decursive's automatic reconfigurations are postponed if the player is in
+  combat. This should fix the "script ran too long" errors some users were
+  experiencing.
+
 
 Changes from Decursive 2.7.3.6 to Decursive 2.7.4.1 (2014-02-26)
 ----------------------------------------------------------------
