@@ -1,5 +1,5 @@
-## Interface: 60100
-## X-Max-Interface: 60100
+## Interface: 60200
+## X-Max-Interface: 60200
 ## X-Min-Interface: 60000
 
 ## Title: Decursive |cffff00ff -Ace3-|r
