@@ -275,7 +275,7 @@ function D:ScheduledTasks() -- {{{
             local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
             status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
             status.DelayedFunctionCallsCount = status.DelayedFunctionCallsCount - 1;
-            if (DidSmth) then
+            if DidSmth ~= false then
                 break;
             end
         end

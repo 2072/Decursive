@@ -205,9 +205,8 @@ function MicroUnitF:Create(Unit, ID) -- {{{
         return false;
     end
 
-    -- if we attempt to create a MUF that already exists, update it instead
-    if (self.ExistingPerUNIT[Unit]) then
-        return self.ExistingPerUNIT[Unit];
+    if self.ExistingPerUNIT[Unit] then
+        return false;
     end
 
 
@@ -258,6 +257,7 @@ function MicroUnitF:ResetAllPositions () -- {{{
         end
 
         self:Place();
+        return true;
 
     end, 0.5);
 
@@ -461,6 +461,8 @@ function MicroUnitF:Force_FullUpdate () -- {{{
         D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + i / D.profile.DebuffsFramePerUPdate), MF);
         i = i + 1;
     end
+
+    return true
 end -- }}}
 
 
@@ -505,7 +507,7 @@ do
             D:AddDelayedFunctionCall (
             "MicroUnitFPlace", self.Place,
             self);
-            return;
+            return false;
         end
 
         local UIParent = UIParent;
@@ -625,6 +627,8 @@ do
             D:Debug("|cff00ff00Handle moved|r");
 
         end
+
+        return true
 
 
     end -- }}}

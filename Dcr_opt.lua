@@ -2961,7 +2961,7 @@ function D:AutoHideShowMUFs ()
     end
 
     if D.profile.AutoHideMUFs == 1 then
-        return;
+        return false;
     else
         -- if we want to hide the MUFs when in solo or not in raid
         local InGroup = (GetNumRaidMembers() ~= 0 or (D.profile.AutoHideMUFs ~= 3 and GetNumPartyMembers() ~= 0) );
@@ -2982,6 +2982,8 @@ function D:AutoHideShowMUFs ()
                 D:ShowHideDebuffsFrame ();
             end
         end
+
+        return true;
     end
 end
 

@@ -1074,7 +1074,7 @@ function D:ReConfigure() --{{{
     D:Debug("|cFFFF0000D:ReConfigure was called!|r");
     if not D.DcrFullyInitialized then
         D:Debug("|cFFFF0000D:ReConfigure aborted, init uncomplete!|r");
-        return;
+        return false;
     end
 
     if InCombatLockdown() then
@@ -1082,7 +1082,7 @@ function D:ReConfigure() --{{{
         D:AddDelayedFunctionCall (
         "Configure", self.ReConfigure,
         self);
-        return;
+        return false;
     end
 
     local SpellName = "";
@@ -1146,7 +1146,7 @@ function D:ReConfigure() --{{{
     if Reconfigure == true then
         D:Debug("D:ReConfigure RECONFIGURATION!");
         D:Configure();
-        return;
+        return true;
     end
     D:Debug("D:ReConfigure No reconfiguration required!");
 
@@ -1162,7 +1162,7 @@ function D:Configure() --{{{
         D:AddDelayedFunctionCall (
         "Configure", self.Configure,
         self);
-        return;
+        return false;
     end
 
     -- first empty out the old "spellbook"
@@ -1298,9 +1298,7 @@ function D:Configure() --{{{
 
     LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
 
-    if (not self.Status.HasSpell) then
-        return;
-    end
+    return true;
 
 end --}}}
 
