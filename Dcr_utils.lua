@@ -518,6 +518,8 @@ local function BadLocalTest (localtest)
     D:Print(L[localtest]);
 end
 
+-- /run LibStub("AceAddon-3.0"):GetAddon("Decursive"):MakeError()
+
 function D:MakeError(something)
 
     local testlocal = "test local";

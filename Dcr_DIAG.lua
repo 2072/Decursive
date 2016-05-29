@@ -495,7 +495,7 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
-
+DC.WoWL = (tocversion >= 70000);
 
 function T._DecursiveErrorHandler(err, ...)
 
