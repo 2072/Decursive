@@ -1,5 +1,13 @@
-Decursive 2.7.4.4 (2015-09-08)
+Decursive 2.7.4.5 (2016-07-20)
 ==============================
+
+
+Changes from Decursive 2.7.4.4 to Decursive 2.7.4.5 (2016-07-20)
+----------------------------------------------------------------
+
+- Basic compatibility update for WoW 7, a more thorough update will be coming
+  this weekend. In the mean time you can use the custom spell interface to
+  adjust Decursive's behaviour.
 
 Changes from Decursive 2.7.4.3 to Decursive 2.7.4.4 (2015-09-08)
 ----------------------------------------------------------------
