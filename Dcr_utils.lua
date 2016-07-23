@@ -182,11 +182,11 @@ function D:ColorPrint (r,g,b, ... ) --XXX
     t_insert(datas, 1, ColorHeader);
     t_insert(datas, #datas + 1, "|r");
 
-    if D.profile.Print_ChatFrame then
+    if D.profile and D.profile.Print_ChatFrame then
         self:Print(D.Status.OutputWindow, ColorHeader, unpack(datas));
     end
 
-    if D.profile.Print_CustomFrame then
+    if D.profile and D.profile.Print_CustomFrame then
         self:Print(DecursiveTextFrame, ColorHeader, unpack(datas));
     end
 
