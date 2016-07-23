@@ -217,12 +217,13 @@ local function SetRuntimeConstants_Once () -- {{{
     local DS = T._C.DS;
     local DSI = T._C.DSI;
 
-    DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
+    -- XXX WOWL check
+    DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS['Greater Invisibility']});
 
     DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
     DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
 
-    
+
 
     -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
     DC.SpellsToUse = {
@@ -233,11 +234,13 @@ local function SetRuntimeConstants_Once () -- {{{
             Pet = false,
         },
         -- Mages
+        --[=[ -- LEGION GONE
         [DSI["SPELL_REMOVE_CURSE"]] = {
             Types = {DC.CURSE},
             Better = 0,
             Pet = false,
         },
+        --]=]
         -- Shamans http://www.wowhead.com/?spell=51514
         [DSI["SPELL_HEX"]] = {
             Types = {DC.CHARMED},
@@ -250,12 +253,14 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
+        --[=[ -- LEGION GONE
         -- Hunters http://www.wowhead.com/?spell=19801
         [DSI["SPELL_TRANQUILIZING_SHOT"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = false,
         },
+        --]=]
         -- Monks
         [DSI["SPELL_DETOX"]] = {
             Types = {DC.DISEASE, DC.POISON},
@@ -280,19 +285,15 @@ local function SetRuntimeConstants_Once () -- {{{
             },
         },
         -- Paladins
-        [DSI["SPELL_CLEANSE"]] = {
+        [DSI["SPELL_CLEANSE_TOXINS"]] = {
             Types = {DC.DISEASE, DC.POISON},
+            Better = 0,
+            Pet = false,
+        },
+        [DSI["SPELL_CLEANSE"]] = {
+            Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
             Better = 2,
             Pet = false,
-
-            EnhancedBy = 'holy',
-            EnhancedByCheck = function ()
-                return (GetSpecialization() == 1) and true or false; -- holy?
-            end,
-            Enhancements = {
-                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-            }
-
         },
         [DSI["SPELL_HAND_OF_SACRIFICE"]] = {
             Types = {},
@@ -370,7 +371,7 @@ local function SetRuntimeConstants_Once () -- {{{
             Pet = false,
         },
         -- Warlocks
-        [DSI["PET_DEVOUR_MAGIC"]] = {
+        [DSI["PET_TORCH_MAGIC"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = true,
@@ -408,10 +409,16 @@ local function SetRuntimeConstants_Once () -- {{{
         -- Priests (Discipline, Holy)
         [DSI["SPELL_PURIFY"]] = {
             Types = {DC.MAGIC, DC.DISEASE},
+            Better = 1,
+            Pet = false,
+        },
+        [DSI["SPELL_PURIFY_DISEASE"]] = {
+            Types = {DC.DISEASE},
             Better = 0,
             Pet = false,
         },
         -- Deakth Knights
+        --[=[ LEGION GONE
         [DSI["SPELL_ICY_TOUCH"]] = {
             Types = {},
             Better = 1,
@@ -426,6 +433,7 @@ local function SetRuntimeConstants_Once () -- {{{
             }
 
         },
+        --]=]
     };
 
     -- }}}
@@ -868,7 +876,7 @@ function D:SetConfiguration() -- {{{
         end
 
     end
-    
+
 
     if type (D.profile.OutputWindow) == "string" then
         D.Status.OutputWindow = _G[D.profile.OutputWindow];
@@ -1261,7 +1269,7 @@ function D:Configure() --{{{
                         self.Status.HasSpell = true;
                     end
                 end
-                
+
                 if UnitFiltering then
                     local filteredTypeCount = 0;
                     local lastfilter = false;
@@ -1313,12 +1321,13 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
             ["SPELL_CLEANSE"]               =  4987,
+            ["SPELL_CLEANSE_TOXINS"]        =  213644,
             ["SPELL_HAND_OF_SACRIFICE"]     =  6940,
-            ['SPELL_TRANQUILIZING_SHOT']    =  19801,
+            -- LEGION GONE            ['SPELL_TRANQUILIZING_SHOT']    =  19801,
             ['SPELL_HEX']                   =  51514, -- shamans
             ["CLEANSE_SPIRIT"]              =  51886,
             ["SPELL_PURGE"]                 =  370,
-            ["PET_DEVOUR_MAGIC"]            =  19505,
+            ["PET_TORCH_MAGIC"]             =  171021,
             ["PET_CLONE_MAGIC"]             =  115284,
             ["SPELL_FEAR"]                  =  5782,
             ["DCR_LOC_SILENCE"]             =  15487,
@@ -1341,7 +1350,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Arcane Blast']                =  30451,
             ['Prowl']                       =  5215,
             ['Stealth']                     =  1784,
-            ['Camouflage']                  =  51755,
+            -- LEGION GONE            ['Camouflage']                  =  51755,
             ['Shadowmeld']                  =  58984,
             ['Invisibility']                =  66,
             ['Lesser Invisibility']         =  7870,
@@ -1349,22 +1358,23 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Unstable Affliction']         =  30108,
             ['Fluidity']                    =  138002,
             ['Vampiric Touch']              =  34914,
-            ['Flame Shock']                 =  8050,
-            ["SPELL_REMOVE_CURSE"]          =  475, -- Druids/Mages
+            -- LEGION GONE            ['Flame Shock']                 =  8050,
+            -- LEGION GONE            ["SPELL_REMOVE_CURSE"]          =  475, -- Druids/Mages
             ["SPELL_REMOVE_CORRUPTION"]     =  2782,
             ["PET_SINGE_MAGIC"]             =  89808, -- Warlock imp
             ["PET_SEAR_MAGIC"]              =  115276, -- Warlock Fel imp
             ["SPELL_PURIFY"]                =  527,
+            ["SPELL_PURIFY_DISEASE"]        =  213634,
             ["SPELL_DISPELL_MAGIC"]         =  528,
             ["PURIFY_SPIRIT"]               =  77130, -- resto shaman
             ["SPELL_NATURES_CURE"]          =  88423,
-            ["SHROUD_OF_CONCEALMENT"]       =  115834, -- rogue
+            -- LEGION GONE            ["SHROUD_OF_CONCEALMENT"]       =  115834, -- rogue
             ["SPELL_DETOX"]                 =  115450, -- monk
             ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
             ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
             ['Greater Invisibility']        =  110959,
-            ['GLYPH_OF_ICY_TOUCH']          =  58631, --DK
-            ['SPELL_ICY_TOUCH']             =  45477, --DK
+            -- LEGION GONE            ['GLYPH_OF_ICY_TOUCH']          =  58631, --DK
+            -- LEGION GONE            ['SPELL_ICY_TOUCH']             =  45477, --DK
         };
     end
 
@@ -1472,12 +1482,12 @@ function D:UpdateMacro () -- {{{
 
     --D:PrintLiteral(GetMacroIndexByName(D.CONF.MACRONAME));
     if GetMacroIndexByName(D.CONF.MACRONAME) ~= 0 then
-	if not D.profile.AllowMacroEdit then
-	    EditMacro(D.CONF.MACRONAME, unpack(MacroParameters));
-	    D:Debug("Macro updated");
-	else
-	    D:Debug("Macro not updated due to AllowMacroEdit");
-	end
+        if not D.profile.AllowMacroEdit then
+            EditMacro(D.CONF.MACRONAME, unpack(MacroParameters));
+            D:Debug("Macro updated");
+        else
+            D:Debug("Macro not updated due to AllowMacroEdit");
+        end
     elseif (GetNumMacros()) < MAX_ACCOUNT_MACROS then
         CreateMacro(unpack(MacroParameters));
     else
