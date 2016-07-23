@@ -457,11 +457,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
         MF.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
-        if not DC.WoWL then
-            MF.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
-        else
-            MF.InnerTexture:SetColorTexture(unpack(MF_colors[CHARMED_STATUS]));
-        end
+        MF.InnerTexture:SetColorTexture(unpack(MF_colors[CHARMED_STATUS]));
 
         D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + i / D.profile.DebuffsFramePerUPdate), MF);
         i = i + 1;
@@ -1095,11 +1091,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.InnerTexture:SetPoint("TOPRIGHT",self.Frame ,"TOPRIGHT",0,0);
     self.InnerTexture:SetHeight(7 - petminus);
     self.InnerTexture:SetWidth(7 - petminus);
-    if not DC.WoWL then
-        self.InnerTexture:SetTexture(unpack(MF_colors[CHARMED_STATUS]));
-    else
-        self.InnerTexture:SetColorTexture(unpack(MF_colors[CHARMED_STATUS]));
-    end
+    self.InnerTexture:SetColorTexture(unpack(MF_colors[CHARMED_STATUS]));
 
     -- CenterText Font string
     self.CenterFontString = self.Frame:CreateFontString(nil, "ARTWORK", "DcrMicroUnitChronoFont");
@@ -1361,7 +1353,7 @@ do
     local GetTime           = _G.GetTime;
     local floor             = _G.math.floor;
     local fmod              = _G.math.fmod;
-    local CooldownFrame_SetTimer = DC.WoWL and _G.CooldownFrame_Set or _G.CooldownFrame_SetTimer;
+    local CooldownFrame_Set = _G.CooldownFrame_Set;
     local GetSpellCooldown  = _G.GetSpellCooldown;
     local GetItemCooldown   = _G.GetItemCooldown;
     local GetRaidTargetIndex= _G.GetRaidTargetIndex;
@@ -1459,9 +1451,9 @@ do
 
                 if RangeStatus and self.UpdateCD < Status.UpdateCooldown then
                     if SpellID > 0 then
-                        CooldownFrame_SetTimer (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
+                        CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
                     else
-                        CooldownFrame_SetTimer (self.CooldownFrame, GetItemCooldown(-1 * SpellID));
+                        CooldownFrame_Set (self.CooldownFrame, GetItemCooldown(-1 * SpellID));
                     end
                     self.UpdateCD = Time;
                 end
@@ -1608,11 +1600,7 @@ do
             if PrioChanged then PrioChanged = false; end
 
             -- Set the main texture
-                if not DC.WoWL then
-                    self.Texture:SetTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
-                else
-                    self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
-                end
+            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
             --self.Texture:SetAlpha(Alpha);
 
 
@@ -1658,17 +1646,10 @@ do
             if (Class and Class ~= self.UnitClass) then
                 ClassColor = DC.ClassesColors[Class];
                 -- update the border color (the four borders)
-                if not DC.WoWL then
-                    self.OuterTexture1:SetTexture(  unpack(ClassColor) );
-                    self.OuterTexture2:SetTexture(  unpack(ClassColor) );
-                    self.OuterTexture3:SetTexture(  unpack(ClassColor) );
-                    self.OuterTexture4:SetTexture(  unpack(ClassColor) );
-                else
-                    self.OuterTexture1:SetColorTexture(  unpack(ClassColor) );
-                    self.OuterTexture2:SetColorTexture(  unpack(ClassColor) );
-                    self.OuterTexture3:SetColorTexture(  unpack(ClassColor) );
-                    self.OuterTexture4:SetColorTexture(  unpack(ClassColor) );
-                end
+                self.OuterTexture1:SetColorTexture(  unpack(ClassColor) );
+                self.OuterTexture2:SetColorTexture(  unpack(ClassColor) );
+                self.OuterTexture3:SetColorTexture(  unpack(ClassColor) );
+                self.OuterTexture4:SetColorTexture(  unpack(ClassColor) );
 
                 -- save the class for futur reference
                 self.UnitClass = Class;
