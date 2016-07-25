@@ -123,6 +123,7 @@ DC.ClassNumToLName = {
     [19]        = LC[DC.CLASS_WARRIOR],
     [20]        = LC[DC.CLASS_DEATHKNIGHT],
     [21]        = LC[DC.CLASS_MONK],
+    [22]        = LC[DC.CLASS_DEMONHUNTER],
 }
 
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
@@ -139,6 +140,7 @@ DC.ClassNumToUName = {
     [19]        = DC.CLASS_WARRIOR,
     [20]        = DC.CLASS_DEATHKNIGHT,
     [21]        = DC.CLASS_MONK,
+    [22]        = DC.CLASS_DEMONHUNTER,
 }
 
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
@@ -318,11 +320,11 @@ do
           4 --> our pet, Pets
 
           - 8 groups with 5 persons maximum per group
-          - 11 classes with 80 persons max for each class (Pets may be counted)
+          - 12 classes with 80 persons max for each class (Pets may be counted)
           - 80 persons for default (including possible pets)
 
           default indexes:  100 to 840 (player's index will be 900)
-          class indexes:    1,000, 2,000, 3,000, till 11,000
+          class indexes:    1,000, 2,000, 3,000, till 12,000
           Group indexes:    12,000, 24,000, 36,000, till 96,000
           Priority list:    10^5 till 10^7
           pet indexes:      Same as above but * -1

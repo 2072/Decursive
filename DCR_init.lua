@@ -127,6 +127,7 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.CLASS_WARRIOR     = 'WARRIOR';
     DC.CLASS_DEATHKNIGHT = 'DEATHKNIGHT';
     DC.CLASS_MONK        = 'MONK';
+    DC.CLASS_DEMONHUNTER = 'DEMONHUNTER';
 
     DC.MyClass = "NOCLASS";
     DC.MyName = "NONAME";

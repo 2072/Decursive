@@ -386,6 +386,8 @@ function D:GetDefaultsSettings()
                 ["DEATHKNIGHT"] = {
                 },
                 ["MONK"] = {
+                },
+                ["DEMONHUNTER"] = {
                 }
             },
             -- }}}

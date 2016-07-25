@@ -419,7 +419,7 @@
     <!-- DecursivePopulateListFrame {{{ -->
     <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
         <Size>
-            <AbsDimension x="168" y="285" />
+            <AbsDimension x="228" y="285" />
         </Size>
 
         <Anchors>
@@ -655,10 +655,10 @@
 
             <Button name="$parentWarrior" inherits="GameMenuButtonTemplate" text="Warrior">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
-                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentGroup7">
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parentGroup7">
                         <Offset>
                             <AbsDimension x="0" y="-5" />
                         </Offset>
@@ -678,10 +678,10 @@
 
             <Button name="$parentPriest" inherits="GameMenuButtonTemplate" text="Priest">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
-                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentGroup8">
+                    <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parentGroup8">
                         <Offset>
                             <AbsDimension x="0" y="-5" />
                         </Offset>
@@ -701,7 +701,7 @@
 
             <Button name="$parentMage" inherits="GameMenuButtonTemplate" text="Mage">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentWarrior">
@@ -724,7 +724,7 @@
 
             <Button name="$parentWarlock" inherits="GameMenuButtonTemplate" text="Warlock">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentPriest">
@@ -747,7 +747,7 @@
 
             <Button name="$parentHunter" inherits="GameMenuButtonTemplate" text="Hunter">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentMage">
@@ -770,7 +770,7 @@
 
             <Button name="$parentRogue" inherits="GameMenuButtonTemplate" text="Rogue">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentWarlock">
@@ -793,7 +793,7 @@
 
             <Button name="$parentDruid" inherits="GameMenuButtonTemplate" text="Druid">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentHunter">
@@ -816,7 +816,7 @@
 
             <Button name="$parentShaman" inherits="GameMenuButtonTemplate" text="Shaman">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentRogue">
@@ -839,7 +839,7 @@
 
             <Button name="$parentPaladin" inherits="GameMenuButtonTemplate" text="Paladin">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentDruid">
@@ -861,7 +861,7 @@
             </Button>
             <Button name="$parentDeathknight" inherits="GameMenuButtonTemplate" text="Deathknight">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentShaman">
@@ -883,7 +883,7 @@
             </Button>
             <Button name="$parentMonk" inherits="GameMenuButtonTemplate" text="Monk">
                 <Size>
-                    <AbsDimension x="80" y="20" />
+                    <AbsDimension x="110" y="20" />
                 </Size>
                 <Anchors>
                     <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentPaladin">
@@ -900,6 +900,29 @@
                         if DecursiveInstallCorrupted then return end
                         
                         self.ClassType = DecursiveRootTable._C.CLASS_MONK;
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
+                    </OnLoad>
+                </Scripts>
+            </Button>
+            <Button name="$parentDemonHunter" inherits="GameMenuButtonTemplate" text="DemonHunter">
+                <Size>
+                    <AbsDimension x="110" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentDeathknight">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                    </OnClick>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        
+                        self.ClassType = DecursiveRootTable._C.CLASS_DEMONHUNTER;
                         self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>
