@@ -1,5 +1,14 @@
-Decursive 2.7.4.5 (2016-07-20)
+Decursive 2.7.4.6 (2016-07-25)
 ==============================
+
+Changes from Decursive 2.7.4.5 to Decursive 2.7.4.6 (2016-07-25)
+----------------------------------------------------------------
+
+- Various Legion compatibility fixes.
+
+- Allow user to redefined Decursive's already known spells' debuff curing
+  types in the custom spell interface. Previously only new debuff types could
+  be checked but already checked one were grayed out.
 
 
 Changes from Decursive 2.7.4.4 to Decursive 2.7.4.5 (2016-07-20)
