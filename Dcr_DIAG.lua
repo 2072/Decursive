@@ -677,6 +677,37 @@ do
     local PrintMessage = function (message, ...) if T._DiagStatus ~= 2 then _Print("|cFFFFAA55Self diagnostic:|r ", format(message, ...)); end end;
 
 
+    function T._ExportCustomSpellConfiguration () -- (use pcall with this) -- {{{
+
+        local errorPrefix = function (message)
+            return "_ExportCustomSpellConfiguration: " .. message;
+        end
+
+        local customSpellConfText = {};
+        local D = T.Dcr;
+
+        if not D.classprofile or not D.classprofile.UserSpells then
+            return errorPrefix("D.classprofile.UserSpells not available");
+        end
+
+        customSpellConfText[1] = "\nCustom spells configuration:\n";
+
+        for spellID, spellData in pairs(D.classprofile.UserSpells) do
+            if not spellData.IsDefault then
+                 customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %d) - %s - %s - %s - B: %d - Ts: %s -  Macro: %s\n"):format(
+                 (GetSpellInfo(spellID)), spellID, --                                 3    4    5       6        7            8
+                 spellData.Disabled and "OFF" or "ON", -- 3
+                 spellData.Pet and "PET" or "PLAYER", -- 4
+                 spellData.IsItem and "ITEM" or "SPELL", -- 5
+                 spellData.Better, -- 6
+                 table.concat(spellData.Types, ";"),
+                 spellData.MacroText and spellData.MacroText or "false" -- 8
+                 );
+            end
+        end
+
+        return table.concat(customSpellConfText, "\n");
+    end
     function T._ExportActionsConfiguration () -- (use pcall with this) -- {{{
 
         local errorPrefix = function (message)
@@ -684,7 +715,6 @@ do
         end
 
         local SpellAssignmentsTexts = {};
-        local result = "";
         local D = T.Dcr;
 
         if not D.Status then
@@ -903,6 +933,7 @@ do
                     AddDebugText("Event library functionning properly, Everything seems to be OK");
                     -- get a list of current actions assignments
                     AddDebugText(pcall(T._ExportActionsConfiguration));
+                    AddDebugText(pcall(T._ExportCustomSpellConfiguration));
                     -- open the diagnostic window
                     T._ShowDebugReport(true);
                     return;
