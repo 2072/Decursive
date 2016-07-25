@@ -224,7 +224,7 @@ end -- }}}
 
 do
     local DebugHeader = false;
-    local HeaderFailOver = "|cFF11FF33Please report the content of this window to archarodim+DcrReport@teaser.fr|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
+    local HeaderFailOver = "|cFF11FF33Please email the content of this window to <archarodim+DcrReport@teaser.fr>|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
     local LoadedAddonNum = 0;
 
     local function GetAddonListAsString ()
@@ -353,7 +353,8 @@ local function CheckHHTD_Error(errorm, errorml)
         --or ( errorm:find("[\"']healers%-have%-to%-die[\"']") ) -- events
         --or ( errorm:find("healers%-have%-to%-die:") ) -- libraries error (AceLocal)
         --or ( errorml:find("healers%-have%-to%-die%.")) -- Aceconfig
-        ) then
+        )
+        or errorml:find("\\libnameplateregistry") then
         _Debug("CheckHHTD_Error()", true);
         return true;
     end

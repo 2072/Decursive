@@ -120,7 +120,7 @@ L["COLORSTATUS"] = "Set the color for the '%s' MUF status."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Scan and cure pets"
 L["CURSE"] = "Curse"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please report the content of this window to Archarodim+DcrReport@teaser.fr|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please email the content of this window to <Archarodim+DcrReport@teaser.fr>|r
 |cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r
 Also tell in your report if you noticed any strange behavior of Decursive.
 ]=]
