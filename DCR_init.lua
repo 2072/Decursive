@@ -263,18 +263,15 @@ local function SetRuntimeConstants_Once () -- {{{
         },
         --]=]
         -- Monks
-        [DSI["SPELL_DETOX"]] = {
+        [DSI["SPELL_DETOX_1"]] = {
+            Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+            Better = 2,
+            Pet = false,
+        },
+        [DSI["SPELL_DETOX_2"]] = {
             Types = {DC.DISEASE, DC.POISON},
             Better = 2,
             Pet = false,
-
-            EnhancedBy = 'mistweather',
-            EnhancedByCheck = function ()
-                return (GetSpecialization() == 2) and true or false; -- mist?
-            end,
-            Enhancements = {
-                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-            }
         },
         -- Monks
         [DSI["SPELL_DIFFUSEMAGIC"]] = {
@@ -295,23 +292,6 @@ local function SetRuntimeConstants_Once () -- {{{
             Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
             Better = 2,
             Pet = false,
-        },
-        [DSI["SPELL_HAND_OF_SACRIFICE"]] = {
-            Types = {},
-            Better = 1,
-            Pet = false,
-
-            EnhancedBy = 'retribution',
-            EnhancedByCheck = function ()
-                return (GetSpecialization() == 3) and true or false; -- ret?
-            end,
-            Enhancements = {
-                Types = {DC.MAGIC},
-                UnitFiltering = {
-                    [DC.MAGIC]  = 2, -- on raid/party only
-                },
-            }
-
         },
         -- Shaman
         [DSI["CLEANSE_SPIRIT"]] = { -- same name as PURIFY_SPIRIT in ruRU XXX
@@ -418,23 +398,6 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
-        -- Deakth Knights
-        --[=[ LEGION GONE
-        [DSI["SPELL_ICY_TOUCH"]] = {
-            Types = {},
-            Better = 1,
-            Pet = false,
-
-            EnhancedBy = DS["GLYPH_OF_ICY_TOUCH"],
-            EnhancedByCheck = function ()
-                return (IsPlayerSpell(DSI["GLYPH_OF_ICY_TOUCH"])) and true or false;
-            end,
-            Enhancements = {
-                Types = {DC.ENEMYMAGIC},
-            }
-
-        },
-        --]=]
     };
 
     -- }}}
@@ -1058,6 +1021,12 @@ local function SpellIterator() -- {{{
             D:Debug("|cFF00FF00Shifting to user spells|r");
             --@end-debug@
             return iter(); -- continue with the other table
+        elseif currentSpellTable == DC.SpellsToUse and D.classprofile.UserSpells[currentKey] and not D.classprofile.UserSpells[currentKey].Hidden and not D.classprofile.UserSpells[currentKey].Disabled then
+            -- if the user actively redefined that spell then skip the default one
+            --@debug@
+            D:Debug("Skipping default", currentKey);
+            --@end-debug@
+            return iter(); -- aka 'continue'
         end
 
         -- if it's already defined in the base table (but not editable) or if it's hidden, skip it
@@ -1231,7 +1200,7 @@ function D:Configure() --{{{
                         D.classprofile.UserSpells[spellID].EnhancedByCheck = spell.EnhancedByCheck;
                     end
 
-                    if spell.EnhancedByCheck() then -- we have the enhancement
+                    if spell.EnhancedByCheck and spell.EnhancedByCheck() then -- we have the enhancement
                         IsEnhanced = true;
 
                         Types = spell.Enhancements.Types; -- set the type to scan to the new ones
@@ -1323,8 +1292,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_CYCLONE"]               =  33786,
             ["SPELL_CLEANSE"]               =  4987,
             ["SPELL_CLEANSE_TOXINS"]        =  213644,
-            ["SPELL_HAND_OF_SACRIFICE"]     =  6940,
-            -- LEGION GONE            ['SPELL_TRANQUILIZING_SHOT']    =  19801,
             ['SPELL_HEX']                   =  51514, -- shamans
             ["CLEANSE_SPIRIT"]              =  51886,
             ["SPELL_PURGE"]                 =  370,
@@ -1351,7 +1318,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Arcane Blast']                =  30451,
             ['Prowl']                       =  5215,
             ['Stealth']                     =  1784,
-            -- LEGION GONE            ['Camouflage']                  =  51755,
             ['Shadowmeld']                  =  58984,
             ['Invisibility']                =  66,
             ['Lesser Invisibility']         =  7870,
@@ -1359,8 +1325,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Unstable Affliction']         =  30108,
             ['Fluidity']                    =  138002,
             ['Vampiric Touch']              =  34914,
-            -- LEGION GONE            ['Flame Shock']                 =  8050,
-            -- LEGION GONE            ["SPELL_REMOVE_CURSE"]          =  475, -- Druids/Mages
             ["SPELL_REMOVE_CORRUPTION"]     =  2782,
             ["PET_SINGE_MAGIC"]             =  89808, -- Warlock imp
             ["PET_SEAR_MAGIC"]              =  115276, -- Warlock Fel imp
@@ -1369,13 +1333,11 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_DISPELL_MAGIC"]         =  528,
             ["PURIFY_SPIRIT"]               =  77130, -- resto shaman
             ["SPELL_NATURES_CURE"]          =  88423,
-            -- LEGION GONE            ["SHROUD_OF_CONCEALMENT"]       =  115834, -- rogue
-            ["SPELL_DETOX"]                 =  115450, -- monk
+            ["SPELL_DETOX_1"]               =  115450, -- monk mistweaver
+            ["SPELL_DETOX_2"]               =  218164, -- monk brewmaster and windwaker
             ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
             ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
             ['Greater Invisibility']        =  110959,
-            -- LEGION GONE            ['GLYPH_OF_ICY_TOUCH']          =  58631, --DK
-            -- LEGION GONE            ['SPELL_ICY_TOUCH']             =  45477, --DK
         };
     end
 

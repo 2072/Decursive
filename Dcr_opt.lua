@@ -2694,13 +2694,12 @@ do
         end,
         disabled = function (info) -- disable types edition if an enhancement is active (default types are not used in that case)
             if D.classprofile.UserSpells[TN(info[#info-2])] and D.classprofile.UserSpells[TN(info[#info-2])].EnhancedByCheck then
-
                 return D.classprofile.UserSpells[TN(info[#info-2])].EnhancedByCheck();
             end
 
-            if DC.SpellsToUse[TN(info[#info-2])] and D:tcheckforval(DC.SpellsToUse[TN(info[#info-2])].Types, DC.LocalizableTypeNamesToTypes[info[#info]]) then
-                return true;
-            end
+            --if DC.SpellsToUse[TN(info[#info-2])] and D:tcheckforval(DC.SpellsToUse[TN(info[#info-2])].Types, DC.LocalizableTypeNamesToTypes[info[#info]]) then
+            --    return true;
+            --end
 
             return false;
         end, 
@@ -2721,7 +2720,7 @@ do
             -- an enable checkbox
             header = {
                 type = 'header',
-                name = function (info) return GetColoredName(TN(info[#info - 1])); end,
+                name = function (info) return ("%s  (id: %d)"):format(GetColoredName(TN(info[#info - 1])), TN(info[#info - 1])); end,
                 order = 0,
             },
             enable = {
@@ -2776,9 +2775,9 @@ do
 
                     D.classprofile.UserSpells[TN(info[#info-1])].Pet = v;
 
-                    if isSpellUSable(TN(info[#info-1])) then
-                        D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
-                    end
+                    --if isSpellUSable(TN(info[#info-1])) then
+                    D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
+                    --end
                 end,
                 get = function(info,v)
                     return D.classprofile.UserSpells[TN(info[#info-1])].Pet;
