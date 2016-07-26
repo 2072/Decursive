@@ -1,5 +1,12 @@
-Decursive 2.7.4.6 (2016-07-25)
+Decursive 2.7.4.7 (2016-07-25)
 ==============================
+
+Changes from Decursive 2.7.4.6 to Decursive 2.7.4.7 (2016-07-25)
+----------------------------------------------------------------
+
+- Do not crash when Blizzard forgets to provide a local for the Demon Hunter
+  class in the Chinese client.
+
 
 Changes from Decursive 2.7.4.5 to Decursive 2.7.4.6 (2016-07-25)
 ----------------------------------------------------------------

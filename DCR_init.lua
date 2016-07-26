@@ -79,12 +79,9 @@ local function RegisterLocals_Once() -- {{{
 
     D.L         = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 
-    D.LC        = _G.LOCALIZED_CLASS_NAMES_MALE;
-
-    if not D.LC then
-        T._AddDebugText("DCR_init.lua: Couldn't get LOCALIZED_CLASS_NAMES_MALE!");
-        D.LC = {};
-    end
+    -- do not crash when Blizzard forgets to translate some class names (pre Legion Chinese client got a nil local for DEMONHUNTER...)
+    D.LC        = setmetatable({}, {__index = function(t,k) return k end});
+    FillLocalizedClassList(D.LC, false);
 
     RegisterLocals_Once = nil;
 end -- }}}

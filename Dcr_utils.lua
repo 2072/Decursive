@@ -430,11 +430,8 @@ do
                     D:GetClassHexColor(class);
                     D:GetClassColor(class);
                 else
-                    --RAID_CLASS_COLORS[class] = nil; -- Eat that!
-                    --@debug@
-                    D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class);
-                    --@end-debug@
-                    print("Decursive: |cFFFF0000Stupid value found in _G.RAID_CLASS_COLORS table|r\nThis will cause many issues (tainting), Decursive will display this message until the culprit add-on is fixed or removed, the Stupid value is: '", class, "'");
+                    D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class, 'maxClass:', CLASS_SORT_ORDER and #CLASS_SORT_ORDER or 'CLASS_SORT_ORDER unavailable...');
+                    print("Decursive: |cFFFF0000Unexpected value found in _G.RAID_CLASS_COLORS table|r\nThis may cause many issues, Decursive will display this message until the culprit add-on is fixed or removed, the unexpected value is: '", class, "'");
                 end
             end
         else
