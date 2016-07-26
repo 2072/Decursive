@@ -4,8 +4,11 @@ Decursive 2.7.4.7 (2016-07-25)
 Changes from Decursive 2.7.4.6 to Decursive 2.7.4.7 (2016-07-25)
 ----------------------------------------------------------------
 
-- Do not crash when Blizzard forgets to provide a local for the Demon Hunter
-  class in the Chinese client.
+- Prevent crash on some Chinese clients where the constant
+  LOCALIZED_CLASS_NAMES_MALE is missing a key for 'DEMONHUNTER'...
+
+  This is possibly caused by another add-on as FillLocalizedClassList() does provide
+  the translation...
 
 
 Changes from Decursive 2.7.4.5 to Decursive 2.7.4.6 (2016-07-25)
