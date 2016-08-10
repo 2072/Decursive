@@ -469,7 +469,7 @@ L["SUCCESSCAST"] = "|cFF22FFFF%s %s|r |cFF00AA00succeeded on|r %s"
 L["TARGETUNIT"] = "Target Unit"
 L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
-L["TOO_MANY_ERRORS_ALERT"] = [=[There are too many Lua errors in your User Interface (%d). Your game experience is currently degraded. Disable or update the failing add-ons to turn off this message and regain a proper frame rate.
+L["TOO_MANY_ERRORS_ALERT"] = [=[There are too many Lua errors in your User Interface (%d). Your game experience may be degraded. Disable or update the failing add-ons to turn off this message.
 You may want to turn on Lua error reporting ('Help' section of World of Warcraft's interface options) to identify the problematic add-ons.]=]
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"

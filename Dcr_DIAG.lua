@@ -378,6 +378,7 @@ T._ErrorLimitStripped = false;
 T._HHTDErrors = 0;
 
 local InCombatLockdown  = _G.InCombatLockdown;
+local LastErrorMessage = "!NotSet!";
 function T._onError(event, errorObject)
     local errorm = errorObject.message;
     local mine = false;
@@ -442,12 +443,14 @@ function T._onError(event, errorObject)
                 mine = true;
             elseif errorm:find("ADDON_ACTION_") then
                 T._NDRTaintingAccusations = T._NDRTaintingAccusations + 1;
-            elseif errorm:find("FrameXML") then
+            elseif errorm:find("FrameXML") or errorm:find("SharedXML") then
                 T._BlizzardUIErrors = T._BlizzardUIErrors + 1;
             end
 
         end
     end
+
+    LastErrorMessage = errorm;
 
     if not mine and not T._BugSackLoaded and GetCVarBool("scriptErrors") then
         if not _G.DEBUGLOCALS_LEVEL then
@@ -464,7 +467,7 @@ function T._onError(event, errorObject)
                 return;
             end
         end
-        _G.DEBUGLOCALS_LEVEL = 12; -- XXX must be set to the right value to get the correct stack and locals. This is why we need to load Blizzard_DebugTools ourselves... That sucks...
+        _G.DEBUGLOCALS_LEVEL = 11 -- XXX must be set to the right value to get the correct stack and locals. This is why we need to load Blizzard_DebugTools ourselves... That sucks...
 
         -- forward the error to the default Blizzad error displayer
         if _G._ERRORMESSAGE then
@@ -503,7 +506,7 @@ function T._DecursiveErrorHandler(err, ...)
     end
 
     err = tostring(err);
-    errl = err:lower();
+    local errl = err:lower();
 
     --A check to see if the error is happening inside the Blizzard 'debug' tool himself...
     if errl:find("blizzard_debugtools") then
@@ -534,27 +537,27 @@ function T._DecursiveErrorHandler(err, ...)
 
 
         IsReporting = true;
-        AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
+        AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(3), "\n|cff00aa00LOCALS:|r\n", debuglocals(3), ...);
         IsReporting = false;
 	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         mine = true;
         _Debug("Error recorded");
     else
 
-        if IsReporting then -- then it means there is a bug insiede AddDebugText...
+        if IsReporting then -- then it means there is a bug inside AddDebugText...
             IsReporting = false;
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
             if CheckHHTD_Error(err, errl) then
                 IsReporting = true;
-                AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(4), "\n|cff00aa00LOCALS:|r\n", debuglocals(4), ...);
+                AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(3), "\n|cff00aa00LOCALS:|r\n", debuglocals(3), ...);
                 IsReporting = false;
                 T._HHTDErrors = T._HHTDErrors + 1;
                 mine = true;
             elseif err:find("ADDON_ACTION_") then
                 T._NDRTaintingAccusations = T._NDRTaintingAccusations + 1;
-            elseif err:find("FrameXML") then
+            elseif err:find("FrameXML") or err:find("SharedXML") then
                 T._BlizzardUIErrors = T._BlizzardUIErrors + 1;
             end
 
@@ -565,7 +568,10 @@ function T._DecursiveErrorHandler(err, ...)
         end
     end
 
+    LastErrorMessage = err;
+
     if ProperErrorHandler and not mine then
+        _G.DEBUGLOCALS_LEVEL = 5; -- necessary for Blizzard error handler
         return ProperErrorHandler( err, ... ); -- returning this way prevents this function from appearing in the stack
     end
 end
@@ -580,6 +586,7 @@ function T._TooManyErrors()
         if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
             _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
             _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
+            _Print('|cFF47C2A1Last UI error:|r', LastErrorMessage);
             WarningDisplayed = true;
         end
     else
