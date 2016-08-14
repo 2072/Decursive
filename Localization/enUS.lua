@@ -470,7 +470,7 @@ L["TARGETUNIT"] = "Target Unit"
 L["TIE_LIVELIST"] = "Tie live-list visibility to DCR window"
 L["TOOFAR"] = "Too far"
 L["TOO_MANY_ERRORS_ALERT"] = [=[There are too many Lua errors in your User Interface (%d). Your game experience may be degraded. Disable or update the failing add-ons to turn off this message.
-You may want to turn on Lua error reporting ('Help' section of World of Warcraft's interface options) to identify the problematic add-ons.]=]
+You may want to turn on Lua error reporting (/console scriptErrors 1) to identify the problematic add-ons.]=]
 L["UNITSTATUS"] = "Unit Status: "
 L["UNSTABLERELEASE"] = "Unstable release"
 L["TOC_VERSION_EXPIRED"] = [=[Your Decursive's version is outdated. This version of Decursive was released before the version of World of Warcraft you are using.

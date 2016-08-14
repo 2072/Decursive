@@ -775,8 +775,8 @@ do
             ["AceAddon-3.0"] = 12,
             ["AceComm-3.0"] = 9,
             ["AceConsole-3.0"] = 7,
-            ["AceDB-3.0"] = 25,
-            ["AceDBOptions-3.0"] = 14,
+            ["AceDB-3.0"] = 26,
+            ["AceDBOptions-3.0"] = 15,
             ["AceEvent-3.0"] = 3,
             ["AceHook-3.0"] = 8,
             ["AceLocale-3.0"] = 6,
@@ -785,12 +785,12 @@ do
             ["AceGUI-3.0"] = 34,
             ["AceConfig-3.0"] = 2,
             ["AceConfigCmd-3.0"] = 13,
-            ["AceConfigDialog-3.0"] = 59,
-            ["AceConfigRegistry-3.0"] = 15,
+            ["AceConfigDialog-3.0"] = 61,
+            ["AceConfigRegistry-3.0"] = 16,
 
             ["LibDataBroker-1.1"] = 4,
             ["LibDBIcon-1.0"] = 34,
-            ["LibQTip-1.0"] = 42,
+            ["LibQTip-1.0"] = 44,
             ["CallbackHandler-1.0"] = 6,
         };
 
