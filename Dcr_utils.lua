@@ -397,8 +397,10 @@ do
 
     DC.ClassesColors = { };
 
-    function D:GetClassColor (EnglishClass)
-        if not DC.ClassesColors[EnglishClass] then
+    local RAID_CLASS_COLORS = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS;
+
+    function D:GetClassColor (EnglishClass, noCache)
+        if not DC.ClassesColors[EnglishClass] or noCache then
             if RAID_CLASS_COLORS and RAID_CLASS_COLORS[EnglishClass] then
                 DC.ClassesColors[EnglishClass] = { RAID_CLASS_COLORS[EnglishClass].r, RAID_CLASS_COLORS[EnglishClass].g, RAID_CLASS_COLORS[EnglishClass].b };
             else
@@ -411,8 +413,8 @@ do
 
     DC.HexClassColor = { };
 
-    function D:GetClassHexColor(EnglishClass)
-        if not DC.HexClassColor[EnglishClass] then
+    function D:GetClassHexColor(EnglishClass, noCache)
+        if not DC.HexClassColor[EnglishClass] or noCache then
             local r, g, b = self:GetClassColor(EnglishClass)
             DC.HexClassColor[EnglishClass] = str_format("%02x%02x%02x", r * 255, g * 255, b * 255);
             DC.HexClassColor[LC[EnglishClass]] = DC.HexClassColor[EnglishClass];
@@ -427,8 +429,8 @@ do
             local class, colors;
             for class in pairs(RAID_CLASS_COLORS) do
                 if LC[class] then -- Some badly coded add-ons are modifying RAID_CLASS_COLORS causing multiple problems...
-                    D:GetClassHexColor(class);
-                    D:GetClassColor(class);
+                    D:GetClassColor(class, true);
+                    D:GetClassHexColor(class, true);
                 else
                     D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class, 'maxClass:', CLASS_SORT_ORDER and #CLASS_SORT_ORDER or 'CLASS_SORT_ORDER unavailable...');
                     print("Decursive: |cFFFF0000Unexpected value found in _G.RAID_CLASS_COLORS table|r\nThis may cause many issues, Decursive will display this message until the culprit add-on is fixed or removed, the unexpected value is: '", class, "'");
@@ -438,7 +440,13 @@ do
             D:AddDebugText("global RAID_CLASS_COLORS does not exist...");
             T._FatalError("global RAID_CLASS_COLORS does not exist...");
         end
+
+        D:Debug(INFO, 'CreateClassColorTables called');
     end
+
+    if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS.RegisterCallback then
+        CUSTOM_CLASS_COLORS:RegisterCallback(function() D:ScheduleDelayedCall('update_Class_Colors', D.CreateClassColorTables, .3, D) end);
+    end 
 
 end
 
