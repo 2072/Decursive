@@ -57,6 +57,30 @@ local L     = D.L;
 local LC    = D.LC;
 local DC    = T._C;
 
+local _G                = _G;
+local setmetatable      = _G.setmetatable;
+local unpack            = _G.unpack;
+local select            = _G.select;
+local pairs             = _G.pairs;
+local ipairs            = _G.ipairs;
+local bit               = _G.bit;
+local GetTime           = _G.GetTime;
+local IsControlKeyDown  = _G.IsControlKeyDown;
+local IsAltKeyDown      = _G.IsAltKeyDown;
+local IsShiftKeyDown    = _G.IsShiftKeyDown;
+local floor             = _G.math.floor;
+local table             = _G.table;
+local t_insert          = _G.table.insert;
+local str_format        = _G.string.format;
+local string            = _G.string;
+local UnitExists        = _G.UnitExists;
+local UnitClass         = _G.UnitClass;
+local fmod              = _G.math.fmod;
+local UnitIsUnit        = _G.UnitIsUnit;
+local str_upper         = _G.string.upper;
+local InCombatLockdown  = _G.InCombatLockdown;
+local GetRaidTargetIndex= _G.GetRaidTargetIndex;
+local CreateFrame       = _G.CreateFrame;
 
 -- NS def
 D.MicroUnitF = {};
@@ -72,10 +96,6 @@ function MicroUnitF:new(...)
 end
 
 
-
--- since there are tens of thousands of globals defined at all times, lets use some locals!
-local BOOKTYPE_PET      = BOOKTYPE_PET;
-local BOOKTYPE_SPELL    = BOOKTYPE_SPELL;
 
 -- Init object factory defaults
 --MicroUnitF.ExistingPerID          = {};
@@ -103,36 +123,14 @@ local EMPTY_TABLE           = DC.EMPTY_TABLE;
 -- Those are the different colors used for the MUFs main texture
 local MF_colors = { };
 
-local _G                = _G;
-local unpack            = _G.unpack;
-local select            = _G.select;
-local pairs             = _G.pairs;
-local ipairs            = _G.ipairs;
-local bit               = _G.bit;
-local GetTime           = _G.GetTime;
-local IsControlKeyDown  = _G.IsControlKeyDown;
-local floor             = _G.math.floor;
-local table             = _G.table;
-local t_insert          = _G.table.insert;
-local str_format        = _G.string.format;
-local table             = _G.table;
-local string            = _G.string;
-local UnitExists        = _G.UnitExists;
-local UnitClass         = _G.UnitClass;
-local fmod              = _G.math.fmod;
-local UnitIsUnit        = _G.UnitIsUnit;
-local str_upper         = _G.string.upper;
-local InCombatLockdown  = _G.InCombatLockdown;
-local GetRaidTargetIndex= _G.GetRaidTargetIndex;
-local CreateFrame       = _G.CreateFrame;
 
 
 DC.MouseButtonsReadable = { -- {{{
-    ["*%s1"]         =   L["HLP_LEFTCLICK"], -- left mouse button
-    ["*%s2"]         =   L["HLP_RIGHTCLICK"], -- right mouse button
-    ["*%s3"]         =   L["HLP_MIDDLECLICK"], -- middle mouse button
-    ["*%s4"]         =   L["HLP_MOUSE4"], -- 4th mouse button
-    ["*%s5"]         =   L["HLP_MOUSE5"], -- 5th mouse button
+    ["*%s1"]        =   L["HLP_LEFTCLICK"],   -- left mouse button
+    ["*%s2"]        =   L["HLP_RIGHTCLICK"],  -- right mouse button
+    ["*%s3"]        =   L["HLP_MIDDLECLICK"], -- middle mouse button
+    ["*%s4"]        =   L["HLP_MOUSE4"],      -- 4th mouse button
+    ["*%s5"]        =   L["HLP_MOUSE5"],      -- 5th mouse button
     ["ctrl-%s1"]    =   L["CTRL"]  .. "-" .. L["HLP_LEFTCLICK"],
     ["ctrl-%s2"]    =   L["CTRL"]  .. "-" .. L["HLP_RIGHTCLICK"],
     ["ctrl-%s3"]    =   L["CTRL"]  .. "-" .. L["HLP_MIDDLECLICK"],
@@ -148,7 +146,6 @@ DC.MouseButtonsReadable = { -- {{{
     ["alt-%s3"]     =   L["ALT"]   .. "-" .. L["HLP_MIDDLECLICK"],
     ["alt-%s4"]     =   L["ALT"]   .. "-" .. L["HLP_MOUSE4"],
     ["alt-%s5"]     =   L["ALT"]   .. "-" .. L["HLP_MOUSE5"],
-    -- 3, -- middle mouse button || RESERVED FOR TARGETTING
 }; -- }}}
 
 -- modifier for the macro
