@@ -131,15 +131,23 @@ DC.MouseButtonsReadable = { -- {{{
     ["*%s1"]         =   L["HLP_LEFTCLICK"], -- left mouse button
     ["*%s2"]         =   L["HLP_RIGHTCLICK"], -- right mouse button
     ["*%s3"]         =   L["HLP_MIDDLECLICK"], -- middle mouse button
+    ["*%s4"]         =   L["HLP_MOUSE4"], -- 4th mouse button
+    ["*%s5"]         =   L["HLP_MOUSE5"], -- 5th mouse button
     ["ctrl-%s1"]    =   L["CTRL"]  .. "-" .. L["HLP_LEFTCLICK"],
     ["ctrl-%s2"]    =   L["CTRL"]  .. "-" .. L["HLP_RIGHTCLICK"],
     ["ctrl-%s3"]    =   L["CTRL"]  .. "-" .. L["HLP_MIDDLECLICK"],
+    ["ctrl-%s4"]    =   L["CTRL"]  .. "-" .. L["HLP_MOUSE4"],
+    ["ctrl-%s5"]    =   L["CTRL"]  .. "-" .. L["HLP_MOUSE5"],
     ["shift-%s1"]   =   L["SHIFT"] .. "-" .. L["HLP_LEFTCLICK"],
     ["shift-%s2"]   =   L["SHIFT"] .. "-" .. L["HLP_RIGHTCLICK"],
     ["shift-%s3"]   =   L["SHIFT"] .. "-" .. L["HLP_MIDDLECLICK"],
+    ["shift-%s4"]   =   L["SHIFT"] .. "-" .. L["HLP_MOUSE4"],
+    ["shift-%s5"]   =   L["SHIFT"] .. "-" .. L["HLP_MOUSE5"],
     ["alt-%s1"]     =   L["ALT"]   .. "-" .. L["HLP_LEFTCLICK"],
     ["alt-%s2"]     =   L["ALT"]   .. "-" .. L["HLP_RIGHTCLICK"],
     ["alt-%s3"]     =   L["ALT"]   .. "-" .. L["HLP_MIDDLECLICK"],
+    ["alt-%s4"]     =   L["ALT"]   .. "-" .. L["HLP_MOUSE4"],
+    ["alt-%s5"]     =   L["ALT"]   .. "-" .. L["HLP_MOUSE5"],
     -- 3, -- middle mouse button || RESERVED FOR TARGETTING
 }; -- }}}
 
@@ -921,39 +929,44 @@ end
 function MicroUnitF.OnPreClick(frame, Button) -- {{{
     D:Debug("Micro unit Preclicked: ", Button);
 
-    local Unit = frame.Object.CurrUnit; -- shortcut
+    local RequestedPrio;
+    local ButtonsString = "";
+    local modifier;
 
-    if (frame.Object.UnitStatus == NORMAL and (Button == "LeftButton" or Button == "RightButton")) then
+    if IsControlKeyDown() then
+        modifier = "ctrl-";
+    elseif IsAltKeyDown() then
+        modifier = "alt-";
+    elseif IsShiftKeyDown() then
+        modifier = "shift-";
+    end
+
+    if Button == "LeftButton" then
+        ButtonsString = "*%s1";
+    elseif Button == "RightButton" then
+        ButtonsString = "*%s2";
+    elseif Button == "MiddleButton" then
+        ButtonsString = "*%s3";
+    elseif Button == "Button4" then
+        ButtonsString = "*%s4";
+    elseif Button == "Button5" then
+        ButtonsString = "*%s5";
+    else
+        D:Debug("unknown button", Button);
+        return;
+    end
+
+    RequestedPrio = D:tGiveValueIndex(D.db.global.MouseButtons, modifier and (modifier .. ButtonsString:sub(-3)) or ButtonsString);
+
+    D:Debug("RequestedPrio:", RequestedPrio);
+    if frame.Object.UnitStatus == NORMAL and D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
 
         D:Println(L["HLP_NOTHINGTOCURE"]);
 
     elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs[1]) then
         local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
-        local RequestedPrio;
-        local ButtonsString = "";
-        local modifier;
-
-        if IsControlKeyDown() then
-            modifier = "ctrl-";
-        elseif IsAltKeyDown() then
-            modifier = "alt-";
-        elseif IsShiftKeyDown() then
-            modifier = "shift-";
-        end
-
-        if Button == "LeftButton" then
-            ButtonsString = "*%s1";
-        elseif Button == "RightButton" then
-            ButtonsString = "*%s2";
-        elseif Button == "MiddleButton" then
-            ButtonsString = "*%s3";
-        else
-            D:Debug("unknown button");
-            return;
-        end
-
-        RequestedPrio = D:tGiveValueIndex(D.db.global.MouseButtons, modifier and (modifier .. ButtonsString:sub(-3)) or ButtonsString);
-        D:Debug("RequestedPrio:", RequestedPrio);
+        local Unit = frame.Object.CurrUnit; -- shortcut
+        
 
         -- there is no spell for the requested prio ? (no spell registered to this modifier+mousebutton)
         if modifier and RequestedPrio and not D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
@@ -1265,6 +1278,18 @@ do
             self.Frame:SetAttribute("ctrl-type3", "macro");
             self.Frame:SetAttribute("alt-type3", "macro");
             self.Frame:SetAttribute("shift-type3", "macro");
+
+            -- set the mouse 4th-button actions on all modifiers
+            self.Frame:SetAttribute("*type4", "macro");
+            self.Frame:SetAttribute("ctrl-type4", "macro");
+            self.Frame:SetAttribute("alt-type4", "macro");
+            self.Frame:SetAttribute("shift-type4", "macro");
+
+            -- set the mouse 4th-button actions on all modifiers
+            self.Frame:SetAttribute("*type5", "macro");
+            self.Frame:SetAttribute("ctrl-type5", "macro");
+            self.Frame:SetAttribute("alt-type5", "macro");
+            self.Frame:SetAttribute("shift-type5", "macro");
         end
 
         local MouseButtons = D.db.global.MouseButtons;

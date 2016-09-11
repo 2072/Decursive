@@ -174,6 +174,8 @@ L["HLP_LEFTCLICK"] = "Left-Click"
 L["HLP_LL_ONCLICK_TEXT"] = [=[The Live-List is not meant to be clicked. Please, read the documentation to learn how to use this add-on. Just search for 'Decursive' on WoWAce.com
 (To move this list move the Decursive bar, /dcrshow and left-alt-click to move)]=]
 L["HLP_MIDDLECLICK"] = "Middle-Click"
+L["HLP_MOUSE4"] = "Mouse Button 4"
+L["HLP_MOUSE5"] = "Mouse Button 5"
 L["HLP_NOTHINGTOCURE"] = "There is nothing to cure!"
 L["HLP_RIGHTCLICK"] = "Right-Click"
 L["HLP_USEXBUTTONTOCURE"] = "Use \"%s\" to cure this affliction!"

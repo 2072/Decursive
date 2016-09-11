@@ -1,5 +1,11 @@
-Decursive 2.7.4.7 (2016-07-26)
-==============================
+Decursive 2.7.5 (2016-09-11)
+============================
+
+Changes from Decursive 2.7.4.7 to Decursive 2.7.5 (2016-09-11)
+--------------------------------------------------------------
+
+- Add support for mouse 4th and 5th buttons in micro-unit frames. (Users need
+  to assign them directly in Decursive's option panel).
 
 Changes from Decursive 2.7.4.6 to Decursive 2.7.4.7 (2016-07-26)
 ----------------------------------------------------------------
