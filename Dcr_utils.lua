@@ -56,6 +56,7 @@ local _G                = _G;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
 local type              = _G.type;
+local tostring          = _G.tostring;
 local unpack            = _G.unpack;
 local select            = _G.select;
 local str_sub           = _G.string.sub;
@@ -77,6 +78,7 @@ local IsSpellInRange    = _G.IsSpellInRange;
 local UnitInRange       = _G.UnitInRange;
 local debugprofilestop  = _G.debugprofilestop;
 local GetSpellInfo      = _G.GetSpellInfo;
+local GetItemInfo       = _G.GetItemInfo;
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
 D.IsSpellInRange = function (spellName, unit)
@@ -441,7 +443,7 @@ do
             T._FatalError("global RAID_CLASS_COLORS does not exist...");
         end
 
-        D:Debug(INFO, 'CreateClassColorTables called');
+        D:Debug('CreateClassColorTables called');
     end
 
     if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS.RegisterCallback then
@@ -515,7 +517,7 @@ function D.GetSpellOrItemInfo(spellID)
     if spellID > 0 then
         return GetSpellInfo(spellID);
     else
-        return GetItemInfo(spellID * -1);
+        return GetItemInfo(spellID * -1) or "Item: " .. spellID * -1;
     end
 end
 
