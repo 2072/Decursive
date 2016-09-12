@@ -701,13 +701,13 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
     -- Combat detection events
-    D.eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
-    D.eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
+    D.eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
+    D.eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 
     -- Raid/Group changes events
-    D.eventFrame:RegisterEvent("PARTY_LEADER_CHANGED", D.GroupChanged, D);
+    D.eventFrame:RegisterEvent("PARTY_LEADER_CHANGED");
 
-    D.eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE", D.GroupChanged, D);
+    D.eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 
     D.eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 

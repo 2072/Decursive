@@ -86,7 +86,11 @@ local IsShiftKeyDown    = _G.IsShiftKeyDown;
 
 -- Blizzard event management
 function D.OnEvent(frame, event, ...)
-    D[event](D, event, ...);
+    if D[event] then
+        D[event](D, event, ...);
+    else
+        D:AddDebugText('unused event:', event);
+    end
 end
 
 -- GroupChanged(reason) {{{
@@ -136,6 +140,9 @@ do
 
         self:Debug("Group changed", reason);
     end
+
+    D.PARTY_LEADER_CHANGED = D.GroupChanged;
+    D.GROUP_ROSTER_UPDATE = D.GroupChanged;
 end
  -- }}}
 
@@ -271,7 +278,7 @@ function D:ScheduledTasks() -- {{{
     end
 
     if status.Combat and not InCombatLockdown() then -- just in case...
-        self:LeaveCombat();
+        self:PLAYER_REGEN_ENABLED();
     end
 
     if (not InCombatLockdown() and status.DelayedFunctionCallsCount > 0) then
@@ -317,16 +324,16 @@ end --}}}
 
 -- the combat functions and events. // {{{
 -------------------------------------------------------------------------------
-function D:EnterCombat() -- called on PLAYER_REGEN_DISABLED {{{
+function D:PLAYER_REGEN_DISABLED() -- {{{
     -- this is not reliable for testing unitframe modifications authorization,
     -- this event fires after the player enters in combat, only InCombatLockdown() may be used for critical checks
     self.Status.Combat = true;
 end --}}}
 
---function D:LeaveCombat() --{{{
+--function D:PLAYER_REGEN_ENABLED() --{{{
 do
     local LastDebugReportNotification = 0;
-    function D:LeaveCombat()
+    function D:PLAYER_REGEN_ENABLED() -- LeaveCombat
         --D:Debug("Leaving combat");
         self.Status.Combat = false;
 
