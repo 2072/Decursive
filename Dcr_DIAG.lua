@@ -300,8 +300,15 @@ do
         end
 
         -- get running add-ons list
-        local success, errorm, loadedAddonList;
-        success, errorm, loadedAddonList = pcall(GetAddonListAsString);
+        local ALASsuccess, ALASerrorm, loadedAddonList;
+        ALASsuccess, ALASerrorm, loadedAddonList = pcall(GetAddonListAsString);
+
+        
+        local ACsuccess, ACerrorm, actionsConfiguration;
+        ACsuccess, ACerrorm, actionsConfiguration = pcall(T._ExportActionsConfiguration);
+
+        local CSCsuccess, CSCerrorm, customSpellConfiguration;
+        CSCsuccess, CSCerrorm, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
 
         local headerSucess, headerGenErrorm;
         if not DebugHeader then
@@ -311,7 +318,11 @@ do
         end
 
 
-        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or ""))) .. table.concat(T._DebugTextTable, "") .. "\n\nLoaded Addons:\n\n" .. (success and loadedAddonList or errorm) .. "\n-- --";
+        T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or "")))
+        .. table.concat(T._DebugTextTable, "")
+        .. "\n\n-- --\n" .. (ACsuccess and actionsConfiguration or ACerrorm) .. "\n-- --"
+        .. (CSCsuccess and customSpellConfiguration or CSCerrorm) .. "\n-- --"
+        .. "\n\nLoaded Addons:\n\n" .. (ALASsuccess and loadedAddonList or ALASerrorm) .. "\n-- --";
 
         if _G.DecursiveDebuggingFrameText then
             _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
@@ -701,14 +712,16 @@ do
 
         for spellID, spellData in pairs(D.classprofile.UserSpells) do
             if not spellData.IsDefault then
-                 customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %d) - %s - %s - %s - B: %d - Ts: %s -  Macro: %s\n"):format(
-                 (GetSpellInfo(spellID)), spellID, --                                 3    4    5       6        7            8
+                 customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %d) - %s - %s - %s - B: %d - Ts: %s - UF: %s - Macro: %s\n"):format(
+                 --                                                                  3    4    5       6        7        8           9
+                 tostring(spellData.IsItem and (GetItemInfo(spellID * -1)) or (GetSpellInfo(spellID))), spellID,
                  spellData.Disabled and "OFF" or "ON", -- 3
                  spellData.Pet and "PET" or "PLAYER", -- 4
                  spellData.IsItem and "ITEM" or "SPELL", -- 5
                  spellData.Better, -- 6
-                 table.concat(spellData.Types, ";"),
-                 spellData.MacroText and spellData.MacroText or "false" -- 8
+                 D:tAsString(spellData.Types), -- 7
+                 D:tAsString(spellData.UnitFiltering), -- 8
+                 spellData.MacroText and spellData.MacroText or "false" -- 9
                  );
             end
         end
@@ -938,9 +951,6 @@ do
                     PrintMessage("|cFF00FF00Event library functionning properly!|r");
                     PrintMessage("|cFF00FF00Everything seems to be OK.|r");
                     AddDebugText("Event library functionning properly, Everything seems to be OK");
-                    -- get a list of current actions assignments
-                    AddDebugText(pcall(T._ExportActionsConfiguration));
-                    AddDebugText(pcall(T._ExportCustomSpellConfiguration));
                     -- open the diagnostic window
                     T._ShowDebugReport(true);
                     return;
