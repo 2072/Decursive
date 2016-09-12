@@ -284,6 +284,11 @@ Your custom spells always have a higher priority and will override and replace t
 ]=]
 L["OPT_CUSTOMSPELLS_EFFECTIVE_ASSIGNMENTS"] = "Effective spells assignments:"
 L["OPT_CUSTOM_SPELL_UNAVAILABLE"] = "unavailable"
+L["OPT_CUSTOM_SPELL_UNIT_FILTER"] = "Unit Filtering"
+L["OPT_CUSTOM_SPELL_UNIT_FILTER_DESC"] = "Select units that can benefit from this spell"
+L["OPT_CUSTOM_SPELL_UNIT_FILTER_NONE"] = "All units"
+L["OPT_CUSTOM_SPELL_UNIT_FILTER_PLAYER"] = "Player only"
+L["OPT_CUSTOM_SPELL_UNIT_FILTER_NONPLAYER"] = "Others only"
 L["OPT_DEBCHECKEDBYDEF"] = [=[
 
 Checked by default]=]

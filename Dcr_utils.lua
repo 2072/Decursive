@@ -221,8 +221,6 @@ end
 
 
 function D:tremovebyval(tab, val) -- {{{
-    local k;
-    local v;
     for k,v in pairs(tab) do
         if(v==val) then
             t_remove(tab, k);
@@ -231,6 +229,19 @@ function D:tremovebyval(tab, val) -- {{{
     end
     return false;
 end -- }}}
+
+function D:tAsString(t) -- debugging function
+
+    if type(t) ~= 'table' then
+        return tostring(t)
+    end
+
+    local s = '{'
+    for k,v in pairs(t) do
+        s = s .. ('[%s] = [%s], '):format(tostring(k), tostring(v))
+    end
+    return s .. '}'
+end
 
 function D:tcheckforval(tab, val) -- {{{
     local k, v;

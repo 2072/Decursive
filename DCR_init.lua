@@ -1162,6 +1162,7 @@ function D:Configure() --{{{
     local IsSpellKnown = _G.IsSpellKnown;
     local Types = {};
     local UnitFiltering = false;
+    local ActualUnitFiltering = false;
     local PermanentUnitFiltering = false;
     local IsEnhanced = false;
     local SpellName = "";
@@ -1186,7 +1187,12 @@ function D:Configure() --{{{
 
                 Types = spell.Types;
                 UnitFiltering = false;
+                ActualUnitFiltering = false;
                 IsEnhanced = false;
+
+                if spell.UnitFiltering then
+                    UnitFiltering = spell.UnitFiltering;
+                end
 
                 -- Could it be enhanced by something (a talent for example)?
                 if spell.EnhancedBy then
@@ -1214,10 +1220,6 @@ function D:Configure() --{{{
                     end
                 end
 
-                if spell.UnitFiltering then
-                    UnitFiltering = spell.UnitFiltering;
-                end
-
                 -- register it
                 self.Status.FoundSpells[SpellName] = {spell.Pet, spellID, IsEnhanced, spell.Better, spell.MacroText, nil};
                 for _, Type in ipairs (Types) do
@@ -1227,10 +1229,14 @@ function D:Configure() --{{{
                         CuringSpells[Type] = SpellName;
 
                         if UnitFiltering and UnitFiltering[Type] then
-                            --@alpha@
-                            self:Debug("Enhancement for player only for type added",Type);
-                            --@end-alpha@
+                            self:Debug("Spell with unit filtering added :", Type, UnitFiltering[Type]);
                             self.Status.UnitFilteringTypes[Type] = UnitFiltering[Type];
+
+                            if not ActualUnitFiltering then
+                                ActualUnitFiltering = {};
+                            end
+
+                            ActualUnitFiltering[Type] = UnitFiltering[Type];
                         else
                             self.Status.UnitFilteringTypes[Type] = false;
                         end
@@ -1240,11 +1246,11 @@ function D:Configure() --{{{
                     end
                 end
 
-                if UnitFiltering then
+                if ActualUnitFiltering then
                     local filteredTypeCount = 0;
                     local lastfilter = false;
                     -- check if the filters are identical for every type
-                    for _, filter in pairs(UnitFiltering) do
+                    for Type, filter in pairs(ActualUnitFiltering) do
 
                         if not lastfilter then
                             lastfilter = filter;
