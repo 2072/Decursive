@@ -1,14 +1,12 @@
 Decursive for World of Warcraft
 ===============================
 
-[![Gratipay and Bitcoin donation options](http://img.shields.io/gratipay/2072.svg)](https://www.gratipay.com/2072/)
-
 *Decursive is a cleansing mod intended to make affliction removal easy, effective and fun for all the classes having this ability.*
 
 Documentation:
 --------------
 
-**NOTE: Type /DECURSIVE to open the onfiguration panel.**
+**NOTE: Type /DECURSIVE to open the configuration panel.**
 *Decursive's options are not directly available in the "Interface" panel due to ongoing tainting issues Blizzard is not willing to fix.*
 
 [Decursive usage][user-actions] - [Micro Unit Frames documentation][MUFs] - [Decursive Macro documentation][mouse-over macro] - [Frequently Asked Questions][FAQ] - [commands][]
