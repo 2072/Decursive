@@ -84,6 +84,11 @@ local UnitGUID          = _G.UnitGUID;
 local GetTime           = _G.GetTime;
 local IsShiftKeyDown    = _G.IsShiftKeyDown;
 
+-- Blizzard event management
+function D.OnEvent(frame, event, ...)
+    D[event](D, event, ...);
+end
+
 -- GroupChanged(reason) {{{
 do
 
@@ -405,7 +410,7 @@ end
 function D:PLAYER_ALIVE()
     D:Debug("|cFFFF0000PLAYER_ALIVE|r");
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
-    self:UnregisterEvent("PLAYER_ALIVE");
+    self.eventFrame:UnregisterEvent("PLAYER_ALIVE");
     T.PLAYER_IS_ALIVE = GetTime();
 end
 

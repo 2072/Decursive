@@ -637,6 +637,14 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
 
     LibStub("AceComm-3.0"):RegisterComm("DecursiveVersion", D.OnCommReceived);
 
+    -- Handle events directly without relying on AceEvent to prevent undue
+    -- "script ran too long" errors caused by the queuing of event handler
+    -- calls into a per-event dispatcher for ALL add-ons registering an event...
+    -- (The more add-ons registering an event the more chances to get a random
+    -- "script ran too long" error)
+    D.eventFrame = CreateFrame("Frame");
+    D.eventFrame:Hide();
+
     T._CatchAllErrors = false;
 
 end -- // }}}
@@ -683,37 +691,37 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     -- these events are automatically stopped when the addon is disabled by Ace
 
     -- Spell changes events
-    self:RegisterEvent("LEARNED_SPELL_IN_TAB");
-    self:RegisterEvent("SPELLS_CHANGED");
-    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-    self:RegisterEvent("BAG_UPDATE_DELAYED");
-    self:RegisterEvent("GET_ITEM_INFO_RECEIVED");
-    self:RegisterEvent("PLAYER_TALENT_UPDATE");
-    self:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
-    self:RegisterEvent("PLAYER_ENTERING_WORLD");
+    D.eventFrame:RegisterEvent("LEARNED_SPELL_IN_TAB");
+    D.eventFrame:RegisterEvent("SPELLS_CHANGED");
+    D.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+    D.eventFrame:RegisterEvent("BAG_UPDATE_DELAYED");
+    D.eventFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED");
+    D.eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+    D.eventFrame:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
+    D.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
     -- Combat detection events
-    self:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
-    self:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
+    D.eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED","EnterCombat");
+    D.eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED","LeaveCombat");
 
     -- Raid/Group changes events
-    self:RegisterEvent("PARTY_LEADER_CHANGED", D.GroupChanged, D);
+    D.eventFrame:RegisterEvent("PARTY_LEADER_CHANGED", D.GroupChanged, D);
 
-    self:RegisterEvent("GROUP_ROSTER_UPDATE", D.GroupChanged, D);
+    D.eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE", D.GroupChanged, D);
 
-    self:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    D.eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
 
     -- Player pet detection event (used to find pet spells)
-    self:RegisterEvent("UNIT_PET");
+    D.eventFrame:RegisterEvent("UNIT_PET");
 
-    self:RegisterEvent("UNIT_AURA");
+    D.eventFrame:RegisterEvent("UNIT_AURA");
 
-    self:RegisterEvent("PLAYER_TARGET_CHANGED");
+    D.eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED");
 
-    self:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
+    D.eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
-    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-    self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+    D.eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    D.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 
     self:RegisterMessage("DECURSIVE_TALENTS_AVAILABLE");
 
@@ -730,6 +738,8 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     FirstEnable = false;
 
     D:StartTalentAvaibilityPolling();
+
+    D.eventFrame:SetScript("OnEvent", D.OnEvent);
 
     T._CatchAllErrors = false;
 
@@ -930,6 +940,7 @@ function D:OnDisable() -- When the addon is disabled by Ace -- {{{
     }; -- }}}
 
     LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
+    D.eventFrame:SetScript("OnEvent", nil);
     StaticPopup_Show("Decursive_OnDisableWarning");
 end -- }}}
 
