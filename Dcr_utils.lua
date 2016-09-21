@@ -100,9 +100,13 @@ D.IsSpellInRange = function (spellName, unit)
 end
 
 
-function D:ColorText (text, color) --{{{
+function D:ColorText (text, color)
     return "|c".. color .. text .. "|r";
-end --}}}
+end
+
+function D:ColorTextNA (text, color)
+    return "|cFF".. color .. text .. "|r";
+end
 
 function D:RemoveColor (text)
     return str_sub(text, 11, -3);
@@ -372,11 +376,7 @@ function D:ThisSetParentText(frame, text) --{{{
 end --}}}
 
 function D:DisplayTooltip(Message, RelativeTo, AnchorType, x, y) --{{{
-        if not AnchorType then
-            AnchorType = "ANCHOR_LEFT";
-        end
-        DcrDisplay_Tooltip:SetOwner(RelativeTo, AnchorType, x, y);
-        DcrDisplay_Tooltip:ClearLines();
+        DcrDisplay_Tooltip:SetOwner(RelativeTo, AnchorType or "ANCHOR_LEFT", x, y);
         DcrDisplay_Tooltip:SetText(Message);
         DcrDisplay_Tooltip:Show();
 end --}}}

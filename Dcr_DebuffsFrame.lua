@@ -71,13 +71,10 @@ local IsShiftKeyDown    = _G.IsShiftKeyDown;
 local floor             = _G.math.floor;
 local table             = _G.table;
 local t_insert          = _G.table.insert;
-local str_format        = _G.string.format;
-local string            = _G.string;
 local UnitExists        = _G.UnitExists;
 local UnitClass         = _G.UnitClass;
 local fmod              = _G.math.fmod;
 local UnitIsUnit        = _G.UnitIsUnit;
-local str_upper         = _G.string.upper;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local CreateFrame       = _G.CreateFrame;
@@ -766,7 +763,7 @@ do
         MF:SetClassBorder(); -- set the border if it wasn't possible at the time the unit was discovered
 
         if not Unit then
-            return; -- If the user overs the MUF befor it's completely initialized
+            return; -- If the user overs the MUF before it's completely initialized
         end
 
         --Test for unstable affliction like spells
@@ -789,18 +786,20 @@ do
 
         if D.profile.AfflictionTooltips then
 
+            DcrDisplay_Tooltip:SetOwner(self.Frame, "ANCHOR_TOPLEFT");
             -- removes the CHARMED_STATUS bit from Status, we don't need it
             Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
 
             -- First, write the name of the unit in its class color
             if UnitExists(MF.CurrUnit) then
-                TooltipText =
-                ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or ""  ) ..
+            DcrDisplay_Tooltip:AddLine(
+                ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or "")
                 -- Colored unit name
-                D:ColorText(            (D:PetUnitName(       Unit, true    ))
-                , "FF" .. ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA")) .. "  |cFF3F3F3F(".. Unit .. ")|r";
+                .. D:ColorTextNA((D:PetUnitName(Unit, true)), ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA"))
+                .. "  |cFF3F3F3F(".. Unit .. ")|r"
+                );
             else
-                TooltipText = MF.CurrUnit;
+                DcrDisplay_Tooltip:AddLine(MF.CurrUnit);
             end
 
 
@@ -812,7 +811,7 @@ do
                 StatusText = L["NORMAL"];
 
             elseif Status == ABSENT then
-                StatusText = str_format(L["ABSENT"], Unit);
+                StatusText = L["ABSENT"]:format(Unit);
 
             elseif Status == FAR then
                 StatusText = L["TOOFAR"];
@@ -822,30 +821,29 @@ do
 
             elseif MF.Debuffs[1] and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
                 local DebuffType = MF.Debuffs[1].Type;
-                StatusText = str_format(L["AFFLICTEDBY"], D:ColorText( L[str_upper(DC.TypeNames[DebuffType])], "FF" .. DC.TypeColors[DebuffType]) );
+                StatusText = L["AFFLICTEDBY"]:format(D:ColorTextNA( L[DC.TypeNames[DebuffType]:upper()], DC.TypeColors[DebuffType]) );
 
             elseif Status == STEALTHED then
                 StatusText = L["STEALTHED"];
             end
 
             -- Unit Status
-            TooltipText = TooltipText .. "\n" .. StatusText;
+            DcrDisplay_Tooltip:AddLine(StatusText);
 
             -- list the debuff(s) names
             if MF.Debuffs[1] then
                 for i, Debuff in ipairs(MF.Debuffs) do
                     if Debuff.Type then
                         local DebuffApps = Debuff.Applications;
-                        TooltipText = TooltipText .. "\n" .. str_format("%s", D:ColorText(Debuff.Name, "FF" .. DC.TypeColors[Debuff.Type])) .. (DebuffApps>0 and str_format(" (%d)", DebuffApps) or "");
+                        DcrDisplay_Tooltip:AddLine(D:ColorTextNA(Debuff.Name, DC.TypeColors[Debuff.Type]) .. (DebuffApps > 0 and (" (%d)"):format(DebuffApps) or ""));
                     end
                 end
             end
 
             -- Display the tooltip
-            D:DisplayTooltip(TooltipText, self.Frame, "ANCHOR_TOPLEFT");
-
             DcrDisplay_Tooltip:ClearAllPoints();
             DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor());
+            DcrDisplay_Tooltip:Show();
 
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
             if floor(DcrDisplay_Tooltip:GetTop() + 0.5) == floor(UIParent:GetTop() + 0.5) then -- if at top
@@ -863,11 +861,11 @@ do
 
                 for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
                     TooltipButtonsInfo[Prio] =
-                    str_format("%s: %s%s", D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), (GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                    ("%s: %s%s"):format(D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), (GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
                 end
 
-                t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
-                t_insert(TooltipButtonsInfo, str_format("%s: %s", DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
+                t_insert(TooltipButtonsInfo, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
+                t_insert(TooltipButtonsInfo, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
                 TooltipButtonsInfo = table.concat(TooltipButtonsInfo, "\n");
                 TooltipUpdate = D.Status.SpellsChanged;
             end
@@ -891,29 +889,29 @@ do
     end -- }}}
 end
 
+do
+    local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"
+    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"
+    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"
+    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"
+    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s";
 
-function D.MicroUnitF:OnCornerEnter(frame)
-    if (D.profile.DebuffsFrameShowHelp) then
-        D:DisplayGameTooltip(frame,
-        str_format(
-        "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
-        --"|cFF11FF11%s|r: %s\n"..
-        "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
-        "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"..
-        "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"..
-        "|cFF11FF11%s|r-|cFF11FF11%s|r: %s",
+    function D.MicroUnitF:OnCornerEnter(frame)
+        if (D.profile.DebuffsFrameShowHelp) then
+            D:DisplayGameTooltip(frame,
+            keyTemplate:format(
+            D.L["ALT"],             D.L["HLP_LEFTCLICK"],   D.L["HANDLEHELP"],
 
-        D.L["ALT"],             D.L["HLP_LEFTCLICK"],   D.L["HANDLEHELP"],
+            --D.L["HLP_RIGHTCLICK"],  D.L["STR_OPTIONS"],
+            D.L["ALT"],             D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOWOPTION"],
 
-        --D.L["HLP_RIGHTCLICK"],  D.L["STR_OPTIONS"],
-        D.L["ALT"],             D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOWOPTION"],
+            D.L["CTRL"],            D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRPRSHOW"], 
+            D.L["SHIFT"],           D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRSKSHOW"],
 
-        D.L["CTRL"],            D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRPRSHOW"], 
-        D.L["SHIFT"],           D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRSKSHOW"],
-
-        D.L["SHIFT"],           D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOW"]
-        ));
-    end;
+            D.L["SHIFT"],           D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOW"]
+            ));
+        end;
+    end
 end
 
 
