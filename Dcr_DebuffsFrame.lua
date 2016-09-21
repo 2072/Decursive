@@ -896,10 +896,12 @@ do
     .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"
     .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s";
 
+    local keyHelp;
+
     function D.MicroUnitF:OnCornerEnter(frame)
-        if (D.profile.DebuffsFrameShowHelp) then
-            D:DisplayGameTooltip(frame,
-            keyTemplate:format(
+
+        if not keyHelp then
+            keyHelp = keyTemplate:format(
             D.L["ALT"],             D.L["HLP_LEFTCLICK"],   D.L["HANDLEHELP"],
 
             --D.L["HLP_RIGHTCLICK"],  D.L["STR_OPTIONS"],
@@ -909,7 +911,11 @@ do
             D.L["SHIFT"],           D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRSKSHOW"],
 
             D.L["SHIFT"],           D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOW"]
-            ));
+            )
+        end
+
+        if D.profile.DebuffsFrameShowHelp then
+            D:DisplayGameTooltip(frame, keyHelp);
         end;
     end
 end
