@@ -857,7 +857,7 @@ do
         -- show a help text in the Game default tooltip
         if D.profile.DebuffsFrameShowHelp then
             -- if necessary we will update the help tooltip text
-            if (D.Status.SpellsChanged ~= TooltipUpdate) then
+            if (D.Status.SpellsChanged ~= TooltipUpdate and not D.Status.Combat) then
                 TooltipButtonsInfo = {};
                 local MouseButtons = D.db.global.MouseButtons;
 

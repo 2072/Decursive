@@ -1929,7 +1929,7 @@ function D:SetCureOrder (ToChange)
     end
 
     local LostSpells = {}; -- an orphanage for the lost spells :'(
-    local FoundSpell = 0; -- we wouldn't need that if #table was always returning something meaningful...
+    local FoundSpell = 0;
 
     -- re-compute the position of each spell type
     for Type, Num in pairs (CureOrder) do
@@ -1944,7 +1944,7 @@ function D:SetCureOrder (ToChange)
     end
 
    -- take care of the lost spells here
-   -- Sort the lost spells so that they can be readded in the correct order
+   -- Sort the lost spells so that they can be read in the correct order
    LostSpells =  D:tSortUsingKeys(LostSpells);
 
    -- Place the lost spells after the found ones but with <0 values so they
