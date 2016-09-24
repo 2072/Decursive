@@ -729,7 +729,7 @@ end
 do
     local UnitGUID = _G.UnitGUID;
     local GetSpellInfo = _G.GetSpellInfo;
-    local TooltipButtonsInfo = {}; -- help tooltip text table
+    local TooltipButtonsInfo = ""; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
     local DcrDisplay_Tooltip = _G.DcrDisplay_Tooltip;
     local GameTooltip_SetDefaultAnchor = _G.GameTooltip_SetDefaultAnchor;
@@ -856,23 +856,25 @@ do
         if D.profile.DebuffsFrameShowHelp then
             -- if necessary we will update the help tooltip text
             if (D.Status.SpellsChanged ~= TooltipUpdate and not D.Status.Combat) then
-                TooltipButtonsInfo = {};
+                local ttHelpLines = {};
                 local MouseButtons = D.db.global.MouseButtons;
 
                 for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
-                    TooltipButtonsInfo[Prio] =
+                    ttHelpLines[Prio] =
                     ("%s: %s%s"):format(D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), (GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
                 end
 
-                t_insert(TooltipButtonsInfo, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
-                t_insert(TooltipButtonsInfo, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
-                TooltipButtonsInfo = table.concat(TooltipButtonsInfo, "\n");
+                t_insert(ttHelpLines, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
+                t_insert(ttHelpLines, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
+                TooltipButtonsInfo = table.concat(ttHelpLines, "\n");
                 TooltipUpdate = D.Status.SpellsChanged;
             end
 
-            GameTooltip_SetDefaultAnchor(GameTooltip, frame);
-            GameTooltip:SetText(TooltipButtonsInfo);
-            GameTooltip:Show();
+            if TooltipButtonsInfo ~= "" then
+                GameTooltip_SetDefaultAnchor(GameTooltip, frame);
+                GameTooltip:SetText(TooltipButtonsInfo);
+                GameTooltip:Show();
+            end
 
         end
 
