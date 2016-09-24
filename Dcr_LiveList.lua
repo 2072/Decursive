@@ -573,13 +573,12 @@ end -- }}}
 
 -- this displays the tooltips of the live-list
 function LiveList:DebuffTemplate_OnEnter(frame) --{{{
-    if (D.profile.AfflictionTooltips and frame.Object.UnitID) then
+    if D.profile.AfflictionTooltips and frame.Object.UnitID then
         DcrDisplay_Tooltip:SetOwner(frame, "ANCHOR_CURSOR");
-        DcrDisplay_Tooltip:ClearLines();
-        DcrDisplay_Tooltip:SetUnitDebuff(frame.Object.UnitID,frame.Object.Debuff.index); -- OK
+        DcrDisplay_Tooltip:SetUnitDebuff(frame.Object.UnitID,frame.Object.Debuff.index); -- Reported to trigger a "script ran too long" error on 2016-09-13...
         DcrDisplay_Tooltip:Show();
     else
-        D:Debug(D.profile.AfflictionTooltips, frame.Object.UnitID );
+        D:Debug(D.profile.AfflictionTooltips, frame.Object.UnitID);
     end
 end --}}}
 
