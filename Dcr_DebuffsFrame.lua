@@ -1621,15 +1621,21 @@ do
                 D:Debug("SetColor(): UnitsDebuffedInRange INCREASED:",  MicroUnitF.UnitsDebuffedInRange);
 
                 if not Status.SoundPlayed then
-                    D:PlaySound (self.CurrUnit, "SetColor()" .. MicroUnitF.UnitsDebuffedInRange );
+                    D:PlaySound (self.CurrUnit, "SetColor()");
                 end
             end
 
             if PrioChanged then PrioChanged = false; end
 
+            --@debug@
+            D:Debug('Setting MUF texture color...');
+            --@end-debug@
             -- Set the main texture
-            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
+            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha); -- XXX reported to cause rare "script ran too long" errors" on 2016-09-25
             --self.Texture:SetAlpha(Alpha);
+            --@debug@
+            D:Debug('Setting MUF texture color... done');
+            --@end-debug@
 
 
 

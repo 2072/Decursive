@@ -561,6 +561,29 @@ function D:NiceTime()
     return tonumber(("%.4f"):format(GetTime() - DC.StartTime));
 end
 
+
+do
+
+    -- /run LibStub("AceAddon-3.0"):GetAddon("Decursive"):RuncombatCrash()
+    local combatcrash;
+    function D:RuncombatCrash()
+        D:Debug("RCC: Last run:", combatcrash);
+        if not InCombatLockdown() then
+            D:Debug("RCC: Not in combat");
+            return;
+        end
+
+        local crashstart = debugprofilestop();
+
+        D:Debug("RCC: Hang started");
+
+        repeat
+            combatcrash = debugprofilestop() - crashstart;
+        until false
+    end
+
+end
+
 do
     local DcrTimers = {};
     local argCount = 0;
