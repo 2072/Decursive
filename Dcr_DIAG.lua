@@ -226,19 +226,26 @@ do
     local DebugHeader = false;
     local HeaderFailOver = "|cFF11FF33Please email the content of this window to <archarodim+DcrReport@teaser.fr>|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
     local LoadedAddonNum = 0;
+    local TotalAddonMemoryUsage = 0;
 
     local function GetAddonListAsString ()
         local addonCount = GetNumAddOns();
         local loadedAddonList = {};
-        local name, security, _;
+        local version, memoryUsage, name, security, _;
+
+        TotalAddonMemoryUsage = 0;
+        UpdateAddOnMemoryUsage();
 
         for addonID=1, addonCount do
             name, _, _, _, _, security, _ = GetAddOnInfo(addonID)
 
             if security == 'INSECURE' and IsAddOnLoaded(addonID) then
-                local version = GetAddOnMetadata(addonID, "Version");
+                version = GetAddOnMetadata(addonID, "Version");
+                memoryUsage = GetAddOnMemoryUsage(addonID);
 
-                table.insert(loadedAddonList, ("%s (%s)[%d]"):format(name, version or 'N/A', addonID));
+                TotalAddonMemoryUsage = TotalAddonMemoryUsage + memoryUsage;
+
+                table.insert(loadedAddonList, ("%s (%s)[%d]{MU: %d}"):format(name, version or 'N/A', addonID, memoryUsage));
 
             end
         end
@@ -270,7 +277,9 @@ do
         _Debug(unpack(TIandBI));
 
 
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d LA: %d TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        -- TODO: add add-on memory usage stats and prevent grabage creation in critical part to avoid triggering the grabage collector...
+
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -278,6 +287,7 @@ do
         tostring(T._EmbeddedMode), -- Embeded: %s
         IsWindowsClient() and 1 or 0, -- W: %d
         LoadedAddonNum, -- LA: %d
+        TotalAddonMemoryUsage, -- TAMU: %d
         T._TaintingAccusations, -- TA: %d
         T._NDRTaintingAccusations, -- NDRTA: %d
         T._BlizzardUIErrors, -- BUIE: %d
