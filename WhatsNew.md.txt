@@ -1,16 +1,19 @@
-Decursive 2.7.5 (2016-09-11)
-============================
+Decursive 2.7.5_beta_1 (2016-10-11)
+===================================
 
-Changes from Decursive 2.7.4.7 to Decursive 2.7.5 (2016-09-12)
---------------------------------------------------------------
 
-- Add support for mouse 4th and 5th buttons in micro-unit frames. (Users need
-  to assign them directly in Decursive's option panel).
+Changes from Decursive 2.7.4.7 to Decursive 2.7.5_beta_1 (2016-10-11)
+---------------------------------------------------------------------
+
+- Add support for mouse's 4th and 5th buttons in micro-unit frames. (They need
+  to be assigned directly in Decursive's option panel).
 
 - New unit filtering options for custom spells allowing to restrict a spell or
   item to the player only or to other party members only.
 
-- Reliability improvements.
+- Add support for CUSTOM_CLASS_COLORS.
+
+- Reliability improvements concerning very rare "script ran too long" Lua errors.
 
 
 Changes from Decursive 2.7.4.6 to Decursive 2.7.4.7 (2016-07-26)
