@@ -368,7 +368,7 @@
 
                 self.CloseButtonTip = DecursiveRootTable.Dcr.L["BINDING_NAME_DCRPRSHOW"];
 
-                self.PopulateAddFunction = DecursiveRootTable.Dcr.AddUnitToPriorityList;
+                self.PopulateAddFunction = DecursiveRootTable.Dcr.AddElementToPriorityList;
                 self.PopulateFrameTitle = DecursiveRootTable.Dcr.L["PRIORITY_LIST"];
 
                 self.AddTargetFunc = DecursiveRootTable.Dcr.AddTargetToPriorityList;
@@ -403,7 +403,7 @@
 
                 self.CloseButtonTip = DecursiveRootTable.Dcr.L["BINDING_NAME_DCRSKSHOW"];
 
-                self.PopulateAddFunction = DecursiveRootTable.Dcr.AddUnitToSkipList;
+                self.PopulateAddFunction = DecursiveRootTable.Dcr.AddElementToSkipList;
                 self.PopulateFrameTitle = DecursiveRootTable.Dcr.L["SKIP_LIST_STR"];
 
                 self.AddTargetFunc = DecursiveRootTable.Dcr.AddTargetToSkipList;
@@ -515,6 +515,23 @@
                 </Scripts>
             </Button>
 
+            <Button name="$parentHealer" inherits="GameMenuButtonTemplate" text="healer">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentGroup1" />
+                    <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parentGroup2" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self.GroupNumber = -1;
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                    </OnClick>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        self:SetText(_G.HEALER or "healer");
+                    </OnLoad>
+                </Scripts>
+            </Button>
+
             <Button name="$parentGroup3" inherits="GameMenuButtonTemplate" text="Group 3">
                 <Size>
                     <AbsDimension x="80" y="20" />
@@ -561,6 +578,23 @@
                 </Scripts>
             </Button>
 
+            <Button name="$parentTank" inherits="GameMenuButtonTemplate" text="healer">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentGroup3" />
+                    <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parentGroup4" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self.GroupNumber = -2;
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                    </OnClick>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        self:SetText(_G.TANK or "tank");
+                    </OnLoad>
+                </Scripts>
+            </Button>
+
             <Button name="$parentGroup5" inherits="GameMenuButtonTemplate" text="Group 5">
                 <Size>
                     <AbsDimension x="80" y="20" />
@@ -603,6 +637,23 @@
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
                         self:SetText(DecursiveRootTable.Dcr.L["STR_GROUP"] .. '6');
+                    </OnLoad>
+                </Scripts>
+            </Button>
+
+            <Button name="$parentDamager" inherits="GameMenuButtonTemplate" text="healer">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentGroup5" />
+                    <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parentGroup6" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self.GroupNumber = -3;
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                    </OnClick>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        self:SetText(_G.DAMAGER or "damager");
                     </OnLoad>
                 </Scripts>
             </Button>

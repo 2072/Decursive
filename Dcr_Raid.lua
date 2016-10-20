@@ -78,6 +78,7 @@ local UnitIsUnit            = _G.UnitIsUnit;
 local UnitClass             = _G.UnitClass;
 local UnitExists            = _G.UnitExists;
 local UnitGUID              = _G.UnitGUID;
+local UnitGroupRolesAssigned= _G.UnitGroupRolesAssigned;
 local table                 = _G.table;
 local t_insert              = _G.table.insert;
 local str_upper             = _G.string.upper;
@@ -146,22 +147,20 @@ DC.ClassNumToUName = {
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
 
 
--- this gets an array of units for us to check
-
 do
 
-    local i = 1;
+    local i;
+    local _; -- a local dummy trash variable
     local D = D;
-    local _ = false; -- a local dummy trash variable
 
     local MAX_RAID_MEMBERS = _G.MAX_RAID_MEMBERS;
 
     local UnitToGUID = {};
     local GUIDToUnit = {};
 
-    local Raidnum = 0;
+    local Raidnum;
     local Status;
-    local testMode = false;
+    local testMode;
 
     -- define some mock function to make testing easier
     local function _UnitExists (unit)
@@ -231,6 +230,17 @@ do
 
             return "fakeName"..i, nil, randomGroup, nil, nil, randomClass;
         end
+    end
+
+    local fakeRoles = {}; local roles = {"HEALER", "TANK", "DAMAGER", "NONE"};
+    local function _UnitGroupRolesAssigned(unit)
+        if not testMode then
+            return UnitGroupRolesAssigned(unit);
+        elseif not fakeRoles[unit] then
+            fakeRoles[unit] = roles[random(1,4)];
+        end
+
+        return fakeRoles[unit];
     end
 
     local UnitToGUID_mt = { __index = function(self, unit)
@@ -359,26 +369,14 @@ do
     end --}}}
 
 
-    local ClassPrio = { };
-    local GroupsPrio = { };
-
     local currentGroup = 0; -- the group we are in
 
     local unitInfo = {};
 
-    local function a_isBefore_b(a, b, allowSame)
+    local function a_isBefore_b(a, b)
 
         if a == b then
             return nil;
-            --[=[
-            if a == nil then
-                -- if both are nil
-                return nil
-            else
-                -- if same
-                return allowSame and false or nil; -- XXX test
-            end
-            --]=]
         elseif a and b then
             return a < b;
         elseif a and not b then
@@ -395,8 +393,8 @@ do
     local UIa, UIb;
     local min = math.min;
 
-    local function getMinOf3(ui1,ui2,ui3)
-        local t = min(ui1 or 1337, ui2 or 1337, ui3 or 1337)
+    local function getMinOf4(ui1,ui2,ui3,ui4)
+        local t = min(ui1 or 1337, ui2 or 1337, ui3 or 1337, ui4 or 1337)
         return t ~= 1337 and t or nil;
     end
 
@@ -411,7 +409,7 @@ do
 
         -- Priority list
         UIa = unitInfo[ua]; UIb = unitInfo[ub];
-        uaVSub = a_isBefore_b(getMinOf3(IPL[UIa.class], IPL[UIa.group], IPL[UIa.GUID]), getMinOf3(IPL[UIb.class], IPL[UIb.group], IPL[UIb.GUID]));
+        uaVSub = a_isBefore_b(getMinOf4(IPL[UIa.class], IPL[UIa.group], IPL[UIa.GUID], IPL[UIa.role]), getMinOf4(IPL[UIb.class], IPL[UIb.group], IPL[UIb.GUID], IPL[UIb.role]));
 
         if uaVSub ~= nil then
             return uaVSub;
@@ -465,6 +463,7 @@ do
             ["group"]  = group;
             ["RaidID"] = id;
             ["isPet"]  = isPet;
+            ["role"]   = not isPet and _UnitGroupRolesAssigned(unit) or "NONE";
         }
     end
 
@@ -481,9 +480,9 @@ do
         local unit;
 
         -- These are used in local functions
-        Status  = self.Status;
+        Status   = self.Status;
         testMode = Status.TestLayout;
-        Raidnum = _GetNumRaidMembers();
+        Raidnum  = _GetNumRaidMembers();
 
         self:Debug ("|cFFFF44FF-->|r Updating Units Array, test mode:", D.Status.TestLayout, D.Status.TestLayoutUNum, Raidnum);
         local MyGUID  = DC.MyGUID;
@@ -498,8 +497,9 @@ do
         Status.Unit_Array_UnitToGUID    = {};
         unitInfo                        = {};
         if not testMode then
-            fakeGroups                      = {};
-            fakeClasses                     = {};
+            fakeGroups                  = {};
+            fakeClasses                 = {};
+            fakeRoles                   = {};
         end
 
         UnitToGUID = setmetatable(UnitToGUID, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
@@ -507,9 +507,6 @@ do
         GUIDToUnit_ScannedAll = false;
 
         -- ############### PARSE PRIO AND SKIP LIST ###############
-
-        GroupsPrio, ClassPrio = D:MakeGroupsAndClassPrio();
-
         lookforpets = false;
 
         -- First clean and load the prioritylist (remove missing units)
@@ -522,10 +519,13 @@ do
                     Status.InternalPrioList[ListEntry] = i;
                 end
 
-            else -- if ListEntry is not a string, then it's a number
-                 -- representing the groups or the classes
+            elseif ListEntry > 0 then
+                -- > 0 == groups and classes
 
                 Status.InternalPrioList[ListEntry] = i;
+            else
+                -- < 0 == roles
+                Status.InternalPrioList[roles[-ListEntry]] = i;
             end
         end
 
@@ -659,8 +659,7 @@ do
             addUnit("pet", 0, UnitToGUID["pet"] or "pet", currentGroup, true)
         end
 
-        -- NEW focus management
-        -- there is a focus and its not hostile in the first place
+        -- There is a focus and its not hostile in the first place
         if UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player")) then
             pGUID = UnitToGUID["focus"]
             -- the unit is not registered somewhere else yet
@@ -683,40 +682,9 @@ do
         D:Debug("Current group:", currentGroup, D:tAsString(IPL));
         for i, unit in ipairs(Status.Unit_Array) do
             unit = Status.Unit_Array[i];
-            D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[unitInfo[unit].class])), DC.ClassNumToUName[unitInfo[unit].class], unitInfo[unit].group and "g"..unitInfo[unit].group or nil, "i"..unitInfo[unit].RaidID);
+            D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[unitInfo[unit].class])), DC.ClassNumToUName[unitInfo[unit].class], unitInfo[unit].group and "g"..unitInfo[unit].group or nil, "i"..unitInfo[unit].RaidID, unitInfo[unit].role);
         end
         --@end-debug@
-    end
-
-    function D:GetFakeUnit_array ()
-
-        if not testMode then
-            return;
-        end
-
-        self:Debug ("|cFFFF22FF-->|r Creating fake Units Array");
-
-        local Status = self.Status;
-        Status.Unit_Array_GUIDToUnit[DC.MyGUID] =  "player";
-
-        Status.Unit_Array = {}
-
-        for i = 1, D.Status.TestLayoutUNum - 1 do -- the player is always in so we remove one here.
-            Status.Unit_Array_GUIDToUnit["raid" .. i .. "GUID"] = "raid" .. i;
-        end
-
-        local GUID;
-        for GUID, unit in pairs(Status.Unit_Array_GUIDToUnit) do -- /!\ PAIRS not iPAIRS
-            t_insert(Status.Unit_Array, unit);
-
-            Status.Unit_Array_UnitToGUID[unit] = GUID; -- just a useful table, not used here :)
-        end
-
-        table.sort(Status.Unit_Array);
-
-        Status.UnitNum = #Status.Unit_Array;
-        D.Status.GroupUpdatedOn = D:NiceTime(); -- It's used in UNIT_AURA event handler to trigger a rescan if the array is found inacurate
-
     end
 
 end

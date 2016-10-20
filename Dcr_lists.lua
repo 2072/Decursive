@@ -205,18 +205,18 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
                 classname = D.profile.SkipListClass[GUIDorNum];
                 name = D.profile.SkipGUIDtoNAME[GUIDorNum];
             end
-            if not classname then
-                classname = "WARRIOR";
-            end
+          
             if (GUIDorNum) then
                 if (type(GUIDorNum) == "number") then
-                    if (GUIDorNum < 10) then
+                    if (GUIDorNum > 10) then
+                        name = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
+                    elseif GUIDorNum > 0 then
                         name = str_format("[ %s %s ]", L["STR_GROUP"], GUIDorNum);
                     else
-                        name = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
+                        name = str_format("[ %s ]", _G[({"HEALER", "TANK", "DAMAGER"})[-GUIDorNum]] or GUIDorNum);
                     end
                 end
-                Entry:SetText(id.." - "..D:ColorText(name, "FF"..DC.HexClassColor[classname]));
+                Entry:SetText(id.." - "..D:ColorText(name, classname and "FF"..DC.HexClassColor[classname] or (GUIDorNum > 0 and "FFCACAF0" or "FFBAF0DA") ));
             else
                 Entry:SetText("Error - NO name!");
             end
@@ -269,40 +269,13 @@ end -- }}}
 
 -- list specific management functions {{{
 -------------------------------------------------------------------------------
-D.Status.GroupsPrio = { };
-D.Status.ClassPrio  = { };
-function D:MakeGroupsAndClassPrio ()
-
-    if D.Status.PrioChanged then
-        local GroupsPrio = {};
-        local ClassPrio = {};
-
-        for i, ListEntry in ipairs(self.profile.PriorityList) do
-            if (type(ListEntry) ~= "string") then
-                if (ListEntry < 10) then
-                    t_insert(GroupsPrio, ListEntry);
-                else
-                    t_insert(ClassPrio, ListEntry);
-                end
-            end
-        end
-
-        -- Reverse GroupsPrio and ClassPrio so we can have something useful...
-        D.Status.GroupsPrio = self:tReverse(GroupsPrio);
-        D.Status.ClassPrio  = self:tReverse(ClassPrio);
-        D.Status.PrioChanged = false;
-    end
-
-    return D.Status.GroupsPrio, D.Status.ClassPrio;
-end
-
 
 function D:AddTargetToPriorityList() --{{{
     D:Debug( "Adding the target to the priority list");
-    return D:AddUnitToPriorityList("target", true);
+    return D:AddElementToPriorityList("target", true);
 end --}}}
 
-function D:AddUnitToPriorityList( unit, check ) --{{{
+function D:AddElementToPriorityList(element, check) --{{{
 
     if not D.DcrFullyInitialized then
         return false;
@@ -312,19 +285,17 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
         return false;
     end
 
-    if (not check or UnitExists(unit)) then
-        if (type(unit) == "number" or UnitIsPlayer(unit)) then
-            D:Debug("adding %s", unit);
+    if (not check or UnitExists(element)) then
+        if (type(element) == "number" or UnitIsPlayer(element)) then
+            D:Debug("adding %s", element);
 
             --local name;
             local GUIDorNum;
 
-            if type(unit) == "number" then
-                GUIDorNum = unit;
+            if type(element) == "number" then
+                GUIDorNum = element;
             else
-                --name = (D:UnitName(unit));
-                GUIDorNum = UnitGUID(unit);
-                --if name == DC.UNKNOWN then
+                GUIDorNum = UnitGUID(element);
                 if not GUIDorNum then
                     return false;
                 end
@@ -333,23 +304,14 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
             if D.profile.PrioGUIDtoNAME[GUIDorNum] then
                 return false;
             end
-            --[[
-            for _, pname in pairs(D.profile.PriorityList) do
-                if (name == pname) then
-                    return false;
-                end
-            end
-            --]]
 
             table.insert(D.profile.PriorityList,GUIDorNum);
 
-
-
-            if (type(unit) == "string") then
-                _, D.profile.PriorityListClass[GUIDorNum] = UnitClass(unit);
-                D.profile.PrioGUIDtoNAME[GUIDorNum] = (D:UnitName(unit));
-            elseif unit > 10 then
-                D.profile.PriorityListClass[unit] = DC.ClassNumToUName[unit];
+            if (type(element) == "string") then
+                _, D.profile.PriorityListClass[GUIDorNum] = UnitClass(element);
+                D.profile.PrioGUIDtoNAME[GUIDorNum] = (D:UnitName(element));
+            elseif element > 10 then
+                D.profile.PriorityListClass[element] = DC.ClassNumToUName[element];
                 D.profile.PrioGUIDtoNAME[GUIDorNum] = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
             else
                 D.profile.PrioGUIDtoNAME[GUIDorNum] = str_format("[ %s %s ]", L["STR_GROUP"], GUIDorNum);
@@ -358,16 +320,16 @@ function D:AddUnitToPriorityList( unit, check ) --{{{
             DecursivePriorityListFrame.UpdateYourself = true;
             D:Debug("Unit %s added to the prio list", GUIDorNum);
             D.Status.PrioChanged       = true;
-            D:GroupChanged ("AddUnitToPriorityList");
+            D:GroupChanged ("AddElementToPriorityList");
             return true;
         else
-            D:Debug("Unit is not a player:", unit, check, UnitExists(unit));
-            if (not unit) then
-                error("D:AddUnitToPriorityList: bad argument #1 'unit' must be!",2);
+            D:Debug("Unit is not a player:", element, check, UnitExists(element));
+            if (not element) then
+                error("D:AddElementToPriorityList: bad argument #1 'element' must be!",2);
             end
         end
     else
-            D:Debug("Unit does not exist");
+        D:Debug("Unit does not exist");
     end
     return false;
 end --}}}
@@ -396,29 +358,27 @@ end --}}}
 
 function D:AddTargetToSkipList() --{{{
     D:Debug( "Adding the target to the Skip list");
-    return D:AddUnitToSkipList("target");
+    return D:AddElementToSkipList("target");
 end --}}}
 
-function D:AddUnitToSkipList( unit) --{{{
+function D:AddElementToSkipList(element) --{{{
 
     if (#D.profile.SkipList > 99) then
         return false;
     end
 
-    if (not check or UnitExists(unit)) then
-        if (type(unit) == "number" or UnitIsPlayer(unit)) then
-            D:Debug("adding %s", unit);
+    if (not check or UnitExists(element)) then
+        if (type(element) == "number" or UnitIsPlayer(element)) then
+            D:Debug("adding %s", element);
 
              --local name;
             local GUIDorNum;
 
             
-            if type(unit) == "number" then
-                GUIDorNum = unit;
+            if type(element) == "number" then
+                GUIDorNum = element;
             else
-                --name = (D:UnitName( unit));
-                GUIDorNum = UnitGUID(unit);
-                --if name == DC.UNKNOWN then
+                GUIDorNum = UnitGUID(element);
                 if not GUIDorNum then
                     return false;
                 end
@@ -427,21 +387,14 @@ function D:AddUnitToSkipList( unit) --{{{
             if D.profile.SkipGUIDtoNAME[GUIDorNum] then
                 return false;
             end
-            --[[
-            for _, pname in pairs(D.profile.SkipList) do
-                if (name == pname) then
-                    return false;
-                end
-            end
-            --]]
 
             table.insert(D.profile.SkipList,GUIDorNum);
 
-            if (type(unit) == "string") then
-                _, D.profile.SkipListClass[GUIDorNum] = UnitClass(unit);
-                D.profile.SkipGUIDtoNAME[GUIDorNum] = (D:UnitName(unit));
-            elseif unit > 10 then
-                D.profile.SkipListClass[unit] = DC.ClassNumToUName[unit];
+            if (type(element) == "string") then
+                _, D.profile.SkipListClass[GUIDorNum] = UnitClass(element);
+                D.profile.SkipGUIDtoNAME[GUIDorNum] = (D:UnitName(element));
+            elseif element > 10 then
+                D.profile.SkipListClass[element] = DC.ClassNumToUName[element];
                 D.profile.SkipGUIDtoNAME[GUIDorNum] = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
             else
                 D.profile.SkipGUIDtoNAME[GUIDorNum] = str_format("[ %s %s ]", L["STR_GROUP"], GUIDorNum);
@@ -450,10 +403,10 @@ function D:AddUnitToSkipList( unit) --{{{
             DecursiveSkipListFrame.UpdateYourself = true;
             D:Debug("Unit %s added to the skip list", GUIDorNum);
             D.Status.PrioChanged       = true;
-            D:GroupChanged ("AddUnitToSkipList");
+            D:GroupChanged ("AddElementToSkipList");
             return true;
         else
-            D:Debug("Unit is not a player:", unit);
+            D:Debug("Unit is not a player:", element);
         end
     else
             D:Debug("Unit does not exist");
@@ -490,15 +443,6 @@ end --}}}
 
 function D:IsInPriorList (GUID) --{{{
     return self.Status.InternalPrioList[GUID] or false;
-
---[=[
-    for _, PriorName in pairs(D.profile.PrioGUIDtoNAME) do
-        if (PriorName == name) then
-            return true;
-        end
-    end
-    return false;
-    --]=]
 end --}}}
 
 function D:IsInSkipList (name) --{{{
