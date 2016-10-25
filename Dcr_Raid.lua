@@ -2,7 +2,7 @@
     This file is part of Decursive.
     
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
+    Copyright (C) 2006-2016 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
     is no longer free software, all rights are reserved to its author (John Wellesz).
@@ -88,28 +88,8 @@ local rawget                = _G.rawget;
 local GetTime               = _G.GetTime;
 -------------------------------------------------------------------------------
 
--- GROUP STATUS UPDATE, these functions update the UNIT table to scan {{{
+-- GROUP STATUS UPDATE, these functions update the UNIT table to scan
 -------------------------------------------------------------------------------
-
---[=[
-local function AddToSort (unit, GUID, index) -- // {{{
-    if (D.profile.Random_Order and
-        (not D.Status.InternalPrioList[GUID]) and not GUID~=MyGUID) then
-        index = random (1, 3000);
-    end
-    SortingTable[unit] = index;
-    --D:Debug("Adding to sort: ", unit, index);
-end --}}}
---]=]
-
-
--- Raid/Party Name Check Function (a terrible function, need optimising)
--- this returns the UnitID that the Name points to
--- this does not check "target" or "mouseover"
---[=[
---]=]
--- }}}
-
 
 
 DC.ClassNumToLName = {
@@ -149,7 +129,6 @@ DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
 
 do
 
-    local i;
     local _; -- a local dummy trash variable
     local D = D;
 
@@ -160,11 +139,11 @@ do
 
     local Raidnum;
     local Status;
-    local testMode;
+    local TestMode;
 
     -- define some mock function to make testing easier
     local function _UnitExists (unit)
-        if not testMode then
+        if not TestMode then
             return UnitExists(unit);
         elseif #SortingTable < D.Status.TestLayoutUNum then
             return true;
@@ -173,23 +152,23 @@ do
         end
     end
 
-    local fakeClasses = {};
+    local FakeClasses = {};
     local function _UnitClass(unit)
-        if not testMode then
+        if not TestMode then
             return UnitClass(unit);
         else
             if UnitClass(unit) then
                 return UnitClass(unit);
             end
 
-            local randomClass = fakeClasses[unit] or DC.ClassNumToUName[random(11,22)];
-            fakeClasses[unit] = randomClass;
+            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,22)];
+            FakeClasses[unit] = randomClass;
             return randomClass, randomClass;
         end
     end
 
     local function _UnitGUID (unit)
-        if not testMode then
+        if not TestMode then
             return UnitGUID(unit);
         elseif #SortingTable < D.Status.TestLayoutUNum then
             return UnitGUID(unit) or "fakeGUID"..unit.."-"..#SortingTable;
@@ -197,7 +176,7 @@ do
     end
 
     local function _GetNumRaidMembers()
-        if not testMode then
+        if not TestMode then
             return GetNumRaidMembers();
         elseif D.Status.TestLayoutUNum > 5 then
             return D.Status.TestLayoutUNum < MAX_RAID_MEMBERS and D.Status.TestLayoutUNum or MAX_RAID_MEMBERS;
@@ -206,41 +185,41 @@ do
         end
     end
 
-    local fakeGroups = {};
+    local FakeGroups = {};
     local function _GetRaidRosterInfo(i)
-        if not testMode then
+        if not TestMode then
             return GetRaidRosterInfo(i);
         else
             if GetRaidRosterInfo(i) then
                 return GetRaidRosterInfo(i);
             end
 
-            local randomClass = fakeClasses["raid"..i] or DC.ClassNumToUName[random(11,22)];
-            fakeClasses["raid"..i] = randomClass;
+            local randomClass = FakeClasses["raid"..i] or DC.ClassNumToUName[random(11,22)];
+            FakeClasses["raid"..i] = randomClass;
             local randomGroup;
 
             repeat
                 randomGroup = random (1,8);
-                if not fakeGroups[randomGroup] then
-                    fakeGroups[randomGroup] = 1;
-                elseif fakeGroups[randomGroup] ~= 5 then
-                    fakeGroups[randomGroup] = fakeGroups[randomGroup] + 1;
+                if not FakeGroups[randomGroup] then
+                    FakeGroups[randomGroup] = 1;
+                elseif FakeGroups[randomGroup] ~= 5 then
+                    FakeGroups[randomGroup] = FakeGroups[randomGroup] + 1;
                 end
-            until fakeGroups[randomGroup] == 5;
+            until FakeGroups[randomGroup] == 5;
 
             return "fakeName"..i, nil, randomGroup, nil, nil, randomClass;
         end
     end
 
-    local fakeRoles = {}; local roles = {"HEALER", "TANK", "DAMAGER", "NONE"};
+    local FakeRoles = {}; local roles = {"HEALER", "TANK", "DAMAGER", "NONE"};
     local function _UnitGroupRolesAssigned(unit)
-        if not testMode then
+        if not TestMode then
             return UnitGroupRolesAssigned(unit);
-        elseif not fakeRoles[unit] then
-            fakeRoles[unit] = roles[random(1,4)];
+        elseif not FakeRoles[unit] then
+            FakeRoles[unit] = roles[random(1,4)];
         end
 
-        return fakeRoles[unit];
+        return FakeRoles[unit];
     end
 
     local UnitToGUID_mt = { __index = function(self, unit)
@@ -249,21 +228,12 @@ do
         self[unit] = GUID;
         GUIDToUnit[GUID] = unit;
 
-        --[=[
-        if (D.db.global.debug) then
-            if not GUID then
-                D:errln("UnitToGUID_mt: no GUID for: ", unit); -- this is not an error, it's to see when raid# ids are not contiguous...
-            end
-        end
-        --]=]
-
-
         return self[unit];
     end };
 
 
     local GUIDToUnit_ScannedAll = false;
-    local lookforpets = true;
+    local Lookforpets = true;
     local GUIDToUnit_mt = { __index = function(self, GUID)
         -- {{{
 
@@ -309,7 +279,6 @@ do
             end
         else
             -- we are in a raid
-            local i;
             local foundmembers = 0;
             local RaidGUID;
             for i=1, MAX_RAID_MEMBERS do
@@ -324,7 +293,7 @@ do
                         break;
                     end
 
-                    if lookforpets and D.profile.Scan_Pets and GUID == UnitToGUID["raidpet"..i]  then
+                    if Lookforpets and D.profile.Scan_Pets and GUID == UnitToGUID["raidpet"..i]  then
                         unit = "raidpet"..i;
                         break;
                     end
@@ -347,31 +316,19 @@ do
     --}}}
 
 
-    local function IsInSkipList ( GUID, group, classNum ) -- {{{
-        if (D.Status.InternalSkipList[GUID] or D.Status.InternalSkipList[group] or D.Status.InternalSkipList[classNum]) then
+    local IPL;
+    local ISL;
+    local function IsInSkipList (GUID, group, classNum, role) -- {{{
+        if (   ISL[GUID]
+            or ISL[group]
+            or ISL[classNum]
+            or role ~= "NONE" and ISL[role]) then
             return true;
         end
 
         return false;
     end -- }}}
 
-    local function IsInSkipOrPriorList( GUID, group, classNum )  --{{{
-
-        if (IsInSkipList ( GUID, group, classNum )) then
-            return true;
-        end
-
-        if (D.Status.InternalPrioList[GUID] or D.Status.InternalPrioList[group] or D.Status.InternalPrioList[classNum]) then
-            return true;
-        end
-
-        return false;
-    end --}}}
-
-
-    local currentGroup = 0; -- the group we are in
-
-    local unitInfo = {};
 
     local function a_isBefore_b(a, b)
 
@@ -387,7 +344,6 @@ do
 
     end
 
-    local IPL;
 
     local uaVSub;
     local UIa, UIb;
@@ -398,17 +354,19 @@ do
         return t ~= 1337 and t or nil;
     end
 
+    local UnitInfo = {};
+    local CurrentGroup = 0; -- the group we are in
     local function isUnitBeforeUnit(ua, ub)
         -- pet
         -- humans are > to pets in WoW...
-        uaVSub = a_isBefore_b(unitInfo[ub].isPet, unitInfo[ua].isPet);
+        uaVSub = a_isBefore_b(UnitInfo[ub].isPet, UnitInfo[ua].isPet);
 
         if uaVSub ~= nil then
             return uaVSub;
         end
 
         -- Priority list
-        UIa = unitInfo[ua]; UIb = unitInfo[ub];
+        UIa = UnitInfo[ua]; UIb = UnitInfo[ub];
         uaVSub = a_isBefore_b(getMinOf4(IPL[UIa.class], IPL[UIa.group], IPL[UIa.GUID], IPL[UIa.role]), getMinOf4(IPL[UIb.class], IPL[UIb.group], IPL[UIb.GUID], IPL[UIb.role]));
 
         if uaVSub ~= nil then
@@ -416,27 +374,27 @@ do
         end
 
         -- default group
-        uaVSub = a_isBefore_b(unitInfo[ua].group and (unitInfo[ua].group + 8 - currentGroup) % 8 or nil, unitInfo[ub].group and (unitInfo[ub].group + 8 - currentGroup) % 8 or nil);
+        uaVSub = a_isBefore_b(UnitInfo[ua].group and (UnitInfo[ua].group + 8 - CurrentGroup) % 8 or nil, UnitInfo[ub].group and (UnitInfo[ub].group + 8 - CurrentGroup) % 8 or nil);
 
         if uaVSub ~= nil then
             return uaVSub;
         end
 
          -- default id
-        uaVSub = a_isBefore_b(unitInfo[ua].RaidID, unitInfo[ub].RaidID);
+        uaVSub = a_isBefore_b(UnitInfo[ua].RaidID, UnitInfo[ub].RaidID);
 
         if uaVSub ~= nil then
             return uaVSub;
-        elseif unitInfo[ua].GUID == unitInfo[ub].GUID then
-            D:Debug('identity in sort for', unitInfo[ua].GUID);
+        elseif UnitInfo[ua].GUID == UnitInfo[ub].GUID then
+            D:Debug('identity in sort for', UnitInfo[ua].GUID);
             return false;
         else
             D:AddDebugText("impossible sort group issue",
-                "Cl:", unitInfo[ua].class,  unitInfo[ub].class,
-                "Gu:", unitInfo[ua].GUID,   unitInfo[ub].GUID,
-                "Gr:", unitInfo[ua].group,  unitInfo[ub].group,
-                "ID:", unitInfo[ua].RaidID, unitInfo[ub].RaidID,
-                "iP:", unitInfo[ua].isPet,  unitInfo[ub].isPet,
+                "Cl:", UnitInfo[ua].class,  UnitInfo[ub].class,
+                "Gu:", UnitInfo[ua].GUID,   UnitInfo[ub].GUID,
+                "Gr:", UnitInfo[ua].group,  UnitInfo[ub].group,
+                "ID:", UnitInfo[ua].RaidID, UnitInfo[ub].RaidID,
+                "iP:", UnitInfo[ua].isPet,  UnitInfo[ub].isPet,
                 "--:", D:tAsString(SortingTable)
             );
             if D.RunningADevVersion then
@@ -457,7 +415,7 @@ do
 
         t_insert(SortingTable, unit);
 
-        unitInfo[unit] = {
+        UnitInfo[unit] = {
             ["class"]  = DC.ClassUNameToNum[select(2, _UnitClass(unit))];
             ["GUID"]   = GUID;
             ["group"]  = group;
@@ -465,6 +423,26 @@ do
             ["isPet"]  = isPet;
             ["role"]   = not isPet and _UnitGroupRolesAssigned(unit) or "NONE";
         }
+    end
+
+    local function setInternalList(inList, outList)
+        for i, ListEntry in ipairs(inList) do
+
+            -- first add GUIDs present in our raid group
+            if (type(ListEntry) == "string") then
+                if GUIDToUnit[ListEntry] then
+                    outList[ListEntry] = i;
+                end
+
+            elseif ListEntry > 0 then
+                -- > 0 == groups and classes
+
+                outList[ListEntry] = i;
+            else
+                -- < 0 == roles
+                outList[roles[-ListEntry]] = i;
+            end
+        end
     end
 
     local RaidRosterCache = {};
@@ -481,25 +459,26 @@ do
 
         -- These are used in local functions
         Status   = self.Status;
-        testMode = Status.TestLayout;
+        TestMode = Status.TestLayout;
         Raidnum  = _GetNumRaidMembers();
 
         self:Debug ("|cFFFF44FF-->|r Updating Units Array, test mode:", D.Status.TestLayout, D.Status.TestLayoutUNum, Raidnum);
-        local MyGUID  = DC.MyGUID;
+        local myGUID  = DC.MyGUID;
 
 
         -- clear all the arrays
         Status.InternalPrioList         = {}; -- these lists contains only units currently present
-        IPL                             = Status.InternalPrioList
+        IPL                             = Status.InternalPrioList;
         Status.InternalSkipList         = {};
+        ISL                             = Status.InternalSkipList;
         SortingTable                    = {};
         Status.Unit_Array_GUIDToUnit    = {};
         Status.Unit_Array_UnitToGUID    = {};
-        unitInfo                        = {};
-        if not testMode then
-            fakeGroups                  = {};
-            fakeClasses                 = {};
-            fakeRoles                   = {};
+        UnitInfo                        = {};
+        if not TestMode then
+            FakeGroups                  = {};
+            FakeClasses                 = {};
+            FakeRoles                   = {};
         end
 
         UnitToGUID = setmetatable(UnitToGUID, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
@@ -507,46 +486,21 @@ do
         GUIDToUnit_ScannedAll = false;
 
         -- ############### PARSE PRIO AND SKIP LIST ###############
-        lookforpets = false;
+        Lookforpets = false; -- ignore pet while checking existing names
 
         -- First clean and load the prioritylist (remove missing units)
-        for i, ListEntry in ipairs(self.profile.PriorityList) do
-
-            -- first add GUIDs present in our raid group
-            if (type(ListEntry) == "string") then
-                unit = GUIDToUnit[ListEntry];
-                if unit then
-                    Status.InternalPrioList[ListEntry] = i;
-                end
-
-            elseif ListEntry > 0 then
-                -- > 0 == groups and classes
-
-                Status.InternalPrioList[ListEntry] = i;
-            else
-                -- < 0 == roles
-                Status.InternalPrioList[roles[-ListEntry]] = i;
-            end
-        end
-
+        setInternalList(self.profile.PriorityList, IPL);
+        
         -- Get a cleaned skip list
-        for i, ListEntry in ipairs(self.profile.SkipList) do
-            if type(ListEntry) == "string" then
-                unit = GUIDToUnit[ListEntry];
-                if unit then
-                    Status.InternalSkipList[ListEntry] = i;
-                end
-            else
-                Status.InternalSkipList[ListEntry] = i;
-            end
-        end
-        lookforpets = true;
+        setInternalList(self.profile.SkipList, ISL);
+        
+        Lookforpets = true;
 
         -- if we are not in a raid but in a party
         if Raidnum == 0 then
-            currentGroup = 1; -- this is used to compute the default priorities
-            if not IsInSkipList(MyGUID, false, DC.ClassUNameToNum[DC.MyClass]) then
-                addUnit("player", 0, MyGUID, 1)
+            CurrentGroup = 1; -- this is used to compute the default priorities
+            if not IsInSkipList(myGUID, false, DC.ClassUNameToNum[DC.MyClass], _UnitGroupRolesAssigned("player")) then
+                addUnit("player", 0, myGUID, 1)
             end
 
             -- add the party members and their pets... if they exist
@@ -557,7 +511,7 @@ do
 
                     pGUID = UnitToGUID[unit] or unit; -- at logon sometimes GUID is nil...
 
-                    if not IsInSkipList(pGUID, nil, DC.ClassUNameToNum[(select(2, _UnitClass(unit)))]) then
+                    if not IsInSkipList(pGUID, nil, DC.ClassUNameToNum[(select(2, _UnitClass(unit)))], _UnitGroupRolesAssigned(unit)) then
 
                         addUnit(unit, i, pGUID, 1);
 
@@ -574,58 +528,57 @@ do
             end
         end
 
-       
-
         if Raidnum > 0 then -- if we are in a raid
-            currentGroup = 0;
+            CurrentGroup = 0;
             local rName, rGroup, rClass, GUID;
-            local CaheID = 1; -- make an ordered table
+            local caheID = 1; -- make an ordered table
             local excluded = 0;
             local playerPrio = 900;
 
             -- Cache the raid roster info eliminating useless info and already listed members
             for i = 1, MAX_RAID_MEMBERS do
                 rName, _, rGroup, _, _, rClass = _GetRaidRosterInfo(i);
-                GUID =  UnitToGUID["raid"..i];
+                unit = "raid"..i;
+                GUID =  UnitToGUID[unit];
 
                 -- add all except member to skip
-                if not IsInSkipList(GUID, rGroup, DC.ClassUNameToNum[rClass]) then
+                if not IsInSkipList(GUID, rGroup, DC.ClassUNameToNum[rClass], _UnitGroupRolesAssigned(unit)) then
 
                     if (rName) then -- (at log-in GetRaidRosterInfo() returns garbage)
 
-                        if (not RaidRosterCache[CaheID]) then
-                            RaidRosterCache[CaheID] = {};
+                        if (not RaidRosterCache[caheID]) then
+                            RaidRosterCache[caheID] = {};
                         end
 
-                        RaidRosterCache[CaheID].rName    = rName;
-                        RaidRosterCache[CaheID].rGroup   = rGroup;
-                        RaidRosterCache[CaheID].rClass   = rClass;
-                        RaidRosterCache[CaheID].rIndex   = i;
-                        RaidRosterCache[CaheID].rGUID    = GUID;
-                        CaheID = CaheID + 1;
+                        RaidRosterCache[caheID].rName    = rName;
+                        RaidRosterCache[caheID].rGroup   = rGroup;
+                        RaidRosterCache[caheID].rClass   = rClass;
+                        RaidRosterCache[caheID].rIndex   = i;
+                        RaidRosterCache[caheID].rGUID    = GUID;
+                        caheID = caheID + 1;
                     end
                 else
                     excluded = excluded + 1;
                 end
 
                 -- find our group (a whole iteration is required, raid info are not ordered) -- wrong, the player is always the last now but never trust Blizzard...
-                if currentGroup == 0 and GUID == MyGUID then -- anyway they do the same thing in PlayerFrame.lua...
-                    currentGroup = rGroup;
+                if CurrentGroup == 0 and GUID == myGUID then -- anyway they do the same thing in PlayerFrame.lua...
+                    CurrentGroup = rGroup;
                 end
 
-                if CaheID + excluded > Raidnum then -- we found all the units
-                    RaidRosterCache[CaheID] = false;
+                if caheID + excluded > Raidnum then -- we found all the units
+                    RaidRosterCache[caheID] = false;
                     break;
                 end
             end
 
-            if testMode and currentGroup == 0 then
-                currentGroup = random(1,8);
+            if TestMode and CurrentGroup == 0 then
+                CurrentGroup = random(1,8);
             end
 
             -- Add the player to the main list if needed
             
-            addUnit("player", 0, MyGUID, currentGroup)
+            addUnit("player", 0, myGUID, CurrentGroup)
 
             -- Now we have a cache without the units we want to skip
             local TempID;
@@ -656,7 +609,7 @@ do
 
         -- add our own pet
         if self.profile.Scan_Pets and _UnitExists("pet") then
-            addUnit("pet", 0, UnitToGUID["pet"] or "pet", currentGroup, true)
+            addUnit("pet", 0, UnitToGUID["pet"] or "pet", CurrentGroup, true)
         end
 
         -- There is a focus and its not hostile in the first place
@@ -679,20 +632,20 @@ do
         self:Debug ("|cFFFF44FF-->|r Update complete!", Status.UnitNum);
 
         --@debug@
-        D:Debug("Current group:", currentGroup, D:tAsString(IPL));
+        D:Debug("Current group:", CurrentGroup, D:tAsString(IPL));
         for i, unit in ipairs(Status.Unit_Array) do
             unit = Status.Unit_Array[i];
-            D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[unitInfo[unit].class])), DC.ClassNumToUName[unitInfo[unit].class], unitInfo[unit].group and "g"..unitInfo[unit].group or nil, "i"..unitInfo[unit].RaidID, unitInfo[unit].role);
+            D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
         end
         --@end-debug@
     end
 
 end
 
---}}}
 
 -------------------------------------------------------------------------------
 T._LoadedFiles["Dcr_Raid.lua"] = "@project-version@";
 
 -- "Your God is dead and no one cares"
 -- "If there is a Hell I'll see you there"
+-- NIN
