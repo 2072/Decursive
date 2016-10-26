@@ -63,6 +63,7 @@ D.Status.InternalPrioList       = { };
 D.Status.InternalSkipList       = { };
 D.Status.Unit_Array             = { };
 
+local _G                    = _G;
 local pairs                 = _G.pairs;
 local ipairs                = _G.ipairs;
 local type                  = _G.type;
@@ -186,6 +187,7 @@ do
     end
 
     local FakeGroups = {};
+    local FakeGroupsAttribution = {};
     local function _GetRaidRosterInfo(i)
         if not TestMode then
             return GetRaidRosterInfo(i);
@@ -194,18 +196,26 @@ do
                 return GetRaidRosterInfo(i);
             end
 
-            local randomClass = FakeClasses["raid"..i] or DC.ClassNumToUName[random(11,22)];
-            FakeClasses["raid"..i] = randomClass;
+            local unit = "raid"..i;
+
+            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,22)];
+            FakeClasses[unit] = randomClass;
             local randomGroup;
 
-            repeat
-                randomGroup = random (1,8);
-                if not FakeGroups[randomGroup] then
-                    FakeGroups[randomGroup] = 1;
-                elseif FakeGroups[randomGroup] ~= 5 then
-                    FakeGroups[randomGroup] = FakeGroups[randomGroup] + 1;
-                end
-            until FakeGroups[randomGroup] == 5;
+            if FakeGroupsAttribution[unit] then
+                randomGroup = FakeGroupsAttribution[unit];
+            else
+                repeat
+                    randomGroup = random (1,8);
+                    if not FakeGroups[randomGroup] then
+                        FakeGroups[randomGroup] = 1;
+                    elseif FakeGroups[randomGroup] ~= 5 then
+                        FakeGroups[randomGroup] = FakeGroups[randomGroup] + 1;
+                    end
+                until FakeGroups[randomGroup] == 5;
+
+                FakeGroupsAttribution[unit] = randomGroup;
+            end
 
             return "fakeName"..i, nil, randomGroup, nil, nil, randomClass;
         end
@@ -459,10 +469,6 @@ do
 
         -- These are used in local functions
         Status   = self.Status;
-        TestMode = Status.TestLayout;
-        Raidnum  = _GetNumRaidMembers();
-
-        self:Debug ("|cFFFF44FF-->|r Updating Units Array, test mode:", D.Status.TestLayout, D.Status.TestLayoutUNum, Raidnum);
         local myGUID  = DC.MyGUID;
 
 
@@ -475,11 +481,20 @@ do
         Status.Unit_Array_GUIDToUnit    = {};
         Status.Unit_Array_UnitToGUID    = {};
         UnitInfo                        = {};
-        if not TestMode then
+
+        -- test mode was disabled
+        if TestMode ~= Status.TestLayout then
             FakeGroups                  = {};
+            FakeGroupsAttribution       = {};
             FakeClasses                 = {};
             FakeRoles                   = {};
+
+            TestMode = Status.TestLayout;
         end
+
+        Raidnum  = _GetNumRaidMembers();
+
+        self:Debug ("|cFFFF44FF-->|r Updating Units Array, test mode:", D.Status.TestLayout, D.Status.TestLayoutUNum, Raidnum);
 
         UnitToGUID = setmetatable(UnitToGUID, UnitToGUID_mt); -- we could simply erase this one to prevent garbage
         GUIDToUnit = setmetatable(GUIDToUnit, GUIDToUnit_mt); -- this one cannot be erased (memory leak due to GUID...)
@@ -573,7 +588,7 @@ do
             end
 
             if TestMode and CurrentGroup == 0 then
-                CurrentGroup = random(1,8);
+                CurrentGroup = random(1,8); -- XXX tofix
             end
 
             -- Add the player to the main list if needed
