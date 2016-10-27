@@ -87,16 +87,14 @@
     <!-- }}} -->
 
     <!--  Dcr_ListFrameTemplate {{{ -->
-    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" EnableMouseWheel="true" movable="true" hidden="true" virtual="true" parent="UIParent">
+    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" EnableMouseWheel="true" movable="true" clampedToScreen="true" hidden="true" virtual="true" parent="UIParent">
         <Size>
             <AbsDimension x="170" y="210" />
         </Size>
 
         <Anchors>
-            <Anchor point="CENTER" />
+            <Anchor point="CENTER" relativeTo="UIParent" />
         </Anchors>
-
-        <TitleRegion setAllPoints="true"/>
 
         <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
             <EdgeSize>
@@ -118,6 +116,7 @@
                 DcrDisplay_Tooltip:Hide();
             </OnLeave>
             <OnLoad>
+                <!-- overridden in implementation -->
                 if DecursiveInstallCorrupted then return end
                 DecursiveRootTable.Dcr.ListFrameTemplate_OnLoad(self);
             </OnLoad>
@@ -128,6 +127,9 @@
             <OnUpdate>
                 self.OnUpdate(self);
             </OnUpdate>
+
+            <OnDragStart>self:StartMoving();</OnDragStart>
+            <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
         </Scripts>
 
         <Layers>
@@ -349,8 +351,18 @@
     <!-- DecursivePriorityListFrame  {{{ -->
     <Frame name="DecursivePriorityListFrame" inherits="Dcr_ListFrameTemplate">
 
+        <Anchors>
+            <Anchor point="CENTER">
+                <Offset>
+                    <AbsDimension x="-85" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+
         <Scripts>
             <OnLoad>
+                self:RegisterForDrag("LeftButton");
+
                 if DecursiveInstallCorrupted then return end
                 DecursiveRootTable.Dcr.ListFrameTemplate_OnLoad(self);
 
@@ -383,8 +395,18 @@
     <!-- DecursiveSkipListFrame  {{{ -->
     <Frame name="DecursiveSkipListFrame" inherits="Dcr_ListFrameTemplate">
 
+        <Anchors>
+            <Anchor point="CENTER">
+                <Offset>
+                    <AbsDimension x="85" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+
         <Scripts>
             <OnLoad>
+                self:RegisterForDrag("LeftButton");
+
                 if DecursiveInstallCorrupted then return end
                 DecursiveRootTable.Dcr.ListFrameTemplate_OnLoad(self);
 
@@ -417,16 +439,18 @@
 
 
     <!-- DecursivePopulateListFrame {{{ -->
-    <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent">
+    <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" parent="UIParent">
         <Size>
             <AbsDimension x="228" y="285" />
         </Size>
 
         <Anchors>
-            <Anchor point="CENTER" />
+            <Anchor point="CENTER">
+                <Offset>
+                    <AbsDimension x="0" y="285"/>
+                </Offset>
+            </Anchor>
         </Anchors>
-
-        <TitleRegion setAllPoints="true"/>
 
         <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
             <EdgeSize>
@@ -444,6 +468,11 @@
             <OnShow>
                 _G[self:GetName().."Title"]:SetText(DecursiveRootTable.Dcr.L["STR_QUICK_POP"]);
             </OnShow>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton");
+            </OnLoad>
+            <OnDragStart>self:StartMoving();</OnDragStart>
+            <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
         </Scripts>
         <Layers>
             <Layer level="BACKGROUND">
