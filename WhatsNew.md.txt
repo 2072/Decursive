@@ -1,17 +1,11 @@
-Decursive 2.7.5_beta_2 (2016-10-26)
-===================================
+Decursive 2.7.5 (2016-10-27)
+============================
 
 
-Changes from Decursive 2.7.5_beta_1 to Decursive 2.7.5_beta_2 (2016-10-26)
---------------------------------------------------------------------------
+Changes from Decursive 2.7.4.7 to Decursive 2.7.5 (2016-10-27)
+--------------------------------------------------------------
 
 - Add support for roles (Healer, Tank and Damager in priority and skip lists).
-
-- Code cleanup and improvements.
-
-
-Changes from Decursive 2.7.4.7 to Decursive 2.7.5_beta_1 (2016-10-11)
----------------------------------------------------------------------
 
 - Add support for mouse's 4th and 5th buttons in micro-unit frames. (They need
   to be assigned directly in Decursive's option panel).
@@ -22,6 +16,8 @@ Changes from Decursive 2.7.4.7 to Decursive 2.7.5_beta_1 (2016-10-11)
 - Add support for CUSTOM_CLASS_COLORS.
 
 - Reliability improvements concerning very rare "script ran too long" Lua errors.
+
+- Code cleanup and improvements.
 
 
 Changes from Decursive 2.7.4.6 to Decursive 2.7.4.7 (2016-07-26)
