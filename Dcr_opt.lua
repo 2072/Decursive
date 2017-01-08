@@ -103,6 +103,10 @@ function D:GetDefaultsSettings()
         },
 
         global = {
+            SRTLerrors = {
+                ["total"] = 0
+                -- "file:line" = {date, ...}
+            },
             debug = false,
             NonRelease = false,
             TocExpiredDetection = false,

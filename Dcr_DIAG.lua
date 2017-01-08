@@ -34,6 +34,10 @@ local strjoin           = _G.strjoin;
 local GetCVarBool       = _G.GetCVarBool;
 local IsAddOnLoaded     = _G.IsAddOnLoaded;
 local GetAddOnMetadata  = _G.GetAddOnMetadata;
+local time              = _G.time;
+local pcall             = _G.pcall;
+local pairs             = _G.pairs;
+local ipairs            = _G.ipairs;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI. -- Also used by HHTD from 2013-04-05
@@ -277,8 +281,6 @@ do
         _Debug(unpack(TIandBI));
 
 
-        -- TODO: add add-on memory usage stats and prevent grabage creation in critical part to avoid triggering the grabage collector...
-
         DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
@@ -310,15 +312,14 @@ do
         end
 
         -- get running add-ons list
-        local ALASsuccess, ALASerrorm, loadedAddonList;
-        ALASsuccess, ALASerrorm, loadedAddonList = pcall(GetAddonListAsString);
+        local ALASsuccess, ALASerrorm, loadedAddonList = pcall(GetAddonListAsString);
 
-        
-        local ACsuccess, ACerrorm, actionsConfiguration;
-        ACsuccess, ACerrorm, actionsConfiguration = pcall(T._ExportActionsConfiguration);
+        local ACsuccess, ACerrorm, actionsConfiguration = pcall(T._ExportActionsConfiguration);
 
-        local CSCsuccess, CSCerrorm, customSpellConfiguration;
-        CSCsuccess, CSCerrorm, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
+        local CSCsuccess, CSCerrorm, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
+
+        local SRTOLEsuccess, SRTOLEerrorm, SRTOLErrors =
+            pcall(function() return "Script ran too long errors:\n" .. T.Dcr:tAsString(T.Dcr.db.global.SRTLerrors) end);
 
         local headerSucess, headerGenErrorm;
         if not DebugHeader then
@@ -332,6 +333,7 @@ do
         .. table.concat(T._DebugTextTable, "")
         .. "\n\n-- --\n" .. (ACsuccess and actionsConfiguration or ACerrorm) .. "\n-- --"
         .. (CSCsuccess and customSpellConfiguration or CSCerrorm) .. "\n-- --"
+        .. (SRTOLEsuccess and SRTOLErrors or SRTOLEerrorm) .. "\n-- --"
         .. "\n\nLoaded Addons:\n\n" .. (ALASsuccess and loadedAddonList or ALASerrorm) .. "\n-- --";
 
         if _G.DecursiveDebuggingFrameText then
@@ -400,6 +402,50 @@ T._HHTDErrors = 0;
 
 local InCombatLockdown  = _G.InCombatLockdown;
 local LastErrorMessage = "!NotSet!";
+
+-- a special handler for these random "Script ran too long" error
+-- returns true when a resport should be shown, false otherwise
+local function ranTooLongHandler (lowerCaseErrorMsg)
+    local isSRTLE = lowerCaseErrorMsg:find("script ran too long")
+
+    -- these tests appear redundant but this function must never crash...
+    if not isSRTLE or not T.Dcr.db or not T.Dcr.db.global or not T.Dcr.db.global.SRTLerrors then
+        return false;
+    end
+
+    local fname_line = lowerCaseErrorMsg:match('(%w+%.[xl][mu][la]:%d+)');
+
+    if not fname_line then
+        return false;
+    end
+
+    local SRTLerrors = T.Dcr.db.global.SRTLerrors;
+
+    SRTLerrors["total"] = SRTLerrors["total"] + 1;
+
+    if not SRTLerrors[fname_line] then
+        SRTLerrors[fname_line] = {};
+    end
+
+    local ctime = time();
+
+    while(SRTLerrors[fname_line][1] and ctime - SRTLerrors[fname_line][1] > 86400 * 30) do
+        table.remove(SRTLerrors[fname_line], 1);
+    end
+
+    table.insert(SRTLerrors[fname_line], ctime);
+
+    if lowerCaseErrorMsg:find("dcr_diag.lua") then
+        return false;
+    end
+
+    if #SRTLerrors[fname_line] > 1 then
+        return true;
+    else
+        return false;
+    end
+end
+
 function T._onError(event, errorObject)
     local errorm = errorObject.message;
     local mine = false;
@@ -423,8 +469,7 @@ function T._onError(event, errorObject)
         )
         )) then
 
-        if errorml:find("dcr_diag.lua") and errorml:find("script ran too long") then
-            -- don't create report for these 'errors'...
+        if not ranTooLongHandler(errorml) then
             return;
         end
 
@@ -457,6 +502,11 @@ function T._onError(event, errorObject)
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
             if CheckHHTD_Error(errorm, errorml) then
+
+                if not ranTooLongHandler(errorml) then
+                    return;
+                end
+
                 IsReporting = true;
                 AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
                 IsReporting = false;
@@ -546,8 +596,7 @@ function T._DecursiveErrorHandler(err, ...)
     local mine = false;
     if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("\\libs\\")) then
 
-        if errl:find("dcr_diag.lua") and errl:find("script ran too long") then
-            -- don't create report for these 'errors'...
+        if not ranTooLongHandler(errl) then
             return;
         end
 
@@ -560,7 +609,7 @@ function T._DecursiveErrorHandler(err, ...)
         IsReporting = true;
         AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(3), "\n|cff00aa00LOCALS:|r\n", debuglocals(3), ...);
         IsReporting = false;
-	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
+        T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         mine = true;
         _Debug("Error recorded");
     else
@@ -571,6 +620,11 @@ function T._DecursiveErrorHandler(err, ...)
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
             if CheckHHTD_Error(err, errl) then
+
+                if not ranTooLongHandler(errl) then
+                    return;
+                end
+
                 IsReporting = true;
                 AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(3), "\n|cff00aa00LOCALS:|r\n", debuglocals(3), ...);
                 IsReporting = false;

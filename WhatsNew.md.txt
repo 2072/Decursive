@@ -1,5 +1,13 @@
-Decursive 2.7.5 (2016-10-27)
-============================
+Decursive 2.7.5.1 (2017-01-08)
+==============================
+
+
+Changes from Decursive 2.7.5 to Decursive 2.7.5.1 (2017-01-08)
+--------------------------------------------------------------
+
+- Only report a "script ran too long" error when it happens for the second
+  time in a 30 days period. As these errors have become random since Legion
+  this technique should ensure that only real bottlenecks will get reported...
 
 
 Changes from Decursive 2.7.4.7 to Decursive 2.7.5 (2016-10-27)

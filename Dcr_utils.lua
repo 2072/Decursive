@@ -234,17 +234,21 @@ function D:tremovebyval(tab, val) -- {{{
     return false;
 end -- }}}
 
-function D:tAsString(t) -- debugging function
+function D:tAsString(t, indent) -- debugging function
 
     if type(t) ~= 'table' then
         return tostring(t)
     end
 
-    local s = '{'
-    for k,v in pairs(t) do
-        s = s .. ('[%s] = [%s], '):format(tostring(k), tostring(v))
+    if indent == nil then
+        indent = "  ";
     end
-    return s .. '}'
+
+    local s = "\n" .. indent .. "{"
+    for k,v in pairs(t) do
+        s = s .. "\n" .. indent .. indent .. ("[%s] = [%s],\n"):format(tostring(k), self:tAsString(v, indent .. "  "))
+    end
+    return s .. indent .. "}"
 end
 
 function D:tcheckforval(tab, val) -- {{{
@@ -565,21 +569,28 @@ end
 do
 
     -- /run LibStub("AceAddon-3.0"):GetAddon("Decursive"):RuncombatCrash()
-    local combatcrash;
+    local combatCrash;
     function D:RuncombatCrash()
-        D:Debug("RCC: Last run:", combatcrash);
+        D:Debug("RCC: Last run:", combatCrash);
         if not InCombatLockdown() then
             D:Debug("RCC: Not in combat");
             return;
         end
 
-        local crashstart = debugprofilestop();
+        local crashStart = debugprofilestop();
 
-        D:Debug("RCC: Hang started");
+        if not crashStart then
+            D:Debug("RCC: debugprofilestop() returned garbage...");
+            return;
+        end
+
+        D:Debug("RCC: Hang started (1s max)");
 
         repeat
-            combatcrash = debugprofilestop() - crashstart;
-        until false
+            for i=1,1000,1 do end
+            combatCrash = debugprofilestop() - crashStart;
+        until debugprofilestop() - crashStart > 1000;
+
     end
 
 end
@@ -801,18 +812,6 @@ do
     local PlaySoundFile = _G.PlaySoundFile;
     T._PlayingASound = false;
 
-    --@debug@
-    local function CrashTest(path, chanel)
-        local start = debugprofilestop();
-
-        repeat
-        until debugprofilestop() - start == 1000;
-
-        return 'blah1', 'blah2';
-
-    end
-    --@end-debug@
-
     -- Play sounda on a special update execution context to avoid
     -- crashing and leaving the program in an unknown state if WoW fails
     -- to play the sound fast enough... ('script ran too long' add-on
@@ -828,7 +827,6 @@ do
         end
 
         T._PlayingASound = GetTime();
-        -- local r1, r2 = CrashTest(path, "Master");
         local r1, r2 = PlaySoundFile(path, "Master");
         T._PlayingASound = false;
 
