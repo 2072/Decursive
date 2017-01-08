@@ -1338,7 +1338,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Shadowmeld']                  =  58984,
             ['Invisibility']                =  66,
             ['Lesser Invisibility']         =  7870,
-            ['Ice Armor']                   =  7302,
             ['Unstable Affliction']         =  30108,
             ['Fluidity']                    =  138002,
             ['Vampiric Touch']              =  34914,
