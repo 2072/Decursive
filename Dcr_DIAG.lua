@@ -273,7 +273,7 @@ do
         end
 
         if T._HHTDErrors ~= 0 then
-            instructionsHeader = instructionsHeader:gsub('ecursive', 'ecursive / Healers Have To Die');
+            instructionsHeader = instructionsHeader:gsub('ecursive', 'ecursive / H.H.T.D.');
         end
 
         local TIandBI = T.Dcr.GetTimersInfo and {T.Dcr:GetTimersInfo()} or {-1,-1,-1,-1,-1,0};
@@ -312,13 +312,13 @@ do
         end
 
         -- get running add-ons list
-        local ALASsuccess, ALASerrorm, loadedAddonList = pcall(GetAddonListAsString);
+        local ALASsuccess, loadedAddonList = pcall(GetAddonListAsString);
 
-        local ACsuccess, ACerrorm, actionsConfiguration = pcall(T._ExportActionsConfiguration);
+        local ACsuccess, actionsConfiguration = pcall(T._ExportActionsConfiguration);
 
-        local CSCsuccess, CSCerrorm, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
+        local CSCsuccess, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
 
-        local SRTOLEsuccess, SRTOLEerrorm, SRTOLErrors =
+        local SRTOLEsuccess, SRTOLErrors =
             pcall(function() return "Script ran too long errors:\n" .. T.Dcr:tAsString(T.Dcr.db.global.SRTLerrors) end);
 
         local headerSucess, headerGenErrorm;
@@ -331,10 +331,10 @@ do
 
         T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or "")))
         .. table.concat(T._DebugTextTable, "")
-        .. "\n\n-- --\n" .. (ACsuccess and actionsConfiguration or ACerrorm) .. "\n-- --"
-        .. (CSCsuccess and customSpellConfiguration or CSCerrorm) .. "\n-- --"
-        .. (SRTOLEsuccess and SRTOLErrors or SRTOLEerrorm) .. "\n-- --"
-        .. "\n\nLoaded Addons:\n\n" .. (ALASsuccess and loadedAddonList or ALASerrorm) .. "\n-- --";
+        .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --"
+        .. customSpellConfiguration .. "\n-- --"
+        .. SRTOLErrors .. "\n-- --"
+        .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. "\n-- --";
 
         if _G.DecursiveDebuggingFrameText then
             _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
@@ -370,13 +370,8 @@ local function PlaySoundFile_RanTooLongheck(message)
 end
 
 local function CheckHHTD_Error(errorm, errorml)
-    if errorml:find("healers%-have%-to%-die") and -- first, make a general test to see if it's worth looking further
-        (
-        not errorml:find("\\libs\\")
-        --or ( errorm:find("[\"']healers%-have%-to%-die[\"']") ) -- events
-        --or ( errorm:find("healers%-have%-to%-die:") ) -- libraries error (AceLocal)
-        --or ( errorml:find("healers%-have%-to%-die%.")) -- Aceconfig
-        )
+    if (errorml:find("healers%-have%-to%-die") or errorml:find("hhtd"))
+        and not errorml:find("\\libs\\")
         or errorml:find("\\libnameplateregistry") then
         _Debug("CheckHHTD_Error()", true);
         return true;
@@ -405,11 +400,15 @@ local LastErrorMessage = "!NotSet!";
 
 -- a special handler for these random "Script ran too long" error
 -- returns true when a resport should be shown, false otherwise
-local function ranTooLongHandler (lowerCaseErrorMsg)
+local function continueErrorReporting (lowerCaseErrorMsg)
     local isSRTLE = lowerCaseErrorMsg:find("script ran too long")
 
+    if not isSRTLE then
+        return true;
+    end
+
     -- these tests appear redundant but this function must never crash...
-    if not isSRTLE or not T.Dcr.db or not T.Dcr.db.global or not T.Dcr.db.global.SRTLerrors then
+    if not T.Dcr.db or not T.Dcr.db.global or not T.Dcr.db.global.SRTLerrors then
         return false;
     end
 
@@ -469,7 +468,7 @@ function T._onError(event, errorObject)
         )
         )) then
 
-        if not ranTooLongHandler(errorml) then
+        if not continueErrorReporting(errorml) then
             return;
         end
 
@@ -503,7 +502,7 @@ function T._onError(event, errorObject)
 
             if CheckHHTD_Error(errorm, errorml) then
 
-                if not ranTooLongHandler(errorml) then
+                if not continueErrorReporting(errorml) then
                     return;
                 end
 
@@ -596,7 +595,7 @@ function T._DecursiveErrorHandler(err, ...)
     local mine = false;
     if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("\\libs\\")) then
 
-        if not ranTooLongHandler(errl) then
+        if not continueErrorReporting(errl) then
             return;
         end
 
@@ -621,7 +620,7 @@ function T._DecursiveErrorHandler(err, ...)
 
             if CheckHHTD_Error(err, errl) then
 
-                if not ranTooLongHandler(errl) then
+                if not continueErrorReporting(errl) then
                     return;
                 end
 
