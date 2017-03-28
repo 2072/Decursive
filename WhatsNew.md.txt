@@ -1,13 +1,22 @@
-Decursive 2.7.5.1 (2017-01-08)
+Decursive 2.7.5.2 (2017-03-28)
 ==============================
 
 
-Changes from Decursive 2.7.5 to Decursive 2.7.5.1 (2017-01-08)
+Changes from Decursive 2.7.5.1 to Decursive 2.7.5.2 (2017-03-28)
+----------------------------------------------------------------
+
+- TOC update for WoW 7.2
+
+
+Changes from Decursive 2.7.5 to Decursive 2.7.5.1 (2017-01-19)
 --------------------------------------------------------------
+
+- Remove the Ice Armor test spell gone with 7.1.5 as it was triggering a
+  diagnostic error at log-in for some users.
 
 - Only report a "script ran too long" error when it happens for the second
   time in a 30 days period. As these (very rare) errors have become random
-  since Legion this technique should ensure that only real bottlenecks will
+  since Legion, this technique should ensure that only real bottlenecks will
   get reported...
 
 
