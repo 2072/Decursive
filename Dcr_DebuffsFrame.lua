@@ -731,7 +731,12 @@ do
     local GetSpellInfo = _G.GetSpellInfo;
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
-    local DcrDisplay_Tooltip = _G.DcrDisplay_Tooltip;
+
+    T._CatchAllErrors = 'LibQTip';
+    local LibQTip = LibStub('LibQTip-1.0');
+    T._CatchAllErrors = false;
+
+    local MUFtoolTip = nil;
 
     -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
     -- it also handles Unstable Affliction detection and warning.
@@ -784,21 +789,23 @@ do
         end
 
         if D.profile.AfflictionTooltips then
+            MUFtoolTip = LibQTip:Acquire("DecursiveMUFToolTip", 1, "LEFT");
+            MUFtoolTip:SetAutoHideDelay(.3, frame, function() MUFtoolTip = nil end)
+            MUFtoolTip:Clear()
 
-            DcrDisplay_Tooltip:SetOwner(self.Frame, "ANCHOR_TOPLEFT");
             -- removes the CHARMED_STATUS bit from Status, we don't need it
             Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
 
             -- First, write the name of the unit in its class color
             if UnitExists(MF.CurrUnit) then
-            DcrDisplay_Tooltip:AddLine(
+            MUFtoolTip:AddLine(
                 ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or "")
                 -- Colored unit name
                 .. D:ColorTextNA((D:PetUnitName(Unit, true)), ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA"))
                 .. "  |cFF3F3F3F(".. Unit .. ")|r"
                 );
             else
-                DcrDisplay_Tooltip:AddLine(MF.CurrUnit);
+                MUFtoolTip:AddLine(MF.CurrUnit);
             end
 
 
@@ -827,27 +834,26 @@ do
             end
 
             -- Unit Status
-            DcrDisplay_Tooltip:AddLine(StatusText);
+            MUFtoolTip:AddLine(StatusText);
 
             -- list the debuff(s) names
             if MF.Debuffs[1] then
                 for i, Debuff in ipairs(MF.Debuffs) do
                     if Debuff.Type then
                         local DebuffApps = Debuff.Applications;
-                        DcrDisplay_Tooltip:AddLine(D:ColorTextNA(Debuff.Name, DC.TypeColors[Debuff.Type]) .. (DebuffApps > 0 and (" (%d)"):format(DebuffApps) or ""));
+                        MUFtoolTip:AddLine(D:ColorTextNA(Debuff.Name, DC.TypeColors[Debuff.Type]) .. (DebuffApps > 0 and (" (%d)"):format(DebuffApps) or ""));
                     end
                 end
             end
 
             -- Display the tooltip
-            DcrDisplay_Tooltip:ClearAllPoints();
-            DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor());
-            DcrDisplay_Tooltip:Show();
+            MUFtoolTip:SetPoint(self:GetHelperAnchor());
+            MUFtoolTip:SetClampedToScreen(true)
+            MUFtoolTip:Show();
 
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
-            if floor(DcrDisplay_Tooltip:GetTop() + 0.5) == floor(UIParent:GetTop() + 0.5) then -- if at top
-                DcrDisplay_Tooltip:ClearAllPoints();
-                DcrDisplay_Tooltip:SetPoint(self:GetHelperAnchor(true));
+            if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top
+                MUFtoolTip:SetPoint(self:GetHelperAnchor(true));
             end
         end
 
@@ -877,7 +883,6 @@ do
 
     function MicroUnitF:OnLeave(frame) -- {{{
         D.Status.MouseOveringMUF = false;
-        DcrDisplay_Tooltip:Hide();
     end -- }}}
 
     local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r";
@@ -888,6 +893,11 @@ do
     end
 
     function D.MicroUnitF:OnCornerEnter(frame)
+
+        if MUFtoolTip then
+            MUFtoolTip:Release();
+            MUFtoolTip = nil;
+        end
 
         if not keyHelp then
             keyHelp = {
