@@ -735,7 +735,7 @@ local function GetStaticOptions ()
                         desc = L["DECURSIVE_DEBUG_REPORT_SHOW_DESC"],
                         func = function ()
                             LibStub("AceConfigDialog-3.0"):Close(D.name);
-                            GameTooltip:Hide();
+                            if GameTooltip:IsShown() then GameTooltip:Hide(); end
                             T._ShowDebugReport();
                         end,
                         hidden = function() return  #T._DebugTextTable < 1 end,
@@ -750,7 +750,7 @@ local function GetStaticOptions ()
 
                         -- {{{
                             LibStub("AceConfigDialog-3.0"):Close(D.name);
-                            GameTooltip:Hide();
+                            if GameTooltip:IsShown() then GameTooltip:Hide(); end
                             if not D.MemoriumFrame then
                                 D.MemoriumFrame = CreateFrame("Frame", nil, UIParent);
                                 local f = D.MemoriumFrame;
@@ -1745,7 +1745,10 @@ local function GetStaticOptions ()
                         name = L["OPT_CHECKOTHERPLAYERS"],
                         desc = L["OPT_CHECKOTHERPLAYERS_DESC"],
                         disabled = function () return InCombatLockdown() or GetTime() - T.LastVCheck < 60; end,
-                        func = function () if D:AskVersion() then D.versions = false; end GameTooltip:Hide(); end,
+                        func = function ()
+                            if D:AskVersion() then D.versions = false; end
+                            if GameTooltip:IsShown() then GameTooltip:Hide(); end
+                        end,
                         order = 10,
                     },
                     VersionsDisplay = {
