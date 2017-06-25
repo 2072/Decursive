@@ -357,7 +357,7 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = true,
         },
-        [DSI["PET_CLONE_MAGIC"]] = {
+        [DSI["PET_DEVOUR_MAGIC"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = true,
@@ -1313,7 +1313,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["CLEANSE_SPIRIT"]              =  51886,
             ["SPELL_PURGE"]                 =  370,
             ["PET_TORCH_MAGIC"]             =  171021,
-            ["PET_CLONE_MAGIC"]             =  115284,
+          --["PET_CLONE_MAGIC"]             =  115284, -- XXX disappeared in 7.2.5, devour magic seems to have returned...
+            ["PET_DEVOUR_MAGIC"]            =  19505,
             ["SPELL_FEAR"]                  =  5782,
             ["DCR_LOC_SILENCE"]             =  15487,
             ["DCR_LOC_MINDVISION"]          =  2096,
