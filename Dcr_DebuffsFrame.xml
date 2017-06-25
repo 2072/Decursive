@@ -117,10 +117,7 @@
                     </OnEnter>
                     <OnLeave>
                         DecursiveRootTable.Dcr.Status.MouseOveringCorner = false;
-
-                        if (DecursiveRootTable.Dcr.profile.DebuffsFrameShowHelp) then
-                        GameTooltip:Hide();
-                        end;
+                        DecursiveRootTable.Dcr.MicroUnitF:OnCornerLeave(self);
                     </OnLeave>
                 </Scripts>
             </Button>
@@ -155,7 +152,7 @@
                 DecursiveRootTable.Dcr.MicroUnitF:OnEnter(self);
             </OnEnter>
             <OnLeave>
-                DecursiveRootTable.Dcr.MicroUnitF:OnLeave();
+                DecursiveRootTable.Dcr.MicroUnitF:OnLeave(self);
             </OnLeave>
         </Scripts>
     </Button>

@@ -729,11 +729,10 @@ end
 do
     local UnitGUID = _G.UnitGUID;
     local GetSpellInfo = _G.GetSpellInfo;
-    local TooltipButtonsInfo = ""; -- help tooltip text
+    local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
     local DcrDisplay_Tooltip = _G.DcrDisplay_Tooltip;
-    local GameTooltip_SetDefaultAnchor = _G.GameTooltip_SetDefaultAnchor;
-    local GameTooltip = _G.GameTooltip;
+
     -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
     -- it also handles Unstable Affliction detection and warning.
     function MicroUnitF:OnEnter(frame) -- {{{
@@ -856,68 +855,55 @@ do
         if D.profile.DebuffsFrameShowHelp then
             -- if necessary we will update the help tooltip text
             if (D.Status.SpellsChanged ~= TooltipUpdate and not D.Status.Combat) then
-                local ttHelpLines = {};
+                ttHelpLines = {};
                 local MouseButtons = D.db.global.MouseButtons;
 
                 for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
-                    ttHelpLines[Prio] =
-                    ("%s: %s%s"):format(D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio])), (GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                    ttHelpLines[Prio] = {[D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio]))] =
+
+                    ("%s%s"):format((GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "")}
                 end
 
-                t_insert(ttHelpLines, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]], L["TARGETUNIT"]));
-                t_insert(ttHelpLines, ("%s: %s"):format(DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]], L["FOCUSUNIT"]));
-                TooltipButtonsInfo = table.concat(ttHelpLines, "\n");
+                t_insert(ttHelpLines, {[DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]]] = ("%s"):format(L["TARGETUNIT"])});
+                t_insert(ttHelpLines, {[DC.MouseButtonsReadable[MouseButtons[#MouseButtons    ]]] = ("%s"):format(L["FOCUSUNIT"])});
+
                 TooltipUpdate = D.Status.SpellsChanged;
             end
 
-            if TooltipButtonsInfo ~= "" then
-                GameTooltip_SetDefaultAnchor(GameTooltip, frame);
-                GameTooltip:SetText(TooltipButtonsInfo);
-                GameTooltip:Show();
-            end
-
+            D:DisplayLQTGameTooltip(ttHelpLines, frame)
         end
 
     end -- }}}
 
-    function MicroUnitF:OnLeave() -- {{{
+    function MicroUnitF:OnLeave(frame) -- {{{
         D.Status.MouseOveringMUF = false;
-        --D:Debug("Micro unit Hidden");
         DcrDisplay_Tooltip:Hide();
-
-        if (D.profile.DebuffsFrameShowHelp) then
-            GameTooltip:Hide();
-        end
     end -- }}}
-end
 
-do
-    local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"
-    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"
-    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n"
-    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s\n\n"
-    .. "|cFF11FF11%s|r-|cFF11FF11%s|r: %s";
+    local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r";
 
     local keyHelp;
+
+    function D.MicroUnitF:OnCornerLeave(frame)
+    end
 
     function D.MicroUnitF:OnCornerEnter(frame)
 
         if not keyHelp then
-            keyHelp = keyTemplate:format(
-            D.L["ALT"],             D.L["HLP_LEFTCLICK"],   D.L["HANDLEHELP"],
-
-            --D.L["HLP_RIGHTCLICK"],  D.L["STR_OPTIONS"],
-            D.L["ALT"],             D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOWOPTION"],
-
-            D.L["CTRL"],            D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRPRSHOW"], 
-            D.L["SHIFT"],           D.L["HLP_LEFTCLICK"],   D.L["BINDING_NAME_DCRSKSHOW"],
-
-            D.L["SHIFT"],           D.L["HLP_RIGHTCLICK"],  D.L["BINDING_NAME_DCRSHOW"]
-            )
+            keyHelp = {
+                {[keyTemplate:format(D.L["ALT"],   D.L["HLP_LEFTCLICK"]) ] = D.L["HANDLEHELP"]},
+                {[-1] =  -1},
+                {[keyTemplate:format(D.L["ALT"],   D.L["HLP_RIGHTCLICK"])] = D.L["BINDING_NAME_DCRSHOWOPTION"]},
+                {[-1] =  -1},
+                {[keyTemplate:format(D.L["CTRL"],  D.L["HLP_LEFTCLICK"]) ] = D.L["BINDING_NAME_DCRPRSHOW"] },
+                {[keyTemplate:format(D.L["SHIFT"], D.L["HLP_LEFTCLICK"]) ] = D.L["BINDING_NAME_DCRSKSHOW"] },
+                {[-1] =  -1},
+                {[keyTemplate:format(D.L["SHIFT"], D.L["HLP_RIGHTCLICK"])] = D.L["BINDING_NAME_DCRSHOW"] },
+            }
         end
 
         if D.profile.DebuffsFrameShowHelp then
-            D:DisplayGameTooltip(frame, keyHelp);
+            D:DisplayLQTGameTooltip(keyHelp, frame);            
         end;
     end
 end
@@ -1631,7 +1617,7 @@ do
             D:Debug('Setting MUF texture color...');
             --@end-debug@
             -- Set the main texture
-            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha); -- XXX reported to cause rare "script ran too long" errors" on 2016-09-25
+            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha); -- XXX reported to cause rare "script ran too long" errors" on 2016-09-25 and 2016-12-30
             --self.Texture:SetAlpha(Alpha);
             --@debug@
             D:Debug('Setting MUF texture color... done');

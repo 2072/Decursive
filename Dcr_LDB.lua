@@ -74,30 +74,7 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Decursive", {
 
 T._CatchAllErrors = false;
 
-local HeadFont;
-local function CreateFonts()
 
-    D:Debug("create font called");
-
-    -- Create the fonts objects we'll use in the tooltip:
-    -- New font looking like GameTooltipText
-    local HeadFont = CreateFont("DCR_QT_HeadFont")
-    HeadFont:SetFont(GameTooltipText:GetFont(), 16)
-    HeadFont:SetTextColor(0.8,0.8,0.3)
-
-    --[=[
-
-    -- New font looking like defaultFont
-    local CommandFont = CreateFont("DCR_QT_CommandFont")
-    CommandFont:CopyFontObject(defaultFont)
-    CommandFont:SetTextColor(0,1,0)
-
-    --]=]
-
-    return HeadFont;
-
-
-end
 
 
 local function ShowToolTip (frame)
@@ -107,9 +84,7 @@ local function ShowToolTip (frame)
 
     --D:Debug("ShowToolTip called");
 
-    if not HeadFont then
-        HeadFont = CreateFonts();
-    end
+    local HeadFont = D:CreateLQTHFonts();
 
     local tooltip = LibQTip:Acquire("DecursiveGenInfo", 2, "LEFT", "RIGHT");
     frame.tooltip = tooltip 
