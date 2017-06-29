@@ -847,12 +847,14 @@ do
             end
 
             -- Display the tooltip
-            MUFtoolTip:SetPoint(self:GetHelperAnchor());
+            MUFtoolTip:ClearAllPoints();
             MUFtoolTip:SetClampedToScreen(true)
+            MUFtoolTip:SetPoint(self:GetHelperAnchor());
             MUFtoolTip:Show();
 
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
             if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top
+                MUFtoolTip:ClearAllPoints();
                 MUFtoolTip:SetPoint(self:GetHelperAnchor(true));
             end
         end
