@@ -1,5 +1,14 @@
-Decursive 2.7.5.3 (2017-06-25)
+Decursive 2.7.5.4 (2017-07-30)
 ==============================
+
+
+Changes from Decursive 2.7.5.3 to Decursive 2.7.5.4 (2017-07-30)
+----------------------------------------------------------------
+
+- Fix MUFs's tooltip overlapping issue
+
+- Add in combat status to debug reports and do report 'script ran too long'
+  errors happening during initialisation.
 
 
 Changes from Decursive 2.7.5.2 to Decursive 2.7.5.3 (2017-06-25)

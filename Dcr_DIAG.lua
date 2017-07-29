@@ -38,6 +38,7 @@ local time              = _G.time;
 local pcall             = _G.pcall;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
+local InCombatLockdown  = _G.InCombatLockdown;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI. -- Also used by HHTD from 2013-04-05
@@ -198,7 +199,17 @@ function T._AddDebugText(a1, ...) -- {{{
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(NiceTime(), tostring(T._DebugTimerRefName), tostring(T._CatchAllErrors), select(3, GetNetStats()), select(4, GetNetStats()), GetFramerate(), zone, text) );
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(
+        NiceTime(), -- %.4f
+        tostring(T._DebugTimerRefName), -- tr:'%s'
+        tostring(T._CatchAllErrors), -- ca:'%s'
+        tostring(InCombatLockdown()), -- icl:'%s'
+        select(3, GetNetStats()), -- h%d
+        select(4, GetNetStats()), -- w%d
+        GetFramerate(), -- %dfps
+        zone, -- -%s
+        text -- %s
+        ));
         table.insert (DebugTextTable, 1);
         Reported[text] = #DebugTextTable;
     else
@@ -395,7 +406,6 @@ T._BlizzardUIErrors = 0;
 T._ErrorLimitStripped = false;
 T._HHTDErrors = 0;
 
-local InCombatLockdown  = _G.InCombatLockdown;
 local LastErrorMessage = "!NotSet!";
 
 -- a special handler for these random "Script ran too long" error
@@ -404,10 +414,16 @@ local function continueErrorReporting (lowerCaseErrorMsg)
     local isSRTLE = lowerCaseErrorMsg:find("script ran too long")
 
     if not isSRTLE then
+        -- continue as usual when this error is not a SRTL one
+        return true;
+    elseif T._CatchAllErrors or not T.Dcr.DcrFullyInitialized then
+        -- However we do want to catch SRTL errors when these flags are active as it
+        -- explains why subsequent "impossible" errors are happening...
+        -- (several reports were received where DCR init did not complete for no apparent reason)
         return true;
     end
 
-    -- these tests appear redundant but this function must never crash...
+    -- these tests appear to be redundant but this function must never crash...
     if not T.Dcr.db or not T.Dcr.db.global or not T.Dcr.db.global.SRTLerrors then
         return false;
     end
