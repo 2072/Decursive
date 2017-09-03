@@ -538,39 +538,26 @@ function T._onError(event, errorObject)
 
     LastErrorMessage = errorm;
 
-    if not mine and not T._BugSackLoaded and GetCVarBool("scriptErrors") then
-        if not _G.DEBUGLOCALS_LEVEL then
-            if not InCombatLockdown() then
-                _G.LoadAddOn("Blizzard_DebugTools");
-            else
-                if T.Dcr.AddDelayedFunctionCall then
-                    T.Dcr:AddDelayedFunctionCall('Load_Blizzard_DebugTools', _G.LoadAddOn, 'Blizzard_DebugTools');
+    if not mine and not T._BugSackLoaded then
 
-                    _Debug("Blizzard_DebugTools load has been delayed because InCombatLockdown");
-                else
-                    _Debug("Blizzard_DebugTools load has been cancelled because InCombatLockdown");
-                end
-                return;
+        --/console scriptErrors 1 to check it
+        if _G.DEBUGLOCALS_LEVEL then
+
+            -- Fix Blizzard's own code... (2017-09-04: it's set to 5 while it should be 4)
+            if _G.DEBUGLOCALS_LEVEL == 5 then
+                _G.DEBUGLOCALS_LEVEL = 4
             end
+
+            _G.DEBUGLOCALS_LEVEL = _G.DEBUGLOCALS_LEVEL + 9
         end
-        _G.DEBUGLOCALS_LEVEL = 11 -- XXX must be set to the right value to get the correct stack and locals. This is why we need to load Blizzard_DebugTools ourselves... That sucks...
 
         -- forward the error to the default Blizzad error displayer
-        if _G._ERRORMESSAGE then
+        if _G.HandleLuaError then
             local errorm = errorObject.message;
-
-            -- if the error happened inside blizzard_debugtools, use Blizzards's BasicScriptErrorsText
-            if (errorm:lower()):find("blizzard_debugtools") then
-                --@alpha@
-                _G.BasicScriptErrorsText:SetText(errorm);
-                _G.BasicScriptErrors:Show();
-                --@end-alpha@
-                return;
-            end
 
             _Debug("Lua error forwarded");
 
-            _G._ERRORMESSAGE( errorm );
+            return _G.HandleLuaError( errorm );
         end
     else
         _Debug("Lua error NOT forwarded, mine=", mine);
@@ -593,16 +580,6 @@ function T._DecursiveErrorHandler(err, ...)
 
     err = tostring(err);
     local errl = err:lower();
-
-    --A check to see if the error is happening inside the Blizzard 'debug' tool himself...
-    if errl:find("blizzard_debugtools") then
-        --@alpha@
-        if ( GetCVarBool("scriptErrors") ) then
-            print (("|cFFFF0000%s|r"):format(err));
-        end
-        --@end-alpha@
-        return;
-    end
 
     if PlaySoundFile_RanTooLongheck(err) then
         return;
@@ -661,7 +638,15 @@ function T._DecursiveErrorHandler(err, ...)
     LastErrorMessage = err;
 
     if ProperErrorHandler and not mine then
-        _G.DEBUGLOCALS_LEVEL = 5; -- necessary for Blizzard error handler
+        if _G.DEBUGLOCALS_LEVEL then
+
+            -- Fix Blizzard's own code... (2017-09-04: it's set to 5 while it should be 4)
+            if _G.DEBUGLOCALS_LEVEL == 5 then
+                _G.DEBUGLOCALS_LEVEL = 4
+            end
+
+            _G.DEBUGLOCALS_LEVEL = _G.DEBUGLOCALS_LEVEL + 3;
+        end
         return ProperErrorHandler( err, ... ); -- returning this way prevents this function from appearing in the stack
     end
 end
@@ -985,8 +970,12 @@ do
             T._DiagStatus = FatalOccured and 2 or 1;
         end
 
-        -- if the diagnostic was requested by the user, we also test AceEvent functionalities {{{ -
+        -- if the diagnostic was requested by the user, we also test AceEvent functionalities among a few other things {{{ -
         if force and FromCommand and T._DiagStatus == 0 then
+
+            if not _G.HandleLuaError then
+                AddDebugText("|cFFFF0000WARNING Blizzard default error handler is no longer available...|r");
+            end
 
             PrintMessage("|cFF00FF00No problem found in shared libraries or Decursive files!|r");
 
