@@ -254,8 +254,13 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
+        -- Hunters http://www.wowhead.com/?spell=212640
+        [DSI["SPELL_MENDINGBANDAGE"]] = { -- PVP
+            Types = {DC.DISEASE, DC.POISON},
+            Better = 0,
+            Pet = false,
+        },
         --[=[ -- LEGION GONE
-        -- Hunters http://www.wowhead.com/?spell=19801
         [DSI["SPELL_TRANQUILIZING_SHOT"]] = {
             Types = {DC.ENEMYMAGIC},
             Better = 0,
@@ -321,6 +326,11 @@ local function SetRuntimeConstants_Once () -- {{{
         },
         -- Warlocks (Imp)
         [DSI["PET_SINGE_MAGIC"]] = {
+            Types = {DC.MAGIC},
+            Better = 0,
+            Pet = true,
+        },
+        [DSI["PET_SINGE_MAGIC_PVP"]] = { -- PVP
             Types = {DC.MAGIC},
             Better = 0,
             Pet = true,
@@ -396,6 +406,12 @@ local function SetRuntimeConstants_Once () -- {{{
         [DSI["SPELL_PURIFY_DISEASE"]] = {
             Types = {DC.DISEASE},
             Better = 0,
+            Pet = false,
+        },
+        -- Demon hunters
+        [DSI["SPELL_SPELL_REVERSEMAGIC"]] = { -- PVP
+            Types = {DC.MAGIC},
+            Better = 1,
             Pet = false,
         },
     };
@@ -1344,6 +1360,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Vampiric Touch']              =  34914,
             ["SPELL_REMOVE_CORRUPTION"]     =  2782,
             ["PET_SINGE_MAGIC"]             =  89808, -- Warlock imp
+            ["PET_SINGE_MAGIC_PVP"]         =  212623, -- Warlock imp PVP
             ["PET_SEAR_MAGIC"]              =  115276, -- Warlock Fel imp
             ["SPELL_PURIFY"]                =  527,
             ["SPELL_PURIFY_DISEASE"]        =  213634,
@@ -1355,6 +1372,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
             ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
             ['Greater Invisibility']        =  110959,
+            ['SPELL_MENDINGBANDAGE']        =  212640,
+            ['SPELL_REVERSEMAGIC']          =  205604,
         };
     end
 
