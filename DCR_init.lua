@@ -409,7 +409,7 @@ local function SetRuntimeConstants_Once () -- {{{
             Pet = false,
         },
         -- Demon hunters
-        [DSI["SPELL_SPELL_REVERSEMAGIC"]] = { -- PVP
+        [DSI["SPELL_REVERSEMAGIC"]] = { -- PVP
             Types = {DC.MAGIC},
             Better = 1,
             Pet = false,
