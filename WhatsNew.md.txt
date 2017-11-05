@@ -1,8 +1,8 @@
-Decursive 2.7.5.7 alpha (2017-09-30)
+Decursive 2.7.5.7 alpha (2017-11-05)
 ====================================
 
 
-Changes from Decursive 2.7.5.4 to Decursive 2.7.5.7 (2017-09-30)
+Changes from Decursive 2.7.5.6 to Decursive 2.7.5.7 (2017-11-05)
 ----------------------------------------------------------------
 
 - Update detected PVP spells for 7.3 (Hunters, Warlocks and Daemon Hunters)
