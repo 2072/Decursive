@@ -511,10 +511,10 @@ local function GetStaticOptions ()
 
             isItem = not (GetSpellInfo(v));
 
-        elseif v:find('|Hspell:%d+') then
+        elseif D:GetSpellFromLink(v) then
             -- We got a spell link!
             v = D:GetSpellFromLink(v);
-        elseif v:find('|Hitem:%d+') then
+        elseif D:GetItemFromLink(v) then
             -- We got a item link!
             isItem = true;
             v = D:GetItemFromLink(v);
@@ -2654,7 +2654,7 @@ do
 
         local spell = D.classprofile.UserSpells[spellID];
 
-        if not spell.IsItem then
+        if not spell.IsItem and spellID > 0 then
             return IsSpellKnown(spellID, spell.Pet)
         else
             return D:isItemUsable(spellID * -1)

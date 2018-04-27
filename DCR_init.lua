@@ -1097,6 +1097,8 @@ function D:ReConfigure() --{{{
 
         SpellName = D.GetSpellOrItemInfo(spellID);
 
+        spell.IsItem = (spellID < 0); -- pre-emptive fix for erroneous configuration -- this *-1 thing was a bad idea...
+
         -- if item info not available yet
         if spell.IsItem and not SpellName then
             self.Status.WaitingForSpellInfo = -1 * spellID;
@@ -1199,6 +1201,9 @@ function D:Configure() --{{{
     for spellID, spell in SpellIterator() do repeat
         if not spell.Disabled then
             -- self:Debug("trying spell", spellID);
+
+            spell.IsItem = (spellID < 0); -- pre-emptive fix for erroneous configuration -- this *-1 thing was a bad idea...
+
             -- Do we have that spell?
             if not spell.IsItem and IsSpellKnown(spellID, spell.Pet)
                 or spell.IsItem and D:isItemUsable(-1 * spellID) then
