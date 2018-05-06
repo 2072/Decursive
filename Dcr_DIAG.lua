@@ -572,6 +572,8 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
+DC.WOW8 = (tocversion >= 80000)
+
 function T._DecursiveErrorHandler(err, ...)
 
     if T._ErrorLimitStripped then
@@ -850,7 +852,7 @@ do
         --LibStub:GetLibrary
         local UseLibStub = {
             ["AceAddon-3.0"] = 12,
-            ["AceComm-3.0"] = 10,
+            ["AceComm-3.0"] = 11,
             ["AceConsole-3.0"] = 7,
             ["AceDB-3.0"] = 26,
             ["AceDBOptions-3.0"] = 15,
@@ -862,12 +864,12 @@ do
             ["AceGUI-3.0"] = 34,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 64,
-            ["AceConfigRegistry-3.0"] = 17,
+            ["AceConfigDialog-3.0"] = 66,
+            ["AceConfigRegistry-3.0"] = 18,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 34,
-            ["LibQTip-1.0"] = 44,
+            ["LibDBIcon-1.0"] = 36,
+            ["LibQTip-1.0"] = 46,
             ["CallbackHandler-1.0"] = 6,
         };
 

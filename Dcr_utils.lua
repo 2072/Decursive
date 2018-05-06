@@ -538,7 +538,7 @@ function D:GetSpellFromLink(link)
             return nil;
         end
 
-        if spellRank ~= "" then
+        if spellRank and spellRank ~= "" then
             spellName = ("%s(%s)"):format(spellName, spellRank);
         end
         D:Debug('Spell link detected:', spellID, spellName, spellRank);

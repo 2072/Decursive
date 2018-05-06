@@ -812,7 +812,27 @@ end
 --local UnitBuffsCache    = {};
 
 do
-    local UnitBuff = _G.UnitBuff;
+    local G_UnitBuff = _G.UnitBuff;
+
+    local buffName;
+
+
+    local function UnitBuff(unit, BuffNameToCheck)
+        if DC.WOW8 then
+            for i = 1, 40 do
+                buffName = G_UnitBuff(unit, i)
+                if not buffName then
+                    return
+                else
+                    if BuffNameToCheck == buffName then
+                        return G_UnitBuff(unit, i)
+                    end
+                end
+            end
+        else
+            return G_UnitBuff(unit, BuffNameToCheck)
+        end
+    end
 
     -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
     function D:CheckUnitForBuffs(unit, BuffNamesToCheck) --{{{

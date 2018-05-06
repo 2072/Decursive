@@ -1,5 +1,5 @@
 ## Interface: 70300
-## X-Max-Interface: 70300
+## X-Max-Interface: 80000
 ## X-Min-Interface: 70300
 
 ## Title: Decursive |cffff00ff -Ace3-|r
