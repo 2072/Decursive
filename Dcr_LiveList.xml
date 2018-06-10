@@ -151,7 +151,7 @@
         <Color r="1.0" g="0.1" b="0.2"/>
     </FontString> <!-- }}} -->
 
-    <FontString name="DcrLLUnitIDFont" inherits="MasterFont" font="Fonts\FRIZQT__.TTF" justifyH="LEFT" maxLines="1" text="Unit Name" virtual="true"> <!-- {{{ -->
+    <FontString name="DcrLLUnitIDFont" inherits="GameFontNormalSmall" font="Fonts\FRIZQT__.TTF" justifyH="LEFT" maxLines="1" text="Unit Name" virtual="true"> <!-- {{{ -->
         <FontHeight>
             <AbsValue val="7.5"/>
         </FontHeight>
