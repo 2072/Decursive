@@ -2,7 +2,7 @@
     This file is part of Decursive.
 
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
+    Copyright (C) 2006-2018 John Wellesz (decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
     is no longer free software, all rights are reserved to its author (John Wellesz).
@@ -239,7 +239,7 @@ end -- }}}
 
 do
     local DebugHeader = false;
-    local HeaderFailOver = "|cFF11FF33Please email the content of this window to <archarodim+DcrReport@teaser.fr>|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
+    local HeaderFailOver = "|cFF11FF33Please email the content of this window to <decursive+report@2072productions.com>|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
     local LoadedAddonNum = 0;
     local TotalAddonMemoryUsage = 0;
 

@@ -1,9 +1,8 @@
 --[[
     This file is part of Decursive.
-    
+
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2014 John Wellesz (archarodim AT
-    teaser.fr) ( http://www.2072productions.com/to/decursive.php )
+    Copyright (C) 2006-2018 John Wellesz (decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
     is no longer free software, all rights are reserved to its author (John
@@ -13,7 +12,7 @@
     www.2072productions.com, www.wowace.com and curse.com.
     To distribute Decursive through other means a special authorization is
     required.
-    
+
 
     Decursive is inspired from the original "Decursive v1.9.4" by Patrick Bohnet (Quu).
     The original "Decursive 1.9.4" is in public domain ( www.quutar.com )
@@ -120,7 +119,7 @@ L["COLORSTATUS"] = "Set the color for the '%s' MUF status."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Scan and cure pets"
 L["CURSE"] = "Curse"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please email the content of this window to <Archarodim+DcrReport@teaser.fr>|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please email the content of this window to <decursive+report@2072productions.com>|r
 |cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r
 Also tell in your report if you noticed any strange behavior of Decursive.
 ]=]

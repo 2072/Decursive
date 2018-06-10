@@ -1,8 +1,8 @@
 --[[
     This file is part of Decursive.
-    
+
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
+    Copyright (C) 2006-2018 John Wellesz (decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
     is no longer free software, all rights are reserved to its author (John
@@ -12,7 +12,7 @@
     www.2072productions.com, www.wowace.com and curse.com.
     To distribute Decursive through other means a special authorization is
     required.
-    
+
 
     Decursive is inspired from the original "Decursive v1.9.4" by Patrick Bohnet (Quu).
     The original "Decursive 1.9.4" is in public domain ( www.quutar.com )
