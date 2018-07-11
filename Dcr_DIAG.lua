@@ -852,7 +852,7 @@ do
         --LibStub:GetLibrary
         local UseLibStub = {
             ["AceAddon-3.0"] = 12,
-            ["AceComm-3.0"] = 11,
+            ["AceComm-3.0"] = 12,
             ["AceConsole-3.0"] = 7,
             ["AceDB-3.0"] = 26,
             ["AceDBOptions-3.0"] = 15,
