@@ -861,7 +861,7 @@ do
             ["AceLocale-3.0"] = 6,
             ["AceTimer-3.0"] = 17,
 
-            ["AceGUI-3.0"] = 34,
+            ["AceGUI-3.0"] = 35,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
             ["AceConfigDialog-3.0"] = 66,
