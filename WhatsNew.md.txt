@@ -6,9 +6,9 @@ Changes from Decursive 2.7.5.7 to Decursive 2.7.5.8 (2018-07-18)
 ----------------------------------------------------------------
 
 - Basic update compatibility for WoW 8, please use the [ticket system][ticket] on
-  WoWAace to report and track any issue you encounter. 
+  WoWAce to report and track any issue you encounter. 
 
-- Change of author's email address: form now on it's decursive AT 2072productions.com
+- Change of author's email address: from now on it's Decursive {AT} 2072productions.com
 
 
 Changes from Decursive 2.7.5.6 to Decursive 2.7.5.7 (2017-11-05)
