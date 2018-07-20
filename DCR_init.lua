@@ -235,13 +235,11 @@ local function SetRuntimeConstants_Once () -- {{{
             Pet = false,
         },
         -- Mages
-        --[=[ -- LEGION GONE
         [DSI["SPELL_REMOVE_CURSE"]] = {
             Types = {DC.CURSE},
             Better = 0,
             Pet = false,
         },
-        --]=]
         -- Shamans http://www.wowhead.com/?spell=51514
         [DSI["SPELL_HEX"]] = {
             Types = {DC.CHARMED},
@@ -1328,6 +1326,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_POLYMORPH"]             =  118,
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
+            ["SPELL_REMOVE_CURSE"]          =  475,
             ["SPELL_CLEANSE"]               =  4987,
             ["SPELL_CLEANSE_TOXINS"]        =  213644,
             ['SPELL_HEX']                   =  51514, -- shamans
