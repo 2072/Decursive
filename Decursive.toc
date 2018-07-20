@@ -39,7 +39,7 @@
 
 ## X-AceForum: 4195
 
-## X-eMail: decursive@2072productions.com
+## X-eMail: Decursive@2072productions.com
 
 embeds.xml
 

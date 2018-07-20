@@ -1,5 +1,11 @@
-Decursive 2.7.5.8 (2018-07-18)
+Decursive 2.7.5.9 (2018-07-20)
 ==============================
+
+
+Changes from Decursive 2.7.5.8 to Decursive 2.7.5.9 (2018-07-20)
+----------------------------------------------------------------
+
+- Fix WoW 8 compatibility issue.
 
 
 Changes from Decursive 2.7.5.7 to Decursive 2.7.5.8 (2018-07-18)
