@@ -395,6 +395,18 @@ local function SetRuntimeConstants_Once () -- {{{
             Better = 0,
             Pet = false,
         },
+        -- Demon Hunters (global)
+        [DSI["SPELL_CONSUME_MAGIC"]] = {
+            Types = {DC.ENEMYMAGIC},
+            Better = 0,
+            Pet = false,
+        },
+        -- Mages (global)
+        [DSI["SPELL_SPELLSTEAL"]] = {
+            Types = {DC.ENEMYMAGIC},
+            Better = 1,
+            Pet = false,
+        },
         -- Priests (Discipline, Holy)
         [DSI["SPELL_PURIFY"]] = {
             Types = {DC.MAGIC, DC.DISEASE},
@@ -1327,6 +1339,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
             ["SPELL_REMOVE_CURSE"]          =  475,
+            ["SPELL_CONSUME_MAGIC"]         =  278326,
+            ["SPELL_SPELLSTEAL"]            =  30449, -- mages, not sure about this one
             ["SPELL_CLEANSE"]               =  4987,
             ["SPELL_CLEANSE_TOXINS"]        =  213644,
             ['SPELL_HEX']                   =  51514, -- shamans
