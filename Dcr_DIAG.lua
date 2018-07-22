@@ -878,7 +878,7 @@ do
             ["LibDataBroker-1.1"] = 4,
             ["LibDBIcon-1.0"] = 36,
             ["LibQTip-1.0"] = 46,
-            ["CallbackHandler-1.0"] = 6,
+            ["CallbackHandler-1.0"] = 7,
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00LibStub|r) could not be found.\n";
