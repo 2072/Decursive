@@ -1,13 +1,13 @@
-Decursive 2.7.5.9 (2018-07-22)
-==============================
+Decursive 2.7.6 (2018-07-22)
+============================
 
 
-Changes from Decursive 2.7.5.8 to Decursive 2.7.5.9 (2018-07-22)
-----------------------------------------------------------------
+Changes from Decursive 2.7.5.8 to Decursive 2.7.6 (2018-07-22)
+--------------------------------------------------------------
 
-- Fix WoW 8 compatibility issue.
+- Fix WoW 8 compatibility issue where nothing was displayed on the MUFs.
 
-- Readded Remove Curse for Mages.
+- Re-added `Remove Curse` for Mages.
 
 - Added `Consume Magic` for Demon Hunters and `Spellsteal` for Mages to remove
   magical mind-controlled effects on friendly units.
