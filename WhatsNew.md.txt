@@ -1,13 +1,20 @@
-Decursive 2.7.5.9 (2018-07-20)
+Decursive 2.7.5.9 (2018-07-22)
 ==============================
 
 
-Changes from Decursive 2.7.5.8 to Decursive 2.7.5.9 (2018-07-20)
+Changes from Decursive 2.7.5.8 to Decursive 2.7.5.9 (2018-07-22)
 ----------------------------------------------------------------
 
 - Fix WoW 8 compatibility issue.
 
 - Readded Remove Curse for Mages.
+
+- Added `Consume Magic` for Demon Hunters and `Spellsteal` for Mages to remove
+  magical mind-controlled effects on friendly units.
+
+- Added a graceful period of 10 seconds after startup before complaining about
+  other add-ons errors as the new LUA_WARNING WoW 8 feature unveils many
+  non-consequential errors in other add-ons.
 
 
 Changes from Decursive 2.7.5.7 to Decursive 2.7.5.8 (2018-07-18)
@@ -22,7 +29,7 @@ Changes from Decursive 2.7.5.7 to Decursive 2.7.5.8 (2018-07-18)
 Changes from Decursive 2.7.5.6 to Decursive 2.7.5.7 (2017-11-05)
 ----------------------------------------------------------------
 
-- Update detected PVP spells for 7.3 (Hunters, Warlocks and Daemon Hunters)
+- Update detected PVP spells for 7.3 (Hunters, Warlocks and Demon Hunters)
 
 
 Changes from Decursive 2.7.5.4 to Decursive 2.7.5.6 (2017-09-04)
