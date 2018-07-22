@@ -468,7 +468,7 @@ do
             IsCharmed = false;
         end
 
-        if self.LiveList.TestItemDisplayed and not UnTrustedUnitIDs[Unit] and D.Status.ReversedCureOrder[1] == DC.CHARMED then
+        if self.LiveList.TestItemDisplayed and not UnTrustedUnitIDs[Unit] and (D.Status.ReversedCureOrder[1] == DC.CHARMED or D.Status.ReversedCureOrder[1] == DC.ENEMYMAGIC) then
             IsCharmed = true;
         end
 
