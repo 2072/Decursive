@@ -631,7 +631,7 @@ function T._DecursiveErrorHandler(err, ...)
             end
 
             if (T._NonDecursiveErrors - T._NDRTaintingAccusations - T._BlizzardUIErrors) > 999 then
-                T._ErrorLimitStripped = true;
+		T._ErrorLimitStripped = NiceTime() > 10; -- allow a graceful period of 10s after startup
                 T._TooManyErrors();
             end
         end
@@ -658,16 +658,24 @@ function T._TooManyErrors()
 
     -- T._NDRTaintingAccusations
 
-    -- if tainting accusation and Blizzard's UI errors represent more than 90% of errors then yield and don't display anything
-    if not ((T._NDRTaintingAccusations + T._BlizzardUIErrors) > T._NonDecursiveErrors * 0.9) then
-        if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
-            _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
-            _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
-            _Print('|cFF47C2A1Last UI error:|r', LastErrorMessage);
-            WarningDisplayed = true;
+    -- If the game just started (or Decursive), we ignore error burst as the
+    -- new LUA_WARNING feature reveals many loading issues in other add-ons
+    -- without gameplay consequences
+    if (NiceTime() > 10) then
+
+        -- if tainting accusation and Blizzard's UI errors represent more than 90% of errors then yield and don't display anything
+        if not ((T._NDRTaintingAccusations + T._BlizzardUIErrors) > T._NonDecursiveErrors * 0.9) then
+            if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
+                _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
+                _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
+                _Print('|cFF47C2A1Last UI error:|r', LastErrorMessage);
+                WarningDisplayed = true;
+            end
+        else
+            _Debug("_TooManyErrors()'s message not displayed NDR-TA being predominent...");
         end
     else
-        _Debug("_TooManyErrors()'s message not displayed NDR-TA being predominent...");
+            _Debug("_TooManyErrors()'s message not displayed Decursive was just started...");
     end
 
     _Debug("Error handler disabled");
