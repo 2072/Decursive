@@ -1,5 +1,11 @@
-Decursive 2.7.6 (2018-07-22)
-============================
+Decursive 2.7.6.1
+=================
+
+Changes from Decursive 2.7.6 to Decursive 2.7.6.1 (2018-08-03)
+--------------------------------------------------------------
+
+- Prevent error reports being created due to bad embedding of
+  LibNameplateRegistry in other add-ons.
 
 
 Changes from Decursive 2.7.5.8 to Decursive 2.7.6 (2018-07-22)

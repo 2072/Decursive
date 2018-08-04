@@ -381,9 +381,9 @@ local function PlaySoundFile_RanTooLongheck(message)
 end
 
 local function CheckHHTD_Error(errorm, errorml)
-    if (errorml:find("healers%-have%-to%-die") or errorml:find("hhtd"))
-        and not errorml:find("\\libs\\")
-        or errorml:find("\\libnameplateregistry") then
+    if (errorml:find("hhtd") and not errorml:find("\\libs\\"))
+        or
+        (errorml:find("\\libnameplateregistry") and not errorml:find("couldn't open") and not errorml:find("error loading")) then
         _Debug("CheckHHTD_Error()", true);
         return true;
     end
@@ -607,7 +607,6 @@ function T._DecursiveErrorHandler(err, ...)
         mine = true;
         _Debug("Error recorded");
     else
-
         if IsReporting then -- then it means there is a bug inside AddDebugText...
             IsReporting = false;
         else
@@ -720,7 +719,7 @@ function T._HookErrorHandler()
         BUGGRABBER_SUPPRESS_THROTTLE_CHAT = true; -- for people using an older version of BugGrabber. There is no way to know...
 
 
-        -- force BG to load callbackhandler since it relies on other add-ons to embeded it.
+        -- force BG to load callbackhandler since it relies on other add-ons that embeded it.
         if not BugGrabber.RegisterCallback and BugGrabber.setupCallbacks then
             BugGrabber.setupCallbacks();
         end
