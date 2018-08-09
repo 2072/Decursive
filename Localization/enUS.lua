@@ -119,9 +119,9 @@ L["COLORSTATUS"] = "Set the color for the '%s' MUF status."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Scan and cure pets"
 L["CURSE"] = "Curse"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please email the content of this window to <decursive+report@2072productions.com>|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Please email the content of this window to <%s>|r
 |cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r
-Also tell in your report if you noticed any strange behavior of Decursive.
+Also tell in your report if you noticed any strange behavior of %s.
 ]=]
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive Debug Report|r ****"
 L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"] = [=[|cFF11FF33Decursive crashed but fear not! A NEW version of Decursive has been detected (%s). You simply need to update. Go to curse.com and search for 'Decursive' or use Curse's client, it'll update automatically all your beloved add-ons.|r

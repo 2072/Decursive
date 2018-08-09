@@ -239,7 +239,8 @@ end -- }}}
 
 do
     local DebugHeader = false;
-    local HeaderFailOver = "|cFF11FF33Please email the content of this window to <Decursive+Report@2072productions.com>|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\n\n";
+    local ReportEmail = GetAddOnMetadata("Decursive", "X-eMail") or "Decursive@2072productions.com";
+    local HeaderFailOver = ("|cFF11FF33Please email the content of this window to <%s>|r\n|cFF009999(Use CTRL+A to select all and then CTRL+C to put the text in your clip-board)|r\nAlso tell in your report if you noticed any strange behavior of Decursive.\n"):format(ReportEmail:gsub('@','+ReportFH@'));
     local LoadedAddonNum = 0;
     local TotalAddonMemoryUsage = 0;
 
@@ -276,15 +277,22 @@ do
         local instructionsHeader;
 
         if fromDiag or not T.Dcr.db or not T.Dcr.db.global.NewerVersionName or T._HHTDErrors ~= 0 then
-            instructionsHeader = T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] or HeaderFailOver;
+            if T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] then
+                -- Create the header insterting the email address and
+                -- influencing the content if this is an HHTD error.
+                instructionsHeader = (T.Dcr.L["DEBUG_REPORT_HEADER"]):format(
+
+                    ReportEmail:gsub('@', T._HHTDErrors ~= 0 and '+HHTDReport@' or '+Report@'),
+                    T._HHTDErrors ~= 0 and 'Decursive / H.H.T.D.' or 'Decursive'
+
+                );
+            else
+                instructionsHeader = HeaderFailOver
+            end
         else
             instructionsHeader = T.Dcr.L and ((T.Dcr.L["DECURSIVE_DEBUG_REPORT_BUT_NEW_VERSION"]):format(T.Dcr.db.global.NewerVersionName)) or HeaderFailOver;
             -- disable bug me not since the user _clearly_ took the wrong decision
             T.Dcr.db.global.NewVersionsBugMeNot = false;
-        end
-
-        if T._HHTDErrors ~= 0 then
-            instructionsHeader = instructionsHeader:gsub('ecursive', 'ecursive / H.H.T.D.');
         end
 
         local TIandBI = T.Dcr.GetTimersInfo and {T.Dcr:GetTimersInfo()} or {-1,-1,-1,-1,-1,0};
@@ -353,7 +361,7 @@ do
             local title = T.Dcr.L and T.Dcr.L["DECURSIVE_DEBUG_REPORT"] or "**** |cFFFF0000Decursive Debug Report|r ****";
 
             if T._HHTDErrors ~= 0 then
-                title = title:gsub('ecursive', 'ecursive/HHTD');
+                title = title:gsub('ecursive', 'ecursive / H.H.T.D.');
             end
 
             _G.DecursiveDEBUGtext:SetText(title);
