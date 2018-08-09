@@ -184,7 +184,7 @@ function D:Println( ... ) --{{{
     end
 end --}}}
 
-function D:ColorPrint (r,g,b, ... ) --XXX
+function D:ColorPrint (r,g,b, ... )
 
     local datas = {UseFormatIfPresent(...)};
 

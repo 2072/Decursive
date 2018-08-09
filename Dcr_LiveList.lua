@@ -198,7 +198,7 @@ function LiveList.prototype:GiveAnchor() -- {{{
         if D.profile.ReverseLiveDisplay then
             return "BOTTOMLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "TOPLEFT", 0, 1;
         else
-            return "TOPLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "BOTTOMLEFT", 0, -1; -- TODO index is nil error received in a report by mail on 2012-11-02
+            return "TOPLEFT", LiveList.ExistingPerID[self.ID - 1].Frame, "BOTTOMLEFT", 0, -1;
         end
     end
 

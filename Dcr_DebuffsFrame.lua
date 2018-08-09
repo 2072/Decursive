@@ -526,8 +526,6 @@ do
         current_x = current_x * FrameScale;
         current_y = current_y * FrameScale;
 
-        --D:Debug("xDelta=", current_x - saved_x, "yDelta=", current_y - saved_y); -- XXX will crash
-
         -- If executed for the very first time, then put it in the top right corner of the screen
         if (not saved_x or not saved_y) then
             saved_x =    (UIParent:GetWidth() * UIScale) - (UIParent:GetWidth() * UIScale) / 4;
