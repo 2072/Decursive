@@ -22,7 +22,7 @@ Decursive key benefits
 
 - Control **what and who** you want to dispel:
 
-    -   Easily [**Filter out**][filteropts] afflictions you don't want to cure or that are useless to remove by class (*some are pre-configured*).  
+    -   Easily [**Filter out**][filteropts] afflictions you don't want to cure or that are useless to remove by class (*some are pre-configured*).
 	(Such as afflictions affecting mana on non-mana classes, etc...).
     -   [**Choose** between what you can dispel][cureopts] (**magic, curses, poison, diseases, charms**) choosing their priority.
 	(this allows you to *share* the cleansing work with other players effectively)
@@ -39,11 +39,11 @@ Decursive key benefits
 - **Don't waste time:**
 
     -   Your cleansing spell **Cooldown** is displayed to maximize your dispel speed.
-    -   An **automatic blacklist** will prevent you from loosing time on players who can't be dispelled.  
+    -   An **automatic blacklist** will prevent you from loosing time on players who can't be dispelled.
 	(player 'out of line of sight' for example).
-    -	Decursive choose a **logical cleansing order** depending on your current position in the raid.  
+    -	Decursive choose a **logical cleansing order** depending on your current position in the raid.
 	(preventing dispel concurrence between players and thus 'nothing to dispel' messages)
-    	
+
 - **React faster:**
 
     -   [**Visual**][curseexemple1] and/or **auditive** alerts when someone needs your attention and *can* be dispelled.
@@ -59,12 +59,12 @@ Decursive key benefits
 - **Highly optimized and effective coding:**
 
     -	Decursive was developed with **memory and CPU usage** in mind, **installing Decursive won't affect your frame rate even in the worst battle conditions**.
-    -   Bug free: **bugs are not tolerated in Decursive**.  
-  
-  
-In brief, what you get with Decursive is **effectiveness**, *a player using Decursive will always dispel faster than other players*.  
-  
- 
+    -   Bug free: **bugs are not tolerated in Decursive**.
+
+
+In brief, what you get with Decursive is **effectiveness**, *a player using Decursive will always dispel faster than other players*.
+
+
 *See also:*
 
 - [Decursive usage][user-actions]
@@ -73,7 +73,7 @@ In brief, what you get with Decursive is **effectiveness**, *a player using Decu
 - [Frequently Asked Questions][FAQ] *try this before asking any question*
 - [commands][]
 
- 
+
 ********************************************************
 Interesting articles and videos about Decursive's usage:
 --------------------------------------------------------
@@ -95,50 +95,49 @@ For other videos about Decursive, see the [YouTube playlist][youtubeplaylist].
 
 
 ******************************************
-  
-  
+
+
 Decursive is dedicated to the memory of Bertrand Sense known as Glorfindal on
 the European server *Les Sentinelles*.
 He was the raid leader of my guild (Horizon)
 
 ******************************************
 
-You can **subscribe** to [Decursive's newsletter](http://www.2072productions.com/to/decursive-newsletter.php) to be alerted whenever a new stable version is released.
+For **suggestions, feature request, or bug report**, use the [ticket system
+provided by WoWAce.com](https://www.wowace.com/projects/decursive/tickets/).
 
-For **suggestions, feature request, or bug report**, use the [ticket system provided by WoWAce.com](http://www.wowace.com/projects/decursive/tickets/).
-
-**Development versions of Decursive are available** at this URI: [http://www.2072productions.com/to/decursive_dev](http://www.2072productions.com/to/decursive_dev) ; note that development versions may be unstable.
+**Development versions of Decursive are available** at this URI: [https://www.2072productions.com/to/decursive_dev](https://www.2072productions.com/to/decursive_dev) ; note that development versions may be unstable.
 Unless you want to help testing unstable code you should download the versions considered stable below.
 
 **Do not forget to rate Decursive!**
 
 Bitcoin donation address: **1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX**
 
-![stats](http://www.2072productions.com/to/dcrcursedisplaystat.gif)
+![stats](https://www.2072productions.com/to/dcrcursedisplaystat.gif)
 
 
-[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
-[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
-[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
-[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
-[commands]: http://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
-[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
-[dev]: http://www.2072productions.com/to/decursive_dev
-[ticket]: http://www.wowace.com/addons/decursive/tickets/
+[MUFs]: https://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
+[MUF]: https://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
+[FAQ]: https://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
+[mouse-over macro]: https://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
+[commands]: https://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
+[user-actions]: https://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
+[dev]: https://www.2072productions.com/to/decursive_dev
+[ticket]: https://www.wowace.com/addons/decursive/tickets/
 
-[cureopts]: http://www.wowace.com/addons/decursive/images/12-decursives-option-panels-curing/
-[filteropts]: http://www.wowace.com/addons/decursive/images/11-decursives-option-panels-affliction-filtering/
-[prioskipopts]: http://www.wowace.com/addons/decursive/images/22-priority-and-skip-list-management-interface/
-[curseexemple1]: http://www.wowace.com/addons/decursive/images/7-curse-affliction-1/
-[mufsdisplayopts]: http://www.wowace.com/addons/decursive/images/19-decursives-option-panels-mufs-display/
-[mufscolors]: http://www.wowace.com/addons/decursive/images/18-decursives-option-panels-mufs-colors/
-[mufsmousebuttons]: http://www.wowace.com/addons/decursive/images/20-decursives-option-panels-mufs-mouse-buttons/
-[generalopts]: http://www.wowace.com/addons/decursive/images/13-decursives-option-panels-general/
-[livelistopts]: http://www.wowace.com/addons/decursive/images/14-decursives-option-panels-live-list/
-[mufshandle]: http://www.wowace.com/addons/decursive/images/23-micro-unit-frames-handle/
-[decursivebar]: http://www.wowace.com/addons/decursive/images/24-decursives-bar/
-[messagesopts]: http://www.wowace.com/addons/decursive/images/16-decursives-option-panels-messages/
+[cureopts]: https://www.wowace.com/addons/decursive/images/12-decursives-option-panels-curing/
+[filteropts]: https://www.wowace.com/addons/decursive/images/11-decursives-option-panels-affliction-filtering/
+[prioskipopts]: https://www.wowace.com/addons/decursive/images/22-priority-and-skip-list-management-interface/
+[curseexemple1]: https://www.wowace.com/addons/decursive/images/7-curse-affliction-1/
+[mufsdisplayopts]: https://www.wowace.com/addons/decursive/images/19-decursives-option-panels-mufs-display/
+[mufscolors]: https://www.wowace.com/addons/decursive/images/18-decursives-option-panels-mufs-colors/
+[mufsmousebuttons]: https://www.wowace.com/addons/decursive/images/20-decursives-option-panels-mufs-mouse-buttons/
+[generalopts]: https://www.wowace.com/addons/decursive/images/13-decursives-option-panels-general/
+[livelistopts]: https://www.wowace.com/addons/decursive/images/14-decursives-option-panels-live-list/
+[mufshandle]: https://www.wowace.com/addons/decursive/images/23-micro-unit-frames-handle/
+[decursivebar]: https://www.wowace.com/addons/decursive/images/24-decursives-bar/
+[messagesopts]: https://www.wowace.com/addons/decursive/images/16-decursives-option-panels-messages/
 
-[youtubeplaylist]: http://www.youtube.com/view_play_list?p=BAC83C82EDE3FD24
-[GoodYoutube1]: http://www.youtube.com/watch?v=Q0OqxD3Svqo
+[youtubeplaylist]: https://www.youtube.com/view_play_list?p=BAC83C82EDE3FD24
+[GoodYoutube1]: https://www.youtube.com/watch?v=Q0OqxD3Svqo
 
