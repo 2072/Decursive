@@ -1215,7 +1215,7 @@ function D:Configure() --{{{
             spell.IsItem = (spellID < 0); -- pre-emptive fix for erroneous configuration -- this *-1 thing was a bad idea...
 
             -- Do we have that spell?
-            if not spell.IsItem and IsSpellKnown(spellID, spell.Pet)
+            if not spell.IsItem and IsSpellKnown(spellID, spell.Pet) -- XXX a damaged conf may trigger an integer overflow here (trying to store 3238092496)
                 or spell.IsItem and D:isItemUsable(-1 * spellID) then
 
                 SpellName = D.GetSpellOrItemInfo(spellID);

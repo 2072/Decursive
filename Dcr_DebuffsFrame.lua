@@ -851,7 +851,7 @@ do
             MUFtoolTip:Show();
 
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
-            if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top
+            if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top -- XXX attempt to perform arithmetic on a nil value, reported on 2018-08-16
                 MUFtoolTip:ClearAllPoints();
                 MUFtoolTip:SetPoint(self:GetHelperAnchor(true));
             end
