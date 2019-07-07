@@ -113,8 +113,6 @@ Unless you want to help testing unstable code you should download the versions c
 
 Bitcoin donation address: **1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX**
 
-![stats](https://www.2072productions.com/to/dcrcursedisplaystat.gif)
-
 
 [MUFs]: https://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
 [MUF]: https://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"

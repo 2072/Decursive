@@ -876,14 +876,14 @@ do
             ["AceLocale-3.0"] = 6,
             ["AceTimer-3.0"] = 17,
 
-            ["AceGUI-3.0"] = 35,
+            ["AceGUI-3.0"] = 36,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 66,
-            ["AceConfigRegistry-3.0"] = 18,
+            ["AceConfigDialog-3.0"] = 73,
+            ["AceConfigRegistry-3.0"] = 20,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 36,
+            ["LibDBIcon-1.0"] = 43,
             ["LibQTip-1.0"] = 46,
             ["CallbackHandler-1.0"] = 7,
         };

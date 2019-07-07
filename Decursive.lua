@@ -248,11 +248,7 @@ function D:PlaySound (UnitID, Caller) --{{{
         local Debuffs, IsCharmed = self:UnitCurableDebuffs(UnitID, true);
         if Debuffs[1] or IsCharmed then
 
-            -- good sounds: Sound\\Doodad\\BellTollTribal.wav
-            --          Sound\\interface\\AuctionWindowOpen.wav
-            --          Sound\\interface\\AlarmClockWarning3.wav
-            
-
+            -- since WoW 8.2, one has to use ids found at https://wow.tools/files/
             self:SafePlaySoundFile(self.profile.SoundFile);
 
             self.Status.SoundPlayed = true;

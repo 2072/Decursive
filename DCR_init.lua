@@ -146,7 +146,7 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.AfflictionSound = "Interface\\AddOns\\Decursive\\Sounds\\AfflictionAlert.ogg";
     DC.FailedSound = "Interface\\AddOns\\Decursive\\Sounds\\FailedSpell.ogg";
     DC.DeadlyDebuffAlert = "Interface\\AddOns\\Decursive\\Sounds\\G_NecropolisWound-fast.ogg";
-    --DC.AfflictionSound = "Sound\\Doodad\\BellTollTribal.wav"
+    --DC.AfflictionSound = 566027
 
     DC.EMPTY_TABLE = {};
 
