@@ -635,7 +635,6 @@ do -- Combat log event handling {{{1
         ["SPELL_AURA_APPLIED"]      = 1,
         ["SPELL_AURA_APPLIED_DOSE"] = 1,
         ["SPELL_AURA_REMOVED"]      = 0,
-        ["SPELL_AURA_APPLIED_DOSE"] = 1,
         ["SPELL_AURA_REMOVED_DOSE"] = 0,
         ["UNIT_DIED"] = 0, -- Special! Base parameters are not compatible
         --["SPELL_DISPEL"] = 0, -- we don't use it because it just means that someone is dispelling something, the aura is not removed yet

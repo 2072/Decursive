@@ -218,216 +218,302 @@ local function SetRuntimeConstants_Once () -- {{{
     local DS = T._C.DS;
     local DSI = T._C.DSI;
 
-    -- XXX WOWL check
-    DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS['Greater Invisibility']});
 
-    DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
-    DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
+    if not DC.WOWC then
+        DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS['Greater Invisibility']});
+
+        DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
+        DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
 
 
-
-    -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
-    DC.SpellsToUse = {
-        -- Druids
-        [DSI["SPELL_CYCLONE"]] = {
-            Types = {DC.CHARMED},
-            Better = 0,
-            Pet = false,
-        },
-        -- Mages
-        [DSI["SPELL_REMOVE_CURSE"]] = {
-            Types = {DC.CURSE},
-            Better = 0,
-            Pet = false,
-        },
-        -- Shamans http://www.wowhead.com/?spell=51514
-        [DSI["SPELL_HEX"]] = {
-            Types = {DC.CHARMED},
-            Better = 0,
-            Pet = false,
-        },
-        -- Shamans
-        [DSI["SPELL_PURGE"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = false,
-        },
-        -- Hunters http://www.wowhead.com/?spell=212640
-        [DSI["SPELL_MENDINGBANDAGE"]] = { -- PVP
-            Types = {DC.DISEASE, DC.POISON},
-            Better = 0,
-            Pet = false,
-        },
-        --[=[ -- LEGION GONE
-        [DSI["SPELL_TRANQUILIZING_SHOT"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = false,
-        },
-        --]=]
-        -- Monks
-        [DSI["SPELL_DETOX_1"]] = {
-            Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-            Better = 2,
-            Pet = false,
-        },
-        [DSI["SPELL_DETOX_2"]] = {
-            Types = {DC.DISEASE, DC.POISON},
-            Better = 2,
-            Pet = false,
-        },
-        -- Monks
-        [DSI["SPELL_DIFFUSEMAGIC"]] = {
-            Types = {DC.MAGIC},
-            Better = 0,
-            Pet = false,
-            UnitFiltering = {
-                [DC.MAGIC]  = 1,
+        -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
+        DC.SpellsToUse = {
+            -- Druids
+            [DSI["SPELL_CYCLONE"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
             },
-        },
-        -- Paladins
-        [DSI["SPELL_CLEANSE_TOXINS"]] = {
-            Types = {DC.DISEASE, DC.POISON},
+            -- Mages
+            [DSI["SPELL_REMOVE_CURSE"]] = {
+                Types = {DC.CURSE},
+                Better = 0,
+                Pet = false,
+            },
+            -- Shamans http://www.wowhead.com/?spell=51514
+            [DSI["SPELL_HEX"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+            },
+            -- Shamans
+            [DSI["SPELL_PURGE"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = false,
+            },
+            -- Hunters http://www.wowhead.com/?spell=212640
+            [DSI["SPELL_MENDINGBANDAGE"]] = { -- PVP
+                Types = {DC.DISEASE, DC.POISON},
+                Better = 0,
+                Pet = false,
+            },
+            --[=[ -- LEGION GONE
+            [DSI["SPELL_TRANQUILIZING_SHOT"]] = {
+            Types = {DC.ENEMYMAGIC},
             Better = 0,
             Pet = false,
-        },
-        [DSI["SPELL_CLEANSE"]] = {
-            Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-            Better = 2,
-            Pet = false,
-        },
-        -- Shaman
-        [DSI["CLEANSE_SPIRIT"]] = { -- same name as PURIFY_SPIRIT in ruRU XXX
-            Types = {DC.CURSE},
-            Better = 3,
-            Pet = false,
-            -- detect resto spec and enhance this spell
-            EnhancedBy = 'resto',
-            EnhancedByCheck = function ()
-                return (GetSpecialization() == 3) and true or false; -- restoration?
-            end,
-            Enhancements = {
-                Types = {DC.CURSE, DC.MAGIC}, -- see PURIFY_SPIRIT
-            }
-        },
-
-        --[=[
-        i=1; while GetSpellBookItemInfo(i, 'spell') do if (select(2, GetSpellBookItemInfo(i, 'spell'))) == 77130 then print(i) end; i = i + 1; end
-        --]=]
-
-        -- Shaman resto
-        [DSI["PURIFY_SPIRIT"]] = { -- same name as CLEANSE_SPIRIT in ruRU XXX -- IsSpellKnown(DSI["PURIFY_SPIRIT"]) actually fails in all situaions...
-            -- BUG in MOP BETA and 5.2 (2012-07-08): /dump GetSpellBookItemInfo('Purify Spirit') == nil while /dump (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
-            Types = {DC.CURSE, DC.MAGIC},
-            Better = 4,
-            Pet = false,
-        },
-        -- Warlocks (Imp)
-        [DSI["PET_SINGE_MAGIC"]] = {
-            Types = {DC.MAGIC},
-            Better = 0,
-            Pet = true,
-        },
-        [DSI["PET_SINGE_MAGIC_PVP"]] = { -- PVP
-            Types = {DC.MAGIC},
-            Better = 0,
-            Pet = true,
-        },
-         -- Warlocks (Fel-Imp)
-        [DSI["PET_SEAR_MAGIC"]] = {
-            Types = {DC.MAGIC},
-            Better = 0,
-            Pet = true,
-        },
-        -- Warlocks (Imp singe magic ability when used with Grimoire of Sacrifice)
-        [DSI["SPELL_COMMAND_DEMON"]] = {
-            Types = {}, -- does nothing by default
-            Better = 1, -- the Imp takes time to disappear when sacrificed, during that interlude, Singe Magic is still there
-            Pet = false,
-
-            EnhancedBy = true,
-            EnhancedByCheck = function ()
-                return (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SINGE_MAGIC"] or (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SEAR_MAGIC"];
-            end,
-            Enhancements = {
+            },
+            --]=]
+            -- Monks
+            [DSI["SPELL_DETOX_1"]] = {
+                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                Better = 2,
+                Pet = false,
+            },
+            [DSI["SPELL_DETOX_2"]] = {
+                Types = {DC.DISEASE, DC.POISON},
+                Better = 2,
+                Pet = false,
+            },
+            -- Monks
+            [DSI["SPELL_DIFFUSEMAGIC"]] = {
                 Types = {DC.MAGIC},
-            }
-        },
-        -- Warlock
-        [DSI["SPELL_FEAR"]] = {
-            Types = {DC.CHARMED},
-            Better = 0,
-            Pet = false,
-        },
-        -- Warlocks
-        [DSI["PET_TORCH_MAGIC"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = true,
-        },
-        [DSI["PET_DEVOUR_MAGIC"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = true,
-        },
-        -- Mages
-        [DSI["SPELL_POLYMORPH"]] = {
-            Types = {DC.CHARMED},
-            Better = 0,
-            Pet = false,
-        },
-        -- Druids (Balance Feral Guardian)
-        [DSI["SPELL_REMOVE_CORRUPTION"]] = {
-            Types = {DC.POISON, DC.CURSE},
-            Better = 0,
-            Pet = false,
+                Better = 0,
+                Pet = false,
+                UnitFiltering = {
+                    [DC.MAGIC]  = 1,
+                },
+            },
+            -- Paladins
+            [DSI["SPELL_CLEANSE_TOXINS"]] = {
+                Types = {DC.DISEASE, DC.POISON},
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["SPELL_CLEANSE"]] = {
+                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                Better = 2,
+                Pet = false,
+            },
+            -- Shaman
+            [DSI["CLEANSE_SPIRIT"]] = { -- same name as PURIFY_SPIRIT in ruRU XXX
+                Types = {DC.CURSE},
+                Better = 3,
+                Pet = false,
+                -- detect resto spec and enhance this spell
+                EnhancedBy = 'resto',
+                EnhancedByCheck = function ()
+                    return (GetSpecialization() == 3) and true or false; -- restoration?
+                end,
+                Enhancements = {
+                    Types = {DC.CURSE, DC.MAGIC}, -- see PURIFY_SPIRIT
+                }
+            },
 
-        },
-        -- Druids (Restoration)
-        [DSI["SPELL_NATURES_CURE"]] = {
-            Types = {DC.MAGIC, DC.POISON, DC.CURSE},
-            Better = 3,
-            Pet = false,
-        },
-        -- Priests (global)
-        [DSI["SPELL_DISPELL_MAGIC"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = false,
-        },
-        -- Demon Hunters (global)
-        [DSI["SPELL_CONSUME_MAGIC"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = false,
-        },
-        -- Mages (global)
-        [DSI["SPELL_SPELLSTEAL"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 1,
-            Pet = false,
-        },
-        -- Priests (Discipline, Holy)
-        [DSI["SPELL_PURIFY"]] = {
-            Types = {DC.MAGIC, DC.DISEASE},
-            Better = 1,
-            Pet = false,
-        },
-        [DSI["SPELL_PURIFY_DISEASE"]] = {
-            Types = {DC.DISEASE},
-            Better = 0,
-            Pet = false,
-        },
-        -- Demon hunters
-        [DSI["SPELL_REVERSEMAGIC"]] = { -- PVP
-            Types = {DC.MAGIC},
-            Better = 1,
-            Pet = false,
-        },
-    };
+            --[=[
+            i=1; while GetSpellBookItemInfo(i, 'spell') do if (select(2, GetSpellBookItemInfo(i, 'spell'))) == 77130 then print(i) end; i = i + 1; end
+            --]=]
 
-    -- }}}
+            -- Shaman resto
+            [DSI["PURIFY_SPIRIT"]] = { -- same name as CLEANSE_SPIRIT in ruRU XXX -- IsSpellKnown(DSI["PURIFY_SPIRIT"]) actually fails in all situaions...
+                -- BUG in MOP BETA and 5.2 (2012-07-08): /dump GetSpellBookItemInfo('Purify Spirit') == nil while /dump (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
+                Types = {DC.CURSE, DC.MAGIC},
+                Better = 4,
+                Pet = false,
+            },
+            -- Warlocks (Imp)
+            [DSI["PET_SINGE_MAGIC"]] = {
+                Types = {DC.MAGIC},
+                Better = 0,
+                Pet = true,
+            },
+            [DSI["PET_SINGE_MAGIC_PVP"]] = { -- PVP
+                Types = {DC.MAGIC},
+                Better = 0,
+                Pet = true,
+            },
+            -- Warlocks (Fel-Imp)
+            [DSI["PET_SEAR_MAGIC"]] = {
+                Types = {DC.MAGIC},
+                Better = 0,
+                Pet = true,
+            },
+            -- Warlocks (Imp singe magic ability when used with Grimoire of Sacrifice)
+            [DSI["SPELL_COMMAND_DEMON"]] = {
+                Types = {}, -- does nothing by default
+                Better = 1, -- the Imp takes time to disappear when sacrificed, during that interlude, Singe Magic is still there
+                Pet = false,
 
+                EnhancedBy = true,
+                EnhancedByCheck = function ()
+                    return (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SINGE_MAGIC"] or (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SEAR_MAGIC"];
+                end,
+                Enhancements = {
+                    Types = {DC.MAGIC},
+                }
+            },
+            -- Warlock
+            [DSI["SPELL_FEAR"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+            },
+            -- Warlocks
+            [DSI["PET_TORCH_MAGIC"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = true,
+            },
+            [DSI["PET_DEVOUR_MAGIC"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = true,
+            },
+            -- Mages
+            [DSI["SPELL_POLYMORPH"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+            },
+            -- Druids (Balance Feral Guardian)
+            [DSI["SPELL_REMOVE_CORRUPTION"]] = {
+                Types = {DC.POISON, DC.CURSE},
+                Better = 0,
+                Pet = false,
+
+            },
+            -- Druids (Restoration)
+            [DSI["SPELL_NATURES_CURE"]] = {
+                Types = {DC.MAGIC, DC.POISON, DC.CURSE},
+                Better = 3,
+                Pet = false,
+            },
+            -- Priests (global)
+            [DSI["SPELL_DISPELL_MAGIC"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = false,
+            },
+            -- Demon Hunters (global)
+            [DSI["SPELL_CONSUME_MAGIC"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = false,
+            },
+            -- Mages (global)
+            [DSI["SPELL_SPELLSTEAL"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 1,
+                Pet = false,
+            },
+            -- Priests (Discipline, Holy)
+            [DSI["SPELL_PURIFY"]] = {
+                Types = {DC.MAGIC, DC.DISEASE},
+                Better = 1,
+                Pet = false,
+            },
+            [DSI["SPELL_PURIFY_DISEASE"]] = {
+                Types = {DC.DISEASE},
+                Better = 0,
+                Pet = false,
+            },
+            -- Demon hunters
+            [DSI["SPELL_REVERSEMAGIC"]] = { -- PVP
+                Types = {DC.MAGIC},
+                Better = 1,
+                Pet = false,
+            },
+        };
+
+        -- }}}
+    else -- WOW CLASSIC
+        DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"], DS["Lesser Invisibility"]});
+        DC.IS_HARMFULL_DEBUFF = D:tReverse({});
+        DC.IS_DEADLY_DEBUFF   = D:tReverse({});
+
+        -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
+        DC.SpellsToUse = {
+            -- Mages
+            [DSI["SPELL_REMOVE_LESSER_CURSE"]] = {
+                Types = {DC.CURSE},
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["SPELL_REMOVE_CURSE"]] = {
+                Types = {DC.CURSE},
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["SPELL_HEX"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+            },
+            -- Shamans
+            [DSI["SPELL_PURGE"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["SPELL_CLEANSE"]] = {
+                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                Better = 2,
+                Pet = false,
+            },
+            -- Warlock
+            [DSI["SPELL_FEAR"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+            },
+             -- Mages
+            [DSI["SPELL_POLYMORPH"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+            },
+            -- Priests (global)
+            [DSI["SPELL_DISPELL_MAGIC"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = false,
+            },
+            -- Priests (Discipline, Holy)
+            [DSI["SPELL_PURIFY"]] = {
+                Types = {DC.MAGIC, DC.DISEASE},
+                Better = 1,
+                Pet = false,
+            },
+            [DSI["SPELL_ABOLISH_DISEASE"]] = {
+                Types = {DC.DISEASE},
+                Better = 2,
+                Pet = false,
+            },
+            [DSI["SPELL_CURE_DISEASE"]] = {
+                Types = {DC.DISEASE},
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["SPELL_ABOLISH_POISON"]] = {
+                Types = {DC.POISON},
+                Better = 2,
+                Pet = false,
+            },
+            [DSI["SPELL_CURE_POISON"]] = {
+                Types = {DC.POISON},
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["PET_DEVOUR_MAGIC"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = true,
+            },
+            
+        }
+        -- }}}
+    end
     D:CreateClassColorTables();
 
     SetRuntimeConstants_Once = nil;
@@ -722,7 +808,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     D.eventFrame:RegisterEvent("BAG_UPDATE_DELAYED");
     D.eventFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED");
-    D.eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+    if not DC.WOWC then
+        D.eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+    end
     D.eventFrame:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
     D.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
@@ -735,7 +823,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     D.eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 
-    D.eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    if not DC.WOWC then
+        D.eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    end
 
     -- Player pet detection event (used to find pet spells)
     D.eventFrame:RegisterEvent("UNIT_PET");
@@ -1331,9 +1421,9 @@ end --}}}
 function D:SetSpellsTranslations(FromDIAG) -- {{{
     local GetSpellInfo = _G.GetSpellInfo;
 
-
     if not T._C.DS then
         T._C.DS = {};
+
         T._C.DSI = {
             ["SPELL_POLYMORPH"]             =  118,
             ["SPELL_COUNTERSPELL"]          =  2139,
@@ -1393,6 +1483,72 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_MENDINGBANDAGE']        =  212640,
             ['SPELL_REVERSEMAGIC']          =  205604,
         };
+
+        
+
+        if DC.WOWC then
+
+            local DSI_NOT_OR_CHANGED_IN_CLASSIC = {
+                ['Invisibility']        =  66,
+                ['Shadowmeld']          =  58984,
+                ["SPELL_DISPELL_MAGIC"] =  528,
+                ["SPELL_PURIFY"]        =  527,
+                ["Fluidity"]	        = 138002,
+                ["SPELL_SPELLSTEAL"]	= 30449,
+                ["SPELL_CONSUME_MAGIC"]	= 278326,
+                ["PET_TORCH_MAGIC"]	= 171021,
+                ["SPELL_HEX"]	        = 51514,
+                ["SPELL_CYCLONE"]	= 33786,
+                ["SPELL_DETOX_1"]	= 115450,
+                ["Unstable Affliction"]	= 30108,
+                ["SPELL_REVERSEMAGIC"]	= 205604,
+                ["PET_SEAR_MAGIC"]	= 115276,
+                ["SPELL_COMMAND_DEMON"]	= 119898,
+                ["Greater Invisibility"]= 110959,
+                ["SPELL_MENDINGBANDAGE"]= 212640,
+                ["CRIPLES"]	        = 33787,
+                ["Arcane Blast"]	= 30451,
+                ["SPELL_DETOX_2"]	= 218164,
+                ["MDREAMLESSSLEEP"]	= 28504,
+                ["PURIFY_SPIRIT"]	= 77130,
+                ["SONICBURST"]	        = 39052,
+                ["SPELL_PURIFY_DISEASE"]= 213634,
+                ["Vampiric Touch"]	= 34914,
+                ["CLEANSE_SPIRIT"]	= 51886,
+                ["SPELL_NATURES_CURE"]	= 88423,
+                ["PET_SINGE_MAGIC"]	= 89808,
+                ["PET_SINGE_MAGIC_PVP"]	= 212623,
+                ["SPELL_CLEANSE_TOXINS"]= 213644,
+                ["SPELL_DIFFUSEMAGIC"]	= 122783,
+                ["SPELL_REMOVE_CORRUPTION"]     =  2782,
+            }
+
+            for name, sid in pairs(DSI_NOT_OR_CHANGED_IN_CLASSIC) do
+                T._C.DSI[name] = nil;
+            end
+
+            -- the spells in classic
+            T._C.DSI["SPELL_REMOVE_LESSER_CURSE"] = 475;
+            T._C.DSI["SPELL_REMOVE_CURSE"]        = 2782;
+            T._C.DSI["SPELL_HEX"]                 = 16707;
+            T._C.DSI["SPELL_PURGE"]               = 370;
+            T._C.DSI["SPELL_CLEANSE"]             = 4987;
+            T._C.DSI["SPELL_FEAR"]                = 5782;
+            T._C.DSI["SPELL_POLYMORPH"]           = 13323;
+            T._C.DSI["SPELL_DISPELL_MAGIC"]       = 527;
+            T._C.DSI["SPELL_PURIFY"]              = 1152;
+            T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
+            T._C.DSI["SPELL_ABOLISH_POISON"]      = 2893;
+            T._C.DSI["SPELL_CURE_DISEASE"]        = 528;
+            T._C.DSI["SPELL_CURE_POISON"]         = 526;
+            T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
+            T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
+            T._C.DSI["SONICBURST"]                = 8281;
+            T._C.DSI["CRIPLES"]                   = 11443;
+            T._C.DSI["Shadowmeld"]                = 20580;
+
+           
+        end
     end
 
     local DS  = T._C.DS;

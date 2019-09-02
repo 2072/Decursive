@@ -321,10 +321,10 @@ function D:GetDefaultsSettings()
             BuffDebuff = {
                 [DS["DREAMLESSSLEEP"]]          = true,
                 [DS["GDREAMLESSSLEEP"]]         = true,
-                [DS["MDREAMLESSSLEEP"]]         = true,
+                [(not DC.WOWC) and DS["MDREAMLESSSLEEP"] or "NONE"]         = (not DC.WOWC) and true or nil,
                 [DS["DCR_LOC_MINDVISION"]]      = true,
                 [DS["MUTATINGINJECTION"]]       = true,
-                [DS["Arcane Blast"]]            = true,
+                [(not DC.WOWC) and DS["Arcane Blast"] or "NONE"]            = (not DC.WOWC) and true or nil,
             },
 
             DebuffAlwaysSkipList = {
@@ -2962,6 +2962,7 @@ end
 
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(D.db.global.MacroBind));
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingKey(D.CONF.MACROCOMMAND));
+local SaveBindings = _G.SaveBindings or _G.AttemptToSaveBindings; -- was renamed for WOW Classic, it might happen too on retail...
 
 function D:SetMacroKey ( key )
 

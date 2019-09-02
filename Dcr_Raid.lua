@@ -223,6 +223,11 @@ do
 
     local FakeRoles = {}; local roles = {"HEALER", "TANK", "DAMAGER", "NONE"};
     local function _UnitGroupRolesAssigned(unit)
+
+        if DC.WOWC then
+            return "NONE";
+        end
+
         if not TestMode then
             return UnitGroupRolesAssigned(unit);
         elseif not FakeRoles[unit] then

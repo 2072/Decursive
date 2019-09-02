@@ -336,6 +336,7 @@ do
         local ACsuccess, actionsConfiguration = pcall(T._ExportActionsConfiguration);
 
         local CSCsuccess, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
+        local STPsuccess, spellTable = pcall(T._PrintSpellTable);
 
         local SRTOLEsuccess, SRTOLErrors =
             pcall(function() return "Script ran too long errors:\n" .. T.Dcr:tAsString(T.Dcr.db.global.SRTLerrors) end);
@@ -352,6 +353,7 @@ do
         .. table.concat(T._DebugTextTable, "")
         .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --"
         .. customSpellConfiguration .. "\n-- --"
+        .. spellTable .. "\n-- --"
         .. SRTOLErrors .. "\n-- --"
         .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. "\n-- --";
 
@@ -580,7 +582,10 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
-DC.WOW8 = (tocversion >= 80000)
+DC.WOWC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+DC.WOW8 = (tocversion >= 80000) or DC.WOWC
+
+
 
 function T._DecursiveErrorHandler(err, ...)
 
@@ -808,6 +813,21 @@ do
         end
 
         return table.concat(customSpellConfText, "\n");
+    end
+    function T._PrintSpellTable() -- (use pcall with this) -- {{{
+
+        local errorPrefix = function (message)
+            return "_PrintSpellTable: " .. message;
+        end
+
+        local customSpellConfText = {};
+        local D = T.Dcr;
+
+        if not T._C or not T._C.DSI then
+            return errorPrefix("T._C.DSI not available");
+        end
+
+        return "\nDecursive known spells:\n(left and right side should be 'matching')\n" .. D:tAsString(D:tMap(T._C.DSI, GetSpellInfo));
     end
     function T._ExportActionsConfiguration () -- (use pcall with this) -- {{{
 
