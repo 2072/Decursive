@@ -1122,8 +1122,8 @@ do
 
         -- else, let's check for the first 3 talents, one of them ought to be
         -- 'available' (6th returned value of GetTalentInfo) if not selected.
-        for talent=1,3 do
-            if (select(6, GetTalentInfo(talent))) then
+        for talent=1, (GetNumTalentTabs and GetNumTalentTabs() or 3) do
+            if (select(5, GetTalentInfo(DC.WOWC and talent or 1, DC.WOWC and 1 or talent, (not DC.WOWC) and 1 or nil))) then
                 return true;
             end
         end
