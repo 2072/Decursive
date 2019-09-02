@@ -1,5 +1,11 @@
-Decursive 2.7.6.3
-=================
+Decursive 2.7.6.4--BETA
+=======================
+
+
+Changes from Decursive 2.7.6.3 to Decursive 2.7.6.4 (2019-09-02)
+----------------------------------------------------------------
+
+- Compatible with WoW Classic, needs testing.
 
 
 Changes from Decursive 2.7.6.2 to Decursive 2.7.6.3 (2019-07-07)
