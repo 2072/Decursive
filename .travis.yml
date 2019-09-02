@@ -1,0 +1,13 @@
+language: minimal
+
+git:
+  depth: 150
+
+after_success:
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash; if [[ $? != 0 ]]; then TRAVIS_TEST_RESULT=1; fi
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.2 -m .pkgmeta-classic -w 24944; if [[ $? != 0 ]]; then TRAVIS_TEST_RESULT=1; fi
+
+notifications:
+  email:
+    on_failure: always
+    on_success: never
