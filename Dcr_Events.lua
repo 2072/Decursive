@@ -1109,15 +1109,14 @@ do
 
         local playerLevel = UnitLevel("player");
 
-        -- no talents before level 15, so if we know the level (>0) and it's
-        -- <15, we know there is no talent.
-        if playerLevel > 0 and playerLevel < 15 then
+        -- no talents before level 10
+        if playerLevel > 0 and playerLevel < 10 then
             return true;
         end
 
         -- if we know that there are unspet talents, it means we can check for
         -- them
-        if GetNumUnspentTalents() then
+        if _G.GetNumUnspentTalents and GetNumUnspentTalents() then
             return true;
         end
 
