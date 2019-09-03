@@ -54,7 +54,7 @@
     <!-- Inspired from BugSack error report frame-->
 
     <Frame name="DecursiveDebuggingFrame" parent="UIParent" inherits="DialogBoxFrame" hidden="true">
-        <Backdrop name="$parentBackdrop" bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
             <BackgroundInsets>
                 <AbsInset left="5" right="5" top="5" bottom="5"/>
             </BackgroundInsets>

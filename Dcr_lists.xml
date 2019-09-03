@@ -55,9 +55,9 @@
 
         <ButtonText name="$parentText" justifyH="LEFT" />
 
-        <NormalFont inherits="GameFontNormal" style="GameFontNormal" justifyH="LEFT" />
-        <HighlightFont inherits="GameFontHighlight" style="GameFontHighlight" justifyH="LEFT" />
-        <DisabledFont inherits="GameFontDisable" style="GameFontDisable" justifyH="LEFT" />
+        <NormalFont style="GameFontNormal" />
+        <HighlightFont style="GameFontHighlight" />
+        <DisabledFont style="GameFontDisable" />
 
     </Button>
 
@@ -87,7 +87,7 @@
     <!-- }}} -->
 
     <!--  Dcr_ListFrameTemplate {{{ -->
-    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" EnableMouseWheel="true" movable="true" clampedToScreen="true" hidden="true" virtual="true" parent="UIParent">
+    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" virtual="true" parent="UIParent">
         <Size>
             <AbsDimension x="170" y="210" />
         </Size>

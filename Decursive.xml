@@ -271,8 +271,6 @@
             </Anchor>
         </Anchors>
 
-        <TitleRegion setAllPoints="true"/>
-
         <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
             <EdgeSize>
                 <AbsValue val="16"/>
