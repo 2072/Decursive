@@ -1,11 +1,14 @@
-Decursive 2.7.6.4--BETA
-=======================
+Decursive 2.7.6.4-beta_1
+========================
 
 
-Changes from Decursive 2.7.6.3 to Decursive 2.7.6.4 (2019-09-02)
+Changes from Decursive 2.7.6.3 to Decursive 2.7.6.4 (2019-09-03)
 ----------------------------------------------------------------
 
 - Compatible with WoW Classic, needs testing.
+
+- Due to the switch to Bigwig's packager -nolib packages are only available
+  from Github.
 
 
 Changes from Decursive 2.7.6.2 to Decursive 2.7.6.3 (2019-07-07)

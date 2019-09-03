@@ -44,7 +44,7 @@ externals:
         url: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
     Libs/LibDataBroker-1.1:
         url: git://github.com/tekkub/libdatabroker-1-1.git
-    
+
 
 ignore:
     - Libs/LibStub/tests
@@ -56,7 +56,7 @@ enable-nolib-creation: yes
 
 #license-output: LICENSE.txt
 
-#manual-changelog:
-#    filename: WhatsNew.md.txt
-#    markup-type: markdown
+manual-changelog:
+    filename: WhatsNew.md.txt
+    markup-type: markdown
 
