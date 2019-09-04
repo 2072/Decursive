@@ -395,7 +395,7 @@ L["OPT_READDDEFAULTSD_DESC1"] = [=[Add missing Decursive's default afflictions t
 Your settings won't be changed]=]
 L["OPT_READDDEFAULTSD_DESC2"] = "All Decursive's default afflictions are in this list"
 L["OPT_REMOVESKDEBCONF"] = [=[Are you sure you want to remove
- '%s' 
+ '%s'
 from Decursive's affliction skip list?]=]
 L["OPT_REMOVETHISDEBUFF"] = "Remove this affliction"
 L["OPT_REMOVETHISDEBUFF_DESC"] = "Removes '%s' from the skip list"

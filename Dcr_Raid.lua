@@ -318,7 +318,7 @@ do
                     end
                 end
             end
-        end 
+        end
 
         if not unit then
             GUIDToUnit_ScannedAll = true;
@@ -510,10 +510,10 @@ do
 
         -- First clean and load the prioritylist (remove missing units)
         setInternalList(self.profile.PriorityList, IPL);
-        
+
         -- Get a cleaned skip list
         setInternalList(self.profile.SkipList, ISL);
-        
+
         Lookforpets = true;
 
         -- if we are not in a raid but in a party
@@ -597,7 +597,7 @@ do
             end
 
             -- Add the player to the main list if needed
-            
+
             addUnit("player", 0, myGUID, CurrentGroup)
 
             -- Now we have a cache without the units we want to skip

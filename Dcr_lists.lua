@@ -188,7 +188,7 @@ function D.PrioSkipListEntryTemplate_OnClick(listFrame, entryBFrame, button) --{
                 list[nextUnit_ID]       = list[id];
                 list[id]                = nextUnit;
             elseif (button=="MiddleButton") then
-            
+
             end
             listFrame.UpdateYourself = true;
         end
@@ -214,7 +214,7 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
                 classname = D.profile.SkipListClass[GUIDorNum];
                 name = D.profile.SkipGUIDtoNAME[GUIDorNum];
             end
-          
+
             if (GUIDorNum) then
                 if (type(GUIDorNum) == "number") then
                     if (GUIDorNum > 10) then
@@ -372,7 +372,7 @@ function D:ClearPriorityList() --{{{
     D.profile.PriorityList = {};
     D.profile.PriorityListClass = {};
     D.profile.PrioGUIDtoNAME = {};
-    
+
     D.Status.PrioChanged       = true;
     D:GroupChanged ("ClearPriorityList");
     DecursivePriorityListFrame.UpdateYourself = true;
@@ -406,7 +406,7 @@ function D:RemoveIDFromSkipList(id) --{{{
 
     D.profile.SkipListClass[ D.profile.SkipList[id] ] = nil; -- remove it from the table
     D.profile.SkipGUIDtoNAME[ D.profile.SkipList[id]] = nil;
-    
+
 
     table.remove( D.profile.SkipList, id );
 
@@ -421,7 +421,7 @@ function D:ClearSkipList() --{{{
     D.profile.SkipList = {};
     D.profile.SkipListClass = {};
     D.profile.SkipGUIDtoNAME = {};
-    
+
     D.Status.PrioChanged       = true;
     D.Groups_datas_are_invalid = true;
     D:GroupChanged ("ClearSkipList");

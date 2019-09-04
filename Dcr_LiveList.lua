@@ -206,7 +206,7 @@ end -- }}}
 
 
 function LiveList.prototype:init(Container,ID) -- {{{
-    
+
     --LiveList.super.prototype.init(self); -- needed
     D:Debug("(LiveList) Initializing LiveList object '%s'", ID);
 
@@ -223,7 +223,7 @@ function LiveList.prototype:init(Container,ID) -- {{{
     self.PrevUnitID         = false;
     self.PrevRaidTargetIndex= false;
     self.UnitClass          = false;
-    
+
     self.Debuff             = {};
 
     self.PrevDebuffIndex    = false;
@@ -258,14 +258,14 @@ function LiveList.prototype:init(Container,ID) -- {{{
 
     -- Create the character name Fontstring
     self.UnitNameFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitName", "OVERLAY", "DcrLLUnitNameFont");
-    
+
     -- Create the unitID Fontstring
     self.UnitIDFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."UnitID", "OVERLAY", "DcrLLUnitIDFont");
     --self.UnitIDFontString:SetHeight(3);
 
     -- Create the debuff type fontstring
     self.DebuffTypeFontString = self.Frame:CreateFontString("DcrLiveListItem"..ID.."Type", "OVERLAY", "DcrLLDebuffTypeFont");
-    
+
     -- Create the Raid Target Icon Texture
     self.RaidIconTexture = self.Frame:CreateTexture("DcrLiveListItem"..ID.."RaidIcon", "ARTWORK", "DcrLVRaidIconTemplate");
 
@@ -398,7 +398,7 @@ function LiveList:Update_Display() -- {{{
         return;
     end
 
-    -- 
+    --
     self:PreCreate();
 
     Index = 0;

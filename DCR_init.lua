@@ -85,7 +85,7 @@ local function RegisterLocals_Once() -- {{{
     -- it's best to stay on the safe side...
 
     D.LC = setmetatable(FillLocalizedClassList({}, false), {__index = function(t,k) return k end});
-  
+
     RegisterLocals_Once = nil;
 end -- }}}
 
@@ -510,7 +510,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = true,
             },
-            
+
         }
         -- }}}
     end
@@ -1484,7 +1484,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_REVERSEMAGIC']          =  205604,
         };
 
-        
+
 
         if DC.WOWC then
 
@@ -1547,7 +1547,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["CRIPLES"]                   = 11443;
             T._C.DSI["Shadowmeld"]                = 20580;
 
-           
+
         end
     end
 

@@ -240,7 +240,7 @@
 
                         local Scrollmin, scrollmax = Slider:GetMinMaxValues();
 
-                        Slider:SetMinMaxValues(Scrollmin, scrollmax + Slider:GetValueStep()); 
+                        Slider:SetMinMaxValues(Scrollmin, scrollmax + Slider:GetValueStep());
 
                         Slider:SetValue(scrollmax + Slider:GetValueStep());
                         end
@@ -978,7 +978,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        
+
                         self.ClassType = DecursiveRootTable._C.CLASS_MONK;
                         self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
@@ -1001,7 +1001,7 @@
                     </OnClick>
                     <OnLoad>
                         if DecursiveInstallCorrupted then return end
-                        
+
                         self.ClassType = DecursiveRootTable._C.CLASS_DEMONHUNTER;
                         self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
@@ -1033,7 +1033,7 @@
     </Frame>
     <!-- DecursivePopulateListFrame }}} -->
 
-    
+
     <Script>
         local T = DecursiveRootTable or {};
 

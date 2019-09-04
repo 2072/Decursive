@@ -72,7 +72,7 @@ T._LoadedFiles["frFR.lua"] = false;
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "frFR");
 
-if not L then 
+if not L then
     T._LoadedFiles["frFR.lua"] = "@project-version@";
     return;
 end

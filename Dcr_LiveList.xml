@@ -78,7 +78,7 @@
         </Scripts>
     </Button> <!-- }}} -->
 
- 
+
     <Texture name="DcrLVBackgroundTemplate" virtual="true"> <!-- {{{ -->
         <Anchors>
             <Anchor point="TOPLEFT" relativeTo="$parent" />
@@ -206,7 +206,7 @@
         <Color r="0.1" g="0.5" b="0.4"/>
     </FontString> <!-- }}} -->
 
-    
+
     <Script>
         local T = DecursiveRootTable or {};
         T._LoadedFiles["Dcr_LiveList.xml"] = "@project-version@";

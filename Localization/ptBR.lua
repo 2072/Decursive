@@ -71,7 +71,7 @@ end
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "ptBR");
 
-if not L then 
+if not L then
     T._LoadedFiles["ptBR.lua"] = "@project-version@";
     return;
 end
