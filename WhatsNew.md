@@ -2,20 +2,23 @@ Decursive 2.7.6.4-beta_2
 ========================
 
 
-Decursive 2.7.6.4_beta_2 (2019-09-08)
+Decursive 2.7.6.4-beta_2 (2019-09-08)
 -------------------------------------
 
-- WOW Classic: Fix missing Cure Poison for Druids.
+- WOW Classic: Fix missing `Cure Poison` for Druids.
 
-- WOW Classic: Fix Paladins' Purify to remove poison instead of magic.
+- WOW Classic: Fix Paladins' `Purify` to remove poison instead of magic.
 
 If you encounter other mismatched abilities, please provide the class AND the spell
 along with any other relevant details.
 Also note that you can change the default spell mappings by checking the
 "Allow internal macro editing..." checkbox in the "Custom spell" option tab.
 
+- Rename all .md.txt files to .md so that they are properly formatted on
+  Github.com
 
-Decursive 2.7.6.4_beta_1 (2019-09-03)
+
+Decursive 2.7.6.4-beta_1 (2019-09-03)
 -------------------------------------
 
 - Compatible with WoW Classic. You need to use the _"*-classic.zip" packages_ or
