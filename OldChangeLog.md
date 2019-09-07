@@ -1,8 +1,15 @@
+Decursive prior versions change logs
+====================================
+***
+(For the latest version changes see WhatsNew.md.txt)
+***
+
+
 Changes from Decursive 2.7.5.7 to Decursive 2.7.5.8 (2018-07-18)
 ----------------------------------------------------------------
 
 - Basic update compatibility for WoW 8, please use the [ticket system][ticket] on
-  WoWAce to report and track any issue you encounter. 
+  WoWAce to report and track any issue you encounter.
 
 - Change of author's email address: from now on it's Decursive {AT} 2072productions.com
 
@@ -294,7 +301,7 @@ Changes from Decursive 2.7.2.3 to Decursive 2.7.2.4 (2012-12-25)
 - Added automatic support for Druid's Symbiosis spell, Decursive should detect
   any useful cleansing spell gained through the use of Symbiosis. Previously
   you had to add Symbiosis as a custom spell yourself and configure it.
- 
+
 - Better performances for people playing in very low FPS conditions.
 
 - Fix automatic version announcement related Lua error due to wrong
@@ -700,7 +707,7 @@ Changes from Decursive 2.5.0 to Decursive 2.5.1
   macro and letting the user change it and still use Decursive macro key-binding
   management. (Defaults to off)
 
-- *NEW command line option* to hide and disable the MUFs handle: 
+- *NEW command line option* to hide and disable the MUFs handle:
   (/dcr HideMUFsHandle)
 
 - German translation is now complete (thanks to Freydis88).
@@ -978,7 +985,7 @@ Changes from Decursive 2.3.0 RC2 to Decursive 2.3.0 RC4
 - Moved and renamed localization files to a proper directory.
 - New option: "MiniMap Icon" to toggle the display of Decursive Icon around the MiniMap.
 - Fixes a NIL error when an outsider friendly target got stealth.
-- Fixes the LUA error related to the "test affliction" in the live-list options. 
+- Fixes the LUA error related to the "test affliction" in the live-list options.
 
 
 Changes from Decursive 2.3 beta 3 to Decursive 2.3.0 RC2
@@ -1073,7 +1080,7 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0 Final
 - New option: "Align MUF window to the right" (defaults to off)
   If enabled, the MUFs will grow from right to left and the handle will be
   moved automatically.
-    
+
 - New option: "Auto-Hide" (defaults to "Never")
   Lets you choose if you want to auto-hide/show the MUF window when in party or raid.
 
@@ -1112,7 +1119,7 @@ Changes from Decursive 2.0.4 to Decursive 2.1.0 Final
 - Fix an initialization issue some users were experiencing.
 
 - Added a new FAQ entry about a rumour according to which Decursive would be
-  banned by Blizzard. (take a look at the end of the Readme.txt file) 
+  banned by Blizzard. (take a look at the end of the Readme.txt file)
 
 
 Changes from Decursive 2.0.3 to Decursive 2.0.4

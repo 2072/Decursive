@@ -1,11 +1,25 @@
-Decursive 2.7.6.4-beta_1
+Decursive 2.7.6.4-beta_2
 ========================
 
 
-Decursive 2.7.6.4 (2019-09-03)
-----------------------------------------------------------------
+Decursive 2.7.6.4_beta_2 (2019-09-08)
+-------------------------------------
 
-- Compatible with WoW Classic, needs testing.
+- WOW Classic: Fix missing Cure Poison for Druids.
+
+- WOW Classic: Fix Paladins' Purify to remove poison instead of magic.
+
+If you encounter other mismatched abilities, please provide the class AND the spell
+along with any other relevant details.
+Also note that you can change the default spell mappings by checking the
+"Allow internal macro editing..." checkbox in the "Custom spell" option tab.
+
+
+Decursive 2.7.6.4_beta_1 (2019-09-03)
+-------------------------------------
+
+- Compatible with WoW Classic. You need to use the _"*-classic.zip" packages_ or
+  the Twitch client.
 
 - Due to the switch to Bigwig's packager -nolib packages are only available
   from Github.
@@ -45,6 +59,10 @@ Decursive 2.7.6 (2018-07-22)
 - Added a graceful period of 10 seconds after startup before complaining about
   other add-ons errors as the new LUA_WARNING WoW 8 feature unveils many
   non-consequential errors in other add-ons.
+
+
+***
+For older versions changes, see OldChangelog.txt
 
 
 [ticket]: http://www.wowace.com/addons/decursive/tickets/
