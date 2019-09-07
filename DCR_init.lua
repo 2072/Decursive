@@ -481,7 +481,7 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Priests (Discipline, Holy)
             [DSI["SPELL_PURIFY"]] = {
-                Types = {DC.MAGIC, DC.DISEASE},
+                Types = {DC.POISON, DC.DISEASE},
                 Better = 1,
                 Pet = false,
             },
@@ -500,7 +500,12 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 2,
                 Pet = false,
             },
-            [DSI["SPELL_CURE_POISON"]] = {
+            [DSI["SPELL_CURE_POISON_SHAMAN"]] = {
+                Types = {DC.POISON},
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["SPELL_CURE_POISON_DRUID"]] = {
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
@@ -1540,7 +1545,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
             T._C.DSI["SPELL_ABOLISH_POISON"]      = 2893;
             T._C.DSI["SPELL_CURE_DISEASE"]        = 528;
-            T._C.DSI["SPELL_CURE_POISON"]         = 526;
+            T._C.DSI["SPELL_CURE_POISON_SHAMAN"]  = 526;
+            T._C.DSI["SPELL_CURE_POISON_DRUID"]   = 8946;
             T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
             T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
             T._C.DSI["SONICBURST"]                = 8281;
