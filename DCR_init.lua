@@ -475,7 +475,7 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Priests (global)
             [DSI["SPELL_DISPELL_MAGIC"]] = {
-                Types = {DC.ENEMYMAGIC},
+                Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
             },
