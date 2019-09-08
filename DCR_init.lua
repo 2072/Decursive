@@ -434,84 +434,87 @@ local function SetRuntimeConstants_Once () -- {{{
 
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
         DC.SpellsToUse = {
-            -- Mages
-            [DSI["SPELL_REMOVE_LESSER_CURSE"]] = {
+            -- Mage
+            [DSI["SPELL_REMOVE_LESSER_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_REMOVE_CURSE"]] = {
+            -- Druid
+            [DSI["SPELL_REMOVE_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_HEX"]] = {
-                Types = {DC.CHARMED},
-                Better = 0,
-                Pet = false,
-            },
-            -- Shamans
-            [DSI["SPELL_PURGE"]] = {
+            -- Shaman
+            [DSI["SPELL_PURGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=370/purge
                 Types = {DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_CLEANSE"]] = {
+            -- Paladin
+            [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
             },
             -- Warlock
-            [DSI["SPELL_FEAR"]] = {
+            [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
                 Types = {DC.CHARMED},
                 Better = 0,
                 Pet = false,
             },
              -- Mages
-            [DSI["SPELL_POLYMORPH"]] = {
+            [DSI["SPELL_POLYMORPH"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=118/polymorph
                 Types = {DC.CHARMED},
                 Better = 0,
                 Pet = false,
             },
             -- Priests (global)
-            [DSI["SPELL_DISPELL_MAGIC"]] = {
+            [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
             },
-            -- Priests (Discipline, Holy)
-            [DSI["SPELL_PURIFY"]] = {
+            -- Paladin
+            [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify#taught-by-item
                 Types = {DC.POISON, DC.DISEASE},
                 Better = 1,
                 Pet = false,
             },
-            [DSI["SPELL_ABOLISH_DISEASE"]] = {
+            -- Priest
+            [DSI["SPELL_ABOLISH_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease#taught-by-item
                 Types = {DC.DISEASE},
                 Better = 2,
                 Pet = false,
             },
-            [DSI["SPELL_CURE_DISEASE"]] = {
+            -- Priest
+            [DSI["SPELL_CURE_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease#taught-by-item
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_ABOLISH_POISON"]] = {
+            -- Druid
+            [DSI["SPELL_ABOLISH_POISON"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
                 Types = {DC.POISON},
                 Better = 2,
                 Pet = false,
             },
-            [DSI["SPELL_CURE_POISON_SHAMAN"]] = {
+            -- Shaman
+            [DSI["SPELL_CURE_POISON_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["SPELL_CURE_POISON_DRUID"]] = {
+            -- Druid
+            [DSI["SPELL_CURE_POISON_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison²
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
-            [DSI["PET_DEVOUR_MAGIC"]] = {
-                Types = {DC.ENEMYMAGIC},
+            -- Warlock
+            [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
+                Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = true,
             },
@@ -1535,11 +1538,11 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             -- the spells in classic
             T._C.DSI["SPELL_REMOVE_LESSER_CURSE"] = 475;
             T._C.DSI["SPELL_REMOVE_CURSE"]        = 2782;
-            T._C.DSI["SPELL_HEX"]                 = 16707;
+            --T._C.DSI["SPELL_HEX"]                 = 16707;
             T._C.DSI["SPELL_PURGE"]               = 370;
             T._C.DSI["SPELL_CLEANSE"]             = 4987;
             T._C.DSI["SPELL_FEAR"]                = 5782;
-            T._C.DSI["SPELL_POLYMORPH"]           = 13323;
+            T._C.DSI["SPELL_POLYMORPH"]           = 118;
             T._C.DSI["SPELL_DISPELL_MAGIC"]       = 527;
             T._C.DSI["SPELL_PURIFY"]              = 1152;
             T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
@@ -1547,7 +1550,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["SPELL_CURE_DISEASE"]        = 528;
             T._C.DSI["SPELL_CURE_POISON_SHAMAN"]  = 526;
             T._C.DSI["SPELL_CURE_POISON_DRUID"]   = 8946;
-            T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
             T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
             T._C.DSI["SONICBURST"]                = 8281;
             T._C.DSI["CRIPLES"]                   = 11443;
