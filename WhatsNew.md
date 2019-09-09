@@ -1,5 +1,13 @@
-Decursive 2.7.6.4-beta_2
+Decursive 2.7.6.4-beta_3
 ========================
+
+
+Decursive 2.7.6.4-beta_3 (2019-09-09)
+-------------------------------------
+
+- Fix more WOW Classic spell issues:
+    - Priests and Felhunters could not remove magic on friendly players.
+    - Mages' Polymorph may not have been available.
 
 
 Decursive 2.7.6.4-beta_2 (2019-09-08)
