@@ -1438,7 +1438,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
     if not T._C.DS then
         T._C.DS = {};
 
-        T._C.DSI = {
+        T._C.DSI = { -- Main spell table for WoW Retail {{{
             ["SPELL_POLYMORPH"]             =  118,
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
@@ -1496,55 +1496,54 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Greater Invisibility']        =  110959,
             ['SPELL_MENDINGBANDAGE']        =  212640,
             ['SPELL_REVERSEMAGIC']          =  205604,
-        };
+        }; --- }}}
 
-
-
+        -- if running in WoW Classic, we need to adjust the main spell table
         if DC.WOWC then
+            local DSI_REMOVED_OR_CHANGED_IN_CLASSIC = { -- {{{
+                ['Invisibility']            = 66,
+                ['Shadowmeld']              = 58984,
+                ["SPELL_DISPELL_MAGIC"]     = 528,
+                ["SPELL_PURIFY"]            = 527,
+                ["Fluidity"]	            = 138002,
+                ["SPELL_SPELLSTEAL"]	    = 30449,
+                ["SPELL_CONSUME_MAGIC"]	    = 278326,
+                ["PET_TORCH_MAGIC"]	        = 171021,
+                ["SPELL_HEX"]	            = 51514,
+                ["SPELL_CYCLONE"]	        = 33786,
+                ["SPELL_DETOX_1"]	        = 115450,
+                ["Unstable Affliction"]	    = 30108,
+                ["SPELL_REVERSEMAGIC"]	    = 205604,
+                ["PET_SEAR_MAGIC"]	        = 115276,
+                ["SPELL_COMMAND_DEMON"]	    = 119898,
+                ["Greater Invisibility"]    = 110959,
+                ["SPELL_MENDINGBANDAGE"]    = 212640,
+                ["CRIPLES"]	                = 33787,
+                ["Arcane Blast"]	        = 30451,
+                ["SPELL_DETOX_2"]	        = 218164,
+                ["MDREAMLESSSLEEP"]	        = 28504,
+                ["PURIFY_SPIRIT"]	        = 77130,
+                ["SONICBURST"]	            = 39052,
+                ["SPELL_PURIFY_DISEASE"]    = 213634,
+                ["Vampiric Touch"]	        = 34914,
+                ["CLEANSE_SPIRIT"]	        = 51886,
+                ["SPELL_NATURES_CURE"]	    = 88423,
+                ["PET_SINGE_MAGIC"]	        = 89808,
+                ["PET_SINGE_MAGIC_PVP"]	    = 212623,
+                ["SPELL_CLEANSE_TOXINS"]    = 213644,
+                ["SPELL_DIFFUSEMAGIC"]	    = 122783,
+                ["SPELL_REMOVE_CORRUPTION"] = 2782,
+            } -- }}}
 
-            local DSI_NOT_OR_CHANGED_IN_CLASSIC = {
-                ['Invisibility']        =  66,
-                ['Shadowmeld']          =  58984,
-                ["SPELL_DISPELL_MAGIC"] =  528,
-                ["SPELL_PURIFY"]        =  527,
-                ["Fluidity"]	        = 138002,
-                ["SPELL_SPELLSTEAL"]	= 30449,
-                ["SPELL_CONSUME_MAGIC"]	= 278326,
-                ["PET_TORCH_MAGIC"]	= 171021,
-                ["SPELL_HEX"]	        = 51514,
-                ["SPELL_CYCLONE"]	= 33786,
-                ["SPELL_DETOX_1"]	= 115450,
-                ["Unstable Affliction"]	= 30108,
-                ["SPELL_REVERSEMAGIC"]	= 205604,
-                ["PET_SEAR_MAGIC"]	= 115276,
-                ["SPELL_COMMAND_DEMON"]	= 119898,
-                ["Greater Invisibility"]= 110959,
-                ["SPELL_MENDINGBANDAGE"]= 212640,
-                ["CRIPLES"]	        = 33787,
-                ["Arcane Blast"]	= 30451,
-                ["SPELL_DETOX_2"]	= 218164,
-                ["MDREAMLESSSLEEP"]	= 28504,
-                ["PURIFY_SPIRIT"]	= 77130,
-                ["SONICBURST"]	        = 39052,
-                ["SPELL_PURIFY_DISEASE"]= 213634,
-                ["Vampiric Touch"]	= 34914,
-                ["CLEANSE_SPIRIT"]	= 51886,
-                ["SPELL_NATURES_CURE"]	= 88423,
-                ["PET_SINGE_MAGIC"]	= 89808,
-                ["PET_SINGE_MAGIC_PVP"]	= 212623,
-                ["SPELL_CLEANSE_TOXINS"]= 213644,
-                ["SPELL_DIFFUSEMAGIC"]	= 122783,
-                ["SPELL_REMOVE_CORRUPTION"]     =  2782,
-            }
-
-            for name, sid in pairs(DSI_NOT_OR_CHANGED_IN_CLASSIC) do
+            -- remove invalid spells from the spell table
+            for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CLASSIC) do
                 T._C.DSI[name] = nil;
             end
 
-            -- the spells in classic
+            -- reassign the proper spells
+            -- The new and changed spells in classic {{{
             T._C.DSI["SPELL_REMOVE_LESSER_CURSE"] = 475;
             T._C.DSI["SPELL_REMOVE_CURSE"]        = 2782;
-            --T._C.DSI["SPELL_HEX"]                 = 16707;
             T._C.DSI["SPELL_PURGE"]               = 370;
             T._C.DSI["SPELL_CLEANSE"]             = 4987;
             T._C.DSI["SPELL_FEAR"]                = 5782;
@@ -1561,8 +1560,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["SONICBURST"]                = 8281;
             T._C.DSI["CRIPLES"]                   = 11443;
             T._C.DSI["Shadowmeld"]                = 20580;
-
-
+            -- }}}
         end
     end
 
