@@ -477,19 +477,25 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Paladin
-            [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify#taught-by-item
+            [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
                 Types = {DC.POISON, DC.DISEASE},
                 Better = 1,
                 Pet = false,
             },
             -- Priest
-            [DSI["SPELL_ABOLISH_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease#taught-by-item
+            [DSI["SPELL_ABOLISH_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
                 Types = {DC.DISEASE},
                 Better = 2,
                 Pet = false,
             },
             -- Priest
-            [DSI["SPELL_CURE_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease#taught-by-item
+            [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
+                Types = {DC.DISEASE},
+                Better = 0,
+                Pet = false,
+            },
+            -- Priest
+            [DSI["SPELL_CURE_DISEASE_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
@@ -507,7 +513,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Druid
-            [DSI["SPELL_CURE_POISON_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison²
+            [DSI["SPELL_CURE_POISON_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
@@ -1547,7 +1553,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["SPELL_PURIFY"]              = 1152;
             T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
             T._C.DSI["SPELL_ABOLISH_POISON"]      = 2893;
-            T._C.DSI["SPELL_CURE_DISEASE"]        = 528;
+            T._C.DSI["SPELL_CURE_DISEASE_PRIEST"] = 528;
+            T._C.DSI["SPELL_CURE_DISEASE_SHAMAN"] = 2870;
             T._C.DSI["SPELL_CURE_POISON_SHAMAN"]  = 526;
             T._C.DSI["SPELL_CURE_POISON_DRUID"]   = 8946;
             T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
