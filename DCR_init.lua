@@ -1437,6 +1437,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
     if not T._C.DS then
         T._C.DS = {};
+        T._C.EXPECTED_DUPLICATES = {};
 
         T._C.DSI = { -- Main spell table for WoW Retail {{{
             ["SPELL_POLYMORPH"]             =  118,
@@ -1497,6 +1498,11 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_MENDINGBANDAGE']        =  212640,
             ['SPELL_REVERSEMAGIC']          =  205604,
         }; --- }}}
+
+        T._C.EXPECTED_DUPLICATES = {
+            {"SPELL_DETOX_1", "SPELL_DETOX_2"},
+            {"PET_SINGE_MAGIC", "PET_SINGE_MAGIC_PVP"},
+        }
 
         -- if running in WoW Classic, we need to adjust the main spell table
         if DC.WOWC then
@@ -1561,6 +1567,12 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["CRIPLES"]                   = 11443;
             T._C.DSI["Shadowmeld"]                = 20580;
             -- }}}
+
+            T._C.EXPECTED_DUPLICATES = {
+                {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
+                {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
+            }
+
         end
     end
 
@@ -1571,7 +1583,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
     -- Note to self: The truth is not unique, there can be several truths. The world is not binary. (epiphany on 2011-02-25)
 
-    local dubs = {};
+    local duplicates = {};
     local alpha = false;
     --@alpha@
     alpha = true;
@@ -1583,11 +1595,12 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
         DS[Sname] = (GetSpellInfo(Sid));
 
         if FromDIAG and DS[Sname] then
-            if not dubs[DS[Sname]] then
-                dubs[DS[Sname]] = {Sname};
+            if not duplicates[DS[Sname]] then
+                duplicates[DS[Sname]] = {Sname};
             else
-                dubs[DS[Sname]][#dubs[DS[Sname]] + 1] = Sname;
+                duplicates[DS[Sname]][#duplicates[DS[Sname]] + 1] = Sname;
             end
+
         end
 
         if not DS[Sname] then
@@ -1600,14 +1613,41 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
     end
 
     if FromDIAG then
-        for spell, ids in pairs(dubs) do
+        -- Do not report expected duplicates {{{
+        local compareDuplicates = function (d1, d2)
+            if #d1 ~= #d2 then
+                return false;
+            end
+            table.sort(d1);
+            table.sort(d2);
+
+            for i, _ in ipairs(d1) do
+                if d1[i] ~= d2[i] then
+                    return false;
+                end
+            end
+
+            return true;
+        end
+        for _, Snames in ipairs(T._C.EXPECTED_DUPLICATES) do
+            if DS[Snames[1]] and duplicates[DS[Snames[1]]] then
+                if compareDuplicates(Snames, duplicates[DS[Snames[1]]]) then
+                    duplicates[DS[Snames[1]]] = nil;
+                else
+                    D:AddDebugText("Expected duplicates diverges for", Snames[1]);
+                end
+            else
+                D:AddDebugText("Expected duplicates not found for", Snames[1]);
+            end
+        end -- }}}
+        for spell, ids in pairs(duplicates) do
             if #ids > 1 then
                 local dub = "";
 
                 for _, id in ipairs(ids) do
                     dub = dub .. ", " .. id;
                 end
-                D:AddDebugText("|cffffAA22dubs found for", spell, ':|r ', dub);
+                D:AddDebugText("|cffffAA22Unexpected duplicates found for", spell, ':|r ', dub);
             end
         end
     end
