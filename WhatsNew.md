@@ -1,5 +1,11 @@
-Decursive 2.7.6.4-beta_3
+Decursive 2.7.6.4-beta_4
 ========================
+
+
+Decursive 2.7.6.4-beta_4 (2019-09-11)
+-------------------------------------
+
+- WoW Classic: The Shaman version of `Cure Disease` was missing.
 
 
 Decursive 2.7.6.4-beta_3 (2019-09-09)
