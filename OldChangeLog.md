@@ -1776,4 +1776,6 @@ localisation is not correct in Decursive 1.9.4)
 - Fixed initialization, 1.9.4 was sometime unable to find a spell to use
 
 
-[ticket]: http://www.wowace.com/addons/decursive/tickets/
+[ticket]: https://www.wowace.com/projects/decursive/issues
+[GithubReleasess]: https://github.com/2072/Decursive/releases
+[BigwigsPackager]: https://github.com/BigWigsMods/packager

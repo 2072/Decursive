@@ -1,45 +1,22 @@
-Decursive 2.7.6.4-beta_4
-========================
+Decursive 2.7.6.4
+=================
 
-
-Decursive 2.7.6.4-beta_4 (2019-09-11)
+Decursive 2.7.6.4 (2019-09-13)
 -------------------------------------
 
-- WoW Classic: The Shaman version of `Cure Disease` was missing.
+- Compatible with WoW Classic. You need to use the _"*-classic.zip" packages_
+  or install Decursive through Twitch.
 
+If you encounter mismatched abilities in WoW Classic, please provide the class
+AND the spell along with any other relevant details, type /dcrdiag and follow
+the instructions displayed to send your report.
 
-Decursive 2.7.6.4-beta_3 (2019-09-09)
--------------------------------------
+Also note that you can change the default spell mappings by typing /decursive
+and checking the _"Allow internal macro editing..."_ checkbox in the  _"Custom spells / items"_
+option tab and then re-adding the spell you want to use with Decursive.
 
-- Fix more WOW Classic spell issues:
-    - Priests and Felhunters could not remove magic on friendly players.
-    - Mages' Polymorph may not have been available.
-
-
-Decursive 2.7.6.4-beta_2 (2019-09-08)
--------------------------------------
-
-- WOW Classic: Fix missing `Cure Poison` for Druids.
-
-- WOW Classic: Fix Paladins' `Purify` to remove poison instead of magic.
-
-If you encounter other mismatched abilities, please provide the class AND the spell
-along with any other relevant details.
-Also note that you can change the default spell mappings by checking the
-"Allow internal macro editing..." checkbox in the "Custom spell" option tab.
-
-- Rename all .md.txt files to .md so that they are properly formatted on
-  Github.com
-
-
-Decursive 2.7.6.4-beta_1 (2019-09-03)
--------------------------------------
-
-- Compatible with WoW Classic. You need to use the _"*-classic.zip" packages_ or
-  the Twitch client.
-
-- Due to the switch to Bigwig's packager -nolib packages are only available
-  from Github.
+- Due to the switch to [Bigwigs' packager][BigwigsPackager] `-nolib` packages are only available
+  from [Github's release page][GithubReleases].
 
 
 Decursive 2.7.6.3 (2019-07-07)
@@ -82,4 +59,6 @@ Decursive 2.7.6 (2018-07-22)
 For older versions changes, see OldChangelog.txt
 
 
-[ticket]: http://www.wowace.com/addons/decursive/tickets/
+[ticket]: https://www.wowace.com/projects/decursive/issues
+[GithubReleases]: https://github.com/2072/Decursive/releases
+[BigwigsPackager]: https://github.com/BigWigsMods/packager
