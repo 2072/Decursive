@@ -1,8 +1,15 @@
-Decursive 2.7.6.4
+Decursive 2.7.6.5
 =================
 
+
+Decursive 2.7.6.5 (2019-10-28)
+-----------------------------
+
+- TOC bump to 80205
+
+
 Decursive 2.7.6.4 (2019-09-13)
--------------------------------------
+-----------------------------
 
 - Compatible with WoW Classic. You need to use the _"*-classic.zip" packages_
   or install Decursive through Twitch.

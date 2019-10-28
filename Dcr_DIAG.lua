@@ -643,7 +643,7 @@ function T._DecursiveErrorHandler(err, ...)
             end
 
             if (T._NonDecursiveErrors - T._NDRTaintingAccusations - T._BlizzardUIErrors) > 999 then
-		T._ErrorLimitStripped = NiceTime() > 10; -- allow a graceful period of 10s after startup
+                T._ErrorLimitStripped = NiceTime() > 10; -- allow a graceful period of 10s after startup
                 T._TooManyErrors();
             end
         end
