@@ -1,5 +1,11 @@
-Decursive 2.7.6.5
+Decursive 2.7.6.6
 =================
+
+
+Decursive 2.7.6.6 (2019-11-18)
+------------------------------
+
+- Switch license back to GNU GPL V3
 
 
 Decursive 2.7.6.5 (2019-10-28)
