@@ -2,7 +2,7 @@ Decursive 2.7.6.7
 =================
 
 
-Decursive 2.7.6.6 (2019-11-18)
+Decursive 2.7.6.7 (2019-11-18)
 ------------------------------
 
 - TOC bumps to 11303 (classic) and 80300 (retail)
