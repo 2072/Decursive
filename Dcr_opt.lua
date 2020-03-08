@@ -298,7 +298,7 @@ function D:GetDefaultsSettings()
             DisableMacroCreation = false,
 
             -- Allow Decursive's macro editing
-	    AllowMacroEdit = false,
+            AllowMacroEdit = false,
 
             -- Those are the different colors used for the MUFs main textures
             MF_colors = {
@@ -315,6 +315,16 @@ function D:GetDefaultsSettings()
                 [DC.STEALTHED]      =   {  .4 ,  .6 ,  .4  ,  1     }, -- pale green
                 [DC.CHARMED_STATUS] =   { 0   , 1   , 0    ,  1     }, -- full green
                 ["COLORCHRONOS"]    =   { 0.6 , 0.1 , 0.2  ,   .6   }, -- medium red
+            },
+
+            TypeColors = {
+                [DC.MAGIC]      = "FF1887DD",
+                [DC.ENEMYMAGIC] = "FF98F9FF",
+                [DC.CURSE]      = "FFDD22DD",
+                [DC.POISON]     = "FF22DD22",
+                [DC.DISEASE]    = "FF995533",
+                [DC.CHARMED]    = "FFFF0000",
+                [DC.NOTYPE]     = "FFAAAAAA",
             },
 
             -- Debuffs {{{
@@ -1696,7 +1706,7 @@ local function GetStaticOptions ()
                         disabled = function () return D.profile.DisableMacroCreation end,
                         order = 300
                     },
-		    AllowMacroEdit = {
+                    AllowMacroEdit = {
                         type = "toggle",
                         name = L["OPT_ALLOWMACROEDIT"],
                         desc = L["OPT_ALLOWMACROEDIT_DESC"],
@@ -1793,6 +1803,8 @@ local function GetOptions()
     options.args.DebuffSkip.args = D:CreateDropDownFiltersMenu();
     -- create MUF color configuration menus
     D:CreateDropDownMUFcolorsMenu(options.args.MicroFrameOpt.args.MUFsColors.args);
+    -- add the affliction color pickers there too
+    D:CreateAfflictionColorsMenu(options.args.MicroFrameOpt.args.MUFsColors.args);
     -- create MUF's mouse buttons configuration menus
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
     -- create curring spells addition submenus
@@ -2515,7 +2527,6 @@ do
     function D:CreateDropDownMUFcolorsMenu(MUFsColors_args)
         L_MF_colors = D.profile.MF_colors;
 
-
         for ColorReason, Color in pairs(L_MF_colors) do
 
             if not L_MF_colors[ColorReason][4] then
@@ -2537,6 +2548,66 @@ do
 
         end
     end
+end
+do
+    local infoPrefix = "cAffliction_";
+    local orderStart = 2048 + 200;
+
+    local function retrieveAffTypeFromInfo(info)
+        return tonumber((info[#info]):sub(#infoPrefix + 1));
+    end
+
+    local function GetAffTypeName(info)
+        return L[DC.TypeToLocalizableTypeNames[retrieveAffTypeFromInfo(info)]];
+    end
+
+    local function GetAffTypeDesc(info)
+        local affName = L[DC.TypeToLocalizableTypeNames[retrieveAffTypeFromInfo(info)]];
+        return L["OPT_SETAFFTYPECOLOR_DESC"]:format(affName);
+    end
+
+    local function GetAffTypeOrder(info)
+        return orderStart + retrieveAffTypeFromInfo(info);
+    end
+
+    local function GetAffTypeColor(info)
+        return unpack( D:HexColorToNum(D.profile.TypeColors[retrieveAffTypeFromInfo(info)]));
+    end
+
+    local function SetAffTypeColor(info, r, g, b, a)
+        local affType = retrieveAffTypeFromInfo(info);
+
+        D.profile.TypeColors[affType] = D:NumToHexColor({r, g, b, (a and a or 1)});
+        D:Debug("Affliction type color ", affType, "set to", D.profile.TypeColors[affType]);
+    end
+
+    local afflictionColorPicker = {
+        type = "color",
+        name = GetAffTypeName,
+        desc = GetAffTypeDesc,
+        hasAlpha = true,
+        order = GetAffTypeOrder,
+
+        get = GetAffTypeColor,
+        set = SetAffTypeColor,
+    };
+
+    function D:CreateAfflictionColorsMenu(MUFsColors_args)
+        local TypeColors = D.profile.TypeColors;
+
+        MUFsColors_args[infoPrefix.."0"] = {
+            type = "header",
+            name = "",
+            order = GetAffTypeOrder,
+        }
+
+        for afflictionType, Color in pairs(TypeColors) do
+            if afflictionType ~= DC.NOTYPE then
+                MUFsColors_args[infoPrefix..afflictionType] = afflictionColorPicker;
+            end
+        end
+    end
+
 end
 
 -- Modifiers order choosing dynamic menu creation

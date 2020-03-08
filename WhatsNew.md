@@ -1,8 +1,18 @@
-Decursive 2.7.6.7
-=================
+Decursive 2.7.7 (alpha)
+===============
 
 
-Decursive 2.7.6.7 (2019-11-18)
+Decursive 2.7.7 (2020-03-08)
+----------------------------
+
+- It's now possible to change the color of the affliction types displayed in
+  the MUF's tooltips and on the Live list.
+  (see the "Colors" tab in the MUF option panel)
+
+- Use lighter blues by default for the "Magic" and "Enemy Magic" affliction types.
+
+
+Decursive 2.7.6.7 (2020-02-27)
 ------------------------------
 
 - TOC bumps to 11303 (classic) and 80300 (retail)

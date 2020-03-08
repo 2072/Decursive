@@ -499,6 +499,11 @@ L["OPT_CENTERTEXT_ELAPSED"] = "Time elapsed"
 L["OPT_CENTERTEXT_STACKS"] = "Number of stacks"
 L["OPT_CENTERTEXT_DISABLED"] = "Disabled"
 
+L["OPT_SETAFFTYPECOLOR_DESC"] = [=[Set the color of the "%s" affliction type.
+
+(Mostly appears in the MUF's tooltips and on the Live list)
+]=]
+
 
 --]==]
 --@end-do-not-package@

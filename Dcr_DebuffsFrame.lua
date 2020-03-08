@@ -832,7 +832,7 @@ do
 
             elseif MF.Debuffs[1] and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
                 local DebuffType = MF.Debuffs[1].Type;
-                StatusText = L["AFFLICTEDBY"]:format(D:ColorTextNA( L[DC.TypeNames[DebuffType]:upper()], DC.TypeColors[DebuffType]) );
+                StatusText = L["AFFLICTEDBY"]:format(D:ColorTextNA( L[DC.TypeNames[DebuffType]:upper()], D.profile.TypeColors[DebuffType]) );
 
             elseif Status == STEALTHED then
                 StatusText = L["STEALTHED"];
@@ -846,7 +846,7 @@ do
                 for i, Debuff in ipairs(MF.Debuffs) do
                     if Debuff.Type then
                         local DebuffApps = Debuff.Applications;
-                        MUFtoolTip:AddLine(D:ColorTextNA(Debuff.Name, DC.TypeColors[Debuff.Type]) .. (DebuffApps > 0 and (" (%d)"):format(DebuffApps) or ""));
+                        MUFtoolTip:AddLine(D:ColorTextNA(Debuff.Name, D.profile.TypeColors[Debuff.Type]) .. (DebuffApps > 0 and (" (%d)"):format(DebuffApps) or ""));
                     end
                 end
             end
@@ -858,7 +858,7 @@ do
             MUFtoolTip:Show();
 
             -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
-            if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top -- XXX attempt to perform arithmetic on a nil value, reported on 2018-08-16
+            if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top -- XXX attempt to perform arithmetic on a nil value, reported on 2018-08-16 and 2020-01-29
                 MUFtoolTip:ClearAllPoints();
                 MUFtoolTip:SetPoint(self:GetHelperAnchor(true));
             end

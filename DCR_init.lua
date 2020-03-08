@@ -200,16 +200,6 @@ local function SetRuntimeConstants_Once () -- {{{
     DC.NameToTypes = D:tReverse(DC.TypeNames);
     DC.NameToTypes["Magic"] = DC.MAGIC; -- make sure 'Magic' is set to DC.MAGIC and not to DC.ENEMYMAGIC
 
-    DC.TypeColors = {
-        [DC.MAGIC]      = "2222DD",
-        [DC.ENEMYMAGIC] = "2222FF",
-        [DC.CURSE]      = "DD22DD",
-        [DC.POISON]     = "22DD22",
-        [DC.DISEASE]    = "995533",
-        [DC.CHARMED]    = "FF0000",
-        [DC.NOTYPE]     = "AAAAAA",
-    }
-
     DC.TypeToLocalizableTypeNames = {
         [DC.MAGIC]      = "MAGIC",
         [DC.ENEMYMAGIC] = "MAGICCHARMED",
