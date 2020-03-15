@@ -386,7 +386,7 @@ do
 
        if Colored then
            --D:Debug(D.DebuffHistory[HumanIndex], DebuffHistHashTable[D.DebuffHistory[HumanIndex]]);
-           return D:ColorText(D.DebuffHistory[HumanIndex], DC.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex]]]), true;
+           return D:ColorText(D.DebuffHistory[HumanIndex], D.profile.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex]]]), true;
        else
            return D.DebuffHistory[HumanIndex], true;
        end
