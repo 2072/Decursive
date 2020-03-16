@@ -348,16 +348,16 @@ function D:GetDefaultsSettings()
             },
 
             DebuffsSkipList = {
-                DS["DCR_LOC_SILENCE"],
                 DS["ANCIENTHYSTERIA"],
-                DS["IGNITE"],
-                DS["TAINTEDMIND"],
-                DS["MAGMASHAKLES"],
                 DS["CRIPLES"],
+                DS["DELUSIONOFJINDO"],
                 DS["DUSTCLOUD"],
-                DS["WIDOWSEMBRACE"],
+                DS["IGNITE"],
+                DS["MAGMASHAKLES"],
+                DS["DCR_LOC_SILENCE"],
                 DS["SONICBURST"],
-                DS["DELUSIONOFJINDO"]
+                DS["TAINTEDMIND"],
+                DS["WIDOWSEMBRACE"],
             },
 
             skipByClass = {
@@ -1669,7 +1669,7 @@ local function GetStaticOptions ()
                 name = D:ColorText(L["OPT_DEBUFFFILTER"], "FF99CCAA"),
                 desc = L["OPT_DEBUFFFILTER_DESC"],
                 order = 60,
-                childGroups= "select",
+                childGroups= "tab",
                 args = {}
             }, -- }}}
 
@@ -1800,7 +1800,7 @@ local function GetOptions()
     end
 
     -- create per class filters menus
-    options.args.DebuffSkip.args = D:CreateDropDownFiltersMenu();
+    options.args.DebuffSkip.args = D:CreateFiltersMenu();
     -- create MUF color configuration menus
     D:CreateDropDownMUFcolorsMenu(options.args.MicroFrameOpt.args.MUFsColors.args);
     -- add the affliction color pickers there too
@@ -2165,8 +2165,10 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         local values = {};
 
         for i, class in pairs (DC.ClassNumToUName) do
-            values[i] = D:ColorText( LC[class], "FF"..DC.HexClassColor[class]) ..
-            (DefaultSkipByClass[class][DebuffName] and D:ColorText("  *", "FFFFAA00") or "");
+            if LC[class] ~= class then -- skip non existant classes in WoW classic
+                values[i] = D:ColorText( LC[class], "FF"..DC.HexClassColor[class]) ..
+                (DefaultSkipByClass[class][DebuffName] and D:ColorText("  *", "FFFFAA00") or "");
+            end
         end
 
         --D:Debug(unpack (values));
@@ -2296,7 +2298,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
     local AddFunc = function (NewDebuff)
         if (not D:tcheckforval(DebuffsSkipList, NewDebuff)) then
-            table.insert(DebuffsSkipList, strtrim(NewDebuff));
+            table.insert(DebuffsSkipList, 1, strtrim(NewDebuff));
             D:Debug("'%s' added to debuff skip list", strtrim(NewDebuff));
         end
     end
@@ -2351,7 +2353,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         return DebuffHistTable;
     end
 
-    function D:CreateDropDownFiltersMenu()
+    function D:CreateFiltersMenu()
         DebuffsSkipList             = D.profile.DebuffsSkipList;
         DefaultDebuffsSkipList      = D.defaults.profile.DebuffsSkipList;
 
@@ -2363,8 +2365,15 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         local num = 1;
 
 
+        DebuffsSubMenu["debuffHolder"] = {
+            name = L["OPT_DEBUFFFILTER"],
+            type = "group",
+            order = 200,
+            args = {}
+        }
+
         for _, Debuff in ipairs(DebuffsSkipList) do
-            DebuffsSubMenu[str_gsub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
+            DebuffsSubMenu.debuffHolder.args[str_gsub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
             num = num + 1;
         end
 
