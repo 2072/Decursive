@@ -82,6 +82,7 @@ local _;
 
 function D:GetDefaultsSettings()
     local DS = DC.DS;
+    local DSI = DC.DSI;
 
     return {
         -- default settings {{{
@@ -346,18 +347,27 @@ function D:GetDefaultsSettings()
 
             DebuffAlwaysSkipList = {
             },
-
             DebuffsSkipList = {
-                DS["ANCIENTHYSTERIA"],
-                DS["CRIPLES"],
-                DS["DELUSIONOFJINDO"],
-                DS["DUSTCLOUD"],
-                DS["IGNITE"],
-                DS["MAGMASHAKLES"],
-                DS["DCR_LOC_SILENCE"],
-                DS["SONICBURST"],
-                DS["TAINTEDMIND"],
-                DS["WIDOWSEMBRACE"],
+                [DS["ANCIENTHYSTERIA"]] =
+                DSI["ANCIENTHYSTERIA"],
+                [DS["CRIPLES"]]         =
+                DSI["CRIPLES"],
+                [DS["DELUSIONOFJINDO"]] =
+                DSI["DELUSIONOFJINDO"],
+                [DS["DUSTCLOUD"]]       =
+                DSI["DUSTCLOUD"],
+                [DS["IGNITE"]]          =
+                DSI["IGNITE"],
+                [DS["MAGMASHAKLES"]]    =
+                DSI["MAGMASHAKLES"],
+                [DS["DCR_LOC_SILENCE"]] =
+                DSI["DCR_LOC_SILENCE"],
+                [DS["SONICBURST"]]      =
+                DSI["SONICBURST"],
+                [DS["TAINTEDMIND"]]     =
+                DSI["TAINTEDMIND"],
+                [DS["WIDOWSEMBRACE"]]   =
+                DSI["WIDOWSEMBRACE"],
             },
 
             skipByClass = {
@@ -2090,15 +2100,21 @@ end --}}}
 do -- All this block predates Ace3, it could be recoded in a much more effecicent and cleaner way now (memory POV) thanks to the "info" table given to all callbacks in Ace3.
    -- A good example would be the code creating the MUF color configuration menu or the click assigment settings right after this block.
 
-    local DebuffsSkipList, DefaultDebuffsSkipList, skipByClass, AlwaysSkipList, DefaultSkipByClass;
+    local DebuffsSkipList, DefaultDebuffsSkipList, skipByClass, DebuffAlwaysSkipList, DefaultSkipByClass;
 
     local spacer = function(num) return { name="",type="header", order = 100 + num } end;
 
+    local error = function (...) D:ColorPrint(1, 0, 0, ...); end;
+
     local RemoveFunc = function (handler)
-        D:Debug("Removing '%s'...", handler["Debuff"]);
 
 
-        D:tremovebyval(D.profile.DebuffsSkipList, handler["Debuff"])
+        if DefaultDebuffsSkipList[handler["Debuff"]] then
+            D.profile.DebuffsSkipList[handler["Debuff"]] = false;
+        else
+            D.profile.DebuffsSkipList[handler["Debuff"]] = nil;
+        end
+        D:Debug("Removing ", handler["Debuff"], D.profile.DebuffsSkipList[handler["Debuff"]], DefaultDebuffsSkipList[handler["Debuff"]]);
 
         skipByClass  = D.profile.skipByClass;
         for class, debuffs in pairs (skipByClass) do
@@ -2112,7 +2128,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     end
 
     local AddToAlwaysSkippFunc = function (handler, v)
-        AlwaysSkipList[handler["Debuff"]] = v;
+        DebuffAlwaysSkipList[handler["Debuff"]] = v;
     end
 
     local ResetFunc = function (handler)
@@ -2130,37 +2146,6 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         end
     end
 
-    local function ClassCheckbox (Class, DebuffName, num)
-        local CheckedByDefault = false;
-
-        if (DefaultSkipByClass[Class][DebuffName]) then
-            CheckedByDefault = true;
-        end
-
-        return {
-            type = "toggle",
-            name = D:ColorText( LC[Class], "FF"..DC.HexClassColor[Class]) ..
-            (CheckedByDefault and D:ColorText("  *", "FFFFAA00") or ""),
-            desc = str_format(L["OPT_AFFLICTEDBYSKIPPED"], LC[Class], DebuffName) ..
-            (CheckedByDefault and D:ColorText(L["OPT_DEBCHECKEDBYDEF"], "FFFFAA00") or "");
-            handler = {
-                ["Debuff"]=DebuffName,
-                ["Class"]=Class,
-                ["get"] = function  (handler)
-                    skipByClass = D.profile.skipByClass;
-                    return skipByClass[handler["Class"]][handler["Debuff"]];
-                end,
-                ["set"] = function  (handler, info, v)
-                    skipByClass = D.profile.skipByClass;
-                    skipByClass[handler["Class"]][string.trim(handler["Debuff"])] = v;
-                end
-            },
-            get = "get",
-            set = "set",
-            order = 100 + num;
-        }
-    end
-
     local function ClassValues(DebuffName)
         local values = {};
 
@@ -2176,14 +2161,43 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
     end
 
-    local function DebuffSubmenu (DebuffName, num)
+    local function DebuffSubmenu (DebuffName, num, spellID)
         local classes = {};
 
-        classes["header"] = {
+        classes["header1"] = {
             type = "description",
             name = (L["OPT_FILTEROUTCLASSES_FOR_X"]):format(D:ColorText(DebuffName, "FF77CC33")),
-            order = 0,
+            order = num,
         }
+        num = num + 1;
+
+        classes["header2"] = {
+            type = "description",
+            name = function ()
+                local spellDesc = GetSpellDescription(spellID);
+                local desc;
+
+                D:Debug("Dealing with spell description for ", spellID);
+                if spellID ~= 0 then
+                    if spellDesc == "" then
+                        if not C_Spell.IsSpellDataCached(spellID) then
+                            C_Spell.RequestLoadSpellData(spellID);
+                            desc = L["OPT_SPELL_DESCRIPTION_LOADING"];
+                        else
+                            desc = L["OPT_SPELL_DESCRIPTION_UNAVAILABLE"];
+                        end
+                    else
+                        desc = spellDesc;
+                    end
+                else
+                    desc = L["OPT_SPELLID_MISSING_READD"];
+                end
+
+                return "\n" .. D:ColorText(desc, "FFD09050");
+            end,
+            order = num,
+        }
+        num = num + 1;
 
         skipByClass = D.profile.skipByClass;
          classes[DebuffName] = {
@@ -2218,7 +2232,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             handler = {
                 ["Debuff"] = DebuffName,
                 ["get"] = function (handler)
-                    return AlwaysSkipList[handler["Debuff"]];
+                    return DebuffAlwaysSkipList[handler["Debuff"]];
                 end,
                 ["set"] = function (handler,info,v) AddToAlwaysSkippFunc(handler,v) end,
             },
@@ -2256,7 +2270,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
         local resetDisabled = false;
 
-        if (not D:tcheckforval(DefaultDebuffsSkipList, DebuffName)) then
+        if not DefaultDebuffsSkipList[DebuffName] then
             resetDisabled = true;
         end
 
@@ -2285,32 +2299,35 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
 
     --Entry Templates
-    local function DebuffEntryGroup (DebuffName, num)
-        local IsADefault = D:tcheckforval(DefaultDebuffsSkipList, DebuffName);
+    local function DebuffEntryGroup (DebuffName, num, spellID)
+        local IsADefault = DefaultDebuffsSkipList[DebuffName] and true;
         return {
             type = "group",
             name = IsADefault and D:ColorText(DebuffName, "FFFFFFFF") or D:ColorText(DebuffName, "FF99FFFF"),
             desc = L["OPT_DEBUFFENTRY_DESC"],
             order = num,
-            args = DebuffSubmenu(DebuffName, num),
+            args = DebuffSubmenu(DebuffName, num, spellID),
         }
     end
 
-    local AddFunc = function (NewDebuff)
-        if (not D:tcheckforval(DebuffsSkipList, NewDebuff)) then
-            table.insert(DebuffsSkipList, 1, strtrim(NewDebuff));
-            D:Debug("'%s' added to debuff skip list", strtrim(NewDebuff));
+    local AddFunc = function (spellID)
+        local newDebuff = GetSpellInfo(spellID);
+        if newDebuff then
+            DebuffsSkipList[newDebuff] = spellID;
+            D:Debug("'%s' added to debuff skip list", newDebuff, spellID);
+        elseif not newDebuff then
+            error("Can't add debuff, invalid spellID:", spellID);
         end
     end
 
 
     local ReAddDefaultsDebuffs = function ()
 
-        for _, Debuff in ipairs(DefaultDebuffsSkipList) do
+        for Debuff, spellID in pairs(DefaultDebuffsSkipList) do
 
-            if (not D:tcheckforval(DebuffsSkipList, Debuff)) then
+            if not DebuffsSkipList[Debuff] then
 
-                table.insert(DebuffsSkipList, Debuff);
+                DebuffsSkipList[Debuff] = spellID;
 
                 ResetFunc({["Debuff"] = Debuff});
 
@@ -2320,9 +2337,8 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     end
 
     local CheckDefaultsPresence = function ()
-        for _, Debuff in ipairs(DefaultDebuffsSkipList) do
-            if (not D:tcheckforval(DebuffsSkipList, Debuff)) then
-
+        for Debuff, _ in pairs(DefaultDebuffsSkipList) do
+            if not DebuffsSkipList[Debuff] then
                 return false;
             end
         end
@@ -2333,24 +2349,68 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     local First = "";
 
     local GetHistoryDebuff = function ()
-        local DebuffName, exists, index;
+        local coloredDebuffName, exists, spellID, index;
 
         for index=1, DC.DebuffHistoryLength do
-            DebuffName, exists = D:Debuff_History_Get (index, true);
+            coloredDebuffName, spellID, exists = D:Debuff_History_Get (index, true);
 
-            if not exists or index == 1 and DebuffName == First then
+            if not exists or index == 1 and coloredDebuffName == First then
                 break;
             end
 
             if index == 1 then
-                First = DebuffName;
+                First = coloredDebuffName;
             end
 
-            DebuffHistTable[index] = DebuffName;
+            DebuffHistTable[index] = {coloredDebuffName, spellID};
             index = index + 1;
         end
 
         return DebuffHistTable;
+    end
+
+    local updateFilteredDebuffNames_ONCE;
+    local noop = function() D:Debug("no op"); end;
+    updateFilteredDebuffNames_ONCE = function ()
+        local debuffSkipListCopy = {};
+        local realName;
+        D:tcopy(debuffSkipListCopy, DebuffsSkipList);
+        for debuffName, spellID in pairs(debuffSkipListCopy) do
+            if spellID ~= false then -- leave removed default spells
+                if spellID ~= 0 and not C_Spell.DoesSpellExist(spellID) then
+                    RemoveFunc({["Debuff"] = debuffName});
+                else
+                    realName = (GetSpellInfo(spellID));
+                    if realName and realName ~= debuffName then
+                        DebuffsSkipList[debuffName] = nil;
+                        DebuffsSkipList[realName] = spellID;
+                        D:Debug(debuffName, "replaced by", realName, "for DebuffsSkipList");
+
+                        if DebuffAlwaysSkipList[debuffName] then
+                            DebuffAlwaysSkipList[debuffName] = nil;
+                            DebuffAlwaysSkipList[realName] = true;
+                            D:Debug(debuffName, "replaced by", realName, "for DebuffAlwaysSkipList");
+                        end
+
+                        for class, debuffs in pairs(skipByClass) do
+                            if debuffs[debuffName] then
+                                debuffs[debuffName] = nil;
+                                debuffs[realName] = true;
+                                D:Debug(debuffName, "replaced by", realName, "for class:", class);
+                            end
+                        end
+
+                        D:Print((L["OPT_FILTERED_DEBUFF_RENAMED"]):format(debuffName, realName, spellID));
+                    elseif not realName then
+                        D:Debug(realName, "no name for spell ID", spellID, (GetSpellInfo(spellID)))
+                    end
+                end
+            end
+        end
+        debuffSkipListCopy = nil;
+        if realName then
+            updateFilteredDebuffNames_ONCE = noop;
+        end
     end
 
     function D:CreateFiltersMenu()
@@ -2358,7 +2418,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         DefaultDebuffsSkipList      = D.defaults.profile.DebuffsSkipList;
 
         skipByClass                 = D.profile.skipByClass;
-        AlwaysSkipList              = D.profile.DebuffAlwaysSkipList;
+        DebuffAlwaysSkipList        = D.profile.DebuffAlwaysSkipList;
         DefaultSkipByClass          = D.defaults.profile.skipByClass;
 
         local DebuffsSubMenu = {};
@@ -2372,9 +2432,13 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             args = {}
         }
 
-        for _, Debuff in ipairs(DebuffsSkipList) do
-            DebuffsSubMenu.debuffHolder.args[str_gsub(Debuff, " ", "")] = DebuffEntryGroup(Debuff, num);
-            num = num + 1;
+       updateFilteredDebuffNames_ONCE();
+
+        for debuffName, spellID in pairs(DebuffsSkipList) do
+            if false ~= spellID then
+                DebuffsSubMenu.debuffHolder.args[str_gsub(debuffName, " ", "")] = DebuffEntryGroup(debuffName, num, spellID);
+                num = num + 1;
+            end
         end
 
         DebuffsSubMenu["description"] = {
@@ -2390,7 +2454,15 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             desc = L["OPT_ADDDEBUFF_DESC"],
             usage = L["OPT_ADDDEBUFF_USAGE"],
             get = false,
-            set = function(info,value) AddFunc(value) end,
+            set = function(info,v) AddFunc(tonumber(v)) end,
+            validate = function(info, v)
+
+                if tonumber(v) and C_Spell.DoesSpellExist(tonumber(v)) then
+                    return 0;
+                else
+                    return error("'", v, "'", L["OPT_ISNOTVALID_SPELLID"]);
+                end
+            end,
             order = 100 + num,
         };
 
@@ -2399,12 +2471,14 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         DebuffsSubMenu["addFromHist"] = {
             type = "select",
             name = L["OPT_ADDDEBUFFFHIST"], --"Add from Debuff history",
-            desc = L["OPT_ADDDEBUFFFHIST_DESC"], --"Add a recently seen debuff",
+            desc = L["OPT_ADDDEBUFFFHIST_DESC"], --"Add a recently dispelled debuff",
             disabled = function () GetHistoryDebuff(); return (#DebuffHistTable == 0) end,
-            values = GetHistoryDebuff;
+            values = function () return D:tMap(GetHistoryDebuff(), function (debuff) return debuff[1] end) end;
             get = function() GetHistoryDebuff(); return false; end,
             set = function(info,value)
-                AddFunc(D:RemoveColor(GetHistoryDebuff()[value])); end,
+                local debuffName, spellID = unpack(GetHistoryDebuff()[value]);
+                AddFunc(spellID ~= 0 and spellID or (D:RemoveColor(debuffName) == "Test item" and 1243 or 0));
+            end,
             order = 100 + num,
         };
 
@@ -2965,7 +3039,7 @@ do
                     local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
 
                     if type(v) ~= 'string' then -- this should be impossible
-                        return error("What did you do ?!?");
+                        return error("What did you do?!?");
                     end
 
                     local length = (v:gsub("UNITID", "PARTYPET5")):len()

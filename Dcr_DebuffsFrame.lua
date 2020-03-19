@@ -1010,7 +1010,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
             local spell = D.Status.CuringSpells[frame.Object.Debuffs[1].Type];
 
             D.Status.ClickedMF.CastingSpell = "notyet";
-            D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName);
+            D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, frame.Object.Debuffs[1].SpellID);
         end
     end
 end -- }}}

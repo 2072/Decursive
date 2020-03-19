@@ -978,6 +978,22 @@ function D:SetConfiguration() -- {{{
 
     end
 
+    -- update layer for debuff filtering from version prior to 2020-03-19
+    local oldDebuffsSkipList = {};
+    -- make a copy of the table since we may add new keys while iterating with pairs()
+    D:tcopy(oldDebuffsSkipList, D.profile.DebuffsSkipList);
+    for key, debuffName in pairs(oldDebuffsSkipList) do
+        if type(key) == 'number' then
+            -- Let's associate a fake spell ID to existing user added names since
+            -- there is no way to retrieve this ID from the debuff tranlated name
+            if not D.defaults.profile.DebuffsSkipList[debuffName] then
+                D.profile.DebuffsSkipList[debuffName] = 0;
+            end
+            D.profile.DebuffsSkipList[key] = nil;
+        end
+    end
+    oldDebuffsSkipList = nil;
+
 
     if type (D.profile.OutputWindow) == "string" then
         D.Status.OutputWindow = _G[D.profile.OutputWindow];
