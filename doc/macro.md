@@ -1,6 +1,6 @@
 Decursive's Macro
 =================
- 
+
 Decursive also creates and maintains (for all your characters) a macro that
 allows you to cure units (or other unit-frames) you mouse-over, *you choose the
 key in [Decursive's macro options][macrooptions]*.
@@ -9,7 +9,7 @@ Hitting the key alone will try to cast the first spell, *Ctrl-hitting*, the
 second and *shift-hitting* will try to cast the third. Decursive will show you
 if the unit beneath your cursor is afflicted by something through its
 *live-list* and a sound.
- 
+
 
 *See also:*
 
@@ -19,12 +19,12 @@ if the unit beneath your cursor is afflicted by something through its
 - [commands][]
 
 
-[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
-[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
-[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
-[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
-[commands]: http://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
-[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
+[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frames"
+[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frame"
+[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq "F.A.Q section"
+[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro "Decursive's mouse-over macro documentation"
+[commands]: http://www.wowace.com/projects/decursive/pages/main/commands "Command lines"
+[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions "Decursive, user possible actions"
 
 [cureopts]: http://www.wowace.com/addons/decursive/images/12-decursives-option-panels-curing/
 [filteropts]: http://www.wowace.com/addons/decursive/images/11-decursives-option-panels-affliction-filtering/

@@ -114,12 +114,12 @@ Unless you want to help testing unstable code you should download the versions c
 Bitcoin donation address: **1LEHZuPsiHN4hM3H3Gru5xKmDgCj867eFX**
 
 
-[MUFs]: https://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
-[MUF]: https://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
-[FAQ]: https://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
-[mouse-over macro]: https://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
-[commands]: https://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
-[user-actions]: https://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
+[MUFs]: https://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frames"
+[MUF]: https://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frame"
+[FAQ]: https://www.wowace.com/projects/decursive/pages/main/faq "F.A.Q section"
+[mouse-over macro]: https://www.wowace.com/projects/decursive/pages/main/macro "Decursive's mouse-over macro documentation"
+[commands]: https://www.wowace.com/projects/decursive/pages/main/commands "Command lines"
+[user-actions]: https://www.wowace.com/projects/decursive/pages/main/user-actions "Decursive, user possible actions"
 [dev]: https://www.2072productions.com/to/decursive_dev
 [ticket]: https://www.wowace.com/addons/decursive/tickets/
 

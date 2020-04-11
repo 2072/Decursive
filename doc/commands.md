@@ -4,49 +4,49 @@ Decursive's COMMANDS
 - /Decursive
 
     To open the [configuration interface][generalopts]
- 
+
 - /DcrShow
 
     To show main Decursive bar (also available by right-shift-clicking the
 MUFs handle)
 Note that *this bar is also the anchor of the live-list*
 (moving this bar moves the live-list).
- 
+
 - /DcrHide
 
     To hide the Decursive bar (leaving live-list displayed)
- 
+
 - /DcrReset
 
     To reset Decursive windows position to the middle of your screen (useful
 when you loose a frame)
- 
+
 - /DcrPrAdd
 
     Add the current target to the priority list
- 
+
 - /DcrPrClear
 
     Clear the priority list
- 
+
 - /DcrPrShow
 
     Display the [priority list UI][prioskipopts] (where you can add, delete, move players)
 (Ctrl-left-clicking the MUFs handle does the same)
- 
+
 - /DcrSkAdd
 
     Add the current target to the skip list
- 
+
 - /DcrSkClear
 
     Clear the skip list
- 
+
 - /DcrSkShow
 
     Display the [skip list UI][prioskipopts] (where you can add,delete,clear)
 (Shift-right-clicking the MUFs handle does the same)
- 
+
 **NOTE:**
 
 All the above commands can also be bound to a key through WoW key-binding
@@ -78,12 +78,12 @@ interface.
 
 
 
-[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
-[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
-[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
-[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
-[commands]: http://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
-[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
+[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frames"
+[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frame"
+[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq "F.A.Q section"
+[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro "Decursive's mouse-over macro documentation"
+[commands]: http://www.wowace.com/projects/decursive/pages/main/commands "Command lines"
+[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions "Decursive, user possible actions"
 
 [cureopts]: http://www.wowace.com/addons/decursive/images/12-decursives-option-panels-curing/
 [filteropts]: http://www.wowace.com/addons/decursive/images/11-decursives-option-panels-affliction-filtering/

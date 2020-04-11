@@ -4,7 +4,7 @@ Decursive, user possible actions
 *How to use Decursive at the maximum of its possibilities*
 
 - **Remove afflictions:**
-    
+
     - Using the [MUFs][]:
 
 	    If you've displayed the Micro-Unit-Frame (on by default) you can [click on
@@ -31,7 +31,7 @@ Decursive, user possible actions
 	4. [Paladin]
 
 	    Etc...
-    
+
     The lists Interface allows you to **add, move, delete** entries very easily and intuitively.
 
     That's why **Decursive doesn't need to display the player names on the MUF interface**:
@@ -39,11 +39,11 @@ Decursive, user possible actions
 
     **You just need to click on the MUF. No time or thoughts are wasted
     reading a player name and choosing if you have to cure him or not.**
-	
+
 - **Set Decursive's interface to feet your needs:**
 
     - **[The main 'Decursive bar'][decursivebar] and the live-list:**
-	
+
 	    This bar is the anchor of the live-list, it can also be used to access
 	    Decursive options and different frames.
 
@@ -63,19 +63,19 @@ Decursive, user possible actions
 
 	    **Move the MUF window** by *Alt-Left-clicking* above the first MUF, there is a
 	    hidden [**handle**][mufshandle] to move the frame.
- 
+
 - **WoW key binding interface:**
 
 	You can bind a lot of things to keys under "Decursive" section.
- 
+
 - **The option menu:**
 
     There are **several ways** to access the options:
- 
+
      - On the MUFs handle, or on Decursive icon (Mini-Map or LDB), *Alt-Right-Click*
        to display a [**static option panel**][generalopts]. (Or type /Decursive in the chat window)
      - In Blizzard Interface->Addons panel, there is a Decursive section.
- 
+
     Each option has an explanation tool-tip, here are **the most important ones**:
 
     - **Bind Decursive [mouse-over macro][] to a key:**
@@ -89,10 +89,10 @@ Decursive, user possible actions
       first (in the live-list) but also the key and click mapping of your spells in
       the MUFs and in the [mouse-over macro][] (look at the tool-tips to know the
       current bindings)
- 
+
     - You can [**add afflictions** to ignore][filteropts] while in combat (or always) per
       **class**, it **avoids to waste time and mana** ; Decursive already has
-      a comprehensive affliction list ignored on specific classes. 
+      a comprehensive affliction list ignored on specific classes.
 
 	    The addition of affliction names is **easily done** through a dynamic menu in the
       options listing recently cured ones *(no need to manually enter the affliction
@@ -115,12 +115,12 @@ Decursive, user possible actions
 - [commands][]
 
 
-[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frames"
-[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs/ "Micro Unit Frame"
-[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq/ "F.A.Q section"
-[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro/ "Decursive's mouse-over macro documentation"
-[commands]: http://www.wowace.com/projects/decursive/pages/main/commands/ "Command lines"
-[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions/ "Decursive, user possible actions"
+[MUFs]: http://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frames"
+[MUF]: http://www.wowace.com/projects/decursive/pages/main/mufs "Micro Unit Frame"
+[FAQ]: http://www.wowace.com/projects/decursive/pages/main/faq "F.A.Q section"
+[mouse-over macro]: http://www.wowace.com/projects/decursive/pages/main/macro "Decursive's mouse-over macro documentation"
+[commands]: http://www.wowace.com/projects/decursive/pages/main/commands "Command lines"
+[user-actions]: http://www.wowace.com/projects/decursive/pages/main/user-actions "Decursive, user possible actions"
 
 [cureopts]: http://www.wowace.com/addons/decursive/images/12-decursives-option-panels-curing/
 [filteropts]: http://www.wowace.com/addons/decursive/images/11-decursives-option-panels-affliction-filtering/
