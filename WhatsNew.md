@@ -1,8 +1,8 @@
-Decursive 2.7.7 (alpha)
+Decursive 2.7.7
 ===============
 
 
-Decursive 2.7.7 (2020-04-11)
+Decursive 2.7.7 (2020-05-09)
 ----------------------------
 
 - It's now possible to change the color of the affliction types displayed in
