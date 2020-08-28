@@ -39,7 +39,7 @@ externals:
 
 
     Libs/LibQTip-1.0:
-        url: https://repos.wowace.com/wow/libqtip-1-0/trunk
+        url: https://repos.wowace.com/wow/libqtip-1-0
     Libs/LibDBIcon-1.0:
         url: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
     Libs/LibDataBroker-1.1:
