@@ -291,9 +291,9 @@ function D:ScheduledTasks() -- {{{
     if (not InCombatLockdown() and status.DelayedFunctionCallsCount > 0) then
         for Id, FuncAndArgs in pairs (status.DelayedFunctionCalls) do
             self:Debug("Running post combat command", Id);
-            local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
             status.DelayedFunctionCalls[Id] = nil; -- remove it from the list
             status.DelayedFunctionCallsCount = status.DelayedFunctionCallsCount - 1;
+            local DidSmth = FuncAndArgs.func(unpack(FuncAndArgs.args));
             if DidSmth ~= false then
                 break;
             end
