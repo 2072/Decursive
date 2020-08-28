@@ -2024,7 +2024,10 @@ function D:SetCureOrder (ToChange)
     end
 
     -- Set the spells shortcut (former decurse key)
-    D:UpdateMacro();
+    D:AddDelayedFunctionCall(
+        "UpdateMacro", self.UpdateMacro,  -- dangerous call many add-ons hook APIs call there this should be delayed
+        self)
+
     D:Debug("Spell changed");
     D.Status.SpellsChanged = GetTime();
 

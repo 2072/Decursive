@@ -318,6 +318,8 @@ function D:SaveLLPos () -- {{{
             self.profile.MainBarY = 0;
         end
 
+        D:Debug("LL pos Saved:", self.profile.MainBarX, self.profile.MainBarY);
+
     end
 end -- }}}
 
