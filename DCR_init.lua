@@ -978,6 +978,17 @@ function D:SetConfiguration() -- {{{
 
     end
 
+    -- remove invalid spell ids from D.classprofile.UserSpells
+    -- Not sure how this is possible but it can happen for some reason
+    for spellOrItemID, spellData in pairs(D.classprofile.UserSpells) do
+        -- IsSpellKnown and isItemUsable crash on > 32 bit signed integers
+        if spellOrItemID > 0x7fffffff or spellOrItemID < -0x7fffffff then
+            D:AddDebugText("invalid spell id detected and removed:", spellOrItemID, spellData.MacroText)
+            D.classprofile.UserSpells[spellOrItemID] = nil
+        end
+    end
+
+
     -- update layer for debuff filtering from version prior to 2020-03-19
     local oldDebuffsSkipList = {};
     -- make a copy of the table since we may add new keys while iterating with pairs()

@@ -358,9 +358,9 @@ do
 
         T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or "")))
         .. table.concat(T._DebugTextTable, "")
-        .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --"
+        .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --" -- (Spells assignments:)
         .. customSpellConfiguration .. "\n-- --"
-        .. spellTable .. "\n-- --"
+        .. spellTable .. "\n-- --" -- (Decursive known spells:)
         .. SRTOLErrors .. "\n-- --"
         .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. "\n-- --";
 
@@ -805,9 +805,9 @@ do
 
         for spellID, spellData in pairs(D.classprofile.UserSpells) do
             if not spellData.IsDefault then
-                 customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %d) - %s - %s - %s - B: %d - Ts: %s - UF: %s - Macro: %s\n"):format(
+                 customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %s) - %s - %s - %s - B: %d - Ts: %s - UF: %s - Macro: %s\n"):format(
                  --                                                                  3    4    5       6        7        8           9
-                 tostring(spellData.IsItem and (GetItemInfo(spellID * -1)) or (GetSpellInfo(spellID))), spellID,
+                 select (2, pcall(function () return tostring(spellData.IsItem and (GetItemInfo(spellID * -1)) or (GetSpellInfo(spellID))) end)), tostring(spellID),
                  spellData.Disabled and "OFF" or "ON", -- 3
                  spellData.Pet and "PET" or "PLAYER", -- 4
                  spellData.IsItem and "ITEM" or "SPELL", -- 5
