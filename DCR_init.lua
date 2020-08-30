@@ -1205,7 +1205,7 @@ function D:ReConfigure() --{{{
 
     D:Debug("|cFFFF0000D:ReConfigure was called!|r");
     if not D.DcrFullyInitialized then
-        D:Debug("|cFFFF0000D:ReConfigure aborted, init uncomplete!|r");
+        D:Debug("|cFFFF0000D:ReConfigure aborted, init incomplete!|r");
         return false;
     end
 
