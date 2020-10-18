@@ -893,25 +893,25 @@ do
 
         --LibStub:GetLibrary
         local UseLibStub = {
-            ["AceAddon-3.0"] = 12,
+            ["AceAddon-3.0"] = 13,
             ["AceComm-3.0"] = 12,
             ["AceConsole-3.0"] = 7,
-            ["AceDB-3.0"] = 26,
+            ["AceDB-3.0"] = 27,
             ["AceDBOptions-3.0"] = 15,
             ["AceEvent-3.0"] = 4,
             ["AceHook-3.0"] = 8,
             ["AceLocale-3.0"] = 6,
             ["AceTimer-3.0"] = 17,
 
-            ["AceGUI-3.0"] = 36,
+            ["AceGUI-3.0"] = 41,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 73,
+            ["AceConfigDialog-3.0"] = 79,
             ["AceConfigRegistry-3.0"] = 20,
 
             ["LibDataBroker-1.1"] = 4,
             ["LibDBIcon-1.0"] = 43,
-            ["LibQTip-1.0"] = 46,
+            ["LibQTip-1.0"] = 48,
             ["CallbackHandler-1.0"] = 7,
         };
 

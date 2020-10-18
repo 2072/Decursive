@@ -1,9 +1,9 @@
-Decursive 2.7.7.1-beta_2
-========================
+Decursive 2.7.7.1
+=================
 
 
-Decursive 2.7.7.1-beta_2 (2020-10-18)
--------------------------------------
+Decursive 2.7.7.1 (2020-10-18)
+------------------------------
 
 - Prevent a damaged custom spell profile from crashing Decursive when loading.
   The bad spell IDs are removed but the root cause of this rare issue has not been identified yet.
