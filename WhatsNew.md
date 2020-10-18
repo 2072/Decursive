@@ -1,17 +1,23 @@
-Decursive 2.7.7.1-beta_1
+Decursive 2.7.7.1-beta_2
 ========================
 
 
-Decursive 2.7.7.1-beta_1 (2020-09-27)
+Decursive 2.7.7.1-beta_2 (2020-10-18)
 -------------------------------------
 
 - Prevent a damaged custom spell profile from crashing Decursive when loading.
-  The bad spell IDs are removed but the root cause of this rare issue has not been identified.
+  The bad spell IDs are removed but the root cause of this rare issue has not been identified yet.
 
 - Add some resiliency to Decursive initialisation phase to mitigate some third party
   add-ons' bugs preventing Decursive from loading.
 
-- In progress Spanish localization by Sugymaylis
+- In progress: Spanish localization by Sugymaylis.
+
+- TOC update for WoW 9.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.7 (2020-05-09)
