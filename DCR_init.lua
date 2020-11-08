@@ -265,13 +265,21 @@ local function SetRuntimeConstants_Once () -- {{{
             -- Monks
             [DSI["SPELL_DETOX_1"]] = {
                 Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-                Better = 2,
+                Better = 3,
                 Pet = false,
             },
             [DSI["SPELL_DETOX_2"]] = {
                 Types = {DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
+                -- detect mistweaver spec since the spell no longer seems to change with the spec like it used to
+                EnhancedBy = 'mistweaver',
+                EnhancedByCheck = function ()
+                    return (GetSpecialization() == 2) and true or false; -- restoration?
+                end,
+                Enhancements = {
+                    Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                }
             },
             -- Monks
             [DSI["SPELL_DIFFUSEMAGIC"]] = {
