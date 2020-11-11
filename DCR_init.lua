@@ -991,7 +991,8 @@ function D:SetConfiguration() -- {{{
     for spellOrItemID, spellData in pairs(D.classprofile.UserSpells) do
         -- IsSpellKnown and isItemUsable crash on > 32 bit signed integers
         if spellOrItemID > 0x7fffffff or spellOrItemID < -0x7fffffff then
-            D:AddDebugText("invalid spell id detected and removed:", spellOrItemID, spellData.MacroText)
+            D:AddDebugText("invalid spell id detected and fixed:", spellOrItemID, spellData.MacroText)
+            D.classprofile.UserSpells[bit.band(0xffffff, spellOrItemID)] = D.classprofile.UserSpells[spellOrItemID]
             D.classprofile.UserSpells[spellOrItemID] = nil
         end
     end

@@ -524,9 +524,11 @@ local function GetStaticOptions ()
 
     local function validateSpellInput(info, v)  -- {{{
 
+        D:Debug("Validating spell id", v);
         local error = function (m) D:ColorPrint(1, 0, 0, m); return m; end;
 
         local isItem = nil;
+        local isPetAbility = nil;
 
         -- We got a spell ID directly
         if tonumber(v) then
@@ -547,13 +549,21 @@ local function GetStaticOptions ()
             v = D:GetItemFromLink(v);
         elseif type(v) == 'string' and (GetSpellBookItemInfo(v)) then -- not a number, not a spell link, then a spell name?
             -- We got a spell name!
-            v = select(2, GetSpellBookItemInfo(v));
+            D:Debug(v, "is a spell name in our book:", GetSpellBookItemInfo(v));
+            local SPItype, id = GetSpellBookItemInfo(v);
+            v = id;
+            isPetAbility = SPItype == "PETACTION" and true or false;
         elseif type(v) == 'string' and (GetItemInfo(v)) then
+            D:Debug(v, "is a item name:", GetItemInfo(v));
             -- We got an item name!
             isItem = true;
             v = D:GetItemFromLink(select(2, GetItemInfo(v)));
         else
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
+        end
+
+        if v > 0x7fffffff then
+            v = bit.band(0xffffff, v);
         end
 
         -- avoid spellID/itemID collisions
@@ -572,7 +582,7 @@ local function GetStaticOptions ()
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"]);
         end
 
-        return 0, v, isItem;
+        return 0, v, isItem, isPetAbility;
     end -- }}}
 
     return {
@@ -1604,8 +1614,8 @@ local function GetStaticOptions ()
                         width = 'double',
                         set = function(info, v)
 
-                            local errorn, isItem;
-                            errorn, v, isItem = validateSpellInput(info, v);
+                            local errorn, isItem, isPetAbility;
+                            errorn, v, isItem, isPetAbility = validateSpellInput(info, v);
                             if errorn ~= 0 then D:Debug("XXXX AHHHHHHHHHHHHHHH!!!!!", errorn); return false end
 
                             if not D.classprofile.UserSpells[v] or D.classprofile.UserSpells[v].Hidden and CustomSpellMacroEditingAllowed then
@@ -1613,7 +1623,7 @@ local function GetStaticOptions ()
                                 D.classprofile.UserSpells[v] = {
                                     Types = {},
                                     Better = 10,
-                                    Pet = false,
+                                    Pet = isPetAbility,
                                     Disabled = false,
                                     IsItem = isItem,
                                 };
@@ -2963,6 +2973,24 @@ do
                 end,
                 order = 100
             },
+            isPet = {
+                type = "toggle",
+                name = L["OPT_CUSTOM_SPELL_ISPET"],
+                desc = L["OPT_CUSTOM_SPELL_ISPET_DESC"];
+                set = function(info,v)
+
+                    D.classprofile.UserSpells[TN(info[#info-1])].Pet = v;
+
+                    --if isSpellUSable(TN(info[#info-1])) then
+                    D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
+                    --end
+                end,
+                get = function(info,v)
+                    return D.classprofile.UserSpells[TN(info[#info-1])].Pet;
+                end,
+                hidden = function (info) return D.classprofile.UserSpells[TN(info[#info-1])].IsItem end,
+                order = 105
+            },
             cureTypes = {
                 type = 'group',
                 name = L["OPT_CUSTOM_SPELL_CURE_TYPES"],
@@ -2970,6 +2998,7 @@ do
                 inline = true,
 
                 args={},
+                order = 106
             },
             UnitFiltering = {
                 type = 'group',
@@ -2978,6 +3007,7 @@ do
                 inline = true,
 
                 args={},
+                order = 107
             },
             priority = {
                 type = 'range',
@@ -2996,24 +3026,7 @@ do
                 order = 110,
             },
 
-            isPet = {
-                type = "toggle",
-                name = L["OPT_CUSTOM_SPELL_ISPET"],
-                desc = L["OPT_CUSTOM_SPELL_ISPET_DESC"];
-                set = function(info,v)
 
-                    D.classprofile.UserSpells[TN(info[#info-1])].Pet = v;
-
-                    --if isSpellUSable(TN(info[#info-1])) then
-                    D:ScheduleDelayedCall("Dcr_Delayed_Configure", D.Configure, 2, D);
-                    --end
-                end,
-                get = function(info,v)
-                    return D.classprofile.UserSpells[TN(info[#info-1])].Pet;
-                end,
-                hidden = function (info) return D.classprofile.UserSpells[TN(info[#info-1])].IsItem end,
-                order = 112
-            },
             MacroEdition = {
                 type = 'input',
                 name = L["OPT_CUSTOM_SPELL_MACRO_TEXT"],
