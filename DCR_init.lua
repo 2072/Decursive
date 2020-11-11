@@ -990,10 +990,22 @@ function D:SetConfiguration() -- {{{
     -- Not sure how this is possible but it can happen for some reason
     for spellOrItemID, spellData in pairs(D.classprofile.UserSpells) do
         -- IsSpellKnown and isItemUsable crash on > 32 bit signed integers
-        if spellOrItemID > 0x7fffffff or spellOrItemID < -0x7fffffff then
-            D:AddDebugText("invalid spell id detected and fixed:", spellOrItemID, spellData.MacroText)
-            D.classprofile.UserSpells[bit.band(0xffffff, spellOrItemID)] = D.classprofile.UserSpells[spellOrItemID]
-            D.classprofile.UserSpells[spellOrItemID] = nil
+        -- it seems that the maximum value of a spell id is 24 bits
+        if spellOrItemID > 0xffffff or spellOrItemID < -0x7fffffff then -- not sure about the max possible value of an itemID
+            local newSpellOrItemID = bit.band(0xffffff, spellOrItemID);
+            D.classprofile.UserSpells[newSpellOrItemID] = D.classprofile.UserSpells[spellOrItemID];
+            D.classprofile.UserSpells[spellOrItemID] = nil;
+
+            D:AddDebugText("invalid spell id detected and fixed:", spellOrItemID, "new", newSpellOrItemID, spellData.MacroText);
+            spellOrItemID = newSpellOrItemID;
+        end
+
+        if not select (2, pcall(
+            function ()
+                return spellData.IsItem and (GetItemInfo(spellOrItemID * -1)) or (GetSpellInfo(spellOrItemID))
+            end)) then
+            D.classprofile.UserSpells[spellOrItemID] = nil;
+            D:AddDebugText("invalid spell id detected and removed:", spellOrItemID, spellData.MacroText)
         end
     end
 

@@ -542,7 +542,7 @@ local function GetStaticOptions ()
 
         elseif D:GetSpellFromLink(v) then
             -- We got a spell link!
-            v = D:GetSpellFromLink(v);
+            v, isPetAbility = D:GetSpellFromLink(v);
         elseif D:GetItemFromLink(v) then
             -- We got a item link!
             isItem = true;
@@ -562,7 +562,7 @@ local function GetStaticOptions ()
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
         end
 
-        if v > 0x7fffffff then
+        if not isItem and v > 0xffffff then
             v = bit.band(0xffffff, v);
         end
 

@@ -596,13 +596,15 @@ function D:GetSpellFromLink(link)
             return nil;
         end
 
+       local isPetAbility = (GetSpellBookItemInfo(spellName)) == "PETACTION" and true or false;
+
         if spellRank and spellRank ~= "" then
             spellName = ("%s(%s)"):format(spellName, spellRank);
         end
         D:Debug('Spell link detected:', spellID, spellName, spellRank);
 
         --return spellName;
-        return spellID;
+        return spellID, isPetAbility;
     end
 
     return nil;
