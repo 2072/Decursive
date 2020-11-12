@@ -1643,6 +1643,7 @@ local function GetStaticOptions ()
                                         D.classprofile.UserSpells[v].EnhancedByCheck    = DC.SpellsToUse[v].EnhancedByCheck;
                                         D.classprofile.UserSpells[v].Enhancements       = DC.SpellsToUse[v].Enhancements;
                                         if DC.SpellsToUse[v].UnitFiltering then
+                                            D.classprofile.UserSpells[v].UnitFiltering = {};
                                             D:tcopy(D.classprofile.UserSpells[v].UnitFiltering, DC.SpellsToUse[v].UnitFiltering) -- UnitFiltering is a table, protect the original
                                         end
                                     end

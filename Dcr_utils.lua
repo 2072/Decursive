@@ -636,7 +636,7 @@ function D:isSpellReady(spellID, isPetAbility)
         if spellType == "PETACTION" then
             spellID = bit.band(0xffffff, id);
         elseif spellType then
-           D:AddDebugText("Pet ability update lookup failed", spellID, spellName, spellType, id);
+           D:Debug("Pet ability update lookup failed", spellID, spellName, spellType, id);
         end
     end
 
