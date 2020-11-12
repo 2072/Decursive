@@ -2819,7 +2819,7 @@ do
 
     local t_insert      = _G.table.insert;
     local tonumber      = _G.tonumber;
-    local IsSpellKnown  = _G.IsSpellKnown;
+    local IsSpellKnown  = nil; -- use D:isSpellReady instead
     local TN            = function(string) return tonumber(string) or nil; end;
 
     local order = 160;
@@ -2829,7 +2829,7 @@ do
         local spell = D.classprofile.UserSpells[spellID];
 
         if not spell.IsItem and spellID > 0 then
-            return IsSpellKnown(spellID, spell.Pet)
+            return D:isSpellReady(spellID, spell.Pet)
         else
             return D:isItemUsable(spellID * -1)
         end

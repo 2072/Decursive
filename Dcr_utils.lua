@@ -622,6 +622,27 @@ function D:isItemUsable(itemIDorName)
     return IsUsableItem(itemIDorName);
 end
 
+
+function D:isSpellReady(spellID, isPetAbility)
+
+    if DC.WOWC and isPetAbility then
+        -- Former ranks of known pet spell abilities are lost in WoW classic
+        -- so we need to get back to the corresponding current spell id using
+        -- the name of the spell.
+
+        local spellName = (GetSpellInfo(spellID));
+        local spellType, id = GetSpellBookItemInfo(spellName);
+
+        if spellType == "PETACTION" then
+            spellID = bit.band(0xffffff, id);
+        elseif spellType then
+           D:AddDebugText("Pet ability update lookup failed", spellID, spellName, spellType, id);
+        end
+    end
+
+    return IsSpellKnown(spellID, isPetAbility);
+end
+
 function D:GetItemFromLink(link)
     -- GetItemInfo (only if item seen)
     -- GetItemCooldown
