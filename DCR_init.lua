@@ -361,8 +361,11 @@ local function SetRuntimeConstants_Once () -- {{{
             -- Warlock
             [DSI["SPELL_FEAR"]] = {
                 Types = {DC.CHARMED},
-                Better = 0,
+                Better = 1,
                 Pet = false,
+                UnitFiltering = {
+                    [DC.CHARMED]  = 2,
+                },
             },
             -- Warlocks
             [DSI["PET_TORCH_MAGIC"]] = {
@@ -429,6 +432,15 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 1,
                 Pet = false,
             },
+            -- undead racial
+            [DSI["SPELL_WILL_OF_THE_FORSAKEN"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+                UnitFiltering = {
+                    [DC.CHARMED] = 1, -- player only
+                },
+            }
         };
 
         -- }}}
@@ -466,14 +478,20 @@ local function SetRuntimeConstants_Once () -- {{{
             -- Warlock
             [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
                 Types = {DC.CHARMED},
-                Better = 0,
+                Better = 1,
                 Pet = false,
+                UnitFiltering = {
+                    [DC.CHARMED]  = 2,
+                },
             },
              -- Mages
             [DSI["SPELL_POLYMORPH"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=118/polymorph
                 Types = {DC.CHARMED},
                 Better = 0,
                 Pet = false,
+                UnitFiltering = {
+                    [DC.CHARMED]  = 2,
+                },
             },
             -- Priests (global)
             [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
@@ -529,6 +547,15 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = true,
             },
+            -- undead racial
+            [DSI["SPELL_WILL_OF_THE_FORSAKEN"]] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+                UnitFiltering = {
+                    [DC.CHARMED] = 1, -- player only
+                },
+            }
 
         }
         -- }}}
@@ -1416,7 +1443,12 @@ function D:Configure() --{{{
                 self.Status.FoundSpells[SpellName] = {spell.Pet, spellID, IsEnhanced, spell.Better, spell.MacroText, nil};
                 for _, Type in ipairs (Types) do
 
-                    if not CuringSpells[Type] or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4] then  -- we did not already register this spell or it's not the best spell for this type
+                    if not CuringSpells[Type]
+                        or spell.Better > self.Status.FoundSpells[CuringSpells[Type]][4]
+                        or not spell.UnitFiltering and self.Status.FoundSpells[CuringSpells[Type]][6] then
+                        -- we did not already register this spell
+                        -- or it's not the best spell for this type
+                        -- or there the it has no unit filtering while the previous one had one.
 
                         CuringSpells[Type] = SpellName;
 
@@ -1543,6 +1575,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['Greater Invisibility']        =  110959,
             ['SPELL_MENDINGBANDAGE']        =  212640,
             ['SPELL_REVERSEMAGIC']          =  205604,
+            ['SPELL_WILL_OF_THE_FORSAKEN']  =  7744,
         }; --- }}}
 
         T._C.EXPECTED_DUPLICATES = {
