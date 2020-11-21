@@ -3081,7 +3081,7 @@ do
             -- a delete button
             delete = {
                 type = 'execute',
-                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], D.GetSpellOrItemInfo(TN(info[#info - 1]))) end,
+                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], D.GetSpellOrItemInfo(TN(info[#info - 1])) or "BAD SPELL!") end,
                 confirm = true,
                 width = 'double',
                 func = function (info)
