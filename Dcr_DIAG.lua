@@ -775,6 +775,10 @@ T._ShowNotice = function (notice)
             showAlert = 1,
             preferredIndex = 3,
         }; -- }}}
+
+        if T.Dcr.L and T.Dcr.L["NOTICE_FRAME_TEMPLATE"] and T.Dcr.L["NOTICE_FRAME_TEMPLATE"]:find("%s") then
+            StaticPopupDialogs["DECURSIVE_NOTICE_FRAME"].text = T.Dcr.L["NOTICE_FRAME_TEMPLATE"];
+        end
     end
 
     StaticPopup_Show ("DECURSIVE_NOTICE_FRAME", notice);

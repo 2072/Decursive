@@ -2191,7 +2191,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
                 local spellDesc = GetSpellDescription(spellID);
                 local desc;
 
-                D:Debug("Dealing with spell description for ", spellID);
+                --D:Debug("Dealing with spell description for ", spellID);
                 if spellID ~= 0 then
                     if spellDesc == "" then
                         if not C_Spell.IsSpellDataCached(spellID) then

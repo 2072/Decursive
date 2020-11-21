@@ -509,6 +509,10 @@ L["OPT_SETAFFTYPECOLOR_DESC"] = [=[Set the color of the "%s" affliction type.
 (Mostly appears in the MUF's tooltips and on the Live list)
 ]=]
 
+L["NOTICE_FRAME_TEMPLATE"] = [=[|cFFFF0000Decursive Notice|r
+
+%s
+]=]
 
 --]==]
 --@end-do-not-package@
