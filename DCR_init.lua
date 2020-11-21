@@ -1013,27 +1013,19 @@ function D:SetConfiguration() -- {{{
 
     end
 
-    -- remove invalid spell ids from D.classprofile.UserSpells
-    -- Not sure how this is possible but it can happen for some reason
+    -- Remove invalid spell ids from D.classprofile.UserSpells
     for spellOrItemID, spellData in pairs(D.classprofile.UserSpells) do
         -- IsSpellKnown and isItemUsable crash on > 32 bit signed integers
-        -- it seems that the maximum value of a spell id is 24 bits
-        if spellOrItemID > 0xffffff then
-            local newSpellOrItemID = bit.band(0xffffff, spellOrItemID);
-            D.classprofile.UserSpells[newSpellOrItemID] = D.classprofile.UserSpells[spellOrItemID];
-            D.classprofile.UserSpells[spellOrItemID] = nil;
-
-            D:Debug("Invalid spell id detected and fixed:", spellOrItemID, "new", newSpellOrItemID, spellData.MacroText);
-            spellOrItemID = newSpellOrItemID;
-        end
-
-        -- Try the id on the function directly and remove them if they crash or return nothing
-        if not select (2, pcall(
+        -- It seems that the maximum value of a spell id is 24 bits
+        -- Try the id on the functions directly and remove them if they crash (they can return nothing at an early game loading stage)
+        if not (pcall(
             function ()
                 return spellData.IsItem and (GetItemInfo(spellOrItemID * -1)) or (GetSpellInfo(spellOrItemID))
             end)) then
             D.classprofile.UserSpells[spellOrItemID] = nil;
+            --@debug@
             D:AddDebugText("Invalid spell/item id detected and removed:", spellOrItemID, spellData.MacroText)
+            --@end-debug@
         end
     end
 
