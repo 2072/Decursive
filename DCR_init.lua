@@ -1023,7 +1023,7 @@ function D:SetConfiguration() -- {{{
             D.classprofile.UserSpells[newSpellOrItemID] = D.classprofile.UserSpells[spellOrItemID];
             D.classprofile.UserSpells[spellOrItemID] = nil;
 
-            D:AddDebugText("Invalid spell id detected and fixed:", spellOrItemID, "new", newSpellOrItemID, spellData.MacroText);
+            D:Debug("Invalid spell id detected and fixed:", spellOrItemID, "new", newSpellOrItemID, spellData.MacroText);
             spellOrItemID = newSpellOrItemID;
         end
 
