@@ -1,6 +1,6 @@
 #@retail@
-## Interface: 90001
-## X-Max-Interface: 90001
+## Interface: 90002
+## X-Max-Interface: 90002
 ## X-Min-Interface: 80000
 #@end-retail@
 #@non-retail@

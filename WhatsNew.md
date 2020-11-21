@@ -1,8 +1,8 @@
-Decursive 2.7.8_beta_1
-======================
+Decursive 2.7.8
+===============
 
 
-Decursive 2.7.8 (2020-11-14)
+Decursive 2.7.8 (2020-11-21)
 ----------------------------
 
 
@@ -13,11 +13,11 @@ Decursive 2.7.8 (2020-11-14)
 
 - WoW Classic: Fix pet abilities detection where only rank 1 could be detected.
 
-- Add `Will Of The Forsaken` to automatic spell detection.
-
 - Full Spanish translation (thank to Sugymaylis)
 
 - Full Barzilian Portuguese translation (thank to DarkbreakerSM)
+
+- Add `Will Of The Forsaken` to automatic spell detection.
 
 - Small enhancements to the custom spell interface.
 
