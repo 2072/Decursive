@@ -754,7 +754,7 @@ do -- Combat log event handling {{{1
 
             if event == "SPELL_CAST_SUCCESS" then
 
-                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "[WoW8.0-unknown]", self:MakePlayerName(destName)); end
+                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName)); end
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
                 self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);
@@ -774,7 +774,7 @@ do -- Combat log event handling {{{1
             if event == "SPELL_CAST_FAILED" and not self.Status.ClickedMF.SPELL_CAST_SUCCESS then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "[WoW8.0-unknown]", self:MakePlayerName(destName), auraTYPE_failTYPE);
+                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName), auraTYPE_failTYPE);
 
                 if (auraTYPE_failTYPE == SPELL_FAILED_LINE_OF_SIGHT or auraTYPE_failTYPE == SPELL_FAILED_BAD_TARGETS) then
 
@@ -795,7 +795,7 @@ do -- Combat log event handling {{{1
             elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "[WoW8.0-unknown]", self:MakePlayerName(destName), auraTYPE_failTYPE);
+                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName), auraTYPE_failTYPE);
                 self:SafePlaySoundFile(DC.FailedSound);
                 self.Status.ClickedMF = false;
                 --@alpha@
