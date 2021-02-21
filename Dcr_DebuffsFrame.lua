@@ -1466,13 +1466,13 @@ do
                     PrioChanged = true;
                 end
 
-                SpellID = Status.FoundSpells[Status.CuringSpells[DebuffType]][2];
 
                 -- Test if the spell we are going to use is in range
                 -- Some time can elaps between the instant the debuff is detected and the instant it is shown.
                 -- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
                 -- So we test before calling this api that we can still cure this debuff type
                 if Status.CuringSpells[DebuffType] then
+                    SpellID = Status.FoundSpells[Status.CuringSpells[DebuffType]][2];
                     RangeStatus = SpellID > 0 and IsSpellInRange(Status.CuringSpells[DebuffType], Unit) or D:isItemUsable(-1 * SpellID) and IsItemInRange(-1 * SpellID, Unit);
                 else
                     RangeStatus = false;
