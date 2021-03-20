@@ -1,10 +1,22 @@
-Decursive 2.7.8
-===============
+Decursive 2.7.8.1
+=================
+
+Decursive 2.7.8.1 (2021-03-21)
+------------------------------
+
+- Fix Backdrop issue in WoW 9 (priority and skip lists UI).
+
+- Fix for rare `Dcr_DebuffsFrame.lua:1469: attempt to index field '?' (a nil value)` Lua error.
+
+- Remove old unknown rank text when a spell cast fails.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.8 (2020-11-21)
 ----------------------------
-
 
 - Fix Mistweaver `Detox` detection.
 
@@ -20,11 +32,6 @@ Decursive 2.7.8 (2020-11-21)
 - Add `Will Of The Forsaken` to automatic spell detection.
 
 - Small enhancements to the custom spell interface.
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
-
 
 
 Decursive 2.7.7.1 (2020-10-18)
