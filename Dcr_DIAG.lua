@@ -50,6 +50,12 @@ local InCombatLockdown  = _G.InCombatLockdown;
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI. -- Also used by HHTD from 2013-04-05
 
+-- a necessray compatibility layer between WoW 9 and WoW classic since we still have old xml UI stuff
+DecursiveTemplateMixin = BackdropTemplateMixin and BackdropTemplateMixin or {
+    OnBackdropLoaded = function() end;
+    OnBackdropSizeChanged = function() end;
+}
+
 T._FatalError_Diaplayed = false;
 
 -- big ugly scary fatal error message display function - only used when nothing else works {{{
@@ -92,6 +98,14 @@ T._DebugTimerRefName    = "";
 T.Dcr = {};
 
 local DC                = T._C;
+
+DC.UI_BACKDROP = {
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+    tile = true, tileSize = 16, edgeSize = 16,
+    insets = { left = 3, right = 5, top = 5, bottom = 5 }
+}
+
 local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 

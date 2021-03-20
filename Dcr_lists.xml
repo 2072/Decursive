@@ -94,7 +94,7 @@
     <!-- }}} -->
 
     <!--  Dcr_ListFrameTemplate {{{ -->
-    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" virtual="true" parent="UIParent">
+    <Frame name="Dcr_ListFrameTemplate" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" virtual="true" parent="UIParent" inherits="DecursiveBackDropTemplate">
         <Size>
             <AbsDimension x="170" y="210" />
         </Size>
@@ -102,18 +102,6 @@
         <Anchors>
             <Anchor point="CENTER" relativeTo="UIParent" />
         </Anchors>
-
-        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-            <EdgeSize>
-                <AbsValue val="16"/>
-            </EdgeSize>
-            <TileSize>
-                <AbsValue val="16"/>
-            </TileSize>
-            <BackgroundInsets>
-                <AbsInset left="5" right="5" top="5" bottom="5"/>
-            </BackgroundInsets>
-        </Backdrop>
 
         <Scripts>
             <OnEnter>
@@ -393,6 +381,7 @@
                 self.AddTargetFunc = DecursiveRootTable.Dcr.AddTargetToPriorityList;
                 self.EntryOnclick = DecursiveRootTable.Dcr.PrioSkipListEntryTemplate_OnClick;
 
+                self:SetBackdrop(DecursiveRootTable._C.UI_BACKDROP)
 
             </OnLoad>
         </Scripts>
@@ -438,6 +427,7 @@
                 self.AddTargetFunc = DecursiveRootTable.Dcr.AddTargetToSkipList;
                 self.EntryOnclick = DecursiveRootTable.Dcr.PrioSkipListEntryTemplate_OnClick;
 
+                self:SetBackdrop(DecursiveRootTable._C.UI_BACKDROP)
 
             </OnLoad>
         </Scripts>
@@ -446,7 +436,7 @@
 
 
     <!-- DecursivePopulateListFrame {{{ -->
-    <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" parent="UIParent">
+    <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" parent="UIParent" inherits="DecursiveBackDropTemplate">
         <Size>
             <AbsDimension x="228" y="285" />
         </Size>
@@ -459,24 +449,13 @@
             </Anchor>
         </Anchors>
 
-        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-            <EdgeSize>
-                <AbsValue val="16"/>
-            </EdgeSize>
-            <TileSize>
-                <AbsValue val="16"/>
-            </TileSize>
-            <BackgroundInsets>
-                <AbsInset left="5" right="5" top="5" bottom="5"/>
-            </BackgroundInsets>
-        </Backdrop>
-
         <Scripts>
             <OnShow>
                 _G[self:GetName().."Title"]:SetText(DecursiveRootTable.Dcr.L["STR_QUICK_POP"]);
             </OnShow>
             <OnLoad>
                 self:RegisterForDrag("LeftButton");
+                self:SetBackdrop(DecursiveRootTable._C.UI_BACKDROP)
             </OnLoad>
             <OnDragStart>self:StartMoving();</OnDragStart>
             <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
