@@ -6,7 +6,7 @@ git:
 after_success:
   - if [[ -z "$TRAVIS_TAG" ]]; then mv -vf WhatsNew.md WhatsNew_.md; fi
   - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash; if [[ $? != 0 ]]; then TRAVIS_TEST_RESULT=1; fi
-  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -m .pkgmeta-classic -w 24944; if [[ $? != 0 ]]; then TRAVIS_TEST_RESULT=1; fi
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.5 -m .pkgmeta-classic -w 24944; if [[ $? != 0 ]]; then TRAVIS_TEST_RESULT=1; fi
 
 notifications:
   email:
