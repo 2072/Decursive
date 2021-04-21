@@ -1,7 +1,7 @@
 Decursive 2.7.8.1
 =================
 
-Decursive 2.7.8.1 (2021-03-21)
+Decursive 2.7.8.1 (2021-04-21)
 ------------------------------
 
 - Fix Backdrop issue in WoW 9 (priority and skip lists UI).
