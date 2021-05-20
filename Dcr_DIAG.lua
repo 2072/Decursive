@@ -603,9 +603,7 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
-DC.WOWC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-DC.WOW8 = (tocversion >= 80000) or DC.WOWC
-
+DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 
 
 function T._DecursiveErrorHandler(err, ...)
