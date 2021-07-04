@@ -783,6 +783,7 @@ local function GetStaticOptions ()
                         type = "execute",
                         name = D:ColorText(L["GLOR1"], "FF" .. D:GetClassHexColor( "WARRIOR" )),
                         desc = L["GLOR2"],
+                        width = 'double',
                         func = function ()
 
                         -- {{{
