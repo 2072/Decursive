@@ -927,7 +927,7 @@ do
 
             ["LibDataBroker-1.1"] = 4,
             ["LibDBIcon-1.0"] = 43,
-            ["LibQTip-1.0"] = 48,
+            ["LibQTip-1.0"] = 49,
             ["CallbackHandler-1.0"] = 7,
         };
 
