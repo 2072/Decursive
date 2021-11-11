@@ -818,7 +818,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     -- alpha of 2012-11-23 which fail to make their callback available for
     -- registration b4 PLAYER_LOGIN...
     if not T._HookErrorHandler() then
-        T._AddDebugText("BG's callbacks were not available after PLAYER_LOGIN");
+        T._AddDebugText("BG's callbacks were not available after PLAYER_LOGIN. Make sure you are using the very latest version of BugGrabber available at: https://www.wowace.com/projects/bug-grabber/files or disable it.");
     end
 
     T._CatchAllErrors = "OnEnable"; -- During init we catch all the errors else, if a library fails we won't know it.
