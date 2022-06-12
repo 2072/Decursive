@@ -1,9 +1,9 @@
-## Interface: 90200
-## Interface-Retail: 90200
-## Interface-Classic: 11402
-## Interface-BCC: 20503
-## X-Max-Interface: 90200
-## X-Min-Interface: 11402
+## Interface: 90205
+## Interface-Retail: 90205
+## Interface-Classic: 11403
+## Interface-BCC: 20504
+## X-Max-Interface: 90205
+## X-Min-Interface: 11403
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@
