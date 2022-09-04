@@ -1,13 +1,22 @@
-Decursive 2.7.8.6
+Decursive 2.7.8.7
 =================
+
+Decursive 2.7.8.7 (2022-09-04)
+------------------------------
+
+- TOC updates
+
+- Compatible with WotLK (if you find any issue, please create a [ticket](ticket).
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
 
 Decursive 2.7.8.6 (2022-06-12)
 ------------------------------
 
 - TOC updates
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.8.5 (2022-02-27)
