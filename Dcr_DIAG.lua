@@ -604,6 +604,8 @@ T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
 DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
+DC.WOTLK =  WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_WRATH_CLASSIC -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
+
 
 
 function T._DecursiveErrorHandler(err, ...)
@@ -927,7 +929,7 @@ do
 
             ["LibDataBroker-1.1"] = 4,
             ["LibDBIcon-1.0"] = 43,
-            ["LibQTip-1.0"] = 49,
+            ["LibQTip-1.0"] = 48,
             ["CallbackHandler-1.0"] = 7,
         };
 

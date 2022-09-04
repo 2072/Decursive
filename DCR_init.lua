@@ -232,7 +232,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Mages
-            [DSI["SPELL_REMOVE_CURSE"]] = {
+            [DSI["SPELL_REMOVE_CURSE_MAGE"]] = {
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
@@ -452,13 +452,13 @@ local function SetRuntimeConstants_Once () -- {{{
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
         DC.SpellsToUse = {
             -- Mage
-            [DSI["SPELL_REMOVE_LESSER_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
+            [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
             },
             -- Druid
-            [DSI["SPELL_REMOVE_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
+            [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
@@ -518,7 +518,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Priest
-            [DSI["SPELL_CURE_DISEASE_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+            [not DC.WOTLK and DSI["SPELL_CURE_DISEASE_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
@@ -558,6 +558,7 @@ local function SetRuntimeConstants_Once () -- {{{
             }
 
         }
+        DC.SpellsToUse[false] = nil; -- cleanup compatible layer invalid spells
         -- }}}
     end
     D:CreateClassColorTables();
@@ -1513,7 +1514,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_POLYMORPH"]             =  118,
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
-            ["SPELL_REMOVE_CURSE"]          =  475,
+            ["SPELL_REMOVE_CURSE_MAGE"]     =  475,
             ["SPELL_CONSUME_MAGIC"]         =  278326,
             ["SPELL_SPELLSTEAL"]            =  30449, -- mages, not sure about this one
             ["SPELL_CLEANSE"]               =  4987,
@@ -1612,6 +1613,12 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ["SPELL_REMOVE_CORRUPTION"] = 2782,
             } -- }}}
 
+            local DSI_REMOVED_OR_CHANGED_IN_WOTLK = { -- {{{
+                ['SPELL_CURE_DISEASE_SHAMAN']            = 2870,
+                ['Shadowmeld']                           = 20580,
+            } -- }}}
+
+
             -- remove invalid spells from the spell table
             for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CLASSIC) do
                 T._C.DSI[name] = nil;
@@ -1619,8 +1626,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
             -- reassign the proper spells
             -- The new and changed spells in classic {{{
-            T._C.DSI["SPELL_REMOVE_LESSER_CURSE"] = 475;
-            T._C.DSI["SPELL_REMOVE_CURSE"]        = 2782;
+            T._C.DSI["SPELL_REMOVE_CURSE_DRUID"]  = 2782;
+            T._C.DSI["SPELL_REMOVE_CURSE_MAGE"]   = 475;
             T._C.DSI["SPELL_PURGE"]               = 370;
             T._C.DSI["SPELL_CLEANSE"]             = 4987;
             T._C.DSI["SPELL_FEAR"]                = 5782;
@@ -1643,6 +1650,20 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
                 {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
             }
+
+            if DC.WOTLK then
+                -- remove invalid spells from the spell table
+                for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_WOTLK) do
+                    T._C.DSI[name] = nil;
+                end
+
+                -- reassign the proper spells for WotLK
+                T._C.DSI["Shadowmeld"] = 58984;
+
+                T._C.EXPECTED_DUPLICATES = {
+                {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
+                }
+            end
 
         end
     end
