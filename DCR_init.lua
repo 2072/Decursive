@@ -510,6 +510,19 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.DISEASE},
                 Better = 2,
                 Pet = false,
+
+                EnhancedBy = DC.WOTLK and DS["TALENT_BODY_AND_SOUL"] ~= nil,
+                EnhancedByCheck = function ()
+                    local talentName, _, _, _, isAvailable = GetTalentInfo(2,27)
+                    return talentName == DS["TALENT_BODY_AND_SOUL"] and isAvailable;
+                end,
+                Enhancements = {
+                    Types = {DC.DISEASE, DC.POISON},
+                    OnPlayerOnly = {
+                        [DC.DISEASE] = false,
+                        [DC.POISON]  = true,
+                    },
+                }
             },
             -- Priest
             [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
@@ -523,6 +536,24 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = false,
             },
+            -- Shaman
+            [DC.WOTLK and DSI["CLEANSE_SPIRIT"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+                Types = {DC.CURSE, DC.DISEASE, DC.POISON},
+                Better = 2,
+                Pet = false,
+            },
+            -- HUNTERS http://www.wowhead.com/?spell=19801
+            [DC.WOTLK and DSI["SPELL_TRANQUILIZING_SHOT"] or false]    = {
+                Types = {DC.ENEMYMAGIC},
+                IsBest = true,
+                Pet = false,
+            },
+            -- Shamans http://www.wowhead.com/?spell=51514
+            [DC.WOTLK and DSI["SPELL_HEX"] or false] = {
+                Types = {DC.CHARMED},
+                Better = 0,
+                Pet = false,
+            },
             -- Druid
             [DSI["SPELL_ABOLISH_POISON"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
                 Types = {DC.POISON},
@@ -531,7 +562,7 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Shaman
             [DSI["SPELL_CURE_POISON_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
-                Types = {DC.POISON},
+                Types = not DC.WOTLK and {DC.POISON} or {DC.POISON, DC.DISEASE},
                 Better = 0,
                 Pet = false,
             },
@@ -1659,6 +1690,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
                 -- reassign the proper spells for WotLK
                 T._C.DSI["Shadowmeld"] = 58984;
+                T._C.DSI["SPELL_TRANQUILIZING_SHOT"] = 19801;
+                T._C.DSI["TALENT_BODY_AND_SOUL"] = 64127;
 
                 T._C.EXPECTED_DUPLICATES = {
                 {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
