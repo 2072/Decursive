@@ -499,6 +499,12 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = false,
             },
+            -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
+            [DC.WOTLK and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
+                Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = false,
+            },
             -- Paladin
             [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
                 Types = {DC.POISON, DC.DISEASE},
@@ -537,7 +543,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Shaman
-            [DC.WOTLK and DSI["CLEANSE_SPIRIT"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+            [DC.WOTLK and DSI["CLEANSE_SPIRIT"] or false] = {
                 Types = {DC.CURSE, DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
@@ -562,7 +568,7 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Shaman
             [DSI["SPELL_CURE_POISON_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
-                Types = not DC.WOTLK and {DC.POISON} or {DC.POISON, DC.DISEASE},
+                Types = DC.WOTLK and {DC.POISON, DC.DISEASE} or {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
@@ -1689,12 +1695,16 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 end
 
                 -- reassign the proper spells for WotLK
-                T._C.DSI["Shadowmeld"] = 58984;
-                T._C.DSI["SPELL_TRANQUILIZING_SHOT"] = 19801;
-                T._C.DSI["TALENT_BODY_AND_SOUL"] = 64127;
+                T._C.DSI["Shadowmeld"]                    = 58984;
+                T._C.DSI["SPELL_TRANQUILIZING_SHOT"]      = 19801;
+                T._C.DSI["TALENT_BODY_AND_SOUL"]          = 64127;
+                T._C.DSI["CLEANSE_SPIRIT"]                = 66056;
+                T._C.DSI["SPELL_HEX"]	                  = 51514;
+                T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
 
                 T._C.EXPECTED_DUPLICATES = {
-                {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
+                    {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
+                    {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
                 }
             end
 
