@@ -520,7 +520,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 EnhancedBy = DC.WOTLK and DS["TALENT_BODY_AND_SOUL"] ~= nil,
                 EnhancedByCheck = function ()
                     local talentName, _, _, _, isAvailable = GetTalentInfo(2,27)
-                    return talentName == DS["TALENT_BODY_AND_SOUL"] and isAvailable;
+                    return talentName == DS["TALENT_BODY_AND_SOUL"] and isAvailable ~= 0
                 end,
                 Enhancements = {
                     Types = {DC.DISEASE, DC.POISON},
@@ -892,7 +892,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     D.eventFrame:RegisterEvent("BAG_UPDATE_DELAYED");
     D.eventFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED");
-    if not DC.WOWC then
+    if not DC.WOWC or DC.WOTLK then
         D.eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
     end
     D.eventFrame:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
@@ -1698,7 +1698,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["Shadowmeld"]                    = 58984;
                 T._C.DSI["SPELL_TRANQUILIZING_SHOT"]      = 19801;
                 T._C.DSI["TALENT_BODY_AND_SOUL"]          = 64127;
-                T._C.DSI["CLEANSE_SPIRIT"]                = 66056;
+                T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
                 T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
 
