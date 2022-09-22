@@ -1,5 +1,15 @@
-Decursive 2.7.8.8
+Decursive 2.7.8.9
 =================
+
+Decursive 2.7.8.9 (2022-09-22)
+------------------------------
+
+- WOTLK:
+    - Fix Shaman's "Cleanse Spirit", Fellhunter's "Devour Magic" detection, Priests' "Body and Soul" talent detection.
+    - Fix crash when adding custom pet spell by name in custom spell.
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.8.8 (2022-09-10)
@@ -9,9 +19,6 @@ Decursive 2.7.8.8 (2022-09-10)
     - Hunters: tranquilizing shot.
     - Shamans: Hex, Cleanse Spirit.
     - Priests: Dispell Magic (rank 1 is not detected once rank 2 is learned apparently...), Body and Soul talent detection (to cure poison on oneself).
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.8.7 (2022-09-04)

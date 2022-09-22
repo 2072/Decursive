@@ -551,7 +551,7 @@ local function SetRuntimeConstants_Once () -- {{{
             -- HUNTERS http://www.wowhead.com/?spell=19801
             [DC.WOTLK and DSI["SPELL_TRANQUILIZING_SHOT"] or false]    = {
                 Types = {DC.ENEMYMAGIC},
-                IsBest = true,
+                Better = 0,
                 Pet = false,
             },
             -- Shamans http://www.wowhead.com/?spell=51514
