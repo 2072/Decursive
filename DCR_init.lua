@@ -524,9 +524,8 @@ local function SetRuntimeConstants_Once () -- {{{
                 end,
                 Enhancements = {
                     Types = {DC.DISEASE, DC.POISON},
-                    OnPlayerOnly = {
-                        [DC.DISEASE] = false,
-                        [DC.POISON]  = true,
+                    UnitFiltering = {
+                        [DC.POISON]  = 1, -- player only
                     },
                 }
             },
