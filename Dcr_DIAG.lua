@@ -917,19 +917,19 @@ do
             ["AceDB-3.0"] = 27,
             ["AceDBOptions-3.0"] = 15,
             ["AceEvent-3.0"] = 4,
-            ["AceHook-3.0"] = 8,
+            ["AceHook-3.0"] = 9,
             ["AceLocale-3.0"] = 6,
             ["AceTimer-3.0"] = 17,
 
             ["AceGUI-3.0"] = 41,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 79,
+            ["AceConfigDialog-3.0"] = 85,
             ["AceConfigRegistry-3.0"] = 20,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 43,
-            ["LibQTip-1.0"] = 48,
+            ["LibDBIcon-1.0"] = 44,
+            ["LibQTip-1.0"] = 49,
             ["CallbackHandler-1.0"] = 7,
         };
 
