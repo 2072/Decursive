@@ -1,8 +1,8 @@
-## Interface: 90207
-## Interface-Retail: 90207
+## Interface: 100000
+## Interface-Retail: 100000
 ## Interface-Classic: 11403
 ## Interface-wrath: 30400
-## X-Max-Interface: 90207
+## X-Max-Interface: 100000
 ## X-Min-Interface: 11403
 
 ## Title: Decursive |cffff00ff -Ace3-|r
