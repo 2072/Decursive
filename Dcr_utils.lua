@@ -443,7 +443,7 @@ do
         -- Create the fonts objects we'll use in the tooltip:
         -- New font looking like GameTooltipText
         HeadFont = CreateFont("DCR_QT_HeadFont")
-        HeadFont:SetFont(GameTooltipText:GetFont(), 16)
+        HeadFont:SetFont(GameTooltipText:GetFont(), 16, "")
         HeadFont:SetTextColor(0.8,0.8,0.3)
 
         return HeadFont;

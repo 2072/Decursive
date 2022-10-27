@@ -1,17 +1,22 @@
-Decursive 2.7.8.10
+Decursive 2.7.8.11
 ==================
 
-Decursive 2.7.8.10 (2022-10-26)
+Decursive 2.7.8.11 (2022-10-27)
 -------------------------------
 
-- TOC update for Dragonflight + fix XML error
-
-- WOTLK: Fix Body and soul talent detection
+- Fix LUA error with LDB's tooltip creation.
 
 
 **New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
 delegate your stake to my pool: [anfra.io](https://anfra.io)
 
+
+Decursive 2.7.8.10 (2022-10-26)
+-------------------------------
+
+- TOC update for Dragonflight + fix XML error.
+
+- WOTLK: Fix Body and Soul talent handling.
 
 Decursive 2.7.8.9 (2022-09-22)
 ------------------------------
