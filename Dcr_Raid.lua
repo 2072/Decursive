@@ -113,6 +113,7 @@ DC.ClassNumToLName = {
     [20]        = LC[DC.CLASS_DEATHKNIGHT],
     [21]        = LC[DC.CLASS_MONK],
     [22]        = LC[DC.CLASS_DEMONHUNTER],
+    [23]        = LC[DC.CLASS_EVOKER],
 }
 
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
@@ -130,6 +131,7 @@ DC.ClassNumToUName = {
     [20]        = DC.CLASS_DEATHKNIGHT,
     [21]        = DC.CLASS_MONK,
     [22]        = DC.CLASS_DEMONHUNTER,
+    [23]        = DC.CLASS_EVOKER,
 }
 
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
@@ -169,7 +171,7 @@ do
                 return UnitClass(unit);
             end
 
-            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,22)];
+            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,23)];
             FakeClasses[unit] = randomClass;
             return randomClass, randomClass;
         end
@@ -205,7 +207,7 @@ do
 
             local unit = "raid"..i;
 
-            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,22)];
+            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,23)];
             FakeClasses[unit] = randomClass;
             local randomGroup;
 

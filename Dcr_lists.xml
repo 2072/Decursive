@@ -438,13 +438,13 @@
     <!-- DecursivePopulateListFrame {{{ -->
     <Frame name="DecursivePopulateListFrame" frameStrata="LOW" toplevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" parent="UIParent" inherits="DecursiveBackDropTemplate">
         <Size>
-            <AbsDimension x="228" y="285" />
+            <AbsDimension x="228" y="305" />
         </Size>
 
         <Anchors>
             <Anchor point="CENTER">
                 <Offset>
-                    <AbsDimension x="0" y="285"/>
+                    <AbsDimension x="0" y="305"/>
                 </Offset>
             </Anchor>
         </Anchors>
@@ -989,6 +989,29 @@
                         if DecursiveInstallCorrupted then return end
 
                         self.ClassType = DecursiveRootTable._C.CLASS_DEMONHUNTER;
+                        self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
+                    </OnLoad>
+                </Scripts>
+            </Button>
+            <Button name="$parentEvoker" inherits="GameMenuButtonTemplate" text="Evoker">
+                <Size>
+                    <AbsDimension x="110" y="20" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parentMonk">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                    </OnClick>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+
+                        self.ClassType = DecursiveRootTable._C.CLASS_EVOKER;
                         self:SetText(DecursiveRootTable.Dcr:ColorText(DecursiveRootTable.Dcr.LC[self.ClassType], "FF"..DecursiveRootTable.Dcr:GetClassHexColor(self.ClassType)));
                     </OnLoad>
                 </Scripts>

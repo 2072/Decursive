@@ -135,6 +135,7 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.CLASS_DEATHKNIGHT = 'DEATHKNIGHT';
     DC.CLASS_MONK        = 'MONK';
     DC.CLASS_DEMONHUNTER = 'DEMONHUNTER';
+    DC.CLASS_EVOKER      = 'EVOKER';
 
     DC.MyClass = "NOCLASS";
     DC.MyName = "NONAME";
@@ -430,6 +431,24 @@ local function SetRuntimeConstants_Once () -- {{{
             [DSI["SPELL_REVERSEMAGIC"]] = { -- PVP
                 Types = {DC.MAGIC},
                 Better = 1,
+                Pet = false,
+            },
+            -- Evoker
+            [DSI["SPELL_EXPUNGE"]] = {
+                Types = {DC.POISON},
+                Better = 1,
+                Pet = false,
+                EnhancedBy = true,
+                EnhancedByCheck = function ()
+                    return (GetSpellInfo(DS["SPELL_EXPUNGE"])) == DS["SPELL_NATURALIZE"];
+                end,
+                Enhancements = {
+                    Types = {DC.POISON, DC.MAGIC},
+                }
+            },
+            [DSI["SPELL_CAUTERIZING_FLAME"]] = {
+                Types = {DC.POISON, DC.CURSE, DC.DISEASE},
+                Better = 3,
                 Pet = false,
             },
             -- undead racial
@@ -1264,7 +1283,7 @@ local function SpellIterator() -- {{{
             D:Debug("|cFF00FF00Shifting to user spells|r");
             --@end-debug@
             return iter(); -- continue with the other table
-        elseif currentSpellTable == DC.SpellsToUse and D.classprofile.UserSpells[currentKey] and not D.classprofile.UserSpells[currentKey].Hidden and not D.classprofile.UserSpells[currentKey].Disabled then
+        elseif currentSpellTable == DC.SpellsToUse and D.classprofile.UserSpells[currentKey] and not D.classprofile.UserSpells[currentKey].Hidden and not D.classprofile.UserSpells[currentKey].Disabled and currentSpellTable[currentKey].MacroText then
             -- if the user actively redefined that spell then skip the default one
             --@debug@
             D:Debug("Skipping default", currentKey);
@@ -1277,7 +1296,7 @@ local function SpellIterator() -- {{{
             --@debug@
             D:Debug("Skipping", currentKey);
             if currentSpellTable ~= DC.SpellsToUse and DC.SpellsToUse[currentKey] then
-                D:Print("|cFFFF0000Cheating for|r", currentKey);
+                D:Print("|cFFFF0000Ignored custom spell id|r", currentKey, "remove this spell from the custom spells list or re-add it with the edit macro option checked.");
             end
             --@end-debug@
 
@@ -1605,6 +1624,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_MENDINGBANDAGE']        =  212640,
             ['SPELL_REVERSEMAGIC']          =  205604,
             ['SPELL_WILL_OF_THE_FORSAKEN']  =  7744,
+            ['SPELL_EXPUNGE']               =  365585,
+            ['SPELL_NATURALIZE']            =  360823,
+            ['SPELL_CAUTERIZING_FLAME']     =  374251,
         }; --- }}}
 
         T._C.EXPECTED_DUPLICATES = {
@@ -1647,6 +1669,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ["SPELL_CLEANSE_TOXINS"]    = 213644,
                 ["SPELL_DIFFUSEMAGIC"]	    = 122783,
                 ["SPELL_REMOVE_CORRUPTION"] = 2782,
+                ['SPELL_EXPUNGE']           = 365585,
+                ['SPELL_NATURALIZE']        = 360823,
+                ['SPELL_CAUTERIZING_FLAME'] = 374251,
             } -- }}}
 
             local DSI_REMOVED_OR_CHANGED_IN_WOTLK = { -- {{{

@@ -427,6 +427,8 @@ function D:GetDefaultsSettings()
                 ["MONK"] = {
                 },
                 ["DEMONHUNTER"] = {
+                },
+                ["EVOKER"] = {
                 }
             },
             -- }}}
@@ -563,7 +565,7 @@ local function GetStaticOptions ()
         end
 
         if not isItem and v > 0xffffff then
-            v = bit.band(0xffffff, v);
+            v = bit.band(0xffffff, v); -- XXX does not seem to yield the expected results in wotlk for pet spells...
         end
 
         -- avoid spellID/itemID collisions

@@ -529,7 +529,8 @@ do
     local NON_CLASSIC_CLASSES = {
         ["DEMONHUNTER"]    = true,
         ["DEATHKNIGHT"]    = true,
-        ["MONK"]           = true
+        ["MONK"]           = true,
+        ["EVOKER"]         = true,
 
     };
 
