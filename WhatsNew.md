@@ -8,6 +8,10 @@ Decursive 2.7.8.12 (2022-11-28)
   Flame (Poison, Disease, Curse) as well as the Naturalize enhancement of the
   Expunge spell (Poison, Magic).
 
+- WotLK: Added "Mutating Injection" to the "harmful debuff" list instead of the ignore list.
+  You'll hear a sound and a warning will be displayed whenever your mouse cursor
+  enters within a MUF with the Mutating Injection debuff.
+
 
 
 **New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can

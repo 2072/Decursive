@@ -341,7 +341,6 @@ function D:GetDefaultsSettings()
                 [DS["GDREAMLESSSLEEP"]]         = true,
                 [(not DC.WOWC) and DS["MDREAMLESSSLEEP"] or "NONE"]         = (not DC.WOWC) and true or nil,
                 [DS["DCR_LOC_MINDVISION"]]      = true,
-                [DS["MUTATINGINJECTION"]]       = true,
                 [(not DC.WOWC) and DS["Arcane Blast"] or "NONE"]            = (not DC.WOWC) and true or nil,
             },
 

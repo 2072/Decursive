@@ -220,7 +220,7 @@ local function SetRuntimeConstants_Once () -- {{{
     if not DC.WOWC then
         DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS['Greater Invisibility']});
 
-        DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
+        DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"], DC.DS["MUTATINGINJECTION"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
         DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
 
 
@@ -465,7 +465,7 @@ local function SetRuntimeConstants_Once () -- {{{
         -- }}}
     else -- WOW CLASSIC
         DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"], DS["Lesser Invisibility"]});
-        DC.IS_HARMFULL_DEBUFF = D:tReverse({});
+        DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["MUTATINGINJECTION"]}); --, "Test item"});
         DC.IS_DEADLY_DEBUFF   = D:tReverse({});
 
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
