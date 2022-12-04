@@ -436,7 +436,7 @@ local function SetRuntimeConstants_Once () -- {{{
             -- Evoker
             [DSI["SPELL_EXPUNGE"]] = {
                 Types = {DC.POISON},
-                Better = 1,
+                Better = 2,
                 Pet = false,
                 EnhancedBy = true,
                 EnhancedByCheck = function ()
@@ -448,7 +448,7 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             [DSI["SPELL_CAUTERIZING_FLAME"]] = {
                 Types = {DC.POISON, DC.CURSE, DC.DISEASE},
-                Better = 3,
+                Better = 1,
                 Pet = false,
             },
             -- undead racial

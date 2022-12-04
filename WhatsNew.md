@@ -1,5 +1,16 @@
-Decursive 2.7.8.12
+Decursive 2.7.8.13
 ==================
+
+Decursive 2.7.8.13 (2022-12-03)
+-------------------------------
+
+- Cauterizing Flame is no longer considered better than Expunge.
+
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
 
 Decursive 2.7.8.12 (2022-11-28)
 -------------------------------
@@ -11,11 +22,6 @@ Decursive 2.7.8.12 (2022-11-28)
 - WotLK: Added "Mutating Injection" to the "harmful debuff" list instead of the ignore list.
   You'll hear a sound and a warning will be displayed whenever your mouse cursor
   enters within a MUF with the Mutating Injection debuff.
-
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.8.11 (2022-10-27)
