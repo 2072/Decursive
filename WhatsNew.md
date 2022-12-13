@@ -1,10 +1,12 @@
 Decursive 2.7.8.13
 ==================
 
-Decursive 2.7.8.13 (2022-12-03)
+Decursive 2.7.8.13 (2022-12-13)
 -------------------------------
 
 - Cauterizing Flame is no longer considered better than Expunge.
+
+- Update CallBackHandler library to revision 8
 
 
 
