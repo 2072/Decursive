@@ -254,7 +254,7 @@
 
     <!-- ================================================================== -->
 
-    <Frame name="DecursiveAnchor" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent"> <!-- {{{ -->
+    <Frame name="DecursiveAnchor" clampedToScreen="true" frameStrata="HIGH" toplevel="true" enableMouse="true" movable="true" hidden="true" parent="UIParent" inherits="DecursiveBackDropTemplate"> <!-- {{{ -->
         <Size>
             <AbsDimension x="180" y="25"/>
         </Size>
@@ -266,6 +266,14 @@
                 </Offset>
             </Anchor>
         </Anchors>
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton");
+                self:SetBackdrop(DecursiveRootTable._C.UI_BACKDROP)
+            </OnLoad>
+            <OnDragStart>self:StartMoving();</OnDragStart>
+            <OnDragStop>self:StopMovingOrSizing();</OnDragStop>
+        </Scripts>
 
         <Layers>
             <Layer level="BACKGROUND">
