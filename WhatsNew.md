@@ -1,5 +1,16 @@
-Decursive 2.7.8.13
-==================
+Decursive 2.7.9
+===============
+
+
+Decursive 2.7.9 (2023-01-10)
+----------------------------
+
+- Add support for by-specialization profiles thanks to libDualSpec-1.0.
+
+- Keep specific curing order for each class specialization (instead of just for each class).
+
+- Decursive text anchor can be moved again.
+
 
 Decursive 2.7.8.13 (2022-12-13)
 -------------------------------

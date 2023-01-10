@@ -32,6 +32,8 @@
 
     <Include file="Libs\BugGrabber\load.xml" />
 
+    <Script file="Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua" />
+
     <Script>
         DecursiveInEmbeddedMode = true;
     </Script>

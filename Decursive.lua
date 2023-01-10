@@ -573,7 +573,7 @@ do
     local CureOrder;
     local sorting = function (a, b)
 
-        CureOrder = D.classprofile.CureOrder;
+        CureOrder = D:GetCureOrderTable();
 
         return CureOrder[a.Type] * 10000 - a.Applications < CureOrder[b.Type] * 10000 - b.Applications;
     end
@@ -684,12 +684,12 @@ do
 
 
                 -- We have a match for this type and we decided (checked) to
-                -- cure it NOTE: self.classprofile.CureOrder[DEBUFF_TYPE] is set
+                -- cure it NOTE: self:GetCureOrderTable()[DEBUFF_TYPE] is set
                 -- to FALSE when the type is unchecked and to < 0 when there is
                 -- no spell available for the type or when the spell is gone
                 -- (it happens for warlocks or when using the same profile with
                 -- several characters)
-                --if (self.classprofile.CureOrder[Debuff.Type] and self.classprofile.CureOrder[Debuff.Type] > 0) then
+                --if (self:GetCureOrderTable()[Debuff.Type] and self:GetCureOrderTable()[Debuff.Type] > 0) then
                 if self:GetCureTypeStatus(Debuff.Type) then
 
 
