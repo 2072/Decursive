@@ -673,8 +673,12 @@ local function GetStaticOptions ()
                         type = "select",
                         style = "dropdown",
                         name = L["OPT_AUTOHIDEMFS"],
-                        desc = L["OPT_AUTOHIDEMFS_DESC"] .. "\n\n" .. ("%s: %s\n%s: %s\n%s: %s"):format(D:ColorText(L["OPT_HIDEMFS_NEVER"], "FF88CCAA"), L["OPT_HIDEMFS_NEVER_DESC"], D:ColorText(L["OPT_HIDEMFS_SOLO"], "FF88CCAA"), L["OPT_HIDEMFS_SOLO_DESC"], D:ColorText(L["OPT_HIDEMFS_GROUP"], "FF88CCAA"), L["OPT_HIDEMFS_GROUP_DESC"]),
-                        values = {L["OPT_HIDEMFS_NEVER"], L["OPT_HIDEMFS_SOLO"], L["OPT_HIDEMFS_GROUP"]},
+                        desc = L["OPT_AUTOHIDEMFS_DESC"] .. "\n\n" .. ("%s: %s\n%s: %s\n%s: %s\n%s: %s"):format(
+                            D:ColorText(L["OPT_HIDEMFS_NEVER"], "FF88CCAA"), L["OPT_HIDEMFS_NEVER_DESC"]
+                            , D:ColorText(L["OPT_HIDEMFS_SOLO"], "FF88CCAA"), L["OPT_HIDEMFS_SOLO_DESC"]
+                            , D:ColorText(L["OPT_HIDEMFS_GROUP"], "FF88CCAA"), L["OPT_HIDEMFS_GROUP_DESC"]
+                            , D:ColorText(L["OPT_HIDEMFS_RAID"], "FF88CCAA"), L["OPT_HIDEMFS_RAID_DESC"]),
+                        values = {L["OPT_HIDEMFS_NEVER"], L["OPT_HIDEMFS_SOLO"], L["OPT_HIDEMFS_GROUP"], L["OPT_HIDEMFS_RAID"]},
                         order = 6,
                     },
                     HideLiveList = {
@@ -3241,10 +3245,9 @@ function D:SetMacroKey ( key )
 
 end
 
-
 function D:AutoHideShowMUFs ()
 
-   -- This function cannot do anything if we are fighting
+    -- This function cannot do anything if we are fighting
     if (InCombatLockdown()) then
         -- if we are fighting, postpone the call
         D:AddDelayedFunctionCall (
@@ -3256,19 +3259,22 @@ function D:AutoHideShowMUFs ()
     if D.profile.AutoHideMUFs == 1 then
         return false;
     else
-        -- if we want to hide the MUFs when in solo or not in raid
-        local InGroup = (GetNumRaidMembers() ~= 0 or (D.profile.AutoHideMUFs ~= 3 and GetNumPartyMembers() ~= 0) );
-        D:Debug("AutoHideShowMUFs, InGroup: ", InGroup);
+        local hideBecauseInSolo          = D.profile.AutoHideMUFs == 2 and GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0
+        local hideBecauseInSoloOrParty   = D.profile.AutoHideMUFs == 3 and GetNumRaidMembers() == 0
+        local hideBecauseInRaids         = D.profile.AutoHideMUFs == 4 and GetNumRaidMembers() ~= 0
 
-        -- if we are not in such a group
-        if not InGroup then
+        local shouldHide = hideBecauseInSolo or hideBecauseInSoloOrParty or hideBecauseInRaids
+
+        -- local InGroup = (GetNumRaidMembers() ~= 0 or (D.profile.AutoHideMUFs ~= 3 and GetNumPartyMembers() ~= 0) );
+        D:Debug("AutoHideShowMUFs:", shouldHide, hideBecauseInSolo, hideBecauseInSoloOrParty, hideBecauseInRaids);
+
+        if shouldHide then
             -- if the frame is displayed
             if D.profile.ShowDebuffsFrame then
                 -- hide it
                 D:ShowHideDebuffsFrame ();
             end
         else
-            -- if we are in a group
             -- if the frame is not displayed
             if not D.profile.ShowDebuffsFrame then
                 -- show it
