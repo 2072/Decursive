@@ -2,7 +2,7 @@ Decursive 2.7.9
 ===============
 
 
-Decursive 2.7.9 (2023-01-25)
+Decursive 2.7.9 (2023-02-25)
 ----------------------------
 
 - Add support for by-specialization-profiles thanks to libDualSpec-1.0.
