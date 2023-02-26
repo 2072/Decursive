@@ -17,9 +17,9 @@ jobs:
         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 150
+          fetch-depth: 0
 
       - name: Rename WhatsNew.md
         if: env.GITHUB_REF_TYPE == 'branch'
@@ -34,13 +34,13 @@ jobs:
       - name: Package retail
         uses: BigWigsMods/packager@master
 
-      - name: Package classic
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g classic
+      #- name: Package classic
+      #  uses: BigWigsMods/packager@master
+      #  with:
+      #    args: -g classic
 
-      - name: Package wraith
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g wrath
+      #- name: Package wraith
+      #  uses: BigWigsMods/packager@master
+      #  with:
+      #    args: -g wrath
 
