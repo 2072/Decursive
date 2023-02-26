@@ -1,0 +1,46 @@
+name: Check and buid addon
+
+on:
+  push:
+    branches:
+      - master
+    # paths-ignore:
+    #- '.github/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+        CF_API_KEY: ${{ secrets.CF_API_KEY }}
+        #WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+        #WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+        GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 150
+
+      - name: Rename WhatsNew.md
+        if: env.GITHUB_REF_TYPE == 'branch'
+        run: mv -vf WhatsNew.md WhatsNew_.md
+
+
+      - name: Run luacheck
+        uses: BigWigsMods/actions/luacheck@master
+        with:
+          args: -qo 011
+
+      - name: Package retail
+        uses: BigWigsMods/packager@master
+
+      - name: Package classic
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g classic
+
+      - name: Package wraith
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g wrath
+
