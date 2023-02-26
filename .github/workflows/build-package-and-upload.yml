@@ -21,18 +21,29 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: print GITHUB_REF_TYPE if it's branch
+        if: env.GITHUB_REF_TYPE == 'branch'
+        run: |
+            echo "GITHUB_REF_TYPE: $GITHUB_REF_TYPE"
+      - name: print GITHUB_REF_TYPE if it's not branch
+        if: env.GITHUB_REF_TYPE != 'branch'
+        run: |
+            echo "GITHUB_REF_TYPE: $GITHUB_REF_TYPE"
+
+
       - name: Rename WhatsNew.md
         if: env.GITHUB_REF_TYPE == 'branch'
-        run: mv -vf WhatsNew.md WhatsNew_.md
-
+        run: |
+           mv -vf WhatsNew.md WhatsNew_.md
+           echo "file moved"
 
       - name: Run luacheck
         uses: BigWigsMods/actions/luacheck@master
         with:
           args: -qo 011
 
-      - name: Package retail
-        uses: BigWigsMods/packager@master
+          #- name: Package retail
+          #uses: BigWigsMods/packager@master
 
       #- name: Package classic
       #  uses: BigWigsMods/packager@master
