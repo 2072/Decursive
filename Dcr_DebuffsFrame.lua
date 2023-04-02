@@ -1386,7 +1386,7 @@ do
     local fmod              = _G.math.fmod;
     local CooldownFrame_Set = _G.CooldownFrame_Set;
     local GetSpellCooldown  = _G.GetSpellCooldown;
-    local GetItemCooldown   = _G.GetItemCooldown;
+    local GetItemCooldown   = _G.C_Container and _G.C_Container.GetItemCooldown or _G.GetItemCooldown;
     local GetRaidTargetIndex= _G.GetRaidTargetIndex;
     local bor               = _G.bit.bor;
     local band              = _G.bit.band;
@@ -1484,6 +1484,7 @@ do
                     if SpellID > 0 then
                         CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
                     else
+                        --D:Debug("SetColor(): setting interface cooldown for ", -1 * SpellID, "GetItemCooldown:",  GetItemCooldown(-1 * SpellID));
                         CooldownFrame_Set (self.CooldownFrame, GetItemCooldown(-1 * SpellID));
                     end
                     self.UpdateCD = Time;
