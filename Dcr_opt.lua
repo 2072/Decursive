@@ -77,6 +77,7 @@ local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
 local GetSpellInfo      = _G.GetSpellInfo;
 local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
+local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local _;
 -- Default values for the option
 

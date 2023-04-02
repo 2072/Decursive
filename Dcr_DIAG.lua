@@ -40,7 +40,7 @@ local GetTime           = _G.GetTime;
 local strjoin           = _G.strjoin;
 local GetCVarBool       = _G.GetCVarBool;
 local IsAddOnLoaded     = _G.IsAddOnLoaded;
-local GetAddOnMetadata  = _G.GetAddOnMetadata;
+local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local time              = _G.time;
 local pcall             = _G.pcall;
 local pairs             = _G.pairs;
@@ -701,7 +701,7 @@ function T._TooManyErrors()
             if not WarningDisplayed and T.Dcr and T.Dcr.L and not (#DebugTextTable > 0 or T._TaintingAccusations > 10) then -- if we can and should display the alert
                 _Print(T.Dcr:ColorText((T.Dcr.L["TOO_MANY_ERRORS_ALERT"]):format(T._NonDecursiveErrors), "FFFF0000"));
                 _Print(T.Dcr:ColorText(T.Dcr.L["DONT_SHOOT_THE_MESSENGER"], "FFFF9955"));
-                _Print('|cFF47C2A1Last UI error:|r', LastErrorMessage);
+                _Print('|cFF47C2A1Here is the last non-Decursive UI error:|r', LastErrorMessage);
                 WarningDisplayed = true;
             end
         else

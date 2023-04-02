@@ -62,6 +62,7 @@ local GetSpellInfo          = _G.GetSpellInfo;
 local IsSpellKnown          = nil; -- use D:isSpellReady instead
 local GetSpecialization     = _G.GetSpecialization;
 local IsPlayerSpell         = _G.IsPlayerSpell;
+local GetAddOnMetadata      = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 
 local function RegisterDecursive_Once() -- {{{
 
