@@ -1,5 +1,19 @@
-Decursive 2.7.9
-===============
+Decursive 2.7.9.1
+=================
+
+
+Decursive 2.7.9.1 (2023-04-02)
+------------------------------
+
+- TOC Updates
+
+- WotLK:Fix GetItemCooldown() Lua error
+
+- WoW 10.1.0 (PTR): Fix GetAddOnMetadata Lua error
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.9 (2023-02-25)
@@ -14,10 +28,6 @@ Decursive 2.7.9 (2023-02-25)
 - Decursive text anchor can be moved again.
 
 - Do not report errors thrown in libraries embedded by Decursive on systems using '/' as directory separator.
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.8.13 (2022-12-13)
