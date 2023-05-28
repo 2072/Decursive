@@ -1,5 +1,11 @@
-Decursive 2.7.9.1
+Decursive 2.7.9.2
 =================
+
+
+Decursive 2.7.9.2 (2023-05-28)
+------------------------------
+
+- TOC update for WoW 10.1 with icon support
 
 
 Decursive 2.7.9.1 (2023-04-02)
