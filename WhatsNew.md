@@ -2,10 +2,15 @@ Decursive 2.7.9.2
 =================
 
 
-Decursive 2.7.9.2 (2023-05-28)
+Decursive 2.7.9.2 (2023-05-29)
 ------------------------------
 
 - TOC update for WoW 10.1 with icon support
+
+- Shamans (Dragonflight):
+   - Add cleansing totem support.
+   - Fix Purify Spirit to only cure curses when Improved Purify Spirit talent
+     is detected.
 
 
 Decursive 2.7.9.1 (2023-04-02)
