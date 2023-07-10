@@ -914,7 +914,7 @@ do
             ["AceAddon-3.0"] = 13,
             ["AceComm-3.0"] = 12,
             ["AceConsole-3.0"] = 7,
-            ["AceDB-3.0"] = 27,
+            ["AceDB-3.0"] = 28,
             ["AceDBOptions-3.0"] = 15,
             ["AceEvent-3.0"] = 4,
             ["AceHook-3.0"] = 9,
