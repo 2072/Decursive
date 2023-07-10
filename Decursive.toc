@@ -1,7 +1,7 @@
 ## Interface: 100100
 ## Interface-Retail: 100100
 ## Interface-Classic: 11403
-## Interface-wrath: 30401
+## Interface-wrath: 30402
 ## X-Max-Interface: 100105
 ## X-Min-Interface: 11403
 
