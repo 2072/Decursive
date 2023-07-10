@@ -330,7 +330,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 -- detect improved purify spirit
                 EnhancedBy = 'talent',
                 EnhancedByCheck = function ()
-                    return (D:isSpellReady(DSI["IMPROVED_PURIFY_SPIRIT"], false));
+                    return (IsPlayerSpell(DSI["IMPROVED_PURIFY_SPIRIT"]));
                 end,
                 Enhancements = {
                     Types = {DC.CURSE, DC.MAGIC}, -- see PURIFY_SPIRIT
