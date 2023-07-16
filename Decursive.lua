@@ -683,16 +683,8 @@ do
                 -- If we are still here it means that this Debuff is something not to be ignored...
 
 
-                -- We have a match for this type and we decided (checked) to
-                -- cure it NOTE: self:GetCureOrderTable()[DEBUFF_TYPE] is set
-                -- to FALSE when the type is unchecked and to < 0 when there is
-                -- no spell available for the type or when the spell is gone
-                -- (it happens for warlocks or when using the same profile with
-                -- several characters)
-                --if (self:GetCureOrderTable()[Debuff.Type] and self:GetCureOrderTable()[Debuff.Type] > 0) then
-                if self:GetCureTypeStatus(Debuff.Type) then
-
-
+                -- We have an active curing spell for that type
+                if D.Status.CuringSpells[Debuff.Type] then
                     -- self:Debug("we can cure it");
 
                     -- if we do have a spell to cure

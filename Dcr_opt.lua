@@ -1889,8 +1889,7 @@ end
 
 
 function D:GetCureTypeStatus (Type)
-    local cureOrder = self:GetCureOrderTable();
-    return cureOrder[Type] and cureOrder[Type] > 0;
+    return self:GetCureOrderTable()[Type];
 end
 
 local TypesToUName = {
@@ -1904,9 +1903,11 @@ local TypesToUName = {
 
 local CureCheckBoxes = false;
 function D:SetCureCheckBoxNum (Type, checkBox)
-    -- add the number in green before the name if we have a spell available and if we checked the box
-    if (D:GetCureTypeStatus(Type)) then
-        checkBox.name = D:ColorText(D:GetCureOrderTable()[Type], "FF00FF00") .. " " .. L[TypesToUName[Type]];
+    local cureOrders = self:GetCureOrderTable();
+    -- add the priority in front of the name
+    if (cureOrders[Type]) then
+        local cureOrder = abs(cureOrders[Type])
+        checkBox.name = D:ColorText(cureOrder, cureOrders[Type] > 0 and "FF00FF00" or "FF3030F0") .. " " .. L[TypesToUName[Type]];
     else
         checkBox.name = "  " .. L[TypesToUName[Type]];
     end
@@ -1919,7 +1920,7 @@ function D:GetCureOrderTable ()
 
     if not activeSpec or activeSpec == 5 then
         --@debug@
-        D:Debug("No active spec, returning general cure order table");
+        D:Debug("No active spec, returning general cure order table:", D:tAsString(generalCureOrder));
         --@end-debug@
         return generalCureOrder;
     else
@@ -1932,7 +1933,7 @@ function D:GetCureOrderTable ()
         end
 
         --@debug@
-        D:Debug("returning specific cure order table ", specCureOrder, " for spec:", activeSpec);
+        D:Debug("returning specific cure order table ", specCureOrder, " for spec:", activeSpec, "table:", D:tAsString(D.classprofile[specCureOrder]));
         --@end-debug@
         return D.classprofile[specCureOrder];
     end
@@ -2028,6 +2029,9 @@ function D:SetCureOrder (ToChange)
             tmpTable[abs(CureOrder[Type])] = Type; -- CureOrder[Type] can have a <0 value if the spell was lost
             FoundSpell = FoundSpell + 1;
         elseif (CureOrder[Type]) then -- if we don't have a spell for this type
+            --@debug@
+            D:Debug("SetCureOrder(): Adding lost spell", CureOrder[Type], Type)
+            --@end-debug@
             LostSpells[abs(CureOrder[Type])] = Type;  -- save the position
         end
     end
@@ -2040,22 +2044,42 @@ function D:SetCureOrder (ToChange)
    -- can be readded later using their former priorities
    local AvailableSpot = (FoundSpell + 10 + 1) * -1; -- we add 10 so that they'll be re-added after any not-lost spell...
 
+
+   -- if the user requested this change, then we update the saved data else we
+   -- leave it as it is so that it can go back to the previous state if the old
+   -- conditions are met again
+   local newCureOrder = {}
+   if (ToChange) then
+       newCureOrder = CureOrder
+   else
+        D:tcopy(newCureOrder, CureOrder)
+   end
+
    -- D:PrintLiteral(LostSpells);
    for FormerPrio, Type in ipairs(LostSpells) do
-       CureOrder[Type] = AvailableSpot
+       newCureOrder[Type] = AvailableSpot
+        --@debug@
+        D:Debug("SetCureOrder(): old lost spell prio:", CureOrder[Type], Type)
+        --@end-debug@
        AvailableSpot = AvailableSpot - 1;
    end
 
     -- we sort the tables
     tmpTable = D:tSortUsingKeys(tmpTable);
 
-    -- apply the new priority to the types we can handle, leave their negative value to the others
+    -- apply the new priority to the types we can handle, leave their negative
+    -- value to the other
     for Num, Type in ipairs (tmpTable) do
-        CureOrder[Type] = Num;
+        newCureOrder[Type] = Num;
     end
 
+    --@debug@
+    D:Debug("SetCureOrder(): updated cure order table:", D:tAsString(newCureOrder), ToChange and "(saved)" or "(unsaved)" );
+    --@end-debug@
+
+
     -- create / update the ReversedCureOrder table (prio => type, ..., )
-    D.Status.ReversedCureOrder = D:tReverse(CureOrder);
+    D.Status.ReversedCureOrder = D:tReverse(newCureOrder);
 
     -- Create spell priority table
     D.Status.CuringSpellsPrio = {};
