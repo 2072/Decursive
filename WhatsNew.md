@@ -2,14 +2,14 @@ Decursive 2.7.9.3
 =================
 
 
-Decursive 2.7.9.3 (2023-07-10)
+Decursive 2.7.9.3 (2023-07-16)
 ------------------------------
 
 - Fix Improved Purify Spirit talent detection for resto shamans.
 
-- Remove new DF shaman spells from Classics
+- Remove new DF shaman spells from Classic versions
 
-- TOC update for WotLK
+- TOC updates
 
 
 
