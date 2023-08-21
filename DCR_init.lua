@@ -1016,6 +1016,7 @@ function D:SetConfiguration() -- {{{
     D.Status.InternalPrioList = {};
     D.Status.InternalSkipList = {};
     D.Status.WaitingForSpellInfo = false;
+    D.Status.t_CheckBleedDebufsActiveIDs = {};
 
     D.Stealthed_Units = {};
 
@@ -1026,6 +1027,24 @@ function D:SetConfiguration() -- {{{
 
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
+
+    for spellID, isBleed in pairs(D.db.global.t_BleedEffectsIDCheck) do
+        if isBleed ~= -1 then
+            D.Status.t_CheckBleedDebufsActiveIDs[spellID] = isBleed;
+        end
+    end
+
+   -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
+   -- many "bleeding" effect do not contain this term but rather 'Physical'...
+    if D.db.global.BleedEffectIdentifier == false and _G.STRING_SCHOOL_PHYSICAL then
+        D.db.global.BleedEffectIdentifier = _G.STRING_SCHOOL_PHYSICAL;
+    end
+
+    if D.db.global.BleedEffectIdentifier ~= false and D.db.global.BleedEffectIdentifier:trim() ~= "" then
+        D.Status.P_BleedEffectIdentifier_noCase = D:makeNoCasePattern(D.db.global.BleedEffectIdentifier);
+    else
+         D.db.global.BleedEffectIdentifier = false;
+    end
 
     -- Upgrade layer for versions of Decursive prior to 2013-03-03
     for spell, spellData in pairs(D.classprofile.UserSpells) do

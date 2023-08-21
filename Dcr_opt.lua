@@ -76,9 +76,12 @@ local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
 local GetSpellInfo      = _G.GetSpellInfo;
+local GetSpellDescription = _G.GetSpellDescription;
 local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
 local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local _;
+local tonumber          = _G.tonumber;
+local TN                = function(string) return tonumber(string) or nil; end;
 -- Default values for the option
 
 
@@ -154,6 +157,22 @@ function D:GetDefaultsSettings()
                 "*%s3",       -- the last two entries are always target and focus
                 "ctrl-%s3",
             },
+            BleedEffectIdentifier = false,
+            BleedAutoDetection = true,
+            t_BleedEffectsIDCheck = {
+                [396007] = true,
+                [396093] = true,
+                [193092] = true,
+                [193092] = true,
+                [376997] = true,
+                [381683] = true,
+                [388911] = true,
+                [371005] = false,
+                [384134] = true,
+                [394628] = true,
+                [372860] = true,
+                [393444] = true,
+            }
         },
 
         profile = {
@@ -1559,10 +1578,91 @@ local function GetStaticOptions ()
 
                         },
                     },
+                    BleedEffects = {
+                        type = 'group',
+                        name = L["OPT_BLEED_EFFECT_HOLDER"],
+                        desc = L["OPT_BLEED_EFFECT_HOLDER_DESC"],
+                        order = 175,
+                        --inline = true,
+                        childGroups = 'tab',
+                        args = {
+                            enableDetection = {
+                                type = 'toggle',
+                                width = 'full',
+                                name = L["OPT_ENABLE_BLEED_EFFECTS_DETECTION"],
+                                desc = L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"],
+                                get = function() return D.db.global.BleedAutoDetection; end,
+                                set = function(info, v) D.db.global.BleedAutoDetection = v end,
+                                order = 0,
+                            },
+                            bleedTranslation = {
+                                type = 'input',
+                                name = L["OPT_BLEED_EFFECT_IDENTIFIER"],
+                                desc = L["OPT_BLEED_EFFECT_IDENTIFIER_DESC"],
+                                get = function(info)
+                                    return D.db.global.BleedEffectIdentifier and D.db.global.BleedEffectIdentifier or "";
+                                end,
+                                set = function(info, v)
+                                    local value = v:trim() ~= "" and v:trim() or false;
 
+                                    if not value and _G.STRING_SCHOOL_PHYSICAL then
+                                        value = _G.STRING_SCHOOL_PHYSICAL
+                                    end
 
+                                    if value then
+                                        D.Status.P_BleedEffectIdentifier_noCase = value;
+                                        D.db.global.BleedEffectIdentifier = value;
+                                    else
+                                        D.Status.P_BleedEffectIdentifier_noCase = false;
+                                    end
 
-                }
+                                end,
+                                validate = false,
+                                disabled = function() return not D.db.global.BleedAutoDetection; end,
+
+                                order = 10,
+                            },
+                            addBleedEffect = {
+                                type = 'input',
+                                name = L["OPT_ADD_BLEED_EFFECT_ID"],
+                                desc = L["OPT_ADD_BLEED_EFFECT_ID_DESC"],
+                                set = function(info, v)
+                                    D.db.global.t_BleedEffectsIDCheck[TN(v)] = true;
+                                    D.Status.t_CheckBleedDebufsActiveIDs[TN(v)] = true;
+                                end,
+                                validate = function(info, v)
+                                    return TN(v) ~= nil and C_Spell.DoesSpellExist(TN(v)) and 0 or D:ColorPrint(1, 0, 0, L["OPT_BLEED_EFFECT_BAD_SPELLID"]);
+                                end,
+                                order = 20,
+                            },
+                            readdDefaults = {
+                                type = 'execute',
+                                width = 1.7,
+                                name = L["OPT_READD_DEFAULT_BLEED_EFFECTS"],
+                                desc = L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"],
+                                func = function()
+                                    local defaults = D.defaults.global.t_BleedEffectsIDCheck;
+                                    local t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
+                                    local t_CheckBleedDebufsActiveIDs = D.Status.t_CheckBleedDebufsActiveIDs;
+
+                                    for spellID, isBleed in pairs(defaults) do
+                                        t_BleedEffectsIDCheck[spellID] = isBleed;
+                                        t_CheckBleedDebufsActiveIDs[spellID] = isBleed;
+                                    end
+                                end,
+                                order = 30,
+                            },
+                            knownBleedingEffects = {
+                                type = 'group',
+                                width = 'full',
+                                name = L["OPT_KNOWN_BLEED_EFFECTS"],
+                                order = 40,
+                                args = {},
+
+                            },
+                        },
+                    },
+                },
             }, -- }}}
 
             CustomSpells = {
@@ -1838,6 +1938,8 @@ local function GetOptions()
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
     -- create curring spells addition submenus
     D:CreateAddedSpellsOptionMenu(options.args.CustomSpells.args.CustomSpellsHolder.args);
+    -- create bleeding debufs addition submenus
+    D:CreateBleedingDebufsOptionMenu(options.args.CureOptions.args.BleedEffects.args.knownBleedingEffects.args);
 
     -- Create profile options
     options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
@@ -2885,9 +2987,7 @@ end
 do
 
     local t_insert      = _G.table.insert;
-    local tonumber      = _G.tonumber;
     local IsSpellKnown  = nil; -- use D:isSpellReady instead
-    local TN            = function(string) return tonumber(string) or nil; end;
 
     local order = 160;
 
@@ -3201,6 +3301,140 @@ do
             end
         end
 
+    end
+end
+
+do
+    local t_BleedEffectsIDCheck = {};
+    local t_DefaultBleedEffectsIDCheck = {};
+    local t_CheckBleedDebufsActiveIDs = {};
+    local noCaseIdentifierPattern = "";
+
+    local tw_spell_desc_cache = setmetatable({}, {
+        __index = function(table, spellID)
+            D:Debug("metatable __index called with ", spellID);
+            local desc = C_Spell.DoesSpellExist(spellID) and GetSpellDescription(spellID) or L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID);
+
+            if desc ~= "" then
+                table[spellID] = desc;
+            elseif not C_Spell.IsSpellDataCached(spellID) then
+                C_Spell.RequestLoadSpellData(spellID);
+                desc =  L["OPT_SPELL_DESCRIPTION_LOADING"];
+            else
+                desc = L["OPT_SPELL_DESCRIPTION_UNAVAILABLE"];
+                table[spellID] = desc;
+            end
+            D:Debug("metatable __index called with ", spellID, "desc:", desc);
+            return desc;
+        end;
+    });
+
+    local tw_spell_name_cache = setmetatable({}, {
+        __index = function(table, spellID)
+            local spellName = C_Spell.DoesSpellExist(spellID) and D.GetSpellOrItemInfo(spellID) or false;
+            table[spellID] = spellName;
+            return spellName;
+        end
+    });
+    local order = 0;
+
+    local function descHasBleedIdentifier(spellID, skipHighlight)
+        local desc = tw_spell_desc_cache[spellID];
+        local bleedIdentifier = D.db.global.BleedEffectIdentifier
+
+        if desc:find(noCaseIdentifierPattern) then
+            return true, not skipHighlight and desc:gsub(noCaseIdentifierPattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end) or desc;
+        else
+            return false, desc;
+        end
+
+    end
+
+    local function GetBleedEffectColoredName(spellID) -- {{{
+        local descHasID = descHasBleedIdentifier(spellID, true);
+        local name = tw_spell_name_cache[spellID];
+        local color = 'FFFFFFFF';
+
+        if name then
+            if not t_BleedEffectsIDCheck[spellID] then
+                color = 'FFAA0000';
+            else
+                color = 'FF00D000';
+            end
+        else
+            color = 'FFA0A0A0';
+        end
+
+        return D:ColorText(name and ((not descHasID and "|cFFFF0000?|r " or "") .. name) or L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID), color);
+    end -- }}}
+
+    local bleedEffectEntry = { -- {{{
+        type = 'group',
+        name = function(info) return GetBleedEffectColoredName(TN(info[#info])) end,
+        desc = function () return false; end,
+        order = function() return order; end,
+        args = {
+            header = {
+                type = 'header',
+                name = function (info)
+                    return L["OPT_BLEED_EFFECT_DESCRIPTION"]:format(info[#info - 1]);
+                end,
+                order = 0,
+            },
+            desc = {
+                type = 'description',
+                name = function (info)
+                    local hasIdentifier, highlightedDesc = descHasBleedIdentifier(TN(info[#info - 1]))
+                    return highlightedDesc;
+                end,
+                order = 10,
+            },
+            isBleedEffect = {
+                type = 'toggle',
+                name = L["OPT_IS_BLEED_EFFECT"],
+                desc = L["OPT_IS_BLEED_EFFECT_DESC"],
+                set = function(info, v)
+                    t_BleedEffectsIDCheck[TN(info[#info - 1])] = v;
+                    t_CheckBleedDebufsActiveIDs[TN(info[#info - 1])] = v;
+
+                    return t_BleedEffectsIDCheck[TN(info[#info - 1])];
+                end,
+                get = function(info)
+                    return t_BleedEffectsIDCheck[TN(info[#info - 1])];
+                end,
+                order = 20,
+            },
+            remove = {
+                type = 'execute',
+                name = L["OPT_DELETE_A_CUSTOM_SPELL"],
+                set = function(info, v)
+                    return t_BleedEffectsIDCheck[TN(info[#info - 1])]
+                end,
+                confirm = true,
+                func = function (info)
+                    local toRemove = TN(info[#info - 1]);
+                    t_BleedEffectsIDCheck[toRemove] = t_DefaultBleedEffectsIDCheck[toRemove] and -1 or nil;
+                    D:Debug('XXXX',t_BleedEffectsIDCheck[toRemove]  );
+                    t_CheckBleedDebufsActiveIDs[toRemove] = nil;
+                end,
+                order = 30,
+            },
+
+
+        },
+    }; -- }}}
+
+    function D:CreateBleedingDebufsOptionMenu(where)
+        t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
+        t_DefaultBleedEffectsIDCheck = D.defaults.global.t_BleedEffectsIDCheck;
+        t_CheckBleedDebufsActiveIDs = D.Status.t_CheckBleedDebufsActiveIDs;
+        noCaseIdentifierPattern = D:makeNoCasePattern(D.db.global.BleedEffectIdentifier)
+
+        for spellID, enabled in pairs(t_BleedEffectsIDCheck) do
+            if enabled ~= -1 then
+                where[tostring(spellID)] = bleedEffectEntry;
+            end
+        end
     end
 end
 

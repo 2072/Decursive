@@ -995,4 +995,11 @@ do
 end
 
 
+function D:makeNoCasePattern (s)
+    return string.gsub(s, "%a",
+    function (c)
+        return string.format("[%s%s]", string.lower(c), string.upper(c))
+    end)
+end
+
 T._LoadedFiles["Dcr_utils.lua"] = "@project-version@";

@@ -516,6 +516,24 @@ L["NOTICE_FRAME_TEMPLATE"] = [=[|cFFFF0000Decursive Notice|r
 %s
 ]=]
 
+
+L["OPT_BLEED_EFFECT_DESCRIPTION"] = "Spell description (SpellID: |cFF00C000%s|r)"
+L["OPT_IS_BLEED_EFFECT"] = "Is a bleed effect"
+L["OPT_IS_BLEED_EFFECT_DESC"] = "Check to tell Decursive to consider this effect to be of the 'Bleed' type can be unchecked for false positives..."
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION"] = "Bleed Effects discovery"
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"] = "Enable Decursive to discover new bleed effects when their description contains the 'Bleed effect identifier' string"
+L["OPT_BLEED_EFFECT_IDENTIFIER"] = "Bleed effect identifier"
+L["OPT_BLEED_EFFECT_IDENTIFIER_DESC"] = "Should match the term found in the description of the debuf causing the target to bleed and that can be used to identify such effect.\nClear the field to reset to the default."
+L["OPT_ADD_BLEED_EFFECT_ID"] = "Add a bleed effect"
+L["OPT_ADD_BLEED_EFFECT_ID_DESC"] = "Directly add a bleed effect by its spell ID (as found on wowhead.com)"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS"] = "re-add default bleed effects"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"] = "re-add Decursive known bleed effects to the list"
+L["OPT_KNOWN_BLEED_EFFECTS"] = "Known bleed effects"
+
+L["OPT_BLEED_EFFECT_HOLDER"] = "Bleed effect management"
+L["OPT_BLEED_EFFECT_HOLDER_DESC"] = "Manage bleed effect detection"
+L["OPT_BLEED_EFFECT_BAD_SPELLID"] = "Bad spell ID, only input numeric spell ids as found on wowhead.com"
+L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"] = "Unknown spell (%s)"
 --]==]
 --@end-do-not-package@
 
