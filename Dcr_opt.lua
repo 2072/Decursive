@@ -161,18 +161,20 @@ function D:GetDefaultsSettings()
             BleedEffectIdentifier = false,
             BleedAutoDetection = true,
             t_BleedEffectsIDCheck = {
-                [396007] = true,
-                [396093] = true,
-                [193092] = true,
-                [193092] = true,
-                [376997] = true,
-                [381683] = true,
-                [388911] = true,
-                [371005] = false,
-                [384134] = true,
-                [394628] = true,
-                [372860] = true,
-                [393444] = true,
+                [396007] = true, -- Vicious Peck
+                [396093] = true, -- Savage Leap
+                [193092] = true, -- Bloodletting Sweep
+                [375937] = true, -- Rending Strike
+                [376997] = true, -- Savage Peck
+                [381683] = true, -- Swift Stab
+                [388911] = true, -- Severing Slash
+                [371005] = true, -- arcane but dispellable with cauterizing flame
+                [384134] = true, -- Pierce
+                [394628] = true, -- Peck
+                [372860] = true, -- Searing Wounds
+                [393444] = true, -- Gushing Wound
+                [413131] = true, -- Whirling Dagger
+                [413136] = true, -- Whirling Dagger
             }
         },
 

@@ -5,9 +5,13 @@ Decursive 2.7.10
 Decursive 2.7.10 (2023-08-22)
 ------------------------------
 
-- Add support for Bleed Effects, many thanks to :
-    - Decursive scans the debufs with not type for a particular keywords.
-    - The debufs are automatically added to a list the user can configure under the curing options.
+- Add support for Bleed Effects detection:
+    - Decursive scans the debufs with no type for a particular keyword ('Physical' by default) in their description.
+    - The debufs are automatically added to a list the user can edit under the curing options.
+
+Many thanks to Teelolws for prototyping this solution and to Xadras for their
+suggestions about the user editable list. Their contributions made this
+solution possible.
 
 - Decursive will remember the priority of types when the associated spells
   disappear as long as the user does not change the priorities.
