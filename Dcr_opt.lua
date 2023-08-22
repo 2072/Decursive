@@ -349,7 +349,7 @@ function D:GetDefaultsSettings()
                 [DC.POISON]     = "FF22DD22",
                 [DC.DISEASE]    = "FF995533",
                 [DC.CHARMED]    = "FFFF0000",
-                [DC.BLEED]      = "FFBB0077",
+                [DC.BLEED]      = "FFC0B0B0",
                 [DC.NOTYPE]     = "FFAAAAAA",
             },
 
@@ -1122,7 +1122,7 @@ local function GetStaticOptions ()
             MicroFrameOpt = {
                 -- {{{
                 type = "group",
-                childGroups = "tab",
+                --childGroups = "tab",
                 name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
                 desc = L["OPT_MFSETTINGS_DESC"],
                 disabled = function () return not D:IsEnabled(); end,
@@ -1136,6 +1136,7 @@ local function GetStaticOptions ()
                     },
                     displayOpts = {
                         type = "group",
+                        inline = true,
                         name = L["OPT_DISPLAYOPTIONS"],
                         desc = L["OPT_MFSETTINGS_DESC"],
                         handler = {
@@ -1281,6 +1282,7 @@ local function GetStaticOptions ()
 
                     AdvDispOptions = {
                         type = "group",
+                        inline = true,
                         name = L["OPT_ADVDISP"],
                         desc = L["OPT_ADVDISP_DESC"],
                         order = 2,
@@ -1411,7 +1413,7 @@ local function GetStaticOptions ()
                         type = "group",
                         name = L["OPT_MUFSCOLORS"],
                         desc = L["OPT_MUFSCOLORS_DESC"],
-                        order = 4,
+                        order = 3,
                         disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1;end,
                         hidden = function () return not D:IsEnabled(); end,
                         args = {
@@ -1431,7 +1433,7 @@ local function GetStaticOptions ()
                     PerfOptions = {
                         type = "group",
                         name = L["OPT_MFPERFOPT"],
-                        order = 5,
+                        order = 3,
                         disabled = function () return not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                         args = {
                             -- {{{

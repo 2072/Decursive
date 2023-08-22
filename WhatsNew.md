@@ -20,6 +20,8 @@ solution possible.
   changes the settings and lost abilities will be put at the end keeping their
   former order.
 
+- Some layout changes in the MUFs option panel to make it more comfy.
+
 
 **New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
 delegate your stake to my pool: [anfra.io](https://anfra.io)
