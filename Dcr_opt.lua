@@ -1581,7 +1581,7 @@ local function GetStaticOptions ()
                             },
                             CureBleed = {
                                 type = "toggle",
-                                name = "  "..(ENCOUNTER_JOURNAL_SECTION_FLAG13 and ENCOUNTER_JOURNAL_SECTION_FLAG13 or L["BLEED"]),
+                                name = "  "..L["BLEED"],
                                 desc = L["OPT_BLEEDCHECK_DESC"],
                                 get = function() return D:GetCureTypeStatus(DC.BLEED) end,
                                 set = function()
