@@ -446,7 +446,7 @@ do
 
 
     local function checkSpellIDForBleed()
-        if D.Status.t_CheckBleedDebufsActiveIDs[SpellID] ~= nil or not D.db.global.BleedAutoDetection then
+        if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] ~= nil or not D.db.global.BleedAutoDetection then
             return
         end
 
@@ -456,10 +456,10 @@ do
         elseif D.Status.P_BleedEffectIdentifier_noCase ~= false then
 
             if GetSpellDescription(SpellID):find(D.Status.P_BleedEffectIdentifier_noCase) then
-                D.Status.t_CheckBleedDebufsActiveIDs[SpellID] = true;
+                D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = true;
                 D.db.global.t_BleedEffectsIDCheck[SpellID] = true;
             else
-                D.Status.t_CheckBleedDebufsActiveIDs[SpellID] = false;
+                D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = false;
             end
 
         end
@@ -516,7 +516,7 @@ do
                 Type = DC.NameToTypes[TypeName];
             else
                 checkSpellIDForBleed();
-                if D.Status.t_CheckBleedDebufsActiveIDs[SpellID] then
+                if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
                     Type = DC.NameToTypes["Bleed"]
                     TypeName = DC.TypeNames[DC.BLEED];
                 else
@@ -660,7 +660,7 @@ do
 
             continue_ = true;
 
-            -- test if we have to ignore this debuf  {{{ --
+            -- test if we have to ignore this debuff  {{{ --
 
             if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then
                 continue_ = false; -- == skip this debuff
@@ -718,7 +718,7 @@ do
 
                         ManagedDebuffs[#ManagedDebuffs + 1] = Debuff;
 
-                        -- the live-list only reports the first debuf found and set JustOne to true
+                        -- the live-list only reports the first debuff found and set JustOne to true
                         if JustOne then
                             break;
                         end

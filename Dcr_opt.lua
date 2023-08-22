@@ -1630,7 +1630,7 @@ local function GetStaticOptions ()
                                             D.db.global.BleedEffectIdentifier = value;
                                             -- if the identifier changes we need to reset the active table
                                             -- so that new stuff can be found if previously ignored
-                                            D:reset_t_CheckBleedDebufsActiveIDs();
+                                            D:reset_t_CheckBleedDebuffsActiveIDs();
                                         end
                                     else
                                         D.Status.P_BleedEffectIdentifier_noCase = false;
@@ -1648,7 +1648,7 @@ local function GetStaticOptions ()
                                 desc = L["OPT_ADD_BLEED_EFFECT_ID_DESC"],
                                 set = function(info, v)
                                     D.db.global.t_BleedEffectsIDCheck[TN(v)] = true;
-                                    D.Status.t_CheckBleedDebufsActiveIDs[TN(v)] = true;
+                                    D.Status.t_CheckBleedDebuffsActiveIDs[TN(v)] = true;
                                 end,
                                 validate = function(info, v)
                                     return TN(v) ~= nil and C_Spell.DoesSpellExist(TN(v)) and 0 or D:ColorPrint(1, 0, 0, L["OPT_BLEED_EFFECT_BAD_SPELLID"]);
@@ -1663,11 +1663,11 @@ local function GetStaticOptions ()
                                 func = function()
                                     local defaults = D.defaults.global.t_BleedEffectsIDCheck;
                                     local t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
-                                    local t_CheckBleedDebufsActiveIDs = D.Status.t_CheckBleedDebufsActiveIDs;
+                                    local t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
 
                                     for spellID, isBleed in pairs(defaults) do
                                         t_BleedEffectsIDCheck[spellID] = isBleed;
-                                        t_CheckBleedDebufsActiveIDs[spellID] = isBleed;
+                                        t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
                                     end
                                 end,
                                 order = 30,
@@ -1959,8 +1959,8 @@ local function GetOptions()
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
     -- create curring spells addition submenus
     D:CreateAddedSpellsOptionMenu(options.args.CustomSpells.args.CustomSpellsHolder.args);
-    -- create bleeding debufs addition submenus
-    D:CreateBleedingDebufsOptionMenu(options.args.CureOptions.args.BleedEffects.args.knownBleedingEffects.args);
+    -- create bleeding debuffs addition submenus
+    D:CreateBleedingDebuffsOptionMenu(options.args.CureOptions.args.BleedEffects.args.knownBleedingEffects.args);
 
     -- Create profile options
     options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
@@ -3332,7 +3332,7 @@ end
 do
     local t_BleedEffectsIDCheck = {};
     local t_DefaultBleedEffectsIDCheck = {};
-    local t_CheckBleedDebufsActiveIDs = {};
+    local t_CheckBleedDebuffsActiveIDs = {};
     local noCaseIdentifierPattern = "";
 
     local tw_spell_desc_cache = setmetatable({}, {
@@ -3420,7 +3420,7 @@ do
                 desc = L["OPT_IS_BLEED_EFFECT_DESC"],
                 set = function(info, v)
                     t_BleedEffectsIDCheck[TN(info[#info - 1])] = v;
-                    t_CheckBleedDebufsActiveIDs[TN(info[#info - 1])] = v;
+                    t_CheckBleedDebuffsActiveIDs[TN(info[#info - 1])] = v;
 
                     return t_BleedEffectsIDCheck[TN(info[#info - 1])];
                 end,
@@ -3440,7 +3440,7 @@ do
                     local toRemove = TN(info[#info - 1]);
                     t_BleedEffectsIDCheck[toRemove] = t_DefaultBleedEffectsIDCheck[toRemove] and -1 or nil;
                     D:Debug('XXXX',t_BleedEffectsIDCheck[toRemove]  );
-                    t_CheckBleedDebufsActiveIDs[toRemove] = nil;
+                    t_CheckBleedDebuffsActiveIDs[toRemove] = nil;
                 end,
                 order = 30,
             },
@@ -3449,10 +3449,10 @@ do
         },
     }; -- }}}
 
-    function D:CreateBleedingDebufsOptionMenu(where)
+    function D:CreateBleedingDebuffsOptionMenu(where)
         t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
         t_DefaultBleedEffectsIDCheck = D.defaults.global.t_BleedEffectsIDCheck;
-        t_CheckBleedDebufsActiveIDs = D.Status.t_CheckBleedDebufsActiveIDs;
+        t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
         noCaseIdentifierPattern = D:makeNoCasePattern(D.db.global.BleedEffectIdentifier)
 
         for spellID, enabled in pairs(t_BleedEffectsIDCheck) do
@@ -3462,11 +3462,11 @@ do
         end
     end
 
-    function D:reset_t_CheckBleedDebufsActiveIDs()
+    function D:reset_t_CheckBleedDebuffsActiveIDs()
         for spellID, isBleed in pairs(D.db.global.t_BleedEffectsIDCheck) do
             if isBleed ~= -1 then
-                D.Status.t_CheckBleedDebufsActiveIDs = {};
-                D.Status.t_CheckBleedDebufsActiveIDs[spellID] = isBleed;
+                D.Status.t_CheckBleedDebuffsActiveIDs = {};
+                D.Status.t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
             end
         end
     end

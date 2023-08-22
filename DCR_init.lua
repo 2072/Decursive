@@ -1019,7 +1019,7 @@ function D:SetConfiguration() -- {{{
     D.Status.InternalPrioList = {};
     D.Status.InternalSkipList = {};
     D.Status.WaitingForSpellInfo = false;
-    D.Status.t_CheckBleedDebufsActiveIDs = {};
+    D.Status.t_CheckBleedDebuffsActiveIDs = {};
 
     D.Stealthed_Units = {};
 
@@ -1031,7 +1031,7 @@ function D:SetConfiguration() -- {{{
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
 
-    D:reset_t_CheckBleedDebufsActiveIDs();
+    D:reset_t_CheckBleedDebuffsActiveIDs();
 
    -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
    -- many "bleeding" effect do not contain this term but rather 'Physical'...
