@@ -1,5 +1,24 @@
-Decursive 2.7.9.3
-=================
+Decursive 2.7.10
+================
+
+
+Decursive 2.7.10 (2023-08-22)
+------------------------------
+
+- Add support for Bleed Effects, many thanks to :
+    - Decursive scans the debufs with not type for a particular keywords.
+    - The debufs are automatically added to a list the user can configure under the curing options.
+
+- Decursive will remember the priority of types when the associated spells
+  disappear as long as the user does not change the priorities.
+  The default priorities are displayed in blue instead of green.
+  As it is today active spells will always be put on top whenever the user
+  changes the settings and lost abilities will be put at the end keeping their
+  former order.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.9.3 (2023-07-16)
@@ -10,12 +29,6 @@ Decursive 2.7.9.3 (2023-07-16)
 - Remove new DF shaman spells from Classic versions
 
 - TOC updates
-
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
-
 
 
 Decursive 2.7.9.2 (2023-05-30)
