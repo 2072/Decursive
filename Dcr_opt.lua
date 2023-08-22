@@ -3463,9 +3463,9 @@ do
     end
 
     function D:reset_t_CheckBleedDebuffsActiveIDs()
+        D.Status.t_CheckBleedDebuffsActiveIDs = {};
         for spellID, isBleed in pairs(D.db.global.t_BleedEffectsIDCheck) do
             if isBleed ~= -1 then
-                D.Status.t_CheckBleedDebuffsActiveIDs = {};
                 D.Status.t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
             end
         end
