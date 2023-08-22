@@ -28,35 +28,6 @@
 --]]
 -------------------------------------------------------------------------------
 
-local bleedspellids = {
-                    [396007] = true,
-                    [396093] = true,
-                    [193092] = true,
-                    [375937] = true,
-                    [376997] = true,
-                    [381683] = true,
-                    [388911] = true,
-                    [371005] = true,
-                    [384134] = true,
-                    [394628] = true,
-                    [372860] = true,
-                    [393444] = true,
-                    [413131] = true,
-                    [413136] = true,
-                    }
-
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data) 
-    local spellid = data.id
-    if bleedspellids[spellid] then return end
-    for k, linedata in pairs(data.lines) do
-        if linedata.leftText:lower():find(ENCOUNTER_JOURNAL_SECTION_FLAG13:lower()) then
-            bleedspellids[spellid] = true
-        end
-    end
-end)
-
-local bleedScanningTooltip = CreateFrame("GameTooltip", "DecursiveBleedScanningTooltip", nil, "GameTooltipTemplate")
-
 local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
@@ -474,7 +445,25 @@ do
     local DcrC = T._C; -- for faster access
 
 
+    local function checkSpellIDForBleed()
+        if D.Status.t_CheckBleedDebufsActiveIDs[SpellID] ~= nil or not D.db.global.BleedAutoDetection then
+            return
+        end
 
+        if not C_Spell.IsSpellDataCached(SpellID) then
+            C_Spell.RequestLoadSpellData(SpellID);
+
+        elseif D.Status.P_BleedEffectIdentifier_noCase ~= false then
+
+            if GetSpellDescription(SpellID):find(D.Status.P_BleedEffectIdentifier_noCase) then
+                D.Status.t_CheckBleedDebufsActiveIDs[SpellID] = true;
+                D.db.global.t_BleedEffectsIDCheck[SpellID] = true;
+            else
+                D.Status.t_CheckBleedDebufsActiveIDs[SpellID] = false;
+            end
+
+        end
+    end
 
     -- This is the core debuff scanning function of Decursive
     -- This function does more than just reporting Debuffs. it also detects charmed units
@@ -522,15 +511,16 @@ do
             end
 
 
-            -- test for a type (Magic Curse Disease or Poison)
+            -- test for a type
             if TypeName and TypeName ~= "" then
                 Type = DC.NameToTypes[TypeName];
             else
-                Type = false;
-                
-                bleedScanningTooltip:SetUnitDebuff(Unit, i)
-                if bleedspellids[SpellID] then
+                checkSpellIDForBleed();
+                if D.Status.t_CheckBleedDebufsActiveIDs[SpellID] then
                     Type = DC.NameToTypes["Bleed"]
+                    TypeName = DC.TypeNames[DC.BLEED];
+                else
+                    Type = false;
                 end
             end
 

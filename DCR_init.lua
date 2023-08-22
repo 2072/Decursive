@@ -122,8 +122,8 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.POISON       = 8;
     DC.DISEASE      = 16;
     DC.CHARMED      = 32;
-    DC.NOTYPE       = 64;
-    DC.BLEED = 128
+    DC.BLEED        = 64;
+    DC.NOTYPE       = 128;
 
     DC.CLASS_DRUID       = 'DRUID';
     DC.CLASS_HUNTER      = 'HUNTER';
@@ -198,7 +198,7 @@ local function SetRuntimeConstants_Once () -- {{{
         [DC.POISON]     = "Poison",
         [DC.DISEASE]    = "Disease",
         [DC.CHARMED]    = "Charm",
-        [DC.BLEED] = "Bleed",
+        [DC.BLEED]      = "Bleed",
     }
 
     DC.NameToTypes = D:tReverse(DC.TypeNames);
@@ -211,7 +211,7 @@ local function SetRuntimeConstants_Once () -- {{{
         [DC.POISON]     = "POISON",
         [DC.DISEASE]    = "DISEASE",
         [DC.CHARMED]    = "CHARM",
-        [DC.BLEED] = "BLEED",
+        [DC.BLEED]      = "BLEED",
     }
     DC.LocalizableTypeNamesToTypes = D:tReverse(DC.TypeToLocalizableTypeNames);
 
@@ -1031,11 +1031,7 @@ function D:SetConfiguration() -- {{{
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
 
-    for spellID, isBleed in pairs(D.db.global.t_BleedEffectsIDCheck) do
-        if isBleed ~= -1 then
-            D.Status.t_CheckBleedDebufsActiveIDs[spellID] = isBleed;
-        end
-    end
+    D:reset_t_CheckBleedDebufsActiveIDs();
 
    -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
    -- many "bleeding" effect do not contain this term but rather 'Physical'...

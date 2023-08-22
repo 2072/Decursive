@@ -100,7 +100,7 @@ function D:GetDefaultsSettings()
                 [DC.DISEASE]    = 4,
                 [DC.ENEMYMAGIC] = 5,
                 [DC.CHARMED]    = 6,
-                [DC.BLEED] = 7
+                [DC.BLEED]      = 7,
             },
 
             UserSpells = {
@@ -347,8 +347,8 @@ function D:GetDefaultsSettings()
                 [DC.POISON]     = "FF22DD22",
                 [DC.DISEASE]    = "FF995533",
                 [DC.CHARMED]    = "FFFF0000",
+                [DC.BLEED]      = "FFBB0077",
                 [DC.NOTYPE]     = "FFAAAAAA",
-                [DC.BLEED] = "FFFFFFFF",
             },
 
             -- Debuffs {{{
@@ -1579,15 +1579,16 @@ local function GetStaticOptions ()
                             },
                             CureBleed = {
                                 type = "toggle",
-                                name = " Bleed",
-                                desc = "Bleeds",
+                                name = "  "..(ENCOUNTER_JOURNAL_SECTION_FLAG13 and ENCOUNTER_JOURNAL_SECTION_FLAG13 or L["BLEED"]),
+                                desc = L["OPT_BLEEDCHECK_DESC"],
                                 get = function() return D:GetCureTypeStatus(DC.BLEED) end,
                                 set = function()
-                                    D:SetCureOrder (DC.BLEED)
+                                    D:SetCureOrder (DC.BLEED);
                                 end,
                                 disabled = function() return not D.Status.CuringSpells[DC.BLEED] or D.Status.Combat end,
                                 order = 147
                             },
+
                         },
                     },
                     BleedEffects = {
@@ -1607,7 +1608,7 @@ local function GetStaticOptions ()
                                 set = function(info, v) D.db.global.BleedAutoDetection = v end,
                                 order = 0,
                             },
-                            bleedTranslation = {
+                            bleedIdentifier = {
                                 type = 'input',
                                 name = L["OPT_BLEED_EFFECT_IDENTIFIER"],
                                 desc = L["OPT_BLEED_EFFECT_IDENTIFIER_DESC"],
@@ -1622,8 +1623,13 @@ local function GetStaticOptions ()
                                     end
 
                                     if value then
-                                        D.Status.P_BleedEffectIdentifier_noCase = value;
-                                        D.db.global.BleedEffectIdentifier = value;
+                                        if value ~= D.db.global.BleedEffectIdentifier then
+                                            D.Status.P_BleedEffectIdentifier_noCase = D:makeNoCasePattern(value);
+                                            D.db.global.BleedEffectIdentifier = value;
+                                            -- if the identifier changes we need to reset the active table
+                                            -- so that new stuff can be found if previously ignored
+                                            D:reset_t_CheckBleedDebufsActiveIDs();
+                                        end
                                     else
                                         D.Status.P_BleedEffectIdentifier_noCase = false;
                                     end
@@ -1933,7 +1939,7 @@ local function GetOptions()
         [DC.POISON]         = options.args.CureOptions.args.CureOrder.args.CurePoison,
         [DC.DISEASE]        = options.args.CureOptions.args.CureOrder.args.CureDisease,
         [DC.CHARMED]        = options.args.CureOptions.args.CureOrder.args.CureCharmed,
-        [DC.BLEED] = options.args.CureOptions.args.CureOrder.args.CureBleed,
+        [DC.BLEED]          = options.args.CureOptions.args.CureOrder.args.CureBleed,
     }
 
     -- Add the green number infront of the checkboxes
@@ -2014,7 +2020,7 @@ local TypesToUName = {
     [DC.POISON]         = "POISON",
     [DC.DISEASE]        = "DISEASE",
     [DC.CHARMED]        = "CHARM",
-    [DC.BLEED] = "BLEED",
+    [DC.BLEED]          = "BLEED",
 }
 
 local CureCheckBoxes = false;
@@ -2067,7 +2073,7 @@ function D:CheckCureOrder ()
         [DC.POISON]         = 4,
         [DC.DISEASE]        = 5,
         [DC.CHARMED]        = 6,
-        [DC.BLEED] = 7,
+        [DC.BLEED]          = 7,
     };
     local AuthorizedValues = {
         [false] = true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
@@ -2084,8 +2090,8 @@ function D:CheckCureOrder ()
         [-15]   = DC.DISEASE,
         [6]     = DC.CHARMED,
         [-16]   = DC.CHARMED,
-        [7] = DC.BLEED,
-        [-17] = DC.BLEED,
+        [7]     = DC.BLEED,
+        [-17]   = DC.BLEED,
     };
     local GivenValues = {};
 
@@ -3450,6 +3456,15 @@ do
         for spellID, enabled in pairs(t_BleedEffectsIDCheck) do
             if enabled ~= -1 then
                 where[tostring(spellID)] = bleedEffectEntry;
+            end
+        end
+    end
+
+    function D:reset_t_CheckBleedDebufsActiveIDs()
+        for spellID, isBleed in pairs(D.db.global.t_BleedEffectsIDCheck) do
+            if isBleed ~= -1 then
+                D.Status.t_CheckBleedDebufsActiveIDs = {};
+                D.Status.t_CheckBleedDebufsActiveIDs[spellID] = isBleed;
             end
         end
     end

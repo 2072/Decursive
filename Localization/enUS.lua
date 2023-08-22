@@ -517,6 +517,8 @@ L["NOTICE_FRAME_TEMPLATE"] = [=[|cFFFF0000Decursive Notice|r
 ]=]
 
 
+L["BLEED"] = "Bleed"
+L["OPT_BLEEDCHECK_DESC"] = "If checked you'll be able to see and cure bleeding effects on units"
 L["OPT_BLEED_EFFECT_DESCRIPTION"] = "Spell description (SpellID: |cFF00C000%s|r)"
 L["OPT_IS_BLEED_EFFECT"] = "Is a bleed effect"
 L["OPT_IS_BLEED_EFFECT_DESC"] = "Check to tell Decursive to consider this effect to be of the 'Bleed' type can be unchecked for false positives..."
