@@ -446,7 +446,9 @@ do
 
 
     local function checkSpellIDForBleed()
-        if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] ~= nil or not D.db.global.BleedAutoDetection then
+        -- it appears that sometime SpellID can be nil...
+        if not SpellID or D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] ~= nil
+            or not D.db.global.BleedAutoDetection then
             return
         end
 
