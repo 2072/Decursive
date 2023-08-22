@@ -28,6 +28,35 @@
 --]]
 -------------------------------------------------------------------------------
 
+local bleedspellids = {
+                    [396007] = true,
+                    [396093] = true,
+                    [193092] = true,
+                    [375937] = true,
+                    [376997] = true,
+                    [381683] = true,
+                    [388911] = true,
+                    [371005] = true,
+                    [384134] = true,
+                    [394628] = true,
+                    [372860] = true,
+                    [393444] = true,
+                    [413131] = true,
+                    [413136] = true,
+                    }
+
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data) 
+    local spellid = data.id
+    if bleedspellids[spellid] then return end
+    for k, linedata in pairs(data.lines) do
+        if linedata.leftText:lower():find(ENCOUNTER_JOURNAL_SECTION_FLAG13:lower()) then
+            bleedspellids[spellid] = true
+        end
+    end
+end)
+
+local bleedScanningTooltip = CreateFrame("GameTooltip", "DecursiveBleedScanningTooltip", nil, "GameTooltipTemplate")
+
 local addonName, T = ...;
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
@@ -498,6 +527,11 @@ do
                 Type = DC.NameToTypes[TypeName];
             else
                 Type = false;
+                
+                bleedScanningTooltip:SetUnitDebuff(Unit, i)
+                if bleedspellids[SpellID] then
+                    Type = DC.NameToTypes["Bleed"]
+                end
             end
 
             -- if the unit is charmed and we didn't took care of this information yet

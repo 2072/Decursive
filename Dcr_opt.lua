@@ -100,6 +100,7 @@ function D:GetDefaultsSettings()
                 [DC.DISEASE]    = 4,
                 [DC.ENEMYMAGIC] = 5,
                 [DC.CHARMED]    = 6,
+                [DC.BLEED] = 7
             },
 
             UserSpells = {
@@ -347,6 +348,7 @@ function D:GetDefaultsSettings()
                 [DC.DISEASE]    = "FF995533",
                 [DC.CHARMED]    = "FFFF0000",
                 [DC.NOTYPE]     = "FFAAAAAA",
+                [DC.BLEED] = "FFFFFFFF",
             },
 
             -- Debuffs {{{
@@ -1575,7 +1577,17 @@ local function GetStaticOptions ()
                                 disabled = function() return not D.Status.CuringSpells[DC.CHARMED] or D.Status.Combat end,
                                 order = 146
                             },
-
+                            CureBleed = {
+                                type = "toggle",
+                                name = " Bleed",
+                                desc = "Bleeds",
+                                get = function() return D:GetCureTypeStatus(DC.BLEED) end,
+                                set = function()
+                                    D:SetCureOrder (DC.BLEED)
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.BLEED] or D.Status.Combat end,
+                                order = 147
+                            },
                         },
                     },
                     BleedEffects = {
@@ -1921,6 +1933,7 @@ local function GetOptions()
         [DC.POISON]         = options.args.CureOptions.args.CureOrder.args.CurePoison,
         [DC.DISEASE]        = options.args.CureOptions.args.CureOrder.args.CureDisease,
         [DC.CHARMED]        = options.args.CureOptions.args.CureOrder.args.CureCharmed,
+        [DC.BLEED] = options.args.CureOptions.args.CureOrder.args.CureBleed,
     }
 
     -- Add the green number infront of the checkboxes
@@ -2001,6 +2014,7 @@ local TypesToUName = {
     [DC.POISON]         = "POISON",
     [DC.DISEASE]        = "DISEASE",
     [DC.CHARMED]        = "CHARM",
+    [DC.BLEED] = "BLEED",
 }
 
 local CureCheckBoxes = false;
@@ -2053,6 +2067,7 @@ function D:CheckCureOrder ()
         [DC.POISON]         = 4,
         [DC.DISEASE]        = 5,
         [DC.CHARMED]        = 6,
+        [DC.BLEED] = 7,
     };
     local AuthorizedValues = {
         [false] = true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
@@ -2069,6 +2084,8 @@ function D:CheckCureOrder ()
         [-15]   = DC.DISEASE,
         [6]     = DC.CHARMED,
         [-16]   = DC.CHARMED,
+        [7] = DC.BLEED,
+        [-17] = DC.BLEED,
     };
     local GivenValues = {};
 

@@ -123,6 +123,7 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.DISEASE      = 16;
     DC.CHARMED      = 32;
     DC.NOTYPE       = 64;
+    DC.BLEED = 128
 
     DC.CLASS_DRUID       = 'DRUID';
     DC.CLASS_HUNTER      = 'HUNTER';
@@ -197,6 +198,7 @@ local function SetRuntimeConstants_Once () -- {{{
         [DC.POISON]     = "Poison",
         [DC.DISEASE]    = "Disease",
         [DC.CHARMED]    = "Charm",
+        [DC.BLEED] = "Bleed",
     }
 
     DC.NameToTypes = D:tReverse(DC.TypeNames);
@@ -209,6 +211,7 @@ local function SetRuntimeConstants_Once () -- {{{
         [DC.POISON]     = "POISON",
         [DC.DISEASE]    = "DISEASE",
         [DC.CHARMED]    = "CHARM",
+        [DC.BLEED] = "BLEED",
     }
     DC.LocalizableTypeNamesToTypes = D:tReverse(DC.TypeToLocalizableTypeNames);
 
@@ -462,7 +465,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 }
             },
             [DSI["SPELL_CAUTERIZING_FLAME"]] = {
-                Types = {DC.POISON, DC.CURSE, DC.DISEASE},
+                Types = {DC.POISON, DC.CURSE, DC.DISEASE, DC.BLEED},
                 Better = 1,
                 Pet = false,
             },
@@ -1454,6 +1457,7 @@ function D:Configure() --{{{
     CuringSpells[DC.POISON]     = false;
     CuringSpells[DC.DISEASE]    = false;
     CuringSpells[DC.CHARMED]    = false;
+    CuringSpells[DC.BLEED]      = false;
 
     local Type, _;
     local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
