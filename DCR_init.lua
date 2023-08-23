@@ -1033,16 +1033,11 @@ function D:SetConfiguration() -- {{{
 
     D:reset_t_CheckBleedDebuffsActiveIDs();
 
-   -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
-   -- many "bleeding" effect do not contain this term but rather 'Physical'...
-    if D.db.global.BleedEffectIdentifiers == false and _G.STRING_SCHOOL_PHYSICAL then
-        D.db.global.BleedEffectIdentifiers = _G.STRING_SCHOOL_PHYSICAL;
-    end
 
-    if D.db.global.BleedEffectIdentifiers ~= false and D.db.global.BleedEffectIdentifiers:trim() ~= "" then
-        D.Status.P_BleedEffectIdentifiers_noCase = D:makeNoCasePattern(D.db.global.BleedEffectIdentifiers);
+    if D.db.global.BleedEffectsKeywords:trim() ~= "" then
+        D.Status.P_BleedEffectsKeywords_noCase = D:makeNoCasePattern(D.db.global.BleedEffectsKeywords);
     else
-         D.db.global.BleedEffectIdentifiers = false;
+        D.Status.P_BleedEffectsKeywords_noCase = false;
     end
 
     -- Upgrade layer for versions of Decursive prior to 2013-03-03

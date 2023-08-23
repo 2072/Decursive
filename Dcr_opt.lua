@@ -159,7 +159,7 @@ function D:GetDefaultsSettings()
                 "*%s3",       -- the last two entries are always target and focus
                 "ctrl-%s3",
             },
-            BleedEffectIdentifiers = false,
+            BleedEffectsKeywords = D:GetDefaultBleedEffectsKeywords(),
             BleedAutoDetection = true,
             t_BleedEffectsIDCheck = {
                 [396007] = true, -- Vicious Peck
@@ -1613,38 +1613,50 @@ local function GetStaticOptions ()
                                 set = function(info, v) D.db.global.BleedAutoDetection = v end,
                                 order = 0,
                             },
-                            bleedIdentifiers = {
+                            bleedkeywords = {
                                 type = 'input',
                                 multiline = true,
                                 name = L["OPT_BLEED_EFFECT_IDENTIFIERS"],
                                 desc = L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"],
                                 get = function(info)
-                                    return D.db.global.BleedEffectIdentifiers and D.db.global.BleedEffectIdentifiers or "";
+                                    return D.db.global.BleedEffectsKeywords and D.db.global.BleedEffectsKeywords or "";
                                 end,
                                 set = function(info, v)
+                                    local oldValue = D.db.global.BleedEffectsKeywords;
                                     local value = v:trim() ~= "" and v:trim() or false;
 
-                                    if not value and _G.STRING_SCHOOL_PHYSICAL then
-                                        value = _G.STRING_SCHOOL_PHYSICAL
-                                        if _G.ENCOUNTER_JOURNAL_SECTION_FLAG13 then
-                                            value = value .. "\n" .. _G.ENCOUNTER_JOURNAL_SECTION_FLAG13
-                                        end
-                                    end
+                                    -- remove empty lines and trim each line
+                                    local cleanedValue = value and value:gsub("[\n\r]%s*[\n\r]", "\n"):gsub("[\n\r]%s+", "\n"):gsub("%s+[\n\r]", "\n") or false;
 
-                                    if value then
-                                        if value ~= D.db.global.BleedEffectIdentifiers then
-                                            D.Status.P_BleedEffectIdentifiers_noCase = D:makeNoCasePattern(value);
-                                            D.db.global.BleedEffectIdentifiers = value;
+                                    D.db.global.BleedEffectsKeywords = cleanedValue and cleanedValue or D.defaults.global.BleedEffectsKeywords;
+
+                                    local newValueOrDefault = D.db.global.BleedEffectsKeywords;
+
+                                    if newValueOrDefault:trim() ~= "" then
+                                        if oldValue ~= newValueOrDefault then
+                                            D.Status.P_BleedEffectsKeywords_noCase = D:makeNoCasePattern(newValueOrDefault);
                                             -- if the identifier changes we need to reset the active table
                                             -- so that new stuff can be found if previously ignored
                                             D:reset_t_CheckBleedDebuffsActiveIDs();
                                         end
                                     else
-                                        D.Status.P_BleedEffectIdentifiers_noCase = false;
+                                        D.Status.P_BleedEffectsKeywords_noCase = false;
                                     end
-
                                 end,
-                                validate = false,
+                                validate = function(info, v)
+                                    -- test for pattern match exceptions
+                                    -- Note that Lua does not validate patterns before using them so they may crash depending
+                                    -- on the string being search so we search the provided input text to increase our changes
+                                    -- of getting a match but there is no guarantee, there are protections embeded in hasDescBleedEffectkeyword
+                                    local _, errorMessage = D:hasDescBleedEffectkeyword(v, D:makeNoCasePattern(v), true);
+                                    if not errorMessage then
+                                        return true;
+                                    else
+                                        local cleanedError = errorMessage:gsub("^[^:]+:%d+:%s*", "");
+                                        T._ShowNotice(cleanedError);
+                                        return cleanedError
+                                    end
+                                end,
                                 disabled = function() return not D.db.global.BleedAutoDetection; end,
 
                                 order = 10,
@@ -3345,7 +3357,7 @@ do
     local t_BleedEffectsIDCheck = {};
     local t_DefaultBleedEffectsIDCheck = {};
     local t_CheckBleedDebuffsActiveIDs = {};
-    local noCaseIdentifierPatterns = "";
+    local noCasekeywordPatterns = "";
 
     local tw_spell_desc_cache = setmetatable({}, {
         __index = function(table, spellID)
@@ -3375,32 +3387,40 @@ do
     });
     local order = 0;
 
-    function D:hasDescBleedEffectIdentifier(desc)
+    function D:hasDescBleedEffectkeyword(desc, test_pattern, testAll)
+        local P_BleedEffectsKeywords_noCase = test_pattern and test_pattern or D.Status.P_BleedEffectsKeywords_noCase;
+
         local hasMatch = false;
 
-        for pattern in D.Status.P_BleedEffectIdentifiers_noCase:gmatch("[^\n\r]+") do
-            if desc:find(pattern) then
-                hasMatch = true;
-                break;
+        local success, errorMessage = pcall(function()
+            for pattern in P_BleedEffectsKeywords_noCase:gmatch("[^\n\r]+") do
+                if desc:find(pattern) then
+                    hasMatch = true;
+                    if not testAll then
+                        break;
+                    end
+                end
             end
-        end
+        end);
 
-        return hasMatch;
+        return hasMatch, errorMessage;
     end
 
-    local function higlightIdentifiers(desc)
+    local function higlightkeywords(desc, test_pattern)
         local highlightedDesc = desc;
 
-        for pattern in D.Status.P_BleedEffectIdentifiers_noCase:gmatch("[^\n\r]+") do
-            highlightedDesc =
-            highlightedDesc:gsub(pattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end);
+        for pattern in D.Status.P_BleedEffectsKeywords_noCase:gmatch("[^\n\r]+") do
+            pcall(function()
+                highlightedDesc =
+                highlightedDesc:gsub(pattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end);
+            end)
         end
 
         return highlightedDesc;
     end
 
     local function GetBleedEffectColoredName(spellID) -- {{{
-        local descHasID = D:hasDescBleedEffectIdentifier(tw_spell_desc_cache[spellID]);
+        local descHasID = D:hasDescBleedEffectkeyword(tw_spell_desc_cache[spellID]);
         local name = tw_spell_name_cache[spellID];
         local color = 'FFFFFFFF';
 
@@ -3433,7 +3453,7 @@ do
             desc = {
                 type = 'description',
                 name = function (info)
-                    return higlightIdentifiers(tw_spell_desc_cache[TN(info[#info - 1])])
+                    return higlightkeywords(tw_spell_desc_cache[TN(info[#info - 1])])
                 end,
                 order = 10,
             },
@@ -3476,7 +3496,7 @@ do
         t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
         t_DefaultBleedEffectsIDCheck = D.defaults.global.t_BleedEffectsIDCheck;
         t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
-        noCaseIdentifierPatterns = D.Status.P_BleedEffectIdentifiers_noCase
+        noCasekeywordPatterns = D.Status.P_BleedEffectsKeywords_noCase
 
         for spellID, enabled in pairs(t_BleedEffectsIDCheck) do
             if enabled ~= -1 then
@@ -3492,6 +3512,22 @@ do
                 D.Status.t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
             end
         end
+    end
+
+    function D:GetDefaultBleedEffectsKeywords()
+        local keywords;
+        -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
+        -- many "bleeding" effect do not contain this term but rather 'Physical' so we use both.
+        if _G.STRING_SCHOOL_PHYSICAL then
+            keywords = _G.STRING_SCHOOL_PHYSICAL
+            if _G.ENCOUNTER_JOURNAL_SECTION_FLAG13 then
+                keywords = keywords .. "\n" .. _G.ENCOUNTER_JOURNAL_SECTION_FLAG13
+            else
+                keywords = keywords .. "\n" .. L["BLEED"]
+            end
+        end
+
+        return keywords;
     end
 end
 

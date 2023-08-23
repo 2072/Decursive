@@ -458,8 +458,8 @@ do
         if not IsSpellDataCached(SpellID) then
             RequestLoadSpellData(SpellID);
 
-        elseif D.Status.P_BleedEffectIdentifiers_noCase ~= false then
-            if D:hasDescBleedEffectIdentifier(GetSpellDescription(SpellID)) then
+        elseif D.Status.P_BleedEffectsKeywords_noCase ~= false then
+            if D:hasDescBleedEffectkeyword(GetSpellDescription(SpellID)) then
                 D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = true;
                 D.db.global.t_BleedEffectsIDCheck[SpellID] = true;
             else
