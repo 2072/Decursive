@@ -82,6 +82,7 @@ local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.Get
 local _;
 local tonumber          = _G.tonumber;
 local TN                = function(string) return tonumber(string) or nil; end;
+local C_Spell           = C_Spell;
 -- Default values for the option
 
 
@@ -158,7 +159,7 @@ function D:GetDefaultsSettings()
                 "*%s3",       -- the last two entries are always target and focus
                 "ctrl-%s3",
             },
-            BleedEffectIdentifier = false,
+            BleedEffectIdentifiers = false,
             BleedAutoDetection = true,
             t_BleedEffectsIDCheck = {
                 [396007] = true, -- Vicious Peck
@@ -1612,30 +1613,34 @@ local function GetStaticOptions ()
                                 set = function(info, v) D.db.global.BleedAutoDetection = v end,
                                 order = 0,
                             },
-                            bleedIdentifier = {
+                            bleedIdentifiers = {
                                 type = 'input',
-                                name = L["OPT_BLEED_EFFECT_IDENTIFIER"],
-                                desc = L["OPT_BLEED_EFFECT_IDENTIFIER_DESC"],
+                                multiline = true,
+                                name = L["OPT_BLEED_EFFECT_IDENTIFIERS"],
+                                desc = L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"],
                                 get = function(info)
-                                    return D.db.global.BleedEffectIdentifier and D.db.global.BleedEffectIdentifier or "";
+                                    return D.db.global.BleedEffectIdentifiers and D.db.global.BleedEffectIdentifiers or "";
                                 end,
                                 set = function(info, v)
                                     local value = v:trim() ~= "" and v:trim() or false;
 
                                     if not value and _G.STRING_SCHOOL_PHYSICAL then
                                         value = _G.STRING_SCHOOL_PHYSICAL
+                                        if _G.ENCOUNTER_JOURNAL_SECTION_FLAG13 then
+                                            value = value .. "\n" .. _G.ENCOUNTER_JOURNAL_SECTION_FLAG13
+                                        end
                                     end
 
                                     if value then
-                                        if value ~= D.db.global.BleedEffectIdentifier then
-                                            D.Status.P_BleedEffectIdentifier_noCase = D:makeNoCasePattern(value);
-                                            D.db.global.BleedEffectIdentifier = value;
+                                        if value ~= D.db.global.BleedEffectIdentifiers then
+                                            D.Status.P_BleedEffectIdentifiers_noCase = D:makeNoCasePattern(value);
+                                            D.db.global.BleedEffectIdentifiers = value;
                                             -- if the identifier changes we need to reset the active table
                                             -- so that new stuff can be found if previously ignored
                                             D:reset_t_CheckBleedDebuffsActiveIDs();
                                         end
                                     else
-                                        D.Status.P_BleedEffectIdentifier_noCase = false;
+                                        D.Status.P_BleedEffectIdentifiers_noCase = false;
                                     end
 
                                 end,
@@ -1643,6 +1648,11 @@ local function GetStaticOptions ()
                                 disabled = function() return not D.db.global.BleedAutoDetection; end,
 
                                 order = 10,
+                            },
+                            sep1 = {
+                                type = 'header',
+                                name = "",
+                                order = 11,
                             },
                             addBleedEffect = {
                                 type = 'input',
@@ -3335,7 +3345,7 @@ do
     local t_BleedEffectsIDCheck = {};
     local t_DefaultBleedEffectsIDCheck = {};
     local t_CheckBleedDebuffsActiveIDs = {};
-    local noCaseIdentifierPattern = "";
+    local noCaseIdentifierPatterns = "";
 
     local tw_spell_desc_cache = setmetatable({}, {
         __index = function(table, spellID)
@@ -3365,20 +3375,32 @@ do
     });
     local order = 0;
 
-    local function descHasBleedIdentifier(spellID, skipHighlight)
-        local desc = tw_spell_desc_cache[spellID];
-        local bleedIdentifier = D.db.global.BleedEffectIdentifier
+    function D:hasDescBleedEffectIdentifier(desc)
+        local hasMatch = false;
 
-        if desc:find(noCaseIdentifierPattern) then
-            return true, not skipHighlight and desc:gsub(noCaseIdentifierPattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end) or desc;
-        else
-            return false, desc;
+        for pattern in D.Status.P_BleedEffectIdentifiers_noCase:gmatch("[^\n\r]+") do
+            if desc:find(pattern) then
+                hasMatch = true;
+                break;
+            end
         end
 
+        return hasMatch;
+    end
+
+    local function higlightIdentifiers(desc)
+        local highlightedDesc = desc;
+
+        for pattern in D.Status.P_BleedEffectIdentifiers_noCase:gmatch("[^\n\r]+") do
+            highlightedDesc =
+            highlightedDesc:gsub(pattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end);
+        end
+
+        return highlightedDesc;
     end
 
     local function GetBleedEffectColoredName(spellID) -- {{{
-        local descHasID = descHasBleedIdentifier(spellID, true);
+        local descHasID = D:hasDescBleedEffectIdentifier(tw_spell_desc_cache[spellID]);
         local name = tw_spell_name_cache[spellID];
         local color = 'FFFFFFFF';
 
@@ -3411,8 +3433,7 @@ do
             desc = {
                 type = 'description',
                 name = function (info)
-                    local hasIdentifier, highlightedDesc = descHasBleedIdentifier(TN(info[#info - 1]))
-                    return highlightedDesc;
+                    return higlightIdentifiers(tw_spell_desc_cache[TN(info[#info - 1])])
                 end,
                 order = 10,
             },
@@ -3455,7 +3476,7 @@ do
         t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
         t_DefaultBleedEffectsIDCheck = D.defaults.global.t_BleedEffectsIDCheck;
         t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
-        noCaseIdentifierPattern = D:makeNoCasePattern(D.db.global.BleedEffectIdentifier)
+        noCaseIdentifierPatterns = D.Status.P_BleedEffectIdentifiers_noCase
 
         for spellID, enabled in pairs(t_BleedEffectsIDCheck) do
             if enabled ~= -1 then

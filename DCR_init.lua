@@ -1035,14 +1035,14 @@ function D:SetConfiguration() -- {{{
 
    -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
    -- many "bleeding" effect do not contain this term but rather 'Physical'...
-    if D.db.global.BleedEffectIdentifier == false and _G.STRING_SCHOOL_PHYSICAL then
-        D.db.global.BleedEffectIdentifier = _G.STRING_SCHOOL_PHYSICAL;
+    if D.db.global.BleedEffectIdentifiers == false and _G.STRING_SCHOOL_PHYSICAL then
+        D.db.global.BleedEffectIdentifiers = _G.STRING_SCHOOL_PHYSICAL;
     end
 
-    if D.db.global.BleedEffectIdentifier ~= false and D.db.global.BleedEffectIdentifier:trim() ~= "" then
-        D.Status.P_BleedEffectIdentifier_noCase = D:makeNoCasePattern(D.db.global.BleedEffectIdentifier);
+    if D.db.global.BleedEffectIdentifiers ~= false and D.db.global.BleedEffectIdentifiers:trim() ~= "" then
+        D.Status.P_BleedEffectIdentifiers_noCase = D:makeNoCasePattern(D.db.global.BleedEffectIdentifiers);
     else
-         D.db.global.BleedEffectIdentifier = false;
+         D.db.global.BleedEffectIdentifiers = false;
     end
 
     -- Upgrade layer for versions of Decursive prior to 2013-03-03

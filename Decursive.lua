@@ -407,6 +407,9 @@ do
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;
     local GetTime           = _G.GetTime;
+    local GetSpellDescription  = _G.GetSpellDescription;
+    local IsSpellDataCached    = _G.C_Spell.IsSpellDataCached
+    local RequestLoadSpellData = _G.C_Spell.RequestLoadSpellData
 
     local UnTrustedUnitIDs = {
         ['mouseover'] = true,
@@ -452,12 +455,11 @@ do
             return
         end
 
-        if not C_Spell.IsSpellDataCached(SpellID) then
-            C_Spell.RequestLoadSpellData(SpellID);
+        if not IsSpellDataCached(SpellID) then
+            RequestLoadSpellData(SpellID);
 
-        elseif D.Status.P_BleedEffectIdentifier_noCase ~= false then
-
-            if GetSpellDescription(SpellID):find(D.Status.P_BleedEffectIdentifier_noCase) then
+        elseif D.Status.P_BleedEffectIdentifiers_noCase ~= false then
+            if D:hasDescBleedEffectIdentifier(GetSpellDescription(SpellID)) then
                 D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = true;
                 D.db.global.t_BleedEffectsIDCheck[SpellID] = true;
             else

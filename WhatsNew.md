@@ -6,7 +6,7 @@ Decursive 2.7.10 (2023-08-22)
 ------------------------------
 
 - Add support for Bleed Effects detection:
-    - Decursive scans the debuffs with no type for a particular keyword ('Physical' by default) in their description.
+    - Decursive scans the debuffs with no type for particular keywords ('Physical' and 'Bleed' by default) in their description.
     - The debuffs are automatically added to a list the user can edit under the curing options.
 
 Many thanks to Teelolws for prototyping this solution and to Xadras for their
