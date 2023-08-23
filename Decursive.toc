@@ -1,9 +1,9 @@
 ## Interface: 100105
 ## Interface-Retail: 100105
-## Interface-Classic: 11403
+## Interface-Classic: 11404
 ## Interface-Wrath: 30402
 ## X-Max-Interface: 100105
-## X-Min-Interface: 11403
+## X-Min-Interface: 11404
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@
