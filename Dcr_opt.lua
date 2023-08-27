@@ -116,7 +116,9 @@ function D:GetDefaultsSettings()
                 },
             },
         },
-
+        locale = {
+            BleedEffectsKeywords = D:GetDefaultBleedEffectsKeywords(),
+        },
         global = {
             SRTLerrors = {
                 ["total"] = 0
@@ -159,7 +161,6 @@ function D:GetDefaultsSettings()
                 "*%s3",       -- the last two entries are always target and focus
                 "ctrl-%s3",
             },
-            BleedEffectsKeywords = D:GetDefaultBleedEffectsKeywords(),
             BleedAutoDetection = true,
             t_BleedEffectsIDCheck = {
                 [396007] = true, -- Vicious Peck
@@ -1619,18 +1620,18 @@ local function GetStaticOptions ()
                                 name = L["OPT_BLEED_EFFECT_IDENTIFIERS"],
                                 desc = L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"],
                                 get = function(info)
-                                    return D.db.global.BleedEffectsKeywords and D.db.global.BleedEffectsKeywords or "";
+                                    return D.db.locale.BleedEffectsKeywords and D.db.locale.BleedEffectsKeywords or "";
                                 end,
                                 set = function(info, v)
-                                    local oldValue = D.db.global.BleedEffectsKeywords;
+                                    local oldValue = D.db.locale.BleedEffectsKeywords;
                                     local value = v:trim() ~= "" and v:trim() or false;
 
                                     -- remove empty lines and trim each line
                                     local cleanedValue = value and value:gsub("[\n\r]%s*[\n\r]", "\n"):gsub("[\n\r]%s+", "\n"):gsub("%s+[\n\r]", "\n") or false;
 
-                                    D.db.global.BleedEffectsKeywords = cleanedValue and cleanedValue or D.defaults.global.BleedEffectsKeywords;
+                                    D.db.locale.BleedEffectsKeywords = cleanedValue and cleanedValue or D.defaults.locale.BleedEffectsKeywords;
 
-                                    local newValueOrDefault = D.db.global.BleedEffectsKeywords;
+                                    local newValueOrDefault = D.db.locale.BleedEffectsKeywords;
 
                                     if newValueOrDefault:trim() ~= "" then
                                         if oldValue ~= newValueOrDefault then

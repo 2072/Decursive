@@ -1036,8 +1036,8 @@ function D:SetConfiguration() -- {{{
     D:reset_t_CheckBleedDebuffsActiveIDs();
 
 
-    if D.db.global.BleedEffectsKeywords:trim() ~= "" then
-        D.Status.P_BleedEffectsKeywords_noCase = D:makeNoCasePattern(D.db.global.BleedEffectsKeywords);
+    if D.db.locale.BleedEffectsKeywords:trim() ~= "" then
+        D.Status.P_BleedEffectsKeywords_noCase = D:makeNoCasePattern(D.db.locale.BleedEffectsKeywords);
     else
         D.Status.P_BleedEffectsKeywords_noCase = false;
     end
