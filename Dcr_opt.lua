@@ -335,6 +335,7 @@ function D:GetDefaultsSettings()
                 [4]                 =   { 1   , 0   , 1    ,  1     }, -- purple
                 [5]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
                 [6]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
+                [7]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
                 [DC.NORMAL]         =   {  .0 ,  .3 ,  .1  ,   .9   }, -- dark green
                 [DC.BLACKLISTED]    =   { 0   , 0   , 0    ,  1     }, -- black
                 [DC.ABSENT]         =   {  .4 ,  .4 ,  .4  ,   .9   }, -- transparent grey
@@ -2244,7 +2245,7 @@ function D:SetCureOrder (ToChange)
     local DebuffType;
     -- set the priority for each spell, Micro frames will use this to determine which button to map
     local affected = 1;
-    for i=1,6 do
+    for i=1,7 do
         DebuffType = ReversedCureOrder[i]; -- there is no gap between indexes
         if (DebuffType and not CuringSpellsPrio[ CuringSpells[DebuffType] ] ) then
             CuringSpellsPrio[ CuringSpells[DebuffType] ] = affected;
@@ -2741,7 +2742,7 @@ do
 
         L_MF_colors = D.profile.MF_colors;
 
-        if (type(ColorReason) == "number" and ColorReason <= 6) then
+        if (type(ColorReason) == "number" and ColorReason <= 7) then
 
             name = D:ColorText(  ("%s (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(ColorReason), DC.MouseButtonsReadable[D.db.global.MouseButtons[ColorReason] ])  , D:NumToHexColor(L_MF_colors[ColorReason]));
             desc = (L["COLORALERT"]):format(DC.MouseButtonsReadable[D.db.global.MouseButtons[ColorReason] ]);
@@ -2808,7 +2809,7 @@ do
 
     local GetOrder = function (info)
         local ColorReason = retrieveColorReason(info);
-        return 100 + (type(ColorReason) == "number" and ColorReason or 2048);
+        return 100 + (type(ColorReason) == "number" and ColorReason * 2 or 2048);
     end
 
     local function GetColor (info)
@@ -2841,7 +2842,7 @@ do
 
     function D:CreateDropDownMUFcolorsMenu(MUFsColors_args)
         L_MF_colors = D.profile.MF_colors;
-
+        -- /dump  LibStub("AceAddon-3.0"):GetAddon("Decursive").db.profile.MF_colors
         for ColorReason, Color in pairs(L_MF_colors) do
 
             if not L_MF_colors[ColorReason][4] then
@@ -2849,7 +2850,7 @@ do
             end
 
             -- add a separator for the different color typs when necessary.
-            if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
+            if (type(ColorReason) == "number" and ColorReason == DC.NORMAL) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
                 MUFsColors_args["S" .. ColorReason] = {
                     type = "header",
                     name = "",
@@ -3020,7 +3021,7 @@ do
             -- }}}
         };
 
-        for i = 1, 6 do
+        for i = 1, 7 do
             key_Combos_Select["KeyCombo" .. i] = OptionPrototype;
         end
 
