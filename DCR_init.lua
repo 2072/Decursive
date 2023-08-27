@@ -1030,6 +1030,8 @@ function D:SetConfiguration() -- {{{
 
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
+    -- reset: /run  LibStub("AceAddon-3.0"):GetAddon("Decursive").db.class.CureOrder = {}
+    -- reset: /run  LibStub("AceAddon-3.0"):GetAddon("Decursive").db.class["CureOrder-"..(GetSpecialization or GetActiveTalentGroup)()][64] = nil
 
     D:reset_t_CheckBleedDebuffsActiveIDs();
 

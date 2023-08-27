@@ -93,7 +93,7 @@ function D:GetDefaultsSettings()
     return {
         -- default settings {{{
         class = {
-            -- Curring order (1 is the most important, 6 the lesser...)
+            -- Curring order (1 is the most important, 7 the lesser...)
             CureOrder = {
                 [DC.MAGIC]      = 1,
                 [DC.CURSE]      = 2,
@@ -1968,7 +1968,7 @@ local function GetOptions()
         [DC.BLEED]          = options.args.CureOptions.args.CureOrder.args.CureBleed,
     }
 
-    -- Add the green number infront of the checkboxes
+    -- Add the number infront of the checkboxes
     for Type, CheckBox in pairs(CureCheckBoxes) do
         D:SetCureCheckBoxNum(Type, CheckBox);
     end
@@ -2077,7 +2077,7 @@ function D:GetCureOrderTable ()
         if not D.classprofile[specCureOrder] then
             D:Debug("Creating specific cureorder table ", specCureOrder, " for spec:", activeSpec);
             D.classprofile[specCureOrder] = {};
-            self:tcopy(D.classprofile[specCureOrder], generalCureOrder)
+            self:tcopy(D.classprofile[specCureOrder], generalCureOrder);
         end
 
         --@debug@
@@ -2125,8 +2125,8 @@ function D:CheckCureOrder ()
     local cureOrder = self:GetCureOrderTable();
     -- add missing entries...
     for key, value in pairs(AuthorizedKeys) do
-        if not cureOrder[key] then
-            cureOrder[key] = false;
+        if nil == cureOrder[key] then
+            cureOrder[key] = D.defaults.class.CureOrder[key];
         end
     end
 
