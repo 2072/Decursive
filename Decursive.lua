@@ -600,9 +600,6 @@ do
     local _;
     local CureOrder;
     local sorting = function (a, b)
-
-        CureOrder = D:GetCureOrderTable();
-
         return CureOrder[a.Type] * 10000 - a.Applications < CureOrder[b.Type] * 10000 - b.Applications;
     end
 
@@ -645,6 +642,8 @@ do
             D:AddDebugText("No unit supplied to UnitCurableDebuffs()");
             return DC.EMPTY_TABLE, false;
         end
+
+        CureOrder = D:GetCureOrderTable();
 
         if not ManagedDebuffUnitCache[Unit] then
             ManagedDebuffUnitCache[Unit] = {};
@@ -711,8 +710,8 @@ do
                 -- If we are still here it means that this Debuff is something not to be ignored...
 
 
-                -- We have an active curing spell for that type
-                if D.Status.CuringSpells[Debuff.Type] then
+                -- We have an active curing spell for that type and we want to use it
+                if D.Status.CuringSpells[Debuff.Type] and CureOrder[Debuff.Type] then
                     -- self:Debug("we can cure it");
 
                     -- if we do have a spell to cure
