@@ -2809,7 +2809,7 @@ do
 
     local GetOrder = function (info)
         local ColorReason = retrieveColorReason(info);
-        return 100 + (type(ColorReason) == "number" and ColorReason * 2 or 2048);
+        return 100 + (type(ColorReason) == "number" and ColorReason * 2 or 4096);
     end
 
     local function GetColor (info)
@@ -2867,7 +2867,7 @@ do
 end
 do
     local infoPrefix = "cAffliction_";
-    local orderStart = 2048 + 200;
+    local orderStart = 4096 + 200;
 
     local function retrieveAffTypeFromInfo(info)
         return tonumber((info[#info]):sub(#infoPrefix + 1));
