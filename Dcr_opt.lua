@@ -3521,15 +3521,15 @@ do
         -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
         -- many "bleeding" effect do not contain this term but rather 'Physical' so we use both.
         if _G.STRING_SCHOOL_PHYSICAL then
-            keywords = _G.STRING_SCHOOL_PHYSICAL
+            keywords = _G.STRING_SCHOOL_PHYSICAL:gsub("%A", "");
             if _G.ENCOUNTER_JOURNAL_SECTION_FLAG13 then
-                keywords = keywords .. "\n" .. _G.ENCOUNTER_JOURNAL_SECTION_FLAG13
+                keywords = keywords .. "\n" .. _G.ENCOUNTER_JOURNAL_SECTION_FLAG13:gsub("%A", "");
             else
                 keywords = keywords .. "\n" .. L["BLEED"]
             end
         end
 
-        return keywords;
+        return keywords:trim();
     end
 end
 
