@@ -996,10 +996,18 @@ end
 
 
 function D:makeNoCasePattern (s)
-    return string.gsub(s, "%a",
-    function (c)
-        return string.format("[%s%s]", string.lower(c), string.upper(c))
-    end)
+    local nocase = "";
+    -- make the pattern case insensitive by replacing each letter with a [Aa] caracter class for each letter
+    -- do not do this if there are already a caracterclass defined
+    for pattern in s:gmatch("[^\n\r]+") do
+        nocase = nocase ..(not pattern:find("%[.-[^%%]%]") and (string.gsub(pattern, "%a",
+        function (c)
+            return string.format("[%s%s]", string.lower(c), string.upper(c))
+        end)) or pattern) .. "\n";
+    end
+
+    D:Debug("No case keywords pattern: ", nocase:trim())
+    return nocase:trim();
 end
 
 T._LoadedFiles["Dcr_utils.lua"] = "@project-version@";
