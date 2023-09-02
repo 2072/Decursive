@@ -1613,6 +1613,7 @@ local function GetStaticOptions ()
                                 desc = L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"],
                                 get = function() return D.db.global.BleedAutoDetection; end,
                                 set = function(info, v) D.db.global.BleedAutoDetection = v end,
+                                disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
                                 order = 0,
                             },
                             bleedkeywords = {
@@ -1659,7 +1660,7 @@ local function GetStaticOptions ()
                                         return cleanedError
                                     end
                                 end,
-                                disabled = function() return not D.db.global.BleedAutoDetection; end,
+                                disabled = function() return not D.db.global.BleedAutoDetection or not D.Status.CuringSpells[DC.BLEED]; end,
 
                                 order = 10,
                             },
@@ -1679,6 +1680,7 @@ local function GetStaticOptions ()
                                 validate = function(info, v)
                                     return TN(v) ~= nil and C_Spell.DoesSpellExist(TN(v)) and 0 or D:ColorPrint(1, 0, 0, L["OPT_BLEED_EFFECT_BAD_SPELLID"]);
                                 end,
+                                disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
                                 order = 20,
                             },
                             readdDefaults = {
@@ -1696,6 +1698,7 @@ local function GetStaticOptions ()
                                         t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
                                     end
                                 end,
+                                disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
                                 order = 30,
                             },
                             knownBleedingEffects = {
@@ -2070,7 +2073,7 @@ function D:GetCureOrderTable ()
 
     if not activeSpec or activeSpec == 5 then
         --@debug@
-        D:Debug("No active spec, returning general cure order table:", D:tAsString(generalCureOrder));
+        --D:Debug("No active spec, returning general cure order table:", D:tAsString(generalCureOrder));
         --@end-debug@
         return generalCureOrder;
     else
@@ -2083,7 +2086,7 @@ function D:GetCureOrderTable ()
         end
 
         --@debug@
-        D:Debug("returning specific cure order table ", specCureOrder, " for spec:", activeSpec, "table:", D:tAsString(D.classprofile[specCureOrder]));
+        --D:Debug("returning specific cure order table ", specCureOrder, " for spec:", activeSpec, "table:", D:tAsString(D.classprofile[specCureOrder]));
         --@end-debug@
         return D.classprofile[specCureOrder];
     end

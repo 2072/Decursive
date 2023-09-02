@@ -518,7 +518,7 @@ do
             -- test for a type
             if TypeName and TypeName ~= "" then
                 Type = DC.NameToTypes[TypeName];
-            else
+            elseif self.Status.CuringSpells[DC.BLEED] then
                 checkSpellIDForBleed();
                 if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
                     Type = DC.NameToTypes["Bleed"]
@@ -526,6 +526,8 @@ do
                 else
                     Type = false;
                 end
+            else
+                Type = false;
             end
 
             -- if the unit is charmed and we didn't took care of this information yet
@@ -711,7 +713,7 @@ do
 
 
                 -- We have an active curing spell for that type and we want to use it
-                if D.Status.CuringSpells[Debuff.Type] and CureOrder[Debuff.Type] then
+                if Spells[Debuff.Type] and CureOrder[Debuff.Type] then
                     -- self:Debug("we can cure it");
 
                     -- if we do have a spell to cure
