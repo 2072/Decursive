@@ -524,11 +524,20 @@ L["OPT_IS_BLEED_EFFECT"] = "Is a bleed effect"
 L["OPT_IS_BLEED_EFFECT_DESC"] = "Check to tell Decursive to consider this effect to be of the 'Bleed' type.\nCan be unchecked for false positives..."
 L["OPT_ENABLE_BLEED_EFFECTS_DETECTION"] = "Bleed Effects discovery"
 L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"] = "Enable Decursive to discover new bleed effects when their description contains the keywords indicated in the 'Bleed effects keywords' field"
-L["OPT_BLEED_EFFECT_IDENTIFIERS"] = "Bleed effects keywords"
-L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"] = "Each keyword should match a term found in the description of the debuff causing the target to bleed and that can be used to identify such effects.\nOne keyword per line.\nClear the field to reset to the default keywords.\n\nDepending on your locale, you may need to adjust those keywords manually.\nUse the pre-configured Bleed effects list below as a guide so that their descriptions contain at least one keyword.\n(Lua patterns can be used)"
+L["OPT_BLEED_EFFECT_IDENTIFIERS"] = "Bleed effects descriptions keywords:"
+L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"] = [=[Each keyword should match a term found in the |cFFFF0000description|r of the debuff causing the target to bleed and that can be used to identify such effects.
+
+One keyword per line.
+
+Clear the field to reset to the default keywords.
+
+Depending on your locale, you may need to adjust those keywords manually.
+Use the pre-configured Bleed effects list below as a guide so that their descriptions contain at least one keyword (matching keywords are highlighted in the descriptions of each effect below).
+
+(Lua patterns can be used, each line being a pattern)]=]
 L["OPT_ADD_BLEED_EFFECT_ID"] = "Add a bleed effect"
 L["OPT_ADD_BLEED_EFFECT_ID_DESC"] = "Directly add a bleed effect by its Spell ID (as found on wowhead.com)"
-L["OPT_READD_DEFAULT_BLEED_EFFECTS"] = "Re-add default bleed effects"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS"] = "Re-add defaults"
 L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"] = "Re-add Decursive's default bleed effects to the list"
 L["OPT_KNOWN_BLEED_EFFECTS"] = "Known bleed effects"
 
@@ -536,6 +545,8 @@ L["OPT_BLEED_EFFECT_HOLDER"] = "Bleed effects management"
 L["OPT_BLEED_EFFECT_HOLDER_DESC"] = "Manage bleed effects detection"
 L["OPT_BLEED_EFFECT_BAD_SPELLID"] = "Bad spell ID, only input numeric Spell IDs as found on wowhead.com"
 L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"] = "Unknown spell (%s)"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] = "Clear list"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"] = "Clear the list and reset to default values, all added and detected debuffs will be lost!!"
 --]==]
 --@end-do-not-package@
 

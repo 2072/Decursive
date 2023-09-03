@@ -1621,6 +1621,7 @@ local function GetStaticOptions ()
                                 multiline = true,
                                 name = L["OPT_BLEED_EFFECT_IDENTIFIERS"],
                                 desc = L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"],
+                                width = 1.5,
                                 get = function(info)
                                     return D.db.locale.BleedEffectsKeywords and D.db.locale.BleedEffectsKeywords or "";
                                 end,
@@ -1682,24 +1683,6 @@ local function GetStaticOptions ()
                                 end,
                                 disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
                                 order = 20,
-                            },
-                            readdDefaults = {
-                                type = 'execute',
-                                width = 1.7,
-                                name = L["OPT_READD_DEFAULT_BLEED_EFFECTS"],
-                                desc = L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"],
-                                func = function()
-                                    local defaults = D.defaults.global.t_BleedEffectsIDCheck;
-                                    local t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
-                                    local t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
-
-                                    for spellID, isBleed in pairs(defaults) do
-                                        t_BleedEffectsIDCheck[spellID] = isBleed;
-                                        t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
-                                    end
-                                end,
-                                disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
-                                order = 30,
                             },
                             knownBleedingEffects = {
                                 type = 'group',
@@ -3512,6 +3495,32 @@ do
                 where[tostring(spellID)] = bleedEffectEntry;
             end
         end
+
+        where["resetListToDefaults"] = {
+            type = 'execute',
+            name = "|cFFFF0000" .. L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] .. "|r",
+            desc = L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"],
+            func = function()
+                D.Status.t_CheckBleedDebuffsActiveIDs = {};
+                table.wipe(D.db.global.t_BleedEffectsIDCheck);
+
+                D:readdDefaultsBleedEffects();
+            end,
+            confirm = true,
+            disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
+            order = -1,
+        };
+        where["readdDefaults"] = {
+            type = 'execute',
+            confirm = true,
+            name = L["OPT_READD_DEFAULT_BLEED_EFFECTS"],
+            desc = L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"],
+            func = function()
+                D:readdDefaultsBleedEffects();
+            end,
+            disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
+            order = 0,
+        };
     end
 
     function D:reset_t_CheckBleedDebuffsActiveIDs()
@@ -3537,6 +3546,17 @@ do
         end
 
         return keywords:trim();
+    end
+
+    function D:readdDefaultsBleedEffects()
+        local defaults = D.defaults.global.t_BleedEffectsIDCheck;
+        local t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
+        local t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
+
+        for spellID, isBleed in pairs(defaults) do
+            t_BleedEffectsIDCheck[spellID] = isBleed;
+            t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
+        end
     end
 end
 
