@@ -641,7 +641,7 @@ function D:isSpellReady(spellID, isPetAbility)
             end
 
             if id and spellType == "PETACTION" then
-                spellID = bit.band(0xffffff, id);
+                spellID = band(0xffffff, id);
             elseif spellType then
                 D:Debug("Pet ability update lookup failed", spellID, spellName, spellType, id);
             end
@@ -994,20 +994,65 @@ do
     end
 end
 
+do
 
-function D:makeNoCasePattern (s)
-    local nocase = "";
-    -- make the pattern case insensitive by replacing each letter with a [Aa] caracter class for each letter
-    -- do not do this if there are already a caracterclass defined
-    for pattern in s:gmatch("[^\n\r]+") do
-        nocase = nocase ..(not pattern:find("%[.-[^%%]%]") and (string.gsub(pattern, "%a",
-        function (c)
-            return string.format("[%s%s]", string.lower(c), string.upper(c))
-        end)) or pattern) .. "\n";
+    local placeHolderMark = "_______";
+    local function findPatternPositions(s, pattern)
+        local start, finish = s:find(pattern);
+
+        local positions = {};
+
+        while start do
+            table.insert(positions, {start, finish, s:sub(start, finish)});
+            start, finish = s:find(pattern, finish + 1);
+        end
+
+        return positions;
     end
 
-    D:Debug("No case keywords pattern: ", nocase:trim())
-    return nocase:trim();
-end
+    local function replaceWithPlaceholders(s, positions)
+        local protected = "";
+        local start = 1;
+        for i, details in ipairs(positions) do
+            protected = protected .. s:sub(start, details[1] - 1) .. placeHolderMark .. i .. placeHolderMark;
+            start = details[2] + 1;
+        end
+        protected = protected .. s:sub(start);
+        return protected;
+    end
 
+    local function revertPlaceHolder(s, positions, func)
+
+       return #positions > 0 and (s:gsub(placeHolderMark .. "(%d+)" .. placeHolderMark, function(phnum)
+            return func(positions[tonumber(phnum)][3]);
+            end)) or s;
+    end
+
+    local function replaceWithLowerUpper(s, addBrackets)
+        return string.gsub(s, "%a",
+                function (c)
+                    return (addBrackets and "[" or "") .. string.lower(c) .. string.upper(c) .. (addBrackets and "]" or "");
+                end);
+
+    end
+
+    function D:makeNoCasePattern (s)
+        local nocase = "";
+
+
+        for pattern in s:gmatch("[^\n\r]+") do -- consider each line as an independant pattern
+
+            -- protect existing character classes
+            local charClasses = findPatternPositions(pattern, "%b[]");
+            local protected = replaceWithPlaceholders(pattern, charClasses)
+            local protectedNoCase = replaceWithLowerUpper(protected, true);
+
+            nocase = nocase .. revertPlaceHolder(protectedNoCase, charClasses, replaceWithLowerUpper) .. "\n";
+
+        end
+
+        D:Debug("No case keywords pattern: ", nocase:trim())
+        return nocase:trim();
+    end
+end
 T._LoadedFiles["Dcr_utils.lua"] = "@project-version@";
