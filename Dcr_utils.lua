@@ -995,60 +995,42 @@ do
 end
 
 do
-
-    local placeHolderMark = "_______";
-    local function findPatternPositions(s, pattern)
-        local start, finish = s:find(pattern);
-
-        local positions = {};
-
-        while start do
-            table.insert(positions, {start, finish, s:sub(start, finish)});
-            start, finish = s:find(pattern, finish + 1);
-        end
-
-        return positions;
-    end
-
-    local function replaceWithPlaceholders(s, positions)
-        local protected = "";
-        local start = 1;
-        for i, details in ipairs(positions) do
-            protected = protected .. s:sub(start, details[1] - 1) .. placeHolderMark .. i .. placeHolderMark;
-            start = details[2] + 1;
-        end
-        protected = protected .. s:sub(start);
-        return protected;
-    end
-
-    local function revertPlaceHolder(s, positions, func)
-
-       return #positions > 0 and (s:gsub(placeHolderMark .. "(%d+)" .. placeHolderMark, function(phnum)
-            return func(positions[tonumber(phnum)][3]);
-            end)) or s;
-    end
+    local placeholderMark = "_______";
 
     local function replaceWithLowerUpper(s, addBrackets)
         return string.gsub(s, "%a",
                 function (c)
                     return (addBrackets and "[" or "") .. string.lower(c) .. string.upper(c) .. (addBrackets and "]" or "");
                 end);
-
     end
 
     function D:makeNoCasePattern (s)
         local nocase = "";
 
-
         for pattern in s:gmatch("[^\n\r]+") do -- consider each line as an independant pattern
 
             -- protect existing character classes
-            local charClasses = findPatternPositions(pattern, "%b[]");
-            local protected = replaceWithPlaceholders(pattern, charClasses)
-            local protectedNoCase = replaceWithLowerUpper(protected, true);
 
-            nocase = nocase .. revertPlaceHolder(protectedNoCase, charClasses, replaceWithLowerUpper) .. "\n";
+            local placeholderTable = {}
+            local placeholderCounter = 0
 
+            -- Replace letters between balanced [] with placeholders
+            local protectedInput = pattern:gsub("%b[]", function(match)
+                local placeholder = placeholderMark .. placeholderCounter .. placeholderMark
+                placeholderCounter = placeholderCounter + 1
+                placeholderTable[placeholder] = match
+                return placeholder
+            end)
+
+            -- Replace letters outside [] with character classes
+            local partialOutput = replaceWithLowerUpper(protectedInput, true);
+
+            -- Replace placeholders with original content
+            local output = partialOutput:gsub(placeholderMark .."%d+" .. placeholderMark, function(placeholder)
+                return replaceWithLowerUpper(placeholderTable[placeholder] or placeholder, false)
+            end)
+
+            nocase = nocase .. output .. "\n";
         end
 
         D:Debug("No case keywords pattern: ", nocase:trim())
