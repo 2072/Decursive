@@ -356,11 +356,34 @@ do
 
         local ACsuccess, actionsConfiguration = pcall(T._ExportActionsConfiguration);
 
+        local BCsuccess, bleedConfiguration = pcall(function ()
+            local D = T.Dcr;
+            local knownBleedEffectsCount = 0;
+
+            for _ in pairs(D.Status.t_CheckBleedDebuffsActiveIDs) do
+               knownBleedEffectsCount = knownBleedEffectsCount + 1;
+           end
+
+            return ([=[%d Bleed Effects registered.
+Bleed keywords:
+---
+%s
+---
+Active no case version:
+---
+%s
+---]=]):format(
+                knownBleedEffectsCount,
+                tostring(D.db.locale.BleedEffectsKeywords),
+                tostring(D.Status.P_BleedEffectsKeywords_noCase)
+            )
+        end);
+
         local CSCsuccess, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
         local STPsuccess, spellTable = pcall(T._PrintSpellTable);
 
         local SRTOLEsuccess, SRTOLErrors =
-            pcall(function() return "Script ran too long errors:\n" .. T.Dcr:tAsString(T.Dcr.db.global.SRTLerrors) end);
+            pcall(function() return T.Dcr:tAsString(T.Dcr.db.global.SRTLerrors) end);
 
         local headerSucess, headerGenErrorm;
         if not DebugHeader then
@@ -369,14 +392,17 @@ do
             headerSucess = true;
         end
 
+        local SEP = "\n\n-- --\n\n";
+
 
         T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or "")))
         .. table.concat(T._DebugTextTable, "")
-        .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --" -- (Spells assignments:)
-        .. customSpellConfiguration .. "\n-- --"
-        .. spellTable .. "\n-- --" -- (Decursive known spells:)
-        .. SRTOLErrors .. "\n-- --"
-        .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. "\n-- --";
+        .. SEP .. "Bleed Conf:\n" .. bleedConfiguration .. SEP
+        .. "Action Conf:\n" .. actionsConfiguration .. SEP -- (Spells assignments:)
+        .. "Custom Spell Conf:\n" .. customSpellConfiguration .. SEP
+        .. "Decursive known spells:\n" .. spellTable .. SEP
+        .. "Script ran too long errors:\n" .. SRTOLErrors .. SEP
+        .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. SEP;
 
         if _G.DecursiveDebuggingFrameText then
             _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
@@ -819,8 +845,6 @@ do
             return errorPrefix("D.classprofile.UserSpells not available");
         end
 
-        customSpellConfText[1] = "\nCustom spells configuration:\n";
-
         for spellID, spellData in pairs(D.classprofile.UserSpells) do
             if not spellData.IsDefault then
                  customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %s) - %s - %s - %s - B: %d - Ts: %s - UF: %s - Macro: %s\n"):format(
@@ -852,7 +876,7 @@ do
             return errorPrefix("T._C.DSI not available");
         end
 
-        return "\nDecursive known spells:\n(left and right side should be 'matching')\n" .. D:tAsString(D:tMap(T._C.DSI, GetSpellInfo));
+        return "\n(left and right side should be 'matching')\n" .. D:tAsString(D:tMap(T._C.DSI, GetSpellInfo));
     end
     function T._ExportActionsConfiguration () -- (use pcall with this) -- {{{
 
