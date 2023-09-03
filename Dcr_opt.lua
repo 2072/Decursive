@@ -3366,7 +3366,7 @@ do
 
     local tw_spell_desc_cache = setmetatable({}, {
         __index = function(table, spellID)
-            D:Debug("metatable __index called with ", spellID);
+            --D:Debug("metatable __index called with ", spellID);
             local desc = C_Spell.DoesSpellExist(spellID) and GetSpellDescription(spellID) or L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID);
 
             if desc ~= "" then
@@ -3374,11 +3374,15 @@ do
             elseif not C_Spell.IsSpellDataCached(spellID) then
                 C_Spell.RequestLoadSpellData(spellID);
                 desc =  L["OPT_SPELL_DESCRIPTION_LOADING"];
+
+                D:Debug("delayed Bleed Effect option panel refresh scheduled because of spellID: ", spellID);
+                D:ScheduleDelayedCall("refreshBleedEffectList", function () LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name) end, 2);
+
             else
                 desc = L["OPT_SPELL_DESCRIPTION_UNAVAILABLE"];
                 table[spellID] = desc;
             end
-            D:Debug("metatable __index called with ", spellID, "desc:", desc);
+            --D:Debug("metatable __index called with ", spellID, "desc:", desc);
             return desc;
         end;
     });
