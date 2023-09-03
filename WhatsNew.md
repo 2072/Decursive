@@ -1,17 +1,20 @@
-Decursive 2.7.10
-================
+Decursive 2.7.10 Beta 1
+=======================
 
 
-Decursive 2.7.10 (2023-08-22)
-------------------------------
+Decursive 2.7.10 Beta 1 (2023-09-03)
+------------------------------------
 
 - Add support for Bleed Effects detection:
     - Decursive scans the debuffs with no type for particular keywords ('Physical' and 'Bleed' by default) in their description.
-    - The debuffs are automatically added to a list the user can edit under the curing options.
+    - The debuffs are automatically added to a list the user can edit under the curing options
+      (it is recommanded to review this list for non-English locales).
 
 Many thanks to Teelolws for prototyping this solution and to Xadras for their
-suggestions about the user editable list. Their contributions made this
-solution possible.
+suggestions and follow ups about the user editable list. Their contributions
+made this solution possible.
+
+Report any problem found with this new feature in [issue #248 on wowace.com](https://www.wowace.com/projects/decursive/issues/248).
 
 - Decursive will remember the priority of types when the associated spells
   disappear as long as the user does not change the priorities.
