@@ -537,9 +537,9 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
-            [DC.WOTLK and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
+            [DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"]] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
-                Better = 0,
+                Better = 1,
                 Pet = false,
             },
             -- Paladin
