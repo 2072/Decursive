@@ -1,9 +1,9 @@
-Decursive 2.7.10 Beta 1
-=======================
+Decursive 2.7.10
+================
 
 
-Decursive 2.7.10 Beta 1 (2023-09-03)
-------------------------------------
+Decursive 2.7.10 (2023-09-12)
+-----------------------------
 
 - Add support for Bleed Effects detection:
     - Decursive scans the debuffs with no type for particular keywords ('Physical' and 'Bleed' by default) in their description.
@@ -11,7 +11,7 @@ Decursive 2.7.10 Beta 1 (2023-09-03)
       (it is recommanded to review this list for non-English locales).
 
 Many thanks to Teelolws for prototyping this solution and to Xadras for their
-suggestions and follow ups about the user editable list. Their contributions
+suggestions and follow-ups about the user editable list. Their contributions
 made this solution possible.
 
 Report any problem found with this new feature in [issue #248 on wowace.com](https://www.wowace.com/projects/decursive/issues/248).
@@ -24,6 +24,8 @@ Report any problem found with this new feature in [issue #248 on wowace.com](htt
   former order.
 
 - Some layout changes in the MUFs option panel to make it more comfy.
+
+- WoW Classic: Fix detection of Dispel Magic Rank 2 for Priests.
 
 
 **New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
