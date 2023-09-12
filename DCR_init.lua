@@ -1742,11 +1742,13 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["SONICBURST"]                = 8281;
             T._C.DSI["CRIPLES"]                   = 11443;
             T._C.DSI["Shadowmeld"]                = 20580;
+            T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
             -- }}}
 
             T._C.EXPECTED_DUPLICATES = {
                 {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
                 {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
+                {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
             }
 
             if DC.WOTLK then
@@ -1761,7 +1763,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["TALENT_BODY_AND_SOUL"]          = 64127;
                 T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
-                T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
 
                 T._C.EXPECTED_DUPLICATES = {
                     {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
