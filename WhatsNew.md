@@ -1,5 +1,15 @@
-Decursive 2.7.10
+Decursive 2.7.11
 ================
+
+
+Decursive 2.7.11 (2023-10-22)
+-----------------------------
+
+- TOC update for Wrath
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.10 (2023-09-12)
@@ -27,9 +37,6 @@ Report any problem found with this new feature in [issue #248 on wowace.com](htt
 
 - WoW Classic: Fix detection of Dispel Magic Rank 2 for Priests.
 
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.9.3 (2023-07-16)
