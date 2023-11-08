@@ -1,15 +1,20 @@
-Decursive 2.7.11
+Decursive 2.7.12
 ================
+
+Decursive 2.7.12 (2023-11-08)
+-----------------------------
+
+- TOC update for Retail
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.11 (2023-10-22)
 -----------------------------
 
 - TOC update for Wrath
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.10 (2023-09-12)
