@@ -317,7 +317,7 @@
         </Frames>
     </Frame> <!-- }}} -->
 
-    <MessageFrame name="DecursiveTextFrame" insertMode="TOP" parent="UIParent" frameStrata="HIGH" toplevel="true" > <!-- {{{ -->
+    <MessageFrame name="DecursiveTextFrame" insertMode="TOP" parent="UIParent" frameStrata="DIALOG"> <!-- {{{ -->
         <Size>
             <AbsDimension x="600" y="140"/>
         </Size>
