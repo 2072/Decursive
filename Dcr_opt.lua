@@ -758,7 +758,7 @@ local function GetStaticOptions ()
                         type = 'range',
                         name = L["BLACK_LENGTH"],
                         desc = L["OPT_BLACKLENTGH_DESC"],
-                        min = 1,
+                        min = 0,
                         max = 20,
                         step = 0.1,
                         order = 40,

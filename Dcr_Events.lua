@@ -778,7 +778,10 @@ do -- Combat log event handling {{{1
 
                 if (auraTYPE_failTYPE == SPELL_FAILED_LINE_OF_SIGHT or auraTYPE_failTYPE == SPELL_FAILED_BAD_TARGETS) then
 
-                    if not self.profile.DoNot_Blacklist_Prio_List or not self:IsInPriorList(self.Status.Unit_Array_UnitToGUID[self.Status.ClickedMF.CurrUnit]) then
+                    if self.profile.CureBlacklist > 0 and (
+                        not self.profile.DoNot_Blacklist_Prio_List
+                        or not self:IsInPriorList(self.Status.Unit_Array_UnitToGUID[self.Status.ClickedMF.CurrUnit])
+                        ) then
                         self.Status.Blacklisted_Array[self.Status.ClickedMF.CurrUnit] = self.profile.CureBlacklist;
 
                         self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of blacklist frame|r");
