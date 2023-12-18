@@ -436,9 +436,16 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Priests (Discipline, Holy)
             [DSI["SPELL_PURIFY"]] = {
-                Types = {DC.MAGIC, DC.DISEASE},
+                Types = {DC.MAGIC},
                 Better = 1,
                 Pet = false,
+                EnhancedBy = 'talent',
+                EnhancedByCheck = function ()
+                    return (IsPlayerSpell(DSI["IMPROVED_PURIFY"]));
+                end,
+                Enhancements = {
+                    Types = {DC.MAGIC, DC.DISEASE},
+                }
             },
             [DSI["SPELL_PURIFY_DISEASE"]] = {
                 Types = {DC.DISEASE},
@@ -1644,6 +1651,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["PET_SEAR_MAGIC"]              =  115276, -- Warlock Fel imp
             ["SPELL_PURIFY"]                =  527,
             ["SPELL_PURIFY_DISEASE"]        =  213634,
+            ["IMPROVED_PURIFY"]             =  390632,
             ["SPELL_DISPELL_MAGIC"]         =  528,
             ["PURIFY_SPIRIT"]               =  77130, -- resto shaman
             ["IMPROVED_PURIFY_SPIRIT"]      =  383016, -- resto shaman
@@ -1694,6 +1702,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ["PURIFY_SPIRIT"]	        = 77130,
                 ["SONICBURST"]	            = 39052,
                 ["SPELL_PURIFY_DISEASE"]    = 213634,
+                ["IMPROVED_PURIFY"]         = 390632,
                 ["Vampiric Touch"]	        = 34914,
                 ["CLEANSE_SPIRIT"]	        = 51886,
                 ["SPELL_NATURES_CURE"]	    = 88423,
