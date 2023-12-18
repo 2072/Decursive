@@ -1,5 +1,18 @@
-Decursive 2.7.12
+Decursive 2.7.13
 ================
+
+Decursive 2.7.13 (2023-12-18)
+-----------------------------
+
+- Fix spell detection in classic versions of WoW when "Show all spells ranks"
+  option is not checked in WoW's spell book UI.
+
+- The blacklist can now be disabled completely by setting the "Seconds on the
+  Blacklist" option to 0.
+
+- Fix problem with Decursive' message frame preventing the new Pinging WoW
+  feature to work when clicking through this invisible frame.
+
 
 Decursive 2.7.12 (2023-11-08)
 -----------------------------
