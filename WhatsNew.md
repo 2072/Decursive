@@ -1,5 +1,18 @@
-Decursive 2.7.14
+Decursive 2.7.15
 ================
+
+Decursive 2.7.15 (2024-01-21)
+-----------------------------
+
+- Fix Lua error when bleed default keywords are empty.
+
+- Fix bleed effect keywords defaults detection for non ASCII locals.
+Users should check if the defaults are correct, if they are not please open a
+new issue: Open the option panel (`/decursive` in chat), and head to
+ `curingoptions` -> `Bleed effects management` to check the default keywords.
+
+- TOC update for 10.2.5
+
 
 Decursive 2.7.14 (2023-12-18)
 -----------------------------
