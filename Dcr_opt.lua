@@ -3401,11 +3401,13 @@ do
     local function higlightkeywords(desc, test_pattern)
         local highlightedDesc = desc;
 
-        for pattern in D.Status.P_BleedEffectsKeywords_noCase:gmatch("[^\n\r]+") do
-            pcall(function()
-                highlightedDesc =
-                highlightedDesc:gsub(pattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end);
-            end)
+        if D.Status.P_BleedEffectsKeywords_noCase ~= false then
+            for pattern in D.Status.P_BleedEffectsKeywords_noCase:gmatch("[^\n\r]+") do
+                pcall(function()
+                    highlightedDesc =
+                    highlightedDesc:gsub(pattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end);
+                end)
+            end
         end
 
         return highlightedDesc;
@@ -3534,12 +3536,18 @@ do
 
     function D:GetDefaultBleedEffectsKeywords()
         local keywords;
+
         -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
         -- many "bleeding" effect do not contain this term but rather 'Physical' so we use both.
         if _G.STRING_SCHOOL_PHYSICAL then
-            keywords = _G.STRING_SCHOOL_PHYSICAL:gsub("%A", "");
+            local cleanedSchoolPhysical = (_G.STRING_SCHOOL_PHYSICAL:gsub("%A", ""))
+
+            keywords = cleanedSchoolPhysical ~= "" and cleanedSchoolPhysical or _G.STRING_SCHOOL_PHYSICAL;
+
             if _G.ENCOUNTER_JOURNAL_SECTION_FLAG13 then
-                keywords = keywords .. "\n" .. _G.ENCOUNTER_JOURNAL_SECTION_FLAG13:gsub("%A", "");
+                local cleanedEJSF13 = (_G.ENCOUNTER_JOURNAL_SECTION_FLAG13:gsub("%A", ""))
+
+                keywords = keywords .. "\n" .. (cleanedEJSF13 ~= "" and cleanedEJSF13 or _G.ENCOUNTER_JOURNAL_SECTION_FLAG13);
             else
                 keywords = keywords .. "\n" .. L["BLEED"]
             end
