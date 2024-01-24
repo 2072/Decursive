@@ -844,27 +844,42 @@ end
 --local UnitBuffsCache    = {};
 
 do
-    local G_UnitBuff = _G.UnitBuff;
-
+    local G_UnitBuff = _G.UnitBuff; -- In 10.2.5 UnitBuff and acolytes were deprecated and are falling back to calling C_UnitAuras functions which create a new table each time and thus leak garbage each time they return debuff info... (if only we could provide those functions with a table to use...)
+    local GetAuraDataBySpellName = C_UnitAuras and C_UnitAuras.GetAuraDataBySpellName or nil;
     local buffName;
 
 
     local function UnitBuff(unit, BuffNameToCheck)
-        for i = 1, 40 do
-            buffName = G_UnitBuff(unit, i)
-            if not buffName then
-                return
-            else
-                if BuffNameToCheck == buffName then
-                    return G_UnitBuff(unit, i)
+            --@debug@
+            D:Debug("UnitBuff", unit, BuffNameToCheck)
+            --@end-debug@
+        if GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then
+            --@debug@
+            D:Debug("used C_UnitAuras")
+            --@end-debug@
+            return true
+        elseif not GetAuraDataBySpellName then
+            --@debug@
+            D:Debug("used old buff scan method")
+            --@end-debug@
+
+            for i = 1, 40 do
+                buffName = G_UnitBuff(unit, i)
+                if not buffName then
+                    return
+                else
+                    if BuffNameToCheck == buffName then
+                        return G_UnitBuff(unit, i)
+                    end
                 end
             end
         end
+
+        return false
     end
 
     -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
     function D:CheckUnitForBuffs(unit, BuffNamesToCheck) --{{{
-
 
         if type(BuffNamesToCheck) == "string" then
 
@@ -881,7 +896,6 @@ do
         end
 
         return false;
-
     end --}}}
 end
 

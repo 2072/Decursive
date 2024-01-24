@@ -697,7 +697,7 @@ end -- }}}
 -- }}}
 
 -- Update the MUF of a given unitid
-function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
+function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth, o_auraUpdateInfo)
     if not D.profile.ShowDebuffsFrame then
         return;
     end
@@ -719,7 +719,7 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
         -- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
         if (not D:DelayedCallExixts("Dcr_Update"..unit)) then
             D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-            D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.profile.DebuffsFrameRefreshRate * (0.9 + D.DebuffUpdateRequest / D.profile.DebuffsFramePerUPdate), MF);
+            D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.profile.DebuffsFrameRefreshRate * (0.9 + D.DebuffUpdateRequest / D.profile.DebuffsFramePerUPdate), MF, o_auraUpdateInfo);
             D:Debug("Update scheduled for, ", unit, MF.ID);
 
             return true; -- return value used to aknowledge that the function actually did something
@@ -1141,7 +1141,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 end -- }}}
 
 
-function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
+function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth, o_auraUpdateInfo)
 
 
 
@@ -1175,7 +1175,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     if (not SkipSetColor) then
         if (not SkipDebuffs) then
             -- get the manageable debuffs of this unit
-            MF:SetDebuffs();
+            MF:SetDebuffs(o_auraUpdateInfo);
             --D:Debug("Debuff set for ", MF.ID);
             if CheckStealth then
                 D.Stealthed_Units[MF.CurrUnit] = D:CheckUnitStealth(MF.CurrUnit); -- update stealth status
@@ -1192,7 +1192,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 end
 
 
-function MicroUnitF.prototype:UpdateWithCS()
+function MicroUnitF.prototype:UpdateWithCS(o_auraUpdateInfo)
     self:Update(false, false, true);
 end
 
@@ -1340,7 +1340,7 @@ do
     end
 end -- }}}
 
-function MicroUnitF.prototype:SetDebuffs() -- {{{
+function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
 
     self.Debuffs, self.IsCharmed = D:UnitCurableDebuffs(self.CurrUnit);
 

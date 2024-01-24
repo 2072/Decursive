@@ -496,7 +496,7 @@ do
     local GetTime       = _G.GetTime;
     -- This event manager is only here to catch events when the GUID unit array is not reliable.
     -- For everything else the combat log event manager does the job since it's a lot more resource friendly. (UNIT_AURA fires way too often and provides no data)
-    function D:UNIT_AURA(selfevent, UnitID, ...)
+    function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
 
 
         if not D.DcrFullyInitialized then
@@ -514,7 +514,7 @@ do
         --@debug@
 
 
-        --D:Debug("UNIT_AURA", ..., UnitID, GetTime() + (GetTime() % 1));
+        --D:Debug("UNIT_AURA", auraInfo, UnitID, GetTime() + (GetTime() % 1));
 
         --@end-debug@
 
@@ -563,19 +563,19 @@ do
                     return
                 end
 
-                -- get out of here if this is just about a fucking buff, combat log event manager handles those... unless there is no debuff because the last was removed
-                if not UnitDebuff(UnitID, 1) and not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed then
+                -- get out of here if this is just about a buff, combat log event manager handles those... unless there is no debuff because the last was removed
+                if not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed and not UnitDebuff(UnitID, 1) then
                     --self:Debug(UnitID, " |cFFFF7711has no debuff|r (UNIT_AURA)");
                     return;
                 end
 
                 --self:errln("update schedule for MUF", UnitID);
-                self.MicroUnitF:UpdateMUFUnit(UnitID, true);
+                self.MicroUnitF:UpdateMUFUnit(UnitID, true, o_auraUpdateInfo);
                 return;
             end
 
             if not self.profile.HideLiveList then
-                self.LiveList:DelayedGetDebuff(UnitID);
+                self.LiveList:DelayedGetDebuff(UnitID, o_auraUpdateInfo);
             end
         end
     end

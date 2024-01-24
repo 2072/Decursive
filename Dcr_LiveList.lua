@@ -388,11 +388,11 @@ function LiveList:GetDebuff(UnitID) -- {{{
     return D.UnitDebuffed[UnitID];
 end -- }}}
 
-function LiveList:DelayedGetDebuff(UnitID) -- {{{
+function LiveList:DelayedGetDebuff(UnitID, o_auraUpdateInfo) -- {{{
     if not D:DelayedCallExixts("Dcr_GetDebuff"..UnitID) then
         D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
         D:Debug("LiveList: GetDebuff scheduled for, ", UnitID);
-        D:ScheduleDelayedCall("Dcr_GetDebuff"..UnitID, self.GetDebuff, (D.profile.ScanTime / 3) * (1 + D.DebuffUpdateRequest / 30), self, UnitID);
+        D:ScheduleDelayedCall("Dcr_GetDebuff"..UnitID, self.GetDebuff, (D.profile.ScanTime / 3) * (1 + D.DebuffUpdateRequest / 30), self, UnitID, o_auraUpdateInfo);
     end
 end -- }}}
 
