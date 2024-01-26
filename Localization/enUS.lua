@@ -547,6 +547,14 @@ L["OPT_BLEED_EFFECT_BAD_SPELLID"] = "Bad spell ID, only input numeric Spell IDs 
 L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"] = "Unknown spell (%s)"
 L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] = "Clear list"
 L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"] = "Clear the list and reset to default values, all added and detected debuffs will be lost!!"
+
+
+L["OPT_PERIODICRESCAN"] = "Debuff preiodic full scan"
+L["OPT_PERIODICRESCAN_DESC"] = "Set the delay for global unit periodic rescan for buffs and debuffs.\nSet to 0 to disable.\n\nNote that since WoW 10.2.5 this periodic rescan increases Decursive's memory usage."
+
+
+L["OPT_PERIODICRESCAN_REPORT"] = "Periodic scan debug reporting"
+L["OPT_PERIODICRESCAN_REPORT_DESC"] = "Create a debug report if the periodic scan finds something that was not previously detected through events."
 --]==]
 --@end-do-not-package@
 

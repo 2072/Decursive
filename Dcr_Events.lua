@@ -318,15 +318,6 @@ function D:ScheduledTasks() -- {{{
 
     self.DebuffUpdateRequest = 0;
 
-    -- Rescan all only if the MUF are used else we don't care at all...
-    --[=[
-    if self.profile.ShowDebuffsFrame and GetTime() - LastScanAllTime > 1 then
-        self:ScanEveryBody();
-        LastScanAllTime =  GetTime();
-    end
-    --]=]
-
-
 end --}}}
 
 -- the combat functions and events. // {{{
@@ -514,7 +505,7 @@ do
         --@debug@
 
 
-        --D:Debug("UNIT_AURA", auraInfo, UnitID, GetTime() + (GetTime() % 1));
+        D:Debug("UNIT_AURA", o_auraUpdateInfo, UnitID, GetTime() + (GetTime() % 1));
 
         --@end-debug@
 
@@ -675,6 +666,9 @@ do -- Combat log event handling {{{1
         if event == nil then
             timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE = CombatLogGetCurrentEventInfo()
         end
+                    --@debug@
+                    if self.debug then self:Debug("COMBAT_LOG_EVENT_UNFILTERED: ", timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE); end
+                    --@end-debug@
         -- check for exceptions
         if SpecialDebuffs[spellID] and event == SpecialDebuffs[spellID] then
             event = "SPELL_AURA_APPLIED";
@@ -785,7 +779,7 @@ do -- Combat log event handling {{{1
                         self.Status.Blacklisted_Array[self.Status.ClickedMF.CurrUnit] = self.profile.CureBlacklist;
 
                         self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of blacklist frame|r");
-                        self:ScheduleDelayedCall("Dcr_Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.UpdateSkippingSetBuf, self.profile.DebuffsFrameRefreshRate, self.Status.ClickedMF);
+                        self:ScheduleDelayedCall("Dcr_Update"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.UpdateSkippingSetBuf, self.db.global.DebuffsFrameRefreshRate, self.Status.ClickedMF);
                     end
 
                     self:SafePlaySoundFile(DC.FailedSound);

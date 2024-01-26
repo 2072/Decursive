@@ -177,7 +177,16 @@ function D:GetDefaultsSettings()
                 [393444] = true, -- Gushing Wound
                 [413131] = true, -- Whirling Dagger
                 [413136] = true, -- Whirling Dagger
-            }
+            },
+            -- The time between each MUF update
+            DebuffsFrameRefreshRate = 0.10,
+
+            -- The number of MUFs updated every DebuffsFrameRefreshRate
+            DebuffsFramePerUPdate = 10,
+
+            MFScanEverybodyTimer = 1,
+
+            MFScanEverybodyReport = false,
         },
 
         profile = {
@@ -221,12 +230,6 @@ function D:GetDefaultsSettings()
             DebuffsFrameYSpacing = 3,
 
             DebuffsFrameStickToRight = false,
-
-            -- The time between each MUF update
-            DebuffsFrameRefreshRate = 0.10,
-
-            -- The number of MUFs updated every DebuffsFrameRefreshRate
-            DebuffsFramePerUPdate = 10,
 
             DebuffsFrameShowHelp = true,
 
@@ -482,7 +485,22 @@ local OptionsPostSetActions = { -- {{{
     ["DebuffsFrameMaxCount"] = function(v) D.MicroUnitF.MaxUnit = v; D.MicroUnitF:Delayed_MFsDisplay_Update(); end, -- just the number of MUFs is changed MFsDisplay_Update() is enough
     ["DebuffsFramePerline"] = function(v)  D.MicroUnitF:ResetAllPositions (); end,
     ["DebuffsFrameElemScale"] = function(v) D.MicroUnitF:SetScale(D.profile.DebuffsFrameElemScale); end,
-    ["DebuffsFrameRefreshRate"] = function(v) D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D); D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v); end,
+    ["DebuffsFrameRefreshRate"] = function(v) D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.db.global.DebuffsFrameRefreshRate, D); D:Debug("MUFs refresh rate changed:", D.db.global.DebuffsFrameRefreshRate, v); end,
+    ["MFScanEverybodyTimer"] = function(v)
+        if v > 0 then
+            D:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
+            D:Debug("MUFs scan every body timer changed:", D.db.global.MFScanEverybodyTimer, v);
+        else
+            D:CancelDelayedCall("Dcr_ScanEverybody")
+            D:Debug("MUFs scan every body canceled", D.db.global.MFScanEverybodyTimer, v);
+        end
+    end,
+    ["MFScanEverybodyReport"] = function(v)
+        if D.db.global.MFScanEverybodyTimer > 0 then
+            D:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
+        end
+        D:Debug("MUFs scan every body reporting changed:", D.db.global.MFScanEverybodyReport, v);
+    end,
 
     ["Scan_Pets"] = function(v) D:GroupChanged ("opt CURE_PETS"); end,
     ["DisableMacroCreation"] = function(v) if v then D:SetMacroKey (nil); D:Debug("SetMacroKey (nil)"); end end,
@@ -1463,6 +1481,21 @@ local function GetStaticOptions ()
                                 step = 1,
                                 order = 2700,
                             },
+                            MFScanEverybodyTimer = {
+                                type = 'range',
+                                name = L["OPT_PERIODICRESCAN"],
+                                desc = L["OPT_PERIODICRESCAN_DESC"],
+                                min = 0, -- 0 will disable it
+                                max = 60,
+                                step = 1,
+                                order = 2800,
+                            },
+                            MFScanEverybodyReport = {
+                                type = "toggle",
+                                name = L["OPT_PERIODICRESCAN_REPORT"],
+                                desc = L["OPT_PERIODICRESCAN_REPORT_DESC"],
+                                order = 2900,
+                            },
                         },
                     }, -- }}}
                 },
@@ -2283,8 +2316,12 @@ function D:ShowHideDebuffsFrame ()
             D:Debug("ShowHideDebuffsFrame(): sound re-enabled");
         end
     else
-        D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
-        self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, 1, D);
+        D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.db.global.DebuffsFrameRefreshRate, D);
+
+        if D.db.global.MFScanEverybodyTimer > 0 then
+            self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
+        end
+
         D.MicroUnitF:Force_FullUpdate();
     end
 

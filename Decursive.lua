@@ -773,6 +773,7 @@ do
         local CheckStealth = self.profile.Show_Stealthed_Status;
 
         --@debug@
+        D:Debug("ScanEverybody, report:", report);
         --local start = debugprofilestop();
         --@end-debug@
 
@@ -783,7 +784,7 @@ do
             if MUF and not NoScanStatuses[MUF.UnitStatus] then
                 IsMUFDebuffed = MUF.Debuffs[1] and true or band(MUF.UnitStatus, DC.CHARMED_STATUS) == DC.CHARMED_STATUS;
 
-                Debuffs, IsCharmed = self:UnitCurableDebuffs(Unit, true);
+                Debuffs, IsCharmed = self:UnitCurableDebuffs(Unit, true); -- leaks memory in 10.2.5
 
                 if CheckStealth then
                     self.Stealthed_Units[Unit] = self:CheckUnitStealth(Unit); -- update stealth status
@@ -792,14 +793,14 @@ do
                 IsDebuffed = (Debuffs[1] and true) or IsCharmed;
                 -- If MUF disagrees
                 if (IsDebuffed ~= IsMUFDebuffed) and not D:DelayedCallExixts("Dcr_Update" .. Unit) then
-                    --@debug@
-                    if IsDebuffed then
-                        self:AddDebugText("delayed debuff found by scaneveryone");
-                        --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
-                    else
-                        self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, IsDebuffed, IsMUFDebuffed);
+                    if self.db.global.MFScanEverybodyReport then
+                        if IsDebuffed then
+                            self:AddDebugText("delayed debuff found by scaneveryone");
+                            --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
+                        else
+                            self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, IsDebuffed, IsMUFDebuffed);
+                        end
                     end
-                    --@end-debug@
 
                     self.MicroUnitF:UpdateMUFUnit(Unit, true);
 
