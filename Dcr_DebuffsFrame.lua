@@ -719,7 +719,12 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth, o_auraUpdateInfo)
         -- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
         if (not D:DelayedCallExixts("Dcr_Update"..unit)) then
             D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-            D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.db.global.DebuffsFrameRefreshRate * (0.9 + D.DebuffUpdateRequest / D.db.global.DebuffsFramePerUPdate), MF, o_auraUpdateInfo);
+            D:ScheduleDelayedCall("Dcr_Update"..unit
+                , CheckStealth and MF.UpdateWithCS or MF.Update
+                , D.db.global.DebuffsFrameRefreshRate * (0.9 + D.DebuffUpdateRequest / D.db.global.DebuffsFramePerUPdate)
+                , MF --, o_auraUpdateInfo
+            );
+
             D:Debug("Update scheduled for, ", unit, MF.ID);
 
             return true; -- return value used to aknowledge that the function actually did something
@@ -1193,7 +1198,7 @@ end
 
 
 function MicroUnitF.prototype:UpdateWithCS(o_auraUpdateInfo)
-    self:Update(false, false, true);
+    self:Update(false, false, true, o_auraUpdateInfo); -- o_auraUpdateInfo is not used for now
 end
 
 function MicroUnitF.prototype:UpdateSkippingSetBuf()

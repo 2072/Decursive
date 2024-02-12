@@ -185,8 +185,12 @@ function D:GetDefaultsSettings()
             DebuffsFramePerUPdate = 10,
 
             MFScanEverybodyTimer = 1,
-
             MFScanEverybodyReport = false,
+            --@alpha@
+            MFScanEverybodyReport = true,
+            --@end-alpha@
+
+
         },
 
         profile = {
@@ -2279,6 +2283,11 @@ function D:SetCureOrder (ToChange)
 
     D:Debug("Spell changed");
     D.Status.SpellsChanged = GetTime();
+    D.Status.delayedDebuffReportDisabled = true;
+    if self.db.global.MFScanEverybodyTimer == 0 or self.db.global.MFScanEverybodyTimer > 1 then
+        D:Debug("ScanEveryBody delayed call scheduled by SetCureOrder")
+        D:ScheduleDelayedCall("scanEverybodyAfterSpellChanged", D.ScanEveryBody, 1, D)
+    end
 
     -- If no spell is selected or none is available set Decursive icon to off
     if FoundSpell ~= 0 then

@@ -488,7 +488,7 @@ do
 
 
         -- test if the unit is mind controlled once
-        -- The unit is not mouseover or target and it's attackable ---> it's charmed! (A new game's mechanic as been introduced where a player can become hostile but remain in controll...)
+        -- The unit is not mouseover or target and it's attackable ---> it's charmed! (A new game's mechanic as been introduced where a player can become hostile but remain in control...)
         if not UnTrustedUnitIDs[Unit] and UnitCanAttack("player", Unit) then
             IsCharmed = true;
         else
@@ -773,8 +773,8 @@ do
         local CheckStealth = self.profile.Show_Stealthed_Status;
 
         --@debug@
-        D:Debug("ScanEverybody, report:", report);
         --local start = debugprofilestop();
+        D:Debug("Scanning everybody...", self.Status.delayedDebuffReportDisabled, self.db.global.MFScanEverybodyReport)
         --@end-debug@
 
         while UnitArray[i] do
@@ -793,13 +793,15 @@ do
                 IsDebuffed = (Debuffs[1] and true) or IsCharmed;
                 -- If MUF disagrees
                 if (IsDebuffed ~= IsMUFDebuffed) and not D:DelayedCallExixts("Dcr_Update" .. Unit) then
-                    if self.db.global.MFScanEverybodyReport then
+                    if (not self.Status.delayedDebuffReportDisabled) and self.db.global.MFScanEverybodyReport then
                         if IsDebuffed then
-                            self:AddDebugText("delayed debuff found by scaneveryone");
+                            self:AddDebugText("delayed debuff found by scaneveryone", Unit, Debuffs[1].Name);
                             --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
                         else
-                            self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, IsDebuffed, IsMUFDebuffed);
+                            self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, MUF.Debuffs[1].Name, IsDebuffed, IsMUFDebuffed);
                         end
+                    else
+                        self:Debug("delayed buff found but no-report is set")
                     end
 
                     self.MicroUnitF:UpdateMUFUnit(Unit, true);
@@ -812,6 +814,8 @@ do
 
             i = i + 1;
         end
+        self.Status.delayedDebuffReportDisabled = false; -- set to true after a reconfiguration, reset only here.
+
         --@debug@
         --D:Debug("|cFF777777Scanning everybody...", i - 1, "units scanned in ", debugprofilestop() - start, "miliseconds|r");
         --@end-debug@
@@ -852,7 +856,7 @@ do
 
     local function UnitBuff(unit, BuffNameToCheck)
             --@debug@
-            D:Debug("UnitBuff", unit, BuffNameToCheck)
+            --D:Debug("UnitBuff", unit, BuffNameToCheck)
             --@end-debug@
         if GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then
             --@debug@

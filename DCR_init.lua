@@ -1027,6 +1027,7 @@ function D:SetConfiguration() -- {{{
     D.Status.InternalSkipList = {};
     D.Status.WaitingForSpellInfo = false;
     D.Status.t_CheckBleedDebuffsActiveIDs = {};
+    D.Status.delayedDebuffReportDisabled = true; -- reenabled in the ScanEverybody function
 
     D.Stealthed_Units = {};
 
@@ -1450,6 +1451,7 @@ function D:Configure() --{{{
     -- first empty out the old "spellbook"
     self.Status.HasSpell = false;
     self.Status.FoundSpells = {};
+    self.Status.delayedDebuffReportDisabled = true;
 
 
     local CuringSpells = self.Status.CuringSpells;
