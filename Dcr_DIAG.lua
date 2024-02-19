@@ -322,8 +322,13 @@ do
         TIandBI[#TIandBI + 1], TIandBI[#TIandBI + 2], TIandBI[#TIandBI + 3], TIandBI[#TIandBI + 4] = GetBuildInfo();
         _Debug(unpack(TIandBI));
 
+        local dbcgd = T.Dcr.db.global.delayedDebuffOccurences
+        local dbcld = T.Dcr.Status.delayedDebuffOccurences
+        local dbcgud = T.Dcr.db.global.delayedUnDebuffOccurences
+        local dbclud = T.Dcr.Status.delayedUnDebuffOccurences
 
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -335,9 +340,11 @@ do
         T._TaintingAccusations, -- TA: %d
         T._NDRTaintingAccusations, -- NDRTA: %d
         T._BlizzardUIErrors, -- BUIE: %d
-        unpack(TIandBI));
+        dbcgd, dbcld, dbcgud, dbclud,
+        unpack(TIandBI)
        -- T.Dcr:GetTimersInfo(), -- TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u]
        -- GetBuildInfo()); --  (%s, %s, %s, %s)
+        );
     end
 
     function T._ShowDebugReport(fromDiag)

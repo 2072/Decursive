@@ -1028,6 +1028,8 @@ function D:SetConfiguration() -- {{{
     D.Status.WaitingForSpellInfo = false;
     D.Status.t_CheckBleedDebuffsActiveIDs = {};
     D.Status.delayedDebuffReportDisabled = true; -- reenabled in the ScanEverybody function
+    D.Status.delayedDebuffOccurences = 0;
+    D.Status.delayedUnDebuffOccurences = 0;
 
     D.Stealthed_Units = {};
 

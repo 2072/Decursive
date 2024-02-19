@@ -783,6 +783,7 @@ do
 
             if MUF and not NoScanStatuses[MUF.UnitStatus] then
                 IsMUFDebuffed = MUF.Debuffs[1] and true or band(MUF.UnitStatus, DC.CHARMED_STATUS) == DC.CHARMED_STATUS;
+                local MUFDebuffName = MUF.Debuffs[1] and MUF.Debuffs[1].Name
 
                 Debuffs, IsCharmed = self:UnitCurableDebuffs(Unit, true); -- leaks memory in 10.2.5
 
@@ -793,12 +794,23 @@ do
                 IsDebuffed = (Debuffs[1] and true) or IsCharmed;
                 -- If MUF disagrees
                 if (IsDebuffed ~= IsMUFDebuffed) and not D:DelayedCallExixts("Dcr_Update" .. Unit) then
+                    -- add counters here independently of the option so that I can monitor things using the reports sent to me.
+                    -- a counter saved in the db, and a local session counter
+
+                    if IsDebuffed then
+                        self.Status.delayedDebuffOccurences = self.Status.delayedDebuffOccurences + 1;
+                        self.db.global.delayedDebuffOccurences = self.db.global.delayedDebuffOccurences + 1;
+                    else
+                        self.Status.delayedUnDebuffOccurences = self.Status.delayedUnDebuffOccurences + 1;
+                        self.db.global.delayedUnDebuffOccurences = self.db.global.delayedUnDebuffOccurences + 1;
+                    end
+
                     if (not self.Status.delayedDebuffReportDisabled) and self.db.global.MFScanEverybodyReport then
                         if IsDebuffed then
                             self:AddDebugText("delayed debuff found by scaneveryone", Unit, Debuffs[1].Name);
                             --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
                         else
-                            self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, MUF.Debuffs[1].Name, IsDebuffed, IsMUFDebuffed);
+                            self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, MUFDebuffName, IsDebuffed, IsMUFDebuffed, MUF.UnitStatus);
                         end
                     else
                         self:Debug("delayed buff found but no-report is set")

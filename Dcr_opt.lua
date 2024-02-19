@@ -190,6 +190,8 @@ function D:GetDefaultsSettings()
             MFScanEverybodyReport = true,
             --@end-alpha@
 
+            delayedDebuffOccurences = 0,
+            delayedUnDebuffOccurences = 0,
 
         },
 
