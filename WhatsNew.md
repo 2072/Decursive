@@ -1,5 +1,12 @@
-Decursive 2.7.16
+Decursive 2.7.17
 ================
+
+Decursive 2.7.17 (2024-03-21)
+-----------------------------
+
+- Fix spell detection for 10.2.6.
+  Thanks to Jardragon901 and Meivyn for their help in fixing this!
+
 
 Decursive 2.7.16 (2024-02-19)
 -----------------------------

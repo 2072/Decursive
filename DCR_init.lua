@@ -1513,7 +1513,7 @@ function D:Configure() --{{{
                     --@end-alpha@
 
                     -- Workaround to the fact that function are not serialized upon storage to the DB
-                    if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellID] then
+                    if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellID] and DC.SpellsToUse[spellID] then -- XXX 
                         spell.EnhancedByCheck = DC.SpellsToUse[spellID].EnhancedByCheck;
                         D.classprofile.UserSpells[spellID].EnhancedByCheck = spell.EnhancedByCheck;
                     end
