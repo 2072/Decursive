@@ -656,7 +656,7 @@ function D:isSpellReady(spellID, isPetAbility)
         end
     end
 
-    return spellID and IsSpellKnown(spellID, isPetAbility); -- returns false if not all known spell checkbox is checked... how stupid.
+    return spellID and IsSpellKnownOrOverridesKnown(spellID, isPetAbility); -- returns false if not all known spell checkbox is checked... how stupid.
 end
 
 function D:GetItemFromLink(link)
