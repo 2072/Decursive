@@ -711,10 +711,14 @@ end
 function D:VersionWarnings(forceDisplay) -- {{{
 
     local alpha = false;
+    local debug = false;
     local fromCheckOut = false;
     --@alpha@
     alpha = true;
     --@end-alpha@
+    --@debug@
+    debug = true;
+    --@end-debug@
 
 
     -- test if WoW's TOC version is superior to Decursive's, wait 40 days and warn the users that this version has expired
@@ -725,11 +729,11 @@ function D:VersionWarnings(forceDisplay) -- {{{
         if not self.db.global.TocExpiredDetection then
             self.db.global.TocExpiredDetection = time();
 
-        elseif time() - self.db.global.TocExpiredDetection > 3600 * 24 * 40 then -- if more than 40 days elapsed since the detection
+        elseif time() - self.db.global.TocExpiredDetection > 3600 * 24 * 40 or debug then -- if more than 40 days elapsed since the detection
 
             DC.DevVersionExpired = true; -- disable error reports
 
-            if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
+            if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay or debug then
 
                 T._ShowNotice ("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
 
@@ -1513,7 +1517,7 @@ function D:Configure() --{{{
                     --@end-alpha@
 
                     -- Workaround to the fact that function are not serialized upon storage to the DB
-                    if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellID] and DC.SpellsToUse[spellID] then -- XXX 
+                    if not spell.EnhancedByCheck and D.classprofile.UserSpells[spellID] and DC.SpellsToUse[spellID] then -- XXX
                         spell.EnhancedByCheck = DC.SpellsToUse[spellID].EnhancedByCheck;
                         D.classprofile.UserSpells[spellID].EnhancedByCheck = spell.EnhancedByCheck;
                     end
