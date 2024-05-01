@@ -807,10 +807,10 @@ do
 
                     if (not self.Status.delayedDebuffReportDisabled) and self.db.global.MFScanEverybodyReport then
                         if IsDebuffed then
-                            self:AddDebugText("delayed debuff found by scaneveryone", Unit, Debuffs[1].Name);
+                            self:AddDebugText("delayed debuff found by scaneveryone (you can disable this error by unchecking the `Periodic scan debug reporting` option in the MUFs performance options - see Decursive 2.7.16 release notes)", Unit, Debuffs[1].Name);
                             --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
                         else
-                            self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, MUFDebuffName, IsDebuffed, IsMUFDebuffed, MUF.UnitStatus);
+                            self:AddDebugText("delayed UNdebuff found by scaneveryone (you can disable this error by unchecking the `Periodic scan debug reporting` option in the MUFs performance options - see Decursive 2.7.16 release notes)", Unit, MUFDebuffName, IsDebuffed, IsMUFDebuffed, MUF.UnitStatus);
                         end
                     else
                         self:Debug("delayed buff found but no-report is set")
