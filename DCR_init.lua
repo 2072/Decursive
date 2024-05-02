@@ -497,9 +497,18 @@ local function SetRuntimeConstants_Once () -- {{{
         DC.SpellsToUse = {
             -- Mage
             [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
-                Types = {DC.CURSE},
+                Types = not DC.WOTLK and {DC.CURSE} or {DC.CURSE, DC.POISON},
                 Better = 0,
                 Pet = false,
+
+                EnhancedBy = DC.WOTLK and DS["TALENT_NATURES_CURE"] ~= nil,
+                EnhancedByCheck = function ()
+                    local talentName, _, _, _, isAvailable = GetTalentInfo(2,6)
+                    return talentName == DS["TALENT_NATURES_CURE"] and isAvailable ~= 0
+                end,
+                Enhancements = {
+                    Types = {DC.CURSE, DC.POISON, DC.MAGIC},
+                }
             },
             -- Druid
             [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
@@ -515,9 +524,18 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Paladin
             [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
-                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                Types =  not DC.WOTLK and {DC.MAGIC, DC.DISEASE, DC.POISON} or {DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
+                -- XXX
+                EnhancedBy = DC.WOTLK and DS["TALENT_SACRED_CLEANSING"] ~= nil,
+                EnhancedByCheck = function ()
+                    local talentName, _, _, _, isAvailable = GetTalentInfo(1,7)
+                    return talentName == DS["TALENT_SACRED_CLEANSING"] and isAvailable ~= 0
+                end,
+                Enhancements = {
+                    Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                }
             },
             -- Warlock
             [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
@@ -544,26 +562,33 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
-            [DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"]] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
+            [not DC.WOTLK and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 1,
                 Pet = false,
             },
             -- Paladin
-            [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
+            [not DC.WOTLK and DSI["SPELL_PURIFY"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
                 Types = {DC.POISON, DC.DISEASE},
                 Better = 1,
                 Pet = false,
             },
             -- Priest
-            [DSI["SPELL_ABOLISH_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
+            [not DC.WOTLK and DSI["SPELL_ABOLISH_DISEASE"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
                 Types = {DC.DISEASE},
                 Better = 2,
                 Pet = false,
 
+
+            },
+            -- Priest
+            [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
+                Types = {DC.DISEASE},
+                Better = 0,
+                Pet = false,
                 EnhancedBy = DC.WOTLK and DS["TALENT_BODY_AND_SOUL"] ~= nil,
                 EnhancedByCheck = function ()
-                    local talentName, _, _, _, isAvailable = GetTalentInfo(2,27)
+                    local talentName, _, _, _, isAvailable = GetTalentInfo(2,6)
                     return talentName == DS["TALENT_BODY_AND_SOUL"] and isAvailable ~= 0
                 end,
                 Enhancements = {
@@ -574,12 +599,6 @@ local function SetRuntimeConstants_Once () -- {{{
                 }
             },
             -- Priest
-            [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
-                Types = {DC.DISEASE},
-                Better = 0,
-                Pet = false,
-            },
-            -- Priest
             [not DC.WOTLK and DSI["SPELL_CURE_DISEASE_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
                 Types = {DC.DISEASE},
                 Better = 0,
@@ -587,9 +606,16 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Shaman
             [DC.WOTLK and DSI["CLEANSE_SPIRIT"] or false] = {
-                Types = {DC.CURSE, DC.DISEASE, DC.POISON},
+                Types = {DC.CURSE},
                 Better = 2,
                 Pet = false,
+                EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"] ~= nil,
+                EnhancedByCheck = function ()
+                    return (select(5, GetTalentInfo(3,14))) > 0;
+                end,
+                Enhancements = {
+                    Types = {DC.MAGIC, DC.CURSE},
+                }
             },
             -- HUNTERS http://www.wowhead.com/?spell=19801
             [DC.WOTLK and DSI["SPELL_TRANQUILIZING_SHOT"] or false]    = {
@@ -604,19 +630,19 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Druid
-            [DSI["SPELL_ABOLISH_POISON"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
+            [not DC.WOTLK and DSI["SPELL_ABOLISH_POISON"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
                 Types = {DC.POISON},
                 Better = 2,
                 Pet = false,
             },
             -- Shaman
-            [DSI["SPELL_CURE_POISON_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
+            [not DC.WOTLK and DSI["SPELL_CURE_POISON_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
                 Types = DC.WOTLK and {DC.POISON, DC.DISEASE} or {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
             -- Druid
-            [DSI["SPELL_CURE_POISON_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
+            [not DC.WOTLK and DSI["SPELL_CURE_POISON_DRUID"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
@@ -954,7 +980,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     D.eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 
-    if not DC.WOWC then
+    if not DC.WOWC or DC.WOTLK then
         D.eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
 
@@ -1734,6 +1760,13 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ['Shadowmeld']                           = 20580,
                 ["IMPROVED_PURIFY_SPIRIT"]               = 383016, -- resto shaman
                 ['SPELL_POISON_CLEANSING_TOTEM']         = 383013, -- shaman
+                -- removed in CT
+                ["SPELL_CURE_POISON_SHAMAN"]             = 526,
+                ["SPELL_ABOLISH_DISEASE"]                = 552,
+                ["SPELL_ABOLISH_POISON"]                 = 2893,
+                ["SPELL_DISPELL_MAGIC_PRIEST_R2"]        = 988,
+                ["SPELL_PURIFY"]                         = 1152,
+                ["SPELL_CURE_POISON_DRUID"]              = 8946,
             } -- }}}
 
 
@@ -1781,12 +1814,15 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["Shadowmeld"]                    = 58984;
                 T._C.DSI["SPELL_TRANQUILIZING_SHOT"]      = 19801;
                 T._C.DSI["TALENT_BODY_AND_SOUL"]          = 64127;
+                T._C.DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"]= 77130;
+                T._C.DSI["TALENT_NATURES_CURE"]           = 88423;
+                T._C.DSI["TALENT_SACRED_CLEANSING"]       = 53551;
                 T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
 
                 T._C.EXPECTED_DUPLICATES = {
-                    {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
-                    {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
+                 --   {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
+                 --   {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
                 }
             end
 
