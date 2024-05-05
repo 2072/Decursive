@@ -503,8 +503,7 @@ local function SetRuntimeConstants_Once () -- {{{
 
                 EnhancedBy = DC.WOTLK and DS["TALENT_NATURES_CURE"] ~= nil,
                 EnhancedByCheck = function ()
-                    local talentName, _, _, _, isAvailable = GetTalentInfo(2,6)
-                    return talentName == DS["TALENT_NATURES_CURE"] and isAvailable ~= 0
+                    return DC.WOTLK and IsPlayerSpell(DSI["TALENT_NATURES_CURE"])
                 end,
                 Enhancements = {
                     Types = {DC.CURSE, DC.POISON, DC.MAGIC},
@@ -527,11 +526,9 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types =  not DC.WOTLK and {DC.MAGIC, DC.DISEASE, DC.POISON} or {DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
-                -- XXX
                 EnhancedBy = DC.WOTLK and DS["TALENT_SACRED_CLEANSING"] ~= nil,
                 EnhancedByCheck = function ()
-                    local talentName, _, _, _, isAvailable = GetTalentInfo(1,7)
-                    return talentName == DS["TALENT_SACRED_CLEANSING"] and isAvailable ~= 0
+                    return DC.WOTLK and IsPlayerSpell(DSI["TALENT_SACRED_CLEANSING"])
                 end,
                 Enhancements = {
                     Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
@@ -586,10 +583,9 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
-                EnhancedBy = DC.WOTLK and DS["TALENT_BODY_AND_SOUL"] ~= nil,
+                EnhancedBy = DC.WOTLK and (DS["TALENT_BODY_AND_SOUL_1"] ~= nil or DS["TALENT_BODY_AND_SOUL_2"]),
                 EnhancedByCheck = function ()
-                    local talentName, _, _, _, isAvailable = GetTalentInfo(2,6)
-                    return talentName == DS["TALENT_BODY_AND_SOUL"] and isAvailable ~= 0
+                    return DC.WOTLK and (IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_1"]) or IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_2"]))
                 end,
                 Enhancements = {
                     Types = {DC.DISEASE, DC.POISON},
@@ -611,7 +607,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
                 EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"] ~= nil,
                 EnhancedByCheck = function ()
-                    return (select(5, GetTalentInfo(3,14))) > 0;
+                    return IsPlayerSpell(DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"])
                 end,
                 Enhancements = {
                     Types = {DC.MAGIC, DC.CURSE},
@@ -726,7 +722,6 @@ local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
 local next              = _G.next;
 local InCombatLockdown  = _G.InCombatLockdown;
-local GetTalentInfo     = _G.GetTalentInfo;
 local UnitClass         = _G.UnitClass;
 local time              = _G.time;
 
@@ -1813,7 +1808,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 -- reassign the proper spells for WotLK
                 T._C.DSI["Shadowmeld"]                    = 58984;
                 T._C.DSI["SPELL_TRANQUILIZING_SHOT"]      = 19801;
-                T._C.DSI["TALENT_BODY_AND_SOUL"]          = 64127;
+                T._C.DSI["TALENT_BODY_AND_SOUL_1"]        = 64127;
+                T._C.DSI["TALENT_BODY_AND_SOUL_2"]        = 64129;
                 T._C.DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"]= 77130;
                 T._C.DSI["TALENT_NATURES_CURE"]           = 88423;
                 T._C.DSI["TALENT_SACRED_CLEANSING"]       = 53551;
@@ -1821,7 +1817,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
 
                 T._C.EXPECTED_DUPLICATES = {
-                 --   {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
+                 {"TALENT_BODY_AND_SOUL_1", "TALENT_BODY_AND_SOUL_2"},
                  --   {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
                 }
             end
