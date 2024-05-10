@@ -672,16 +672,16 @@ local function GetStaticOptions ()
                 type = 'toggle',
                 name = L["OPT_HIDEMUFSHANDLE"],
                 desc = L["OPT_HIDEMUFSHANDLE_DESC"],
-                guiHidden = true,
+                guiHidden = D.profile and not D.profile.HideMUFsHandle,
                 disabled = function() return not D:IsEnabled() or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                 get = function(info) return not D.MFContainerHandle:IsMouseEnabled(); end,
                 order = -4,
             },
             debug = {
                 type = "toggle",
+                guiHidden = not D.debug,
                 name = L["OPT_ENABLEDEBUG"],
                 desc = L["OPT_ENABLEDEBUG_DESC"],
-                guiHidden = true,
                 order = -5,
             },
             -- Atticus Ross rules!
