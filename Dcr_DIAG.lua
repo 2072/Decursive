@@ -945,9 +945,9 @@ do
         --LibStub:GetLibrary
         local UseLibStub = {
             ["AceAddon-3.0"] = 13,
-            ["AceComm-3.0"] = 12,
+            ["AceComm-3.0"] = 14,
             ["AceConsole-3.0"] = 7,
-            ["AceDB-3.0"] = 28,
+            ["AceDB-3.0"] = 29,
             ["AceDBOptions-3.0"] = 15,
             ["AceEvent-3.0"] = 4,
             ["AceHook-3.0"] = 9,
@@ -957,11 +957,11 @@ do
             ["AceGUI-3.0"] = 41,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 85,
-            ["AceConfigRegistry-3.0"] = 20,
+            ["AceConfigDialog-3.0"] = 86,
+            ["AceConfigRegistry-3.0"] = 21,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 44,
+            ["LibDBIcon-1.0"] = 52,
             ["LibQTip-1.0"] = 49,
             ["CallbackHandler-1.0"] = 8,
             ["LibDualSpec-1.0"] = (DC.WOTLK or not DC.WOWC) and 22 or nil,
