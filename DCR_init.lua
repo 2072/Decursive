@@ -58,7 +58,8 @@ local D;
 local _G                    = _G;
 local select                = _G.select;
 local GetSpellBookItemInfo  = _G.GetSpellBookItemInfo;
-local GetSpellInfo          = _G.GetSpellInfo;
+local GetSpellInfo          = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+local GetSpellName          = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
 local IsSpellKnown          = nil; -- use D:isSpellReady instead
 local GetSpecialization     = _G.GetSpecialization;
 local IsPlayerSpell         = _G.IsPlayerSpell;
@@ -92,7 +93,7 @@ local function RegisterLocals_Once() -- {{{
     -- While that was probably caused by a badd-on redefining the constant,
     -- it's best to stay on the safe side...
 
-    D.LC = setmetatable(FillLocalizedClassList({}, false), {__index = function(t,k) return k end});
+    D.LC = setmetatable((FillLocalizedClassList or LocalizedClassList)({}, false), {__index = function(t,k) return k end});
 
     RegisterLocals_Once = nil;
 end -- }}}
@@ -364,7 +365,7 @@ local function SetRuntimeConstants_Once () -- {{{
 
                 EnhancedBy = true,
                 EnhancedByCheck = function ()
-                    return (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SINGE_MAGIC"] or (GetSpellInfo(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SEAR_MAGIC"];
+                    return (GetSpellName(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SINGE_MAGIC"] or (GetSpellName(DS["SPELL_COMMAND_DEMON"])) == DS["PET_SEAR_MAGIC"];
                 end,
                 Enhancements = {
                     Types = {DC.MAGIC},
@@ -465,7 +466,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
                 EnhancedBy = true,
                 EnhancedByCheck = function ()
-                    return (GetSpellInfo(DS["SPELL_EXPUNGE"])) == DS["SPELL_NATURALIZE"];
+                    return (GetSpellName(DS["SPELL_EXPUNGE"])) == DS["SPELL_NATURALIZE"];
                 end,
                 Enhancements = {
                     Types = {DC.POISON, DC.MAGIC},
@@ -714,9 +715,6 @@ local L  = D.L;
 local LC = D.LC;
 local DC = T._C;
 
-local BOOKTYPE_PET      = _G.BOOKTYPE_PET;
-local BOOKTYPE_SPELL    = _G.BOOKTYPE_SPELL;
-
 local select            = _G.select;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
@@ -950,7 +948,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     end); -- }}}
 
     D:SecureHook("CastSpellByName", "HOOK_CastSpellByName");
-    D:SecureHook("UseItemByName",   "HOOK_UseItemByName");
+    D:SecureHook(C_Item, "UseItemByName",   "HOOK_UseItemByName");
 
     -- these events are automatically stopped when the addon is disabled by Ace
 
@@ -1141,7 +1139,7 @@ function D:SetConfiguration() -- {{{
         -- Try the id on the functions directly and remove them if they crash (they can return nothing at an early game loading stage)
         if not (pcall(
             function ()
-                return spellData.IsItem and (GetItemInfo(spellOrItemID * -1)) or (GetSpellInfo(spellOrItemID))
+                return spellData.IsItem and (GetItemInfo(spellOrItemID * -1)) or (GetSpellName(spellOrItemID))
             end)) then
             D.classprofile.UserSpells[spellOrItemID] = nil;
             --@debug@
@@ -1629,7 +1627,6 @@ function D:Configure() --{{{
 end --}}}
 
 function D:SetSpellsTranslations(FromDIAG) -- {{{
-    local GetSpellInfo = _G.GetSpellInfo;
 
     if not T._C.DS then
         T._C.DS = {};
@@ -1841,7 +1838,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
     ok = true;
     for Sname, Sid in pairs(DSI) do
 
-        DS[Sname] = (GetSpellInfo(Sid));
+        DS[Sname] = (GetSpellName(Sid));
 
         if FromDIAG and DS[Sname] then
             if not duplicates[DS[Sname]] then

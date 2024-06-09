@@ -738,7 +738,8 @@ end
 -- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnLoad, OnPreClick) {{{
 do
     local UnitGUID = _G.UnitGUID;
-    local GetSpellInfo = _G.GetSpellInfo;
+    local GetSpellInfo = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+    local GetSpellName = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
 
@@ -879,7 +880,7 @@ do
                 for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
                     ttHelpLines[Prio] = {[D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio]))] =
 
-                    ("%s%s"):format((GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "")}
+                    ("%s%s"):format(GetSpellName(Spell) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "")}
                 end
 
                 t_insert(ttHelpLines, {[DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]]] = ("%s"):format(L["TARGETUNIT"])});
@@ -1218,6 +1219,7 @@ do
     function MicroUnitF.prototype:SetUnstableAttribute(attribute, value)
         self.Frame:SetAttribute(attribute, value);
         self.usedAttributes[attribute] = self.LastAttribUpdate;
+        D:Debug("SetUnstableAttribute", attribute, value); -- XXX
     end
 
     function MicroUnitF.prototype:CleanDefuncUnstableAttributes()
@@ -1390,7 +1392,7 @@ do
     local floor             = _G.math.floor;
     local fmod              = _G.math.fmod;
     local CooldownFrame_Set = _G.CooldownFrame_Set;
-    local GetSpellCooldown  = _G.GetSpellCooldown;
+    local GetSpellCooldown  = _G.C_Spell and _G.C_Spell.GetSpellCooldown or _G.GetSpellCooldown;
     local GetItemCooldown   = _G.C_Container and _G.C_Container.GetItemCooldown or _G.GetItemCooldown;
     local GetRaidTargetIndex= _G.GetRaidTargetIndex;
     local bor               = _G.bit.bor;

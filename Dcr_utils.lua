@@ -89,7 +89,9 @@ local GetTime           = _G.GetTime;
 local IsSpellInRange    = _G.IsSpellInRange;
 local UnitInRange       = _G.UnitInRange;
 local debugprofilestop  = _G.debugprofilestop;
-local GetSpellInfo      = _G.GetSpellInfo;
+local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+local GetSpellName      = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
+local GetSpellId        = _G.C_Spell and _G.C_Spell.GetSpellInfo and function(spellName) return GetSpellInfo(spellName).spellID end or function(spellName) return (select(7, GetSpellInfo(spellName))) end
 local GetItemInfo       = _G.GetItemInfo;
 local pcall             = _G.pcall;
 
@@ -632,7 +634,7 @@ function D:isSpellReady(spellID, isPetAbility)
         -- so we need to get back to the corresponding current spell id using
         -- the name of the spell.
 
-        local spellName = (GetSpellInfo(spellID)); -- may return nil if the spell is not known depending on wow version and whether it is a pet ability or not...
+        local spellName = GetSpellName(spellID); -- may return nil if the spell is not known depending on wow version and whether it is a pet ability or not...
 
         if not DC.WOTLK then -- but ranks are back in wotlk and former ranks disappear when the next one is learned...
             local spellType, id
@@ -649,7 +651,7 @@ function D:isSpellReady(spellID, isPetAbility)
             end
         else
             if spellName then
-                spellID = select(7, GetSpellInfo(spellName));
+                spellID = GetSpellId(spellName);
             elseif isPetAbility then
                 D:Debug("Pet ability update lookup failed", spellID, spellName, "GetSpellInfo(spellName):", GetSpellInfo(spellName));
             end
@@ -684,9 +686,9 @@ function D:GetItemFromLink(link)
     return nil;
 end
 
-function D.GetSpellOrItemInfo(spellID)
+function D.GetSpellOrItemInfo(spellID) -- could be renamed to GetSpellOrItemName
     if spellID > 0 then
-        return GetSpellInfo(spellID);
+        return GetSpellName(spellID);
     else
         return GetItemInfo(spellID * -1) or "Item: " .. spellID * -1;
     end

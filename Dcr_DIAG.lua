@@ -48,6 +48,8 @@ local pcall             = _G.pcall;
 local pairs             = _G.pairs;
 local ipairs            = _G.ipairs;
 local InCombatLockdown  = _G.InCombatLockdown;
+local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+local GetSpellName      = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI. -- Also used by HHTD from 2013-04-05
@@ -858,7 +860,7 @@ do
             if not spellData.IsDefault then
                  customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %s) - %s - %s - %s - B: %d - Ts: %s - UF: %s - Macro: %s\n"):format(
                  --                                                                  3    4    5       6        7        8           9
-                 select (2, pcall(function () return tostring(spellData.IsItem and (GetItemInfo(spellID * -1)) or (GetSpellInfo(spellID))) end)), tostring(spellID),
+                 select (2, pcall(function () return tostring(spellData.IsItem and (GetItemInfo(spellID * -1)) or GetSpellName(spellID)) end)), tostring(spellID),
                  spellData.Disabled and "OFF" or "ON", -- 3
                  spellData.Pet and "PET" or "PLAYER", -- 4
                  spellData.IsItem and "ITEM" or "SPELL", -- 5
@@ -885,7 +887,7 @@ do
             return errorPrefix("T._C.DSI not available");
         end
 
-        return "\n(left and right side should be 'matching')\n" .. D:tAsString(D:tMap(T._C.DSI, GetSpellInfo));
+        return "\n(left and right side should be 'matching')\n" .. D:tAsString(D:tMap(T._C.DSI, GetSpellName));
     end
     function T._ExportActionsConfiguration () -- (use pcall with this) -- {{{
 
@@ -968,7 +970,7 @@ do
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00LibStub|r) could not be found.\n";
-        local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your add-ons properly.\nIf that doesn't work, install the add-ons BugGrabber and BugSack in order to detect other errors preventing Decursive to load properly.\n|cFFF000F0Remember that the WoW client must _NOT_ be running while you install add-ons.|r";
+        local GenericErrorMessage2 = "Try to re-install Decursive from its original archive or use the |cFF00FF00Curse client|r (Curse.com) to update |cFFFF0000ALL|r your add-ons properly.\nIf that doesn't work, install the add-ons BugGrabber and BugSack in order to detect other errors preventing Decursive from loading properly.\n|cFFF000F0Remember that the WoW client must _NOT_ be running while you install add-ons.|r";
 
         local ErrorFound = false;
         local Errors = {};

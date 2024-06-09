@@ -601,7 +601,7 @@ do -- Combat log event handling {{{1
     local bor           = bit.bor;
     local UnitGUID      = _G.UnitGUID;
     local GetTime       = _G.GetTime;
-    local GetSpellInfo  = _G.GetSpellInfo; -- XXX to fix for 8
+    local GetSpellInfo  = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
     local time          = _G.time;
 
     --[=[ useless bitfields {{{2
@@ -667,7 +667,7 @@ do -- Combat log event handling {{{1
             timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE = CombatLogGetCurrentEventInfo()
         end
                     --@debug@
-                    if self.debug then self:Debug("COMBAT_LOG_EVENT_UNFILTERED: ", timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE); end
+                    --if self.debug then self:Debug("COMBAT_LOG_EVENT_UNFILTERED: ", timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE); end
                     --@end-debug@
         -- check for exceptions
         if SpecialDebuffs[spellID] and event == SpecialDebuffs[spellID] then
@@ -748,7 +748,7 @@ do -- Combat log event handling {{{1
 
             if event == "SPELL_CAST_SUCCESS" then
 
-                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName)); end
+                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName)); end -- XXX TWW
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
                 self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);

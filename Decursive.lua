@@ -402,12 +402,31 @@ end
 do
 
     local D                 = D;
+    local C_UnitAuras       = _G.C_UnitAuras
 
-    local UnitDebuff        = _G.UnitDebuff;
+    local UnitDebuff        = _G.UnitDebuff or function (unitToken, i)
+        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i);
+
+        if not auraData then
+			return nil;
+		end
+
+        return auraData.name,
+		auraData.icon,
+		auraData.applications,
+		auraData.dispelName,
+		auraData.duration,
+		auraData.expirationTime,
+		nil,
+		nil,
+		nil,
+		auraData.spellId;
+    end
+
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;
     local GetTime           = _G.GetTime;
-    local GetSpellDescription  = _G.GetSpellDescription;
+    local GetSpellDescription = _G.C_Spell and _G.C_Spell.GetSpellDescription or _G.GetSpellDescription;
     local IsSpellDataCached    = _G.C_Spell.IsSpellDataCached
     local RequestLoadSpellData = _G.C_Spell.RequestLoadSpellData
 

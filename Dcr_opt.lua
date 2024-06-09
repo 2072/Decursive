@@ -75,8 +75,9 @@ local GetNumRaidMembers = DC.GetNumRaidMembers;
 local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
-local GetSpellInfo      = _G.GetSpellInfo;
-local GetSpellDescription = _G.GetSpellDescription;
+local GetSpellInfo          = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+local GetSpellName          = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
+local GetSpellDescription = _G.C_Spell and _G.C_Spell.GetSpellDescription or _G.GetSpellDescription;
 local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
 local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local _;
@@ -587,11 +588,11 @@ local function GetStaticOptions ()
         if tonumber(v) then
             v = tonumber(v);
             -- test if it's valid
-            if not (GetSpellInfo(v)) and not (GetItemInfo(v)) then
+            if not GetSpellName(v) and not (GetItemInfo(v)) then
                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
             end
 
-            isItem = not (GetSpellInfo(v));
+            isItem = not GetSpellName(v);
 
         elseif D:GetSpellFromLink(v) then
             -- We got a spell link!
@@ -2446,7 +2447,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
                 --D:Debug("Dealing with spell description for ", spellID);
                 if spellID ~= 0 then
-                    if spellDesc == "" then
+                    if spellDesc == "" or not spellDesc then
                         if not C_Spell.IsSpellDataCached(spellID) then
                             C_Spell.RequestLoadSpellData(spellID);
                             desc = L["OPT_SPELL_DESCRIPTION_LOADING"];
@@ -2578,7 +2579,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     end
 
     local AddFunc = function (spellID)
-        local newDebuff = GetSpellInfo(spellID);
+        local newDebuff = GetSpellName(spellID);
         if newDebuff then
             DebuffsSkipList[newDebuff] = spellID;
             D:Debug("'%s' added to debuff skip list", newDebuff, spellID);
@@ -2647,7 +2648,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
                 if spellID ~= 0 and not C_Spell.DoesSpellExist(spellID) then
                     RemoveFunc({["Debuff"] = debuffName});
                 else
-                    realName = (GetSpellInfo(spellID));
+                    realName = GetSpellName(spellID);
                     if realName and realName ~= debuffName then
                         DebuffsSkipList[debuffName] = nil;
                         DebuffsSkipList[realName] = spellID;
@@ -2669,7 +2670,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
                         D:Print((L["OPT_FILTERED_DEBUFF_RENAMED"]):format(debuffName, realName, spellID));
                     elseif not realName then
-                        D:Debug(realName, "no name for spell ID", spellID, (GetSpellInfo(spellID)))
+                        D:Debug(realName, "no name for spell ID", spellID, GetSpellName(spellID))
                     end
                 end
             end
