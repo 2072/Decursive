@@ -963,6 +963,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     end
     D.eventFrame:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
     D.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    D.eventFrame:RegisterEvent("PLAYER_LEAVING_WORLD");
 
     -- Combat detection events
     D.eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -1908,73 +1909,158 @@ end -- }}}
 
 local MAX_ACCOUNT_MACROS = _G.MAX_ACCOUNT_MACROS;
 
-function D:UpdateMacro () -- {{{
+do
 
+    local BlizzardIsAnnoyingComment = "# Ask Blizzard to re-add support for macrotext attribute dropped in wow 11 if you do not want to see this macro...\n"
 
-    if D.profile.DisableMacroCreation then
-        return false;
+    local function updateMacroByName(macroName, icon, macroText, notEditable) -- {{{
+        if not D.Status.createdMacros then
+            D.Status.createdMacros = {};
+        end
+
+        local createdMacros = D.Status.createdMacros
+
+        local updatedMacroText = notEditable and BlizzardIsAnnoyingComment..macroText or macroText
+
+        if (updatedMacroText:len() > 256) then
+            updatedMacroText = macroText
+        end
+
+        local catchAllErrorBackup = T._CatchAllErrors;
+        T._CatchAllErrors = false; -- the API calls below fire some WoW events (UPDATE_MACRO), we don't want to catch errors done by bugged handlers from other add-ons
+
+        --D:PrintLiteral(GetMacroIndexByName(D.CONF.MACRONAME));
+        if GetMacroIndexByName(macroName) ~= 0 then
+            if notEditable or not D.profile.AllowMacroEdit then
+                EditMacro(GetMacroIndexByName(macroName), macroName, icon, updatedMacroText);
+                if notEditable then
+                    createdMacros[macroName] = true
+                end
+                D:Debug(("Macro '%s' updated"):format(macroName));
+            else
+                D:Debug(("Macro '%s' not updated due to AllowMacroEdit"):format(macroName));
+            end
+        elseif (GetNumMacros()) < MAX_ACCOUNT_MACROS then
+            CreateMacro(macroName, icon, updatedMacroText);
+            if notEditable then
+                createdMacros[macroName] = true
+            end
+        else
+            D:errln(("Too many macros exist, Decursive cannot create its '%s' macro"):format(macroName));
+            T._CatchAllErrors = catchAllErrorBackup;
+            return false;
+        end
+
+        T._CatchAllErrors = catchAllErrorBackup;
+
+        return true;
+    end -- }}}
+
+    function D:SetMacrosPerPrioTable(unit)
+        D.Status.prio_macro = {};
+        local prio_macro = D.Status.prio_macro;
+        local tmp;
+
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+
+            if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
+
+                if not D.UnitFilteringTest (unit, D.Status.FoundSpells[Spell][6]) then
+                    --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
+                    -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
+                    prio_macro[Prio] = ("%s/%s [@%s, help][@%s, harm] %s"):format(
+
+                        not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
+                        D.Status.FoundSpells[Spell][2] > 0 and "cast" or "use", -- item test
+                        unit, unit,
+                        Spell
+                    );
+                end
+            else
+                tmp = D.Status.FoundSpells[Spell][5];
+                tmp = tmp:gsub("UNITID", unit);
+                if tmp:len() < 256 then -- last chance protection, shouldn't happen
+                    prio_macro[Prio] = tmp;
+                else
+                    D:errln("Macro too long for prio", Prio);
+                end
+            end
+
+        end
+
     end
 
-    if InCombatLockdown() then
-        D:AddDelayedFunctionCall (
-        "UpdateMacro", self.UpdateMacro,
-        self);
-        return false;
-    end
-    D:Debug("UpdateMacro called");
+    function D:UpdateInternalMacros ()
+        if not DC.TWW then
+            return
+        end
 
+        -- Blizzard removed the macrotext button attribute so now we need to define our macro alongside the user defined macro... that's dirty but we have no choice...
 
-    local CuringSpellsPrio  = D.Status.CuringSpellsPrio;
-    local ReversedCureOrder = D.Status.ReversedCureOrder;
-    local CuringSpells      = D.Status.CuringSpells;
+        updateMacroByName("zDecursive_Target", "INV_MISC_QUESTIONMARK", "/target mouseover", true);
+        updateMacroByName("zDecursive_Focus", "INV_MISC_QUESTIONMARK", "/focus mouseover", true);
 
+        for prio, macroText in pairs(D.Status.prio_macro) do
+            local macroName = "zDecursive_prio"..prio
+            updateMacroByName(macroName, "INV_MISC_QUESTIONMARK", macroText, true)
 
-    -- Get an ordered spell table
-    local Spells = {};
-    for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE
-        Spells[Prio] = Spell;
+        end
     end
 
-    if (next (Spells)) then
-        for i=1,4 do
-            if (not Spells[i]) then
-                table.insert (Spells, CuringSpells[ReversedCureOrder[1] ]);
+    function D:UpdateMacro () -- {{{
+
+
+        if D.profile.DisableMacroCreation then
+            return false;
+        end
+
+        if InCombatLockdown() then
+            D:AddDelayedFunctionCall (
+            "UpdateMacro", self.UpdateMacro,
+            self);
+            return false;
+        end
+        D:Debug("UpdateMacro called");
+
+        D:UpdateInternalMacros();
+
+        local CuringSpellsPrio  = D.Status.CuringSpellsPrio;
+        local ReversedCureOrder = D.Status.ReversedCureOrder;
+        local CuringSpells      = D.Status.CuringSpells;
+
+
+        -- Get an ordered spell table
+        local Spells = {};
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- XXX MACROUPDATE
+            Spells[Prio] = Spell;
+        end
+
+        if (next (Spells)) then
+            for i=1,4 do
+                if (not Spells[i]) then
+                    table.insert (Spells, CuringSpells[ReversedCureOrder[1] ]);
+                end
             end
         end
-    end
 
-    local MacroParameters = {
-        D.CONF.MACRONAME,
-        "INV_MISC_QUESTIONMARK", -- icon
-        next(Spells) and string.format("/stopcasting\n/cast [@mouseover,nomod,exists] %s;  [@mouseover,exists,mod:ctrl] %s; [@mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script DecursiveRootTable.Dcr:Println('"..L["NOSPELL"].."')",
-    };
+        local MacroParameters = {
+            D.CONF.MACRONAME,
+            "INV_MISC_QUESTIONMARK", -- icon
+            next(Spells) and string.format("/stopcasting\n/cast [@mouseover,nomod,exists] %s;  [@mouseover,exists,mod:ctrl] %s; [@mouseover,exists,mod:shift] %s", unpack(Spells)) or "/script DecursiveRootTable.Dcr:Println('"..L["NOSPELL"].."')",
+        };
 
-    local catchAllErrorBackup = T._CatchAllErrors;
-    T._CatchAllErrors = false; -- the API calls below fire some WoW events (UPDATE_MACRO), we don't want to catch errors done by bugged handlers
+        local catchAllErrorBackup = T._CatchAllErrors;
+        T._CatchAllErrors = false; -- the API calls below fire some WoW events (UPDATE_MACRO), we don't want to catch errors done by bugged handlers
 
-    --D:PrintLiteral(GetMacroIndexByName(D.CONF.MACRONAME));
-    if GetMacroIndexByName(D.CONF.MACRONAME) ~= 0 then
-        if not D.profile.AllowMacroEdit then
-            EditMacro(D.CONF.MACRONAME, unpack(MacroParameters));
-            D:Debug("Macro updated");
-        else
-            D:Debug("Macro not updated due to AllowMacroEdit");
-        end
-    elseif (GetNumMacros()) < MAX_ACCOUNT_MACROS then
-        CreateMacro(unpack(MacroParameters));
-    else
-        D:errln("Too many macros exist, Decursive cannot create its macro");
+        updateMacroByName(unpack(MacroParameters));
+
+        D:SetMacroKey(D.db.global.MacroBind);
+
         T._CatchAllErrors = catchAllErrorBackup;
-        return false;
-    end
+        return true;
 
-
-    D:SetMacroKey(D.db.global.MacroBind);
-
-    T._CatchAllErrors = catchAllErrorBackup;
-    return true;
-
-end -- }}}
+    end -- }}}
+end
 
 
 

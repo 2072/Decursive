@@ -2217,7 +2217,7 @@ function D:SetCureOrder (ToChange)
 
    -- take care of the lost spells here
    -- Sort the lost spells so that they can be read in the correct order
-   LostSpells =  D:tSortUsingKeys(LostSpells);
+   LostSpells = D:tSortUsingKeys(LostSpells);
 
    -- Place the lost spells after the found ones but with <0 values so they
    -- can be readded later using their former priorities
@@ -2301,7 +2301,7 @@ function D:SetCureOrder (ToChange)
         D:SetIcon(DC.IconOFF);
     end
 
-
+    self:SetMacrosPerPrioTable("mouseover");
 
 end
 

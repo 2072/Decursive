@@ -166,6 +166,20 @@ function D:PLAYER_ENTERING_WORLD()
     end
 end
 
+function D:PLAYER_LEAVING_WORLD()
+    if not D.Status.createdMacros then
+        return
+    end
+
+    for macroName, toDelete in pairs( D.Status.createdMacros) do
+        local index = GetMacroIndexByName(macroName)
+        if index and toDelete then
+            DeleteMacro(index)
+        end
+    end
+
+end
+
 local OncePetRetry = false;
 
 function D:UNIT_PET (selfevent, Unit) -- {{{

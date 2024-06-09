@@ -1219,7 +1219,9 @@ do
     function MicroUnitF.prototype:SetUnstableAttribute(attribute, value)
         self.Frame:SetAttribute(attribute, value);
         self.usedAttributes[attribute] = self.LastAttribUpdate;
-        D:Debug("SetUnstableAttribute", attribute, value); -- XXX
+        --@debug@
+        D:Debug("SetUnstableAttribute", attribute, value);
+        --@end-debug@
     end
 
     function MicroUnitF.prototype:CleanDefuncUnstableAttributes()
@@ -1307,34 +1309,34 @@ do
 
         local MouseButtons = D.db.global.MouseButtons;
 
-        self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macrotext"), ("/target %s"):format(Unit));
-        self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macrotext"), ("/focus %s"):format(Unit));
+        if DC.TWW then
+            self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macro"), "zDecursive_Target");
+            self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macro"), "zDecursive_Focus");
+        else
 
-        -- set the spells attributes using the lookup tables above
-        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
+            self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macrotext"), ("/target %s"):format(Unit));
+            self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macrotext"), ("/focus %s"):format(Unit));
+        end
 
-            if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
 
-                if not D.UnitFilteringTest (Unit, D.Status.FoundSpells[Spell][6]) then
-                    --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
-                    -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/%s [@%s, help][@%s, harm] %s"):format(
-                    not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
-                    D.Status.FoundSpells[Spell][2] > 0 and "cast" or "use", -- item test
-                    Unit,Unit,
-                    Spell));
+        local FoundSpells = D.Status.FoundSpells;
+        local ReversedCureOrder = D.Status.ReversedCureOrder;
+        local CuringSpells = D.Status.CuringSpells;
+
+        for prio, macroText in pairs(D.Status.prio_macro) do
+            if DC.TWW then
+                local debufType = ReversedCureOrder[prio]
+                local spell = CuringSpells[debufType]
+                local filter = FoundSpells[spell][6]
+
+                if not D.UnitFilteringTest (Unit, filter) then
+                    self:SetUnstableAttribute(MouseButtons[prio]:format("macro"), "zDecursive_prio"..prio)
                 end
             else
-                tmp = D.Status.FoundSpells[Spell][5];
-                tmp = tmp:gsub("UNITID", Unit);
-                if tmp:len() < 256 then -- last chance protection, shouldn't happen
-                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), tmp);
-                else
-                    D:errln("Macro too long for", Unit);
-                end
+                self:SetUnstableAttribute(MouseButtons[prio]:format("macrotext"), macroText)
             end
-
         end
+
 
         -- clean unused attributes...
         self:CleanDefuncUnstableAttributes();

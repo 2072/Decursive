@@ -3,8 +3,8 @@
 ## Interface-Classic: 11502
 ## Interface-Wrath: 30403
 ## Interface-Cata: 40400
-## X-Max-Interface: 100207
-## X-Min-Interface: 11502
+## X-Max-Interface: 110000
+## X-Min-Interface:  11502
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@
