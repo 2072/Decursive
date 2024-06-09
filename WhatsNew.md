@@ -1,5 +1,11 @@
-Decursive 2.7.19
+Decursive 2.7.20
 ================
+
+Decursive 2.7.20 (2024-06-10)
+-----------------------------
+
+- Compatible with The War Within Beta.
+
 
 Decursive 2.7.19 (2024-05-10)
 -----------------------------
