@@ -330,10 +330,11 @@ do
         local dbclud = T.Dcr.Status.delayedUnDebuffOccurences
 
 
-        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s DTl: %d DE: %d nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
-        tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
+        #DebugTextTable / 2, -- DTl: %d
+        T._DecursiveErrors, -- DE: %d
         T._NonDecursiveErrors, -- nDrE: %d
         tostring(T._EmbeddedMode), -- Embeded: %s
         IsWindowsClient() and 1 or 0, -- W: %d
@@ -468,6 +469,7 @@ local AddDebugText = T._AddDebugText;
 local IsReporting = false;
 
 T._NonDecursiveErrors = 0;
+T._DecursiveErrors = 0;
 T._TaintingAccusations = 0;
 T._NDRTaintingAccusations = 0;
 T._BlizzardUIErrors = 0;
@@ -572,6 +574,7 @@ function T._onError(event, errorObject)
             T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
             mine = true;
             _Debug("Lua error recorded");
+            T._DecursiveErrors = T._DecursiveErrors + 1;
         else
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
             T._TaintingAccusations = T._TaintingAccusations + 1;
