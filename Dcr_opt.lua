@@ -188,7 +188,7 @@ function D:GetDefaultsSettings()
             MFScanEverybodyTimer = 1,
             MFScanEverybodyReport = false,
             --@alpha@
-            MFScanEverybodyReport = true,
+            -- MFScanEverybodyReport = true, -- UNdebuff is triggered very often, not sure when. No more need for reporting though.
             --@end-alpha@
 
             delayedDebuffOccurences = 0,
