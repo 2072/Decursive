@@ -558,6 +558,19 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
+                UnitFiltering = DC.WOTLK and {
+                    [DC.MAGIC]  = 1, -- player only
+                } or nil,
+                EnhancedBy = DC.WOTLK and (DS["TALENT_ABSOLUTION"] ~= nil),
+                EnhancedByCheck = function ()
+                    return DC.WOTLK and (IsPlayerSpell(DSI["TALENT_ABSOLUTION"]))
+                end,
+                Enhancements = DC.WOTLK and {
+                    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                    UnitFiltering = {
+                        [DC.MAGIC]  = nil,
+                    },
+                } or nil,
             },
             -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
             [not DC.WOTLK and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
@@ -1808,6 +1821,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["SPELL_TRANQUILIZING_SHOT"]      = 19801;
                 T._C.DSI["TALENT_BODY_AND_SOUL_1"]        = 64127;
                 T._C.DSI["TALENT_BODY_AND_SOUL_2"]        = 64129;
+                T._C.DSI["TALENT_ABSOLUTION"]             = 33167;
                 T._C.DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"]= 77130;
                 T._C.DSI["TALENT_NATURES_CURE"]           = 88423;
                 T._C.DSI["TALENT_SACRED_CLEANSING"]       = 53551;
