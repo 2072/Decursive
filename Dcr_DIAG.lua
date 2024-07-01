@@ -324,10 +324,10 @@ do
         TIandBI[#TIandBI + 1], TIandBI[#TIandBI + 2], TIandBI[#TIandBI + 3], TIandBI[#TIandBI + 4] = GetBuildInfo();
         _Debug(unpack(TIandBI));
 
-        local dbcgd = T.Dcr.db.global.delayedDebuffOccurences
-        local dbcld = T.Dcr.Status.delayedDebuffOccurences
-        local dbcgud = T.Dcr.db.global.delayedUnDebuffOccurences
-        local dbclud = T.Dcr.Status.delayedUnDebuffOccurences
+        local dbcgd = T.Dcr.db and T.Dcr.db.global.delayedDebuffOccurences or -1
+        local dbcld = T.Dcr.Status and T.Dcr.Status.delayedDebuffOccurences or -1
+        local dbcgud = T.Dcr.db and T.Dcr.db.global.delayedUnDebuffOccurences or -1
+        local dbclud = T.Dcr.Status and T.Dcr.Status.delayedUnDebuffOccurences or -1
 
 
         DebugHeader = ("%s\n@project-version@  %s(%s)  CT: %0.4f D: %s %s %s DTl: %d DE: %d nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
