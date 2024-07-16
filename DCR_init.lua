@@ -2003,23 +2003,6 @@ do
 
     end
 
-    function D:UpdateInternalMacros ()
-        if not DC.TWW then
-            return
-        end
-
-        -- Blizzard removed the macrotext button attribute so now we need to define our macro alongside the user defined macro... that's dirty but we have no choice...
-
-        updateMacroByName("zDecursive_Target", "INV_MISC_QUESTIONMARK", "/target mouseover", true);
-        updateMacroByName("zDecursive_Focus", "INV_MISC_QUESTIONMARK", "/focus mouseover", true);
-
-        for prio, macroText in pairs(D.Status.prio_macro) do
-            local macroName = "zDecursive_prio"..prio
-            updateMacroByName(macroName, "INV_MISC_QUESTIONMARK", macroText, true)
-
-        end
-    end
-
     function D:UpdateMacro () -- {{{
 
 
@@ -2034,8 +2017,6 @@ do
             return false;
         end
         D:Debug("UpdateMacro called");
-
-        D:UpdateInternalMacros();
 
         local CuringSpellsPrio  = D.Status.CuringSpellsPrio;
         local ReversedCureOrder = D.Status.ReversedCureOrder;

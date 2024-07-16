@@ -1309,14 +1309,9 @@ do
 
         local MouseButtons = D.db.global.MouseButtons;
 
-        if DC.TWW then
-            self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macro"), "zDecursive_Target");
-            self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macro"), "zDecursive_Focus");
-        else
 
-            self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macrotext"), ("/target %s"):format(Unit));
-            self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macrotext"), ("/focus %s"):format(Unit));
-        end
+        self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macrotext"), ("/target %s"):format(Unit));
+        self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macrotext"), ("/focus %s"):format(Unit));
 
 
         local FoundSpells = D.Status.FoundSpells;
@@ -1324,17 +1319,7 @@ do
         local CuringSpells = D.Status.CuringSpells;
 
         for prio, macroText in pairs(D.Status.prio_macro) do
-            if DC.TWW then
-                local debufType = ReversedCureOrder[prio]
-                local spell = CuringSpells[debufType]
-                local filter = FoundSpells[spell][6]
-
-                if not D.UnitFilteringTest (Unit, filter) then
-                    self:SetUnstableAttribute(MouseButtons[prio]:format("macro"), "zDecursive_prio"..prio)
-                end
-            else
-                self:SetUnstableAttribute(MouseButtons[prio]:format("macrotext"), macroText)
-            end
+            self:SetUnstableAttribute(MouseButtons[prio]:format("macrotext"), macroText)
         end
 
 
