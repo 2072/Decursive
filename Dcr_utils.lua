@@ -86,13 +86,14 @@ local tonumber          = _G.tonumber;
 local UnitGUID          = _G.UnitGUID;
 local band              = _G.bit.band;
 local GetTime           = _G.GetTime;
-local IsSpellInRange    = _G.IsSpellInRange;
+local IsSpellInRange    = _G.C_Spell and _G.C_Spell.IsSpellInRange or _G.IsSpellInRange;
 local UnitInRange       = _G.UnitInRange;
 local debugprofilestop  = _G.debugprofilestop;
 local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 local GetSpellName      = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
 local GetSpellId        = _G.C_Spell and _G.C_Spell.GetSpellInfo and function(spellName) return GetSpellInfo(spellName).spellID end or function(spellName) return (select(7, GetSpellInfo(spellName))) end
-local GetItemInfo       = _G.GetItemInfo;
+local GetItemInfo       = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
+local GetSpellBookItemInfo  = _G.C_SpellBook and _G.C_SpellBook.GetSpellBookItemInfo or _G.GetSpellBookItemInfo;
 local pcall             = _G.pcall;
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
@@ -614,9 +615,9 @@ function D:GetSpellFromLink(link)
 end
 
 
-local IsUsableItem      = _G.IsUsableItem;
-local IsEquippableItem  = _G.IsEquippableItem;
-local IsEquippedItem    = _G.IsEquippedItem;
+local IsUsableItem      = _G.C_Item and _G.C_Item.IsUsableItem or _G.IsUsableItem;
+local IsEquippableItem  = _G.C_Item and _G.C_Item.IsEquippableItem or _G.IsEquippableItem;
+local IsEquippedItem    = _G.C_Item and _G.C_Item.IsEquippedItem or _G.IsEquippedItem;
 function D:isItemUsable(itemIDorName)
     if IsEquippableItem(itemIDorName) and not IsEquippedItem(itemIDorName) then
         return false;

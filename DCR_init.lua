@@ -57,7 +57,7 @@ T._LoadedFiles["DCR_init.lua"] = false;
 local D;
 local _G                    = _G;
 local select                = _G.select;
-local GetSpellBookItemInfo  = _G.GetSpellBookItemInfo;
+local GetSpellBookItemInfo  = _G.C_SpellBook and _G.C_SpellBook.GetSpellBookItemInfo or _G.GetSpellBookItemInfo;
 local GetSpellInfo          = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 local GetSpellName          = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
 local IsSpellKnown          = nil; -- use D:isSpellReady instead
@@ -1504,7 +1504,6 @@ function D:Configure() --{{{
     CuringSpells[DC.BLEED]      = false;
 
     local Type, _;
-    local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
     local IsSpellKnown = nil; -- use D:isSpellReady instead
     local Types = {};
     local UnitFiltering = false;

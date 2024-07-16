@@ -595,9 +595,9 @@ function D:HOOK_CastSpellByName (spellName, target)
     end
 end
 
-local GetItemSpell = _G.GetItemSpell;
-local GetItemCount = _G.GetItemCount;
-local GetItemInfo  = _G.GetItemInfo;
+local GetItemSpell = _G.C_Item and _G.C_Item.GetItemSpell or _G.GetItemSpell;
+local GetItemCount = _G.C_Item and _G.C_Item.GetItemCount or _G.GetItemCount;
+local GetItemInfo  = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
 function D:HOOK_UseItemByName (itemName, target)
     if self.Status.ClickCastingWIP and self.Status.ClickedMF then
         self.Status.ClickedMF.CastingSpell = GetItemSpell(itemName);

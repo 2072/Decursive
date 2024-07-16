@@ -1382,8 +1382,8 @@ do
 
     -- global access optimization
     local IsSpellInRange    = D.IsSpellInRange;
-    local IsItemInRange     = _G.IsItemInRange;
-    local IsUsableItem      = _G.IsUsableItem;
+    local IsItemInRange     = _G.C_Item and _G.C_Item.IsItemInRange or _G.IsItemInRange;
+    local IsUsableItem      = _G.C_Item and _G.C_Item.IsUsableItem or _G.IsUsableItem;
     local UnitClass         = _G.UnitClass;
     local UnitExists        = _G.UnitExists;
     local UnitIsVisible     = _G.UnitIsVisible;

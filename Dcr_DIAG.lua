@@ -50,6 +50,7 @@ local ipairs            = _G.ipairs;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 local GetSpellName      = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
+local GetItemInfo       = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI. -- Also used by HHTD from 2013-04-05
