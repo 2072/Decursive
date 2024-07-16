@@ -659,7 +659,7 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Warlock
             [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
-                Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                Types = not DC.WOTLK and {DC.MAGIC, DC.ENEMYMAGIC} or {DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = true,
             },
