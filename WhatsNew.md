@@ -1,10 +1,22 @@
 Decursive 2.7.20
 ================
 
-Decursive 2.7.20 (2024-06-10)
+Decursive 2.7.20 (2024-07-19)
 -----------------------------
 
 - Compatible with The War Within Beta.
+
+- Cataclysm: Devour Magic (Felhunter) actually can't remove magic effects on friendly units
+
+- Cataclysm: Fix Priest Dispel Magic capabilities detection: Dispel Magic only
+  works on the player unless they are Holy
+
+- TOC updates
+
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.19 (2024-05-10)
@@ -110,10 +122,6 @@ Decursive 2.7.12 (2023-11-08)
 -----------------------------
 
 - TOC update for Retail
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.11 (2023-10-22)
