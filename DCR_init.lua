@@ -57,7 +57,6 @@ T._LoadedFiles["DCR_init.lua"] = false;
 local D;
 local _G                    = _G;
 local select                = _G.select;
-local GetSpellBookItemInfo  = _G.C_SpellBook and _G.C_SpellBook.GetSpellBookItemInfo or _G.GetSpellBookItemInfo;
 local GetSpellInfo          = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 local GetSpellName          = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
 local IsSpellKnown          = nil; -- use D:isSpellReady instead
@@ -516,7 +515,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = false,
             },
-            [not DC.WOTLK and DSI["SPELL_REMOVE_GREATER_CURSE"] or false] = { -- WOW CLASSIC SoD https://www.wowhead.com/classic/spell=412113/remove-greater-curse
+            [not DC.WOTLK and DSI["SPELL_REMOVE_GREATER_CURSE"] or false] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
                 Types = {DC.CURSE, DC.MAGIC},
                 Better = 1,
                 Pet = false,
@@ -1129,7 +1128,7 @@ function D:SetConfiguration() -- {{{
 
             elseif type(spell) == 'string' then -- necessary due to fuck up in previous release
 
-                local _, spellId = GetSpellBookItemInfo(spell); -- attempt to get the spell id from the name
+                local spellId = D:GetSpellUsefulInfoIfKnown(spell); -- attempt to get the spell id from the name
 
                 if spellId then -- the spell is known to the player
 

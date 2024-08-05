@@ -74,7 +74,6 @@ local abs               = _G.math.abs;
 local GetNumRaidMembers = DC.GetNumRaidMembers;
 local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
-local GetSpellBookItemInfo  = _G.C_SpellBook and _G.C_SpellBook.GetSpellBookItemInfo or _G.GetSpellBookItemInfo;
 local GetSpellInfo          = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 local GetSpellName          = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
 local GetSpellDescription = _G.C_Spell and _G.C_Spell.GetSpellDescription or _G.GetSpellDescription;
@@ -601,10 +600,10 @@ local function GetStaticOptions ()
             -- We got a item link!
             isItem = true;
             v = D:GetItemFromLink(v);
-        elseif type(v) == 'string' and (GetSpellBookItemInfo(v)) then -- not a number, not a spell link, then a spell name?
+        elseif type(v) == 'string' and (D:GetSpellUsefulInfoIfKnown(v)) then -- not a number, not a spell link, then a spell name?
             -- We got a spell name!
-            D:Debug(v, "is a spell name in our book:", GetSpellBookItemInfo(v));
-            local SPItype, id = GetSpellBookItemInfo(v);
+            D:Debug(v, "is a spell name in our book:", D:GetSpellUsefulInfoIfKnown(v));
+            local id, SPItype = D:GetSpellUsefulInfoIfKnown(v);
             v = id;
             isPetAbility = SPItype == "PETACTION" and true or false;
         elseif type(v) == 'string' and (GetItemInfo(v)) then

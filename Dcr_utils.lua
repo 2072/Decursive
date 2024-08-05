@@ -93,7 +93,6 @@ local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellI
 local GetSpellName      = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
 local GetSpellId        = _G.C_Spell and _G.C_Spell.GetSpellInfo and function(spellName) return GetSpellInfo(spellName).spellID end or function(spellName) return (select(7, GetSpellInfo(spellName))) end
 local GetItemInfo       = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
-local GetSpellBookItemInfo  = _G.C_SpellBook and _G.C_SpellBook.GetSpellBookItemInfo or _G.GetSpellBookItemInfo;
 local pcall             = _G.pcall;
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
@@ -600,7 +599,7 @@ function D:GetSpellFromLink(link)
             return nil;
         end
 
-       local isPetAbility = (GetSpellBookItemInfo(spellName)) == "PETACTION" and true or false;
+       local isPetAbility = select(2, D:GetSpellUsefulInfoIfKnown(spellName));
 
         if spellRank and spellRank ~= "" then
             spellName = ("%s(%s)"):format(spellName, spellRank);
@@ -627,6 +626,26 @@ function D:isItemUsable(itemIDorName)
 end
 
 
+function D:GetSpellUsefulInfoIfKnown(spellIdentifier) -- returns spellId, isPet
+
+    if _G.GetSpellBookItemInfo then
+        local spellType, spellID = GetSpellBookItemInfo(spellIdentifier);
+
+        return spellID, spellType == "PETACTION"
+    else
+        local spellBookItemSlotIndex, spellBookItemSpellBank = C_SpellBook.FindSpellBookSlotForSpell(spellIdentifier);
+
+        if spellBookItemSlotIndex then
+
+            local spellBookItemInfo = C_SpellBook.GetSpellBookItemInfo(spellBookItemSlotIndex, spellBookItemSpellBank);
+return spellBookItemInfo.spellID, spellBookItemSpellBank == Enum.SpellBookSpellBank.PetAction
+        else
+            return nil, nil;
+        end
+
+    end
+end
+
 function D:isSpellReady(spellID, isPetAbility)
 
     -- in wow classic flavors, the 'display all ranks' option in the spell book UI changes the output of the IsSpellKnown() function...
@@ -641,7 +660,7 @@ function D:isSpellReady(spellID, isPetAbility)
             local spellType, id
 
             if spellName then
-                spellType, id = GetSpellBookItemInfo(spellName);
+                spellType, id = D:GetSpellUsefulInfoIfKnown(spellName);
                 spellID = id;
             end
 
