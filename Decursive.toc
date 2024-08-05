@@ -1,9 +1,10 @@
-## Interface: 100207, 110002
-## Interface-Retail: 100207, 110002
+## Interface: 110000, 110002
+## Interface-Retail: 110000, 110002
 ## Interface-Classic: 11503
 ## Interface-Cata: 40400
 ## X-Max-Interface: 110002
 ## X-Min-Interface:  11503
+## X-Incompatible-With: 30403
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: @localization(locale="enUS", key="ABOUT_NOTES")@
