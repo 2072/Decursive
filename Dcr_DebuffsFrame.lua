@@ -1318,8 +1318,10 @@ do
         local ReversedCureOrder = D.Status.ReversedCureOrder;
         local CuringSpells = D.Status.CuringSpells;
 
-        for prio, macroText in pairs(D.Status.prio_macro) do
-            self:SetUnstableAttribute(MouseButtons[prio]:format("macrotext"), macroText)
+        for prio, macroData in pairs(D.Status.prio_macro) do
+            if not D.UnitFilteringTest (Unit, macroData.unitFiltering) then
+                self:SetUnstableAttribute(MouseButtons[prio]:format("macrotext"), macroData.macroText)
+            end
         end
 
 

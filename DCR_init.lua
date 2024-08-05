@@ -1985,22 +1985,24 @@ do
 
             if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
 
-                if not D.UnitFilteringTest (unit, D.Status.FoundSpells[Spell][6]) then
                     --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
-                    -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
-                    prio_macro[Prio] = ("%s/%s [@%s, help][@%s, harm] %s"):format(
-
-                        not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
-                        D.Status.FoundSpells[Spell][2] > 0 and "cast" or "use", -- item test
-                        unit, unit,
-                        Spell
-                    );
-                end
+                    prio_macro[Prio] = {
+                        macroText = ("%s/%s [@%s, help][@%s, harm] %s"):format(
+                          not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
+                          D.Status.FoundSpells[Spell][2] > 0 and "cast" or "use", -- item test
+                          unit, unit,
+                          Spell
+                        ),
+                        unitFiltering = D.Status.FoundSpells[Spell][6]
+                    }
             else
                 tmp = D.Status.FoundSpells[Spell][5];
                 tmp = tmp:gsub("UNITID", unit);
                 if tmp:len() < 256 then -- last chance protection, shouldn't happen
-                    prio_macro[Prio] = tmp;
+                    prio_macro[Prio] = {
+                        macroText = tmp,
+                        unitFiltering = D.Status.FoundSpells[Spell][6]
+                    }
                 else
                     D:errln("Macro too long for prio", Prio);
                 end
