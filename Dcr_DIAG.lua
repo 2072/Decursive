@@ -964,14 +964,14 @@ do
             ["AceGUI-3.0"] = 41,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 86,
+            ["AceConfigDialog-3.0"] = 87,
             ["AceConfigRegistry-3.0"] = 21,
 
             ["LibDataBroker-1.1"] = 4,
-            ["LibDBIcon-1.0"] = 52,
+            ["LibDBIcon-1.0"] = 55,
             ["LibQTip-1.0"] = 49,
             ["CallbackHandler-1.0"] = 8,
-            ["LibDualSpec-1.0"] = (DC.WOTLK or not DC.WOWC) and 22 or nil,
+            ["LibDualSpec-1.0"] = (DC.WOTLK or not DC.WOWC) and 24 or nil,
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00LibStub|r) could not be found.\n";
