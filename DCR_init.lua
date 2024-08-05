@@ -462,19 +462,17 @@ local function SetRuntimeConstants_Once () -- {{{
             -- Evoker
             [DSI["SPELL_EXPUNGE"]] = {
                 Types = {DC.POISON},
-                Better = 2,
+                Better = 1,
                 Pet = false,
-                EnhancedBy = true,
-                EnhancedByCheck = function ()
-                    return (GetSpellName(DS["SPELL_EXPUNGE"])) == DS["SPELL_NATURALIZE"];
-                end,
-                Enhancements = {
-                    Types = {DC.POISON, DC.MAGIC},
-                }
             },
             [DSI["SPELL_CAUTERIZING_FLAME"]] = {
                 Types = {DC.POISON, DC.CURSE, DC.DISEASE, DC.BLEED},
-                Better = 1,
+                Better = 0,
+                Pet = false,
+            },
+            [DSI["SPELL_NATURALIZE"]] = {
+                Types = {DC.POISON, DC.MAGIC},
+                Better = 2,
                 Pet = false,
             },
             -- undead racial
