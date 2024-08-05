@@ -549,7 +549,7 @@ L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] = "Clear list"
 L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"] = "Clear the list and reset to default values, all added and detected debuffs will be lost!!"
 
 
-L["OPT_PERIODICRESCAN"] = "Debuff preiodic full scan"
+L["OPT_PERIODICRESCAN"] = "Debuff periodic full scan"
 L["OPT_PERIODICRESCAN_DESC"] = "Set the delay for global unit periodic rescan for buffs and debuffs.\nSet to 0 to disable.\n\nNote that since WoW 10.2.5 this periodic rescan increases Decursive's memory usage."
 
 
