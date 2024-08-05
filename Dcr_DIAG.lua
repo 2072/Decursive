@@ -964,7 +964,7 @@ do
             ["AceGUI-3.0"] = 41,
             ["AceConfig-3.0"] = 3,
             ["AceConfigCmd-3.0"] = 14,
-            ["AceConfigDialog-3.0"] = 87,
+            ["AceConfigDialog-3.0"] = 86,
             ["AceConfigRegistry-3.0"] = 21,
 
             ["LibDataBroker-1.1"] = 4,
