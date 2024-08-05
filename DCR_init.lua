@@ -516,6 +516,11 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = false,
             },
+            [not DC.WOTLK and DSI["SPELL_REMOVE_GREATER_CURSE"] or false] = { -- WOW CLASSIC SoD https://www.wowhead.com/classic/spell=412113/remove-greater-curse
+                Types = {DC.CURSE, DC.MAGIC},
+                Better = 1,
+                Pet = false,
+            },
             -- Shaman
             [DSI["SPELL_PURGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=370/purge
                 Types = {DC.ENEMYMAGIC},
@@ -1784,6 +1789,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             -- The new and changed spells in classic {{{
             T._C.DSI["SPELL_REMOVE_CURSE_DRUID"]  = 2782;
             T._C.DSI["SPELL_REMOVE_CURSE_MAGE"]   = 475;
+            T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]= 412113; --  WoW SoD
             T._C.DSI["SPELL_PURGE"]               = 370;
             T._C.DSI["SPELL_CLEANSE"]             = 4987;
             T._C.DSI["SPELL_FEAR"]                = 5782;
@@ -1826,6 +1832,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["TALENT_SACRED_CLEANSING"]       = 53551;
                 T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
+                T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]    = nil;
 
                 T._C.EXPECTED_DUPLICATES = {
                  {"TALENT_BODY_AND_SOUL_1", "TALENT_BODY_AND_SOUL_2"},
