@@ -1,5 +1,24 @@
-Decursive 2.7.20
+Decursive 2.7.21
 ================
+
+Decursive 2.7.21 (2024-08-06)
+-----------------------------
+
+- Fix many compatibility issues with WoW 11 (Cooldown issue and various Lua errors).
+
+- Fix Evoker's spells priorities.
+
+- Add Remove Greater Curse for mages in WoW Classic SoD.
+
+- Fix bug introduced in 2.7.20 for spells set up to only work on the player (or
+  all other units but the player), they had become unusable.
+
+- Mark this version as incompatible with WoW Cataclysm (This version of WoW classic is still being used in China - Players from China need to stick with Decursive 2.7.17 when playing on cataclysm).
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
 
 Decursive 2.7.20 (2024-07-19)
 -----------------------------
@@ -12,11 +31,6 @@ Decursive 2.7.20 (2024-07-19)
   works on the player unless they are Holy
 
 - TOC updates
-
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.19 (2024-05-10)
