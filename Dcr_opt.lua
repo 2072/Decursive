@@ -2021,7 +2021,7 @@ local function GetOptions()
     options.args.general.args.profiles.hidden = function() return not D:IsEnabled(); end;
     options.args.general.args.profiles.disabled = function() return D.Status.Combat or not D:IsEnabled(); end;
 
-    if DC.WOTLK or not DC.WOWC then
+    if DC.CATACLYSM or not DC.WOWC then
         -- Add dual-spec support
         local LibDualSpec = LibStub('LibDualSpec-1.0');
         LibDualSpec:EnhanceDatabase(D.db, "DecursiveDB");

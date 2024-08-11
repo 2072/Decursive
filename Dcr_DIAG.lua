@@ -645,7 +645,8 @@ T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
 DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
-DC.WOTLK =  WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_WRATH_CLASSIC -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
+DC.WOTLK = WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
+DC.CATACLYSM = WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
 DC.TWW = tocversion >= 110000
 
 
@@ -971,7 +972,7 @@ do
             ["LibDBIcon-1.0"] = 55,
             ["LibQTip-1.0"] = 49,
             ["CallbackHandler-1.0"] = 8,
-            ["LibDualSpec-1.0"] = (DC.WOTLK or not DC.WOWC) and 24 or nil,
+            ["LibDualSpec-1.0"] = (DC.CATACLYSM or not DC.WOWC) and 24 or nil,
         };
 
         local GenericErrorMessage1 = "Decursive could not initialize properly because one or several of the required shared libraries (at least |cFF00FF00LibStub|r) could not be found.\n";

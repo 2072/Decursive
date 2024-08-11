@@ -656,7 +656,7 @@ function D:isSpellReady(spellID, isPetAbility)
 
         local spellName = GetSpellName(spellID); -- may return nil if the spell is not known depending on wow version and whether it is a pet ability or not...
 
-        if not DC.WOTLK then -- but ranks are back in wotlk and former ranks disappear when the next one is learned...
+        if not DC.CATACLYSM then -- but ranks are back in wotlk and former ranks disappear when the next one is learned... Todo: check if still true for Cataclysm
             local spellType, id
 
             if spellName then

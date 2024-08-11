@@ -496,13 +496,13 @@ local function SetRuntimeConstants_Once () -- {{{
         DC.SpellsToUse = {
             -- Mage
             [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
-                Types = not DC.WOTLK and {DC.CURSE} or {DC.CURSE, DC.POISON},
+                Types = not DC.CATACLYSM and {DC.CURSE} or {DC.CURSE, DC.POISON},
                 Better = 0,
                 Pet = false,
 
-                EnhancedBy = DC.WOTLK and DS["TALENT_NATURES_CURE"] ~= nil,
+                EnhancedBy = DC.CATACLYSM and DS["TALENT_NATURES_CURE"] ~= nil,
                 EnhancedByCheck = function ()
-                    return DC.WOTLK and IsPlayerSpell(DSI["TALENT_NATURES_CURE"])
+                    return DC.CATACLYSM and IsPlayerSpell(DSI["TALENT_NATURES_CURE"])
                 end,
                 Enhancements = {
                     Types = {DC.CURSE, DC.POISON, DC.MAGIC},
@@ -514,7 +514,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = false,
             },
-            [not DC.WOTLK and DSI["SPELL_REMOVE_GREATER_CURSE"] or false] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
+            [not DC.CATACLYSM and DSI["SPELL_REMOVE_GREATER_CURSE"] or false] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
                 Types = {DC.CURSE, DC.MAGIC},
                 Better = 1,
                 Pet = false,
@@ -527,12 +527,12 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Paladin
             [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
-                Types =  not DC.WOTLK and {DC.MAGIC, DC.DISEASE, DC.POISON} or {DC.DISEASE, DC.POISON},
+                Types =  not DC.CATACLYSM and {DC.MAGIC, DC.DISEASE, DC.POISON} or {DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
-                EnhancedBy = DC.WOTLK and DS["TALENT_SACRED_CLEANSING"] ~= nil,
+                EnhancedBy = DC.CATACLYSM and DS["TALENT_SACRED_CLEANSING"] ~= nil,
                 EnhancedByCheck = function ()
-                    return DC.WOTLK and IsPlayerSpell(DSI["TALENT_SACRED_CLEANSING"])
+                    return DC.CATACLYSM and IsPlayerSpell(DSI["TALENT_SACRED_CLEANSING"])
                 end,
                 Enhancements = {
                     Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
@@ -561,14 +561,14 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
-                UnitFiltering = DC.WOTLK and {
+                UnitFiltering = DC.CATACLYSM and {
                     [DC.MAGIC]  = 1, -- player only
                 } or nil,
-                EnhancedBy = DC.WOTLK and (DS["TALENT_ABSOLUTION"] ~= nil),
+                EnhancedBy = DC.CATACLYSM and (DS["TALENT_ABSOLUTION"] ~= nil),
                 EnhancedByCheck = function ()
-                    return DC.WOTLK and (IsPlayerSpell(DSI["TALENT_ABSOLUTION"]))
+                    return DC.CATACLYSM and (IsPlayerSpell(DSI["TALENT_ABSOLUTION"]))
                 end,
-                Enhancements = DC.WOTLK and {
+                Enhancements = DC.CATACLYSM and {
                     Types = {DC.MAGIC, DC.ENEMYMAGIC},
                     UnitFiltering = {
                         [DC.MAGIC]  = nil,
@@ -576,19 +576,19 @@ local function SetRuntimeConstants_Once () -- {{{
                 } or nil,
             },
             -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
-            [not DC.WOTLK and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
+            [not DC.CATACLYSM and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
                 Better = 1,
                 Pet = false,
             },
             -- Paladin
-            [not DC.WOTLK and DSI["SPELL_PURIFY"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
+            [not DC.CATACLYSM and DSI["SPELL_PURIFY"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
                 Types = {DC.POISON, DC.DISEASE},
                 Better = 1,
                 Pet = false,
             },
             -- Priest
-            [not DC.WOTLK and DSI["SPELL_ABOLISH_DISEASE"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
+            [not DC.CATACLYSM and DSI["SPELL_ABOLISH_DISEASE"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
                 Types = {DC.DISEASE},
                 Better = 2,
                 Pet = false,
@@ -600,9 +600,9 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
-                EnhancedBy = DC.WOTLK and (DS["TALENT_BODY_AND_SOUL_1"] ~= nil or DS["TALENT_BODY_AND_SOUL_2"]),
+                EnhancedBy = DC.CATACLYSM and (DS["TALENT_BODY_AND_SOUL_1"] ~= nil or DS["TALENT_BODY_AND_SOUL_2"]),
                 EnhancedByCheck = function ()
-                    return DC.WOTLK and (IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_1"]) or IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_2"]))
+                    return DC.CATACLYSM and (IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_1"]) or IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_2"]))
                 end,
                 Enhancements = {
                     Types = {DC.DISEASE, DC.POISON},
@@ -612,13 +612,13 @@ local function SetRuntimeConstants_Once () -- {{{
                 }
             },
             -- Priest
-            [not DC.WOTLK and DSI["SPELL_CURE_DISEASE_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+            [not DC.CATACLYSM and DSI["SPELL_CURE_DISEASE_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
             },
             -- Shaman
-            [DC.WOTLK and DSI["CLEANSE_SPIRIT"] or false] = {
+            [DC.CATACLYSM and DSI["CLEANSE_SPIRIT"] or false] = {
                 Types = {DC.CURSE},
                 Better = 2,
                 Pet = false,
@@ -631,38 +631,38 @@ local function SetRuntimeConstants_Once () -- {{{
                 }
             },
             -- HUNTERS http://www.wowhead.com/?spell=19801
-            [DC.WOTLK and DSI["SPELL_TRANQUILIZING_SHOT"] or false]    = {
+            [DC.CATACLYSM and DSI["SPELL_TRANQUILIZING_SHOT"] or false]    = {
                 Types = {DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
             },
             -- Shamans http://www.wowhead.com/?spell=51514
-            [DC.WOTLK and DSI["SPELL_HEX"] or false] = {
+            [DC.CATACLYSM and DSI["SPELL_HEX"] or false] = {
                 Types = {DC.CHARMED},
                 Better = 0,
                 Pet = false,
             },
             -- Druid
-            [not DC.WOTLK and DSI["SPELL_ABOLISH_POISON"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
+            [not DC.CATACLYSM and DSI["SPELL_ABOLISH_POISON"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
                 Types = {DC.POISON},
                 Better = 2,
                 Pet = false,
             },
             -- Shaman
-            [not DC.WOTLK and DSI["SPELL_CURE_POISON_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
-                Types = DC.WOTLK and {DC.POISON, DC.DISEASE} or {DC.POISON},
+            [not DC.CATACLYSM and DSI["SPELL_CURE_POISON_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
+                Types = DC.CATACLYSM and {DC.POISON, DC.DISEASE} or {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
             -- Druid
-            [not DC.WOTLK and DSI["SPELL_CURE_POISON_DRUID"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
+            [not DC.CATACLYSM and DSI["SPELL_CURE_POISON_DRUID"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
                 Types = {DC.POISON},
                 Better = 0,
                 Pet = false,
             },
             -- Warlock
             [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
-                Types = not DC.WOTLK and {DC.MAGIC, DC.ENEMYMAGIC} or {DC.ENEMYMAGIC},
+                Types = not DC.CATACLYSM and {DC.MAGIC, DC.ENEMYMAGIC} or {DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = true,
             },
@@ -974,7 +974,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     D.eventFrame:RegisterEvent("BAG_UPDATE_DELAYED");
     D.eventFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED");
-    if not DC.WOWC or DC.WOTLK then
+    if not DC.WOWC or DC.CATACLYSM then
         D.eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
     end
     D.eventFrame:RegisterEvent("PLAYER_ALIVE"); -- talents SHOULD be available
@@ -990,7 +990,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     D.eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 
-    if not DC.WOWC or DC.WOTLK then
+    if not DC.WOWC or DC.CATACLYSM then
         D.eventFrame:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
 
@@ -1763,7 +1763,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ['SPELL_POISON_CLEANSING_TOTEM']= 383013, -- shaman
             } -- }}}
 
-            local DSI_REMOVED_OR_CHANGED_IN_WOTLK = { -- {{{
+            local DSI_REMOVED_OR_CHANGED_IN_CATACLYSM = { -- {{{
                 ['SPELL_CURE_DISEASE_SHAMAN']            = 2870,
                 ['Shadowmeld']                           = 20580,
                 ["IMPROVED_PURIFY_SPIRIT"]               = 383016, -- resto shaman
@@ -1813,9 +1813,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
             }
 
-            if DC.WOTLK then
+            if DC.CATACLYSM then
                 -- remove invalid spells from the spell table
-                for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_WOTLK) do
+                for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CATACLYSM) do
                     T._C.DSI[name] = nil;
                 end
 
