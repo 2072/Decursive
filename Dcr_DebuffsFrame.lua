@@ -1384,7 +1384,11 @@ do
     local GetSpellCooldown  = _G.C_Spell and _G.C_Spell.GetSpellCooldown and function(spellid)
         local cooldownInfo = _G.C_Spell.GetSpellCooldown(spellid);
 
-        return cooldownInfo.startTime, cooldownInfo.duration, cooldownInfo.isEnabled;
+        if cooldownInfo then
+            return cooldownInfo.startTime, cooldownInfo.duration, cooldownInfo.isEnabled;
+        else
+            return nil, nil, nil;
+        end
     end or _G.GetSpellCooldown;
 
     local GetItemCooldown   = _G.C_Container and _G.C_Container.GetItemCooldown or _G.GetItemCooldown;
