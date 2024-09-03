@@ -270,22 +270,22 @@ local function SetRuntimeConstants_Once () -- {{{
             --]=]
             -- Monks
             [DSI["SPELL_DETOX_1"]] = {
-                Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                Types = {DC.MAGIC},
                 Better = 3,
                 Pet = false,
+                EnhancedBy = 'talent',
+                EnhancedByCheck = function ()
+                    return (IsPlayerSpell(DSI["SPELL_IMPROVED_DETOX"]));
+                end,
+                Enhancements = {
+                    Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                }
             },
             [DSI["SPELL_DETOX_2"]] = {
                 Types = {DC.DISEASE, DC.POISON},
                 Better = 2,
                 Pet = false,
-                -- detect mistweaver spec since the spell no longer seems to change with the spec like it used to
-                EnhancedBy = 'mistweaver',
-                EnhancedByCheck = function ()
-                    return (GetSpecialization() == 2) and true or false; -- restoration?
-                end,
-                Enhancements = {
-                    Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-                }
+
             },
             -- Monks
             [DSI["SPELL_DIFFUSEMAGIC"]] = {
@@ -1703,6 +1703,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_NATURES_CURE"]          =  88423,
             ["SPELL_DETOX_1"]               =  115450, -- monk mistweaver
             ["SPELL_DETOX_2"]               =  218164, -- monk brewmaster and windwaker
+            ["SPELL_IMPROVED_DETOX"]        =  388874, -- monk's talent
             ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
             ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
             ['Greater Invisibility']        =  110959,
@@ -1743,6 +1744,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ["CRIPLES"]	                = 33787,
                 ["Arcane Blast"]	        = 30451,
                 ["SPELL_DETOX_2"]	        = 218164,
+                ["SPELL_IMPROVED_DETOX"]    = 388874,
                 ["MDREAMLESSSLEEP"]	        = 28504,
                 ["PURIFY_SPIRIT"]	        = 77130,
                 ["SONICBURST"]	            = 39052,
