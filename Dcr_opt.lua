@@ -604,9 +604,9 @@ local function GetStaticOptions ()
         elseif type(v) == 'string' and (D:GetSpellUsefulInfoIfKnown(v)) then -- not a number, not a spell link, then a spell name?
             -- We got a spell name!
             D:Debug(v, "is a spell name in our book:", D:GetSpellUsefulInfoIfKnown(v));
-            local id, SPItype = D:GetSpellUsefulInfoIfKnown(v);
+            local id, isPet = D:GetSpellUsefulInfoIfKnown(v);
             v = id;
-            isPetAbility = SPItype == "PETACTION" and true or false;
+            isPetAbility = isPet;
         elseif type(v) == 'string' and (GetItemInfo(v)) then
             D:Debug(v, "is a item name:", GetItemInfo(v));
             -- We got an item name!
@@ -616,8 +616,8 @@ local function GetStaticOptions ()
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
         end
 
-        if not isItem and v > 0xffffff then
-            v = bit.band(0xffffff, v); -- XXX does not seem to yield the expected results in wotlk for pet spells...
+        if not isItem and v > 0xfffff then
+            v = bit.band(0xfffff, v);
         end
 
         -- avoid spellID/itemID collisions

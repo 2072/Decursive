@@ -673,7 +673,7 @@ function D:isSpellReady(spellID, isPetAbility)
             if spellName then
                 spellID = GetSpellId(spellName);
             elseif isPetAbility then
-                D:Debug("Pet ability update lookup failed", spellID, spellName, "GetSpellInfo(spellName):", GetSpellInfo(spellName));
+                D:Debug("Pet ability update lookup failed", spellID, spellName, "GetSpellInfo(spellName):", spellName and GetSpellInfo(spellName));
             end
         end
     end
