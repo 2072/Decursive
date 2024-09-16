@@ -627,7 +627,6 @@ end
 
 
 function D:GetSpellUsefulInfoIfKnown(spellIdentifier) -- returns spellId, isPet
-
     if _G.GetSpellBookItemInfo then
         local spellType, spellID = GetSpellBookItemInfo(spellIdentifier);
 
@@ -636,13 +635,12 @@ function D:GetSpellUsefulInfoIfKnown(spellIdentifier) -- returns spellId, isPet
         local spellBookItemSlotIndex, spellBookItemSpellBank = C_SpellBook.FindSpellBookSlotForSpell(spellIdentifier);
 
         if spellBookItemSlotIndex then
-
             local spellBookItemInfo = C_SpellBook.GetSpellBookItemInfo(spellBookItemSlotIndex, spellBookItemSpellBank);
-return spellBookItemInfo.spellID, spellBookItemSpellBank == Enum.SpellBookSpellBank.PetAction
+
+            return spellBookItemInfo.spellID, spellBookItemSpellBank == Enum.SpellBookSpellBank.PetAction
         else
             return nil, nil;
         end
-
     end
 end
 
@@ -660,14 +658,16 @@ function D:isSpellReady(spellID, isPetAbility)
             local spellType, id
 
             if spellName then
-                spellType, id = D:GetSpellUsefulInfoIfKnown(spellName);
-                spellID = id;
+                id, isPet = D:GetSpellUsefulInfoIfKnown(spellName);
+                if id then
+                    spellID = id;
+                end
             end
 
-            if id and spellType == "PETACTION" then
-                spellID = band(0xffffff, id);
-            elseif spellType and isPetAbility then
-                D:Debug("Pet ability update lookup failed", spellID, spellName, spellType, id);
+            if id and isPet then
+                spellID = band(0xfffff, id);
+            elseif isPet and isPetAbility then
+                D:Debug("Pet ability update lookup failed", spellID, spellName, isPet, id);
             end
         else
             if spellName then
