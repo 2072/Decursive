@@ -1,14 +1,26 @@
-Decursive 2.7.22
+Decursive 2.7.23
 ================
+
+
+Decursive 2.7.23 (2024-10-04)
+-----------------------------
+
+- Fix pet's spells addition by name in the custom spell interface.
+
+- WoW classic: fix Lua errors with pet's spells
+
+- Fix Improved Detox detection for Mistweaver monks.
+
+- WoW Cataclysm 4.4.1 (current PTR): fix Lua error due to API change.
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
 
 Decursive 2.7.22 (2024-08-16)
 -----------------------------
 
 - Fix Cooldown related Lua error in WoW 11
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.21 (2024-08-06)
