@@ -2130,7 +2130,7 @@ function D:CheckCureOrder ()
         [DC.BLEED]          = 7,
     };
     local AuthorizedValues = {
-        [false] = true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
+        [false] = true; -- LOL Yes, it's TRUE that FALSE is an authorized value xD
         -- Other <0  values are used when there used to be a spell...
         [1]     = DC.ENEMYMAGIC,
         [-11]   = DC.ENEMYMAGIC,

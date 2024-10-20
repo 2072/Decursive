@@ -228,6 +228,7 @@ local function SetRuntimeConstants_Once () -- {{{
         DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"], DC.DS["MUTATINGINJECTION"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
         DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
 
+        DC.IS_OMNI_DEBUFF     = D:tReverse({DC.DSI["DEBUFF_VOID_RIFT"]});
 
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
         DC.SpellsToUse = {
@@ -491,6 +492,7 @@ local function SetRuntimeConstants_Once () -- {{{
         DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"], DS["Lesser Invisibility"]});
         DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["MUTATINGINJECTION"]}); --, "Test item"});
         DC.IS_DEADLY_DEBUFF   = D:tReverse({});
+        DC.IS_OMNI_DEBUFF     = D:tReverse({});
 
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
         DC.SpellsToUse = {
@@ -1714,6 +1716,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_NATURALIZE']            =  360823,
             ['SPELL_CAUTERIZING_FLAME']     =  374251,
             ['SPELL_POISON_CLEANSING_TOTEM']=  383013, -- shaman
+            ['DEBUFF_VOID_RIFT']            =  440313, -- omni-debuff dispellable by any spell
         }; --- }}}
 
         T._C.EXPECTED_DUPLICATES = {
@@ -1763,6 +1766,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ['SPELL_CAUTERIZING_FLAME'] = 374251,
                 ["IMPROVED_PURIFY_SPIRIT"]  = 383016, -- resto shaman
                 ['SPELL_POISON_CLEANSING_TOTEM']= 383013, -- shaman
+                ['DEBUFF_VOID_RIFT']            =  440313, -- omni-debuff dispellable by any spell
             } -- }}}
 
             local DSI_REMOVED_OR_CHANGED_IN_CATACLYSM = { -- {{{

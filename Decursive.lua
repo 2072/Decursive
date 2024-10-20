@@ -537,6 +537,9 @@ do
             -- test for a type
             if TypeName and TypeName ~= "" then
                 Type = DC.NameToTypes[TypeName];
+            elseif DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
+                TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
+                Type = DC.NameToTypes[TypeName]
             elseif self.Status.CuringSpells[DC.BLEED] then
                 checkSpellIDForBleed();
                 if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
