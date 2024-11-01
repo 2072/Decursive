@@ -1,5 +1,17 @@
-Decursive 2.7.23
+Decursive 2.7.24
 ================
+
+
+Decursive 2.7.24 (2024-11-01)
+-----------------------------
+
+- Detect Void Rift in TWW and allow it to be cured by the 1st registered spell ([issue #30](https://github.com/2072/Decursive/issues/30)).
+
+- Fix potential initialization issue.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.23 (2024-10-04)
@@ -12,9 +24,6 @@ Decursive 2.7.23 (2024-10-04)
 - Fix Improved Detox detection for Mistweaver monks.
 
 - WoW Cataclysm 4.4.1 (current PTR): fix Lua error due to API change.
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.22 (2024-08-16)
