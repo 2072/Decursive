@@ -1072,6 +1072,7 @@ function D:SetConfiguration() -- {{{
     D.Status.delayedDebuffReportDisabled = true; -- reenabled in the ScanEverybody function
     D.Status.delayedDebuffOccurences = 0;
     D.Status.delayedUnDebuffOccurences = 0;
+    D.Status.prio_macro = {};
 
     D.Stealthed_Units = {};
 
@@ -1981,7 +1982,6 @@ do
     end -- }}}
 
     function D:SetMacrosPerPrioTable(unit)
-        D.Status.prio_macro = {};
         local prio_macro = D.Status.prio_macro;
         local tmp;
 
