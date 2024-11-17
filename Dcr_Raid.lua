@@ -261,7 +261,7 @@ do
     local GUIDToUnit_mt = { __index = function(self, GUID)
         -- {{{
 
-        if GUIDToUnit_ScannedAll then
+        if GUIDToUnit_ScannedAll and GUID ~= DC.MyGUID then
             self[GUID] = false;
             D:Debug("GUIDToUnit_mt: %s is not in our group!", GUID);
             return self[GUID];
@@ -662,6 +662,7 @@ do
 
         --@debug@
         D:Debug("Current group:", CurrentGroup, D:tAsString(IPL));
+        D:Debug("Source priority list:", #self.profile.PriorityList, D:tAsString(self.profile.PriorityList));
         for i, unit in ipairs(Status.Unit_Array) do
             unit = Status.Unit_Array[i];
             D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
