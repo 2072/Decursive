@@ -261,6 +261,8 @@ do
     local GUIDToUnit_mt = { __index = function(self, GUID)
         -- {{{
 
+        GUID = GUID ~= "player" and GUID or DC.MyGUID -- hack for the player entry in the populate lists GUI
+
         if GUIDToUnit_ScannedAll and GUID ~= DC.MyGUID then
             self[GUID] = false;
             D:Debug("GUIDToUnit_mt: %s is not in our group!", GUID);
@@ -390,6 +392,10 @@ do
         end
 
         -- Priority list
+        -- note that there is no notion of precedence between groups, class and
+        -- roles and unfortunately specific GUIDs. As soon as a unit is part of
+        -- several criteria the criteria with the lowest position will take
+        -- precedence over the other, including GUID.
         UIa = UnitInfo[ua]; UIb = UnitInfo[ub];
         uaVSub = a_isBefore_b(getMinOf4(IPL[UIa.class], IPL[UIa.group], IPL[UIa.GUID], IPL[UIa.role]), getMinOf4(IPL[UIb.class], IPL[UIb.group], IPL[UIb.GUID], IPL[UIb.role]));
 

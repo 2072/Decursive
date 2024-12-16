@@ -719,6 +719,23 @@
                 </Scripts>
             </Button>
 
+            <Button name="$parentSelf" inherits="GameMenuButtonTemplate" text="healer">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentGroup7" />
+                    <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parentGroup8" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self.GroupNumber = "player";
+                        DecursiveRootTable.Dcr:PopulateButtonPress(self);
+                    </OnClick>
+                    <OnLoad>
+                        if DecursiveInstallCorrupted then return end
+                        self:SetText(_G.PLAYER or "Self");
+                    </OnLoad>
+                </Scripts>
+            </Button>
+
             <Button name="$parentWarrior" inherits="GameMenuButtonTemplate" text="Warrior">
                 <Size>
                     <AbsDimension x="110" y="20" />

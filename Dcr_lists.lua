@@ -214,8 +214,8 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
             local name, classname, GUIDorNum;
             if (Entry:GetParent().Priority) then
                 GUIDorNum = D.profile.PriorityList[id];
-                classname = D.profile.PriorityListClass[GUIDorNum];
-                name = D.profile.PrioGUIDtoNAME[GUIDorNum];
+                classname = GUIDorNum ~= "player" and D.profile.PriorityListClass[GUIDorNum] or DC.MyClass;
+                name = GUIDorNum ~= "player" and D.profile.PrioGUIDtoNAME[GUIDorNum] or DC.MyName;
             else
                 GUIDorNum = D.profile.SkipList[id];
                 classname = D.profile.SkipListClass[GUIDorNum];
@@ -305,12 +305,13 @@ local function AddElementToList(element, checkIfExist, list, listGUIDtoName, lis
         if type(element) == "number" or UnitIsPlayer(element) then
             D:Debug("adding %s", element);
 
+            local isNotPlayerCase = element ~= "player";
             local GUIDorNum;
 
             if type(element) == "number" then
                 GUIDorNum = element;
             else
-                GUIDorNum = UnitGUID(element);
+                GUIDorNum = isNotPlayerCase and UnitGUID(element) or element;
                 if not GUIDorNum then
                     return false;
                 end
@@ -323,8 +324,8 @@ local function AddElementToList(element, checkIfExist, list, listGUIDtoName, lis
             table.insert(list, GUIDorNum);
 
             if type(element) == "string" then
-                _, listClass[GUIDorNum]   = UnitClass(element);
-                listGUIDtoName[GUIDorNum] = D:UnitName(element);
+                listClass[GUIDorNum]      = isNotPlayerCase and select(2, UnitClass(element)) or nil;
+                listGUIDtoName[GUIDorNum] = isNotPlayerCase and D:UnitName(element) or "player"; -- used to prevent multi addition
             elseif element > 10 then
                 listClass[element]        = DC.ClassNumToUName[element];
                 listGUIDtoName[GUIDorNum] = str_format("[ %s ]", DC.ClassNumToLName[GUIDorNum]);
