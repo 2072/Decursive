@@ -624,12 +624,14 @@ function T._onError(event, errorObject)
         end
 
         -- forward the error to the default Blizzad error displayer
-        if _G.HandleLuaError then
+        if _G.HandleLuaError then -- TODO: fix this, waiting for https://github.com/funkydude/BugSack/issues/121
             local errorm = errorObject.message;
 
             _Debug("Lua error forwarded");
 
             return _G.HandleLuaError( errorm );
+        else
+            _Debug("Lua error NOT forwarded because no original error handler was found!");
         end
     else
         _Debug("Lua error NOT forwarded, mine=", mine);
@@ -665,6 +667,17 @@ function T._DecursiveErrorHandler(err, ...)
     end
 
     local mine = false;
+
+
+    -- adapted from Blizzard
+    local currentStackHeight = GetCallstackHeight and GetCallstackHeight() or 3;
+	local errorCallStackHeight = GetErrorCallstackHeight and GetErrorCallstackHeight() or currentStackHeight - 2;
+	local errorStackOffset = errorCallStackHeight and (errorCallStackHeight - 1);
+	local debugStackLevel = currentStackHeight - (errorStackOffset or 0);
+    --
+
+    _Debug("GetCallstackHeight: ", GetCallstackHeight(), "GetErrorCallstackHeight:", GetErrorCallstackHeight(), "computed stackLevel:", debugStackLevel);
+
     if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("[\\/]libs[\\/]")) then
 
         if not continueErrorReporting(errl) then
@@ -678,7 +691,7 @@ function T._DecursiveErrorHandler(err, ...)
 
 
         IsReporting = true;
-        AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(3), "\n|cff00aa00LOCALS:|r\n", debuglocals(3), ...);
+        AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(debugStackLevel), "\n|cff00aa00LOCALS:|r\n", debuglocals(debugStackLevel), ...);
         IsReporting = false;
         T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         mine = true;
@@ -1080,6 +1093,10 @@ do
 
             if not _G.HandleLuaError then
                 AddDebugText("|cFFFF0000WARNING Blizzard default error handler is no longer available...|r");
+            end
+
+            if not _G.GetCallstackHeight or not _G.GetErrorCallstackHeight then
+                AddDebugText("|cFFFF0000WARNING Blizzard GetErrorCallstackHeight or GetErrorCallstackHeight not available...|r");
             end
 
             PrintMessage("|cFF00FF00No problem found in shared libraries or Decursive files!|r");
