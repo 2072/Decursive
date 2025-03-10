@@ -56,6 +56,28 @@ T._LoadedFiles["Dcr_opt.lua"] = false;
 
 local D = T.Dcr;
 
+local function RegisterClassLocals_Once() -- {{{
+
+
+    -- Make sure to never crash if some locals are missing (seen this happen on
+    -- Chinese clients when relying on LOCALIZED_CLASS_NAMES_MALE constant)
+    -- While that was probably caused by a badd-on redefining the constant,
+    -- it's best to stay on the safe side...
+
+    local localizedClasses = {};
+
+    D:tcopy(localizedClasses, LocalizedClassList and LocalizedClassList(false) or FillLocalizedClassList({}, false));
+
+
+    -- D.LC = setmetatable((FillLocalizedClassList or LocalizedClassList)(false), {__index = function(t,k) return k end});
+    D.LC = setmetatable(localizedClasses, {__index = function(t,k) return k end});
+
+    RegisterLocals_Once = nil;
+end -- }}}
+
+T._CatchAllErrors = "RegisterClassLocals_Once";      RegisterClassLocals_Once();
+
+
 local L  = D.L;
 local LC = D.LC;
 local DC = T._C;

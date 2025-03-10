@@ -56,7 +56,6 @@ T._LoadedFiles["Dcr_LDB.lua"] = false;
 
 local D = T.Dcr;
 local L = D.L;
-local LC = D.LC;
 local DC = T._C;
 
 T._CatchAllErrors = 'LibDBIcon';
