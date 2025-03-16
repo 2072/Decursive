@@ -47,6 +47,9 @@
 
 ## X-eMail: Decursive@2072productions.com
 
+
+Dcr_preload.lua
+
 embeds.xml
 
 Dcr_DIAG.lua

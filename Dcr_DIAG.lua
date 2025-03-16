@@ -117,7 +117,9 @@ local Reported          = {};
 local UNPACKAGED = "@pro" .. "ject-version@";
 local VERSION = "@project-version@";
 
-T._LoadedFiles = {};
+if not T._LoadedFiles then
+    T._LoadedFiles = {};
+end
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
 
 if DecursiveInEmbeddedMode == nil then
@@ -132,6 +134,7 @@ end
 
 -- a list of all source files part of Decursive sort in loading order
 T._LoadOrderedFiles = { -- {{{
+    "Dcr_preload.lua",
     "embeds.xml",
 
     "Dcr_DIAG.xml",
@@ -623,18 +626,26 @@ function T._onError(event, errorObject)
             _G.DEBUGLOCALS_LEVEL = _G.DEBUGLOCALS_LEVEL + 9
         end
 
-        -- forward the error to the default Blizzad error displayer
-        if _G.HandleLuaError then -- TODO: fix this, waiting for https://github.com/funkydude/BugSack/issues/121
+        -- forward the error to the original error handler
+        if _G.HandleLuaError or T._OriginalDebugHandler then
             local errorm = errorObject.message;
 
-            _Debug("Lua error forwarded");
 
-            return _G.HandleLuaError( errorm );
+            if _G.HandleLuaError then
+                _Debug("Lua error forwarded to Blizzard's handler");
+                return _G.HandleLuaError( errorm );
+            elseif T._OriginalDebugHandler and T._OriginalDebugHandler ~= geterrorhandler() then
+                _Debug("Lua error forwarded to original handler");
+                return T._OriginalDebugHandler ( errorm );
+            else
+                _Debug("Lua error could not be forwarded because the original error handler is no longer available.");
+            end
+
         else
             _Debug("Lua error NOT forwarded because no original error handler was found!");
         end
     else
-        _Debug("Lua error NOT forwarded, mine=", mine);
+        _Debug("Lua error NOT forwarded, mine=", mine, "BugSack loaded:", T._BugSackLoaded);
     end
 
 end
@@ -798,10 +809,10 @@ end
 function T._HookErrorHandler()
 
     if BugGrabber then
-        local name, _, _, enabled = GetAddOnInfo("BugSack") -- enabled becomes isLoaded in WoD
+        local loading, loaded = IsAddOnLoaded("BugSack");
 
-        if name and enabled then
-            T._BugSackLoaded = true;
+        if loaded then
+            T._BugSackLoaded = _G.BugSack and _G.BugSack.healthCheck or false;
         else
             T._BugSackLoaded = false;
         end
