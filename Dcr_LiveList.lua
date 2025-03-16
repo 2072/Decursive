@@ -2,7 +2,7 @@
     This file is part of Decursive.
 
     Decursive (v @project-version@) add-on for World of Warcraft UI
-    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+    Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -326,7 +326,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
         self.UnitClass = (select(2, UnitClass(UnitID)));
         self.UnitNameFontString:SetText(self.UnitName);
         if self.UnitClass then
-            self.UnitNameFontString:SetTextColor(unpack(DC.ClassesColors[self.UnitClass]));
+            self.UnitNameFontString:SetTextColor(unpack(DC.ClassesColors[self.UnitClass])); -- got one report where unpack got a nil... probably a damaged classescolors table...
         end
         self.PrevUnitName =  self.UnitName;
         --D:Debug("(LiveList) Updating %d with %s", self.ID, UnitID);

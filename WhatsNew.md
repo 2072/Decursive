@@ -1,5 +1,24 @@
-Decursive 2.7.25
+Decursive 2.7.26
 ================
+
+
+Decursive 2.7.26 (2025-03-16)
+-----------------------------
+
+- Enable role detection in non-retail versions of WoW.
+
+- Widen the populate list UI.
+
+- Improve and fix class locals initialization where the female version was
+  always selected in WoW retail.
+
+- Fix Lua error forwarding in WoW retail.
+
+- TOC updates.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.25 (2025-01-06)
@@ -13,10 +32,6 @@ Decursive 2.7.25 (2025-01-06)
   characters).
 
 - TOC updates.
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.24 (2024-11-01)
