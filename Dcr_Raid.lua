@@ -399,6 +399,12 @@ do
         UIa = UnitInfo[ua]; UIb = UnitInfo[ub];
         uaVSub = a_isBefore_b(getMinOf4(IPL[UIa.class], IPL[UIa.group], IPL[UIa.GUID], IPL[UIa.role]), getMinOf4(IPL[UIb.class], IPL[UIb.group], IPL[UIb.GUID], IPL[UIb.role]));
 
+        --@debug@
+        if ua == "player" or ub == "player" then
+            D:Debug("xx", ua, D:tAsString(UIa), ub, D:tAsString(UIb), uaVSub, "GUID comp:", IPL[UIa.GUID], IPL[UIb.GUID])
+        end
+        --@end-debug@
+
         if uaVSub ~= nil then
             return uaVSub;
         end
@@ -461,7 +467,7 @@ do
             -- first add GUIDs present in our raid group
             if (type(ListEntry) == "string") then
                 if GUIDToUnit[ListEntry] then
-                    outList[ListEntry] = i;
+                    outList[ListEntry ~= "player" and ListEntry or DC.MyGUID] = i;
                 end
 
             elseif ListEntry > 0 then
