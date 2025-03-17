@@ -1,11 +1,13 @@
-Decursive 2.7.26
+Decursive 2.7.27
 ================
 
 
-Decursive 2.7.26 (2025-03-16)
+Decursive 2.7.27 (2025-03-17)
 -----------------------------
 
 - Enable role detection in non-retail versions of WoW.
+
+- Fix unit sorting when using the "player" placeholder.
 
 - Widen the populate list UI.
 
