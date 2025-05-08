@@ -1,5 +1,15 @@
-Decursive 2.7.27
+Decursive 2.7.28
 ================
+
+
+Decursive 2.7.28 (2025-05-08)
+-----------------------------
+
+- TOC updates.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.27 (2025-03-17)
@@ -17,10 +27,6 @@ Decursive 2.7.27 (2025-03-17)
 - Fix Lua error forwarding in WoW retail.
 
 - TOC updates.
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.25 (2025-01-06)
