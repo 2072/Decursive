@@ -602,9 +602,9 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
-                EnhancedBy = DC.CATACLYSM and (DS["TALENT_BODY_AND_SOUL_1"] ~= nil or DS["TALENT_BODY_AND_SOUL_2"]),
+                EnhancedBy = DC.CATACLYSM and DS["TALENT_BODY_AND_SOUL_2"],
                 EnhancedByCheck = function ()
-                    return DC.CATACLYSM and (IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_1"]) or IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_2"]))
+                    return DC.CATACLYSM and IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_2"])
                 end,
                 Enhancements = {
                     Types = {DC.DISEASE, DC.POISON},
@@ -1829,9 +1829,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 -- reassign the proper spells for WotLK
                 T._C.DSI["Shadowmeld"]                    = 58984;
                 T._C.DSI["SPELL_TRANQUILIZING_SHOT"]      = 19801;
-                T._C.DSI["TALENT_BODY_AND_SOUL_1"]        = 64127;
+                -- T._C.DSI["TALENT_BODY_AND_SOUL_1"]        = 64127; -- MOP removed
                 T._C.DSI["TALENT_BODY_AND_SOUL_2"]        = 64129;
-                T._C.DSI["TALENT_ABSOLUTION"]             = 33167;
+                -- T._C.DSI["TALENT_ABSOLUTION"]             = 33167; -- MOP removed
                 T._C.DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"]= 77130;
                 T._C.DSI["TALENT_NATURES_CURE"]           = 88423;
                 T._C.DSI["TALENT_SACRED_CLEANSING"]       = 53551;
@@ -1840,7 +1840,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]    = nil;
 
                 T._C.EXPECTED_DUPLICATES = {
-                 {"TALENT_BODY_AND_SOUL_1", "TALENT_BODY_AND_SOUL_2"},
+                 -- {"TALENT_BODY_AND_SOUL_1", "TALENT_BODY_AND_SOUL_2"},
                  --   {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
                 }
             end
