@@ -44,8 +44,8 @@ jobs:
         with:
           args: -g classic
 
-      - name: Package cata
-        if: ${{ !contains(github.event.head_commit.message, '#skipcata') }}
+      - name: Package mists
+        if: ${{ !contains(github.event.head_commit.message, '#skipmop') }}
         uses: BigWigsMods/packager@master
         with:
-          args: -g cata
+          args: -g mists
