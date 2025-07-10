@@ -496,7 +496,7 @@ local function SetRuntimeConstants_Once () -- {{{
 
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
         DC.SpellsToUse = {
-            -- Mage
+            -- Druid
             [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
                 Types = not DC.CATACLYSM and {DC.CURSE} or {DC.CURSE, DC.POISON},
                 Better = 0,
@@ -510,7 +510,7 @@ local function SetRuntimeConstants_Once () -- {{{
                     Types = {DC.CURSE, DC.POISON, DC.MAGIC},
                 }
             },
-            -- Druid
+            -- Mage
             [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
                 Types = {DC.CURSE},
                 Better = 0,
@@ -560,22 +560,9 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Priests (global)
             [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
-                Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                Types = not DC.CATACLYSM and {DC.MAGIC, DC.ENEMYMAGIC} or {DC.ENEMYMAGIC},
                 Better = 0,
                 Pet = false,
-                UnitFiltering = DC.CATACLYSM and {
-                    [DC.MAGIC]  = 1, -- player only
-                } or nil,
-                EnhancedBy = DC.CATACLYSM and (DS["TALENT_ABSOLUTION"] ~= nil),
-                EnhancedByCheck = function ()
-                    return DC.CATACLYSM and (IsPlayerSpell(DSI["TALENT_ABSOLUTION"]))
-                end,
-                Enhancements = DC.CATACLYSM and {
-                    Types = {DC.MAGIC, DC.ENEMYMAGIC},
-                    UnitFiltering = {
-                        [DC.MAGIC]  = nil,
-                    },
-                } or nil,
             },
             -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
             [not DC.CATACLYSM and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
@@ -583,9 +570,9 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 1,
                 Pet = false,
             },
-            -- Paladin
-            [not DC.CATACLYSM and DSI["SPELL_PURIFY"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
-                Types = {DC.POISON, DC.DISEASE},
+            -- Paladin or priests on MoP
+            [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
+                Types = not DC.CATACLYSM and {DC.POISON, DC.DISEASE} or {DC.MAGIC, DC.DISEASE},
                 Better = 1,
                 Pet = false,
             },
@@ -602,16 +589,6 @@ local function SetRuntimeConstants_Once () -- {{{
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
-                EnhancedBy = DC.CATACLYSM and DS["TALENT_BODY_AND_SOUL_2"],
-                EnhancedByCheck = function ()
-                    return DC.CATACLYSM and IsPlayerSpell(DSI["TALENT_BODY_AND_SOUL_2"])
-                end,
-                Enhancements = {
-                    Types = {DC.DISEASE, DC.POISON},
-                    UnitFiltering = {
-                        [DC.POISON]  = 1, -- player only
-                    },
-                }
             },
             -- Priest
             [not DC.CATACLYSM and DSI["SPELL_CURE_DISEASE_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
@@ -1838,6 +1815,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
                 T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]    = nil;
+                T._C.DSI["SPELL_DISPELL_MAGIC"]           = 528; -- internally renamed as purify but kept the same spell id
+                T._C.DSI["SPELL_PURIFY"]                  = 527;
+                T._C.DSI["SPELL_CURE_DISEASE_PRIEST"]     = 28133;
 
                 T._C.EXPECTED_DUPLICATES = {
                  -- {"TALENT_BODY_AND_SOUL_1", "TALENT_BODY_AND_SOUL_2"},
