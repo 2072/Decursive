@@ -494,168 +494,262 @@ local function SetRuntimeConstants_Once () -- {{{
         DC.IS_DEADLY_DEBUFF   = D:tReverse({});
         DC.IS_OMNI_DEBUFF     = D:tReverse({});
 
-        -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
-        DC.SpellsToUse = {
-            -- Druid
-            [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
-                Types = not DC.CATACLYSM and {DC.CURSE} or {DC.CURSE, DC.POISON},
-                Better = 0,
-                Pet = false,
-
-                EnhancedBy = DC.CATACLYSM and DS["TALENT_NATURES_CURE"] ~= nil,
-                EnhancedByCheck = function ()
-                    return DC.CATACLYSM and IsPlayerSpell(DSI["TALENT_NATURES_CURE"])
-                end,
-                Enhancements = {
-                    Types = {DC.CURSE, DC.POISON, DC.MAGIC},
-                }
-            },
-            -- Mage
-            [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
-                Types = {DC.CURSE},
-                Better = 0,
-                Pet = false,
-            },
-            [not DC.CATACLYSM and DSI["SPELL_REMOVE_GREATER_CURSE"] or false] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
-                Types = {DC.CURSE, DC.MAGIC},
-                Better = 1,
-                Pet = false,
-            },
-            -- Shaman
-            [DSI["SPELL_PURGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=370/purge
-                Types = {DC.ENEMYMAGIC},
-                Better = 0,
-                Pet = false,
-            },
-            -- Paladin
-            [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
-                Types =  not DC.CATACLYSM and {DC.MAGIC, DC.DISEASE, DC.POISON} or {DC.DISEASE, DC.POISON},
-                Better = 2,
-                Pet = false,
-                EnhancedBy = DC.CATACLYSM and DS["TALENT_SACRED_CLEANSING"] ~= nil,
-                EnhancedByCheck = function ()
-                    return DC.CATACLYSM and IsPlayerSpell(DSI["TALENT_SACRED_CLEANSING"])
-                end,
-                Enhancements = {
-                    Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
-                }
-            },
-            -- Warlock
-            [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
-                Types = {DC.CHARMED},
-                Better = 1,
-                Pet = false,
-                UnitFiltering = {
-                    [DC.CHARMED]  = 2,
+        if not DC.CATACLYSM then
+            -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
+            DC.SpellsToUse = {
+                -- Druid
+                [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
+                    Types = {DC.CURSE},
+                    Better = 0,
+                    Pet = false,
                 },
-            },
-             -- Mages
-            [DSI["SPELL_POLYMORPH"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=118/polymorph
-                Types = {DC.CHARMED},
-                Better = 0,
-                Pet = false,
-                UnitFiltering = {
-                    [DC.CHARMED]  = 2,
+                -- Mage
+                [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
+                    Types = {DC.CURSE},
+                    Better = 0,
+                    Pet = false,
                 },
-            },
-            -- Priests (global)
-            [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
-                Types = not DC.CATACLYSM and {DC.MAGIC, DC.ENEMYMAGIC} or {DC.ENEMYMAGIC},
-                Better = 0,
-                Pet = false,
-            },
-            -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
-            [not DC.CATACLYSM and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
-                Types = {DC.MAGIC, DC.ENEMYMAGIC},
-                Better = 1,
-                Pet = false,
-            },
-            -- Paladin or priests on MoP
-            [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
-                Types = not DC.CATACLYSM and {DC.POISON, DC.DISEASE} or {DC.MAGIC, DC.DISEASE},
-                Better = 1,
-                Pet = false,
-            },
-            -- Priest
-            [not DC.CATACLYSM and DSI["SPELL_ABOLISH_DISEASE"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
-                Types = {DC.DISEASE},
-                Better = 2,
-                Pet = false,
+                [DSI["SPELL_REMOVE_GREATER_CURSE"]] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
+                    Types = {DC.CURSE, DC.MAGIC},
+                    Better = 1,
+                    Pet = false,
+                },
+                -- Shaman
+                [DSI["SPELL_PURGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=370/purge
+                    Types = {DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Paladin
+                [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
+                    Types =  {DC.MAGIC, DC.DISEASE, DC.POISON},
+                    Better = 2,
+                    Pet = false,
 
-
-            },
-            -- Priest
-            [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
-                Types = {DC.DISEASE},
-                Better = 0,
-                Pet = false,
-            },
-            -- Priest
-            [not DC.CATACLYSM and DSI["SPELL_CURE_DISEASE_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
-                Types = {DC.DISEASE},
-                Better = 0,
-                Pet = false,
-            },
-            -- Shaman
-            [DC.CATACLYSM and DSI["CLEANSE_SPIRIT"] or false] = {
-                Types = {DC.CURSE},
-                Better = 2,
-                Pet = false,
-                EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"] ~= nil,
-                EnhancedByCheck = function ()
-                    return IsPlayerSpell(DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"])
-                end,
-                Enhancements = {
-                    Types = {DC.MAGIC, DC.CURSE},
-                }
-            },
-            -- HUNTERS http://www.wowhead.com/?spell=19801
-            [DC.CATACLYSM and DSI["SPELL_TRANQUILIZING_SHOT"] or false]    = {
-                Types = {DC.ENEMYMAGIC},
-                Better = 0,
-                Pet = false,
-            },
-            -- Shamans http://www.wowhead.com/?spell=51514
-            [DC.CATACLYSM and DSI["SPELL_HEX"] or false] = {
-                Types = {DC.CHARMED},
-                Better = 0,
-                Pet = false,
-            },
-            -- Druid
-            [not DC.CATACLYSM and DSI["SPELL_ABOLISH_POISON"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
-                Types = {DC.POISON},
-                Better = 2,
-                Pet = false,
-            },
-            -- Shaman
-            [not DC.CATACLYSM and DSI["SPELL_CURE_POISON_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
-                Types = DC.CATACLYSM and {DC.POISON, DC.DISEASE} or {DC.POISON},
-                Better = 0,
-                Pet = false,
-            },
-            -- Druid
-            [not DC.CATACLYSM and DSI["SPELL_CURE_POISON_DRUID"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
-                Types = {DC.POISON},
-                Better = 0,
-                Pet = false,
-            },
-            -- Warlock
-            [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
-                Types = not DC.CATACLYSM and {DC.MAGIC, DC.ENEMYMAGIC} or {DC.ENEMYMAGIC},
-                Better = 0,
-                Pet = true,
-            },
-            -- undead racial
-            [DSI["SPELL_WILL_OF_THE_FORSAKEN"]] = {
-                Types = {DC.CHARMED},
-                Better = 0,
-                Pet = false,
-                UnitFiltering = {
-                    [DC.CHARMED] = 1, -- player only
+                },
+                -- Warlock
+                [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
+                    Types = {DC.CHARMED},
+                    Better = 1,
+                    Pet = false,
+                    UnitFiltering = {
+                        [DC.CHARMED]  = 2,
+                    },
+                },
+                -- Mages
+                [DSI["SPELL_POLYMORPH"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=118/polymorph
+                    Types = {DC.CHARMED},
+                    Better = 0,
+                    Pet = false,
+                    UnitFiltering = {
+                        [DC.CHARMED]  = 2,
+                    },
+                },
+                -- Priests (global)
+                [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
+                    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
+                [DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"]] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
+                    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                    Better = 1,
+                    Pet = false,
+                },
+                -- Paladin or priests on MoP
+                [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
+                    Types = {DC.POISON, DC.DISEASE},
+                    Better = 1,
+                    Pet = false,
+                },
+                -- Priest
+                [DSI["SPELL_ABOLISH_DISEASE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=552/abolish-disease
+                    Types = {DC.DISEASE},
+                    Better = 2,
+                    Pet = false,
+                },
+                -- Priest
+                [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
+                    Types = {DC.DISEASE},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Priest
+                [DSI["SPELL_CURE_DISEASE_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+                    Types = {DC.DISEASE},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Druid
+                [DSI["SPELL_ABOLISH_POISON"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2893/abolish-poison
+                    Types = {DC.POISON},
+                    Better = 2,
+                    Pet = false,
+                },
+                -- Shaman
+                [DSI["SPELL_CURE_POISON_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
+                    Types = {DC.POISON},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Druid
+                [DSI["SPELL_CURE_POISON_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=8946/cure-poison
+                    Types = {DC.POISON},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Warlock
+                [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
+                    Types = {DC.MAGIC, DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = true,
+                },
+                -- undead racial
+                [DSI["SPELL_WILL_OF_THE_FORSAKEN"]] = {
+                    Types = {DC.CHARMED},
+                    Better = 0,
+                    Pet = false,
+                    UnitFiltering = {
+                        [DC.CHARMED] = 1, -- player only
+                    },
                 },
             }
+        else -- this is the current Classic expansion
+            DC.SpellsToUse = {
+                -- Druid
+                [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
+                    Types = {DC.CURSE, DC.POISON},
+                    Better = 0,
+                    Pet = false,
 
-        }
+                    EnhancedBy = DS["TALENT_NATURES_CURE"] ~= nil,
+                    EnhancedByCheck = function ()
+                        return IsPlayerSpell(DSI["TALENT_NATURES_CURE"])
+                    end,
+                    Enhancements = {
+                        Types = {DC.CURSE, DC.POISON, DC.MAGIC},
+                    }
+                },
+                -- Mage
+                [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
+                    Types = {DC.CURSE},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Shaman
+                [DSI["SPELL_PURGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=370/purge
+                    Types = {DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Paladin
+                [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
+                    Types =  {DC.DISEASE, DC.POISON},
+                    Better = 2,
+                    Pet = false,
+                    EnhancedBy =DS["TALENT_SACRED_CLEANSING"] ~= nil,
+                    EnhancedByCheck = function ()
+                        return IsPlayerSpell(DSI["TALENT_SACRED_CLEANSING"])
+                    end,
+                    Enhancements = {
+                        Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                    }
+                },
+                -- Warlock
+                [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
+                    Types = {DC.CHARMED},
+                    Better = 1,
+                    Pet = false,
+                    UnitFiltering = {
+                        [DC.CHARMED]  = 2,
+                    },
+                },
+                -- Mages
+                [DSI["SPELL_POLYMORPH"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=118/polymorph
+                    Types = {DC.CHARMED},
+                    Better = 0,
+                    Pet = false,
+                    UnitFiltering = {
+                        [DC.CHARMED]  = 2,
+                    },
+                },
+                -- Priests (global)
+                [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
+                    Types ={DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = false,
+                },
+
+                -- Paladin or priests on MoP
+                [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
+                    Types = {DC.MAGIC, DC.DISEASE},
+                    Better = 1,
+                    Pet = false,
+                },
+                -- Priest
+                [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
+                    Types = {DC.DISEASE},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Shaman
+                [DSI["CLEANSE_SPIRIT"]] = {
+                    Types = {DC.CURSE},
+                    Better = 2,
+                    Pet = false,
+                    EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"] ~= nil,
+                    EnhancedByCheck = function ()
+                        return IsPlayerSpell(DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"])
+                    end,
+                    Enhancements = {
+                        Types = {DC.MAGIC, DC.CURSE},
+                    }
+                },
+                -- HUNTERS http://www.wowhead.com/?spell=19801
+                [DSI["SPELL_TRANQUILIZING_SHOT"]]    = {
+                    Types = {DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Shamans http://www.wowhead.com/?spell=51514
+                [DSI["SPELL_HEX"]] = {
+                    Types = {DC.CHARMED},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Warlock
+                [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
+                    Types = {DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = true,
+                },
+                -- undead racial
+                [DSI["SPELL_WILL_OF_THE_FORSAKEN"]] = {
+                    Types = {DC.CHARMED},
+                    Better = 0,
+                    Pet = false,
+                    UnitFiltering = {
+                        [DC.CHARMED] = 1, -- player only
+                    },
+                },
+                -- Deakth Knights
+                [DSI["SPELL_ICY_TOUCH"]] = {
+                    Types = {},
+                    Better = 1,
+                    Pet = false,
+
+                    EnhancedBy = DS["GLYPH_OF_ICY_TOUCH"],
+                    EnhancedByCheck = function ()
+                        return (IsPlayerSpell(DSI["GLYPH_OF_ICY_TOUCH"])) and true or false;
+                    end,
+                    Enhancements = {
+                        Types = {DC.ENEMYMAGIC},
+                    }
+
+                },
+            }
+        end
         DC.SpellsToUse[false] = nil; -- cleanup compatible layer invalid spells
         -- }}}
     end
@@ -1815,9 +1909,11 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
                 T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]    = nil;
-                T._C.DSI["SPELL_DISPELL_MAGIC"]           = 528; -- internally renamed as purify but kept the same spell id
+                T._C.DSI["SPELL_DISPELL_MAGIC"]           = 528;
                 T._C.DSI["SPELL_PURIFY"]                  = 527;
                 T._C.DSI["SPELL_CURE_DISEASE_PRIEST"]     = 28133;
+                T._C.DSI['GLYPH_OF_ICY_TOUCH']            =  58631; --DK
+                T._C.DSI['SPELL_ICY_TOUCH']               =  45477; --DK
 
                 T._C.EXPECTED_DUPLICATES = {
                  -- {"TALENT_BODY_AND_SOUL_1", "TALENT_BODY_AND_SOUL_2"},
