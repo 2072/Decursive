@@ -262,13 +262,6 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = false,
             },
-            --[=[ -- LEGION GONE
-            [DSI["SPELL_TRANQUILIZING_SHOT"]] = {
-            Types = {DC.ENEMYMAGIC},
-            Better = 0,
-            Pet = false,
-            },
-            --]=]
             -- Monks
             [DSI["SPELL_DETOX_1"]] = {
                 Types = {DC.MAGIC},
@@ -489,12 +482,12 @@ local function SetRuntimeConstants_Once () -- {{{
 
         -- }}}
     else -- WOW CLASSIC
-        DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"], DS["Lesser Invisibility"]});
-        DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["MUTATINGINJECTION"]}); --, "Test item"});
-        DC.IS_DEADLY_DEBUFF   = D:tReverse({});
-        DC.IS_OMNI_DEBUFF     = D:tReverse({});
-
         if not DC.CATACLYSM then
+            DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"], DS["Lesser Invisibility"]});
+            DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["MUTATINGINJECTION"]}); --, "Test item"});
+            DC.IS_DEADLY_DEBUFF   = D:tReverse({});
+            DC.IS_OMNI_DEBUFF     = D:tReverse({});
+
             -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
             DC.SpellsToUse = {
                 -- Druid
@@ -616,24 +609,52 @@ local function SetRuntimeConstants_Once () -- {{{
                 },
             }
         else -- this is the current Classic expansion
+            -- MoP
+            DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS["Camouflage"], DS["SHROUD_OF_CONCEALMENT"], DS['Greater Invisibility']});
+
+            DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
+            DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
+            DC.IS_OMNI_DEBUFF     = D:tReverse({});
+
+            local SymbiosisNamesToIDs = {
+                [DS["SPELL_CYCLONE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"],
+                [DS["SPELL_PURGE_FROM_SYMBIOSIS"]]      =  DSI["SPELL_PURGE_FROM_SYMBIOSIS"],
+                [DS["SPELL_CLEANSE_FROM_SYMBIOSIS"]]    =  DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"],
+            }
+            -- special meta table to handle Druid's Symbiosis
+            local SymbiosisEnhancement_mt = {
+                __index = function (self, key)
+                    if key == 'Types' and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
+                        return DC.SpellsToUse[SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])]].Types;
+                    else
+                        return {};
+                    end
+                end
+            }
+
+            -- MoP
             DC.SpellsToUse = {
-                -- Druid
-                [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
-                    Types = {DC.CURSE, DC.POISON},
+                -- Druids
+                [DSI["SPELL_CYCLONE"]] = {
+                    Types = {DC.CHARMED},
                     Better = 0,
                     Pet = false,
-
-                    EnhancedBy = DS["TALENT_NATURES_CURE"] ~= nil,
-                    EnhancedByCheck = function ()
-                        return IsPlayerSpell(DSI["TALENT_NATURES_CURE"])
-                    end,
-                    Enhancements = {
-                        Types = {DC.CURSE, DC.POISON, DC.MAGIC},
-                    }
+                },
+                -- Priests
+                [DSI["SPELL_CYCLONE_FROM_SYMBIOSIS"]] = {
+                    Types = {DC.CHARMED},
+                    Better = 0,
+                    Pet = false,
                 },
                 -- Mage
-                [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
+                [DSI["SPELL_REMOVE_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
                     Types = {DC.CURSE},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Shamans http://www.wowhead.com/?spell=51514
+                [DSI["SPELL_HEX"]] = {
+                    Types = {DC.CHARMED},
                     Better = 0,
                     Pet = false,
                 },
@@ -643,18 +664,134 @@ local function SetRuntimeConstants_Once () -- {{{
                     Better = 0,
                     Pet = false,
                 },
+                -- HUNTERS http://www.wowhead.com/?spell=19801
+                [DSI["SPELL_TRANQUILIZING_SHOT"]]    = {
+                    Types = {DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Monks
+                [DSI["SPELL_DETOX"]] = {
+                    Types = {DC.DISEASE, DC.POISON},
+                    Better = 2,
+                    Pet = false,
+
+                    EnhancedBy = DS["PASSIVE_INTERNAL_MEDICINE"],
+                    EnhancedByCheck = function ()
+                        return IsPlayerSpell(DSI["PASSIVE_INTERNAL_MEDICINE"]);
+                    end,
+                    Enhancements = {
+                        Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
+                    }
+                },
+                -- Monks
+                [DSI["SPELL_DIFFUSEMAGIC"]] = {
+                    Types = {DC.MAGIC},
+                    Better = 0,
+                    Pet = false,
+                    UnitFiltering = {
+                        [DC.MAGIC]  = 1,
+                    },
+                },
                 -- Paladin
                 [DSI["SPELL_CLEANSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=4987/cleanse
                     Types =  {DC.DISEASE, DC.POISON},
                     Better = 2,
                     Pet = false,
-                    EnhancedBy =DS["TALENT_SACRED_CLEANSING"] ~= nil,
+                    EnhancedBy =DS["PASSIVE_SACRED_CLEANSING"] ~= nil,
                     EnhancedByCheck = function ()
-                        return IsPlayerSpell(DSI["TALENT_SACRED_CLEANSING"])
+                        return IsPlayerSpell(DSI["PASSIVE_SACRED_CLEANSING"])
                     end,
                     Enhancements = {
                         Types = {DC.MAGIC, DC.DISEASE, DC.POISON},
                     }
+                },
+                [DSI["SPELL_HAND_OF_SACRIFICE"]] = {
+                    Types = {},
+                    Better = 1,
+                    Pet = false,
+
+                    EnhancedBy = DS["PASSIVE_ABSOLVE"], -- http://www.wowhead.com/talent#srrrdkdz
+                    EnhancedByCheck = function ()
+                        return IsPlayerSpell(DSI["PASSIVE_ABSOLVE"]);
+                    end,
+                    Enhancements = {
+                        Types = {DC.MAGIC},
+                        UnitFiltering = {
+                            [DC.MAGIC]  = 2, -- on raid/party only
+                        },
+                    }
+
+                },
+                -- Druids
+                [DSI["SPELL_CLEANSE_FROM_SYMBIOSIS"]] = {
+                    Types = {DC.DISEASE, DC.POISON},
+                    Better = 2,
+                    Pet = false,
+                },
+                -- Druids
+                [DSI["SPELL_PURGE_FROM_SYMBIOSIS"]] = {
+                    Types = {DC.ENEMYMAGIC},
+                    Better = 2,
+                    Pet = false,
+                },
+                -- Shaman
+                [DSI["CLEANSE_SPIRIT"]] = { -- same name as PURIFY_SPIRIT in ruRU XXX
+                    Types = {DC.CURSE},
+                    Better = 3,
+                    Pet = false,
+                    EnhancedBy = DS["PURIFY_SPIRIT"] ~= nil,
+                    EnhancedByCheck = function ()
+                        return IsPlayerSpell(DSI["PURIFY_SPIRIT"])
+                    end,
+                    Enhancements = {
+                        Types = {DC.MAGIC, DC.CURSE},
+                    }
+                },
+                -- Shaman resto
+                [DSI["PURIFY_SPIRIT"]] = { -- same name as CLEANSE_SPIRIT in ruRU XXX -- IsSpellKnown(DSI["PURIFY_SPIRIT"]) actually fails in all situaions...
+                    -- BUG in MOP BETA and 5.2 (2012-07-08): /dump GetSpellBookItemInfo('Purify Spirit') == nil while /dump (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
+                    Types = {DC.CURSE, DC.MAGIC},
+                    Better = 4,
+                    Pet = false,
+                },
+                -- Warlocks (Imp)
+                [DSI["SPELL_SINGE_MAGIC"]] = {
+                    Types = {DC.MAGIC},
+                    Better = 0,
+                    Pet = true,
+                },
+                -- Warlocks (Imp singe magic ability when used with Grimoire of Sacrifice)
+                [DSI["SPELL_COMMAND_DEMON"]] = {
+                    Types = {}, -- does nothing by default
+                    Better = 1, -- the Imp takes time to disappear when sacrificed, during that interlude, Singe Magic is still there
+                    Pet = false,
+
+                    EnhancedBy = true,
+                    EnhancedByCheck = function ()
+                        return (GetSpellInfo(DS["SPELL_COMMAND_DEMON"]) == DS["SPELL_SINGE_MAGIC"]);
+                    end,
+                    Enhancements = {
+                        Types = {DC.MAGIC},
+                    }
+                },
+                -- Druids (copied for Priests see after table declaration)
+                [DSI["SPELL_SYMBIOSIS"]] = {
+                    Types = {}, -- does nothing by default
+                    Better = 1,
+                    Pet = false,
+
+                    EnhancedBy = true,
+                    EnhancedByCheck = function ()
+                        if (GetSpellInfo(DS["SPELL_SYMBIOSIS"])) ~= DS["SPELL_SYMBIOSIS"] and SymbiosisNamesToIDs[GetSpellInfo(DS["SPELL_SYMBIOSIS"])] then
+                            --  DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
+                            --  DC.SpellsToUse[DSI["SPELL_SYMBIOSIS_PRIEST"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
+                            return true;
+                        else
+                            return false;
+                        end
+                    end,
+                    Enhancements = {}, -- placeholder, replaced by a metatable when active
                 },
                 -- Warlock
                 [DSI["SPELL_FEAR"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=5782/fear
@@ -665,6 +802,12 @@ local function SetRuntimeConstants_Once () -- {{{
                         [DC.CHARMED]  = 2,
                     },
                 },
+                -- Warlocks
+                [DSI["PET_FEL_CAST"]] = {
+                    Types = {DC.ENEMYMAGIC},
+                    Better = 0,
+                    Pet = true,
+                },
                 -- Mages
                 [DSI["SPELL_POLYMORPH"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=118/polymorph
                     Types = {DC.CHARMED},
@@ -673,6 +816,18 @@ local function SetRuntimeConstants_Once () -- {{{
                     UnitFiltering = {
                         [DC.CHARMED]  = 2,
                     },
+                },
+                -- Druids (Balance Feral Guardian)
+                [DSI["SPELL_REMOVE_CORRUPTION"]] = {
+                    Types = {DC.POISON, DC.CURSE},
+                    Better = 0,
+                    Pet = false,
+                },
+                -- Druids (Restoration)
+                [DSI["SPELL_NATURES_CURE"]] = {
+                    Types = {DC.MAGIC, DC.POISON, DC.CURSE},
+                    Better = 3,
+                    Pet = false,
                 },
                 -- Priests (global)
                 [DSI["SPELL_DISPELL_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=527/dispel-magic
@@ -684,45 +839,8 @@ local function SetRuntimeConstants_Once () -- {{{
                 -- Paladin or priests on MoP
                 [DSI["SPELL_PURIFY"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=1152/purify
                     Types = {DC.MAGIC, DC.DISEASE},
-                    Better = 1,
-                    Pet = false,
-                },
-                -- Priest
-                [DSI["SPELL_CURE_DISEASE_PRIEST"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=528/cure-disease
-                    Types = {DC.DISEASE},
                     Better = 0,
                     Pet = false,
-                },
-                -- Shaman
-                [DSI["CLEANSE_SPIRIT"]] = {
-                    Types = {DC.CURSE},
-                    Better = 2,
-                    Pet = false,
-                    EnhancedBy = DS["TALENT_IMPROVED_CLEANSE_SPIRIT"] ~= nil,
-                    EnhancedByCheck = function ()
-                        return IsPlayerSpell(DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"])
-                    end,
-                    Enhancements = {
-                        Types = {DC.MAGIC, DC.CURSE},
-                    }
-                },
-                -- HUNTERS http://www.wowhead.com/?spell=19801
-                [DSI["SPELL_TRANQUILIZING_SHOT"]]    = {
-                    Types = {DC.ENEMYMAGIC},
-                    Better = 0,
-                    Pet = false,
-                },
-                -- Shamans http://www.wowhead.com/?spell=51514
-                [DSI["SPELL_HEX"]] = {
-                    Types = {DC.CHARMED},
-                    Better = 0,
-                    Pet = false,
-                },
-                -- Warlock
-                [DSI["PET_DEVOUR_MAGIC"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=19505/devour-magic
-                    Types = {DC.ENEMYMAGIC},
-                    Better = 0,
-                    Pet = true,
                 },
                 -- undead racial
                 [DSI["SPELL_WILL_OF_THE_FORSAKEN"]] = {
@@ -749,6 +867,9 @@ local function SetRuntimeConstants_Once () -- {{{
 
                 },
             }
+
+            DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]].Enhancements = setmetatable({}, SymbiosisEnhancement_mt);
+            DC.SpellsToUse[DSI["SPELL_SYMBIOSIS_PRIEST"]] = DC.SpellsToUse[DSI["SPELL_SYMBIOSIS"]];
         end
         DC.SpellsToUse[false] = nil; -- cleanup compatible layer invalid spells
         -- }}}
@@ -1798,126 +1919,157 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
         -- if running in WoW Classic, we need to adjust the main spell table
         if DC.WOWC then
-            local DSI_REMOVED_OR_CHANGED_IN_CLASSIC = { -- {{{
-                ['Invisibility']            = 66,
-                ['Shadowmeld']              = 58984,
-                ["SPELL_DISPELL_MAGIC"]     = 528,
-                ["SPELL_PURIFY"]            = 527,
-                ["Fluidity"]	            = 138002,
-                ["SPELL_SPELLSTEAL"]	    = 30449,
-                ["SPELL_CONSUME_MAGIC"]	    = 278326,
-                ["PET_TORCH_MAGIC"]	        = 171021,
-                ["SPELL_HEX"]	            = 51514,
-                ["SPELL_CYCLONE"]	        = 33786,
-                ["SPELL_DETOX_1"]	        = 115450,
-                ["Unstable Affliction"]	    = 30108,
-                ["SPELL_REVERSEMAGIC"]	    = 205604,
-                ["PET_SEAR_MAGIC"]	        = 115276,
-                ["SPELL_COMMAND_DEMON"]	    = 119898,
-                ["Greater Invisibility"]    = 110959,
-                ["SPELL_MENDINGBANDAGE"]    = 212640,
-                ["CRIPLES"]	                = 33787,
-                ["Arcane Blast"]	        = 30451,
-                ["SPELL_DETOX_2"]	        = 218164,
-                ["SPELL_IMPROVED_DETOX"]    = 388874,
-                ["MDREAMLESSSLEEP"]	        = 28504,
-                ["PURIFY_SPIRIT"]	        = 77130,
-                ["SONICBURST"]	            = 39052,
-                ["SPELL_PURIFY_DISEASE"]    = 213634,
-                ["IMPROVED_PURIFY"]         = 390632,
-                ["Vampiric Touch"]	        = 34914,
-                ["CLEANSE_SPIRIT"]	        = 51886,
-                ["SPELL_NATURES_CURE"]	    = 88423,
-                ["PET_SINGE_MAGIC"]	        = 89808,
-                ["PET_SINGE_MAGIC_PVP"]	    = 212623,
-                ["SPELL_CLEANSE_TOXINS"]    = 213644,
-                ["SPELL_DIFFUSEMAGIC"]	    = 122783,
-                ["SPELL_REMOVE_CORRUPTION"] = 2782,
-                ['SPELL_EXPUNGE']           = 365585,
-                ['SPELL_NATURALIZE']        = 360823,
-                ['SPELL_CAUTERIZING_FLAME'] = 374251,
-                ["IMPROVED_PURIFY_SPIRIT"]  = 383016, -- resto shaman
-                ['SPELL_POISON_CLEANSING_TOTEM']= 383013, -- shaman
-                ['DEBUFF_VOID_RIFT']            =  440313, -- omni-debuff dispellable by any spell
-            } -- }}}
+            if not DC.CATACLYSM then
+                local DSI_REMOVED_OR_CHANGED_IN_CLASSIC = { -- {{{
+                    ['Invisibility']            = 66,
+                    ['Shadowmeld']              = 58984,
+                    ["SPELL_DISPELL_MAGIC"]     = 528,
+                    ["SPELL_PURIFY"]            = 527,
+                    ["Fluidity"]	            = 138002,
+                    ["SPELL_SPELLSTEAL"]	    = 30449,
+                    ["SPELL_CONSUME_MAGIC"]	    = 278326,
+                    ["PET_TORCH_MAGIC"]	        = 171021,
+                    ["SPELL_HEX"]	            = 51514,
+                    ["SPELL_CYCLONE"]	        = 33786,
+                    ["SPELL_DETOX_1"]	        = 115450,
+                    ["Unstable Affliction"]	    = 30108,
+                    ["SPELL_REVERSEMAGIC"]	    = 205604,
+                    ["PET_SEAR_MAGIC"]	        = 115276,
+                    ["SPELL_COMMAND_DEMON"]	    = 119898,
+                    ["Greater Invisibility"]    = 110959,
+                    ["SPELL_MENDINGBANDAGE"]    = 212640,
+                    ["CRIPLES"]	                = 33787,
+                    ["Arcane Blast"]	        = 30451,
+                    ["SPELL_DETOX_2"]	        = 218164,
+                    ["SPELL_IMPROVED_DETOX"]    = 388874,
+                    ["MDREAMLESSSLEEP"]	        = 28504,
+                    ["PURIFY_SPIRIT"]	        = 77130,
+                    ["SONICBURST"]	            = 39052,
+                    ["SPELL_PURIFY_DISEASE"]    = 213634,
+                    ["IMPROVED_PURIFY"]         = 390632,
+                    ["Vampiric Touch"]	        = 34914,
+                    ["CLEANSE_SPIRIT"]	        = 51886,
+                    ["SPELL_NATURES_CURE"]	    = 88423,
+                    ["PET_SINGE_MAGIC"]	        = 89808,
+                    ["PET_SINGE_MAGIC_PVP"]	    = 212623,
+                    ["SPELL_CLEANSE_TOXINS"]    = 213644,
+                    ["SPELL_DIFFUSEMAGIC"]	    = 122783,
+                    ["SPELL_REMOVE_CORRUPTION"] = 2782,
+                    ['SPELL_EXPUNGE']           = 365585,
+                    ['SPELL_NATURALIZE']        = 360823,
+                    ['SPELL_CAUTERIZING_FLAME'] = 374251,
+                    ["IMPROVED_PURIFY_SPIRIT"]  = 383016, -- resto shaman
+                    ['SPELL_POISON_CLEANSING_TOTEM']= 383013, -- shaman
+                    ['DEBUFF_VOID_RIFT']            =  440313, -- omni-debuff dispellable by any spell
+                } -- }}}
 
-            local DSI_REMOVED_OR_CHANGED_IN_CATACLYSM = { -- {{{
-                ['SPELL_CURE_DISEASE_SHAMAN']            = 2870,
-                ['Shadowmeld']                           = 20580,
-                ["IMPROVED_PURIFY_SPIRIT"]               = 383016, -- resto shaman
-                ['SPELL_POISON_CLEANSING_TOTEM']         = 383013, -- shaman
-                -- removed in CT
-                ["SPELL_CURE_POISON_SHAMAN"]             = 526,
-                ["SPELL_ABOLISH_DISEASE"]                = 552,
-                ["SPELL_ABOLISH_POISON"]                 = 2893,
-                ["SPELL_DISPELL_MAGIC_PRIEST_R2"]        = 988,
-                ["SPELL_PURIFY"]                         = 1152,
-                ["SPELL_CURE_POISON_DRUID"]              = 8946,
-            } -- }}}
-
-
-            -- remove invalid spells from the spell table
-            for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CLASSIC) do
-                T._C.DSI[name] = nil;
-            end
-
-            -- reassign the proper spells
-            -- The new and changed spells in classic {{{
-            T._C.DSI["SPELL_REMOVE_CURSE_DRUID"]  = 2782;
-            T._C.DSI["SPELL_REMOVE_CURSE_MAGE"]   = 475;
-            T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]= 412113; --  WoW SoD
-            T._C.DSI["SPELL_PURGE"]               = 370;
-            T._C.DSI["SPELL_CLEANSE"]             = 4987;
-            T._C.DSI["SPELL_FEAR"]                = 5782;
-            T._C.DSI["SPELL_POLYMORPH"]           = 118;
-            T._C.DSI["SPELL_DISPELL_MAGIC"]       = 527;
-            T._C.DSI["SPELL_PURIFY"]              = 1152;
-            T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
-            T._C.DSI["SPELL_ABOLISH_POISON"]      = 2893;
-            T._C.DSI["SPELL_CURE_DISEASE_PRIEST"] = 528;
-            T._C.DSI["SPELL_CURE_DISEASE_SHAMAN"] = 2870;
-            T._C.DSI["SPELL_CURE_POISON_SHAMAN"]  = 526;
-            T._C.DSI["SPELL_CURE_POISON_DRUID"]   = 8946;
-            T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
-            T._C.DSI["SONICBURST"]                = 8281;
-            T._C.DSI["CRIPLES"]                   = 11443;
-            T._C.DSI["Shadowmeld"]                = 20580;
-            T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
-            -- }}}
-
-            T._C.EXPECTED_DUPLICATES = {
-                {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
-                {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
-                {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
-            }
-
-            if DC.CATACLYSM then
                 -- remove invalid spells from the spell table
-                for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CATACLYSM) do
+                for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CLASSIC) do
                     T._C.DSI[name] = nil;
                 end
 
-                -- reassign the proper spells for WotLK
-                T._C.DSI["Shadowmeld"]                    = 58984;
-                T._C.DSI["SPELL_TRANQUILIZING_SHOT"]      = 19801;
-                -- T._C.DSI["TALENT_BODY_AND_SOUL_1"]        = 64127; -- MOP removed
-                T._C.DSI["TALENT_BODY_AND_SOUL_2"]        = 64129;
-                -- T._C.DSI["TALENT_ABSOLUTION"]             = 33167; -- MOP removed
-                T._C.DSI["TALENT_IMPROVED_CLEANSE_SPIRIT"]= 77130;
-                T._C.DSI["TALENT_NATURES_CURE"]           = 88423;
-                T._C.DSI["TALENT_SACRED_CLEANSING"]       = 53551;
-                T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
-                T._C.DSI["SPELL_HEX"]	                  = 51514;
-                T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]    = nil;
-                T._C.DSI["SPELL_DISPELL_MAGIC"]           = 528;
-                T._C.DSI["SPELL_PURIFY"]                  = 527;
-                T._C.DSI["SPELL_CURE_DISEASE_PRIEST"]     = 28133;
-                T._C.DSI['GLYPH_OF_ICY_TOUCH']            =  58631; --DK
-                T._C.DSI['SPELL_ICY_TOUCH']               =  45477; --DK
+                -- reassign the proper spells
+                -- The new and changed spells in classic {{{
+                T._C.DSI["SPELL_REMOVE_CURSE_DRUID"]  = 2782;
+                T._C.DSI["SPELL_REMOVE_CURSE_MAGE"]   = 475;
+                T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]= 412113; --  WoW SoD
+                T._C.DSI["SPELL_PURGE"]               = 370;
+                T._C.DSI["SPELL_CLEANSE"]             = 4987;
+                T._C.DSI["SPELL_FEAR"]                = 5782;
+                T._C.DSI["SPELL_POLYMORPH"]           = 118;
+                T._C.DSI["SPELL_DISPELL_MAGIC"]       = 527;
+                T._C.DSI["SPELL_PURIFY"]              = 1152;
+                T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
+                T._C.DSI["SPELL_ABOLISH_POISON"]      = 2893;
+                T._C.DSI["SPELL_CURE_DISEASE_PRIEST"] = 528;
+                T._C.DSI["SPELL_CURE_DISEASE_SHAMAN"] = 2870;
+                T._C.DSI["SPELL_CURE_POISON_SHAMAN"]  = 526;
+                T._C.DSI["SPELL_CURE_POISON_DRUID"]   = 8946;
+                T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
+                T._C.DSI["SONICBURST"]                = 8281;
+                T._C.DSI["CRIPLES"]                   = 11443;
+                T._C.DSI["Shadowmeld"]                = 20580;
+                T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
+                -- }}}
 
                 T._C.EXPECTED_DUPLICATES = {
-                 -- {"TALENT_BODY_AND_SOUL_1", "TALENT_BODY_AND_SOUL_2"},
-                 --   {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
+                    {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
+                    {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
+                    {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
+                }
+
+            else
+                T._C.DSI = {
+                    ["SPELL_POLYMORPH"]             =  118,
+                    ["SPELL_COUNTERSPELL"]          =  2139,
+                    ["SPELL_CYCLONE"]               =  33786,
+                    ["SPELL_CLEANSE"]               =  4987,
+                    ["SPELL_HAND_OF_SACRIFICE"]     =  6940,
+                    ["PASSIVE_ABSOLVE"]             =  140333,
+                    ["SPELL_CLEANSE_FROM_SYMBIOSIS"]=  122288,
+                    ["SPELL_PURGE_FROM_SYMBIOSIS"]  =  110802,
+                    ["SPELL_CYCLONE_FROM_SYMBIOSIS"]=  113506,
+                    ['SPELL_TRANQUILIZING_SHOT']    =  19801,
+                    ['SPELL_HEX']                   =  51514, -- shamans
+                    ["CLEANSE_SPIRIT"]              =  51886,
+                    ["SPELL_PURGE"]                 =  370,
+                    ["PET_FEL_CAST"]                =  19505,
+                    ["SPELL_FEAR"]                  =  5782,
+                    ["DCR_LOC_SILENCE"]             =  15487,
+                    ["DCR_LOC_MINDVISION"]          =  2096,
+                    ["DREAMLESSSLEEP"]              =  15822,
+                    ["GDREAMLESSSLEEP"]             =  24360,
+                    ["MDREAMLESSSLEEP"]             =  28504,
+                    ["ANCIENTHYSTERIA"]             =  19372,
+                    ["IGNITE"]                      =  19659,
+                    ["TAINTEDMIND"]                 =  16567,
+                    ["MAGMASHAKLES"]                =  19496,
+                    ["CRIPLES"]                     =  33787,
+                    ["DUSTCLOUD"]                   =  26072,
+                    ["WIDOWSEMBRACE"]               =  28732,
+                    ["SONICBURST"]                  =  39052,
+                    ["DELUSIONOFJINDO"]             =  24306,
+                    ["MUTATINGINJECTION"]           =  28169,
+                    ['Banish']                      =  710,
+                    ['Frost Trap Aura']             =  13810,
+                    ['Arcane Blast']                =  30451,
+                    ['Prowl']                       =  5215,
+                    ['Stealth']                     =  1784,
+                    ['Camouflage']                  =  51755,
+                    ['Shadowmeld']                  =  58984,
+                    ['Invisibility']                =  66,
+                    ['Lesser Invisibility']         =  7870,
+                    ['Ice Armor']                   =  7302,
+                    ['Unstable Affliction']         =  30108,
+                    ['Fluidity']                    =  138002,
+                    ['Vampiric Touch']              =  34914,
+                    ['Flame Shock']                 =  8050,
+                    ["SPELL_REMOVE_CURSE"]          =  475, -- Druids/Mages
+                    ["SPELL_REMOVE_CORRUPTION"]     =  2782,
+                    ["SPELL_SINGE_MAGIC"]           =  89808, -- Warlock imp
+                    ["SPELL_PURIFY"]                =  527,
+                    ["SPELL_DISPELL_MAGIC"]         =  528,
+                    ["PURIFY_SPIRIT"]               =  77130, -- resto shaman
+                    ["PASSIVE_SACRED_CLEANSING"]    =  53551,
+                    ["PASSIVE_INTERNAL_MEDICINE"]   =  115451,
+                    ["SPELL_NATURES_CURE"]          =  88423,
+                    ["SHROUD_OF_CONCEALMENT"]       =  115834, -- rogue
+                    ["SPELL_DETOX"]                 =  115450, -- monk
+                    ["SPELL_DIFFUSEMAGIC"]          =  122783, -- monk
+                    ["SPELL_COMMAND_DEMON"]         =  119898, -- warlock
+                    ["SPELL_SYMBIOSIS"]             =  110309, -- this is the Druid ability
+                    ["SPELL_SYMBIOSIS_PRIEST"]      =  110502, -- this is the Priest ability
+                    ['Greater Invisibility']        =  110959,
+                    ['GLYPH_OF_ICY_TOUCH']          =  58631, --DK
+                    ['SPELL_ICY_TOUCH']             =  45477, --DK
+                    ['SPELL_WILL_OF_THE_FORSAKEN']  =  7744,
+                }
+
+                T._C.EXPECTED_DUPLICATES = {
+                     {"SPELL_CYCLONE", "SPELL_CYCLONE_FROM_SYMBIOSIS"},
+                     {"SPELL_PURGE", "SPELL_PURGE_FROM_SYMBIOSIS"},
+                     {"SPELL_CLEANSE", "SPELL_CLEANSE_FROM_SYMBIOSIS"},
+                     {"SPELL_SYMBIOSIS", "SPELL_SYMBIOSIS_PRIEST"},
                 }
             end
 
