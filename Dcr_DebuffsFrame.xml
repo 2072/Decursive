@@ -92,7 +92,7 @@
 
                 <Scripts>
                     <OnMouseUp>
-                        if ( self.isMoving ) then
+                        if ( self.isMoving and not InCombatLockdown() ) then
                             self:GetParent():StopMovingOrSizing();
                             self.isMoving = false;
                             DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = false;
@@ -104,7 +104,7 @@
                         end
                     </OnMouseUp>
                     <OnMouseDown>
-                        if (   button == "LeftButton" and IsAltKeyDown() ) then
+                        if (   button == "LeftButton" and IsAltKeyDown() and not InCombatLockdown() ) then
                             self.isMoving = true;
                             DecursiveRootTable.Dcr.MicroUnitF.DraggingHandle = true;
                             self:GetParent():StartMoving();

@@ -340,6 +340,11 @@ function D:PLAYER_REGEN_DISABLED() -- {{{
     -- this is not reliable for testing unitframe modifications authorization,
     -- this event fires after the player enters in combat, only InCombatLockdown() may be used for critical checks
     self.Status.Combat = true;
+    if self.MFContainerHandle.isMoving then
+        self.MFContainer:StopMovingOrSizing();
+        self.MFContainerHandle.isMoving = false;
+        self.MicroUnitF.DraggingHandle = false;
+    end
 end --}}}
 
 --function D:PLAYER_REGEN_ENABLED() --{{{
