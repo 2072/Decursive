@@ -1,5 +1,25 @@
-Decursive 2.7.29
+Decursive 2.7.30
 ================
+
+
+Decursive 2.7.30 (2025-10-22)
+-----------------------------
+
+- Fix compatibility with Classic and MoP (Thanks Blizzard for telling me that
+  GetNumUnspentTalents and GetNumTalentTabs API are unsupported in this version of World of Warcraft,
+  but you know, the nil check worked just fine...).
+
+- Fix Decursive's MUFs not showing for players between level 10 and 15. That's
+  the positive consequence of the breakage above — 🎵always look on the bright side of life 🎵.
+
+- Do not attempt to move the MUFs when in combat and drop it where it is if the
+  user happened to be in the process of moving it while entering combat...
+
+- ToC updates
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.29 (2025-07-21)
@@ -8,10 +28,6 @@ Decursive 2.7.29 (2025-07-21)
 - Compatible with MoP
 
 - ToC updates
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.28 (2025-05-08)
