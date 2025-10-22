@@ -647,7 +647,7 @@ end
 function D:isSpellReady(spellID, isPetAbility)
 
     -- in wow classic flavors, the 'display all ranks' option in the spell book UI changes the output of the IsSpellKnown() function...
-    if DC.WOWC and (isPetAbility or not IsSpellKnownOrOverridesKnown(spellID, isPetAbility)) then
+    if DC.WOWC and not DC.CATACLYSM and (isPetAbility or not IsSpellKnownOrOverridesKnown(spellID, isPetAbility)) then
         -- Former ranks of known pet spell abilities are lost in WoW classic
         -- so we need to get back to the corresponding current spell id using
         -- the name of the spell.

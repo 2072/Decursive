@@ -1133,11 +1133,11 @@ do
         local playerLevel = UnitLevel("player");
 
         -- no talents before level 10
-        if playerLevel > 0 and playerLevel < 10 then
+        if playerLevel > 0 and (playerLevel < 10 or DC.CATACLYSM and playerLevel < 15) then
             return true;
         end
 
-        -- if we know that there are unspet talents, it means we can check for
+        -- if we know that there are unspent talents, it means we can check for
         -- them
         if not DC.WOWC and _G.GetNumUnspentTalents and GetNumUnspentTalents() then
             return true;
@@ -1146,7 +1146,7 @@ do
         if (DC.WOWC) then
             -- local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo
             -- On loading the 8th value (available) is nil
-            for talent=1, (GetNumTalentTabs and GetNumTalentTabs() or 3) do
+            for talent=1, (not DC.CATACLYSM and GetNumTalentTabs and GetNumTalentTabs() or 3) do
                 if (select(8, GetTalentInfo(talent, 1))) then
                     return true;
                 end
