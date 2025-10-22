@@ -1139,7 +1139,7 @@ do
 
         -- if we know that there are unspet talents, it means we can check for
         -- them
-        if _G.GetNumUnspentTalents and GetNumUnspentTalents() then
+        if not DC.WOWC and _G.GetNumUnspentTalents and GetNumUnspentTalents() then
             return true;
         end
 
