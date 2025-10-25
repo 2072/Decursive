@@ -232,7 +232,15 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
                         name = str_format("[ %s ]", _G[({"HEALER", "TANK", "DAMAGER"})[-GUIDorNum]] or GUIDorNum);
                     end
                 end
-                Entry:SetText(id.." - "..D:ColorText(name, classname and "FF"..DC.HexClassColor[classname] or (GUIDorNum > 0 and "FFCACAF0" or "FFBAF0DA") ));
+                if (not DC.HexClassColor[classname]) then
+                    D:Debug("no DC.HexClassColor for ", classname)
+                end
+
+                Entry:SetText(id..
+                " - "..
+                D:ColorText(name, classname and
+                "FF"..(DC.HexClassColor[classname] or "424242") or
+                (GUIDorNum > 0 and "FFCACAF0" or "FFBAF0DA") ));
             else
                 Entry:SetText("Error - NO name!");
             end
