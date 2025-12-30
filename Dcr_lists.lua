@@ -240,7 +240,7 @@ function D:PrioSkipListEntry_Update(Entry) --{{{
                 " - "..
                 D:ColorText(name, classname and
                 "FF"..(DC.HexClassColor[classname] or "424242") or
-                (GUIDorNum > 0 and "FFCACAF0" or "FFBAF0DA") ));
+                (type(GUIDorNum) == "number" and GUIDorNum > 0 and "FFCACAF0" or "FFBAF0DA") ));
             else
                 Entry:SetText("Error - NO name!");
             end
