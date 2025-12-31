@@ -69,10 +69,9 @@ local function RegisterClassLocals_Once() -- {{{
     D:tcopy(localizedClasses, LocalizedClassList and LocalizedClassList(false) or FillLocalizedClassList({}, false));
 
 
-    -- D.LC = setmetatable((FillLocalizedClassList or LocalizedClassList)(false), {__index = function(t,k) return k end});
     D.LC = setmetatable(localizedClasses, {__index = function(t,k) return k end});
 
-    RegisterLocals_Once = nil;
+    RegisterClassLocals_Once = nil;
 end -- }}}
 
 T._CatchAllErrors = "RegisterClassLocals_Once";      RegisterClassLocals_Once();

@@ -88,13 +88,6 @@ local function RegisterLocals_Once() -- {{{
 
     D.L         = LibStub("AceLocale-3.0"):GetLocale("Decursive", true);
 
-    -- Make sure to never crash if some locals are missing (seen this happen on
-    -- Chinese clients when relying on LOCALIZED_CLASS_NAMES_MALE constant)
-    -- While that was probably caused by a badd-on redefining the constant,
-    -- it's best to stay on the safe side...
-
-    D.LC = setmetatable((FillLocalizedClassList or LocalizedClassList)({}, false), {__index = function(t,k) return k end});
-
     RegisterLocals_Once = nil;
 end -- }}}
 
