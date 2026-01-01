@@ -1,5 +1,13 @@
-Decursive 2.7.31
+Decursive 2.7.32
 ================
+
+Decursive 2.7.32 (2026-01-26)
+-----------------------------
+
+- TOC updates
+
+- Fix a reported Lua error in priority/skip list management
+
 
 Decursive 2.7.31 (2025-10-25)
 -----------------------------
