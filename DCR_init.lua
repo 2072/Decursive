@@ -1156,7 +1156,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     -- these events are automatically stopped when the addon is disabled by Ace
 
     -- Spell changes events
-    D.eventFrame:RegisterEvent("LEARNED_SPELL_IN_TAB");
+    if not DC.MN then
+        D.eventFrame:RegisterEvent("LEARNED_SPELL_IN_TAB");
+    end
     D.eventFrame:RegisterEvent("SPELLS_CHANGED");
     D.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     D.eventFrame:RegisterEvent("BAG_UPDATE_DELAYED");
@@ -1190,7 +1192,12 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     D.eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
-    D.eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    if not DC.MN then
+        D.eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    else
+        D:PPrint("CLEU no longer supported (Midnight restrictions), Decursive will not work as expected.")
+    end
+
     D.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 
     self:RegisterMessage("DECURSIVE_TALENTS_AVAILABLE");

@@ -90,6 +90,7 @@ local UnitName          = _G.UnitName;
 local UnitGUID          = _G.UnitGUID;
 local GetTime           = _G.GetTime;
 local IsShiftKeyDown    = _G.IsShiftKeyDown;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- Blizzard event management
 function D.OnEvent(frame, event, ...)
@@ -244,9 +245,15 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 
     -- we need to rescan if the focus is not in our group and it's nice or if we already have a focus unit registered
 
-    local FocusCurrent_ElligStatus = (
-        not self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")]    -- it's not already in the unit array
+    local focusGUID = UnitGUID("focus")
+
+    local FocusCurrent_ElligStatus;
+
+    if canaccessvalue(focusGUID) then
+        FocusCurrent_ElligStatus = (
+        not self.Status.Unit_Array_GUIDToUnit[focusGUID]    -- it's not already in the unit array
         ) and ( UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player"))) -- and it is (or used to) be nice
+    end
 
 
     if not FocusCurrent_ElligStatus then FocusCurrent_ElligStatus = false; end -- avoid the difference between nil and false...
@@ -522,10 +529,7 @@ do
         local unitguid = UnitGUID(UnitID);
 
         --@debug@
-
-
-        D:Debug("UNIT_AURA", o_auraUpdateInfo, UnitID, GetTime() + (GetTime() % 1));
-
+        D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, UnitID, GetTime() + (GetTime() % 1));
         --@end-debug@
 
 

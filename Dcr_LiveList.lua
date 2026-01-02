@@ -103,6 +103,7 @@ local floor             = _G.math.floor;
 local str_upper         = _G.string.upper;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local t_wipe            = _G.table.wipe;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 
 -- defines what is printed when the object is read as a string
@@ -418,8 +419,10 @@ function LiveList:Update_Display() -- {{{
 
     -- Check the units in order of importance:
 
+    local targetGUID = D.Status.TargetExists and UnitGUID("target")
+
     -- First the Target
-    if D.Status.TargetExists and not D.Status.Unit_Array_GUIDToUnit[UnitGUID("target")] and self:GetDebuff("target") then -- TargetExists implies that the unit is a friend
+    if canaccessvalue(targetGUID) and targetGUID and not D.Status.Unit_Array_GUIDToUnit[targetGUID] and self:GetDebuff("target") then -- TargetExists implies that the unit is a friend
         Index = Index + 1;
         self:DisplayItem(Index, "target");
         --D:Debug("frenetic target update");

@@ -1487,7 +1487,11 @@ do
 
                 if RangeStatus and self.UpdateCD < Status.UpdateCooldown then
                     if SpellID > 0 then
-                        CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
+                        if not DC.MN then
+                            CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
+                        else
+                            self.CooldownFrame:SetCooldownFromDurationObject(C_Spell.GetSpellCooldownDuration(Status.CuringSpells[DebuffType]));
+                        end
                     else
                         --D:Debug("SetColor(): setting interface cooldown for ", -1 * SpellID, "GetItemCooldown:",  GetItemCooldown(-1 * SpellID));
                         CooldownFrame_Set (self.CooldownFrame, GetItemCooldown(-1 * SpellID));

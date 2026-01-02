@@ -255,6 +255,36 @@ do
             self:PPrint(debugStyle(UseFormatIfPresent(...)));
         end
     end
+
+    local debug_args = {}
+    local debug_thunks = {}
+
+    function D:lazy_debug(...)
+        if not self.debug then
+            return
+        end
+
+        -- Evaluate and store arguments in reusable table
+        local n = 0
+        for i = 1, select('#', ...) do
+            local arg = select(i, ...)
+            n = n + 1
+            if type(arg) == 'function' then
+                debug_args[n] = arg()  -- Evaluate lazy thunk
+            else
+                debug_args[n] = arg     -- Use value directly
+            end
+        end
+
+        local fmt = debug_args[1]
+        if fmt and isFormattedString(fmt) then
+            -- First arg is format string, apply :format with the rest
+            self:PPrint(debugStyle(fmt:format(unpack(debug_args, 2, n))))
+        else
+            -- Just print all arguments as-is
+            self:PPrint(debugStyle(unpack(debug_args, 1, n)))
+        end
+    end
 end
 
 
@@ -277,7 +307,6 @@ function D:tMap(t, f)
 end
 
 function D:tAsString(t, indent) -- debugging function
-
     if type(t) ~= 'table' then
         return tostring(t)
     end
@@ -288,7 +317,10 @@ function D:tAsString(t, indent) -- debugging function
 
     local s = "\n" .. indent .. "{" .. "\n"
     for k,v in pairs(t) do
-        s = s .. indent .. indent .. ("[%s] = [%s],\n"):format(tostring(k), self:tAsString(v, indent .. "  "))
+        s = s .. indent .. indent .. ("[%s] = [%s],\n"):format(
+         canaccessvalue and canaccessvalue(k) and "secret K" or tostring(k),
+         canaccessvalue and canaccessvalue(v) and "secret V" or self:tAsString(v, indent .. "  ")
+        )
     end
     return s .. indent .. "}"
 end
