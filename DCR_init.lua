@@ -495,7 +495,7 @@ local function SetRuntimeConstants_Once () -- {{{
                     Better = 0,
                     Pet = false,
                 },
-                [DSI["SPELL_REMOVE_GREATER_CURSE"]] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
+                [not DC.BCC and DSI["SPELL_REMOVE_GREATER_CURSE"]] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
                     Types = {DC.CURSE, DC.MAGIC},
                     Better = 1,
                     Pet = false,
@@ -1156,7 +1156,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     -- these events are automatically stopped when the addon is disabled by Ace
 
     -- Spell changes events
-    if not DC.MN then
+    if not DC.MN and not DC.BCC then
         D.eventFrame:RegisterEvent("LEARNED_SPELL_IN_TAB");
     end
     D.eventFrame:RegisterEvent("SPELLS_CHANGED");
@@ -1972,7 +1972,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 -- The new and changed spells in classic {{{
                 T._C.DSI["SPELL_REMOVE_CURSE_DRUID"]  = 2782;
                 T._C.DSI["SPELL_REMOVE_CURSE_MAGE"]   = 475;
-                T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]= 412113; --  WoW SoD
+                if not DC.BCC then
+                    T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]= 412113; --  WoW SoD
+                end
                 T._C.DSI["SPELL_PURGE"]               = 370;
                 T._C.DSI["SPELL_CLEANSE"]             = 4987;
                 T._C.DSI["SPELL_FEAR"]                = 5782;

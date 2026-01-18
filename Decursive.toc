@@ -1,6 +1,6 @@
 ## Interface: 110207, 120000, 120001
 ## Interface-Retail: 110207
-## Interface-Classic: 11508
+## Interface-Classic: 11508, 20505
 ## Interface-Mists: 50503
 ## X-Max-Interface: 120001
 ## X-Min-Interface: 11508

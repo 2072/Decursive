@@ -662,6 +662,7 @@ DC.WOTLK = WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WR
 DC.CATACLYSM = WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
 DC.TWW = tocversion >= 110000
 DC.MN = tocversion >= 120000
+DC.BCC = tocversion >= 20505 and tocversion < 30000
 
 
 
@@ -1031,7 +1032,7 @@ do
         local DcrMinMidTOC = tonumber(GetAddOnMetadata("Decursive", "X-Mid-Interface") or 50503);
 
         -- test if Decursive is backward compatible with the client's version
-        if tocversion < DcrMinTOC or tocversion > 20000 and tocversion < DcrMinMidTOC then
+        if tocversion < DcrMinTOC or tocversion > 30000 and tocversion < DcrMinMidTOC then
             table.insert(Errors, ("Your World of Warcraft client version (%d) is too old to run this version of Decursive.\n"):format(tocversion));
             GenericErrorMessage2 = "You need to install an older version of Decursive.";
             FatalOccured = true;
