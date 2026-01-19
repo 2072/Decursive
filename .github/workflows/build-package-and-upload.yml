@@ -49,3 +49,9 @@ jobs:
         uses: BigWigsMods/packager@master
         with:
           args: -g mists
+
+      - name: Package bcc
+        if: ${{ !contains(github.event.head_commit.message, '#skipbcc') }}
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g bcc
