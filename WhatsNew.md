@@ -1,5 +1,18 @@
-Decursive 2.7.32
+Decursive 2.7.33
 ================
+
+Decursive 2.7.33 (2026-01-19)
+-----------------------------
+
+- Compatible with BCC Anniversary
+
+- Make it so it doesn't crash in Midnight but it's mostly useless.
+
+CLEU being gone and APIs returning secret values, there is little hope but the
+MUFs and spell detection are still working so there might be a way to do
+something with the debuf types and the curve color secret related APIs to
+change the MUFs color depending on the type of debuf...
+
 
 Decursive 2.7.32 (2026-01-01)
 -----------------------------
