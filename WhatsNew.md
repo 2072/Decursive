@@ -1,7 +1,7 @@
-Decursive 2.7.33
+Decursive 2.7.34
 ================
 
-Decursive 2.7.33 (2026-01-19)
+Decursive 2.7.34 (2026-01-19)
 -----------------------------
 
 - Compatible with BCC Anniversary
