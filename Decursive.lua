@@ -437,7 +437,7 @@ do
     };
 
     -- This local function only sets interesting values of UnitDebuff()
-    local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID;
+    local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID, secretMode;
     local function GetUnitDebuff  (Unit, i) --{{{
 
         if D.LiveList.TestItemDisplayed and UnitExists(Unit) then -- and not UnTrustedUnitIDs[Unit] then
@@ -451,6 +451,8 @@ do
         end
 
         Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID = UnitDebuff (Unit, i);
+
+        secretMode = not canaccessvalue(TypeName)
 
         if Name then
             return true;
@@ -493,6 +495,10 @@ do
     -- This function does more than just reporting Debuffs. it also detects charmed units
 
     function D:GetUnitDebuffAll (Unit) --{{{
+
+        if secretMode then
+            return
+        end
 
         -- create a Debuff table for this unit if there is not already one
         if not DebuffUnitCache[Unit] then
