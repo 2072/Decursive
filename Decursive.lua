@@ -703,6 +703,11 @@ do
 
             continue_ = true;
 
+            if not canaccessvalue(Debuff.Type) then
+                continue_ = false;
+                break
+            end
+
             -- test if we have to ignore this debuff  {{{ --
 
             if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then

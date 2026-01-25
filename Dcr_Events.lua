@@ -528,6 +528,10 @@ do
 
         local unitguid = UnitGUID(UnitID);
 
+        if not canaccessvalue(unitguid) then
+            return
+        end
+
         --@debug@
         D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, UnitID, GetTime() + (GetTime() % 1));
         --@end-debug@

@@ -807,10 +807,11 @@ do
             -- removes the CHARMED_STATUS bit from Status, we don't need it
             Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
 
+            local grti = GetRaidTargetIndex(Unit)
             -- First, write the name of the unit in its class color
-            if UnitExists(MF.CurrUnit) then
-            MUFtoolTip:AddLine(
-                ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or "")
+            if UnitExists(MF.CurrUnit) and canaccessvalue(grti) then
+                MUFtoolTip:AddLine(
+                ((DC.RAID_ICON_LIST[grti]) and (DC.RAID_ICON_LIST[grti] .. "0:0:0:0|t ") or "")
                 -- Colored unit name
                 .. D:ColorTextNA((D:PetUnitName(Unit, true)), ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA"))
                 .. "  |cFF3F3F3F(".. Unit .. ")|r"

@@ -108,7 +108,8 @@ D.IsSpellInRange = function (spellName, unit)
         if unit == 'player' or unit == 'pet' then
             return 1;
         else
-            return (UnitInRange(unit)) and 1 or 0;
+            local uir = UnitInRange(unit)
+            return canaccessvalue(uir) and uir and 1 or 0;
         end
     end
 
