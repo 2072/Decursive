@@ -1,7 +1,7 @@
-Decursive 2.7.35
+Decursive 2.7.36
 ================
 
-Decursive 2.7.35 (2026-01-24)
+Decursive 2.7.36 (2026-01-25)
 -----------------------------
 
 - Fix TOC for midnight pre-patch
@@ -16,6 +16,8 @@ Decursive 2.7.35 (2026-01-24)
  MUFs and spell detection are still working so there might be a way to do
  something with the debuf types and the curve color secret related APIs to
  change the MUFs color depending on the type of debuf...
+
+ For now Decursive will just do nothing if the APIs are in secret mode.
 
 
 Decursive 2.7.34 (2026-01-19)

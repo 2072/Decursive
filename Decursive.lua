@@ -495,11 +495,6 @@ do
     -- This function does more than just reporting Debuffs. it also detects charmed units
 
     function D:GetUnitDebuffAll (Unit) --{{{
-
-        if secretMode then
-            return
-        end
-
         -- create a Debuff table for this unit if there is not already one
         if not DebuffUnitCache[Unit] then
             DebuffUnitCache[Unit] = {};
@@ -541,6 +536,19 @@ do
             end
 
             local isSpellIDScret = not canaccessvalue(SpellID)
+
+            --@debug@
+            if isSpellIDScret then
+                D:Debug("spell ids are secret")
+            end
+            --@end-debug@
+
+            if secretMode then
+                --@debug@
+                D:Debug("secret mode, giving up...")
+                --@end-debug@
+                break -- there is nothing we can do...
+            end
 
             -- test for a type
             if TypeName and TypeName ~= "" then
