@@ -306,7 +306,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     end
 
     -- Raid Icon
-    if self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
+    if canaccessvalue(self.RaidTargetIndex) and self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
         self.RaidIconTexture:SetTexture(self.RaidTargetIndex and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIndex] or nil);
         self.PrevRaidTargetIndex = self.RaidTargetIndex;
     end

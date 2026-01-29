@@ -85,6 +85,7 @@ local UnitIsUnit        = _G.UnitIsUnit;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local CreateFrame       = _G.CreateFrame;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- NS def
 D.MicroUnitF = {};
@@ -1541,7 +1542,7 @@ do
                 end
 
                 self.RaidTargetIcon = GetRaidTargetIndex(Unit);
-                if self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
+                if canaccessvalue(self.RaidTargetIcon) and self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
                     self.RaidIconTexture:SetTexture(self.RaidTargetIcon and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIcon] or nil);
                     self.PrevRaidTargetIndex = self.RaidTargetIcon;
                 end
@@ -1565,7 +1566,7 @@ do
                     self.CenterFontString:SetText(" ");
                 end
 
-                if self.RaidTargetIcon then
+                if canaccessvalue(self.RaidTargetIcon) and self.RaidTargetIcon then
                     self.RaidIconTexture:SetTexture(nil);
                     self.RaidTargetIcon = false;
                     self.PrevRaidTargetIndex = false;

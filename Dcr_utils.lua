@@ -94,6 +94,7 @@ local GetSpellName      = _G.C_Spell and _G.C_Spell.GetSpellName or function (sp
 local GetSpellId        = _G.C_Spell and _G.C_Spell.GetSpellInfo and function(spellName) local info = GetSpellInfo(spellName); return info and info.spellID end or function(spellName) return (select(7, GetSpellInfo(spellName))) end
 local GetItemInfo       = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
 local pcall             = _G.pcall;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
 D.IsSpellInRange = function (spellName, unit)
