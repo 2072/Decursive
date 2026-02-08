@@ -308,23 +308,36 @@ function D:tMap(t, f)
     return mapped_t;
 end
 
-function D:tAsString(t, indent) -- debugging function
-    if type(t) ~= 'table' then
-        return tostring(t)
+do
+
+    -- use provided f if not secret or use whenSecret instead
+    function asStringWith(v, f, whenSecret)
+        if not canaccessvalue or canaccessvalue(v) then
+            return f(v)
+        else
+            return whenSecret
+        end
     end
 
-    if indent == nil then
-        indent = "  ";
-    end
+    function D:tAsString(t, indent) -- debugging function
+        if type(t) ~= 'table' then
+            return tostring(t)
+        end
 
-    local s = "\n" .. indent .. "{" .. "\n"
-    for k,v in pairs(t) do
-        s = s .. indent .. indent .. ("[%s] = [%s],\n"):format(
-         canaccessvalue and canaccessvalue(k) and "secret K" or tostring(k),
-         canaccessvalue and canaccessvalue(v) and "secret V" or self:tAsString(v, indent .. "  ")
-        )
+        if indent == nil then
+            indent = "  ";
+        end
+
+        local s = "\n" .. indent .. "{" .. "\n"
+
+        for k,v in pairs(t) do
+            s = s .. indent .. indent .. ("[%s] = [%s],\n"):format(
+            asStringWith(k, tostring, "secret K"),
+            asStringWith(v, function(x) return self:tAsString(x, indent .. "  ")  end, "secret V")
+            )
+        end
+        return s .. indent .. "}"
     end
-    return s .. indent .. "}"
 end
 
 function D:tcheckforval(tab, val) -- {{{
