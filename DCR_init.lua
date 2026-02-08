@@ -1507,9 +1507,12 @@ function D:Init() --{{{
     -- Set poristion and scale
     DecursiveMainBar:SetScale(D.profile.LiveListScale);
     DecursiveMainBar:Show();
-    DcrLiveList:SetScale(D.profile.LiveListScale);
-    DcrLiveList:Show();
-    D:PlaceLL();
+
+    if not DC.MN then 
+        DcrLiveList:SetScale(D.profile.LiveListScale);
+        DcrLiveList:Show();
+        D:PlaceLL();
+    end
 
     if D.profile.BarHidden then
         DecursiveMainBar:Hide();
@@ -1518,7 +1521,7 @@ function D:Init() --{{{
     end
 
     -- displays frame according to the current profile
-    if (D.profile.HideLiveList) then
+    if (D.profile.HideLiveList or DC.MN) then
         DcrLiveList:Hide();
     else
         DcrLiveList:ClearAllPoints();
