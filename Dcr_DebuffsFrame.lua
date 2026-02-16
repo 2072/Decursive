@@ -787,7 +787,7 @@ do
             for i, Debuff in ipairs(MF.Debuffs) do
                 if Debuff.Type then
                     -- Create a warning if an Unstable Affliction like spell is detected XXX will be integrated along with the filtering system comming 'soon'(tm)
-                    if DC.IS_HARMFULL_DEBUFF[Debuff.Name] then
+                    if canaccessvalue(Debuff.Name) and DC.IS_HARMFULL_DEBUFF[Debuff.Name] then
                     -- if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
                         D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                         D:SafePlaySoundFile(DC.DeadlyDebuffAlert);
@@ -854,7 +854,7 @@ do
                 for i, Debuff in ipairs(MF.Debuffs) do
                     if Debuff.Type then
                         local DebuffApps = Debuff.Applications;
-                        MUFtoolTip:AddLine(D:ColorTextNA(Debuff.Name, D.profile.TypeColors[Debuff.Type]) .. (DebuffApps > 0 and (" (%d)"):format(DebuffApps) or ""));
+                        MUFtoolTip:AddLine(D:ColorTextNA(canaccessvalue(Debuff.Name) and Debuff.Name or "*secret*", D.profile.TypeColors[Debuff.Type]) .. (canaccessvalue(DebuffApps) and DebuffApps > 0 and ("(%d)"):format(DebuffApps) or ""));
                     end
                 end
             end
@@ -1010,7 +1010,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                 D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                 --@end-debug@
             end
-        elseif RequestedPrio and D.Status.HasSpell then
+        elseif RequestedPrio and D.Status.HasSpell and not frame.Object.Debuffs[1].secretMode then
             D.Status.ClickCastingWIP = true;
             D:Debug("ClickCastingWIP")
             D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
@@ -1503,11 +1503,11 @@ do
 
                 -- update the CenterText
                 --if profile.DebuffsFrameChrono and self.Debuffs[1].ExpirationTime then
-                if profile.CenterTextDisplay ~= '4_NONE' then
+                if profile.CenterTextDisplay ~= '4_NONE' and canaccessvalue(self.CenterText) then
 
                     self.PrevCenterText = self.CenterText;
 
-                    if Status.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime then
+                    if Status.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime and canaccessvalue(self.Debuffs[1].ExpirationTime) then
 
                         if Status.CenterTextDisplay == '2_TELAPSED' then
                             --self.CenterText = floor(Time - self.CenterText);
@@ -1529,7 +1529,7 @@ do
                             self.CenterFontString:SetText(" ");
                         end
 
-                    else
+                    elseif (canaccessvalue(self.Debuffs[1].Applications)) then
 
                         self.CenterText = self.Debuffs[1].Applications;
 
@@ -1646,7 +1646,12 @@ do
             D:Debug('Setting MUF texture color...');
             --@end-debug@
             -- Set the main texture
-            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha); -- XXX reported to cause rare "script ran too long" errors" on 2016-09-25 and 2016-12-30
+            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
+
+            if DC.MN and self.Debuffs[1] and self.Debuffs[1].secretMode and self.Debuffs[1].s_color then
+                local color = self.Debuffs[1].s_color
+                self.Texture:SetColorTexture(color["r"], color["g"], color["b"], Alpha);
+            end
             --self.Texture:SetAlpha(Alpha);
             --@debug@
             D:Debug('Setting MUF texture color... done');

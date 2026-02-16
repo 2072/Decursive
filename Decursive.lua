@@ -405,8 +405,10 @@ do
     local D                 = D;
     local C_UnitAuras       = _G.C_UnitAuras
 
+    local filter = DC.MN and "RAID_PLAYER_DISPELLABLE" or nil
+
     local UnitDebuff        = _G.UnitDebuff or function (unitToken, i)
-        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i);
+        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter);
 
         if not auraData then
 			return nil;
@@ -421,7 +423,8 @@ do
 		nil,
 		nil,
 		nil,
-		auraData.spellId;
+		auraData.spellId,
+        DC.MN and auraData.auraInstanceID or nil;
     end
 
     local UnitIsCharmed     = _G.UnitIsCharmed;
@@ -437,7 +440,7 @@ do
     };
 
     -- This local function only sets interesting values of UnitDebuff()
-    local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID, secretMode;
+    local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID, secretMode, auraInstanceID;
     local function GetUnitDebuff  (Unit, i) --{{{
 
         if D.LiveList.TestItemDisplayed and UnitExists(Unit) then -- and not UnTrustedUnitIDs[Unit] then
@@ -450,7 +453,7 @@ do
             end
         end
 
-        Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID = UnitDebuff (Unit, i);
+        Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID, auraInstanceID = UnitDebuff (Unit, i);
 
         secretMode = not canaccessvalue(TypeName)
 
@@ -539,31 +542,42 @@ do
 
             --@debug@
             if isSpellIDScret then
-                D:Debug("spell ids are secret")
+                D:Debug("spell ids are secret, aura id: ", auraInstanceID)
             end
             --@end-debug@
 
             if secretMode then
                 --@debug@
-                D:Debug("secret mode, giving up...")
+                D:Debug("secret mode...")
                 --@end-debug@
-                break -- there is nothing we can do...
+               -- break -- there is nothing we can do...
             end
 
+            local typeNameIsSecret = not canaccessvalue(TypeName)
+            local s_color = DC.MN and auraInstanceID and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraInstanceID, D.Status.dsCurve)
+
             -- test for a type
-            if TypeName and TypeName ~= "" then
-                Type = DC.NameToTypes[TypeName];
-            elseif not isSpellIDScret and DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
-                TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
-                Type = DC.NameToTypes[TypeName]
-            elseif not isSpellIDScret and self.Status.CuringSpells[DC.BLEED] then
-                checkSpellIDForBleed();
-                if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
-                    Type = DC.NameToTypes["Bleed"]
-                    TypeName = DC.TypeNames[DC.BLEED];
+            if not typeNameIsSecret then
+                if TypeName and TypeName ~= "" then
+                    Type = DC.NameToTypes[TypeName];
+                elseif not isSpellIDScret and DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
+                    TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
+                    Type = DC.NameToTypes[TypeName]
+                elseif not isSpellIDScret and self.Status.CuringSpells[DC.BLEED] then
+                    checkSpellIDForBleed();
+                    if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
+                        Type = DC.NameToTypes["Bleed"]
+                        TypeName = DC.TypeNames[DC.BLEED];
+                    else
+                        Type = false;
+                    end
                 else
                     Type = false;
                 end
+            elseif s_color then
+                -- temp, just affect the first spell we know for now,
+                TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
+                Type = DC.NameToTypes[TypeName]
             else
                 Type = false;
             end
@@ -599,6 +613,9 @@ do
                 ThisUnitDebuffs[StoredDebuffIndex].Type           = Type;
                 ThisUnitDebuffs[StoredDebuffIndex].Name           = Name;
                 ThisUnitDebuffs[StoredDebuffIndex].SpellID        = SpellID;
+                ThisUnitDebuffs[StoredDebuffIndex].auraInstanceID = auraInstanceID;
+                ThisUnitDebuffs[StoredDebuffIndex].secretMode     = secretMode;
+                ThisUnitDebuffs[StoredDebuffIndex].s_color        = s_color;
                 ThisUnitDebuffs[StoredDebuffIndex].index          = i;
 
                 -- we can't use i, else we wouldn't have contiguous indexes in the table
@@ -708,28 +725,30 @@ do
                 break
             end
 
+            local nameAccessible = canaccessvalue(Debuff.Name)
+
             -- test if we have to ignore this debuff  {{{ --
 
             if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then
                 continue_ = false; -- == skip this debuff
             end
 
-            if self.profile.DebuffsToIgnore[Debuff.Name] then -- XXX not sure it has any actual use nowadays (2013-06-18)
+            if nameAccessible and self.profile.DebuffsToIgnore[Debuff.Name] then -- XXX not sure it has any actual use nowadays (2013-06-18)
                 -- these are the BAD ones... the ones that make the target immune... abort this unit
                 --D:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
                 break; -- exit here
             end
 
-            if self.profile.BuffDebuff[Debuff.Name] then
+            if nameAccessible and self.profile.BuffDebuff[Debuff.Name] then
                 -- these are just ones you don't care about (sleepless deam etc...)
                 continue_ = false; -- == skip this debuff
                 --D:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
             end
 
-            if self.Status.Combat or self.profile.DebuffAlwaysSkipList[Debuff.Name] then
+            if self.Status.Combat or nameAccessible and self.profile.DebuffAlwaysSkipList[Debuff.Name] then
                 local _, EnUClass = UnitClass(Unit);
                 if self.profile.skipByClass[EnUClass] then
-                    if self.profile.skipByClass[EnUClass][Debuff.Name] then
+                    if  nameAccessible and self.profile.skipByClass[EnUClass][Debuff.Name] then
                         -- these are just ones you don't care about by class while in combat
 
                         -- This lead to a problem because once the fight is finished there are no event to trigger

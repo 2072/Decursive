@@ -95,6 +95,7 @@ local GetSpellId        = _G.C_Spell and _G.C_Spell.GetSpellInfo and function(sp
 local GetItemInfo       = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
 local pcall             = _G.pcall;
 local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
+local CreateColor       = _G.CreateColor
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
 D.IsSpellInRange = function (spellName, unit)
@@ -538,6 +539,10 @@ end --}}}
 
 function D:NumToHexColor(ColorTable)
         return str_format("%02x%02x%02x%02x", ColorTable[4] * 255, ColorTable[1] * 255, ColorTable[2] * 255, ColorTable[3] * 255)
+end
+
+function D:NumToColorMixin(colorTable)
+    return CreateColor(unpack(colorTable))
 end
 
 function D:HexColorToNum(hexColor)

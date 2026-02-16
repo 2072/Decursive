@@ -1801,7 +1801,11 @@ local function GetStaticOptions ()
 
                                   SpellCuredTypes = table.concat (SpellCuredTypes, " - ");
 
-                                  SpellAssignmentsTexts[Prio + 1] = str_format("\n    %s -> %s%s", D:ColorText(("%s - %s - (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(Prio), SpellCuredTypes, DC.MouseButtonsReadable[MouseButtons[Prio]]), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                                  SpellAssignmentsTexts[Prio + 1] = str_format(
+                                  "\n    %s -> %s%s", D:ColorText(("%s - %s - (%s)"
+                                  ):format(
+                                  L["OPT_CURE_PRIORITY_NUM"]:format(Prio), SpellCuredTypes, DC.MouseButtonsReadable[MouseButtons[Prio]]
+                                  ), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
                               end
                               return table.concat(SpellAssignmentsTexts, "\n");
                         end,
@@ -2282,6 +2286,11 @@ function D:SetCureOrder (ToChange)
     -- create / update the ReversedCureOrder table (prio => type, ..., )
     D.Status.ReversedCureOrder = D:tReverse(newCureOrder);
 
+    --@debug@
+    D:Debug("SetCureOrder(): ReversedCureOrder table:", D:tAsString(D.Status.ReversedCureOrder));
+    --@end-debug@
+
+
     -- Create spell priority table
     D.Status.CuringSpellsPrio = {};
 
@@ -2299,6 +2308,48 @@ function D:SetCureOrder (ToChange)
             CuringSpellsPrio[ CuringSpells[DebuffType] ] = affected;
             affected = affected + 1;
         end
+    end
+
+    --@debug@
+    D:Debug("SetCureOrder(): updated CuringSpells table:", D:tAsString(CuringSpells));
+    --@end-debug@
+
+
+    if DC.MN then
+        -- we need to set the color of the new MN curve thingy:
+        -- one color per spell, so we need to create a table type -> color
+        local mfc = D.profile.MF_colors
+        local dsc = D.Status.dsCurve
+        local dtToBT = DC.DTtoBT
+
+        local typeToColor = {}
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- for each configured spell
+            for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
+                if D.Status.CuringSpells[afflictionType] == Spell then -- handling an affliction type
+                    typeToColor[afflictionType] = D:NumToColorMixin(mfc[Prio]) -- register the type to color mapping
+                end
+            end
+        end
+
+        --@debug@
+        --D:Debug("SetCureOrder(): typeToColor table:", D:tAsString(typeToColor));
+        --@end-debug@
+
+
+        -- update our curve
+        dsc:ClearPoints()
+        dsc:AddPoint(0, D:NumToColorMixin(mfc[DC.NORMAL]))
+        for affType, cm in pairs(typeToColor) do
+            --@debug@
+            D:Debug("Adding point: ", affType, dtToBT[affType], cm)
+            --@end-debug@
+            dsc:AddPoint(dtToBT[affType], cm)
+        end
+
+        --@debug@
+        --D:Debug("SetCureOrder(): dsCurve points:", dsc:GetPoints());
+        --@end-debug@
+
     end
 
     -- Set the spells shortcut (former decurse key)

@@ -119,6 +119,27 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.BLEED        = 64;
     DC.NOTYPE       = 128;
 
+    DC.DTtoBT = {
+        [DC.NOTYPE]  = 0,
+        [DC.CHARMED]  = 0,
+        [DC.MAGIC]   = 1,
+        [DC.ENEMYMAGIC]   = 1,
+        [DC.CURSE]   = 2,
+        [DC.DISEASE] = 3,
+        [DC.POISON]  = 4,
+        [DC.BLEED]   = 11,
+    }
+
+    DC.BTtoDT = {
+        [0] = DC.NOTYPE,
+        [1] = DC.MAGIC,
+        [2] = DC.CURSE,
+        [3] = DC.DISEASE,
+        [4] = DC.POISON,
+        [9] = DC.BLEED,
+        [11] = DC.BLEED,
+    }
+
     DC.CLASS_DRUID       = 'DRUID';
     DC.CLASS_HUNTER      = 'HUNTER';
     DC.CLASS_MAGE        = 'MAGE';
@@ -881,6 +902,11 @@ local function InitVariables_Once() -- {{{
 
     D.Status = {}; -- might be used by some script in xml files
 
+
+    local DC = T._C;
+
+   
+
     -- An acces the debuff table
     D.ManagedDebuffUnitCache = {};
     -- A table UnitID=>IsDebuffed (boolean)
@@ -1489,6 +1515,14 @@ function D:Init() --{{{
 
     D:Debug( "Decursive Initialization started!");
 
+     -- create our "curve" to map dispel type to a color.
+    if DC.MN then
+        local dsCurve = C_CurveUtil.CreateColorCurve()
+
+        dsCurve:SetType(Enum.LuaCurveType.Step)
+
+        D.Status.dsCurve = dsCurve;
+    end
 
     -- SET MF FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
     -- Set the scale and place the MF container correctly
