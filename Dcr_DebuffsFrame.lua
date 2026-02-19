@@ -1412,7 +1412,7 @@ function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
 
         if guid and D.DcrCache then
             local cached = D.DcrCache:Get(guid);
-            if cached and cached.spell_ids and #cached.spell_ids > 0 then
+            if cached and cached.spell_ids and #cached.spell_ids > 0 and cached.spell_ids[1] then
                 local C_UnitAuras = _G.C_UnitAuras;
                 if C_UnitAuras then
                     local fakeDebuff = {

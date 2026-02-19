@@ -44,29 +44,59 @@ local time = _G.time;
 
 DCR_Cache = {};
 local ByGUID = {};
+local CACHE_TTL_SECONDS = 300;
+
+local function ValidateData(data)
+    if type(data) ~= "table" then return false end
+    if type(data.spell_ids) ~= "table" then return false end
+    if not data.name or type(data.name) ~= "string" then return false end
+    if not data.class or type(data.class) ~= "string" then return false end
+    return true;
+end
 
 function DCR_Cache:Init()
     ByGUID = {};
 end
 
 function DCR_Cache:Store(unit, data)
-    if not unit or not data then return end
+    if not unit or not data then return false end
+    
     local guid = UnitGUID(unit);
-    if guid and not guid:match("^secret") then
-        local now = time();
-        ByGUID[guid] = {
-            guid = guid,
-            unit = unit,
-            name = data.name,
-            class = data.class,
-            role = data.role,
-            timestamp = now,
-            spell_ids = data.spell_ids or {},
-        };
-    end
+    if not guid then return false end
+    if guid:match("^secret") then return false end
+    
+    if not ValidateData(data) then return false end
+    
+    local now = time();
+    ByGUID[guid] = {
+        guid = guid,
+        unit = unit,
+        name = data.name,
+        class = data.class,
+        role = data.role,
+        timestamp = now,
+        spell_ids = data.spell_ids,
+    };
+    return true;
 end
 
 function DCR_Cache:Get(guid)
+    if not guid then return nil end
+    if guid:match("^secret") then return nil end
+    
+    if not ByGUID[guid] then return nil end
+    
+    if not ValidateData(ByGUID[guid]) then
+        ByGUID[guid] = nil;
+        return nil;
+    end
+    
+    local now = time();
+    if now - (ByGUID[guid].timestamp or 0) > CACHE_TTL_SECONDS then
+        ByGUID[guid] = nil;
+        return nil;
+    end
+    
     return ByGUID[guid];
 end
 
@@ -74,6 +104,7 @@ function DCR_Cache:Clear()
     for guid in pairs(ByGUID) do
         ByGUID[guid] = nil;
     end
+    ByGUID = {};
 end
 
 function DCR_Cache:InvalidateAll()
@@ -85,14 +116,19 @@ function DCR_Cache:RefreshFromUnitArray()
     if not unit_array then return 0 end
     local refreshed = 0;
     local now = time();
+    
     for i = 1, #unit_array do
         local unit = unit_array[i];
         if UnitExists(unit) then
             local guid = UnitGUID(unit);
             if guid and ByGUID[guid] then
-                ByGUID[guid].unit = unit;
-                ByGUID[guid].timestamp = now;
-                refreshed = refreshed + 1;
+                if ValidateData(ByGUID[guid]) then
+                    ByGUID[guid].unit = unit;
+                    ByGUID[guid].timestamp = now;
+                    refreshed = refreshed + 1;
+                else
+                    ByGUID[guid] = nil;
+                end
             end
         end
     end

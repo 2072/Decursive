@@ -206,7 +206,7 @@ function D:GetDefaultsSettings()
             -- The number of MUFs updated every DebuffsFrameRefreshRate
             DebuffsFramePerUPdate = 10,
 
-            MFScanEverybodyTimer = 1,
+            MFScanEverybodyTimer = 0.5,
             MFScanEverybodyReport = false,
             --@alpha@
             -- MFScanEverybodyReport = true, -- UNdebuff is triggered very often, not sure when. No more need for reporting though.
