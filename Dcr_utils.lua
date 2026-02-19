@@ -589,27 +589,47 @@ do
     };
 
     function D:GetClassColor (EnglishClass, noCache)
+        if not EnglishClass or type(EnglishClass) ~= "string" then
+            EnglishClass = "UNKNOWN";
+        end
+        
         if not DC.ClassesColors[EnglishClass] or noCache then
             if RAID_CLASS_COLORS and RAID_CLASS_COLORS[EnglishClass] then
                 DC.ClassesColors[EnglishClass] = { RAID_CLASS_COLORS[EnglishClass].r, RAID_CLASS_COLORS[EnglishClass].g, RAID_CLASS_COLORS[EnglishClass].b };
             else
                 DC.ClassesColors[EnglishClass] = { 0.63, 0.63, 0.63 };
             end
-            DC.ClassesColors[D.LC[EnglishClass]] = DC.ClassesColors[EnglishClass];
+            
+            if D.LC[EnglishClass] then
+                DC.ClassesColors[D.LC[EnglishClass]] = DC.ClassesColors[EnglishClass];
+            end
         end
-        return unpack(DC.ClassesColors[EnglishClass]);
+        
+        local color = DC.ClassesColors[EnglishClass];
+        if not color or type(color) ~= "table" then
+            return 0.63, 0.63, 0.63;
+        end
+        
+        return unpack(color);
     end
 
     DC.HexClassColor = { };
 
     function D:GetClassHexColor(EnglishClass, noCache)
+        if not EnglishClass or type(EnglishClass) ~= "string" then
+            EnglishClass = "UNKNOWN";
+        end
+        
         if not DC.HexClassColor[EnglishClass] or noCache then
             local r, g, b = self:GetClassColor(EnglishClass)
             DC.HexClassColor[EnglishClass] = str_format("%02x%02x%02x", r * 255, g * 255, b * 255);
-            DC.HexClassColor[D.LC[EnglishClass]] = DC.HexClassColor[EnglishClass];
+            
+            if D.LC[EnglishClass] then
+                DC.HexClassColor[D.LC[EnglishClass]] = DC.HexClassColor[EnglishClass];
+            end
         end
 
-        return DC.HexClassColor[EnglishClass];
+        return DC.HexClassColor[EnglishClass] or "a0a0a0";
     end
 
 

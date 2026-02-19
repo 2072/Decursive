@@ -1,3 +1,29 @@
+Decursive 2.7.40
+===============
+
+Decursive 2.7.40 (2026-02-19)
+-----------------------------
+
+- **WoW 12.0.0 (Midnight) Migration**: Added workarounds for Secret Values restrictions
+
+**Breaking Changes (WoW 12.0.0):**
+- Updated for WoW 12.0.0 "Midnight" API changes
+- Added `canaccessvalue()` fallbacks for Secret Values restrictions
+- Added RunMacroText compatibility for C_Macro.RunMacroText
+- Added Duration object replacement (auraData.duration/expirationTime)
+
+**Performance Improvements:**
+- Introduce simple cache implementation (Dcr_Cache)
+
+**Known Limitations:**
+- Boss encounters: GUID/aura access restricted by WoW 12.0.0 Secret Values
+- Estimated restoration: 70% (down from pre-12.0.0 100%)
+- World/Dungeon: Near 100% functionality
+- Raid Boss: ~60% functionality
+
+---
+
+
 Decursive 2.7.36
 ================
 

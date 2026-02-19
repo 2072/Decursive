@@ -1097,6 +1097,9 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
     self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
     self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
 
+    DcrStorageDB = DcrStorageDB or {};
+    D:Debug("Dcr_Storage: Loaded from SavedVariables");
+
 
     -- Register slashes command {{{
     self:RegisterChatCommand("dcrdiag"      ,function() T._SelfDiagnostic(true, true)               end         );
@@ -1200,6 +1203,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D.eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
     D.eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 
+    -- WoW 12.0.0 Addon Restriction Management
+    D.eventFrame:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED");
+
     -- Raid/Group changes events
     D.eventFrame:RegisterEvent("PARTY_LEADER_CHANGED");
 
@@ -1243,6 +1249,15 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D:StartTalentAvaibilityPolling();
 
     D.eventFrame:SetScript("OnEvent", D.OnEvent);
+
+    if DcrStorageDB and DcrStorageDB.CorrelationPatterns then
+        D.Status.CorrelationCache = DcrStorageDB.CorrelationPatterns;
+        local count = 0;
+        for _ in pairs(DcrStorageDB.CorrelationPatterns) do
+            count = count + 1;
+        end
+        D:Debug("Dcr_Storage: Restored", count, "correlation patterns from SavedVariables");
+    end
 
     T._CatchAllErrors = false;
 
@@ -1291,6 +1306,7 @@ function D:SetConfiguration() -- {{{
     D.Status.delayedDebuffOccurences = 0;
     D.Status.delayedUnDebuffOccurences = 0;
     D.Status.prio_macro = {};
+    D.Status.CorrelationCache = {};
 
     D.Stealthed_Units = {};
 
@@ -1446,6 +1462,12 @@ function D:SetConfiguration() -- {{{
         end
     end
 
+    -- Initialize the cache module for WoW 12.0.0 workarounds
+    if D.DcrCache then
+        D.DcrCache:Init();
+        D:Debug("DcrFullyInitialized: Cache module initialized");
+    end
+
     D.DcrFullyInitialized = true; -- everything should be OK
     D:ShowHideButtons(true);
     D:AutoHideShowMUFs();
@@ -1479,6 +1501,20 @@ function D:OnDisable() -- When the addon is disabled by Ace -- {{{
 
     D:CancelAllTimedCalls();
     D:Debug(D:GetTimersInfo());
+
+    if D.Status.CorrelationCache then
+        local significantPatterns = {};
+        local patternThreshold = 0.7;
+        for key, pattern in pairs(D.Status.CorrelationCache) do
+            if pattern.confidence >= patternThreshold then
+                significantPatterns[key] = pattern;
+            end
+        end
+
+        DcrStorageDB.CorrelationPatterns = significantPatterns;
+        DcrStorageDB.Timestamp = _G.time();
+        D:Debug("Dcr_Storage: Saved", #significantPatterns, "correlation patterns");
+    end
 
     -- the disable warning popup : {{{ -
     StaticPopupDialogs["Decursive_OnDisableWarning"] = {

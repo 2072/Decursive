@@ -88,8 +88,10 @@ local UnitExists        = _G.UnitExists;
 local UnitCanAttack     = _G.UnitCanAttack;
 local UnitName          = _G.UnitName;
 local UnitGUID          = _G.UnitGUID;
+local UnitIsUnit        = _G.UnitIsUnit;
 local GetTime           = _G.GetTime;
 local IsShiftKeyDown    = _G.IsShiftKeyDown;
+local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- Blizzard event management
@@ -739,7 +741,7 @@ do -- Combat log event handling {{{1
                         self.LiveList:DelayedGetDebuff(UnitID);
                     end
 
-                    if event == "UNIT_DIED" then
+                    if event == "UNIT_DIED" and UnitID then
                         self.Stealthed_Units[UnitID] = false;
                     end
 
@@ -1178,6 +1180,55 @@ do
         self:ScheduleRepeatedCall("PollTalents", PollTalentsAvaibility, 2);
     end
 end
+
+-- Restriction State Management for WoW 12.0.0 (ADDON_RESTRICTION_STATE_CHANGED)
+do
+    local InRestrictedPrevious = false;
+    local WasInCombat = false;
+
+    function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
+        if not D.DcrFullyInitialized then
+            return;
+        end
+
+        local nowInCombat = InCombatLockdown();
+        local nowInRestricted = restrictionState == 2 or restrictionState == 1;
+
+        if restrictionState == 2 then
+            if restrictionType == 1 then
+                D:Debug("Boss encounter detected - restrictions active");
+            elseif restrictionType == 0 then
+                D:Debug("Combat detected - partial restrictions");
+            end
+        elseif restrictionState == 0 then
+            D:Debug("Restrictions lifted");
+        end
+
+        if nowInRestricted and not InRestrictedPrevious then
+            if D.DcrCache then
+                D:Debug("DCR_Cache: Invalidating all on restriction activation");
+                D.DcrCache:InvalidateAll();
+            end
+        elseif not nowInRestricted and InRestrictedPrevious then
+            D:Debug("DCR_Cache: Restrictions lifted, capturing pre-pull data");
+            if D.DcrCache then
+                local count = D.DcrCache:RefreshFromUnitArray();
+                D:Debug("DCR_Cache: Captured", count, "units");
+            end
+        end
+
+        if nowInCombat and not WasInCombat then
+            if D.DcrCache then
+                D:Debug("DCR_Cache: Entering combat, caching state");
+                D.DcrCache:RefreshFromUnitArray();
+            end
+        end
+
+        InRestrictedPrevious = nowInRestricted;
+        WasInCombat = nowInCombat;
+    end
+end
+
 
 T._LoadedFiles["Dcr_Events.lua"] = "@project-version@";
 

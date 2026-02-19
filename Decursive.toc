@@ -23,6 +23,7 @@
 ## IconTexture: Interface/AddOns/Decursive/iconON.tga
 
 ## SavedVariables: DecursiveDB
+## SavedVariablesPerCharacter: DcrStorageDB
 
 ## Version: @project-version@
 ## Author: John Wellesz
@@ -59,10 +60,9 @@ Dcr_DIAG.xml
 Localization\load.xml
 
 DCR_init.lua
+Dcr_Cache.lua
 Dcr_LDB.lua
 Dcr_utils.lua
-
-
 Dcr_opt.lua
 Dcr_Events.lua
 

@@ -350,6 +350,10 @@ do
 
    function D:Debuff_History_Add( DebuffName, DebuffType, spellID)
 
+       if not canaccessvalue(DebuffName) then
+           return;
+       end
+
        if not DebuffHistHashTable[DebuffName] then
 
            -- reset iterator if out of boundaries
@@ -657,7 +661,9 @@ do
     local _;
     local CureOrder;
     local sorting = function (a, b)
-        return CureOrder[a.Type] * 10000 - a.Applications < CureOrder[b.Type] * 10000 - b.Applications;
+        local aApps = canaccessvalue(a.Applications) and a.Applications or 0;
+        local bApps = canaccessvalue(b.Applications) and b.Applications or 0;
+        return CureOrder[a.Type] * 10000 - aApps < CureOrder[b.Type] * 10000 - bApps;
     end
 
     local NotRaidOrParty = {

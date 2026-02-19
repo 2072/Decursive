@@ -86,6 +86,8 @@ local InCombatLockdown  = _G.InCombatLockdown;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local CreateFrame       = _G.CreateFrame;
 local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
+local RunMacroText      = _G.C_Macro and _G.C_Macro.RunMacroText or _G.RunMacroText;
+local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 
 -- NS def
 D.MicroUnitF = {};
@@ -1010,15 +1012,42 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                 D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                 --@end-debug@
             end
-        elseif RequestedPrio and D.Status.HasSpell and not frame.Object.Debuffs[1].secretMode then
-            D.Status.ClickCastingWIP = true;
-            D:Debug("ClickCastingWIP")
-            D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
-            D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
-            local spell = D.Status.CuringSpells[frame.Object.Debuffs[1].Type];
+        elseif RequestedPrio and D.Status.HasSpell then
+            
+            -- Smart mouseover targeting for WoW 12.0.0
+            if frame.Object.Debuffs[1].secretMode and frame.Object.Debuffs[1].SpellID then
+                local spellID = frame.Object.Debuffs[1].SpellID;
+                local spellInfo = GetSpellInfo(spellID);
+                local spellName = type(spellInfo) == "table" and spellInfo.name or spellInfo or ("SpellID:" .. spellID);
+                
+                if Unit and UnitExists(Unit) then
+                    -- NOTE: RunMacroText is protected API and cannot be called in combat
+                    if InCombatLockdown() then
+                        D:Debug("secretMode click-casting skipped: RunMacroText() is protected in combat");
+                        return; -- Skip protected API call
+                    end
+                    
+                    -- Smart targeting: use mouseover if available, otherwise target
+                    if D.Status.MouseOverTargetUnit and UnitExists(D.Status.MouseOverTargetUnit) and UnitIsUnit(Unit, D.Status.MouseOverTargetUnit) then
+                        RunMacroText("/cast [@"..D.Status.MouseOverTargetUnit.."] "..spellName);
+                    elseif UnitIsUnit(Unit, "target") then
+                        RunMacroText("/cast [@target] "..spellName);
+                    else
+                        RunMacroText("/target "..Unit.."\n/cast [@"..Unit.."] "..spellName);
+                    end
+                end
+                D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, spellID);
+            else
+                -- Normal click-casting
+                D.Status.ClickCastingWIP = true;
+                D:Debug("ClickCastingWIP")
+                D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
+                D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
+                local spell = D.Status.CuringSpells[frame.Object.Debuffs[1].Type];
 
-            D.Status.ClickedMF.CastingSpell = "notyet";
-            D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, frame.Object.Debuffs[1].SpellID);
+                D.Status.ClickedMF.CastingSpell = "notyet";
+                D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, frame.Object.Debuffs[1].SpellID);
+            end
         end
     end
 end -- }}}
@@ -1140,6 +1169,21 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     -- register events
     self.Frame:RegisterForClicks("AnyUp");
     self.Frame:SetFrameStrata("MEDIUM");
+    
+    -- Smart mouseover targeting hooks for WoW 12.0.0
+    self.Frame:HookScript("OnEnter", function(frame)
+        D.Status.MouseOverMF = frame.Object;
+        if frame.Object and frame.Object.CurrUnit then
+            if UnitExists(frame.Object.CurrUnit) then
+                D.Status.MouseOverTargetUnit = frame.Object.CurrUnit;
+            end
+        end
+    end);
+    
+    self.Frame:HookScript("OnLeave", function(frame)
+        D.Status.MouseOverMF = false;
+        D.Status.MouseOverTargetUnit = false;
+    end);
 
     -- set the frame attributes
     self:UpdateAttributes(Unit);
@@ -1342,12 +1386,106 @@ function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
 
     self.Debuffs, self.IsCharmed = D:UnitCurableDebuffs(self.CurrUnit);
 
+    local hasFallbackFromCache = false;
+    local hasHeuristicMatch = false;
+
+    if not self.Debuffs[1] and DC.MN then
+        local guid = D.Status.Unit_Array_UnitToGUID[self.CurrUnit];
+        
+        local heuristicSource = nil;
+        local heuristicConfidence = 0;
+        local heuristicSpell = nil;
+
+        if guid and D.Status.CorrelationCache then
+            for spellID, pattern in pairs(D.Status.CorrelationCache) do
+                if pattern.severity == "deadly" and pattern.confidence >= 0.8 then
+                    if pattern.confidence > heuristicConfidence then
+                        heuristicConfidence = pattern.confidence;
+                        heuristicSpell = spellID;
+                        heuristicSource = "correlation";
+                    end
+                end
+            end
+        end
+
+        if guid and D.DcrCache then
+            local cached = D.DcrCache:Get(guid);
+            if cached and cached.spell_ids and #cached.spell_ids > 0 then
+                local C_UnitAuras = _G.C_UnitAuras;
+                if C_UnitAuras then
+                    local fakeDebuff = {
+                        SpellID = cached.spell_ids[1],
+                        Name = cached.name or "*cached*",
+                        Texture = false,
+                        Duration = 0,
+                        ExpirationTime = 0,
+                        Applications = 1,
+                        Type = DC.MAGIC,
+                        TypeName = DC.TypeNames[DC.MAGIC],
+                        auraInstanceID = nil,
+                        secretMode = true,
+                    };
+
+                    local auraInstanceID = self.UnitGUID and D.Status.Unit_Array_GUIDToUnit[self.UnitGUID] and self.CurrUnit;
+                    if auraInstanceID then
+                        local s_color = C_UnitAuras.GetAuraDispelTypeColor(self.CurrUnit, auraInstanceID, D.Status.dsCurve);
+                        if s_color then
+                            fakeDebuff.s_color = {
+                                r = s_color.r,
+                                g = s_color.g,
+                                b = s_color.b,
+                                a = 1,
+                            };
+                            if s_color.colorTable then
+                                local ct = s_color.colorTable;
+                                if ct.magic then fakeDebuff.Type = DC.MAGIC; fakeDebuff.TypeName = DC.TypeNames[DC.MAGIC];
+                                elseif ct.curse then fakeDebuff.Type = DC.CURSE; fakeDebuff.TypeName = DC.TypeNames[DC.CURSE];
+                                elseif ct.poison then fakeDebuff.Type = DC.POISON; fakeDebuff.TypeName = DC.TypeNames[DC.POISON];
+                                elseif ct.disease then fakeDebuff.Type = DC.DISEASE; fakeDebuff.TypeName = DC.TypeNames[DC.DISEASE];
+                                end
+                            end
+                        end
+                    end
+
+                    if heuristicSpell and heuristicSource ~= "cache" then
+                        fakeDebuff.SpellID = heuristicSpell;
+                        fakeDebuff.Name = string.format("%s [heuristic]", fakeDebuff.Name);
+                        fakeDebuff.heuristicSource = heuristicSource;
+                    end
+
+                    self.Debuffs = { fakeDebuff };
+                    hasFallbackFromCache = true;
+                end
+            elseif heuristicSpell then
+                local fakeDebuff = {
+                    SpellID = heuristicSpell,
+                    Name = string.format("*%s*.%d", heuristicSource or "heuristic", math.floor(heuristicConfidence * 100)),
+                    Texture = false,
+                    Duration = 0,
+                    ExpirationTime = 0,
+                    Applications = 1,
+                    Type = DC.MAGIC,
+                    TypeName = DC.TypeNames[DC.MAGIC],
+                    auraInstanceID = nil,
+                    secretMode = true,
+                    heuristicSource = heuristicSource,
+                    heuristicConfidence = heuristicConfidence,
+                };
+
+                self.Debuffs = { fakeDebuff };
+                hasFallbackFromCache = true;
+            end
+        end
+    end
+
     if self.Debuffs[1] then
         self.Debuff1Prio = D:GiveSpellPrioNum( self.Debuffs[1].Type );
     else
         self.Debuff1Prio                = false;
         self.PrevDebuff1Prio            = false;
     end
+
+    return hasFallbackFromCache;
 end -- }}}
 
 
@@ -1384,13 +1522,13 @@ do
     local fmod              = _G.math.fmod;
     local CooldownFrame_Set = _G.CooldownFrame_Set;
     local GetSpellCooldown  = _G.C_Spell and _G.C_Spell.GetSpellCooldown and function(spellid)
-        local cooldownInfo = _G.C_Spell.GetSpellCooldown(spellid);
+    local cooldownInfo = _G.C_Spell.GetSpellCooldown(spellid);
 
-        if cooldownInfo then
-            return cooldownInfo.startTime, cooldownInfo.duration, cooldownInfo.isEnabled;
-        else
-            return nil, nil, nil;
-        end
+    if cooldownInfo then
+        return cooldownInfo.startTime, cooldownInfo.duration, cooldownInfo.isEnabled;
+    else
+        return nil, nil, nil;
+    end
     end or _G.GetSpellCooldown;
 
     local GetItemCooldown   = _G.C_Container and _G.C_Container.GetItemCooldown or _G.GetItemCooldown;
@@ -1398,6 +1536,10 @@ do
     local bor               = _G.bit.bor;
     local band              = _G.bit.band;
     local SpellID;
+    local C_UnitAuras       = _G.C_UnitAuras;
+    local GetAuraDispelTypeColor = C_UnitAuras and C_UnitAuras.GetAuraDispelTypeColor;
+    local GetUnitAuras = C_UnitAuras and C_UnitAuras.GetUnitAuras;
+    local GetAuraDataByAuraInstanceID = C_UnitAuras and C_UnitAuras.GetAuraDataByAuraInstanceID;
 
     function MicroUnitF.prototype:SetColor() -- {{{
 
@@ -1501,25 +1643,35 @@ do
                     self.UpdateCD = Time;
                 end
 
-                -- update the CenterText
-                --if profile.DebuffsFrameChrono and self.Debuffs[1].ExpirationTime then
+                -- update the CenterText with Duration object support for WoW 12.0.0
                 if profile.CenterTextDisplay ~= '4_NONE' and canaccessvalue(self.CenterText) then
 
                     self.PrevCenterText = self.CenterText;
+                    local expirationTime = self.Debuffs[1].ExpirationTime;
+                    local duration = self.Debuffs[1].Duration;
 
-                    if Status.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime and canaccessvalue(self.Debuffs[1].ExpirationTime) then
+                    if Status.CenterTextDisplay ~= '3_STACKS' and expirationTime and canaccessvalue(expirationTime) then
+
+                        if DC.MN and GetUnitAuras and self.Debuffs[1].auraInstanceID then
+                            local auraData = GetAuraDataByAuraInstanceID(Unit, self.Debuffs[1].auraInstanceID);
+                            if auraData and auraData.expirationTime and auraData.duration then
+                                duration = auraData.duration;
+                                expirationTime = auraData.expirationTime;
+                            end
+                        end
+
+                        -- Re-validate expirationTime after GetAuraDataByAuraInstanceID as it may return secret values
+                        local expTime = canaccessvalue(expirationTime) and expirationTime or Time;
 
                         if Status.CenterTextDisplay == '2_TELAPSED' then
-                            --self.CenterText = floor(Time - self.CenterText);
-                            self.CenterText = floor(self.Debuffs[1].Duration - (self.Debuffs[1].ExpirationTime - Time));
+                            self.CenterText = floor(duration - (expTime - Time));
 
-                            if self.CenterText ~= self.PrevCenterText then -- do not unecessarily compute the final displayed string
-                                --D:Debug('center text update');
+                            if self.CenterText ~= self.PrevCenterText then
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and self.CenterText or (floor(self.CenterText / 60) .. "\'") ));
                             end
-                        elseif self.Debuffs[1].ExpirationTime > 0 then
+                        elseif expTime > 0 then
 
-                            self.CenterText = floor(self.Debuffs[1].ExpirationTime - Time);
+                            self.CenterText = floor(expTime - Time);
 
                             if self.CenterText ~= self.PrevCenterText then
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and (self.CenterText + 1) or (floor(self.CenterText / 60 + 1) .. "\'") ));
@@ -1648,9 +1800,16 @@ do
             -- Set the main texture
             self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
 
-            if DC.MN and self.Debuffs[1] and self.Debuffs[1].secretMode and self.Debuffs[1].s_color then
-                local color = self.Debuffs[1].s_color
-                self.Texture:SetColorTexture(color["r"], color["g"], color["b"], Alpha);
+            if DC.MN and self.Debuffs[1] and self.Debuffs[1].secretMode then
+                if self.Debuffs[1].s_color then
+                    local s_color = self.Debuffs[1].s_color;
+                    self.Texture:SetColorTexture(s_color.r, s_color.g, s_color.b, Alpha);
+                elseif GetAuraDispelTypeColor and UnitExists(Unit) then
+                    local s_color = GetAuraDispelTypeColor(Unit, nil, D.Status.dsCurve);
+                    if s_color then
+                        self.Texture:SetColorTexture(s_color.r, s_color.g, s_color.b, Alpha);
+                    end
+                end
             end
             --self.Texture:SetAlpha(Alpha);
             --@debug@
