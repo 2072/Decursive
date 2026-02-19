@@ -1021,20 +1021,22 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                 local spellName = type(spellInfo) == "table" and spellInfo.name or spellInfo or ("SpellID:" .. spellID);
                 
                 if Unit and UnitExists(Unit) then
+                    
+                    local marcoTxt= "/target "..Unit.."\n/cast [@"..Unit.."] "..spellName;
+                    -- Smart targeting: use mouseover if available, otherwise target
+                    if D.Status.MouseOverTargetUnit and UnitExists(D.Status.MouseOverTargetUnit) and UnitIsUnit(Unit, D.Status.MouseOverTargetUnit) then
+                        marcoTxt ="/cast [@"..D.Status.MouseOverTargetUnit.."] "..spellName;
+                    elseif UnitIsUnit(Unit, "target") then
+                        marcoTxt = "/cast [@target] "..spellName;                   
+                    end
+                    
                     -- NOTE: RunMacroText is protected API and cannot be called in combat
                     if InCombatLockdown() then
                         D:Debug("secretMode click-casting skipped: RunMacroText() is protected in combat");
                         return; -- Skip protected API call
                     end
-                    
-                    -- Smart targeting: use mouseover if available, otherwise target
-                    if D.Status.MouseOverTargetUnit and UnitExists(D.Status.MouseOverTargetUnit) and UnitIsUnit(Unit, D.Status.MouseOverTargetUnit) then
-                        RunMacroText("/cast [@"..D.Status.MouseOverTargetUnit.."] "..spellName);
-                    elseif UnitIsUnit(Unit, "target") then
-                        RunMacroText("/cast [@target] "..spellName);
-                    else
-                        RunMacroText("/target "..Unit.."\n/cast [@"..Unit.."] "..spellName);
-                    end
+                   
+                    RunMacroText(marcoTxt);
                 end
                 D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, spellID);
             else
