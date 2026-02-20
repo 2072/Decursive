@@ -101,7 +101,7 @@ end --}}}
 
 function D:ShowHideLiveList(hide) --{{{
 
-    if not D.DcrFullyInitialized or DC.MN then
+    if not D.DcrFullyInitialized then
         return;
     end
 

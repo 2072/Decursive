@@ -1026,6 +1026,11 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
             
             -- Smart mouseover targeting for WoW 12.0.0
             if frame.Object.Debuffs[1].secretMode and frame.Object.Debuffs[1].SpellID then
+                -- NOTE: RunMacroText is protected API and cannot be called in combat
+                if InCombatLockdown() then
+                    D:Debug("secretMode click-casting skipped: RunMacroText() is protected in combat");
+                    return; -- Skip protected API call
+                end
                 local spellID = frame.Object.Debuffs[1].SpellID;
                 local spellInfo = GetSpellInfo(spellID);
                 local spellName = type(spellInfo) == "table" and spellInfo.name or spellInfo or ("SpellID:" .. spellID);
@@ -1040,11 +1045,6 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                         marcoTxt = "/cast [@target] "..spellName;                   
                     end
                     
-                    -- NOTE: RunMacroText is protected API and cannot be called in combat
-                    if InCombatLockdown() then
-                        D:Debug("secretMode click-casting skipped: RunMacroText() is protected in combat");
-                        return; -- Skip protected API call
-                    end
                    
                     RunMacroText(marcoTxt);
                 end

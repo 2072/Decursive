@@ -1591,7 +1591,7 @@ function D:Init() --{{{
     end
 
     -- displays frame according to the current profile
-    if (D.profile.HideLiveList or DC.MN) then
+    if D.profile.HideLiveList then
         DcrLiveList:Hide();
     else
         DcrLiveList:ClearAllPoints();
