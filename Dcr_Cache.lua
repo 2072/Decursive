@@ -44,7 +44,7 @@ local time = _G.time;
 
 DCR_Cache = {};
 local ByGUID = {};
-local CACHE_TTL_SECONDS = 300;
+local CACHE_TTL_SECONDS = 60; -- Reduced from 300 for combat responsiveness (P1-2)
 
 local function ValidateData(data)
     if type(data) ~= "table" then return false end

@@ -661,6 +661,10 @@ DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 DC.WOTLK = WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
 DC.CATACLYSM = WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
 DC.TWW = tocversion >= 110000
+
+-- Midnight expansion (12.x) - introduces secret auras system
+-- Features: canaccessvalue(), C_UnitAuras.GetAuraDispelTypeColor(), secretMode
+-- This flag enables conditional code paths for WoW 12.0.0+ compatibility
 DC.MN = tocversion >= 120000
 DC.BCC = tocversion >= 20505 and tocversion < 30000
 

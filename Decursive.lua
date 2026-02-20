@@ -552,9 +552,8 @@ do
 
             if secretMode then
                 --@debug@
-                D:Debug("secret mode...")
+                D:Debug("secret mode detected")
                 --@end-debug@
-               -- break -- there is nothing we can do...
             end
 
             local typeNameIsSecret = not canaccessvalue(TypeName)

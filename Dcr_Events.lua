@@ -349,6 +349,12 @@ function D:PLAYER_REGEN_DISABLED() -- {{{
     -- this is not reliable for testing unitframe modifications authorization,
     -- this event fires after the player enters in combat, only InCombatLockdown() may be used for critical checks
     self.Status.Combat = true;
+
+    -- Invalidate cache on combat start for fresh data (P1-3)
+    if self.DcrCache then
+        self.DcrCache:InvalidateAll();
+    end
+
     if self.MFContainerHandle.isMoving then
         self.MFContainer:StopMovingOrSizing();
         self.MFContainerHandle.isMoving = false;
@@ -531,14 +537,41 @@ do
         local unitguid = UnitGUID(UnitID);
 
         if not canaccessvalue(unitguid) then
-            return
+        	return
         end
-
+       
         --@debug@
         D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, UnitID, GetTime() + (GetTime() % 1));
         --@end-debug@
-
-
+       
+        -- WoW 12.0+ optimization: Use auraUpdateInfo for incremental updates if available
+        if o_auraUpdateInfo and not o_auraUpdateInfo.isFullUpdate then
+        	-- Incremental update possible
+        	if o_auraUpdateInfo.removedAuraInstanceIDs and #o_auraUpdateInfo.removedAuraInstanceIDs > 0 then
+        		-- Auras removed - rescan required
+        		if self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
+        			self.MicroUnitF:UpdateMUFUnit(UnitID, true, o_auraUpdateInfo);
+        			return;
+        		end
+        	end
+        	if o_auraUpdateInfo.addedAuras and #o_auraUpdateInfo.addedAuras > 0 then
+        			-- New auras - check if it's a curable debuff
+        			for _, auraData in ipairs(o_auraUpdateInfo.addedAuras) do
+        				-- WoW 12.0.0: isHarmful is a secret value, must use canaccessvalue()
+        				if canaccessvalue(auraData.isHarmful) and canaccessvalue(auraData.dispelName) then
+        					if auraData.isHarmfuland and auraData.dispelName and self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
+        						self.MicroUnitF:UpdateMUFUnit(UnitID, true, o_auraUpdateInfo);
+        						return;
+        					end
+        				end
+        			end
+        		end
+        	-- No critical change detected - verify GUID consistency before skipping
+        	if unitguid == self.Status.Unit_Array_UnitToGUID[UnitID] then
+        		return; -- Skip - no relevant change
+        	end
+        end
+       
         -- Here we test if the GUID->Unit array is ok if it isn't we need to scan the unit for debuffs
         -- We also scan the unit if it's charmed. The combatLog event manager tends to not detect those properly, the charm effect is a bitch to manage.
         if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] or UnitIsCharmed(UnitID) then

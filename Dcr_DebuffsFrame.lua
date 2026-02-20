@@ -85,9 +85,19 @@ local UnitIsUnit        = _G.UnitIsUnit;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local CreateFrame       = _G.CreateFrame;
-local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
-local RunMacroText      = _G.C_Macro and _G.C_Macro.RunMacroText or _G.RunMacroText;
-local GetSpellInfo      = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+local canaccessvalue = _G.canaccessvalue or function(_) return true; end
+local RunMacroText = _G.C_Macro and _G.C_Macro.RunMacroText or _G.RunMacroText;
+local GetSpellInfo = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+
+-- WoW 12.0.0 Safe wrapper for C_UnitAuras.GetAuraDispelTypeColor
+local function SafeGetAuraDispelTypeColor(unitToken, auraInstanceID, dsCurve)
+    if not DC.MN then return nil; end
+    local C_UnitAuras = _G.C_UnitAuras
+    if not C_UnitAuras or not C_UnitAuras.GetAuraDispelTypeColor then return nil; end
+    local success, result = pcall(C_UnitAuras.GetAuraDispelTypeColor, C_UnitAuras, unitToken, auraInstanceID, dsCurve)
+    if success then return result; end
+    return nil
+end
 
 -- NS def
 D.MicroUnitF = {};
@@ -1430,8 +1440,8 @@ function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
 
                     local auraInstanceID = self.UnitGUID and D.Status.Unit_Array_GUIDToUnit[self.UnitGUID] and self.CurrUnit;
                     if auraInstanceID then
-                        local s_color = C_UnitAuras.GetAuraDispelTypeColor(self.CurrUnit, auraInstanceID, D.Status.dsCurve);
-                        if s_color then
+                    	local s_color = SafeGetAuraDispelTypeColor(self.CurrUnit, auraInstanceID, D.Status.dsCurve);
+                    	if s_color then
                             fakeDebuff.s_color = {
                                 r = s_color.r,
                                 g = s_color.g,
@@ -1538,8 +1548,7 @@ do
     local bor               = _G.bit.bor;
     local band              = _G.bit.band;
     local SpellID;
-    local C_UnitAuras       = _G.C_UnitAuras;
-    local GetAuraDispelTypeColor = C_UnitAuras and C_UnitAuras.GetAuraDispelTypeColor;
+    local C_UnitAuras = _G.C_UnitAuras;
     local GetUnitAuras = C_UnitAuras and C_UnitAuras.GetUnitAuras;
     local GetAuraDataByAuraInstanceID = C_UnitAuras and C_UnitAuras.GetAuraDataByAuraInstanceID;
 
@@ -1806,8 +1815,8 @@ do
                 if self.Debuffs[1].s_color then
                     local s_color = self.Debuffs[1].s_color;
                     self.Texture:SetColorTexture(s_color.r, s_color.g, s_color.b, Alpha);
-                elseif GetAuraDispelTypeColor and UnitExists(Unit) then
-                    local s_color = GetAuraDispelTypeColor(Unit, nil, D.Status.dsCurve);
+                   else
+                    local s_color = SafeGetAuraDispelTypeColor(Unit, nil, D.Status.dsCurve);
                     if s_color then
                         self.Texture:SetColorTexture(s_color.r, s_color.g, s_color.b, Alpha);
                     end
