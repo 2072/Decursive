@@ -510,11 +510,6 @@ do
         -- This is just a shortcut for easier readability
         local ThisUnitDebuffs = DebuffUnitCache[Unit];
 
-        i = 1;                  -- => to index all debuffs
-        StoredDebuffIndex = 1;  -- => this index only debuffs with a type
-        CharmFound = false;     -- => avoid to find that the unit is charmed again and again...
-
-
         -- test if the unit is mind controlled once
         -- The unit is not mouseover or target and it's attackable ---> it's charmed! (A new game's mechanic as been introduced where a player can become hostile but remain in control...)
         if not UnTrustedUnitIDs[Unit] and UnitCanAttack("player", Unit) then
@@ -527,8 +522,107 @@ do
             IsCharmed = true;
         end
 
-        -- iterate all available debuffs
-        while true do
+        -- WoW 12.0.0+: Utilisation de C_UnitAuras.GetUnitAuras avec filtres avancés
+        if DC.MN then
+            local filter = "HARMFUL|RAID_PLAYER_DISPELLABLE|RAID_IN_COMBAT|IMPORTANT"
+            local sortRule = 2
+            local auras = C_UnitAuras.GetUnitAuras(Unit, filter, nil, sortRule, 0)
+
+            if not auras or #auras == 0 then
+                return ThisUnitDebuffs, IsCharmed
+            end
+
+            StoredDebuffIndex = 1
+            CharmFound = false
+
+            for _, auraData in ipairs(auras) do
+                -- Vérification avec canaccessvalue
+                local isSpellIDSecret = not canaccessvalue(auraData.spellId)
+                local canAccessDispel = auraData.dispelName and canaccessvalue(auraData.dispelName)
+
+                -- test for a type
+                if canAccessDispel and auraData.dispelName and auraData.dispelName ~= "" then
+                    Type = DC.NameToTypes[auraData.dispelName]
+                elseif not isSpellIDSecret and DC.IS_OMNI_DEBUFF[auraData.spellId] then
+                    TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]]
+                    Type = DC.NameToTypes[TypeName]
+                elseif not isSpellIDSecret and self.Status.CuringSpells[DC.BLEED] then
+                    local tempSpellID = SpellID
+                    SpellID = auraData.spellId
+                    checkSpellIDForBleed()
+                    SpellID = tempSpellID
+                    if D.Status.t_CheckBleedDebuffsActiveIDs[auraData.spellId] then
+                        Type = DC.NameToTypes["Bleed"]
+                        TypeName = DC.TypeNames[DC.BLEED]
+                    else
+                        Type = false
+                    end
+                elseif auraData.auraInstanceID then
+                    local s_color = C_UnitAuras.GetAuraDispelTypeColor(Unit, auraData.auraInstanceID, D.Status.dsCurve)
+                    if s_color then
+                        TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]]
+                        Type = DC.NameToTypes[TypeName]
+                    else
+                        Type = false
+                    end
+                else
+                    Type = false
+                end
+
+                -- if the unit is charmed and we didn't took care of this information yet
+                if IsCharmed and (not CharmFound or Type == DC.MAGIC) then
+                    if (Type == DC.MAGIC and self.Status.CuringSpells[DC.ENEMYMAGIC]) then
+                        Type = DC.ENEMYMAGIC
+                    else
+                        Type = DC.CHARMED
+                        TypeName = DC.TypeNames[DC.CHARMED]
+                    end
+                    CharmFound = true
+                end
+
+                -- If we found a type, register the Debuff
+                if Type then
+                    if not ThisUnitDebuffs[StoredDebuffIndex] then
+                        ThisUnitDebuffs[StoredDebuffIndex] = {}
+                    end
+
+                    ThisUnitDebuffs[StoredDebuffIndex].Duration       = auraData.duration
+                    ThisUnitDebuffs[StoredDebuffIndex].ExpirationTime = auraData.expirationTime
+                    ThisUnitDebuffs[StoredDebuffIndex].Texture        = auraData.icon
+                    ThisUnitDebuffs[StoredDebuffIndex].Applications   = auraData.applications
+                    ThisUnitDebuffs[StoredDebuffIndex].TypeName       = auraData.dispelName or TypeName
+                    ThisUnitDebuffs[StoredDebuffIndex].Type           = Type
+                    ThisUnitDebuffs[StoredDebuffIndex].Name           = auraData.name
+                    ThisUnitDebuffs[StoredDebuffIndex].SpellID        = auraData.spellId
+                    ThisUnitDebuffs[StoredDebuffIndex].auraInstanceID = auraData.auraInstanceID
+                    ThisUnitDebuffs[StoredDebuffIndex].secretMode     = isSpellIDSecret
+                    ThisUnitDebuffs[StoredDebuffIndex].s_color        = auraData.auraInstanceID and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraData.auraInstanceID, D.Status.dsCurve)
+
+                    StoredDebuffIndex = StoredDebuffIndex + 1
+                end
+
+                -- if a deadly debuff has been found, just forget everything...
+                if not isSpellIDSecret and DC.IS_DEADLY_DEBUFF[auraData.spellId] then
+                    StoredDebuffIndex = 1
+                    break
+                end
+            end
+
+            -- erase remaining unused entries without freeing the memory (less garbage)
+            while ThisUnitDebuffs[StoredDebuffIndex] do
+                ThisUnitDebuffs[StoredDebuffIndex].Type = false
+                StoredDebuffIndex = StoredDebuffIndex + 1
+            end
+
+            return ThisUnitDebuffs, IsCharmed
+        else
+            -- CODE LEGACY PRE 12.0.0 - PRESERVATION INTEGRALE
+            i = 1
+            StoredDebuffIndex = 1
+            CharmFound = false
+
+            -- iterate all available debuffs
+            while true do
             if not GetUnitDebuff(Unit, i) then
                 if not IsCharmed or CharmFound then
                     break;
@@ -634,18 +728,14 @@ do
             end
         end
 
-        -- erase remaining unused entries without freeing the memory (less garbage)
-        while (ThisUnitDebuffs[StoredDebuffIndex]) do
-            ThisUnitDebuffs[StoredDebuffIndex].Type = false;
-            StoredDebuffIndex = StoredDebuffIndex + 1;
+            -- erase remaining unused entries without freeing the memory (less garbage)
+            while (ThisUnitDebuffs[StoredDebuffIndex]) do
+                ThisUnitDebuffs[StoredDebuffIndex].Type = false;
+                StoredDebuffIndex = StoredDebuffIndex + 1;
+            end
+
+            return ThisUnitDebuffs, IsCharmed;
         end
-
-        -- if no debuff on the unit then it can't be charmed... or is it?
-        -- if i == 1 then
-        --    IsCharmed = false;
-        -- end
-
-        return ThisUnitDebuffs, IsCharmed;
     end --}}}
 end
 

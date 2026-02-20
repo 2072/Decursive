@@ -381,6 +381,48 @@ do
 end--}}}
 -- }}}
 
+-- WoW 12.0.0+: ADDON_RESTRICTION_STATE_CHANGED handler {{{
+do
+    local restrictionTypes = {
+        ["Combat"] = true,
+        ["Encounter"] = true,
+        ["ChallengeMode"] = true,
+        ["PvPMatch"] = true,
+        ["Map"] = true,
+    };
+
+    function D:ADDON_RESTRICTION_STATE_CHANGED(restrictionType, state)
+        if not self.DcrFullyInitialized then return; end
+
+        -- WoW 12.0.0+: Monitoring dynamique des restrictions
+        if not DC.MN then return; end
+
+        -- Vérification du type de restriction supporté
+        if not restrictionTypes[restrictionType] then
+            return;
+        end
+
+        -- Mise à jour de l'état
+        local wasRestricted = self.Status.Restrictions[restrictionType];
+        local isRestricted = (state == 2);
+
+        self.Status.Restrictions[restrictionType] = isRestricted;
+
+        -- Log pour debug
+        self:Debug("Restriction changed: %s, State: %d, Restricted: %s",
+                restrictionType, state, tostring(isRestricted));
+
+        -- Notification si une restriction devient active
+        if not wasRestricted and isRestricted then
+            self:Print("Addon restriction active: %s (certaines fonctionnalités limitées)", restrictionType);
+        end
+
+        -- Recalcul du mode secret global
+        self:UpdateSecretMode();
+    end
+end
+-- }}}
+
 -- This let us park command we can't execute while in combat to execute them later {{{
     -- the called function must return a non false value when it does something to prevent UI lagging
 function D:AddDelayedFunctionCall(CallID,functionLink, ...)
@@ -1261,6 +1303,80 @@ do
         WasInCombat = nowInCombat;
     end
 end
+
+-- ============================================================================
+-- Death Event Handlers for WoW 12.0.0 (UNIT_DIED / PARTY_KILL)
+-- ============================================================================
+do
+    local UnitIsDeadOrGhost = _G.UnitIsDeadOrGhost;
+    local t_wipe            = _G.wipe;
+
+    function D:UNIT_DIED(event, unitGUID)
+        if not D.DcrFullyInitialized then
+            return;
+        end
+
+        -- Mapping GUID → UnitToken via D.Status.Unit_Array_GUIDToUnit
+        local UnitID = D.Status.Unit_Array_GUIDToUnit[unitGUID];
+        if not UnitID then
+            return;
+        end;
+
+        -- Vérification de mort (requis car GUID peut être secret en instance/combat)
+        if UnitIsDeadOrGhost(UnitID) then
+            -- Nettoyage des caches de debuff
+            if D.ManagedDebuffUnitCache and D.ManagedDebuffUnitCache[UnitID] then
+                t_wipe(D.ManagedDebuffUnitCache[UnitID]);
+            end
+            D.UnitDebuffed[UnitID] = false;
+
+            -- Reset live list display counter
+            if D.ForLLDebuffedUnitsNum and D.ForLLDebuffedUnitsNum > 0 then
+                D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
+            end
+
+            -- Reset stealth flag
+            if self.Stealthed_Units then
+                self.Stealthed_Units[UnitID] = false;
+            end
+
+            -- Update MUF if exists
+            if self.profile and self.profile.ShowDebuffs then
+                local MUF = self.MicroUnitF and self.MicroUnitF.UnitToMUF[UnitID];
+                if MUF then
+                    MUF:Update();
+                end
+            end
+
+            self:Debug("UNIT_DIED: Unit", UnitID, "cleaned from debuff tracking");
+        end
+    end
+
+    function D:PARTY_KILL(event, attackerGUID, targetGUID)
+        -- Delegate to UNIT_DIED handler for consistent cleanup
+        return self:UNIT_DIED(event, targetGUID);
+    end
+end
+
+
+-- WoW 12.0.0+: UpdateSecretMode function {{{
+function D:UpdateSecretMode()
+    if not DC.MN or not self.Status.Restrictions then
+        return;
+    end
+
+    -- Déterminer si on est en mode secret
+    local anyRestricted = false;
+    for _, isActive in pairs(self.Status.Restrictions) do
+        if isActive then
+            anyRestricted = true;
+            break;
+        end
+    end
+
+    self.Status.InSecretMode = anyRestricted;
+end
+-- }}}
 
 
 T._LoadedFiles["Dcr_Events.lua"] = "@project-version@";

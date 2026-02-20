@@ -1046,7 +1046,12 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                     end
                     
                    
-                    RunMacroText(marcoTxt);
+                    -- WoW 12.0.0+: Protection race condition RunMacroText()
+                    local success, errMsg = pcall(RunMacroText, marcoTxt);
+                    if not success then
+                        D:Debug("RunMacroText() failed (race condition or protected): %s", tostring(errMsg));
+                        return;
+                    end
                 end
                 D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, spellID);
             else

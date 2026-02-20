@@ -1204,7 +1204,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     D.eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 
     -- WoW 12.0.0 Addon Restriction Management
-    D.eventFrame:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED");
+    if DC.MN then
+        D.eventFrame:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED");
+    end
 
     -- Raid/Group changes events
     D.eventFrame:RegisterEvent("PARTY_LEADER_CHANGED");
@@ -1228,6 +1230,12 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
         D.eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     else
         D:PPrint("CLEU no longer supported (Midnight restrictions), Decursive will not work as expected.")
+    end
+
+    -- Enregistrement des events de mort pour WoW 12.0.0+
+    if DC.MN then
+        D.eventFrame:RegisterEvent("UNIT_DIED");
+        D.eventFrame:RegisterEvent("PARTY_KILL");
     end
 
     D.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
@@ -1307,6 +1315,17 @@ function D:SetConfiguration() -- {{{
     D.Status.delayedUnDebuffOccurences = 0;
     D.Status.prio_macro = {};
     D.Status.CorrelationCache = {};
+
+    if DC.MN then
+        -- WoW 12.0.0+: Initialisation du tracking des restrictions additives
+        D.Status.Restrictions = {
+            Combat = false,
+            Encounter = false,
+            ChallengeMode = false,
+            PvPMatch = false,
+            Map = false,
+        };
+    end
 
     D.Stealthed_Units = {};
 
