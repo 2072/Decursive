@@ -1311,9 +1311,30 @@ do
     local UnitIsDeadOrGhost = _G.UnitIsDeadOrGhost;
     local t_wipe            = _G.wipe;
 
-    function D:UNIT_DIED(event, unitGUID)
+    function D:UNIT_DIED(event, unitTokenOrGUID)
         if not D.DcrFullyInitialized then
             return;
+        end
+
+        -- WoW 12.0.0: Determine if param is unitToken (from UNIT_DIED) or GUID (from PARTY_KILL)
+        local unitGUID;
+        if type(unitTokenOrGUID) == "string" and unitTokenOrGUID:len() >= 19 then
+            -- Looks like a GUID (P0...), direct use (PARTY_KILL case)
+            unitGUID = unitTokenOrGUID;
+        else
+            -- unitToken case (UNIT_DIED): get GUID from unitToken
+            unitGUID = UnitGUID(unitTokenOrGUID);
+            -- Handle secret GUID: scan units to find dead one
+            if not unitGUID or unitGUID:match("^secret") then
+                for unit in D:GetAllUnits() do
+                    if UnitIsDeadOrGhost(unit) then
+                        unitGUID = UnitGUID(unit);
+                        if unitGUID and not unitGUID:match("^secret") then
+                            break;
+                        end
+                    end
+                end
+            end
         end
 
         -- Mapping GUID → UnitToken via D.Status.Unit_Array_GUIDToUnit

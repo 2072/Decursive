@@ -1426,7 +1426,7 @@ function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
         end
 
         if guid and D.DcrCache then
-            local cached = D.DcrCache:Get(guid);
+            local cached = D.DcrCache:Get(guid, self.CurrUnit);
             if cached and cached.spell_ids and #cached.spell_ids > 0 and cached.spell_ids[1] then
                 local C_UnitAuras = _G.C_UnitAuras;
                 if C_UnitAuras then

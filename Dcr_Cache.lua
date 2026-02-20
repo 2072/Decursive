@@ -44,6 +44,7 @@ local time = _G.time;
 
 DCR_Cache = {};
 local ByGUID = {};
+local ByUnitToken = {}; -- WoW 12.0.0: Fallback index for secret GUID support
 local CACHE_TTL_SECONDS = 60; -- Reduced from 300 for combat responsiveness (P1-2)
 
 local function ValidateData(data)
@@ -63,12 +64,26 @@ function DCR_Cache:Store(unit, data)
     
     local guid = UnitGUID(unit);
     if not guid then return false end
-    if guid:match("^secret") then return false end
     
     if not ValidateData(data) then return false end
     
     local now = time();
-    ByGUID[guid] = {
+    
+    -- Store in GUID index (only for non-secret GUIDs)
+    if not guid:match("^secret") then
+        ByGUID[guid] = {
+            guid = guid,
+            unit = unit,
+            name = data.name,
+            class = data.class,
+            role = data.role,
+            timestamp = now,
+            spell_ids = data.spell_ids,
+        };
+    end
+    
+    -- WoW 12.0.0: Always store in unitToken index as fallback for secret GUIDs
+    ByUnitToken[unit] = {
         guid = guid,
         unit = unit,
         name = data.name,
@@ -77,27 +92,51 @@ function DCR_Cache:Store(unit, data)
         timestamp = now,
         spell_ids = data.spell_ids,
     };
+    
     return true;
 end
 
-function DCR_Cache:Get(guid)
+function DCR_Cache:Get(guid, unitToken)
     if not guid then return nil end
-    if guid:match("^secret") then return nil end
     
-    if not ByGUID[guid] then return nil end
+    local cached;
     
-    if not ValidateData(ByGUID[guid]) then
-        ByGUID[guid] = nil;
+    -- First try GUID lookup (for non-secret GUIDs)
+    if not guid:match("^secret") then
+        cached = ByGUID[guid];
+    end
+    
+    -- WoW 12.0.0: Fallback to unitToken lookup if GUID secret or not found
+    if not cached and unitToken then
+        cached = ByUnitToken[unitToken];
+    end
+    
+    if not cached then return nil end
+    
+    if not ValidateData(cached) then
+        -- Cleanup both indexes
+        if cached.guid and not cached.guid:match("^secret") then
+            ByGUID[cached.guid] = nil;
+        end
+        if cached.unit and ByUnitToken[cached.unit] and ByUnitToken[cached.unit] == cached then
+            ByUnitToken[cached.unit] = nil;
+        end
         return nil;
     end
     
     local now = time();
-    if now - (ByGUID[guid].timestamp or 0) > CACHE_TTL_SECONDS then
-        ByGUID[guid] = nil;
+    if now - (cached.timestamp or 0) > CACHE_TTL_SECONDS then
+        -- Expired: cleanup both indexes
+        if cached.guid and not cached.guid:match("^secret") then
+            ByGUID[cached.guid] = nil;
+        end
+        if cached.unit and ByUnitToken[cached.unit] and ByUnitToken[cached.unit] == cached then
+            ByUnitToken[cached.unit] = nil;
+        end
         return nil;
     end
     
-    return ByGUID[guid];
+    return cached;
 end
 
 function DCR_Cache:Clear()
@@ -105,6 +144,12 @@ function DCR_Cache:Clear()
         ByGUID[guid] = nil;
     end
     ByGUID = {};
+    
+    -- WoW 12.0.0: Clear unitToken index
+    for token in pairs(ByUnitToken) do
+        ByUnitToken[token] = nil;
+    end
+    ByUnitToken = {};
 end
 
 function DCR_Cache:InvalidateAll()
