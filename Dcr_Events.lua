@@ -559,7 +559,7 @@ do
         			for _, auraData in ipairs(o_auraUpdateInfo.addedAuras) do
         				-- WoW 12.0.0: isHarmful is a secret value, must use canaccessvalue()
         				if canaccessvalue(auraData.isHarmful) and canaccessvalue(auraData.dispelName) then
-        					if auraData.isHarmfuland and auraData.dispelName and self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
+        					if auraData.isHarmful and auraData.dispelName and self.profile.ShowDebuffsFrame and self.MicroUnitF.UnitToMUF[UnitID] then
         						self.MicroUnitF:UpdateMUFUnit(UnitID, true, o_auraUpdateInfo);
         						return;
         					end
