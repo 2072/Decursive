@@ -866,6 +866,7 @@ do
                 for i, Debuff in ipairs(MF.Debuffs) do
                     if Debuff.Type then
                         local DebuffApps = Debuff.Applications;
+                        --LibQTip-1.0 lead on issue on resticted tainted if only use Debuff.Name that should not be happen because read only is allowed need to investigate on libqtip
                         MUFtoolTip:AddLine(D:ColorTextNA(canaccessvalue(Debuff.Name) and Debuff.Name or "*secret*", D.profile.TypeColors[Debuff.Type]) .. (canaccessvalue(DebuffApps) and DebuffApps > 0 and ("(%d)"):format(DebuffApps) or ""));
                     end
                 end
@@ -1426,7 +1427,7 @@ function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
         end
 
         if guid and D.DcrCache then
-            local cached = D.DcrCache:Get(guid, self.CurrUnit);
+            local cached = D.DcrCache:Get(guid);
             if cached and cached.spell_ids and #cached.spell_ids > 0 and cached.spell_ids[1] then
                 local C_UnitAuras = _G.C_UnitAuras;
                 if C_UnitAuras then
