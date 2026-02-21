@@ -1232,12 +1232,6 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
         D:PPrint("CLEU no longer supported (Midnight restrictions), Decursive will not work as expected.")
     end
 
-    -- Enregistrement des events de mort pour WoW 12.0.0+
-    if DC.MN then
-        D.eventFrame:RegisterEvent("UNIT_DIED");
-        D.eventFrame:RegisterEvent("PARTY_KILL");
-    end
-
     D.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 
     self:RegisterMessage("DECURSIVE_TALENTS_AVAILABLE");
