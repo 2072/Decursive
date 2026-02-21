@@ -88,11 +88,11 @@ local CreateFrame       = _G.CreateFrame;
 local canaccessvalue = _G.canaccessvalue or function(_) return true; end
 local RunMacroText = _G.C_Macro and _G.C_Macro.RunMacroText or _G.RunMacroText;
 local GetSpellInfo = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+local C _UnitAuras = _G.C_UnitAuras;
 
 -- WoW 12.0.0 Safe wrapper for C_UnitAuras.GetAuraDispelTypeColor
 local function SafeGetAuraDispelTypeColor(unitToken, auraInstanceID, dsCurve)
     if not DC.MN then return nil; end
-    local C_UnitAuras = _G.C_UnitAuras
     if not C_UnitAuras or not C_UnitAuras.GetAuraDispelTypeColor then return nil; end
     local success, result = pcall(C_UnitAuras.GetAuraDispelTypeColor, C_UnitAuras, unitToken, auraInstanceID, dsCurve)
     if success then return result; end
@@ -1429,39 +1429,24 @@ function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
         if guid and D.DcrCache then
             local cached = D.DcrCache:Get(guid);
             if cached and cached.spell_ids and #cached.spell_ids > 0 and cached.spell_ids[1] then
-                local C_UnitAuras = _G.C_UnitAuras;
                 if C_UnitAuras then
                     local fakeDebuff = {
                         SpellID = cached.spell_ids[1],
                         Name = cached.name or "*cached*",
-                        Texture = false,
-                        Duration = 0,
-                        ExpirationTime = 0,
-                        Applications = 1,
-                        Type = DC.MAGIC,
-                        TypeName = DC.TypeNames[DC.MAGIC],
-                        auraInstanceID = nil,
+                        Texture = cached.Texture or false,
+                        Duration = cached.Duration or 0,
+                        ExpirationTime = cached.ExpirationTime or 0,
+                        Applications = cached.Applications or 0,
+                        Type = cached.Type or DC.MAGIC,
+                        TypeName = cached.TypeName or DC.TypeNames[DC.MAGIC],
+                        auraInstanceID = self.UnitGUID and D.Status.Unit_Array_GUIDToUnit[self.UnitGUID] and self.CurrUnit,
                         secretMode = true,
                     };
 
-                    local auraInstanceID = self.UnitGUID and D.Status.Unit_Array_GUIDToUnit[self.UnitGUID] and self.CurrUnit;
-                    if auraInstanceID then
-                    	local s_color = SafeGetAuraDispelTypeColor(self.CurrUnit, auraInstanceID, D.Status.dsCurve);
+                    if fakeDebuff.auraInstanceID then
+                    	local s_color = SafeGetAuraDispelTypeColor(self.CurrUnit, fakeDebuff.auraInstanceID, D.Status.dsCurve);
                     	if s_color then
-                            fakeDebuff.s_color = {
-                                r = s_color.r,
-                                g = s_color.g,
-                                b = s_color.b,
-                                a = 1,
-                            };
-                            if s_color.colorTable then
-                                local ct = s_color.colorTable;
-                                if ct.magic then fakeDebuff.Type = DC.MAGIC; fakeDebuff.TypeName = DC.TypeNames[DC.MAGIC];
-                                elseif ct.curse then fakeDebuff.Type = DC.CURSE; fakeDebuff.TypeName = DC.TypeNames[DC.CURSE];
-                                elseif ct.poison then fakeDebuff.Type = DC.POISON; fakeDebuff.TypeName = DC.TypeNames[DC.POISON];
-                                elseif ct.disease then fakeDebuff.Type = DC.DISEASE; fakeDebuff.TypeName = DC.TypeNames[DC.DISEASE];
-                                end
-                            end
+                            fakeDebuff.s_color = s_color;
                         end
                     end
 
@@ -1821,11 +1806,6 @@ do
                 if self.Debuffs[1].s_color then
                     local s_color = self.Debuffs[1].s_color;
                     self.Texture:SetColorTexture(s_color.r, s_color.g, s_color.b, Alpha);
-                   else
-                    local s_color = SafeGetAuraDispelTypeColor(Unit, nil, D.Status.dsCurve);
-                    if s_color then
-                        self.Texture:SetColorTexture(s_color.r, s_color.g, s_color.b, Alpha);
-                    end
                 end
             end
             --self.Texture:SetAlpha(Alpha);
