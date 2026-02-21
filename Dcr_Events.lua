@@ -390,35 +390,60 @@ do
         ["PvPMatch"] = true,
         ["Map"] = true,
     };
+    
+    local restrictionNamesByIndex = {
+        [0] = "Combat",
+        [1] = "Encounter",
+    };
 
-    function D:ADDON_RESTRICTION_STATE_CHANGED(restrictionType, state)
+    local InRestrictedPrevious = false;
+    local WasInCombat = false;
+
+    function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
         if not self.DcrFullyInitialized then return; end
-
-        -- WoW 12.0.0+: Monitoring dynamique des restrictions
         if not DC.MN then return; end
 
-        -- Vérification du type de restriction supporté
-        if not restrictionTypes[restrictionType] then
-            return;
+        local nowInCombat = InCombatLockdown();
+        local restrictionTypeName;
+        local isRestrictedValue;
+
+        if type(restrictionType) == "string" then
+            restrictionTypeName = restrictionType;
+            isRestrictedValue = (restrictionState == 2);
+        elseif type(restrictionType) == "number" then
+            restrictionTypeName = restrictionNamesByIndex[restrictionType];
+            isRestrictedValue = (restrictionState == 2 or restrictionState == 1);
         end
 
-        -- Mise à jour de l'état
-        local wasRestricted = self.Status.Restrictions[restrictionType];
-        local isRestricted = (state == 2);
+        if restrictionTypeName and restrictionTypes[restrictionTypeName] then
+            local wasRestricted = self.Status.Restrictions[restrictionTypeName];
+            self.Status.Restrictions[restrictionTypeName] = isRestrictedValue;
 
-        self.Status.Restrictions[restrictionType] = isRestricted;
+            self:Debug("Restriction changed: %s (%d), State: %d, Restricted: %s",
+                    restrictionTypeName, restrictionType, restrictionState, tostring(isRestrictedValue));           
 
-        -- Log pour debug
-        self:Debug("Restriction changed: %s, State: %d, Restricted: %s",
-                restrictionType, state, tostring(isRestricted));
-
-        -- Notification si une restriction devient active
-        if not wasRestricted and isRestricted then
-            self:Print("Addon restriction active: %s (certaines fonctionnalités limitées)", restrictionType);
+            self:UpdateSecretMode();
         end
 
-        -- Recalcul du mode secret global
-        self:UpdateSecretMode();
+        local nowInRestricted = (restrictionState == 2 or restrictionState == 1);
+        if self.DcrCache then
+            if nowInRestricted and not InRestrictedPrevious then
+                self:Debug("DCR_Cache: Invalidating all on restriction activation");
+                self.DcrCache:InvalidateAll();
+            elseif not nowInRestricted and InRestrictedPrevious then
+                local count = self.DcrCache:RefreshFromUnitArray();
+                self:Debug("DCR_Cache: Restrictions lifted, captured", count, "units");
+                
+            end
+
+            if nowInCombat and not WasInCombat then
+                 self:Debug("DCR_Cache: Entering combat, caching state");
+                 self.DcrCache:RefreshFromUnitArray();
+            end
+        end
+
+        InRestrictedPrevious = nowInRestricted;
+        WasInCombat = nowInCombat;
     end
 end
 -- }}}
@@ -1256,128 +1281,6 @@ do
     end
 end
 
--- Restriction State Management for WoW 12.0.0 (ADDON_RESTRICTION_STATE_CHANGED)
-do
-    local InRestrictedPrevious = false;
-    local WasInCombat = false;
-
-    function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
-        if not D.DcrFullyInitialized then
-            return;
-        end
-
-        local nowInCombat = InCombatLockdown();
-        local nowInRestricted = restrictionState == 2 or restrictionState == 1;
-
-        if restrictionState == 2 then
-            if restrictionType == 1 then
-                D:Debug("Boss encounter detected - restrictions active");
-            elseif restrictionType == 0 then
-                D:Debug("Combat detected - partial restrictions");
-            end
-        elseif restrictionState == 0 then
-            D:Debug("Restrictions lifted");
-        end
-
-        if nowInRestricted and not InRestrictedPrevious then
-            if D.DcrCache then
-                D:Debug("DCR_Cache: Invalidating all on restriction activation");
-                D.DcrCache:InvalidateAll();
-            end
-        elseif not nowInRestricted and InRestrictedPrevious then
-            D:Debug("DCR_Cache: Restrictions lifted, capturing pre-pull data");
-            if D.DcrCache then
-                local count = D.DcrCache:RefreshFromUnitArray();
-                D:Debug("DCR_Cache: Captured", count, "units");
-            end
-        end
-
-        if nowInCombat and not WasInCombat then
-            if D.DcrCache then
-                D:Debug("DCR_Cache: Entering combat, caching state");
-                D.DcrCache:RefreshFromUnitArray();
-            end
-        end
-
-        InRestrictedPrevious = nowInRestricted;
-        WasInCombat = nowInCombat;
-    end
-end
-
--- ============================================================================
--- Death Event Handlers for WoW 12.0.0 (UNIT_DIED / PARTY_KILL)
--- ============================================================================
-do
-    local UnitIsDeadOrGhost = _G.UnitIsDeadOrGhost;
-    local t_wipe            = _G.wipe;
-
-    function D:UNIT_DIED(event, unitTokenOrGUID)
-        if not D.DcrFullyInitialized then
-            return;
-        end
-
-        -- WoW 12.0.0: Determine if param is unitToken (from UNIT_DIED) or GUID (from PARTY_KILL)
-        local unitGUID;
-        if type(unitTokenOrGUID) == "string" and unitTokenOrGUID:len() >= 19 then
-            -- Looks like a GUID (P0...), direct use (PARTY_KILL case)
-            unitGUID = unitTokenOrGUID;
-        else
-            -- unitToken case (UNIT_DIED): get GUID from unitToken
-            unitGUID = UnitGUID(unitTokenOrGUID);
-            -- Handle secret GUID: scan units to find dead one
-            if not unitGUID or unitGUID:match("^secret") then
-                for unit in D:GetAllUnits() do
-                    if UnitIsDeadOrGhost(unit) then
-                        unitGUID = UnitGUID(unit);
-                        if unitGUID and not unitGUID:match("^secret") then
-                            break;
-                        end
-                    end
-                end
-            end
-        end
-
-        -- Mapping GUID → UnitToken via D.Status.Unit_Array_GUIDToUnit
-        local UnitID = D.Status.Unit_Array_GUIDToUnit[unitGUID];
-        if not UnitID then
-            return;
-        end;
-
-        -- Vérification de mort (requis car GUID peut être secret en instance/combat)
-        if UnitIsDeadOrGhost(UnitID) then
-            -- Nettoyage des caches de debuff
-            if D.ManagedDebuffUnitCache and D.ManagedDebuffUnitCache[UnitID] then
-                t_wipe(D.ManagedDebuffUnitCache[UnitID]);
-            end
-            D.UnitDebuffed[UnitID] = false;
-
-            -- Reset live list display counter
-            if D.ForLLDebuffedUnitsNum and D.ForLLDebuffedUnitsNum > 0 then
-                D.ForLLDebuffedUnitsNum = D.ForLLDebuffedUnitsNum - 1;
-            end
-
-            -- Reset stealth flag
-            if self.Stealthed_Units then
-                self.Stealthed_Units[UnitID] = false;
-            end
-
-            -- Update MUF if exists
-            if self.profile and self.profile.ShowDebuffs then
-                local MUF = self.MicroUnitF and self.MicroUnitF.UnitToMUF[UnitID];
-                if MUF then
-                    MUF:Update();
-                end
-            end
-
-            self:Debug("UNIT_DIED: Unit", UnitID, "cleaned from debuff tracking");
-        end
-    end
-
-    function D:PARTY_KILL(event, attackerGUID, targetGUID)
-        -- Delegate to UNIT_DIED handler for consistent cleanup
-        return self:UNIT_DIED(event, targetGUID);
-    end
-end
 
 
 -- WoW 12.0.0+: UpdateSecretMode function {{{
