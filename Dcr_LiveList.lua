@@ -446,7 +446,8 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- Then the MouseOver
-    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and not D.Status.Unit_Array_GUIDToUnit[UnitGUID("mouseover")] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
+    local mouseoverGUID = UnitGUID("mouseover")
+    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and canaccessvalue(mouseoverGUID) and mouseoverGUID and not D.Status.Unit_Array_GUIDToUnit[mouseoverGUID] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
         Index = Index + 1;
         self:DisplayItem(Index, "mouseover");
         --D:Debug("frenetic mouseover update");
