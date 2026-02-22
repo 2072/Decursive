@@ -276,7 +276,7 @@ function D:GetDefaultsSettings()
             CenterTextDisplay = '1_TLEFT',
 
             -- this is wether or not to show the live-list
-            HideLiveList = DC.MN, -- always hide the livelist by default in midnight
+            HideLiveList = false,
 
             LiveListAlpha = 0.7,
 
@@ -767,7 +767,6 @@ local function GetStaticOptions ()
                             end
                         end,
                         get = function () return not D.profile.HideLiveList end,
-                        disabled = function () return DC.MN end,
                         order = 7,
                     },
                     PlaySound = {

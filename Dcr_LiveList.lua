@@ -104,6 +104,9 @@ local str_upper         = _G.string.upper;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local t_wipe            = _G.table.wipe;
 local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
+local function cancompare(a,b) 
+    return canaccessvalue(a) and canaccessvalue(b);
+ end
 
 
 -- defines what is printed when the object is read as a string
@@ -292,28 +295,29 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     self.Debuff             = Debuff;
     self.IsCharmed          = IsCharmed;
     self.RaidTargetIndex    = GetRaidTargetIndex(UnitID);
-
-    if D.profile.LiveListAlpha ~= self.Alpha then
+    
+    if not cancompare(self.Alpha, D.profile.LiveListAlpha) or D.profile.LiveListAlpha ~= self.Alpha then
         self.Frame:SetAlpha(D.profile.LiveListAlpha);
         self.Alpha = D.profile.LiveListAlpha;
     end
-
+    
     -- Set the graphical elements to the right values
     -- Icon
-    if self.PrevDebuffTexture ~= Debuff.Texture then
+    if not cancompare(self.PrevDebuffTexture , Debuff.Texture) or self.PrevDebuffTexture ~= Debuff.Texture then
         self.IconTexture:SetTexture(Debuff.Texture);
-        self.PrevDebuffTexture =  Debuff.Texture;
+        self.PrevDebuffTexture = Debuff.Texture;
     end
-
+    
     -- Raid Icon
-    if canaccessvalue(self.RaidTargetIndex) and self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
+    if  cancompare(self.RaidTargetIndex, self.PrevRaidTargetIndex) and self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
         self.RaidIconTexture:SetTexture(self.RaidTargetIndex and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIndex] or nil);
         self.PrevRaidTargetIndex = self.RaidTargetIndex;
     end
-
+    
     -- Applications count
-    if self.PrevDebuffApplicaton ~= Debuff.Applications then
-        if (Debuff.Applications > 1) then
+    if not cancompare(self.PrevDebuffApplicaton , Debuff.Applications) or self.PrevDebuffApplicaton ~= Debuff.Applications then
+        -- Handle secret auras (WoW 12.0+ Midnight)
+        if Debuff.secretMode or (Debuff.Applications > 1) then
             self.DebuffAppsFontString:SetText(Debuff.Applications);
             self.PrevDebuffApplicaton = Debuff.Applications;
         else
@@ -340,19 +344,24 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     end
 
     -- Debuff Type Name
-    --if self.PrevDebuffTypeName ~= Debuff.TypeName then
-        if Debuff.Type then
+    -- if not cancompare(self.PrevDebuffTypeName, Debuff.TypeName) or self.PrevDebuffTypeName ~= Debuff.TypeName then
+        if not Debuff.secretMode and Debuff.Type then
             self.DebuffTypeFontString:SetText(D:ColorText(L[str_upper(Debuff.TypeName)], D.profile.TypeColors[Debuff.Type] ));
             --self.DebuffTypeFontString:SetTextColor(D.profile.TypeColors[Debuff.Type]);
         else
             self.DebuffTypeFontString:SetText("Unknown");
         end
         self.PrevDebuffTypeName = Debuff.TypeName;
-    --end
+    -- end
 
-    -- Debuff Name
-    if self.PrevDebuffName ~= Debuff.Name then
+  
+    -- Debuff Name display
+    if not cancompare(self.PrevDebuffName, Debuff.Name) or self.PrevDebuffName ~= Debuff.Name then
         self.DebuffNameFontString:SetText(Debuff.Name);
+        -- Use secret color if provided by C_UnitAuras
+        if Debuff.s_color then
+            self.DebuffNameFontString:SetTextColor(Debuff.s_color.r or 1, Debuff.s_color.g or 1, Debuff.s_color.b or 1, Debuff.s_color.a or 1);
+        end
         self.PrevDebuffName = Debuff.Name;
     end
 
@@ -437,7 +446,8 @@ function LiveList:Update_Display() -- {{{
     end
 
     -- Then the MouseOver
-    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and not D.Status.Unit_Array_GUIDToUnit[UnitGUID("mouseover")] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
+    local mouseoverGUID = UnitGUID("mouseover")
+    if not D.Status.MouseOveringMUF and D.UnitDebuffed["mouseover"] and canaccessvalue(mouseoverGUID) and mouseoverGUID and not D.Status.Unit_Array_GUIDToUnit[mouseoverGUID] and self:GetDebuff("mouseover") then -- this won't catch new debuff if all debuffs disappeard while overing the unit...
         Index = Index + 1;
         self:DisplayItem(Index, "mouseover");
         --D:Debug("frenetic mouseover update");
