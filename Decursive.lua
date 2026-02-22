@@ -544,20 +544,16 @@ do
             if isSpellIDScret then
                 D:Debug("spell ids are secret, aura id: ", auraInstanceID)
             end
-            --@end-debug@
 
             if secretMode then
-                --@debug@
-                D:Debug("secret mode...")
-                --@end-debug@
-               -- break -- there is nothing we can do...
+                D:Debug("Debuff type is secret")
             end
+            --@end-debug@
 
-            local typeNameIsSecret = not canaccessvalue(TypeName)
             local s_color = DC.MN and auraInstanceID and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraInstanceID, D.Status.dsCurve)
 
             -- test for a type
-            if not typeNameIsSecret then
+            if not secretMode then
                 if TypeName and TypeName ~= "" then
                     Type = DC.NameToTypes[TypeName];
                 elseif not isSpellIDScret and DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
@@ -574,8 +570,8 @@ do
                 else
                     Type = false;
                 end
-            elseif s_color then
-                -- temp, just affect the first spell we know for now,
+            elseif s_color then --
+                -- temp, just affect the first spell we know for now, XXX this will cause many issues
                 TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
                 Type = DC.NameToTypes[TypeName]
             else

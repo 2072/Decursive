@@ -541,11 +541,7 @@ do
             return;
         end
 
-        local unitguid = UnitGUID(UnitID);
 
-        if not canaccessvalue(unitguid) then
-            return
-        end
 
         --@debug@
         D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, "UnitID:", UnitID, GetTime() + (GetTime() % 1));
@@ -583,12 +579,16 @@ do
         end -- }}}
 
 
+        local unitguid = UnitGUID(UnitID);
+
+        if not canaccessvalue(unitguid) then
+            return
+        end
 
         -- Here we test if the GUID->Unit array is ok if it isn't we need to scan the unit for debuffs
         -- We also scan the unit if it's charmed. The combatLog event manager tends to not detect those properly, the charm effect is a bitch to manage.
         if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] or UnitIsCharmed(UnitID) then
 
-            local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
 
             -- if we updated the unit array but we are here then rebuild the unit array.
             if self.Status.GroupUpdatedOn >= self.Status.GroupUpdateEvent then
@@ -596,6 +596,7 @@ do
                 D:GroupChanged("UNIT_AURA-|cFFFF0000bad group detection|r");
 
                 --[=[
+                local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
                 self:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() and groups up to date, SG:", self.Status.Unit_Array_UnitToGUID[UnitID],
                 "FG:", unitguid,
                 "Unit ID:|cFFFF0000", UnitID,
