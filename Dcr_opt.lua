@@ -767,7 +767,6 @@ local function GetStaticOptions ()
                             end
                         end,
                         get = function () return not D.profile.HideLiveList end,
-                        disabled = function () return false end, -- what is original chack befor DC.MN ?
                         order = 7,
                     },
                     PlaySound = {
