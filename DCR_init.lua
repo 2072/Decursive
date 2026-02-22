@@ -2256,14 +2256,27 @@ do
 
             if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
 
-                    --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
+                    -- Smart macro for WoW 12.0.0+: supports secret auras and intelligent targeting
+                    -- Priority: mouseover > current unit > target
+                    -- The [@mouseover] condition handles secret mode seamlessly since WoW evaluates
+                    -- conditions at cast time with game engine access to secret values
+                    local macroFormat = ("%s/cast [@mouseover,help][@mouseover,harm][@%s,help][@%s,harm] %s"):format(
+                        not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
+                        unit, unit,
+                        Spell
+                    );
+                    
+                    -- Fallback for item use instead of cast
+                    if D.Status.FoundSpells[Spell][2] <= 0 then
+                        macroFormat = ("%s/use [@mouseover,help][@mouseover,harm][@%s,help][@%s,harm] %s"):format(
+                            not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "",
+                            unit, unit,
+                            Spell
+                        );
+                    end
+
                     prio_macro[Prio] = {
-                        macroText = ("%s/%s [@%s, help][@%s, harm] %s"):format(
-                          not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
-                          D.Status.FoundSpells[Spell][2] > 0 and "cast" or "use", -- item test
-                          unit, unit,
-                          Spell
-                        ),
+                        macroText = macroFormat,
                         unitFiltering = D.Status.FoundSpells[Spell][6]
                     }
             else

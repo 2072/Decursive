@@ -1010,7 +1010,12 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                 D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                 --@end-debug@
             end
-        elseif RequestedPrio and D.Status.HasSpell and not frame.Object.Debuffs[1].secretMode then
+        elseif RequestedPrio and D.Status.HasSpell then
+            -- Unified click-casting for both normal and secret mode
+            -- Secret mode handling is now done via smart macros in SetMacrosPerPrioTable()
+            -- using [@mouseover] conditions which are evaluated by the game engine
+            -- at cast time (bypassing secret value restrictions at macro definition time)
+            
             D.Status.ClickCastingWIP = true;
             D:Debug("ClickCastingWIP")
             D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
