@@ -101,7 +101,7 @@ end --}}}
 
 function D:ShowHideLiveList(hide) --{{{
 
-    if not D.DcrFullyInitialized or DC.MN then
+    if not D.DcrFullyInitialized then
         return;
     end
 
@@ -349,7 +349,9 @@ do
    local DebuffHistHashTable = {};
 
    function D:Debuff_History_Add( DebuffName, DebuffType, spellID)
-
+       if not canaccessvalue(DebuffName) then  -- do not store secret value
+          return;
+       end
        if not DebuffHistHashTable[DebuffName] then
 
            -- reset iterator if out of boundaries
