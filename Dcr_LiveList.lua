@@ -344,7 +344,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     end
 
     -- Debuff Type Name
-    if not cancompare(self.PrevDebuffTypeName, Debuff.TypeName) or self.PrevDebuffTypeName ~= Debuff.TypeName then
+    -- if not cancompare(self.PrevDebuffTypeName, Debuff.TypeName) or self.PrevDebuffTypeName ~= Debuff.TypeName then
         if canaccessvalue(Debuff.Type) and Debuff.Type then
             self.DebuffTypeFontString:SetText(D:ColorText(L[str_upper(Debuff.TypeName)], D.profile.TypeColors[Debuff.Type] ));
             --self.DebuffTypeFontString:SetTextColor(D.profile.TypeColors[Debuff.Type]);
@@ -352,7 +352,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
             self.DebuffTypeFontString:SetText("Unknown");
         end
         self.PrevDebuffTypeName = Debuff.TypeName;
-    end
+    -- end
 
   
     -- Debuff Name display
