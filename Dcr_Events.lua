@@ -513,6 +513,21 @@ do
     local GetTime       = _G.GetTime;
     -- This event manager is only here to catch events when the GUID unit array is not reliable.
     -- For everything else the combat log event manager does the job since it's a lot more resource friendly. (UNIT_AURA fires way too often and provides no data)
+    --
+
+    function D:checkForDebuff(UnitID, secretedName)
+        --@debug@
+        if self.debug then self:Debug("(UA) Debuff, UnitId: ", UnitID, secretedName); end
+        --@end-debug@
+
+        if self.profile.ShowDebuffsFrame then
+            self.MicroUnitF:UpdateMUFUnit(UnitID);
+        elseif not self.profile.HideLiveList then
+            if self.debug then self:Debug("(LiveList) Registering delayed GetDebuff for ", destName); end
+            self.LiveList:DelayedGetDebuff(UnitID);
+        end
+    end
+
     function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
 
 
@@ -533,8 +548,40 @@ do
         end
 
         --@debug@
-        D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, UnitID, GetTime() + (GetTime() % 1));
+        D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, "UnitID:", UnitID, GetTime() + (GetTime() % 1));
         --@end-debug@
+
+
+        if o_auraUpdateInfo.removedAuraInstanceIDs then
+            self:checkForDebuff(UnitID)
+        end
+
+        if o_auraUpdateInfo.addedAuras then
+            for _, aura in pairs(o_auraUpdateInfo.addedAuras) do
+
+                local secretedName = canaccessvalue(aura.name) and aura.name or "*secret*"
+
+                if UnitID then -- (this test is enough, if the unit is grouped we definetely need to scan it, whatever is its status...) {{{3
+
+                    if  canaccessvalue(aura.isHelpful) and aura.isHelpful and self.profile.Show_Stealthed_Status then
+
+                        if DC.IS_STEALTH_BUFF[secretedName] then
+                            if AuraEvents[event] == 1 then
+                                self.Stealthed_Units[UnitID] = true;
+                            else
+                                if self.debug then self:Debug("STEALTH LOST: ", UnitID, aura.name); end
+                                self.Stealthed_Units[UnitID] = false;
+                            end
+                            self.MicroUnitF:UpdateMUFUnit(UnitID);
+                        end
+                    else
+                        self:checkForDebuff(UnitID)
+                        break;
+                    end
+                end
+            end
+        end -- }}}
+
 
 
         -- Here we test if the GUID->Unit array is ok if it isn't we need to scan the unit for debuffs
