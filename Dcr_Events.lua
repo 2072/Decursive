@@ -786,7 +786,7 @@ do -- Combat log event handling {{{1
                         self.LiveList:DelayedGetDebuff(UnitID);
                     end
 
-                    if event == "UNIT_DIED" then
+                    if event == "UNIT_DIED" and UnitID then
                         self.Stealthed_Units[UnitID] = false;
                     end
 
