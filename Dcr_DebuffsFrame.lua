@@ -88,7 +88,7 @@ local CreateFrame       = _G.CreateFrame;
 local canaccessvalue = _G.canaccessvalue or function(_) return true; end
 local RunMacroText = _G.C_Macro and _G.C_Macro.RunMacroText or _G.RunMacroText;
 local GetSpellInfo = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
-local C _UnitAuras = _G.C_UnitAuras;
+local C_UnitAuras = _G.C_UnitAuras;
 
 -- WoW 12.0.0 Safe wrapper for C_UnitAuras.GetAuraDispelTypeColor
 local function SafeGetAuraDispelTypeColor(unitToken, auraInstanceID, dsCurve)
