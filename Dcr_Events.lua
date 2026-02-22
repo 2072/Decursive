@@ -371,6 +371,59 @@ do
         end
     end
 end--}}}
+
+
+do
+
+    local R_Combat =        DC.MN and Enum.AddOnRestrictionType.Combat
+    local R_Encounter =     DC.MN and Enum.AddOnRestrictionType.Encounter
+    local R_ChallengeMode = DC.MN and Enum.AddOnRestrictionType.ChallengeMode
+    local R_PvPMatch =      DC.MN and Enum.AddOnRestrictionType.PvPMatch
+    local R_Map =           DC.MN and Enum.AddOnRestrictionType.Map
+
+    -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is...
+    -- moreover, setting any of the "*Forced" cvar does not trigger this event
+    -- it is triggered at login with the correct status
+    local S_Inactive =      DC.MN and Enum.AddOnRestrictionState.Inactive
+    local S_Activating =    DC.MN and Enum.AddOnRestrictionState.Activating
+    local S_Active =        DC.MN and Enum.AddOnRestrictionState.Active
+
+    local r_toString =  DC.MN and D:tReverse(Enum.AddOnRestrictionType)
+    local s_toString =  DC.MN and D:tReverse(Enum.AddOnRestrictionState)
+
+    local currentState = {
+        [R_Combat] = S_Inactive,
+        [R_Encounter] = S_Inactive,
+        [R_ChallengeMode] = S_Inactive,
+        [R_PvPMatch] = S_Inactive,
+        [R_Map] = S_Inactive,
+    };
+
+    function D:GetRestrictionStates()
+        return currentState
+    end;
+
+    function D:currentRestrictionsStr()
+
+        if not DC.MN then return "N/A" end
+
+        local str = ""
+        for t, s in pairs(currentState) do
+            if s ~= S_Inactive then
+                str = ("%s%s%s:%d"):format(str, str ~= "" and "," or "", r_toString[t]:sub(1,2), s)
+            end
+        end
+
+        return str
+    end
+
+    function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
+        D:Debug("ARSC: ", event, r_toString[restrictionType], s_toString[restrictionState])
+
+        currentState[restrictionType] = restrictionState
+    end
+end
+
 -- }}}
 
 -- This let us park command we can't execute while in combat to execute them later {{{

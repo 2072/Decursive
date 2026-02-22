@@ -1221,7 +1221,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     if not DC.MN then
         D.eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     else
-        D:PPrint("CLEU no longer supported (Midnight restrictions), Decursive will not work as expected.")
+        D.eventFrame:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED")
     end
 
     D.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
@@ -1297,6 +1297,10 @@ function D:SetConfiguration() -- {{{
     -- if we log in and we are already fighting...
     if InCombatLockdown() then
         D.Status.Combat = true;
+    end
+
+    if DC.MN then
+        D.Status.restrictions = D:GetRestrictionStates()
     end
 
     D.profile = D.db.profile; -- shortcut
@@ -1542,11 +1546,10 @@ function D:Init() --{{{
     DecursiveMainBar:SetScale(D.profile.LiveListScale);
     DecursiveMainBar:Show();
 
-    if not DC.MN then 
-        DcrLiveList:SetScale(D.profile.LiveListScale);
-        DcrLiveList:Show();
-        D:PlaceLL();
-    end
+
+    DcrLiveList:SetScale(D.profile.LiveListScale);
+    DcrLiveList:Show();
+    D:PlaceLL();
 
     if D.profile.BarHidden then
         DecursiveMainBar:Hide();

@@ -228,11 +228,12 @@ function T._AddDebugText(a1, ...) -- {{{
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' rs:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(
         NiceTime(), -- %.4f
         tostring(T._DebugTimerRefName), -- tr:'%s'
         tostring(T._CatchAllErrors), -- ca:'%s'
         tostring(InCombatLockdown()), -- icl:'%s'
+        T.Dcr and T.Dcr.currentRestrictionsStr and T.Dcr:currentRestrictionsStr() or "!",
         select(3, GetNetStats()), -- h%d
         select(4, GetNetStats()), -- w%d
         GetFramerate(), -- %dfps
