@@ -94,6 +94,7 @@ local MAX_RAID_MEMBERS      = _G.MAX_RAID_MEMBERS;
 local setmetatable          = _G.setmetatable;
 local rawget                = _G.rawget;
 local GetTime               = _G.GetTime;
+local canaccessvalue        = _G.canaccessvalue or function(_) return true; end
 -------------------------------------------------------------------------------
 
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan
@@ -249,8 +250,14 @@ do
     local UnitToGUID_mt = { __index = function(self, unit)
         local GUID = _UnitGUID(unit) or false;
 
+        --@debug@
+        if not canaccessvalue(GUID) then
+            D:AddDebugText("could not access guid for unit:" .. unit)
+        end
+        --@end-debug@
+
         self[unit] = GUID;
-        GUIDToUnit[GUID] = unit;
+        GUIDToUnit[GUID] = unit; -- fails on high restrictions (secretMapRestrictionsForced while dueling but not in combat while map restriciton and encounter is set)
 
         return self[unit];
     end };

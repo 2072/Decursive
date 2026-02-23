@@ -381,9 +381,11 @@ do
     local R_PvPMatch =      DC.MN and Enum.AddOnRestrictionType.PvPMatch
     local R_Map =           DC.MN and Enum.AddOnRestrictionType.Map
 
-    -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is...
-    -- moreover, setting any of the "*Forced" cvar does not trigger this event
-    -- it is triggered at login with the correct status
+    -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
+    -- The current state can be queried with GetAddOnRestrictionState which
+    -- will return active iff event dispatch has completed moreover, setting
+    -- any of the "*Forced" cvar does not trigger this event nor update the queried state.
+    -- This event is also fired at login with the correct state (like the regen disabled event)
     local S_Inactive =      DC.MN and Enum.AddOnRestrictionState.Inactive
     local S_Activating =    DC.MN and Enum.AddOnRestrictionState.Activating
     local S_Active =        DC.MN and Enum.AddOnRestrictionState.Active
@@ -391,13 +393,15 @@ do
     local r_toString =  DC.MN and D:tReverse(Enum.AddOnRestrictionType)
     local s_toString =  DC.MN and D:tReverse(Enum.AddOnRestrictionState)
 
-    local currentState = {
-        [R_Combat] = S_Inactive,
-        [R_Encounter] = S_Inactive,
-        [R_ChallengeMode] = S_Inactive,
-        [R_PvPMatch] = S_Inactive,
-        [R_Map] = S_Inactive,
-    };
+    local GetAddOnRestrictionState = DC.MN and C_RestrictedActions.GetAddOnRestrictionState
+
+    local currentState = DC.MN and {
+        [R_Combat] = GetAddOnRestrictionState(R_Combat),
+        [R_Encounter] = GetAddOnRestrictionState(R_Encounter),
+        [R_ChallengeMode] = GetAddOnRestrictionState(R_ChallengeMode),
+        [R_PvPMatch] = GetAddOnRestrictionState(R_PvPMatch),
+        [R_Map] = GetAddOnRestrictionState(R_Map),
+    } or {};
 
     function D:GetRestrictionStates()
         return currentState
@@ -840,7 +844,7 @@ do -- Combat log event handling {{{1
                         self.LiveList:DelayedGetDebuff(UnitID);
                     end
 
-                    --Note UnitID is valide in that context and have been checked earlyer
+                    -- Note: UnitID is valid in that context and has been checked earlier
                     if event == "UNIT_DIED" then
                         self.Stealthed_Units[UnitID] = false;
                     end

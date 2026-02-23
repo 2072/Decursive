@@ -977,7 +977,8 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
 
         D:Println(L["HLP_NOTHINGTOCURE"]);
 
-    elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs[1]) then
+        -- detect wrong button click and prepare for not-in-line-of-sight casting failures in coordination with CLEU (unavailable in MN)
+    elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs[1] and not frame.Object.Debuffs[1].secretMode) then
         local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
         local Unit = frame.Object.CurrUnit; -- shortcut
 
@@ -1010,7 +1011,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                 D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                 --@end-debug@
             end
-        elseif RequestedPrio and D.Status.HasSpell and not frame.Object.Debuffs[1].secretMode then
+        elseif RequestedPrio and D.Status.HasSpell then -- useless block in Midnight as there is no CLEU anymore to detect cast failures.
             D.Status.ClickCastingWIP = true;
             D:Debug("ClickCastingWIP")
             D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
@@ -1201,7 +1202,7 @@ end
 
 
 function MicroUnitF.prototype:UpdateWithCS(o_auraUpdateInfo)
-    self:Update(false, false, true, o_auraUpdateInfo); -- o_auraUpdateInfo is not used for now
+    self:Update(false, false, true, o_auraUpdateInfo); -- o_auraUpdateInfo is not used for now XXX
 end
 
 function MicroUnitF.prototype:UpdateSkippingSetBuf()
