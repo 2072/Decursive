@@ -392,7 +392,7 @@ do
         -- to prevent futur change we populate currentState using auto casting loop
         for propertie , state in pairs(Enum.AddOnRestrictionType)  do
             D:Debug("Populate state: "..propertie.." for enum state "..state);
-            currentState[value] = C_RestrictedActions.GetAddOnRestrictionState(state)
+            currentState[state] = C_RestrictedActions.GetAddOnRestrictionState(state)
         end       
 
         function D:currentRestrictionsStr()
