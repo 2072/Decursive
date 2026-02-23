@@ -376,11 +376,6 @@ end--}}}
 do
     local currentState ={} -- pre alloc table
     if DC.MN then -- avoid multiple CPU ops
-        local R_Combat =        Enum.AddOnRestrictionType.Combat
-        local R_Encounter =     Enum.AddOnRestrictionType.Encounter
-        local R_ChallengeMode = Enum.AddOnRestrictionType.ChallengeMode
-        local R_PvPMatch =      Enum.AddOnRestrictionType.PvPMatch
-        local R_Map =           Enum.AddOnRestrictionType.Map
 
         -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
         -- The current state can be queried with GetAddOnRestrictionState which
@@ -394,14 +389,11 @@ do
         local r_toString =  D:tReverse(Enum.AddOnRestrictionType)
         local s_toString =  D:tReverse(Enum.AddOnRestrictionState)
 
-        local GetAddOnRestrictionState = C_RestrictedActions.GetAddOnRestrictionState
-
-        
-        currentState[R_Combat] = GetAddOnRestrictionState(R_Combat)
-        currentState[R_Encounter] = GetAddOnRestrictionState(R_Encounter)
-        currentState[R_ChallengeMode] = GetAddOnRestrictionState(R_ChallengeMode)
-        currentState[R_PvPMatch] = GetAddOnRestrictionState(R_PvPMatch)
-        currentState[R_Map] = GetAddOnRestrictionState(R_Map)
+        currentState[Enum.AddOnRestrictionType.Combat] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Combat)
+        currentState[Enum.AddOnRestrictionType.Encounter] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Encounter)
+        currentState[Enum.AddOnRestrictionType.ChallengeMode] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.ChallengeMode)
+        currentState[Enum.AddOnRestrictionType.PvPMatch] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.PvPMatch)
+        currentState[Enum.AddOnRestrictionType.Map] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Map)
 
         function D:currentRestrictionsStr()
             local str = ""
