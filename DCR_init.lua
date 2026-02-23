@@ -905,7 +905,7 @@ local function InitVariables_Once() -- {{{
 
     local DC = T._C;
 
-   
+
 
     -- An acces the debuff table
     D.ManagedDebuffUnitCache = {};
@@ -1141,6 +1141,11 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
 end -- // }}}
 
 local FirstEnable = true;
+
+--@debug@
+D.debug = true
+--@end-debug@
+
 function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     if T._SelfDiagnostic() == 2 then
