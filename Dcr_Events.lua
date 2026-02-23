@@ -389,9 +389,9 @@ do
         local r_toString =  D:tReverse(Enum.AddOnRestrictionType)
         local s_toString =  D:tReverse(Enum.AddOnRestrictionState)
 
-        -- to prevent futur change we populate currentState using auto casting loop
+        -- to prevent futur change we populate currentState using auto hydrate loop
         for propertie , state in pairs(Enum.AddOnRestrictionType)  do
-            D:Debug("Populate state: "..propertie.." for enum state "..state);
+            D:Debug("Populate: "..propertie.." for enum state "..state);
             currentState[state] = C_RestrictedActions.GetAddOnRestrictionState(state)
         end       
 
