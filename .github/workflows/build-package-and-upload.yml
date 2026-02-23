@@ -1,4 +1,4 @@
-name: Check and buid addon
+name: Check and build addon
 
 on:
   push:
@@ -35,23 +35,31 @@ jobs:
           args: -qo 011
 
       - name: Package retail
-        if: ${{ !contains(github.event.head_commit.message, '#skipretail') }}
+        if: >-
+          !contains(github.event.head_commit.message, '#skipretail') &&
+          !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
 
       - name: Package classic
-        if: ${{ !contains(github.event.head_commit.message, '#skipclassic') }}
+        if: >-
+          !contains(github.event.head_commit.message, '#skipclassic') &&
+          !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
         with:
           args: -g classic
 
       - name: Package mists
-        if: ${{ !contains(github.event.head_commit.message, '#skipmop') }}
+        if: >-
+          !contains(github.event.head_commit.message, '#skipmop') &&
+          !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
         with:
           args: -g mists
 
       - name: Package bcc
-        if: ${{ !contains(github.event.head_commit.message, '#skipbcc') }}
+        if: >-
+          !contains(github.event.head_commit.message, '#skipbcc') &&
+          !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
         with:
           args: -g bcc
