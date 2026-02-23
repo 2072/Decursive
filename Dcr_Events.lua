@@ -374,8 +374,8 @@ end--}}}
 
 
 do
-    local currentState ={} -- pre alloc table
-    if DC.MN then -- avoid multiple CPU ops
+    local currentState = {} 
+    if DC.MN then 
 
         -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
         -- The current state can be queried with GetAddOnRestrictionState which
@@ -415,7 +415,7 @@ do
         function D:currentRestrictionsStr()
             return "N/A" 
         end;
-        --D:ADDON_RESTRICTION_STATE_CHANGED is not existing befor MN
+        --D:ADDON_RESTRICTION_STATE_CHANGED does not exist before MN
     end
 
     function D:GetRestrictionStates()
