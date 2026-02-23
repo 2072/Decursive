@@ -374,58 +374,61 @@ end--}}}
 
 
 do
+    local currentState ={} -- pre alloc table
+    if DC.MN then -- avoid multiple CPU ops
+        local R_Combat =        Enum.AddOnRestrictionType.Combat
+        local R_Encounter =     Enum.AddOnRestrictionType.Encounter
+        local R_ChallengeMode = Enum.AddOnRestrictionType.ChallengeMode
+        local R_PvPMatch =      Enum.AddOnRestrictionType.PvPMatch
+        local R_Map =           Enum.AddOnRestrictionType.Map
 
-    local R_Combat =        DC.MN and Enum.AddOnRestrictionType.Combat
-    local R_Encounter =     DC.MN and Enum.AddOnRestrictionType.Encounter
-    local R_ChallengeMode = DC.MN and Enum.AddOnRestrictionType.ChallengeMode
-    local R_PvPMatch =      DC.MN and Enum.AddOnRestrictionType.PvPMatch
-    local R_Map =           DC.MN and Enum.AddOnRestrictionType.Map
+        -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
+        -- The current state can be queried with GetAddOnRestrictionState which
+        -- will return active iff event dispatch has completed moreover, setting
+        -- any of the "*Forced" cvar does not trigger this event nor update the queried state.
+        -- This event is also fired at login with the correct state (like the regen disabled event)
+        local S_Inactive =      Enum.AddOnRestrictionState.Inactive
+        local S_Activating =    Enum.AddOnRestrictionState.Activating
+        local S_Active =        Enum.AddOnRestrictionState.Active
 
-    -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
-    -- The current state can be queried with GetAddOnRestrictionState which
-    -- will return active iff event dispatch has completed moreover, setting
-    -- any of the "*Forced" cvar does not trigger this event nor update the queried state.
-    -- This event is also fired at login with the correct state (like the regen disabled event)
-    local S_Inactive =      DC.MN and Enum.AddOnRestrictionState.Inactive
-    local S_Activating =    DC.MN and Enum.AddOnRestrictionState.Activating
-    local S_Active =        DC.MN and Enum.AddOnRestrictionState.Active
+        local r_toString =  D:tReverse(Enum.AddOnRestrictionType)
+        local s_toString =  D:tReverse(Enum.AddOnRestrictionState)
 
-    local r_toString =  DC.MN and D:tReverse(Enum.AddOnRestrictionType)
-    local s_toString =  DC.MN and D:tReverse(Enum.AddOnRestrictionState)
+        local GetAddOnRestrictionState = C_RestrictedActions.GetAddOnRestrictionState
 
-    local GetAddOnRestrictionState = DC.MN and C_RestrictedActions.GetAddOnRestrictionState
+        
+        currentState[R_Combat] = GetAddOnRestrictionState(R_Combat)
+        currentState[R_Encounter] = GetAddOnRestrictionState(R_Encounter)
+        currentState[R_ChallengeMode] = GetAddOnRestrictionState(R_ChallengeMode)
+        currentState[R_PvPMatch] = GetAddOnRestrictionState(R_PvPMatch)
+        currentState[R_Map] = GetAddOnRestrictionState(R_Map)
 
-    local currentState = DC.MN and {
-        [R_Combat] = GetAddOnRestrictionState(R_Combat),
-        [R_Encounter] = GetAddOnRestrictionState(R_Encounter),
-        [R_ChallengeMode] = GetAddOnRestrictionState(R_ChallengeMode),
-        [R_PvPMatch] = GetAddOnRestrictionState(R_PvPMatch),
-        [R_Map] = GetAddOnRestrictionState(R_Map),
-    } or {};
+        function D:currentRestrictionsStr()
+            local str = ""
+            for t, s in pairs(currentState) do
+                if s ~= S_Inactive then
+                    str = ("%s%s%s:%d"):format(str, str ~= "" and "," or "", r_toString[t]:sub(1,2), s)
+                end
+            end
+
+            return str
+        end
+
+        function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
+            D:Debug("ARSC: ", event, r_toString[restrictionType], s_toString[restrictionState])
+
+            currentState[restrictionType] = restrictionState
+        end
+    else
+        function D:currentRestrictionsStr()
+            return "N/A" 
+        end;
+        --D:ADDON_RESTRICTION_STATE_CHANGED is not existing befor MN
+    end
 
     function D:GetRestrictionStates()
         return currentState
     end;
-
-    function D:currentRestrictionsStr()
-
-        if not DC.MN then return "N/A" end
-
-        local str = ""
-        for t, s in pairs(currentState) do
-            if s ~= S_Inactive then
-                str = ("%s%s%s:%d"):format(str, str ~= "" and "," or "", r_toString[t]:sub(1,2), s)
-            end
-        end
-
-        return str
-    end
-
-    function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
-        D:Debug("ARSC: ", event, r_toString[restrictionType], s_toString[restrictionState])
-
-        currentState[restrictionType] = restrictionState
-    end
 end
 
 -- }}}
