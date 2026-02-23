@@ -104,7 +104,7 @@ local str_upper         = _G.string.upper;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local t_wipe            = _G.table.wipe;
 local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
-local function cancompare(a,b) 
+local function cancompare(a,b)
     return canaccessvalue(a) and canaccessvalue(b);
  end
 
@@ -295,30 +295,30 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     self.Debuff             = Debuff;
     self.IsCharmed          = IsCharmed;
     self.RaidTargetIndex    = GetRaidTargetIndex(UnitID);
-    
+
     if not cancompare(self.Alpha, D.profile.LiveListAlpha) or D.profile.LiveListAlpha ~= self.Alpha then
         self.Frame:SetAlpha(D.profile.LiveListAlpha);
         self.Alpha = D.profile.LiveListAlpha;
     end
-    
+
     -- Set the graphical elements to the right values
     -- Icon
     if not cancompare(self.PrevDebuffTexture , Debuff.Texture) or self.PrevDebuffTexture ~= Debuff.Texture then
         self.IconTexture:SetTexture(Debuff.Texture);
         self.PrevDebuffTexture = Debuff.Texture;
     end
-    
+
     -- Raid Icon
     if  cancompare(self.RaidTargetIndex, self.PrevRaidTargetIndex) and self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
         self.RaidIconTexture:SetTexture(self.RaidTargetIndex and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIndex] or nil);
         self.PrevRaidTargetIndex = self.RaidTargetIndex;
     end
-    
+
     -- Applications count
     if not cancompare(self.PrevDebuffApplicaton , Debuff.Applications) or self.PrevDebuffApplicaton ~= Debuff.Applications then
         -- Handle secret auras (WoW 12.0+ Midnight)
         if Debuff.secretMode or (Debuff.Applications > 1) then
-            self.DebuffAppsFontString:SetText(Debuff.Applications);
+            self.DebuffAppsFontString:SetText(Debuff.secretMode and Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or Debuff.Applications);
             self.PrevDebuffApplicaton = Debuff.Applications;
         else
             self.DebuffAppsFontString:SetText(" ");
@@ -327,7 +327,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     end
 
     -- Unit Name
-    if self.PrevUnitName ~= self.UnitName then
+    if not cancompare(self.PrevUnitName, self.UnitName) or self.PrevUnitName ~= self.UnitName then
         self.UnitClass = (select(2, UnitClass(UnitID)));
         self.UnitNameFontString:SetText(self.UnitName);
         if self.UnitClass then
@@ -354,7 +354,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
         self.PrevDebuffTypeName = Debuff.TypeName;
     -- end
 
-  
+
     -- Debuff Name display
     if not cancompare(self.PrevDebuffName, Debuff.Name) or self.PrevDebuffName ~= Debuff.Name then
         self.DebuffNameFontString:SetText(Debuff.Name);

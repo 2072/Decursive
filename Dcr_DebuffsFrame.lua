@@ -747,7 +747,7 @@ do
 
     local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "GameTooltipTemplate")
 
-    function ShowMUFToolTip(unit, status, debuffs)
+    local function ShowMUFToolTip(unit, status, debuffs)
         tip:ClearLines()
         tip:SetOwner(D.MFContainer, "ANCHOR_NONE")
 
@@ -806,15 +806,13 @@ do
         local Unit = MF.CurrUnit; -- shortcut
         local TooltipText = "";
 
-        local GUIDwasFixed = false;
         local unitguid = UnitGUID(Unit);
 
-        if unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid] then
+        if canaccessvalue(unitguid) and (unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid]) then
 
             if unitguid then
                 D.Status.Unit_Array_UnitToGUID[Unit] = unitguid;
                 D.Status.Unit_Array_GUIDToUnit[unitguid] = Unit;
-                GUIDwasFixed = true;
             end
 
         end

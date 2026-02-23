@@ -250,14 +250,19 @@ do
     local UnitToGUID_mt = { __index = function(self, unit)
         local GUID = _UnitGUID(unit) or false;
 
+        local guidAccessible = canaccessvalue(GUID)
+
         --@alpha@
-        if not canaccessvalue(GUID) then
+        if not guidAccessible then
+            -- fails on high restrictions (secretMapRestrictionsForced while dueling but not in real combat in a real dungeon during an encounter...)
+            -- setting this debug report generation so we can test if this can really happen in normal game conditions
             D:AddDebugText("could not access guid for unit:" .. unit)
         end
         --@end-alpha@
 
-        self[unit] = GUID;
-        GUIDToUnit[GUID] = unit; -- fails on high restrictions (secretMapRestrictionsForced while dueling but not in combat while map restriciton and encounter is set)
+		-- this GUID cache was there to map CLEU to unit ids... so it's not really useful in Midnight (I need to check this though)
+        self[unit] = guidAccessible and GUID or unit;
+        GUIDToUnit[canaccessvalue(GUID) and GUID or unit] = unit;
 
         return self[unit];
     end };
