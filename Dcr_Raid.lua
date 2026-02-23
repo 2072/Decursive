@@ -250,11 +250,11 @@ do
     local UnitToGUID_mt = { __index = function(self, unit)
         local GUID = _UnitGUID(unit) or false;
 
-        --@debug@
+        --@alpha@
         if not canaccessvalue(GUID) then
             D:AddDebugText("could not access guid for unit:" .. unit)
         end
-        --@end-debug@
+        --@end-alpha@
 
         self[unit] = GUID;
         GUIDToUnit[GUID] = unit; -- fails on high restrictions (secretMapRestrictionsForced while dueling but not in combat while map restriciton and encounter is set)

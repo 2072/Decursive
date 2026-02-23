@@ -297,20 +297,21 @@ do
     end
 
 
-    function MicroUnitF:GetHelperAnchor (atBottom)
+    function MicroUnitF:GetHelperAnchor (atBottom, withScale)
+        local scale = withScale and self.Frame:GetEffectiveScale() / UIParent:GetEffectiveScale() or 1
 
         if atBottom then
             -- set Anchor table
             self:GetMUFAnchor(D.profile.DebuffsFrameGrowToTop and 1 or self:GetFarthestVerticalMUF());
             Anchor[3] = Anchor[3] - (D.profile.DebuffsFrameYSpacing + DC.MFSIZE);
 
-            return "TOPLEFT", self.Frame, Anchor[2], Anchor[3], "BOTTOMLEFT";
+            return "TOPLEFT", self.Frame, Anchor[2], Anchor[3] * scale, "BOTTOMLEFT";
         else
             -- set Anchor table
             self:GetMUFAnchor(D.profile.DebuffsFrameGrowToTop and self:GetFarthestVerticalMUF() or 1);
             Anchor[3] = Anchor[3] + (D.profile.DebuffsFrameYSpacing + DC.MFSIZE);
 
-            return "BOTTOMLEFT", self.Frame, Anchor[2], Anchor[3], "BOTTOMLEFT";
+            return "BOTTOMLEFT", self.Frame, Anchor[2], Anchor[3] * scale, "BOTTOMLEFT";
         end
 
     end
@@ -744,11 +745,55 @@ do
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
 
-    T._CatchAllErrors = 'LibQTip';
-    local LibQTip = LibStub('LibQTip-1.0');
-    T._CatchAllErrors = false;
+    local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "GameTooltipTemplate")
 
-    local MUFtoolTip = nil;
+    function ShowMUFToolTip(unit, status, debuffs)
+        tip:ClearLines()
+        tip:SetOwner(D.MFContainer, "ANCHOR_NONE")
+
+        local index = GetRaidTargetIndex(unit)
+
+        local icon = index and string.format("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t ", index) or ""
+
+        local coloredUnitName = D:ColorTextNA((D:PetUnitName(unit, true)), ((UnitClass(unit)) and DC.HexClassColor[ (select(2, UnitClass(unit))) ] or "AAAAAA"))
+        .. "  |cFF3F3F3F(".. unit .. ")|r"
+
+        local playerLine = string.format("%s %s", icon or "", coloredUnitName)
+
+        tip:AddLine(playerLine) -- raidIcon - class-colored name
+        tip:AddLine(status) -- MUF Status
+
+        -- add one line per debuff with the debuff name and it's application count if > 1
+        if debuffs[1] then
+            for _, Debuff in ipairs(debuffs) do
+                local s_color = Debuff.s_color
+
+                local colored = s_color and
+                    s_color:WrapTextInColorCode(Debuff.Name)
+                    or
+                    D:ColorTextNA(Debuff.Name, D.profile.TypeColors[Debuff.Type])
+
+                local appCount = s_color and Debuff.auraInstanceID and
+                    C_StringUtil.WrapString(C_UnitAuras.GetAuraApplicationDisplayCount(unit, Debuff.auraInstanceID, 1), " (x", ")")
+                    or
+                    (Debuff.Applications > 0 and (" (x%s)"):format(Debuff.Applications) or "")
+
+                tip:AddLine(colored .. appCount)
+            end
+        end
+
+        -- Display the tooltip
+        tip:ClearAllPoints()
+        tip:SetClampedToScreen(true)
+        tip:SetPoint(MicroUnitF:GetHelperAnchor(false, true))
+        tip:Show()
+
+        -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
+        if tip:GetTop() and floor(tip:GetTop() + 40) >= floor(UIParent:GetTop()) then -- if at top (the default game tooltip has a kind of padding...)
+            tip:ClearAllPoints();
+            tip:SetPoint(MicroUnitF:GetHelperAnchor(true, true));
+        end
+    end
 
     -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
     -- it also handles Unstable Affliction detection and warning.
@@ -760,7 +805,6 @@ do
 
         local Unit = MF.CurrUnit; -- shortcut
         local TooltipText = "";
-
 
         local GUIDwasFixed = false;
         local unitguid = UnitGUID(Unit);
@@ -786,44 +830,21 @@ do
         if MF.Debuffs[1] then
             for i, Debuff in ipairs(MF.Debuffs) do
                 if Debuff.Type then
-                    -- Create a warning if an Unstable Affliction like spell is detected XXX will be integrated along with the filtering system comming 'soon'(tm)
+                    -- Create a warning if an Unstable Affliction like spell is detected
                     if canaccessvalue(Debuff.Name) and DC.IS_HARMFULL_DEBUFF[Debuff.Name] then
-                    -- if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
                         D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                         D:SafePlaySoundFile(DC.DeadlyDebuffAlert);
                     end
                 end
             end
-
-            -- TODO: scan here for fluidity buff/debuff and alert
-            -- http://www.wowhead.com/search?q=Ionization#npc-abilities
-            -- http://www.wowhead.com/search?q=+Fluidity#spells
         end
 
         if D.profile.AfflictionTooltips then
-            MUFtoolTip = LibQTip:Acquire("DecursiveMUFToolTip", 1, "LEFT");
-            MUFtoolTip:SetAutoHideDelay(.3, frame, function() MUFtoolTip = nil end)
-            MUFtoolTip:Clear()
+            -- set UnitStatus text
+            local StatusText = "";
 
             -- removes the CHARMED_STATUS bit from Status, we don't need it
             Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
-
-            local grti = GetRaidTargetIndex(Unit)
-            -- First, write the name of the unit in its class color
-            if UnitExists(MF.CurrUnit) and canaccessvalue(grti) then
-                MUFtoolTip:AddLine(
-                ((DC.RAID_ICON_LIST[grti]) and (DC.RAID_ICON_LIST[grti] .. "0:0:0:0|t ") or "")
-                -- Colored unit name
-                .. D:ColorTextNA((D:PetUnitName(Unit, true)), ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA"))
-                .. "  |cFF3F3F3F(".. Unit .. ")|r"
-                );
-            else
-                MUFtoolTip:AddLine(MF.CurrUnit);
-            end
-
-
-            -- set UnitStatus text
-            local StatusText = "";
 
             -- set the status text, just translate the bitfield to readable text
             if Status == NORMAL then
@@ -840,36 +861,17 @@ do
 
             elseif MF.Debuffs[1] and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
                 local DebuffType = MF.Debuffs[1].Type;
-                StatusText = L["AFFLICTEDBY"]:format(D:ColorTextNA( L[DC.TypeNames[DebuffType]:upper()], D.profile.TypeColors[DebuffType]) );
+                if not MF.Debuffs[1].secretMode then
+                    StatusText = L["AFFLICTEDBY"]:format(D:ColorTextNA(L[DC.TypeNames[DebuffType]:upper()], D.profile.TypeColors[DebuffType]) );
+                else
+                    StatusText = L["AFFLICTEDBY"]:format(MF.Debuffs[1].s_color:WrapTextInColorCode(MF.Debuffs[1].TypeName))
+                end
 
             elseif Status == STEALTHED then
                 StatusText = L["STEALTHED"];
             end
 
-            -- Unit Status
-            MUFtoolTip:AddLine(StatusText);
-
-            -- list the debuff(s) names
-            if MF.Debuffs[1] then
-                for i, Debuff in ipairs(MF.Debuffs) do
-                    if Debuff.Type then
-                        local DebuffApps = Debuff.Applications;
-                        MUFtoolTip:AddLine(D:ColorTextNA(canaccessvalue(Debuff.Name) and Debuff.Name or "*secret*", D.profile.TypeColors[Debuff.Type]) .. (canaccessvalue(DebuffApps) and DebuffApps > 0 and ("(%d)"):format(DebuffApps) or ""));
-                    end
-                end
-            end
-
-            -- Display the tooltip
-            MUFtoolTip:ClearAllPoints();
-            MUFtoolTip:SetClampedToScreen(true)
-            MUFtoolTip:SetPoint(self:GetHelperAnchor());
-            MUFtoolTip:Show();
-
-            -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
-            if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top -- XXX attempt to perform arithmetic on a nil value, reported on 2018-08-16 and 2020-01-29
-                MUFtoolTip:ClearAllPoints();
-                MUFtoolTip:SetPoint(self:GetHelperAnchor(true));
-            end
+            ShowMUFToolTip(Unit, StatusText, MF.Debuffs)
         end
 
         -- show a help text in the Game default tooltip
@@ -898,6 +900,8 @@ do
 
     function MicroUnitF:OnLeave(frame) -- {{{
         D.Status.MouseOveringMUF = false;
+
+        tip:FadeOut()
     end -- }}}
 
     local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r";
@@ -909,10 +913,7 @@ do
 
     function D.MicroUnitF:OnCornerEnter(frame)
 
-        if MUFtoolTip then
-            MUFtoolTip:Release();
-            MUFtoolTip = nil;
-        end
+        tip:Hide()
 
         if not keyHelp then
             keyHelp = {

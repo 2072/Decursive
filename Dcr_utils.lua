@@ -83,7 +83,6 @@ local UnitName          = _G.UnitName;
 local UnitIsPlayer      = _G.UnitIsPlayer;
 local string            = _G.string;
 local tonumber          = _G.tonumber;
-local UnitGUID          = _G.UnitGUID;
 local band              = _G.bit.band;
 local GetTime           = _G.GetTime;
 local IsSpellInRange    = _G.C_Spell and _G.C_Spell.IsSpellInRange or _G.IsSpellInRange;
@@ -142,7 +141,7 @@ end
 function D:PetUnitName (Unit, Check) -- {{{
     local Name = (self:UnitName(Unit));
 
-    if not Name or Name == DC.UNKNOWN  then
+    if not Name or canaccessvalue(Name) and Name == DC.UNKNOWN  then
         Name = DC.UNKNOWN .. "-" .. Unit;
         D:Debug("PetUnitName(): Name of %s is unknown", Unit);
     end
