@@ -141,7 +141,7 @@ end
 function D:PetUnitName (Unit, Check) -- {{{
     local Name = (self:UnitName(Unit));
 
-    if not Name or canaccessvalue(Name) and Name == DC.UNKNOWN  then
+    if canaccessvalue(Name) and Name == DC.UNKNOWN or not Name then
         Name = DC.UNKNOWN .. "-" .. Unit;
         D:Debug("PetUnitName(): Name of %s is unknown", Unit);
     end
