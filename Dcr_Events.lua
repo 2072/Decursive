@@ -389,10 +389,9 @@ do
         local r_toString =  D:tReverse(Enum.AddOnRestrictionType)
         local s_toString =  D:tReverse(Enum.AddOnRestrictionState)
 
-        -- to prevent futur change we populate currentState using auto hydrate loop
-        for propertie , state in pairs(Enum.AddOnRestrictionType)  do
-            D:Debug("Populate: "..propertie.." for enum state "..state);
-            currentState[state] = C_RestrictedActions.GetAddOnRestrictionState(state)
+        for fieldName, fieldValue in pairs(Enum.AddOnRestrictionType) do
+            currentState[fieldValue] = C_RestrictedActions.GetAddOnRestrictionState(fieldValue)
+            D:Debug(("AddonRestriction %s (%d): %s"):format(fieldName, fieldValue, s_toString[currentState[fieldValue]]))
         end       
 
         function D:currentRestrictionsStr()
