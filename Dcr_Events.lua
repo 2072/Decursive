@@ -389,11 +389,11 @@ do
         local r_toString =  D:tReverse(Enum.AddOnRestrictionType)
         local s_toString =  D:tReverse(Enum.AddOnRestrictionState)
 
-        currentState[Enum.AddOnRestrictionType.Combat] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Combat)
-        currentState[Enum.AddOnRestrictionType.Encounter] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Encounter)
-        currentState[Enum.AddOnRestrictionType.ChallengeMode] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.ChallengeMode)
-        currentState[Enum.AddOnRestrictionType.PvPMatch] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.PvPMatch)
-        currentState[Enum.AddOnRestrictionType.Map] = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Map)
+        -- to prevent futur change we populate currentState using auto casting loop
+        for propertie , state in pairs(Enum.AddOnRestrictionType)  do
+            D:Debug("Populate state: "..propertie.." for enum state "..state);
+            currentState[value] = C_RestrictedActions.GetAddOnRestrictionState(state)
+        end       
 
         function D:currentRestrictionsStr()
             local str = ""
