@@ -104,7 +104,7 @@ D.IsSpellInRange = function (spellName, unit)
         return range;
     else
         --@debug@
-        D:Debug('IsSpellInRange() returned nil for', spellName, unit);
+        --D:Debug('IsSpellInRange() returned nil for', spellName, unit);
         --@end-debug@
         if unit == 'player' or unit == 'pet' then
             return 1;

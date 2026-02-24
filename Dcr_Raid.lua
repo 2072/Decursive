@@ -689,7 +689,11 @@ do
         D:Debug("Source priority list:", #self.profile.PriorityList, D:tAsString(self.profile.PriorityList));
         for i, unit in ipairs(Status.Unit_Array) do
             unit = Status.Unit_Array[i];
-            D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
+            if DC.ClassNumToUName[UnitInfo[unit].class] then
+                D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
+            else
+                self:AddDebugText("issue #46 debug:", unit, UnitInfo[unit].class, "_UC: ",  select(2, _UnitClass(unit)));
+            end
         end
         --@end-debug@
     end
