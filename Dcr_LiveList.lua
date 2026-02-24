@@ -317,9 +317,9 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     -- Applications count
     if not cancompare(self.PrevDebuffApplicaton, Debuff.Applications) or self.PrevDebuffApplicaton ~= Debuff.Applications then
         self.PrevDebuffApplicaton = Debuff.Applications
-        local appDisplayString 
-        if Debuff.secretMode then -- Handle secret auras (WoW 12.0+ Midnight)
-            appDisplayString = Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or "" -- I think it's better to use an empty string as it might be optimized on the C side
+        local appDisplayString
+        if Debuff.secretMode then
+            appDisplayString = Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or ""
         else
             appDisplayString = Debuff.Applications > 1 and Debuff.Applications or ""
         end
