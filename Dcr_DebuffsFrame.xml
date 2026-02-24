@@ -173,6 +173,14 @@
         </Shadow>
     </Font>
 
+    <Font name="DcrMicroUnitRaidIconFont" inherits="NumberFontNormalSmall" justifyH="CENTER" virtual="true">
+        <Shadow>
+            <offset>
+                <AbsDimension x="0.5" y="-0.5" />
+            </offset>
+        </Shadow>
+    </Font>
+
     <Script>
         local T = DecursiveRootTable or {};
 

@@ -1127,11 +1127,13 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.CenterFontString:SetPoint("BOTTOM",self.Frame ,"BOTTOM",0,1)
     self.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
-    -- raid target icon
-    self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY", nil, 5);
-    self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
-    self.RaidIconTexture:SetHeight(13 - petminus);
-    self.RaidIconTexture:SetWidth(13 - petminus);
+    -- raid target icon, it's a FontString in which we use the |t texture formater as it's
+    -- the only way to set a secret texture (formating a secret string as a texture path is rejected...)
+    self.RaidIconTexture = self.Frame:CreateFontString(nil, "OVERLAY", "DcrMicroUnitRaidIconFont");
+    self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",3,9)
+    -- setting an explicit size to the fontString makes it glitch when it's scaled down...
+    --self.RaidIconTexture:SetHeight(16 - petminus);
+    --self.RaidIconTexture:SetWidth(16 - petminus);
 
 
     -- a reference to this object
@@ -1413,7 +1415,10 @@ do
         Unit = self.CurrUnit;
         PreviousStatus = self.UnitStatus;
 
+        local debuff_1 = self.Debuffs[1]
 
+
+        -- D:Debug("in set color", Unit, Status.CenterTextDisplay) TODO: -- optimize when this function is called, with UNIT_AURA, we no longer need to call it several times/s...
 
         -- if unit not available, if a unit cease to exist (this happen often for pets)
         if not UnitExists(Unit) then
@@ -1440,7 +1445,7 @@ do
 
         else
             -- If the Unit is visible
-            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.Debuffs[1] then
+            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not debuff_1 then
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
                     self.UnitStatus = STEALTHED;
@@ -1464,8 +1469,8 @@ do
                 end
 
                 -- if the unit has some debuffs we can handle
-            elseif self.Debuffs[1] then
-                DebuffType = self.Debuffs[1].Type;
+            elseif debuff_1 then
+                DebuffType = debuff_1.Type;
 
                 self.Color = MF_colors[self.Debuff1Prio]; -- so people can play with the color settings (don't put it after the if).
                 if self.PrevDebuff1Prio ~= self.Debuff1Prio then
@@ -1502,24 +1507,28 @@ do
                 end
 
                 -- update the CenterText
+
+                local centerAccess = canaccessvalue(self.CenterText)
+
                 --if profile.DebuffsFrameChrono and self.Debuffs[1].ExpirationTime then
-                if profile.CenterTextDisplay ~= '4_NONE' and canaccessvalue(self.CenterText) then
+                if profile.CenterTextDisplay ~= '4_NONE' then
 
-                    self.PrevCenterText = self.CenterText;
+                    if centerAccess then
+                        self.PrevCenterText = self.CenterText;
+                    end
 
-                    if Status.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime and canaccessvalue(self.Debuffs[1].ExpirationTime) then
+                    if Status.CenterTextDisplay ~= '3_STACKS' and debuff_1.ExpirationTime and canaccessvalue(debuff_1.ExpirationTime) then
 
                         if Status.CenterTextDisplay == '2_TELAPSED' then
-                            --self.CenterText = floor(Time - self.CenterText);
-                            self.CenterText = floor(self.Debuffs[1].Duration - (self.Debuffs[1].ExpirationTime - Time));
+                            self.CenterText = floor(debuff_1.Duration - (debuff_1.ExpirationTime - Time));
 
                             if self.CenterText ~= self.PrevCenterText then -- do not unecessarily compute the final displayed string
                                 --D:Debug('center text update');
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and self.CenterText or (floor(self.CenterText / 60) .. "\'") ));
                             end
-                        elseif self.Debuffs[1].ExpirationTime > 0 then
+                        elseif debuff_1.ExpirationTime > 0 then
 
-                            self.CenterText = floor(self.Debuffs[1].ExpirationTime - Time);
+                            self.CenterText = floor(debuff_1.ExpirationTime - Time);
 
                             if self.CenterText ~= self.PrevCenterText then
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and (self.CenterText + 1) or (floor(self.CenterText / 60 + 1) .. "\'") ));
@@ -1529,22 +1538,32 @@ do
                             self.CenterFontString:SetText(" ");
                         end
 
-                    elseif (canaccessvalue(self.Debuffs[1].Applications)) then
+                    elseif debuff_1.Applications then
 
-                        self.CenterText = self.Debuffs[1].Applications;
+                        self.CenterText = debuff_1.Applications;
+                        local appAccess = canaccessvalue(self.CenterText)
 
-                        if self.CenterText ~= self.PrevCenterText then
-                            self.CenterFontString:SetText(self.CenterText > 0 and self.CenterText or '');
+                        local appCount = debuff_1.s_color and debuff_1.auraInstanceID and
+                            C_UnitAuras.GetAuraApplicationDisplayCount(Unit, debuff_1.auraInstanceID, 1)
+                            or
+                            (appAccess and self.CenterText > 0 and self.CenterText or "")
+
+
+                        if not appAccess or self.CenterText ~= self.PrevCenterText then
+                            self.CenterFontString:SetText(appCount);
                         end
 
                     end
 
                 end
 
-                self.RaidTargetIcon = GetRaidTargetIndex(Unit);
-                if canaccessvalue(self.RaidTargetIcon) and self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
-                    self.RaidIconTexture:SetTexture(self.RaidTargetIcon and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIcon] or nil);
-                    self.PrevRaidTargetIndex = self.RaidTargetIcon;
+                local index = GetRaidTargetIndex(Unit)
+                self.RaidTargetIcon = index
+
+                if not canaccessvalue(index) or self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
+                    local icon = index and string.format("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:11:11|t ", index) or ""
+                    self.RaidIconTexture:SetText(icon);
+                    self.PrevRaidTargetIndex = index;
                 end
 
 
@@ -1566,8 +1585,8 @@ do
                     self.CenterFontString:SetText(" ");
                 end
 
-                if canaccessvalue(self.RaidTargetIcon) and self.RaidTargetIcon then
-                    self.RaidIconTexture:SetTexture(nil);
+                if self.RaidTargetIcon then
+                    self.RaidIconTexture:SetText("");
                     self.RaidTargetIcon = false;
                     self.PrevRaidTargetIndex = false;
                 end
@@ -1648,8 +1667,8 @@ do
             -- Set the main texture
             self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
 
-            if DC.MN and self.Debuffs[1] and self.Debuffs[1].secretMode and self.Debuffs[1].s_color then
-                local color = self.Debuffs[1].s_color
+            if DC.MN and debuff_1 and debuff_1.secretMode and debuff_1.s_color then
+                local color = debuff_1.s_color
                 self.Texture:SetColorTexture(color["r"], color["g"], color["b"], Alpha);
             end
             --self.Texture:SetAlpha(Alpha);

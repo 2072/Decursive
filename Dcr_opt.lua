@@ -1496,7 +1496,7 @@ local function GetStaticOptions ()
                                 name = L["OPT_MFREFRESHRATE"],
                                 desc = L["OPT_MFREFRESHRATE_DESC"],
                                 min = 0.017,
-                                max = 0.2,
+                                max = 1,
                                 step = 0.01,
                                 order = 2600,
                             },

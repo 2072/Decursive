@@ -374,8 +374,8 @@ end--}}}
 
 
 do
-    local currentState = {} 
-    if DC.MN then 
+    local currentState = {}
+    if DC.MN then
 
         -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
         -- The current state can be queried with GetAddOnRestrictionState which
@@ -392,7 +392,7 @@ do
         for fieldName, fieldValue in pairs(Enum.AddOnRestrictionType) do
             currentState[fieldValue] = C_RestrictedActions.GetAddOnRestrictionState(fieldValue)
             D:Debug(("AddonRestriction %s (%d): %s"):format(fieldName, fieldValue, s_toString[currentState[fieldValue]]))
-        end       
+        end
 
         function D:currentRestrictionsStr()
             local str = ""
@@ -412,7 +412,7 @@ do
         end
     else
         function D:currentRestrictionsStr()
-            return "N/A" 
+            return "N/A"
         end;
         --D:ADDON_RESTRICTION_STATE_CHANGED does not exist before MN
     end
@@ -600,6 +600,10 @@ do
 
 
         if o_auraUpdateInfo.removedAuraInstanceIDs then
+            self:checkForDebuff(UnitID)
+        end
+
+        if o_auraUpdateInfo.updatedAuraInstanceIDs and self.Status.CenterTextDisplay == "3_STACKS" then
             self:checkForDebuff(UnitID)
         end
 
