@@ -262,7 +262,7 @@ do
 
 		-- this GUID cache was there to map CLEU to unit ids... so it's not really useful in Midnight (I need to check this though)
         self[unit] = guidAccessible and GUID or unit;
-        GUIDToUnit[canaccessvalue(GUID) and GUID or unit] = unit;
+        GUIDToUnit[self[unit]] = unit;
 
         return self[unit];
     end };
