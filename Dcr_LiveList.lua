@@ -309,20 +309,23 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     end
 
     -- Raid Icon
-    if  cancompare(self.RaidTargetIndex, self.PrevRaidTargetIndex) and self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
+    if cancompare(self.RaidTargetIndex, self.PrevRaidTargetIndex) and self.PrevRaidTargetIndex ~= self.RaidTargetIndex then
         self.RaidIconTexture:SetTexture(self.RaidTargetIndex and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIndex] or nil);
         self.PrevRaidTargetIndex = self.RaidTargetIndex;
     end
 
     -- Applications count
-    if not cancompare(self.PrevDebuffApplicaton , Debuff.Applications) or self.PrevDebuffApplicaton ~= Debuff.Applications then
-        -- Handle secret auras (WoW 12.0+ Midnight)
-        if Debuff.secretMode then
-            self.PrevDebuffApplicaton = Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or " ";
+    if not cancompare(self.PrevDebuffApplicaton, Debuff.Applications) or self.PrevDebuffApplicaton ~= Debuff.Applications then
+        self.PrevDebuffApplicaton = Debuff.Applications -- in such case I like to put this right after the diff check (remember that this part of Decursive's code is about 20 years old, my coding standards have evolved since I wrote that of course - so don't be surprised if I sound picky while some part of the code are clearly ugly^^)
+
+        local appDisplayString -- you should even put this in an upvalue above the function to avoid the local creation
+       
+        if Debuff.secretMode then -- Handle secret auras (WoW 12.0+ Midnight)
+            appDisplayString = Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or "" -- I think it's better to use an empty string as it might be optimized on the C side
         else
-            self.PrevDebuffApplicaton = Debuff.Applications > 1 and Debuff.Applications or " ";
+            appDisplayString = Debuff.Applications > 1 and Debuff.Applications or ""
         end
-        self.DebuffAppsFontString:SetText(self.PrevDebuffApplicaton);
+        self.DebuffAppsFontString:SetText(appDisplayString)
     end
 
     -- Unit Name
