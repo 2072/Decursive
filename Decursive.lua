@@ -938,11 +938,13 @@ do
             --@debug@
             --D:Debug("UnitBuff", unit, BuffNameToCheck)
             --@end-debug@
-        if not restricted and GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then --XXX MN
+        if not restricted and GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then
             --@debug@
             D:Debug("used C_UnitAuras")
             --@end-debug@
-            return true
+
+            -- return the aura instance id instead of true so that we can check when it's removed
+            return GetAuraDataBySpellName(unit, BuffNameToCheck).auraInstanceID
         elseif not restricted and not GetAuraDataBySpellName then
             --@debug@
             D:Debug("used old buff scan method")
@@ -951,10 +953,10 @@ do
             for i = 1, 40 do
                 buffName = G_UnitBuff(unit, i)
                 if not buffName then
-                    return
+                    return false
                 else
                     if BuffNameToCheck == buffName then
-                        return G_UnitBuff(unit, i)
+                        return (G_UnitBuff(unit, i)) and true or false
                     end
                 end
             end
@@ -968,14 +970,12 @@ do
 
         if type(BuffNamesToCheck) == "string" then
 
-            return (UnitBuff(unit, BuffNamesToCheck)) and true or false;
+            return UnitBuff(unit, BuffNamesToCheck)
 
         else
             for buff in pairs(BuffNamesToCheck) do
 
-                if UnitBuff(unit, buff) then
-                    return true;
-                end
+                return UnitBuff(unit, buff)
 
             end
         end
@@ -987,11 +987,7 @@ end
 
 
 function D:CheckUnitStealth(unit)
-    if self:CheckUnitForBuffs(unit, DC.IS_STEALTH_BUFF) then
-        --      self:Debug("Sealth found !");
-        return true;
-    end
-    return false;
+    return self:CheckUnitForBuffs(unit, DC.IS_STEALTH_BUFF)
 end
 -- }}}
 

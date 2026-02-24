@@ -461,24 +461,17 @@ end
 
 
 function D:PLAYER_TARGET_CHANGED()
-
-
     if not D.DcrFullyInitialized then
         D:Debug("|cFFFF0000D:PLAYER_TARGET_CHANGED aborted, init uncomplete!|r");
         return;
     end
 
     if UnitExists("target") and not UnitCanAttack("player", "target") then
-
         D.Status.TargetExists = true;
 
         self.LiveList:DelayedGetDebuff("target");
 
-
-        if self:CheckUnitStealth("target") then
-            self.Stealthed_Units["target"] = true;
-        end
-
+        self.Stealthed_Units["target"] = self:CheckUnitStealth("target")
     else
         D.Status.TargetExists = false;
         self.Stealthed_Units["target"] = false;
@@ -581,17 +574,14 @@ do
 
     function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
 
-
         if not D.DcrFullyInitialized then
             D:Debug("|cFFFF0000D:UNIT_AURA aborted, init uncomplete!|r");
             return;
         end
 
         if not self.Status.Unit_Array_UnitToGUID[UnitID] then
-            -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
             return;
         end
-
 
 
         --@debug@
@@ -601,6 +591,13 @@ do
 
         if o_auraUpdateInfo.removedAuraInstanceIDs then
             self:checkForDebuff(UnitID)
+
+            for _, id in pairs(o_auraUpdateInfo.removedAuraInstanceIDs) do
+                if self.Stealthed_Units[UnitID] and self.Stealthed_Units[UnitID] == id then
+                    self:Debug("STEALTH LOST: ", UnitID)
+                    self.Stealthed_Units[UnitID] = false
+                end
+            end
         end
 
         if o_auraUpdateInfo.updatedAuraInstanceIDs and self.Status.CenterTextDisplay == "3_STACKS" then
@@ -612,17 +609,12 @@ do
 
                 local secretedName = canaccessvalue(aura.name) and aura.name or "*secret*"
 
-                if UnitID then -- (this test is enough, if the unit is grouped we definetely need to scan it, whatever is its status...) {{{3
+                if UnitID then -- (this test is enough, if the unit is known we definetely need to scan it, whatever is its status...) {{{3
 
                     if  canaccessvalue(aura.isHelpful) and aura.isHelpful and self.profile.Show_Stealthed_Status then
 
                         if DC.IS_STEALTH_BUFF[secretedName] then
-                            if AuraEvents[event] == 1 then
-                                self.Stealthed_Units[UnitID] = true;
-                            else
-                                if self.debug then self:Debug("STEALTH LOST: ", UnitID, aura.name); end
-                                self.Stealthed_Units[UnitID] = false;
-                            end
+                            self.Stealthed_Units[UnitID] = aura.auraInstanceID;
                             self.MicroUnitF:UpdateMUFUnit(UnitID);
                         end
                     else
