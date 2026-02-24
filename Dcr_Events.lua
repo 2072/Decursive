@@ -554,7 +554,14 @@ end
 ---[=[
 local SeenUnitEventsUNITAURA = {};
 local SeenUnitEventsCOMBAT = {};
-
+local AuraEvents = {
+    ["SPELL_AURA_APPLIED"]      = 1,
+    ["SPELL_AURA_APPLIED_DOSE"] = 1,
+    ["SPELL_AURA_REMOVED"]      = 0,
+    ["SPELL_AURA_REMOVED_DOSE"] = 0,
+    ["UNIT_DIED"] = 0, -- Special! Base parameters are not compatible
+    --["SPELL_DISPEL"] = 0, -- we don't use it because it just means that someone is dispelling something, the aura is not removed yet
+};
 do
     local FAR           = DC.FAR;
     local UnitDebuff    = _G.UnitDebuff;
@@ -758,15 +765,6 @@ do -- Combat log event handling {{{1
     local FRIENDLY_TARGET       = bit.bor (_G.COMBATLOG_OBJECT_TARGET, _G.COMBATLOG_OBJECT_REACTION_FRIENDLY);
     local ME                    = _G.COMBATLOG_OBJECT_AFFILIATION_MINE;
 
-
-    local AuraEvents = {
-        ["SPELL_AURA_APPLIED"]      = 1,
-        ["SPELL_AURA_APPLIED_DOSE"] = 1,
-        ["SPELL_AURA_REMOVED"]      = 0,
-        ["SPELL_AURA_REMOVED_DOSE"] = 0,
-        ["UNIT_DIED"] = 0, -- Special! Base parameters are not compatible
-        --["SPELL_DISPEL"] = 0, -- we don't use it because it just means that someone is dispelling something, the aura is not removed yet
-    };
 
     local SpellEvents = {
         ["SPELL_MISSED"]        = true,
