@@ -1669,7 +1669,7 @@ do
 
             if DC.MN and debuff_1 and debuff_1.secretMode and debuff_1.s_color then
                 local color = debuff_1.s_color
-                self.Texture:SetColorTexture(color["r"], color["g"], color["b"], Alpha);
+                self.Texture:SetColorTexture(color.r, color.g, color.b, Alpha);
             end
             --self.Texture:SetAlpha(Alpha);
             --@debug@
