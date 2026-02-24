@@ -317,13 +317,12 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
     -- Applications count
     if not cancompare(self.PrevDebuffApplicaton , Debuff.Applications) or self.PrevDebuffApplicaton ~= Debuff.Applications then
         -- Handle secret auras (WoW 12.0+ Midnight)
-        if Debuff.secretMode or (Debuff.Applications > 1) then
-            self.DebuffAppsFontString:SetText(Debuff.secretMode and Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or Debuff.Applications);
-            self.PrevDebuffApplicaton = Debuff.Applications;
+        if Debuff.secretMode then
+            self.PrevDebuffApplicaton = Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or " ";
         else
-            self.DebuffAppsFontString:SetText(" ");
-            self.PrevDebuffApplicaton = " ";
+            self.PrevDebuffApplicaton = Debuff.Applications > 1 and Debuff.Applications or " ";
         end
+        self.DebuffAppsFontString:SetText(self.PrevDebuffApplicaton);
     end
 
     -- Unit Name
