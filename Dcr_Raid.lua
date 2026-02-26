@@ -464,7 +464,7 @@ do
         t_insert(SortingTable, unit);
 
         UnitInfo[unit] = {
-            ["class"]  = DC.ClassUNameToNum[select(2, _UnitClass(unit))];
+            ["class"]  = DC.ClassUNameToNum[select(2, _UnitClass(unit)) or DC.CLASS_WARRIOR]; -- issue #46: sometimes nil is returned on pets right after joining a group
             ["GUID"]   = GUID;
             ["group"]  = group;
             ["RaidID"] = id;
