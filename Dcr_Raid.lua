@@ -253,11 +253,13 @@ do
         local guidAccessible = canaccessvalue(GUID)
 
         --@alpha@
-        if not guidAccessible then
+        --if not guidAccessible then
             -- fails on high restrictions (secretMapRestrictionsForced while dueling but not in real combat in a real dungeon during an encounter...)
             -- setting this debug report generation so we can test if this can really happen in normal game conditions
-            D:AddDebugText("could not access guid for unit:" .. unit)
-        end
+          --  D:AddDebugText("could not access guid for unit:" .. unit)
+          -- ok it does happen in normal game conditions:
+          --          4225.1120 (tr:'Dcr_Delayed_MFsDisplay_Update' ca:'false' icl:'false' rs:'Ma:1' h28_w29-43fps-Manaforge Oméga): could not access guid for unit:raid1
+        --end
         --@end-alpha@
 
 		-- this GUID cache was there to map CLEU to unit ids... so it's not really useful in Midnight (I need to check this though)
