@@ -1018,7 +1018,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
         if self.db.global.NonRelease ~= "@project-version@" then
             self.db.global.NonRelease = "@project-version@";
-            T._ShowNotice ("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+            T._ShowNotice ("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66" .. (("@project-version@"):find("RC") and L["ER_VERSION_NOTICE"] or L["DEV_VERSION_ALERT"]) .. "|r");
         end
     end
 

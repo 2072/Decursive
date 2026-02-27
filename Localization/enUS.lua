@@ -142,6 +142,14 @@ L["DEV_VERSION_ALERT"] = [=[You are using a development version of Decursive.
 If you do not want to participate in testing new features/fixes, receive in-game debug reports, send issues to the author then DO NOT USE THIS VERSION and download the latest STABLE version on curse.com or wowace.com.
 
 This message will be displayed only once per version]=]
+
+L["ER_VERSION_NOTICE"] = [=[This is an early release of Decursive.
+
+Although the version you are using is tagged as a release it might still be rough on the edges, with bugs and Lua errors.
+I use this process to have more feedback as there are not enough people using alpha/beta release types.
+
+This message will be displayed only once per version.]=]
+
 L["DEV_VERSION_EXPIRED"] = [=[This development version of Decursive has expired.
 You should, download the latest development version or go back to the current stable release available on CURSE.COM or WOWACE.COM.
 This warning will be displayed every two days.]=]
