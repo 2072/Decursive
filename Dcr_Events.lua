@@ -589,37 +589,39 @@ do
         --@end-debug@
 
 
-        if o_auraUpdateInfo.removedAuraInstanceIDs then
-            self:checkForDebuff(UnitID)
+        if DC.MN then -- classic versioins still use CLEU and although they support UNIT_AURA as well CLEU provides more features
+            if o_auraUpdateInfo.removedAuraInstanceIDs then
+                self:checkForDebuff(UnitID)
 
-            for _, id in pairs(o_auraUpdateInfo.removedAuraInstanceIDs) do
-                if self.Stealthed_Units[UnitID] and self.Stealthed_Units[UnitID] == id then
-                    self:Debug("STEALTH LOST: ", UnitID)
-                    self.Stealthed_Units[UnitID] = false
+                for _, id in pairs(o_auraUpdateInfo.removedAuraInstanceIDs) do
+                    if self.Stealthed_Units[UnitID] and self.Stealthed_Units[UnitID] == id then
+                        self:Debug("STEALTH LOST: ", UnitID)
+                        self.Stealthed_Units[UnitID] = false
+                    end
                 end
             end
-        end
 
-        if o_auraUpdateInfo.updatedAuraInstanceIDs and self.Status.CenterTextDisplay == "3_STACKS" then
-            self:checkForDebuff(UnitID)
-        end
+            if o_auraUpdateInfo.updatedAuraInstanceIDs and self.Status.CenterTextDisplay == "3_STACKS" then
+                self:checkForDebuff(UnitID)
+            end
 
-        if o_auraUpdateInfo.addedAuras then
-            for _, aura in pairs(o_auraUpdateInfo.addedAuras) do
+            if o_auraUpdateInfo.addedAuras then
+                for _, aura in pairs(o_auraUpdateInfo.addedAuras) do
 
-                local secretedName = canaccessvalue(aura.name) and aura.name or "*secret*"
+                    local secretedName = canaccessvalue(aura.name) and aura.name or "*secret*"
 
-                if UnitID then -- (this test is enough, if the unit is known we definetely need to scan it, whatever is its status...) {{{3
+                    if UnitID then -- (this test is enough, if the unit is known we definetely need to scan it, whatever is its status...) {{{3
 
-                    if  canaccessvalue(aura.isHelpful) and aura.isHelpful and self.profile.Show_Stealthed_Status then
+                        if  canaccessvalue(aura.isHelpful) and aura.isHelpful and self.profile.Show_Stealthed_Status then
 
-                        if DC.IS_STEALTH_BUFF[secretedName] then
-                            self.Stealthed_Units[UnitID] = aura.auraInstanceID;
-                            self.MicroUnitF:UpdateMUFUnit(UnitID);
+                            if DC.IS_STEALTH_BUFF[secretedName] then
+                                self.Stealthed_Units[UnitID] = aura.auraInstanceID;
+                                self.MicroUnitF:UpdateMUFUnit(UnitID);
+                            end
+                        else
+                            self:checkForDebuff(UnitID)
+                            break;
                         end
-                    else
-                        self:checkForDebuff(UnitID)
-                        break;
                     end
                 end
             end
