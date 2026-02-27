@@ -5,22 +5,40 @@ Decursive 2.8.0-RC1
 Decursive 2.8.0-RC1 (2026-02-27)
 --------------------------------
 
-- Compatible with Midnight
+Decursive is now Compatible with Midnight but some features are either gone or severely impaired:
+
+Some features will be missing depending on the dynamic add-on restrictions
+being applied, notably the affliction type priority order which is no longer
+applicable when auras are hidden. In that case Decursive will always assume
+that the detected aura is your first aura type. The result is that:
+
+ - The spell cooldown used on the MUFs will be the one from your first debuff
+   type (so it might be wrong if you have several dispelling abilities).
+
+ - Wrong mouse button click detection will not work (no alert will be given).
+
+ - Range detection might not work or be wrong (you can set the most appropriate
+   spell as your first priority to control that).
 
 
-Although Decursive is now compatible with WoW 12, some features will be missing depending on the dynamic add-on restrictions being applied:
-    - Cure priority order: when auras are secret, Decursive will always assume that the detected aura is your first priority with the following consequences:
-        - The spell cooldown used will be your first spell's cooldown (so it might be wrong if you have several curing spells)
-        - Wrong mouse button click detection will not work (no alert)
-        - Range detection might not work or be wrong (you can set the most appropriate spell as your first priority to control that)
+Broken features in Midgnight:
+  - Debuff timers on MUFs (remaining and elapsed). Decursive will default to
+    the number of stacks instead. You can still mouse over the live-list to see
+    the debuff timers.
 
-Gone features in Midgnight:
-    - Debuff timers on MUFs (remaining and elapsed) - Decursive will default to the number of stacks instead. You can still mouse over the live-list to see the debuff timers.
-    - Line of sight failed cast detection and unit black-listing. (Decursive was using the combat log to do that)
-    - Bleed debuff detection (aura's spell ids are no longer accessible)
-    - Debuff filtering (may only work in the open world while outside of combat...)
-    - Stealth detection and reporting while in combat
-    - Decursive can now only be triggered by debuffs that WoW APIs tells you can dispel so it's uncertain if items can still be used reliably...
+  - Line-of-sight failed cast detection and the resulting unit black-listing. (Decursive
+    was using the combat log to do that)
+
+  - Bleed debuff detection (aura's spell ids are no longer accessible)
+
+  - Debuff filtering (may work in the open world while outside of combat...)
+
+  - Stealth detection and reporting while in combat.
+
+  - Decursive can now only be triggered by debuffs that WoW APIs tells you
+    can dispel so it's uncertain if items can still be used reliably...
+
+  - Specific buff/debuff detection such as "Unstable Affliction" are no longer possible.
 
 
 Please note that this is an early release and that there still might be issues.
