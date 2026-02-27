@@ -76,6 +76,7 @@ local UnitIsPlayer      = _G.UnitIsPlayer;
 local GetRaidRosterInfo = _G.GetRaidRosterInfo;
 local IsShiftKeyDown    = _G.IsShiftKeyDown;
 local IsControlKeyDown  = _G.IsControlKeyDown;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- Dcr_ListFrameTemplate specific internal functions {{{
 function D.ListFrameTemplate_OnLoad(frame)
@@ -320,7 +321,7 @@ local function AddElementToList(element, checkIfExist, list, listGUIDtoName, lis
                 GUIDorNum = element;
             else
                 GUIDorNum = isNotPlayerCase and UnitGUID(element) or element;
-                if not GUIDorNum then
+                if not GUIDorNum or not canaccessvalue(GUIDorNum) then
                     return false;
                 end
             end
