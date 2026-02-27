@@ -1483,7 +1483,7 @@ do
                 -- Some time can elaps between the instant the debuff is detected and the instant it is shown.
                 -- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
                 -- So we test before calling this api that we can still cure this debuff type
-                if Status.CuringSpells[DebuffType] then
+                if Status.CuringSpells[DebuffType] then -- so this will fail on MN as we cannot know the type and thus the spell except for the charm type but this will work for classes that have only one dubuff cleansing ability
                     SpellID = Status.FoundSpells[Status.CuringSpells[DebuffType]][2];
                     RangeStatus = SpellID > 0 and IsSpellInRange(Status.CuringSpells[DebuffType], Unit) or D:isItemUsable(-1 * SpellID) and IsItemInRange(-1 * SpellID, Unit);
                 else
@@ -1535,7 +1535,7 @@ do
                             end
                         elseif self.PrevCenterText then
                             self.CenterText = false;
-                            self.CenterFontString:SetText(" ");
+                            self.CenterFontString:SetText("");
                         end
 
                     elseif debuff_1.Applications then

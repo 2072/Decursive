@@ -253,12 +253,14 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
         FocusCurrent_ElligStatus = (
         not self.Status.Unit_Array_GUIDToUnit[focusGUID]    -- it's not already in the unit array
         ) and ( UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player"))) -- and it is (or used to) be nice
+    else
+        D:Debug("focus GUID is not accessible")
     end
 
 
     if not FocusCurrent_ElligStatus then FocusCurrent_ElligStatus = false; end -- avoid the difference between nil and false...
 
-    if FocusCurrent_ElligStatus~=FocusPrevious_ElligStatus or self.Status.Unit_Array_UnitToGUID["focus"] then
+    if FocusCurrent_ElligStatus ~= FocusPrevious_ElligStatus or self.Status.Unit_Array_UnitToGUID["focus"] then
         self:GroupChanged ("FOCUS changed");
         self:Debug("Groups set to invalid due to focus update", FocusPrevious_ElligStatus, FocusCurrent_ElligStatus);
 
@@ -585,7 +587,7 @@ do
 
 
         --@debug@
-        D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, "UnitID:", UnitID, GetTime() + (GetTime() % 1));
+        --D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, "UnitID:", UnitID, GetTime() + (GetTime() % 1));
         --@end-debug@
 
 

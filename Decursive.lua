@@ -573,7 +573,8 @@ do
                     Type = false;
                 end
             elseif s_color then --
-                -- temp, just affect the first spell we know for now, XXX this will cause many issues
+                -- just affect the first spell we know, it is mormally used to detect the range or button miss clicks
+                -- but in MN it's no longer possible so just default to the first spell as it's better than nothing...
                 TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
                 Type = DC.NameToTypes[TypeName]
             else
@@ -720,7 +721,7 @@ do
 
             continue_ = true;
 
-            if not canaccessvalue(Debuff.Type) then
+            if not Debuff.Type then
                 continue_ = false;
                 break
             end
@@ -733,7 +734,7 @@ do
                 continue_ = false; -- == skip this debuff
             end
 
-            if nameAccessible and self.profile.DebuffsToIgnore[Debuff.Name] then -- XXX not sure it has any actual use nowadays (2013-06-18)
+            if nameAccessible and self.profile.DebuffsToIgnore[Debuff.Name] then
                 -- these are the BAD ones... the ones that make the target immune... abort this unit
                 --D:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
                 break; -- exit here

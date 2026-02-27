@@ -627,7 +627,7 @@ function T._onError(event, errorObject)
             _G.DEBUGLOCALS_LEVEL = _G.DEBUGLOCALS_LEVEL + 9
         end
 
-        -- forward the error to the original error handler
+        -- forward the error to the original error handler (there is no _G.HandleLuaError anymore)
         if _G.HandleLuaError or T._OriginalDebugHandler then
             local errorm = errorObject.message;
 
@@ -1105,9 +1105,6 @@ do
         -- if the diagnostic was requested by the user, we also test AceEvent functionalities among a few other things {{{ -
         if force and FromCommand and T._DiagStatus == 0 then
 
-            if not _G.HandleLuaError then
-                AddDebugText("|cFFFF0000WARNING Blizzard default error handler is no longer available...|r");
-            end
 
             if not _G.GetCallstackHeight or not _G.GetErrorCallstackHeight then
                 AddDebugText("|cFFFF0000WARNING Blizzard GetErrorCallstackHeight or GetErrorCallstackHeight not available...|r");
