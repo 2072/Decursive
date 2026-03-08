@@ -745,7 +745,7 @@ do
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
 
-    local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "GameTooltipTemplate")
+    local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "SharedTooltipTemplate")
 
     local function ShowMUFToolTip(unit, status, debuffs)
         tip:ClearLines()
@@ -899,7 +899,8 @@ do
     function MicroUnitF:OnLeave(frame) -- {{{
         D.Status.MouseOveringMUF = false;
 
-        tip:FadeOut()
+        tip:ClearLines()
+        tip:Hide()
     end -- }}}
 
     local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r";
@@ -911,6 +912,7 @@ do
 
     function D.MicroUnitF:OnCornerEnter(frame)
 
+        tip:ClearLines()
         tip:Hide()
 
         if not keyHelp then

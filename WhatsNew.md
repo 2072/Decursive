@@ -1,8 +1,8 @@
-Decursive 2.8.0-RC1
+Decursive 2.8.0-RC2
 ===================
 
 
-Decursive 2.8.0-RC1 (2026-02-27)
+Decursive 2.8.0-RC2 (2026-03-08)
 --------------------------------
 
 Decursive is now Compatible with Midnight but some features are either gone or severely impaired:
