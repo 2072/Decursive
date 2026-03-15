@@ -1,5 +1,11 @@
-Decursive 2.8.0-RC2
+Decursive 2.8.0-RC3
 ===================
+
+
+Decursive 2.8.0-RC3 (2026-03-16)
+--------------------------------
+
+Fix compatibility with new BugGrabber, fixing error at login.
 
 
 Decursive 2.8.0-RC2 (2026-03-08)

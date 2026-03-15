@@ -800,6 +800,8 @@ function T._RegisterBugGrabberCallBacks()
 
     if not BugGrabber.RegisterCallback then
         EventRegistry:RegisterCallback("BugGrabber.BugGrabbed", T._onError)
+        -- necessary to hide the message printed by buggrabber
+		EventRegistry:TriggerEvent("BugGrabber.DisplayRegistered")
         --@debug@
         print("dcr: new BG registered")
         --@end-debug@
