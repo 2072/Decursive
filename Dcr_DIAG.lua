@@ -137,8 +137,8 @@ T._LoadOrderedFiles = { -- {{{
     "Dcr_preload.lua",
     "embeds.xml",
 
-    "Dcr_DIAG.xml",
     "Dcr_DIAG.lua",
+    "Dcr_DIAG.xml",
 
     "load.xml",
 
@@ -536,7 +536,15 @@ local function continueErrorReporting (lowerCaseErrorMsg)
     end
 end
 
-function T._onError(event, errorObject)
+function T._onError(event, fromBG)
+
+    local errorObject = type(fromBG) == "string" and BugGrabber:GetErrorByID(fromBG) or fromBG;
+
+    if not errorObject.message then
+        _Debug("bad error object", event, "eo=", T.Dcr:tAsString(errorObject), type(errorObject))
+        return
+    end
+
     local errorm = errorObject.message;
     local mine = false;
     local taintingAccusation = false;
@@ -786,27 +794,24 @@ end
 
 function T._RegisterBugGrabberCallBacks()
 
-    if not BugGrabber.RegisterCallback then
+    if not BugGrabber or not EventRegistry then
         return;
     end
 
-    local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
-
-    if ok then
-        T._BugGrabberEmbeded = true;
+    if not BugGrabber.RegisterCallback then
+        EventRegistry:RegisterCallback("BugGrabber.BugGrabbed", T._onError)
+        --@debug@
+        print("dcr: new BG registered")
+        --@end-debug@
     else
-        T._BugGrabberEmbeded = false;
-        AddDebugText("pcall hook 1: "..errorm, BugGrabber);
+        -- there is no way to know which version of Buggraber the user might have so stay compatible with older versions
+        pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
+        --@debug@
+        print("dcr: old BG registered")
+        --@end-debug@
     end
 
-    ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_CapturePaused", T._TooManyErrors)
-    if ok then
-        T._BugGrabberThrottleAlert = true;
-    else
-        AddDebugText("pcall hook 2: "..errorm);
-    end
-
-    return T._BugGrabberEmbeded;
+    return true
 end
 
 function T._HookErrorHandler()
