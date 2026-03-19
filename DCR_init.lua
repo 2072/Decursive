@@ -431,6 +431,12 @@ local function SetRuntimeConstants_Once () -- {{{
                 Better = 0,
                 Pet = false,
             },
+            -- Blood elfs
+            --[=[[DSI["SPELL_ARCANE_TORRENT"]] = {
+                Types = {DC.ENEMYMAGIC},
+                Better = 0,
+                Pet = false,
+            },--]=]
             -- Demon Hunters (global)
             [DSI["SPELL_CONSUME_MAGIC"]] = {
                 Types = {DC.ENEMYMAGIC},
@@ -1882,6 +1888,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
         T._C.EXPECTED_DUPLICATES = {};
 
         T._C.DSI = { -- Main spell table for WoW Retail {{{
+            -- ["SPELL_ARCANE_TORRENT"]        =  28730, -- enemy magic dispell but 8 yards around self so no targetting
             ["SPELL_POLYMORPH"]             =  118,
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
