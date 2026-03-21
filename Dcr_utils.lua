@@ -156,7 +156,7 @@ end -- }}}
 
 function D:UnitName(Unit)
     local name, server = UnitName(Unit);
-        if ( server and server ~= "" ) then
+        if ( server and canaccessvalue(server) and server ~= "" ) then
             return name.."-"..server;
         else
             return name;
