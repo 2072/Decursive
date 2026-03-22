@@ -744,11 +744,12 @@ do
     local GetSpellName = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
+    local ttNumLine = 2
 
     local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "SharedTooltipTemplate")
+    tip:SetClampedToScreen(true)
 
     local function ShowMUFToolTip(unit, status, debuffs)
-        tip:ClearLines()
         tip:SetOwner(D.MFContainer, "ANCHOR_NONE")
 
         local index = GetRaidTargetIndex(unit)
@@ -779,12 +780,12 @@ do
                     (Debuff.Applications > 0 and (" (x%s)"):format(Debuff.Applications) or "")
 
                 tip:AddLine(colored .. appCount)
+                ttNumLine = ttNumLine + 1
             end
         end
 
         -- Display the tooltip
         tip:ClearAllPoints()
-        tip:SetClampedToScreen(true)
         tip:SetPoint(MicroUnitF:GetHelperAnchor(false, true))
         tip:Show()
 
@@ -896,11 +897,23 @@ do
 
     end -- }}}
 
+
+    local function cleanAndHideToolTip()
+        -- "clean" the tooltip to make sure the UI tooltip system is not trying
+        -- to recycle lines with secret values at some points later down the
+        -- road (just a guess to fix the "Blizzard_UIWidgetTemplateTextWithState.lua:35: attempt to perform arithmetic on local 'textHeight'" tainting issue, we'll see if it works...)
+        tip:ClearLines()
+        for i=1, ttNumLine, 1 do
+            tip:AddLine(("cleanText_%d"):format(i))
+        end
+
+        tip:Hide()
+    end
+
     function MicroUnitF:OnLeave(frame) -- {{{
         D.Status.MouseOveringMUF = false;
+        cleanAndHideToolTip();
 
-        tip:ClearLines()
-        tip:Hide()
     end -- }}}
 
     local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r";
@@ -911,9 +924,7 @@ do
     end
 
     function D.MicroUnitF:OnCornerEnter(frame)
-
-        tip:ClearLines()
-        tip:Hide()
+        cleanAndHideToolTip();
 
         if not keyHelp then
             keyHelp = {
