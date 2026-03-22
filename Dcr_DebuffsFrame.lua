@@ -1090,6 +1090,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     -- create the frame
     self.Frame  = CreateFrame ("Button", nil, self.Parent, "DcrMicroUnitTemplateSecure");
     self.CooldownFrame = CreateFrame ("Cooldown", nil, self.Frame, "DcrMicroUnitCDTemplate");
+    self.CooldownFrame:SetHideCountdownNumbers(true)
 
     if petminus ~= 0 then
         self.Frame:SetWidth(20 - petminus);
