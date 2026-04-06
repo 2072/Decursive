@@ -409,7 +409,7 @@ do
 
     local filter = DC.MN and "RAID_PLAYER_DISPELLABLE" or nil
 
-    local UnitDebuff        = _G.UnitDebuff or function (unitToken, i)
+    local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
         local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter);
 
         if not auraData then
@@ -428,6 +428,8 @@ do
 		auraData.spellId,
         DC.MN and auraData.auraInstanceID or nil;
     end
+
+    D.UnitDebuff = UnitDebuff -- it's reused in dcr_events
 
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;

@@ -681,7 +681,7 @@ do
                 end
 
                 -- get out of here if this is just about a buff, combat log event manager handles those... unless there is no debuff because the last was removed
-                if not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed and not UnitDebuff(UnitID, 1) then
+                if not self.MicroUnitF.UnitToMUF[UnitID].IsDebuffed and not D.UnitDebuff(UnitID, 1) then
                     --self:Debug(UnitID, " |cFFFF7711has no debuff|r (UNIT_AURA)");
                     return;
                 end
