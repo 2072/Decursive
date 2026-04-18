@@ -1,5 +1,12 @@
-Decursive 2.8.0-RC4
+Decursive 2.8.0-RC5
 ===================
+
+
+Decursive 2.8.0-RC5 (2026-04-18)
+--------------------------------
+
+- No visible change apart from the strengthening of a compatibility layer.
+  Staying in the RC release stage until 12.0.5 lest something else gets broken.
 
 
 Decursive 2.8.0-RC4 (2026-03-22)
