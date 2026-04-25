@@ -223,7 +223,7 @@ function D:UpdatePlayerPet () -- {{{
     end
 
     -- if we've changed of pet
-    if (last_petType ~= curr_petType) then
+    if (not last_petType or canaccessvalue(curr_petType) and last_petType ~= curr_petType) then
         if (curr_petType) then D:Debug ("|cFF0066FFPet name changed:",curr_petType,"|r"); else D:Debug ("|cFF0066FFNo more pet!|r"); end; -- debug info only
 
         last_petType = curr_petType;
