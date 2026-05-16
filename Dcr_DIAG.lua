@@ -228,7 +228,7 @@ function T._AddDebugText(a1, ...) -- {{{
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' rs:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' rs:'%s' h%d_w%d-%dfps-%s-ttd:%d): %s -|count: "):format(
         NiceTime(), -- %.4f
         tostring(T._DebugTimerRefName), -- tr:'%s'
         tostring(T._CatchAllErrors), -- ca:'%s'
@@ -238,6 +238,7 @@ function T._AddDebugText(a1, ...) -- {{{
         select(4, GetNetStats()), -- w%d
         GetFramerate(), -- %dfps
         zone, -- -%s
+        T.Dcr.temp_tt_taint_debug or -1337, -- ttd:%d (tooltip debug)
         text -- %s
         ));
         table.insert (DebugTextTable, 1);
@@ -308,7 +309,7 @@ do
 
         if fromDiag or not T.Dcr.db or not T.Dcr.db.global.NewerVersionName or T._HHTDErrors ~= 0 then
             if T.Dcr.L and T.Dcr.L["DEBUG_REPORT_HEADER"] then
-                -- Create the header insterting the email address and
+                -- Create the header inserting the email address and
                 -- influencing the content if this is an HHTD error.
                 instructionsHeader = (T.Dcr.L["DEBUG_REPORT_HEADER"]):format(
 

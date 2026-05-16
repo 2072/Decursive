@@ -745,6 +745,7 @@ do
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
     local ttNumLine = 2
+    D.temp_tt_taint_debug = 0
 
     local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "SharedTooltipTemplate")
     tip:SetClampedToScreen(true)
@@ -788,6 +789,7 @@ do
         tip:ClearAllPoints()
         tip:SetPoint(MicroUnitF:GetHelperAnchor(false, true))
         tip:Show()
+        D.temp_tt_taint_debug = D.temp_tt_taint_debug + 1
 
         -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
         if tip:GetTop() and floor(tip:GetTop() + 40) >= floor(UIParent:GetTop()) then -- if at top (the default game tooltip has a kind of padding...)
@@ -908,6 +910,8 @@ do
         end
 
         tip:Hide()
+        D.temp_tt_taint_debug = D.temp_tt_taint_debug - 1
+        D:Debug("tt: ", D.temp_tt_taint_debug)
     end
 
     function MicroUnitF:OnLeave(frame) -- {{{
@@ -924,7 +928,9 @@ do
     end
 
     function D.MicroUnitF:OnCornerEnter(frame)
-        cleanAndHideToolTip();
+        if tip:IsShown() then
+            cleanAndHideToolTip();
+        end
 
         if not keyHelp then
             keyHelp = {
