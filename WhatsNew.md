@@ -1,5 +1,13 @@
-Decursive 2.8.0-RC5
+Decursive 2.8.0-RC6
 ===================
+
+
+Decursive 2.8.0-RC6 (2026-05-17)
+--------------------------------
+
+Midnight: fix another rare secret value error
+
+Midnight: Add some debug to diagnose a tainting issue involving tooltips...
 
 
 Decursive 2.8.0-RC5 (2026-04-18)
