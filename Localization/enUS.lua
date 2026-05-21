@@ -563,6 +563,9 @@ L["OPT_PERIODICRESCAN_DESC"] = "Set the delay for global unit periodic rescan fo
 
 L["OPT_PERIODICRESCAN_REPORT"] = "Periodic scan debug reporting"
 L["OPT_PERIODICRESCAN_REPORT_DESC"] = "Create a debug report if the periodic scan finds something that was not previously detected through events."
+
+L["ToDebugString"] ="AceLocale table"
+L["GetDebugName"] ="AceLocale table"
 --]==]
 --@end-do-not-package@
 
