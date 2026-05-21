@@ -1020,24 +1020,26 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
             end
         end
 
-        if RequestedPrio and NeededPrio ~= RequestedPrio then
-            D:errln(L["HLP_WRONGMBUTTON"]);
-            if NeededPrio and MF_colors[NeededPrio] then
-                D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.MouseButtonsReadable[ D.db.global.MouseButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
-                --@debug@
-            else
-                D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
-                --@end-debug@
-            end
-        elseif RequestedPrio and D.Status.HasSpell then -- useless block in Midnight as there is no CLEU anymore to detect cast failures.
-            D.Status.ClickCastingWIP = true;
-            D:Debug("ClickCastingWIP")
-            D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
-            D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
-            local spell = D.Status.CuringSpells[frame.Object.Debuffs[1].Type];
+        if not DC.MN then -- can no lonber work in Midnight
+            if RequestedPrio and NeededPrio ~= RequestedPrio then
+                D:errln(L["HLP_WRONGMBUTTON"]);
+                if NeededPrio and MF_colors[NeededPrio] then
+                    D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.MouseButtonsReadable[ D.db.global.MouseButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
+                    --@debug@
+                else
+                    D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
+                    --@end-debug@
+                end
+            elseif RequestedPrio and D.Status.HasSpell then -- useless block in Midnight as there is no CLEU anymore to detect cast failures.
+                D.Status.ClickCastingWIP = true;
+                D:Debug("ClickCastingWIP")
+                D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
+                D.Status.ClickedMF.SPELL_CAST_SUCCESS = false;
+                local spell = D.Status.CuringSpells[frame.Object.Debuffs[1].Type];
 
-            D.Status.ClickedMF.CastingSpell = "notyet";
-            D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, frame.Object.Debuffs[1].SpellID);
+                D.Status.ClickedMF.CastingSpell = "notyet";
+                D:Debuff_History_Add(frame.Object.Debuffs[1].Name, frame.Object.Debuffs[1].TypeName, frame.Object.Debuffs[1].SpellID);
+            end
         end
     end
 end -- }}}
