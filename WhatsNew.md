@@ -1,5 +1,16 @@
-Decursive 2.8.0-RC6
+Decursive 2.8.0-RC7
 ===================
+
+
+
+Decursive 2.8.0-RC7 (2026-05-22)
+--------------------------------
+
+Midnight: Fix when switching from a character with a pet with a curing ability
+ to a character without a pet, Decursive would still detect the pet spell
+ (C_SpellBook.IsSpellInSpellBook() API bug)
+
+Midnight: Disable "Wrong button" warnings as this feature cannot work anymore in midnight and created confusion.
 
 
 Decursive 2.8.0-RC6 (2026-05-17)
