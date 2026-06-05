@@ -492,7 +492,12 @@ function D:PLAYER_ALIVE()
 end
 
 function D:LEARNED_SPELL_IN_TAB()
-    D:Debug("|cFFFF0000A new spell was learned, scheduling a reconfiguration|r");
+    D:Debug("|cFFFF0000A new spell was learned, scheduling a reconfiguration (LEARNED_SPELL_IN_TAB)|r");
+    self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
+end
+
+function D:LEARNED_SPELL_IN_SKILL_LINE()
+    D:Debug("|cFFFF0000A new spell was learned, scheduling a reconfiguration (LEARNED_SPELL_IN_SKILL_LINE)|r");
     self:ScheduleDelayedCall("Dcr_ReConfigure", self.ReConfigure, 4, self);
 end
 

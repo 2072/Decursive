@@ -673,6 +673,7 @@ DC.CATACLYSM = WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PR
 DC.TWW = tocversion >= 110000
 DC.MN = tocversion >= 120000
 DC.BCC = tocversion >= 20505 and tocversion < 30000
+DC.MOP = tocversion >= 50504 and tocversion < 60000
 
 
 
