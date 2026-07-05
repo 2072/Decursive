@@ -1,5 +1,5 @@
-## Interface: 120005, 120007
-## Interface-Retail: 120005, 120007
+## Interface: 120007
+## Interface-Retail: 120007
 ## Interface-Classic: 11508
 ## Interface-bcc: 20505
 ## Interface-Mists: 50504

@@ -410,7 +410,13 @@ do
     local filter = DC.MN and "RAID_PLAYER_DISPELLABLE" or nil
 
     local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
-        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter);
+
+        -- this mechanism is completely disabled in 12.1 so do nothing for now...
+        if DC.TWELVEONE then
+            return nil
+        end
+
+        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter); -- forbidden in 12.1...
 
         if not auraData then
 			return nil;
