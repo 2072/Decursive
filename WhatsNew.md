@@ -1,11 +1,13 @@
-Decursive 2.8.0-RC8
-===================
+Decursive 2.8.0
+===============
 
 
-Decursive 2.8.0-RC8 (2026-06-10)
---------------------------------
+Decursive 2.8.0 (2026-07-05)
+----------------------------
 
 - Fix for Classic-MOP
+
+- Mark release stable for all classic version of WoW
 
 
 Decursive 2.8.0-RC7 (2026-05-22)
