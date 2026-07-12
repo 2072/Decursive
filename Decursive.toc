@@ -1,7 +1,7 @@
 ## Interface: 120007
 ## Interface-Retail: 120007
 ## Interface-Classic: 11508
-## Interface-bcc: 20505
+## Interface-bcc: 20506
 ## Interface-Mists: 50504
 ## X-Max-Interface: 120007
 ## X-Min-Interface: 11508
