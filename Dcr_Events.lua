@@ -612,7 +612,7 @@ do
                 self:checkForDebuff(UnitID)
             end
 
-            if o_auraUpdateInfo.addedAuras then
+            if o_auraUpdateInfo.addedAuras and canaccessvalue(o_auraUpdateInfo.addedAuras) then
                 for _, aura in pairs(o_auraUpdateInfo.addedAuras) do
 
                     local secretedName = canaccessvalue(aura.name) and aura.name or "*secret*"
