@@ -1259,6 +1259,7 @@ function D:SetConfiguration() -- {{{
     if T._SelfDiagnostic() == 2 then
         return false;
     end
+    local prev_CatchAllErrors = T._CatchAllErrors
     T._CatchAllErrors = "SetConfiguration"; -- During init we catch all the errors else, if a library fails we won't know it.
 
     D.DcrFullyInitialized = false;
@@ -1473,7 +1474,7 @@ function D:SetConfiguration() -- {{{
     end
 
 
-    T._CatchAllErrors = false; -- During init we catch all the errors else, if a library fails we won't know it.
+    T._CatchAllErrors = prev_CatchAllErrors; -- During init we catch all the errors else, if a library fails we won't know it.
     D:VersionWarnings();
 end -- }}}
 

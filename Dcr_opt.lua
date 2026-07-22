@@ -2060,9 +2060,10 @@ end
 function D:ExportOptions ()
     -- Export the option table to Blizz option UI and to Ace3 option UI
 
+    local prev_CatchAllErrors = T._CatchAllErrors
     T._CatchAllErrors = "ExportOptions";
     LibStub("AceConfig-3.0"):RegisterOptionsTable(D.name,  GetOptions, 'dcr');
-    T._CatchAllErrors = false;
+    T._CatchAllErrors = prev_CatchAllErrors;
 
 
     -- Don't feed the interface option panel until Blizz fixes the taint issue...

@@ -581,7 +581,7 @@ function T._onError(event, fromBG)
             taintingAccusation = true;
         end
 
-        if not taintingAccusation or T._EmbeddedMode == false then -- if we are having this while we're not emebedding anything then it does matters
+        if not taintingAccusation or T._EmbeddedMode == false then -- if we are having this while we're not embedding anything then it does matters
             IsReporting = true;
             AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
             IsReporting = false;
