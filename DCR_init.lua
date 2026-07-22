@@ -1186,11 +1186,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
     -- these events are automatically stopped when the addon is disabled by Ace
 
     -- Spell changes events
-    if not DC.MN and not DC.BCC and not DC.MOP then
-        D.eventFrame:RegisterEvent("LEARNED_SPELL_IN_TAB");
-    else
-        D.eventFrame:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE");
-    end
+    D.eventFrame:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE");
     D.eventFrame:RegisterEvent("SPELLS_CHANGED");
     D.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     D.eventFrame:RegisterEvent("BAG_UPDATE_DELAYED");
