@@ -668,8 +668,10 @@ T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
 DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
-DC.WOTLK = WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
-DC.CATACLYSM = WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
+-- Titan Reforged uses 38xxx TOCs but follows WotLK class and spell behavior.
+DC.TITAN = tocversion >= 38000 and tocversion < 40000
+DC.WOTLK = DC.TITAN or (WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC) -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
+DC.CATACLYSM = not DC.TITAN and WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
 DC.TWW = tocversion >= 110000
 DC.MN = tocversion >= 120000
 DC.BCC = tocversion >= 20505 and tocversion < 30000
@@ -1043,7 +1045,8 @@ do
         local DcrMinMidTOC = tonumber(GetAddOnMetadata("Decursive", "X-Mid-Interface") or 50503);
 
         -- test if Decursive is backward compatible with the client's version
-        if tocversion < DcrMinTOC or tocversion > 30000 and tocversion < DcrMinMidTOC then
+        -- Allow supported WotLK-compatible clients in the mid-classic version gap.
+        if (tocversion < DcrMinTOC or (tocversion > 30000 and tocversion < DcrMinMidTOC)) and not DC.WOTLK then
             table.insert(Errors, ("Your World of Warcraft client version (%d) is too old to run this version of Decursive.\n"):format(tocversion));
             GenericErrorMessage2 = "You need to install an older version of Decursive.";
             FatalOccured = true;
