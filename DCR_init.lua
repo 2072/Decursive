@@ -1106,17 +1106,20 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
 
     -- Register slashes command {{{
     self:RegisterChatCommand("dcrdiag"      ,function() T._SelfDiagnostic(true, true)               end         );
-    self:RegisterChatCommand("decursive"    ,function() LibStub("AceConfigDialog-3.0"):Open(D.name) end         );
-    self:RegisterChatCommand("dcrpradd"     ,function() D:AddTargetToPriorityList()                 end, false  );
-    self:RegisterChatCommand("dcrprclear"   ,function() D:ClearPriorityList()                       end, false  );
-    self:RegisterChatCommand("dcrprshow"    ,function() D:ShowHidePriorityListUI()                  end, false  );
-    self:RegisterChatCommand("dcrskadd"     ,function() D:AddTargetToSkipList()                     end, false  );
-    self:RegisterChatCommand("dcrskclear"   ,function() D:ClearSkipList()                           end, false  );
-    self:RegisterChatCommand("dcrskshow"    ,function() D:ShowHideSkipListUI()                      end, false  );
-    self:RegisterChatCommand("dcrreset"     ,function() D:ResetWindow()                             end, false  );
-    self:RegisterChatCommand("dcrshow"      ,function() D:HideBar(0)                                end, false  );
-    self:RegisterChatCommand("dcrhide"      ,function() D:HideBar(1)                                end, false  );
-    self:RegisterChatCommand("dcrshoworder" ,function() D:Show_Cure_Order()                         end, false  );
+
+    if not DC.TWELVEONE then
+        self:RegisterChatCommand("decursive"    ,function() LibStub("AceConfigDialog-3.0"):Open(D.name) end         );
+        self:RegisterChatCommand("dcrpradd"     ,function() D:AddTargetToPriorityList()                 end, false  );
+        self:RegisterChatCommand("dcrprclear"   ,function() D:ClearPriorityList()                       end, false  );
+        self:RegisterChatCommand("dcrprshow"    ,function() D:ShowHidePriorityListUI()                  end, false  );
+        self:RegisterChatCommand("dcrskadd"     ,function() D:AddTargetToSkipList()                     end, false  );
+        self:RegisterChatCommand("dcrskclear"   ,function() D:ClearSkipList()                           end, false  );
+        self:RegisterChatCommand("dcrskshow"    ,function() D:ShowHideSkipListUI()                      end, false  );
+        self:RegisterChatCommand("dcrreset"     ,function() D:ResetWindow()                             end, false  );
+        self:RegisterChatCommand("dcrshow"      ,function() D:HideBar(0)                                end, false  );
+        self:RegisterChatCommand("dcrhide"      ,function() D:HideBar(1)                                end, false  );
+        self:RegisterChatCommand("dcrshoworder" ,function() D:Show_Cure_Order()                         end, false  );
+    end
     self:RegisterChatCommand("dcrreport"    ,function() T._ShowDebugReport()                         end, false  );
     -- }}}
 
@@ -1155,6 +1158,18 @@ D.debug = true
 function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     if T._SelfDiagnostic() == 2 then
+        return false;
+    end
+
+
+    if DC.TWELVEONE then
+        if not self.db.global.TwelveOneIncompatibleMessageWasShown  then
+            T._ShowNotice("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66"
+            .. "This version of Decursive is not compatible with WoW 12.1.x.\nDecursive will now stay hidden until it is updated with a compatible version.\n\n|cffffff00Check the release notes for more details.|r\n\n|cffff0000This message will not be shown again|r."
+            .. "|r")
+
+            self.db.global.TwelveOneIncompatibleMessageWasShown = true;
+        end
         return false;
     end
 
