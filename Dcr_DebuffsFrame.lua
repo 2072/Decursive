@@ -46,7 +46,7 @@ if not T._FatalError then
         showAlert = 1,
         preferredIndex = 3,
     }; -- }}}
-    T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+    T._FatalError = function (TheError) T._StaticPopupDialogsWasShown = true; StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
 

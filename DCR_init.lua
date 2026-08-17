@@ -44,7 +44,10 @@ if not T._FatalError then
         showAlert = 1,
         preferredIndex = 3,
     }; -- }}}
-    T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+    T._FatalError = function (TheError)
+        T._StaticPopupDialogsWasShown = true
+        StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError);
+    end
 end
 -- }}}
 if not T._LoadedFiles or not T._LoadedFiles["enUS.lua"] then
@@ -1099,9 +1102,6 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
 
     self.db = LibStub("AceDB-3.0"):New("DecursiveDB", D.defaults, true);
 
-    self.db.RegisterCallback(self, "OnProfileChanged", "SetConfiguration")
-    self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
-    self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
 
 
     -- Register slashes command {{{
@@ -1163,14 +1163,15 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
 
     if DC.TWELVEONE then
-        if not self.db.global.TwelveOneIncompatibleMessageWasShown  then
+        if not self.db.global.TwelveOneIncompatibleMessageWasShow then
             T._ShowNotice("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66"
             .. "This version of Decursive is not compatible with WoW 12.1.x.\nDecursive will now stay hidden until it is updated with a compatible version.\n\n|cffffff00Check the release notes for more details.|r\n\n|cffff0000This message will not be shown again|r."
             .. "|r")
 
             self.db.global.TwelveOneIncompatibleMessageWasShown = true;
         end
-        return false;
+        D:Disable()
+        return false
     end
 
     T._CatchAllErrors = "OnEnable"; -- During init we catch all the errors else, if a library fails we won't know it.
@@ -1184,6 +1185,9 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
         DecursiveTextFrame:SetFadeDuration(D.CONF.TEXT_LIFETIME / 3);
         DecursiveTextFrame:SetTimeVisible(D.CONF.TEXT_LIFETIME);
 
+        self.db.RegisterCallback(self, "OnProfileChanged", "SetConfiguration")
+        self.db.RegisterCallback(self, "OnProfileCopied", "SetConfiguration")
+        self.db.RegisterCallback(self, "OnProfileReset", "SetConfiguration")
     end
 
     -- hook the load macro thing {{{
@@ -1267,7 +1271,7 @@ end -- // }}}
 
 function D:SetConfiguration() -- {{{
 
-    if T._SelfDiagnostic() == 2 then
+    if T._SelfDiagnostic() == 2 or not D:IsEnabled() then
         return false;
     end
     local prev_CatchAllErrors = T._CatchAllErrors
@@ -1495,30 +1499,35 @@ function D:OnDisable() -- When the addon is disabled by Ace -- {{{
 
     D:SetIcon("Interface\\AddOns\\Decursive\\iconOFF.tga");
 
-    if ( D.profile.ShowDebuffsFrame) then
+    if (D.profile and D.profile.ShowDebuffsFrame) then
         D.MFContainer:Hide();
     end
 
     D:CancelAllTimedCalls();
     D:Debug(D:GetTimersInfo());
 
-    -- the disable warning popup : {{{ -
-    StaticPopupDialogs["Decursive_OnDisableWarning"] = {
-        text = L["DISABLEWARNING"],
-        button1 = "OK",
-        OnAccept = function()
-            return false;
-        end,
-        timeout = 0,
-        whileDead = 1,
-        hideOnEscape = false,
-        showAlert = 1,
-        preferredIndex = 3,
-    }; -- }}}
+
 
     LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
     D.eventFrame:SetScript("OnEvent", nil);
-    StaticPopup_Show("Decursive_OnDisableWarning");
+
+    if not DC.TWELVEONE then
+        -- the disable warning popup : {{{ -
+        StaticPopupDialogs["Decursive_OnDisableWarning"] = {
+            text = L["DISABLEWARNING"],
+            button1 = "OK",
+            OnAccept = function()
+                return false;
+            end,
+            timeout = 0,
+            whileDead = 1,
+            hideOnEscape = false,
+            showAlert = 1,
+            preferredIndex = 3,
+        }; -- }}}
+        T._StaticPopupDialogsWasShown = true
+        StaticPopup_Show("Decursive_OnDisableWarning");
+    end
 end -- }}}
 
 -------------------------------------------------------------------------------

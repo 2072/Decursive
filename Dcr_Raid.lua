@@ -44,7 +44,7 @@ StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
     showAlert = 1,
     preferredIndex = 3,
     }; -- }}}
-T._FatalError = function (TheError) StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+T._FatalError = function (TheError) T._StaticPopupDialogsWasShown = true; StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
 end
 -- }}}
 if not T._LoadedFiles or not T._LoadedFiles["Dcr_Events.lua"] then

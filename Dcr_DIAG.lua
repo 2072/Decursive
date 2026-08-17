@@ -63,6 +63,8 @@ DecursiveTemplateMixin = BackdropTemplateMixin and BackdropTemplateMixin or {
 
 T._FatalError_Diaplayed = false;
 
+T._StaticPopupDialogsWasShown = false
+
 -- big ugly scary fatal error message display function - only used when nothing else works {{{
 T._FatalError = function (TheError)
 
@@ -83,6 +85,7 @@ T._FatalError = function (TheError)
     end
 
     if not T._FatalError_Diaplayed then
+        T._StaticPopupDialogsWasShown = true
         StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError);
         if T._DiagStatus then
             T._FatalError_Diaplayed = true;
@@ -228,7 +231,7 @@ function T._AddDebugText(a1, ...) -- {{{
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' rs:'%s' h%d_w%d-%dfps-%s-ttd:%d): %s -|count: "):format(
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' rs:'%s' h%d_w%d-%dfps-%s-ttd:%d-ttd2:%s): %s -|count: "):format(
         NiceTime(), -- %.4f
         tostring(T._DebugTimerRefName), -- tr:'%s'
         tostring(T._CatchAllErrors), -- ca:'%s'
@@ -239,6 +242,7 @@ function T._AddDebugText(a1, ...) -- {{{
         GetFramerate(), -- %dfps
         zone, -- -%s
         T.Dcr.temp_tt_taint_debug or -1337, -- ttd:%d (tooltip debug)
+        tostring(T._StaticPopupDialogsWasShown),
         text -- %s
         ));
         table.insert (DebugTextTable, 1);
@@ -875,6 +879,7 @@ T._ShowNotice = function (notice)
         end
     end
 
+    T._StaticPopupDialogsWasShown = true
     StaticPopup_Show ("DECURSIVE_NOTICE_FRAME", notice);
 end
 
