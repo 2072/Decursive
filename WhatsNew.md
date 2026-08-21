@@ -1,5 +1,11 @@
-Decursive 2.8.2
+Decursive 2.8.3
 ===============
+
+Decursive 2.8.3 (2026-08-21)
+----------------------------
+
+- TOC update for BCC Anniversary
+
 
 Decursive 2.8.2 (2026-08-12)
 ----------------------------
