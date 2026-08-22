@@ -3,7 +3,7 @@
 ## Interface-Classic: 11509
 ## Interface-bcc: 20506
 ## Interface-Mists: 50504
-## X-Max-Interface: 120007
+## X-Max-Interface: 120100
 ## X-Min-Interface: 11509
 ## X-Mid-Interface: 50504
 
