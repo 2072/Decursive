@@ -1033,7 +1033,7 @@ do -- Communication event handling and broadcasting {{{1
             if self.debug then D:Debug("Version info received from, ", from, "by", distribution, "version:", versionName, "date:", versionTimeStamp, "islpha:", versionIsAlpha, "enabled:", versionEnabled); end
             --@end-alpha@
 
-            if versionName then
+            if versionName and not versionName:match("^%d%d") then
                 if not D.versions then
                     D.versions = {}
                 end

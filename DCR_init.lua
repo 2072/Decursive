@@ -1059,12 +1059,12 @@ function D:VersionWarnings(forceDisplay) -- {{{
     end
 
 
-    -- Prevent time travelers from blocking the system
-    if D.db.global.NewerVersionDetected > time() then
+    -- Prevent time travelers or forks from blocking the system. Todo: create a "forking Decursive" section in the main readme.
+    if D.db.global.NewerVersionDetected > time() or D.db.global.NewerVersionName ~= false and D.db.global.NewerVersionName:match("^%d%d") then
         D.db.global.NewerVersionDetected = D.VersionTimeStamp;
         D.db.global.NewerVersionName = false;
         D.db.global.NewerVersionAlert = 0;
-        D:Debug("|cFFFF0000TIME TRAVELER DETECTED!|r");
+        D:Debug("|cFFFF0000Ivalid new version in db!|r");
     end
 
     -- if not fromCheckOut then -- this version is properly packaged
