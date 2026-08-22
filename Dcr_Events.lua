@@ -581,6 +581,11 @@ do
 
     function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
 
+        if TWELVEONE then
+            D:Debug("12.1: UNIT_AURA was called!")
+            return
+        end
+
         if not D.DcrFullyInitialized then
             D:Debug("|cFFFF0000D:UNIT_AURA aborted, init uncomplete!|r");
             return;

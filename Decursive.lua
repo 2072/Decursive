@@ -413,6 +413,7 @@ do
 
         -- this mechanism is completely disabled in 12.1 so do nothing for now...
         if DC.TWELVEONE then
+            D:Debug("12.1: UnitDebuff was called!")
             return nil
         end
 
@@ -508,6 +509,12 @@ do
     -- This function does more than just reporting Debuffs. it also detects charmed units
 
     function D:GetUnitDebuffAll (Unit) --{{{
+
+        if TWELVEONE then
+            D:Debug("12.1: GetUnitDebuffAll was called!")
+            return DC.EMPTY_TABLE, false
+        end
+
         -- create a Debuff table for this unit if there is not already one
         if not DebuffUnitCache[Unit] then
             DebuffUnitCache[Unit] = {};
@@ -703,6 +710,11 @@ do
     -- This function will return a table containing only the Debuffs we can cure excepts the one we have to ignore
     -- in different conditions.
     function D:UnitCurableDebuffs (Unit, JustOne) -- {{{
+
+        if TWELVEONE then
+            D:Debug("12.1: UnitCurableDebuffs was called!")
+            return DC.EMPTY_TABLE, false
+        end
 
         if not Unit then
             D:AddDebugText("No unit supplied to UnitCurableDebuffs()");
@@ -976,6 +988,11 @@ do
 
     -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
     function D:CheckUnitForBuffs(unit, BuffNamesToCheck) --{{{
+
+        if TWELVEONE then
+            D:Debug("12.1: CheckUnitForBuffs was called!")
+            return false
+        end
 
         if type(BuffNamesToCheck) == "string" then
 
