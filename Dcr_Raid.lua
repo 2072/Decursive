@@ -164,12 +164,20 @@ do
     end
 
     local FakeClasses = {};
-    local function _UnitClass(unit)
+    local function _UnitClass2(unit)
+        local internationalClass = select(2, UnitClass(unit))
+
+        if not canaccessvalue(internationalClass) then
+            D:Debug("WARNING: unit class was secret, defaulting to WARRIOR")
+
+            internationalClass = DC.CLASS_PRIEST
+        end
+
         if not TestMode then
-            return UnitClass(unit);
+            return internationalClass;
         else
             if UnitClass(unit) then
-                return UnitClass(unit);
+                return internationalClass;
             end
 
             local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,23)];
@@ -466,7 +474,7 @@ do
         t_insert(SortingTable, unit);
 
         UnitInfo[unit] = {
-            ["class"]  = DC.ClassUNameToNum[select(2, _UnitClass(unit)) or DC.CLASS_WARRIOR]; -- issue #46: sometimes nil is returned on pets right after joining a group
+            ["class"]  = DC.ClassUNameToNum[_UnitClass2(unit) or DC.CLASS_WARRIOR]; -- issue #46: sometimes nil is returned on pets right after joining a group
             ["GUID"]   = GUID;
             ["group"]  = group;
             ["RaidID"] = id;
@@ -566,7 +574,7 @@ do
 
                     pGUID = UnitToGUID[unit] or unit; -- at logon sometimes GUID is nil...
 
-                    if not IsInSkipList(pGUID, nil, DC.ClassUNameToNum[(select(2, _UnitClass(unit)))], _UnitGroupRolesAssigned(unit)) then
+                    if not IsInSkipList(pGUID, nil, DC.ClassUNameToNum[(_UnitClass2(unit))], _UnitGroupRolesAssigned(unit)) then
 
                         addUnit(unit, i, pGUID, 1);
 
@@ -694,7 +702,7 @@ do
             if DC.ClassNumToUName[UnitInfo[unit].class] then
                 D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
             else
-                self:AddDebugText("issue #46 debug:", unit, UnitInfo[unit].class, "_UC: ",  select(2, _UnitClass(unit)));
+                self:AddDebugText("issue #46 debug:", unit, UnitInfo[unit].class, "_UC: ",  _UnitClass2(unit));
             end
         end
         --@end-debug@
