@@ -522,7 +522,7 @@ local function SetRuntimeConstants_Once () -- {{{
                     Better = 0,
                     Pet = false,
                 },
-                [not DC.BCC and DSI["SPELL_REMOVE_GREATER_CURSE"]] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
+                [not DC.BCC and not DC.WOTLK and DSI["SPELL_REMOVE_GREATER_CURSE"]] = { -- WOW CLASSIC https://www.wowhead.com/classic/spell=412113/remove-greater-curse
                     Types = {DC.CURSE, DC.MAGIC},
                     Better = 1,
                     Pet = false,
@@ -589,7 +589,7 @@ local function SetRuntimeConstants_Once () -- {{{
                     Pet = false,
                 },
                 -- Priest
-                [DSI["SPELL_CURE_DISEASE_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+                [not DC.WOTLK and DSI["SPELL_CURE_DISEASE_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
                     Types = {DC.DISEASE},
                     Better = 0,
                     Pet = false,
@@ -601,8 +601,9 @@ local function SetRuntimeConstants_Once () -- {{{
                     Pet = false,
                 },
                 -- Shaman
+                -- in WotLK this spell is Cure Toxins and also removes a disease
                 [DSI["SPELL_CURE_POISON_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=526/cure-poison
-                    Types = {DC.POISON},
+                    Types = DC.WOTLK and {DC.POISON, DC.DISEASE} or {DC.POISON},
                     Better = 0,
                     Pet = false,
                 },
@@ -2016,7 +2017,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 -- The new and changed spells in classic {{{
                 T._C.DSI["SPELL_REMOVE_CURSE_DRUID"]  = 2782;
                 T._C.DSI["SPELL_REMOVE_CURSE_MAGE"]   = 475;
-                if not DC.BCC then
+                if not DC.BCC and not DC.WOTLK then
                     T._C.DSI["SPELL_REMOVE_GREATER_CURSE"]= 412113; --  WoW SoD
                 end
                 T._C.DSI["SPELL_PURGE"]               = 370;
@@ -2028,21 +2029,28 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["SPELL_ABOLISH_DISEASE"]     = 552;
                 T._C.DSI["SPELL_ABOLISH_POISON"]      = 2893;
                 T._C.DSI["SPELL_CURE_DISEASE_PRIEST"] = 528;
-                T._C.DSI["SPELL_CURE_DISEASE_SHAMAN"] = 2870;
+                if not DC.WOTLK then -- merged into Cure Toxins (526) by patch 3.1
+                    T._C.DSI["SPELL_CURE_DISEASE_SHAMAN"] = 2870;
+                end
                 T._C.DSI["SPELL_CURE_POISON_SHAMAN"]  = 526;
                 T._C.DSI["SPELL_CURE_POISON_DRUID"]   = 8946;
                 T._C.DSI["PET_DEVOUR_MAGIC"]          = 19505;
                 T._C.DSI["SONICBURST"]                = 8281;
                 T._C.DSI["CRIPLES"]                   = 11443;
-                T._C.DSI["Shadowmeld"]                = 20580;
+                T._C.DSI["Shadowmeld"]                = DC.WOTLK and 58984 or 20580;
                 T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
                 -- }}}
 
                 T._C.EXPECTED_DUPLICATES = {
-                    {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
-                    {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
                     {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
                 }
+
+                if not DC.WOTLK then
+                    -- in WotLK the Shaman's Cure Disease is gone and Cure Toxins (526) no
+                    -- longer shares the Druid's Cure Poison (8946) name
+                    table.insert(T._C.EXPECTED_DUPLICATES, {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"});
+                    table.insert(T._C.EXPECTED_DUPLICATES, {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"});
+                end
 
             else
                 T._C.DSI = {
