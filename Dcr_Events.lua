@@ -471,9 +471,10 @@ function D:PLAYER_TARGET_CHANGED()
     if UnitExists("target") and not UnitCanAttack("player", "target") then
         D.Status.TargetExists = true;
 
-        self.LiveList:DelayedGetDebuff("target");
-
-        self.Stealthed_Units["target"] = self:CheckUnitStealth("target")
+        if not DC.TWELVEONE then -- impossible to do it this way in 12.1
+            self.LiveList:DelayedGetDebuff("target");
+            self.Stealthed_Units["target"] = self:CheckUnitStealth("target")
+        end
     else
         D.Status.TargetExists = false;
         self.Stealthed_Units["target"] = false;
@@ -581,7 +582,7 @@ do
 
     function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
 
-        if TWELVEONE then
+        if DC.TWELVEONE then
             D:Debug("12.1: UNIT_AURA was called!")
             return
         end

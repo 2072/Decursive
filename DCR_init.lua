@@ -1466,7 +1466,7 @@ function D:SetConfiguration() -- {{{
     if D.profile.ShowDebuffsFrame then
         self:ScheduleRepeatedCall("Dcr_MUFupdate", self.DebuffsFrame_Update, self.db.global.DebuffsFrameRefreshRate, self);
 
-        if self.db.global.MFScanEverybodyTimer > 0 then
+        if self.db.global.MFScanEverybodyTimer > 0 and not DC.TWELVEONE then
             self:ScheduleRepeatedCall("Dcr_ScanEverybody", self.ScanEveryBody, self.db.global.MFScanEverybodyTimer, self, self.db.global.ScanEverybodyReport);
         end
     end

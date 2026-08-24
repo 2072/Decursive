@@ -252,6 +252,11 @@ end --}}}
 
 
 function D:PlaySound (UnitID, Caller) --{{{
+    if DC.TWELVEONE then
+        D:Debug("12.1: PlaySound was called!", debugstack(2))
+        return
+    end
+
     if self.profile.PlaySound and not self.Status.SoundPlayed then
         local Debuffs, IsCharmed = self:UnitCurableDebuffs(UnitID, true);
         if Debuffs[1] or IsCharmed then
@@ -413,7 +418,7 @@ do
 
         -- this mechanism is completely disabled in 12.1 so do nothing for now...
         if DC.TWELVEONE then
-            D:Debug("12.1: UnitDebuff was called!")
+            D:Debug("12.1: UnitDebuff was called!", debugstack(2))
             return nil
         end
 
@@ -453,6 +458,8 @@ do
     -- This local function only sets interesting values of UnitDebuff()
     local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID, secretMode, auraInstanceID;
     local function GetUnitDebuff  (Unit, i) --{{{
+
+        -- 12.1 note: only called from one locatioin which is already disbled in 12.1
 
         if D.LiveList.TestItemDisplayed and UnitExists(Unit) then -- and not UnTrustedUnitIDs[Unit] then
             if i == 1 then
@@ -510,7 +517,7 @@ do
 
     function D:GetUnitDebuffAll (Unit) --{{{
 
-        if TWELVEONE then
+        if DC.TWELVEONE then
             D:Debug("12.1: GetUnitDebuffAll was called!")
             return DC.EMPTY_TABLE, false
         end
@@ -711,8 +718,8 @@ do
     -- in different conditions.
     function D:UnitCurableDebuffs (Unit, JustOne) -- {{{
 
-        if TWELVEONE then
-            D:Debug("12.1: UnitCurableDebuffs was called!")
+        if DC.TWELVEONE then
+            D:Debug("12.1: UnitCurableDebuffs was called!", debugstack(2))
             return DC.EMPTY_TABLE, false
         end
 
@@ -847,6 +854,11 @@ do
     --local debugprofilestop = _G.debugprofilestop;
     --@end-debug@
     function D:ScanEveryBody()
+
+        if DC.TWELVEONE then
+            D:Debug("12.1: ScanEveryBody was called!", debugstack(2))
+            return
+        end
 
         if not NoScanStatuses then
             NoScanStatuses = {[DC.ABSENT] = true, [DC.FAR] = true, [DC.BLACKLISTED] = true};
@@ -989,8 +1001,8 @@ do
     -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
     function D:CheckUnitForBuffs(unit, BuffNamesToCheck) --{{{
 
-        if TWELVEONE then
-            D:Debug("12.1: CheckUnitForBuffs was called!")
+        if DC.TWELVEONE then
+            D:Debug("12.1: CheckUnitForBuffs was called!", debugstack(2))
             return false
         end
 

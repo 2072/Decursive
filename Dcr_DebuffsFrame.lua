@@ -1205,7 +1205,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth, o_
 
 
     if (not SkipSetColor) then
-        if (not SkipDebuffs) then
+        if (not SkipDebuffs and not DC.TWELVEONE) then
             -- get the manageable debuffs of this unit
             MF:SetDebuffs(o_auraUpdateInfo);
             --D:Debug("Debuff set for ", MF.ID);
