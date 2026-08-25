@@ -515,7 +515,7 @@ local OptionsPostSetActions = { -- {{{
     ["DebuffsFrameElemScale"] = function(v) D.MicroUnitF:SetScale(D.profile.DebuffsFrameElemScale); end,
     ["DebuffsFrameRefreshRate"] = function(v) D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.db.global.DebuffsFrameRefreshRate, D); D:Debug("MUFs refresh rate changed:", D.db.global.DebuffsFrameRefreshRate, v); end,
     ["MFScanEverybodyTimer"] = function(v)
-        if v > 0 and not DC.TWELVEONE then
+        if v > 0 and not DC.TWELVE_ONE then
             D:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
             D:Debug("MUFs scan every body timer changed:", D.db.global.MFScanEverybodyTimer, v);
         else
@@ -524,7 +524,7 @@ local OptionsPostSetActions = { -- {{{
         end
     end,
     ["MFScanEverybodyReport"] = function(v)
-        if D.db.global.MFScanEverybodyTimer > 0 and not DC.TWELVEONE then
+        if D.db.global.MFScanEverybodyTimer > 0 and not DC.TWELVE_ONE then
             D:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
         end
         D:Debug("MUFs scan every body reporting changed:", D.db.global.MFScanEverybodyReport, v);
@@ -1517,14 +1517,14 @@ local function GetStaticOptions ()
                                 max = 60,
                                 step = 1,
                                 order = 2800,
-                                disabled = function() return DC.TWELVEONE end,
+                                disabled = function() return DC.TWELVE_ONE end,
                             },
                             MFScanEverybodyReport = {
                                 type = "toggle",
                                 name = L["OPT_PERIODICRESCAN_REPORT"],
                                 desc = L["OPT_PERIODICRESCAN_REPORT_DESC"],
                                 order = 2900,
-                                disabled = function() return DC.TWELVEONE end,
+                                disabled = function() return DC.TWELVE_ONE end,
                             },
                         },
                     }, -- }}}
@@ -2368,7 +2368,7 @@ function D:SetCureOrder (ToChange)
     D:Debug("Spell changed");
     D.Status.SpellsChanged = GetTime();
     D.Status.delayedDebuffReportDisabled = true;
-    if (self.db.global.MFScanEverybodyTimer == 0 or self.db.global.MFScanEverybodyTimer > 1) and not DC.TWELVEONE then
+    if (self.db.global.MFScanEverybodyTimer == 0 or self.db.global.MFScanEverybodyTimer > 1) and not DC.TWELVE_ONE then
         D:Debug("ScanEveryBody delayed call scheduled by SetCureOrder")
         D:ScheduleDelayedCall("scanEverybodyAfterSpellChanged", D.ScanEveryBody, 1, D)
     end
@@ -2411,7 +2411,7 @@ function D:ShowHideDebuffsFrame ()
     else
         D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.db.global.DebuffsFrameRefreshRate, D);
 
-        if D.db.global.MFScanEverybodyTimer > 0 and not DC.TWELVEONE then
+        if D.db.global.MFScanEverybodyTimer > 0 and not DC.TWELVE_ONE then
             self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
         end
 

@@ -1101,7 +1101,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.CooldownFrame:SetHideCountdownNumbers(true)
 
 
-    if DC.TWELVEONE then
+    if DC.TWELVE_ONE then
         self.auraContainer = CreateFrame("AuraContainer", nil, self.Frame, "CustomAuraContainerTemplate")
         self.auraContainer:SetAllPoints(self.Frame) -- todo: check if required
     end
@@ -1248,7 +1248,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth, o_
 
 
     if (not SkipSetColor) then
-        if (not SkipDebuffs and not DC.TWELVEONE) then
+        if (not SkipDebuffs and not DC.TWELVE_ONE) then
             -- get the manageable debuffs of this unit
             MF:SetDebuffs(o_auraUpdateInfo);
             --D:Debug("Debuff set for ", MF.ID);

@@ -252,7 +252,7 @@ end --}}}
 
 
 function D:PlaySound (UnitID, Caller) --{{{
-    if DC.TWELVEONE then
+    if DC.TWELVE_ONE then
         D:Debug("12.1: PlaySound was called!", debugstack(2))
         return
     end
@@ -417,7 +417,7 @@ do
     local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
 
         -- this mechanism is completely disabled in 12.1 so do nothing for now...
-        if DC.TWELVEONE then
+        if DC.TWELVE_ONE then
             D:Debug("12.1: UnitDebuff was called!", debugstack(2))
             return nil
         end
@@ -517,7 +517,7 @@ do
 
     function D:GetUnitDebuffAll (Unit) --{{{
 
-        if DC.TWELVEONE then
+        if DC.TWELVE_ONE then
             D:Debug("12.1: GetUnitDebuffAll was called!")
             return DC.EMPTY_TABLE, false
         end
@@ -718,7 +718,7 @@ do
     -- in different conditions.
     function D:UnitCurableDebuffs (Unit, JustOne) -- {{{
 
-        if DC.TWELVEONE then
+        if DC.TWELVE_ONE then
             D:Debug("12.1: UnitCurableDebuffs was called!", debugstack(2))
             return DC.EMPTY_TABLE, false
         end
@@ -855,7 +855,7 @@ do
     --@end-debug@
     function D:ScanEveryBody()
 
-        if DC.TWELVEONE then
+        if DC.TWELVE_ONE then
             D:Debug("12.1: ScanEveryBody was called!", debugstack(2))
             return
         end
@@ -1001,7 +1001,7 @@ do
     -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
     function D:CheckUnitForBuffs(unit, BuffNamesToCheck) --{{{
 
-        if DC.TWELVEONE then
+        if DC.TWELVE_ONE then
             D:Debug("12.1: CheckUnitForBuffs was called!", debugstack(2))
             return false
         end

@@ -1162,7 +1162,8 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     D.debug = D.db.global.debug;
 
-    if DC.TWELVEONE and not D.debug then
+    --[=[
+    if DC.TWELVE_ONE and not D.debug then
         if not self.db.global.TwelveOneIncompatibleMessageWasShown then
             T._ShowNotice("|cff00ff00Decursive version: @project-version@|r\n\n" .. "|cFFFFAA66"
             .. "This version of Decursive is not compatible with WoW 12.1.x.\nDecursive will now stay hidden until it is updated with a compatible version.\n\n|cffffff00Check the release notes for more details.|r\n\n|cffff0000This message will not be shown again|r."
@@ -1173,6 +1174,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
         D:Disable()
         return false
     end
+    --]=]
 
     T._CatchAllErrors = "OnEnable"; -- During init we catch all the errors else, if a library fails we won't know it.
 
@@ -1466,7 +1468,7 @@ function D:SetConfiguration() -- {{{
     if D.profile.ShowDebuffsFrame then
         self:ScheduleRepeatedCall("Dcr_MUFupdate", self.DebuffsFrame_Update, self.db.global.DebuffsFrameRefreshRate, self);
 
-        if self.db.global.MFScanEverybodyTimer > 0 and not DC.TWELVEONE then
+        if self.db.global.MFScanEverybodyTimer > 0 and not DC.TWELVE_ONE then
             self:ScheduleRepeatedCall("Dcr_ScanEverybody", self.ScanEveryBody, self.db.global.MFScanEverybodyTimer, self, self.db.global.ScanEverybodyReport);
         end
     end
@@ -1510,23 +1512,23 @@ function D:OnDisable() -- When the addon is disabled by Ace -- {{{
     LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name);
     D.eventFrame:SetScript("OnEvent", nil);
 
-    if not DC.TWELVEONE or D.debug then
-        -- the disable warning popup : {{{ -
-        StaticPopupDialogs["Decursive_OnDisableWarning"] = {
-            text = L["DISABLEWARNING"],
-            button1 = "OK",
-            OnAccept = function()
-                return false;
-            end,
-            timeout = 0,
-            whileDead = 1,
-            hideOnEscape = false,
-            showAlert = 1,
-            preferredIndex = 3,
-        }; -- }}}
-        T._StaticPopupDialogsWasShown = true
-        StaticPopup_Show("Decursive_OnDisableWarning");
-    end
+    -- if not DC.TWELVE_ONE or D.debug then
+    -- the disable warning popup : {{{ -
+    StaticPopupDialogs["Decursive_OnDisableWarning"] = {
+        text = L["DISABLEWARNING"],
+        button1 = "OK",
+        OnAccept = function()
+            return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = false,
+        showAlert = 1,
+        preferredIndex = 3,
+    }; -- }}}
+    T._StaticPopupDialogsWasShown = true
+    StaticPopup_Show("Decursive_OnDisableWarning");
+    -- end
 end -- }}}
 
 -------------------------------------------------------------------------------

@@ -371,7 +371,7 @@ end -- }}}
 function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
-    if DC.TWELVEONE then
+    if DC.TWELVE_ONE then
         D:Debug("12.1: LiveList:GetDebuff was called!", debugstack(2))
         return false
     end
