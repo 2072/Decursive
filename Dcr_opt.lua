@@ -2207,6 +2207,47 @@ function D:CheckCureOrder ()
 
 end
 
+function D:SetColorCurve()
+
+    if DC.MN then
+        -- we need to set the color of the new MN curve thingy:
+        -- one color per spell, so we need to create a table type -> color
+        local mfc = D.profile.MF_colors
+        local dsc = D.Status.dsCurve
+        local dtToBT = DC.DTtoBT
+
+        local typeToColor = {}
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- for each configured spell
+            for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
+                if D.Status.CuringSpells[afflictionType] == Spell then -- handling an affliction type
+                    typeToColor[afflictionType] = D:NumToColorMixin(mfc[Prio]) -- register the type to color mapping
+                end
+            end
+        end
+
+        --@debug@
+        --D:Debug("SetCureOrder(): typeToColor table:", D:tAsString(typeToColor));
+        --@end-debug@
+
+
+        -- update our curve
+        dsc:ClearPoints()
+        dsc:AddPoint(0, D:NumToColorMixin(mfc[DC.NORMAL]))
+        for affType, cm in pairs(typeToColor) do
+            --@debug@
+            D:Debug("Adding point: ", affType, dtToBT[affType], cm)
+            --@end-debug@
+            dsc:AddPoint(dtToBT[affType], cm)
+        end
+
+        --@debug@
+        --D:Debug("SetCureOrder(): dsCurve points:", dsc:GetPoints());
+        --@end-debug@
+
+    end
+
+end
+
 function D:SetCureOrder (ToChange)
 
 
@@ -2317,42 +2358,7 @@ function D:SetCureOrder (ToChange)
     --@end-debug@
 
 
-    if DC.MN then
-        -- we need to set the color of the new MN curve thingy:
-        -- one color per spell, so we need to create a table type -> color
-        local mfc = D.profile.MF_colors
-        local dsc = D.Status.dsCurve
-        local dtToBT = DC.DTtoBT
-
-        local typeToColor = {}
-        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- for each configured spell
-            for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
-                if D.Status.CuringSpells[afflictionType] == Spell then -- handling an affliction type
-                    typeToColor[afflictionType] = D:NumToColorMixin(mfc[Prio]) -- register the type to color mapping
-                end
-            end
-        end
-
-        --@debug@
-        --D:Debug("SetCureOrder(): typeToColor table:", D:tAsString(typeToColor));
-        --@end-debug@
-
-
-        -- update our curve
-        dsc:ClearPoints()
-        dsc:AddPoint(0, D:NumToColorMixin(mfc[DC.NORMAL]))
-        for affType, cm in pairs(typeToColor) do
-            --@debug@
-            D:Debug("Adding point: ", affType, dtToBT[affType], cm)
-            --@end-debug@
-            dsc:AddPoint(dtToBT[affType], cm)
-        end
-
-        --@debug@
-        --D:Debug("SetCureOrder(): dsCurve points:", dsc:GetPoints());
-        --@end-debug@
-
-    end
+    D:SetColorCurve()
 
     -- Set the spells shortcut (former decurse key)
     D:AddDelayedFunctionCall(
@@ -2937,6 +2943,8 @@ do
         D.MicroUnitF:Delayed_Force_FullUpdate();
 
         D:Debug("MUF color setting changed:", ColorReason);
+        D:SetColorCurve()
+        D.MicroUnitF:Force_FullUpdate();
     end
 
     local ColorPicker = {

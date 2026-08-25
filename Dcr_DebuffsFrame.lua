@@ -1100,6 +1100,12 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.CooldownFrame = CreateFrame ("Cooldown", nil, self.Frame, "DcrMicroUnitCDTemplate");
     self.CooldownFrame:SetHideCountdownNumbers(true)
 
+
+    if DC.TWELVEONE then
+        self.auraContainer = CreateFrame("AuraContainer", nil, self.Frame, "CustomAuraContainerTemplate")
+        self.auraContainer:SetAllPoints(self.Frame) -- todo: check if required
+    end
+
     if petminus ~= 0 then
         self.Frame:SetWidth(20 - petminus);
         self.Frame:SetHeight(20 - petminus);
@@ -1134,6 +1140,43 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.Texture:SetPoint("CENTER",self.Frame ,"CENTER",0,0)
     self.Texture:SetHeight(16 - petminus);
     self.Texture:SetWidth(16 - petminus);
+
+    if self.auraContainer then
+        local c = self.auraContainer
+
+        local setButton = function(ab)
+            self.auraButton = ab
+            ab:EnableMouse(false)
+
+            ab:ClearAllPoints()
+            ab:SetPoint("CENTER", self.Frame, "CENTER", 0, 0)
+            ab:SetSize(16 - petminus, 16 - petminus) -- todo check if useful
+
+            local border = ab:CreateTexture(nil, "OVERLAY")
+            border:ClearAllPoints()
+            border:SetAllPoints(ab)
+            border:SetColorTexture(1, 1, 1, 1) -- necessary for te curve to work...
+            border:Show()
+
+            self.auraBorder = border
+        end
+
+        local b = c:AddAuraSlot(
+            "DCR_DISPELLABLE",
+            "HARMFUL|RAID",
+            {
+                sortMethod = 0,
+                sortDirection = 0,
+                initializeFrame = function(auraButton)
+                    setButton(auraButton)
+                end,
+            }
+        )
+
+        c:SetUnit(Unit)
+        c:SetShown(true)
+        c:SetEnabled(true)
+    end
 
     -- inner Texture (Charmed special texture)
     self.InnerTexture = self.Frame:CreateTexture(nil, "OVERLAY", nil, 6);
@@ -1194,7 +1237,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth, o_
         --@end-debug@
     end
 
-    -- Update the frame attributes if necessary (Spells priority or unit id changes)
+    -- Update the frame attributes if necessary (Spells priority,  unit id changes, or color config changed)
     if (D.Status.SpellsChanged ~= MF.LastAttribUpdate ) then
         --D:Debug("Attributes update required: ", MF.ID);
         if (MF:UpdateAttributes(Unit, true)) then
@@ -1282,6 +1325,10 @@ do
         if not self.CurrUnit then
             self.Frame:SetAttribute("unit", Unit);
 
+            if self.auraContainer then
+                self.auraContainer:SetUnit(Unit)
+            end
+
             -- UnitToMUF[] can only be set when out of fight so it remains
             -- coherent with what is displayed when groups are changed during a
             -- fight
@@ -1293,6 +1340,21 @@ do
 
             -- set the return value because we did something expensive
             ReturnValue = self;
+        end
+
+
+        if self.auraButton then
+            local ab = self.auraButton
+            ab:SetAuraBorder(self.auraBorder, {
+                showIcon = false,
+                showWhenHarmful = true,
+                showWhenHelpful = false,
+                showWithoutDispelType = true,
+                style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
+                customDispelColorCurve = D.Status.dsCurve
+            })
+
+            D:Debug("auraBorderSet for ", Unit)
         end
 
         if (D.Status.SpellsChanged == self.LastAttribUpdate) then
