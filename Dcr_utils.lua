@@ -312,7 +312,7 @@ end
 do
 
     -- use provided f if not secret or use whenSecret instead
-    function asStringWith(v, f, whenSecret)
+    local function asStringWith(v, f, whenSecret)
         if not canaccessvalue or canaccessvalue(v) then
             return f(v)
         else
@@ -541,8 +541,18 @@ function D:NumToHexColor(ColorTable)
         return str_format("%02x%02x%02x%02x", ColorTable[4] * 255, ColorTable[1] * 255, ColorTable[2] * 255, ColorTable[3] * 255)
 end
 
-function D:NumToColorMixin(colorTable)
-    return CreateColor(unpack(colorTable))
+do
+    local cache = setmetatable({}, {
+        __mode = "kv",
+        __index = function(self, key)
+            self[key] = CreateColor(unpack(key))
+            return self[key]
+        end
+    })
+
+    function D:NumToColorMixin(colorTable)
+        return cache[colorTable]
+    end
 end
 
 function D:HexColorToNum(hexColor)
