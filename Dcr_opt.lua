@@ -2207,6 +2207,7 @@ function D:CheckCureOrder ()
 
 end
 
+local TRANSPARENT_CM = D:NumToColorMixin({1,1,1,0})
 function D:SetColorCurve()
 
     if DC.MN then
@@ -2218,10 +2219,18 @@ function D:SetColorCurve()
 
         local typeToColor = {}
         for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- for each configured spell
-            for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
+            for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do -- use ipairs' behaviour to our advantage
                 if D.Status.CuringSpells[afflictionType] == Spell then -- handling an affliction type
                     typeToColor[afflictionType] = D:NumToColorMixin(mfc[Prio]) -- register the type to color mapping
                 end
+            end
+        end
+
+        -- use transparent color for unset types
+        for typeprio, afflictionType in pairs(D.Status.ReversedCureOrder) do
+            if D.Status.CuringSpells[afflictionType] == false then
+                D:Debug("Will use transparent color for type", afflictionType)
+                typeToColor[afflictionType] = TRANSPARENT_CM
             end
         end
 
