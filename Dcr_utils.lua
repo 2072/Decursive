@@ -96,6 +96,21 @@ local pcall             = _G.pcall;
 local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 local CreateColor       = _G.CreateColor
 local C_SpellBook       = _G.C_SpellBook
+local UnitClass         = _G.UnitClass;
+
+
+
+function D:SafeUnitClass2(unit)
+    local internationalClass = select(2, UnitClass(unit))
+
+    if not canaccessvalue(internationalClass) then
+        D:Debug("WARNING: unit class was secret for unit:", unit ,"defaulting to WARRIOR")
+
+        internationalClass = DC.CLASS_WARRIOR
+    end
+
+    return internationalClass
+end
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
 D.IsSpellInRange = function (spellName, unit)

@@ -328,7 +328,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
 
     -- Unit Name
     if not cancompare(self.PrevUnitName, self.UnitName) or self.PrevUnitName ~= self.UnitName then
-        self.UnitClass = (select(2, UnitClass(UnitID)));
+        self.UnitClass = D:SafeUnitClass2(UnitID)
         self.UnitNameFontString:SetText(self.UnitName);
         if self.UnitClass then
             self.UnitNameFontString:SetTextColor(unpack(DC.ClassesColors[self.UnitClass])); -- got one report where unpack got a nil... probably a damaged classescolors table...

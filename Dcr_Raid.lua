@@ -165,18 +165,12 @@ do
 
     local FakeClasses = {};
     local function _UnitClass2(unit)
-        local internationalClass = select(2, UnitClass(unit))
-
-        if not canaccessvalue(internationalClass) then
-            D:Debug("WARNING: unit class was secret, defaulting to WARRIOR")
-
-            internationalClass = DC.CLASS_WARRIOR
-        end
+        local internationalClass = D:SafeUnitClass2(unit)
 
         if not TestMode then
-            return internationalClass;
+            return internationalClass
         else
-            if UnitClass(unit) then
+            if internationalClass then
                 return internationalClass;
             end
 
@@ -241,13 +235,9 @@ do
 
     local FakeRoles = {}; local roles = {"HEALER", "TANK", "DAMAGER", "NONE"};
     local function _UnitGroupRolesAssigned(unit)
-
-        -- if DC.WOWC then
-        --    return "NONE";
-        -- end
-
         if not TestMode then
-            return UnitGroupRolesAssigned(unit);
+            local role = UnitGroupRolesAssigned(unit);
+            return canaccessvalue(role) and role or "NONE"
         elseif not FakeRoles[unit] then
             FakeRoles[unit] = roles[random(1,4)];
         end
@@ -494,6 +484,15 @@ do
             ["isPet"]  = isPet;
             ["role"]   = not isPet and _UnitGroupRolesAssigned(unit) or "NONE";
         }
+
+        --@debug@
+        for k, v in pairs(UnitInfo[unit]) do
+            if not canaccessvalue(v) then
+                D:Debug("XXXXXXXXXXXXXXXXXXXXXXXXXXXX ", k, " is secret for unit: ", unit)
+            end
+        end
+        --@end-debug@
+
     end
 
     local function setInternalList(inList, outList)

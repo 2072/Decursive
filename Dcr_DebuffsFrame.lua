@@ -757,7 +757,7 @@ do
 
         local icon = index and string.format("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t ", index) or ""
 
-        local coloredUnitName = D:ColorTextNA((D:PetUnitName(unit, true)), ((UnitClass(unit)) and DC.HexClassColor[ (select(2, UnitClass(unit))) ] or "AAAAAA"))
+        local coloredUnitName = D:ColorTextNA((D:PetUnitName(unit, true)), ((UnitClass(unit)) and DC.HexClassColor[ D:SafeUnitClass2(unit) ] or "AAAAAA"))
         .. "  |cFF3F3F3F(".. unit .. ")|r"
 
         local playerLine = string.format("%s %s", icon or "", coloredUnitName)
@@ -1796,7 +1796,11 @@ do
 
             if self.UnitGUID then -- can be nil because of focus...
                 -- Get its class
-                Class = (select(2, UnitClass(self.CurrUnit)));
+                local maybeSecretClass = select(2, UnitClass(self.CurrUnit))
+                --@debug@
+                if not canaccessvalue(maybeSecretClass) then D:Debug("class is secret for unit", self.CurrUnit) end
+                --@end-debug@
+                Class = canaccessvalue(maybeSecretClass) and maybeSecretClass or false
             else
                 Class = false;
             end

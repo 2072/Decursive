@@ -1213,7 +1213,7 @@ function D:ReturnVersions()
     local formatedversions = {};
     for name, versiondetails in pairs(D.versions) do
         if Name_To_Unit[name] and UnitExists(Name_To_Unit[name]) then
-            name = D:ColorText(name, "FF"..DC.HexClassColor[select(2, UnitClass(Name_To_Unit[name]))]);
+            name = D:ColorText(name, "FF"..DC.HexClassColor[D:SafeUnitClass2(Name_To_Unit[name])]);
         else
             D:Debug("ReturnVersions() no unit for ", name);
         end

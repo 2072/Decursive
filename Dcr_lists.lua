@@ -333,7 +333,7 @@ local function AddElementToList(element, checkIfExist, list, listGUIDtoName, lis
             table.insert(list, GUIDorNum);
 
             if type(element) == "string" then
-                listClass[GUIDorNum]      = isNotPlayerCase and select(2, UnitClass(element)) or nil;
+                listClass[GUIDorNum]      = isNotPlayerCase and D:SafeUnitClass2(element) or nil;
                 listGUIDtoName[GUIDorNum] = isNotPlayerCase and D:UnitName(element) or "player"; -- used to prevent multi addition
             elseif element > 10 then
                 listClass[element]        = DC.ClassNumToUName[element];
