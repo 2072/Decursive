@@ -42,7 +42,7 @@ jobs:
 
       - name: Package classic
         if: >-
-          !contains(github.event.head_commit.message, '#skipallclassic') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipclassic') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
@@ -51,7 +51,7 @@ jobs:
 
       - name: Package mists
         if: >-
-          !contains(github.event.head_commit.message, '#skipallclassic') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipmop') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
@@ -60,7 +60,7 @@ jobs:
 
       - name: Package bcc
         if: >-
-          !contains(github.event.head_commit.message, '#skipallclassic') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipbcc') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
@@ -69,7 +69,7 @@ jobs:
 
       - name: Package wrath
         if: >-
-          !contains(github.event.head_commit.message, '#skipallclassic') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skiptitan') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
