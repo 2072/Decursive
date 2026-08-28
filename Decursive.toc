@@ -2,6 +2,7 @@
 ## Interface-Retail: 120100
 ## Interface-Classic: 11509
 ## Interface-bcc: 20506
+## Interface-Wrath: 38002
 ## Interface-Mists: 50504
 ## X-Max-Interface: 120100
 ## X-Min-Interface: 11509
