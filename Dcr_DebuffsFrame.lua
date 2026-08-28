@@ -911,7 +911,9 @@ do
 
         tip:Hide()
         D.temp_tt_taint_debug = D.temp_tt_taint_debug - 1
-        D:Debug("tt: ", D.temp_tt_taint_debug)
+        --@debug@
+        D:Debug("ttt debug: ", D.temp_tt_taint_debug)
+        --@end-debug@
     end
 
     function MicroUnitF:OnLeave(frame) -- {{{
@@ -1248,7 +1250,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth, o_
 
 
     if (not SkipSetColor) then
-        if (not SkipDebuffs and not DC.TWELVE_ONE) then
+        if (not SkipDebuffs) then
             -- get the manageable debuffs of this unit
             MF:SetDebuffs(o_auraUpdateInfo);
             --D:Debug("Debuff set for ", MF.ID);

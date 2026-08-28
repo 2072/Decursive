@@ -371,11 +371,6 @@ end -- }}}
 function LiveList:GetDebuff(UnitID) -- {{{
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
-    if DC.TWELVE_ONE then
-        D:Debug("12.1: LiveList:GetDebuff was called!", debugstack(2))
-        return false
-    end
-
     if (UnitID == "target" or UnitID == "mouseover") and (not UnitIsFriend(UnitID, "player") or not UnitExists(UnitID)) then
         if D.ManagedDebuffUnitCache[UnitID] and D.ManagedDebuffUnitCache[UnitID][1] then
             t_wipe(D.ManagedDebuffUnitCache[UnitID]); -- clear target/mouseover debufs, else it would stay on

@@ -170,7 +170,7 @@ do
         if not canaccessvalue(internationalClass) then
             D:Debug("WARNING: unit class was secret, defaulting to WARRIOR")
 
-            internationalClass = DC.CLASS_PRIEST
+            internationalClass = DC.CLASS_WARRIOR
         end
 
         if not TestMode then
@@ -419,7 +419,20 @@ do
         -- several criteria the criteria with the lowest position will take
         -- precedence over the other, including GUID.
         UIa = UnitInfo[ua]; UIb = UnitInfo[ub];
-        uaVSub = a_isBefore_b(getMinOf4(IPL[UIa.class], IPL[UIa.group], IPL[UIa.GUID], IPL[UIa.role]), getMinOf4(IPL[UIb.class], IPL[UIb.group], IPL[UIb.GUID], IPL[UIb.role]));
+
+        uaVSub = a_isBefore_b(
+            getMinOf4(
+                IPL[UIa.class],
+                IPL[UIa.group],
+                IPL[UIa.GUID],
+                IPL[UIa.role]
+            ), getMinOf4(
+                IPL[UIb.class],
+                IPL[UIb.group],
+                IPL[UIb.GUID],
+                IPL[UIb.role]
+            )
+        );
 
         --@debug@
         if ua == "player" or ub == "player" then

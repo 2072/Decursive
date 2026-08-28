@@ -582,11 +582,6 @@ do
 
     function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
 
-        if DC.TWELVE_ONE then
-            D:Debug("12.1: UNIT_AURA was called!")
-            return
-        end
-
         if not D.DcrFullyInitialized then
             D:Debug("|cFFFF0000D:UNIT_AURA aborted, init uncomplete!|r");
             return;
@@ -602,7 +597,8 @@ do
         --@end-debug@
 
 
-        if DC.MN then -- classic versioins still use CLEU and although they support UNIT_AURA as well CLEU provides more features
+        -- defunct code in midnight, leave it here for now
+        if DC.MN and false then -- classic versioins still use CLEU and although they support UNIT_AURA as well CLEU provides more features
             if o_auraUpdateInfo.removedAuraInstanceIDs then
                 self:checkForDebuff(UnitID)
 
@@ -649,7 +645,7 @@ do
 
         -- Here we test if the GUID->Unit array is ok if it isn't we need to scan the unit for debuffs
         -- We also scan the unit if it's charmed. The combatLog event manager tends to not detect those properly, the charm effect is a bitch to manage.
-        if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] or UnitIsCharmed(UnitID) then
+        if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] or D:IsUnitCharmed(UnitID) then
 
 
             -- if we updated the unit array but we are here then rebuild the unit array.
@@ -702,7 +698,7 @@ do
                 return;
             end
 
-            if not self.profile.HideLiveList then
+            if not self.profile.HideLiveList and not DC.MN then
                 self.LiveList:DelayedGetDebuff(UnitID, o_auraUpdateInfo);
             end
         end
