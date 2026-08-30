@@ -2223,8 +2223,6 @@ end -- }}}
 -- Create the macro for Decursive
 -- This macro will cast the first spell (priority)
 
-local MAX_ACCOUNT_MACROS = _G.MAX_ACCOUNT_MACROS;
-
 do
 
     local BlizzardIsAnnoyingComment = "# Ask Blizzard to re-add support for macrotext attribute dropped in wow 11 if you do not want to see this macro...\n"
@@ -2256,15 +2254,19 @@ do
             else
                 D:Debug(("Macro '%s' not updated due to AllowMacroEdit"):format(macroName));
             end
-        elseif (GetNumMacros()) < MAX_ACCOUNT_MACROS then
-            CreateMacro(macroName, icon, updatedMacroText);
-            if notEditable then
-                createdMacros[macroName] = true
-            end
         else
-            D:errln(("Too many macros exist, Decursive cannot create its '%s' macro"):format(macroName));
-            T._CatchAllErrors = catchAllErrorBackup;
-            return false;
+            local success, err = pcall(CreateMacro, macroName, icon, updatedMacroText) -- the limit is now 120 but the global MAX_ACCOUNT_MACROS got removed so just try and catch the fail...
+
+            if success then
+                D:Debug(("Macro '%s' created"):format(macroName))
+                if notEditable then
+                    createdMacros[macroName] = true
+                end
+            else
+                D:errln(("Too many macros exist, Decursive cannot create its '%s' macro"):format(macroName));
+                T._CatchAllErrors = catchAllErrorBackup;
+                return false;
+            end
         end
 
         T._CatchAllErrors = catchAllErrorBackup;
