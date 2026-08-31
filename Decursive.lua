@@ -766,7 +766,7 @@ do
 
             if self.Status.Combat or nameAccessible and self.profile.DebuffAlwaysSkipList[Debuff.Name] then
                 local _, EnUClass = UnitClass(Unit);
-                if self.profile.skipByClass[EnUClass] then
+                if canaccessvalue(EnUClass) and self.profile.skipByClass[EnUClass] then
                     if  nameAccessible and self.profile.skipByClass[EnUClass][Debuff.Name] then
                         -- these are just ones you don't care about by class while in combat
 

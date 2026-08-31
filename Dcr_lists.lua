@@ -463,6 +463,13 @@ function D:PopulateButtonPress(frame) --{{{
     local PopulateFrame = frame:GetParent();
     local UppedClass = "";
 
+    local function addUnitWhenClassMatches(unit)
+        local _, pclass = UnitClass(unit)
+        if canaccessvalue(pclass) and pclass == UppedClass then
+            PopulateFrame:addFunction(unit)
+        end
+    end
+
     if (IsShiftKeyDown() and frame.ClassType) then
 
         -- UnitClass returns uppercased class...
@@ -471,27 +478,11 @@ function D:PopulateButtonPress(frame) --{{{
         D:Debug("Populate called for %s", frame.ClassType);
         -- for the class type stuff... we do party
 
-        local _, pclass = UnitClass("player");
-        if (pclass == UppedClass) then
-            PopulateFrame:addFunction("player");
-        end
-
-        _, pclass = UnitClass("party1");
-        if (pclass == UppedClass) then
-            PopulateFrame:addFunction("party1");
-        end
-        _, pclass = UnitClass("party2");
-        if (pclass == UppedClass) then
-            PopulateFrame:addFunction("party2");
-        end
-        _, pclass = UnitClass("party3");
-        if (pclass == UppedClass) then
-            PopulateFrame:addFunction("party3");
-        end
-        _, pclass = UnitClass("party4");
-        if (pclass == UppedClass) then
-            PopulateFrame:addFunction("party4");
-        end
+        addUnitWhenClassMatches("player")
+        addUnitWhenClassMatches("party1")
+        addUnitWhenClassMatches("party2")
+        addUnitWhenClassMatches("party3")
+        addUnitWhenClassMatches("party4")
     end
 
     local i, pgroup, pclass;
@@ -500,12 +491,7 @@ function D:PopulateButtonPress(frame) --{{{
     if (IsShiftKeyDown() and frame.ClassType) then
         D:Debug("Finding raid units with a macthing class");
         for index, unit in ipairs(D.Status.Unit_Array) do
-            _, pclass = UnitClass(unit);
-
-            if (pclass == UppedClass) then
-                D:Debug("found %s", pclass);
-                PopulateFrame:addFunction(unit);
-            end
+            addUnitWhenClassMatches(unit)
 
         end
     elseif (frame.ClassType) then

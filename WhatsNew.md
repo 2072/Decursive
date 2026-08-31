@@ -1,3 +1,20 @@
+Decursive development version
+=============================
+
+WoW 12.1:
+
+- Preserve Decursive's configured cleansing priorities with one native aura
+  slot per cleansing-spell/mouse-button assignment. When several dispellable
+  aura types are present, the highest configured priority is displayed.
+
+- Exclude disabled or unavailable dispel types from the native aura slots so
+  they cannot mask an enabled dispel type on the same unit.
+
+- Configure restricted AuraButtons only from their initialization callback;
+  later configuration changes update the AuraContainer without accessing
+  secret aura data or forbidden button objects.
+
+
 Decursive 2.8.3
 ===============
 
