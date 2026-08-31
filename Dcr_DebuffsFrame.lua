@@ -993,7 +993,11 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
     RequestedPrio = D:tGiveValueIndex(D.db.global.MouseButtons, modifier and (modifier .. ButtonsString:sub(-3)) or ButtonsString);
 
     D:Debug("RequestedPrio:", RequestedPrio);
-    if frame.Object.UnitStatus == NORMAL and D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
+    -- In Midnight, secret auras can leave the legacy MUF status at NORMAL
+    -- while Blizzard's AuraButton still handles a valid dispel click. The
+    -- addon cannot inspect that aura to distinguish a successful native cast
+    -- from an empty click, so the old message would be a false positive.
+    if not DC.MN and frame.Object.UnitStatus == NORMAL and D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
 
         D:Println(L["HLP_NOTHINGTOCURE"]);
 

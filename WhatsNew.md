@@ -3,6 +3,9 @@ Decursive development version
 
 WoW 12.1:
 
+- Fix the misleading "There is nothing to cure!" message appearing after a
+  successful dispel handled through WoW 12.x's secret-aura system.
+
 - Preserve Decursive's configured cleansing priorities with one native aura
   slot per cleansing-spell/mouse-button assignment. When several dispellable
   aura types are present, the highest configured priority is displayed.
