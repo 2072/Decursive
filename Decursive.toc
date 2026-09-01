@@ -78,6 +78,10 @@ Dcr_lists.xml
 Dcr_DebuffsFrame.lua
 Dcr_DebuffsFrame.xml
 
+#@retail@
+Dcr_12_1_Sounds.lua
+#@end-retail@
+
 Dcr_LiveList.lua
 Dcr_LiveList.xml
 

@@ -3,6 +3,10 @@ Decursive development version
 
 WoW 12.1:
 
+- Restore affliction alert sounds for known current-season dispellable auras.
+  Decursive pre-registers only aura spell IDs the current specialization can
+  cure, and Blizzard performs protected detection and sound playback.
+
 - Show the last-used cleansing action's cooldown sweep and countdown across the
   MUF grid, so the next dispellable unit visibly indicates when that action is
   not ready. The global cooldown is intentionally ignored.
