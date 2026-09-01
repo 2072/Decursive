@@ -3,9 +3,9 @@ Decursive development version
 
 WoW 12.1:
 
-- Show each cleansing spell's cooldown sweep and countdown on its native aura
-  priority slot, so a dispellable grid square visibly indicates when its click
-  action is not ready. The global cooldown is intentionally ignored.
+- Show the last-used cleansing action's cooldown sweep and countdown across the
+  MUF grid, so the next dispellable unit visibly indicates when that action is
+  not ready. The global cooldown is intentionally ignored.
 
 - Fix the misleading "There is nothing to cure!" message appearing after a
   successful dispel handled through WoW 12.x's secret-aura system.
