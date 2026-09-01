@@ -1111,6 +1111,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         self.auraContainer = CreateFrame("AuraContainer", nil, self.Frame, "CustomAuraContainerTemplate")
         self.auraContainer:SetAllPoints(self.Frame)
         self.auraSlotKeys = {}
+        self.auraCooldownFrames = {}
     end
 
     if petminus ~= 0 then
@@ -1179,6 +1180,20 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
                 style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
                 customDispelColorCurve = D.Status.dsCurve,
             })
+
+            -- Keep the spell cooldown separate from AuraButton's duration
+            -- display, which represents the secret aura's remaining time.
+            -- The child inherits the native slot's visibility, so Decursive
+            -- can update a known cleansing spell without inspecting whether
+            -- the restricted AuraButton is currently shown.
+            local cooldown = CreateFrame("Cooldown", nil, ab, "CooldownFrameTemplate")
+            cooldown:SetAllPoints(ab)
+            cooldown:SetFrameLevel(ab:GetFrameLevel() + 1)
+            cooldown:SetDrawEdge(false)
+            cooldown:SetHideCountdownNumbers(false)
+            cooldown:SetSwipeColor(0, 0, 0, 0.75)
+            cooldown:Show()
+            self.auraCooldownFrames[prio] = cooldown
         end
 
         -- Create one native slot per possible cleansing-spell priority. Empty
@@ -1511,10 +1526,38 @@ do
     local band              = _G.bit.band;
     local SpellID;
 
+    local function UpdateNativeAuraCooldowns(MF)
+        if not MF.auraCooldownFrames or MF.NativeCooldownUpdate == Status.UpdateCooldown then
+            return
+        end
+
+        for prio, cooldown in pairs(MF.auraCooldownFrames) do
+            local spell = D:tGiveValueIndex(Status.CuringSpellsPrio, prio)
+            local spellData = spell and Status.FoundSpells[spell]
+            local spellID = spellData and spellData[2]
+
+            if spellID and spellID > 0 then
+                -- Ignore the global cooldown: the grid should only be shaded
+                -- when this cleansing action itself cannot be used yet.
+                cooldown:SetCooldownFromDurationObject(C_Spell.GetSpellCooldownDuration(spellID, true), true)
+            elseif spellID and spellID < 0 then
+                CooldownFrame_Set(cooldown, GetItemCooldown(-spellID))
+            else
+                cooldown:Clear()
+            end
+        end
+
+        MF.NativeCooldownUpdate = Status.UpdateCooldown
+    end
+
     function MicroUnitF.prototype:SetColor() -- {{{
 
         profile = D.profile;
         Status  = D.Status;
+
+        if DC.TWELVE_ONE then
+            UpdateNativeAuraCooldowns(self)
+        end
 
         -- register default alpha of the border
         BorderAlpha =  profile.DebuffsFrameElemBorderAlpha;
