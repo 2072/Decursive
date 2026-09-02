@@ -175,6 +175,8 @@ T._LoadOrderedFiles = { -- {{{
     "Dcr_DebuffsFrame.lua",
     "Dcr_DebuffsFrame.xml",
 
+    "Dcr_12_1_Sounds.lua",
+
     "Dcr_LiveList.lua",
     "Dcr_LiveList.xml",
 }; -- }}}

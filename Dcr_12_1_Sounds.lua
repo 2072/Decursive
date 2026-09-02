@@ -17,6 +17,33 @@ local addonName, T = ...
 local D = T.Dcr
 local DC = T._C
 
+-- big ugly scary fatal error message display function {{{
+if not T._FatalError then
+    -- the beautiful error popup : {{{ -
+    StaticPopupDialogs["DECURSIVE_ERROR_FRAME"] = {
+        text = "|cFFFF0000Decursive Error:|r\n%s",
+        button1 = "OK",
+        OnAccept = function()
+            return false;
+        end,
+        timeout = 0,
+        whileDead = 1,
+        hideOnEscape = 1,
+        showAlert = 1,
+        preferredIndex = 3,
+    }; -- }}}
+    T._FatalError = function (TheError) T._StaticPopupDialogsWasShown = true; StaticPopup_Show ("DECURSIVE_ERROR_FRAME", TheError); end
+end
+-- }}}
+
+if not T._LoadedFiles or not T._LoadedFiles["Dcr_DebuffsFrame.xml"] or not T._LoadedFiles["Dcr_DebuffsFrame.lua"] then -- XML are loaded even if LUA syntax errors exixts
+    if not DecursiveInstallCorrupted then T._FatalError("Decursive installation is corrupted! (Dcr_DebuffsFrame.xml or Dcr_DebuffsFrame.lua not loaded)"); end;
+    DecursiveInstallCorrupted = true;
+    return;
+end
+T._LoadedFiles["Dcr_12_1_Sounds.lua"] = not DC.MN and "@project-version@";
+
+
 if not DC.TWELVE_ONE or not C_UnitAuras or type(C_UnitAuras.AddAuraSound) ~= "function" then
     return
 end
@@ -176,3 +203,5 @@ eventFrame:SetScript("OnEvent", function(_, event)
 
     scheduleRefresh(event == "PLAYER_ENTERING_WORLD" and 1 or 0)
 end)
+
+T._LoadedFiles["Dcr_12_1_Sounds.lua"] = "@project-version@";
