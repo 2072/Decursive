@@ -1236,6 +1236,11 @@ local function GetStaticOptions ()
                                 desc = L["OPT_SHOW_STEALTH_STATUS_DESC"],
                                 order = 1370,
                                 disabled = false,
+                                set = function(info,v)
+                                    D.SetHandler(info,v);
+                                    -- force all MUFs to update their attributes
+                                    D.Status.SpellsChanged = GetTime();
+                                end
                             },
                             AfflictionTooltips = {
                                 type = "toggle",

@@ -1420,14 +1420,25 @@ do
             return ReturnValue; -- nothing changed
         end
 
-        if self.auraContainer and self.auraSlotKeys then
-            local filters = D:GetAuraCandidateFiltersByPrio(Unit)
-            for prio, slotKey in ipairs(self.auraSlotKeys) do
-                self.auraContainer:SetAuraSlotCandidateFilters(
+        if self.auraContainer then
+            -- update debuff indicator
+            if self.auraSlotKeys then
+                local filters = D:GetAuraCandidateFiltersByPrio(Unit)
+                for prio, slotKey in ipairs(self.auraSlotKeys) do
+                    self.auraContainer:SetAuraSlotCandidateFilters(
                     slotKey,
                     filters and filters[prio] or { includeDispelTypes = {} }
-                )
+                    )
+                end
             end
+
+            -- update stealth indicator
+            self.auraContainer:SetAuraSlotCandidateFilters(
+            "DCR_STEALTH_INDICATOR",
+            {
+                includeSpellIDs = D.profile.Show_Stealthed_Status and DC.MN_STEALTH_BUFFS or {}
+            }
+)
         end
 
         -- D:Debug("UpdateAttributes() executed");
