@@ -1165,16 +1165,14 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     if self.auraContainer then
         local c = self.auraContainer
 
-        local setButton = function(ab, prio)
+        local setAuraButtonCommonSettings = function(ab, prio, options)
             ab:EnableMouse(false)
 
             ab:ClearAllPoints()
             ab:SetPoint("CENTER", self.Frame, "CENTER", 0, 0)
             ab:SetSize(16 - petminus, 16 - petminus)
-            -- Lower numeric values are higher Decursive priorities. Put those
-            -- AuraButtons above lower-priority matches when several dispel
-            -- types are present on the same unit.
-            ab:SetFrameLevel(self.Frame:GetFrameLevel() + (8 - prio))
+
+            ab:SetFrameLevel(self.Frame:GetFrameLevel() + prio)
 
             local border = ab:CreateTexture(nil, "OVERLAY")
             border:ClearAllPoints()
@@ -1185,7 +1183,16 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
             -- AuraButtons become inaccessible to addon code while auras are
             -- secret. Configure the display completely inside Blizzard's
             -- initializeFrame callback and update only the container later.
-            ab:SetAuraBorder(border, {
+           ab:SetAuraBorder(border, options)
+        end
+
+        local setButton = function(ab, prio)
+            setAuraButtonCommonSettings(ab,
+            -- Lower numeric values are higher Decursive priorities. Put those
+            -- AuraButtons above lower-priority matches when several dispel
+            -- types are present on the same unit.
+            9 - prio,
+            {
                 showIcon = false,
                 showWhenHarmful = true,
                 showWhenHelpful = false,
@@ -1193,8 +1200,29 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
                 style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
                 customDispelColorCurve = D.Status.dsCurve,
             })
-
         end
+
+        -- Add aura slot to restore stealth indicator
+        c:AddAuraSlot(
+        "DCR_STEALTH_INDICATOR",
+        "HELPFUL",
+        {
+            sortMethod = 0,
+            sortDirection = 0,
+            candidateFilters = {includeSpellIDs = DC.MN_STEALTH_BUFFS},
+            initializeFrame = function(ab)
+                setAuraButtonCommonSettings(ab, 1, {
+                    showIcon = false,
+                    showWhenHarmful = false,
+                    showWhenHelpful = true,
+                    showWithoutDispelType = true,
+                    style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
+                    customDispelColorCurve = D.Status.stealthCurve,
+                })
+            end,
+        }
+        )
+
 
         -- Create one native slot per possible cleansing-spell priority. Empty
         -- candidate maps hide unused priorities. Slots are created in reverse

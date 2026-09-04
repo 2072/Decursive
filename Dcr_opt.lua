@@ -2304,6 +2304,10 @@ function D:SetColorCurve()
         --D:Debug("SetCureOrder(): dsCurve points:", dsc:GetPoints());
         --@end-debug@
 
+        -- update the static stealth color curve
+        local sdsc = D.Status.stealthCurve
+        sdsc:ClearPoints()
+        sdsc:AddPoint(0, D:NumToColorMixin(mfc[DC.STEALTHED]))
     end
 
 end

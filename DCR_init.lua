@@ -240,7 +240,10 @@ local function SetRuntimeConstants_Once () -- {{{
 
 
     if not DC.WOWC then
-        DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"],  DS["Invisibility"], DS["Lesser Invisibility"], DS['Greater Invisibility']});
+        local stealthAuras = {"Prowl", "Stealth", "Shadowmeld",  "Invisibility", "Lesser Invisibility", 'Greater Invisibility'}
+
+        DC.IS_STEALTH_BUFF = D:tReverse(D:tMap(stealthAuras, function(auraName) return DS[auraName] end));
+        DC.MN_STEALTH_BUFFS = D:tReverse(D:tMap(stealthAuras, function(auraName) return DSI[auraName] end));
 
         DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"], DC.DS["MUTATINGINJECTION"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
         DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
@@ -1535,10 +1538,15 @@ function D:Init() --{{{
      -- create our "curve" to map dispel type to a color.
     if DC.MN then
         local dsCurve = C_CurveUtil.CreateColorCurve()
-
         dsCurve:SetType(Enum.LuaCurveType.Step)
-
         D.Status.dsCurve = dsCurve;
+
+        -- create a single point curve for our stealth indicator, I couldn't
+        -- find a simpler way of doing that thanks to the wonderful non existant
+        -- documentation but from Blizzard interface code it seems it's the only way
+        local stealthCurve = C_CurveUtil.CreateColorCurve()
+        stealthCurve:SetType(Enum.LuaCurveType.Step)
+        D.Status.stealthCurve = stealthCurve
     end
 
     -- SET MF FRAME AS WRITTEN IN THE CURRENT PROFILE {{{
