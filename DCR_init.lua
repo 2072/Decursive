@@ -1304,6 +1304,7 @@ function D:SetConfiguration() -- {{{
     D.Status.delayedDebuffOccurences = 0;
     D.Status.delayedUnDebuffOccurences = 0;
     D.Status.prio_macro = {};
+    D.Status.excludedSpellIDsByClass = {}
 
     D.Stealthed_Units = {};
 

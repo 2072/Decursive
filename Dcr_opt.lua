@@ -2220,7 +2220,52 @@ local AURA_DISPEL_TYPES = {
 }
 local MAX_CURE_PRIORITIES = 7
 
-function D:GetAuraCandidateFiltersByPrio(unit)
+local EMPTY_FILTER = {}
+
+function D:resetExcludedSpellIDsCache(class)
+    if class then
+        D.Status.excludedSpellIDsByClass[class] = {}
+        D:Debug("resetExcludedSpellIDsCache", class)
+    else
+        D.Status.excludedSpellIDsByClass = {}
+        D:Debug("resetExcludedSpellIDsCache all")
+    end
+end
+
+-- mostly useless as it only works for NeverSecret spellIds... I discovered it
+-- after finishing the implementation. I want to thank Blizzard for wasting 6
+-- hours of my life due to poor documentation and badly named variable. Wasting
+-- another human's time should be a crime punishable by law... How difficult
+-- would it have been to name this stupid filter neverSecretExcludeSpellIDs
+-- instead of excludeSpellIDs?
+function D:getClassExcludedSpellIDs(class)
+
+    if not class then
+        return EMPTY_FILTER
+    end
+
+    local excludedSpellIDsByClass = D.Status.excludedSpellIDsByClass
+    if not excludedSpellIDsByClass[class] then
+        local skipByClass = D.profile.skipByClass[class]
+        local skipList = D.profile.DebuffsSkipList
+
+        local excludedSpellIDs = {}
+
+        for k, v in pairs(skipByClass) do
+            if v and C_Secrets.GetSpellAuraSecrecy(spellID) ~= Enum.SecrecyLevel.NeverSecret then
+                excludedSpellIDs[skipList[k]] = true
+            end
+        end
+
+        excludedSpellIDsByClass[class] = excludedSpellIDs
+
+    end
+
+    --D:Debug("Spell ids excluded for class", class, D:tAsString(excludedSpellIDsByClass[class]))
+    return excludedSpellIDsByClass[class]
+end
+
+function D:GetAuraCandidateFiltersByPrio(unit, unitClass)
     local defaultFilters = D.Status.auraCandidateFiltersByPrio
     local dispelTypesByPrio = D.Status.auraDispelTypesByPrio
 
@@ -2231,7 +2276,10 @@ function D:GetAuraCandidateFiltersByPrio(unit)
     local filtersByPrio = {}
     for prio = 1, MAX_CURE_PRIORITIES do
         local includeDispelTypes = {}
-        filtersByPrio[prio] = { includeDispelTypes = includeDispelTypes }
+        filtersByPrio[prio] = {
+            includeDispelTypes = includeDispelTypes,
+            excludeSpellIDs = D:getClassExcludedSpellIDs(unitClass)
+        }
 
         for afflictionType, typeName in pairs(dispelTypesByPrio[prio]) do
             if not D.UnitFilteringTest(unit, D.Status.UnitFilteringTypes[afflictionType]) then
@@ -2258,7 +2306,10 @@ function D:SetColorCurve()
         local dispelTypesByPrio = {}
 
         for prio = 1, MAX_CURE_PRIORITIES do
-            candidateFiltersByPrio[prio] = { includeDispelTypes = {} }
+            candidateFiltersByPrio[prio] = {
+                includeDispelTypes = {},
+                excludeSpellIDs = {}
+            }
             dispelTypesByPrio[prio] = {}
         end
 
@@ -2414,7 +2465,7 @@ function D:SetCureOrder (ToChange)
     local DebuffType;
     -- set the priority for each spell, Micro frames will use this to determine which button to map
     local affected = 1;
-    for i=1,7 do
+    for i=1, MAX_CURE_PRIORITIES do
         DebuffType = ReversedCureOrder[i]; -- there is no gap between indexes
         if (DebuffType and not CuringSpellsPrio[ CuringSpells[DebuffType] ] ) then
             CuringSpellsPrio[ CuringSpells[DebuffType] ] = affected;
@@ -2541,6 +2592,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
         D.profile.DebuffAlwaysSkipList[handler["Debuff"]] = nil; -- remove it from the table
 
+        D:resetExcludedSpellIDsCache()
         D:Debug("%s removed!", handler["Debuff"]);
 
     end
@@ -2562,6 +2614,8 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
                 skipByClass[Classe][DebuffName] = nil; -- Removes it
             end
         end
+
+        D:resetExcludedSpellIDsCache()
     end
 
     local function ClassValues(DebuffName)
@@ -2634,6 +2688,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
                 end,
                 ["set"] = function  (handler, info, Classnum, state)
                     skipByClass[DC.ClassNumToUName[Classnum]][string.trim(handler["Debuff"])] = state;
+                    D:resetExcludedSpellIDsCache(DC.ClassNumToUName[Classnum])
                 end
             };
 
@@ -2656,8 +2711,8 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             },
             get = "get",
             set = "set",
-            order = 100 + num;
-
+            hidden = DC.MN,
+            order = 100 + num
         };
 
         num = num + 1;
@@ -2731,8 +2786,12 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     local AddFunc = function (spellID)
         local newDebuff = GetSpellName(spellID);
         if newDebuff then
-            DebuffsSkipList[newDebuff] = spellID;
-            D:Debug("'%s' added to debuff skip list", newDebuff, spellID);
+            if DC.MN and C_Secrets.GetSpellAuraSecrecy(spellID) ~= Enum.SecrecyLevel.NeverSecret then
+                error("Can't add debuff, not a 'Never secret' spellID:", spellID);
+            else
+                DebuffsSkipList[newDebuff] = spellID;
+                D:Debug("'%s' added to debuff skip list", newDebuff, spellID);
+            end
         elseif not newDebuff then
             error("Can't add debuff, invalid spellID:", spellID);
         end

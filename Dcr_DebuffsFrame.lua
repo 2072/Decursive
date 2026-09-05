@@ -1227,7 +1227,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         -- Create one native slot per possible cleansing-spell priority. Empty
         -- candidate maps hide unused priorities. Slots are created in reverse
         -- order as a second, deterministic draw-order safeguard.
-        local filters = D:GetAuraCandidateFiltersByPrio(Unit)
+        local filters = D:GetAuraCandidateFiltersByPrio(Unit, self.UnitClass)
         for prio = 7, 1, -1 do
             local slotPrio = prio
             local slotKey = "DCR_DISPELLABLE_" .. slotPrio
@@ -1423,7 +1423,7 @@ do
         if self.auraContainer then
             -- update debuff indicator
             if self.auraSlotKeys then
-                local filters = D:GetAuraCandidateFiltersByPrio(Unit)
+                local filters = D:GetAuraCandidateFiltersByPrio(Unit, self.UnitClass)
                 for prio, slotKey in ipairs(self.auraSlotKeys) do
                     self.auraContainer:SetAuraSlotCandidateFilters(
                     slotKey,
@@ -1933,6 +1933,8 @@ do
 
                 -- set this to true because we just did something expensive...
                 ReturnValue = true;
+
+                -- TODO: reset class filters here iff Blizzard losens restrictions on excluded spellIDs but it won't happen so jsut do nothing
 
                 --D:Debug("Class '%s' set for '%s'", Class, self.CurrUnit);
             elseif not Class and self.UnitClass then
