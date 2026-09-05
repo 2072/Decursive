@@ -2252,7 +2252,7 @@ function D:getClassExcludedSpellIDs(class)
         local excludedSpellIDs = {}
 
         for k, v in pairs(skipByClass) do
-            if v and C_Secrets.GetSpellAuraSecrecy(spellID) ~= Enum.SecrecyLevel.NeverSecret then
+            if v and C_Secrets.GetSpellAuraSecrecy(skipList[k]) == Enum.SecrecyLevel.NeverSecret then
                 excludedSpellIDs[skipList[k]] = true
             end
         end
