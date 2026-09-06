@@ -1,33 +1,57 @@
-Decursive development version
-=============================
-
-WoW 12.1:
-
-- Restore affliction alert sounds for known current-season dispellable auras.
-  Decursive pre-registers only aura spell IDs the current specialization can
-  cure, and Blizzard performs protected detection and sound playback.
-
-- Show the last-used cleansing action's cooldown sweep and countdown across the
-  MUF grid, so the next dispellable unit visibly indicates when that action is
-  not ready. The global cooldown is intentionally ignored.
-
-- Fix the misleading "There is nothing to cure!" message appearing after a
-  successful dispel handled through WoW 12.x's secret-aura system.
-
-- Preserve Decursive's configured cleansing priorities with one native aura
-  slot per cleansing-spell/mouse-button assignment. When several dispellable
-  aura types are present, the highest configured priority is displayed.
-
-- Exclude disabled or unavailable dispel types from the native aura slots so
-  they cannot mask an enabled dispel type on the same unit.
-
-- Configure restricted AuraButtons only from their initialization callback;
-  later configuration changes update the AuraContainer without accessing
-  secret aura data or forbidden button objects.
+Decursive 2.9.0-RC1
+===================
 
 
-Decursive 2.8.3
-===============
+Decursive 2.9.0-RC1 (2026-09-06)
+--------------------------------
+
+
+This is an early release that brings basic compatibility with WoW 12.1
+
+Decursive now uses the restricted/mandatory Blizzard API to show debuffs.
+Decursive is now just conveying the information Blizzard provides without the
+ability to filter or format anything depending on certain conditions apart from
+the filtering options Blizzard is providing.
+
+This has a few implications, first the bad and then the good ones:
+
+The bad news:
+-------------
+- The alert sound only works consistently for the mind-controlled state and the
+  current season's known debuffs (thanks to [RejectKid][RejectKid] and [Randy  Lorfing][RandyLorfing]).
+  There might be a way to make Decursive learn and register debuffs the players dispell when outside of combat,
+  it will be explored for a later release.
+
+- The range indicator (dimmed MUF) is not working anymore (might be restored in
+  a different way in a later release).
+
+- The remaining duration/elapsed time or stack count of the debuff is gone for now (some of them might return in
+  a later version if formatting functions from Blizzard are usable enough).
+
+- Debuff filtering is mostly gone as it only works for NeverSecret debuffs.
+
+- The LiveList only works for mind-controlled units and won't show any other debuffs.
+
+- The bleed effect detection system cannot work anymore.
+
+- Many still accessible options have no longer any effect in 12.1, they'll be hidden in future releases.
+
+- As with 12.0, wrong-mouse-button detection is gone as well as out-of-line-of-sight cast error detection and unit black-listing.
+
+- See the release notes for 2.8.0-RC2 for other Midnight related restrictions not listed here.
+
+The good news:
+--------------
+
+- ✨ Stealth detection has been restored.
+
+- ✨ Dispel type priority has been restored. (Thanks to [RejectKid][RejectKid] for his work on this)
+
+- ✨ Unlike with wow 12.0 Decursive should be able to display all debuffs now (to be comfirmed)
+
+
+- ✨ This release is also compatible with the Chinese client (Titan Reforged) of WoW thanks to [WidgetA][WidgetA]
+
 
 Decursive 2.8.3 (2026-08-21)
 ----------------------------
@@ -499,3 +523,6 @@ For older versions changes, see OldChangelog.txt
 [ticket]: https://www.wowace.com/projects/decursive/issues
 [GithubReleases]: https://github.com/2072/Decursive/releases
 [BigwigsPackager]: https://github.com/BigWigsMods/packager
+[WidgetA]: https://github.com/WidgetA
+[RejectKid]: https://github.com/RejectKid
+[RandyLorfing]: https://github.com/randylorfing
