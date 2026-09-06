@@ -2508,10 +2508,7 @@ function D:SetCureOrder (ToChange)
 
     self:SetMacrosPerPrioTable("mouseover");
 
-    if DC.MN then
-        D:Schedule_MN_SoundsRegistration()
-    end
-
+    D:Schedule_MN_SoundsRegistration()
 end
 
 function D:ShowHideDebuffsFrame ()

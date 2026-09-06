@@ -706,6 +706,8 @@ do
 
         self:Debug ("|cFFFF44FF-->|r Update complete!", Status.UnitNum);
 
+        D:Schedule_MN_SoundsRegistration()
+
         --@debug@
         D:Debug("Current group:", CurrentGroup, D:tAsString(IPL));
         D:Debug("Source priority list:", #self.profile.PriorityList, D:tAsString(self.profile.PriorityList));

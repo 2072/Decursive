@@ -43,6 +43,12 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_DebuffsFrame.xml"] or not T._Lo
 end
 T._LoadedFiles["Dcr_12_1_Sounds.lua"] = not DC.MN and "@project-version@";
 
+function D:Schedule_MN_SoundsRegistration(delay)
+    if DC.MN then
+        D:ScheduleDelayedCall("12.1RegisterSounds", D.Refresh12_1AuraSounds, delay or 1, D)
+    end
+end
+
 
 if not DC.TWELVE_ONE or not C_UnitAuras or type(C_UnitAuras.AddAuraSound) ~= "function" then
     return
@@ -83,25 +89,6 @@ local SPELLS_BY_TYPE = {
 
 local handles = {}
 
-local function getUnitTokens()
-    local units = { "player" }
-
-    if IsInRaid() then
-        for i = 1, GetNumGroupMembers() do
-            units[#units + 1] = "raid" .. i
-        end
-    else
-        -- Pre-arm stable party tokens even while solo. A dungeon can enable
-        -- aura restrictions before a later roster refresh is allowed to add
-        -- registrations. TODO: fix this, replace with our unit array function
-        for i = 1, 4 do
-            units[#units + 1] = "party" .. i
-        end
-    end
-
-    return units
-end
-
 local function buildDesiredRegistrations()
     local desired = {}
 
@@ -112,7 +99,7 @@ local function buildDesiredRegistrations()
     local cureOrder = D:GetCureOrderTable() -- key are types, values are positive number when type is enabled, false or negative number otherwise
     local soundFile = D.profile.SoundFile or DC.AfflictionSound
 
-    for _, unit in ipairs(getUnitTokens()) do -- TODO: replace this with our displayed MUF unit array
+    for _, unit in ipairs(D.Status.Unit_Array) do
         for debuffType, spellIDs in pairs(SPELLS_BY_TYPE) do
             local typePrio = cureOrder[debuffType]
             if typePrio and typePrio > 0 then
@@ -130,10 +117,6 @@ local function buildDesiredRegistrations()
     end
 
     return desired
-end
-
-function D:Schedule_MN_SoundsRegistration(delay)
-    D:ScheduleDelayedCall("12.1RegisterSounds", D.Refresh12_1AuraSounds, delay or 1, D)
 end
 
 function D:Refresh12_1AuraSounds()
@@ -174,7 +157,7 @@ function D:Refresh12_1AuraSounds()
     for _ in pairs(handles) do
         handleCount = handleCount + 1
     end
-    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, "Added:", addedCount, "Removed:", removedCount)
+    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, ", Added:", addedCount, ", Removed:", removedCount)
     return true
 end
 
