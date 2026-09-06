@@ -89,8 +89,15 @@ local SPELLS_BY_TYPE = {
 
 local handles = {}
 
+local soundRegCache = setmetatable({}, {
+    __mode = "kv",
+})
+
+local cacheMissCount = 0
+
 local function buildDesiredRegistrations()
     local desired = {}
+    cacheMissCount = 0
 
     if not D.profile or not D.profile.PlaySound or not D.Status or not D.Status.CuringSpells then
         return desired
@@ -105,12 +112,16 @@ local function buildDesiredRegistrations()
             if typePrio and typePrio > 0 then
                 for _, spellID in ipairs(spellIDs) do
                     local key = unit .. ":" .. spellID .. ":" .. soundFile
-                    desired[key] = {
-                        unitToken = unit,
-                        spellID = spellID,
-                        soundFileName = soundFile,
-                        outputChannel = "Master",
-                    }
+                    if not soundRegCache[key] then
+                        soundRegCache[key] = {
+                            unitToken = unit,
+                            spellID = spellID,
+                            soundFileName = soundFile,
+                            outputChannel = "Master",
+                        }
+                        cacheMissCount = cacheMissCount + 1
+                    end
+                    desired[key] = soundRegCache[key]
                 end
             end
         end
@@ -157,7 +168,7 @@ function D:Refresh12_1AuraSounds()
     for _ in pairs(handles) do
         handleCount = handleCount + 1
     end
-    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, ", Added:", addedCount, ", Removed:", removedCount)
+    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, ", Added:", addedCount, ", Removed:", removedCount, ", CacheMiss:", cacheMissCount)
     return true
 end
 
