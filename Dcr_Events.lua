@@ -408,7 +408,7 @@ do
         end
 
         function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
-            D:Debug("ARSC: ", event, r_toString[restrictionType], s_toString[restrictionState])
+            D:Debug("ARSC: ", event, r_toString[restrictionType], restrictionType, s_toString[restrictionState], restrictionState)
 
             currentState[restrictionType] = restrictionState
         end
@@ -422,6 +422,10 @@ do
     function D:GetRestrictionStates()
         return currentState
     end;
+
+    function D:InEncounterOrCombat()
+        return currentState[Enum.AddOnRestrictionType.Combat] ~= 0 or currentState[Enum.AddOnRestrictionType.Encounter] ~= 0
+    end
 end
 
 -- }}}

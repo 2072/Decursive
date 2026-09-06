@@ -774,6 +774,10 @@ local function GetStaticOptions ()
                         disabled = function() return D.profile.HideLiveList and not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1 or not D:IsEnabled(); end,
                         name = L["PLAY_SOUND"],
                         desc = L["OPT_PLAYSOUND_DESC"],
+                        set = function(info,v)
+                            D.SetHandler(info,v)
+                            D:Schedule_MN_SoundsRegistration()
+                        end,
 
                         order = 10,
                     },
@@ -2503,6 +2507,10 @@ function D:SetCureOrder (ToChange)
     end
 
     self:SetMacrosPerPrioTable("mouseover");
+
+    if DC.MN then
+        D:Schedule_MN_SoundsRegistration()
+    end
 
 end
 

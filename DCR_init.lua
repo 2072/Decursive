@@ -1313,10 +1313,6 @@ function D:SetConfiguration() -- {{{
         D.Status.Combat = true;
     end
 
-    if DC.MN then
-        D.Status.restrictions = D:GetRestrictionStates()
-    end
-
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
     -- reset: /run  LibStub("AceAddon-3.0"):GetAddon("Decursive").db.class.CureOrder = {}
