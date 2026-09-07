@@ -412,8 +412,8 @@ do
     local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
 
         -- this mechanism is completely disabled in 12.1 so do nothing for now...
-        if DC.TWELVE_ONE then
-            D:Debug("12.1: UnitDebuff was called!", debugstack(2))
+        if DC.TWELVE_ONE and D:AurasRestricted() then
+            --D:Debug("12.1: UnitDebuff was called while auras are restricted!", debugstack(2))
             return nil
         end
 
@@ -463,8 +463,7 @@ do
             end
         end
 
-        -- debuffs are unusable in midnight so always return false
-        if DC.MN then
+        if DC.MN and D:AurasRestricted() then
             return false
         end
 

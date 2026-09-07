@@ -836,6 +836,10 @@ do
                         D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                         D:SafePlaySoundFile(DC.DeadlyDebuffAlert);
                     end
+
+                    if DC.MN then
+                        D:Debuff_History_Add(Debuff.Name, Debuff.TypeName, Debuff.SpellID);
+                    end
                 end
             end
         end

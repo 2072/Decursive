@@ -423,8 +423,19 @@ do
         return currentState
     end;
 
+    local Combat        = Enum.AddOnRestrictionType.Combat
+    local Encounter     = Enum.AddOnRestrictionType.Encounter
+    local ChallengeMode = Enum.AddOnRestrictionType.ChallengeMode
+    local PvPMatch      = Enum.AddOnRestrictionType.PvPMatch
+
+    assert(Combat and Encounter and ChallengeMode and PvPMatch)
+
     function D:InEncounterOrCombat()
-        return currentState[Enum.AddOnRestrictionType.Combat] ~= 0 or currentState[Enum.AddOnRestrictionType.Encounter] ~= 0
+        return currentState[Combat] ~= 0 or currentState[Encounter] ~= 0
+    end
+
+    function D:AurasRestricted()
+        return D:InEncounterOrCombat() or currentState[ChallengeMode] ~= 0 or currentState[PvPMatch] ~= 0
     end
 end
 
@@ -475,7 +486,7 @@ function D:PLAYER_TARGET_CHANGED()
     if UnitExists("target") and not UnitCanAttack("player", "target") then
         D.Status.TargetExists = true;
 
-        if not DC.TWELVE_ONE then -- impossible to do it this way in 12.1
+        if not DC.TWELVE_ONE then -- Done using Blizzard's special aura container API
             self.LiveList:DelayedGetDebuff("target");
             self.Stealthed_Units["target"] = self:CheckUnitStealth("target")
         end
@@ -601,8 +612,7 @@ do
         --@end-debug@
 
 
-        -- defunct code in midnight, leave it here for now
-        if DC.MN and false then -- classic versioins still use CLEU and although they support UNIT_AURA as well CLEU provides more features
+        if DC.MN and not D:AurasRestricted() then -- classic versions still use CLEU and although they support UNIT_AURA as well CLEU provides more features
             if o_auraUpdateInfo.removedAuraInstanceIDs then
                 self:checkForDebuff(UnitID)
 
