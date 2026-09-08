@@ -387,6 +387,15 @@ function D:tcopy(to, from)   -- "to" must be a table (possibly empty)
     end
 end
 
+function D:tCount(t)
+    local c = 0
+    for _ in pairs(t) do
+        c = c + 1
+    end
+
+    return c
+end
+
 
 -- tcopycallback: recursively copy contents of one table to another calling a callback before storing the new values
 function D:tcopycallback(to, from, CallBack) -- "to" must be a table (possibly empty)

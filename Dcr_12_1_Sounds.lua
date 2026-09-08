@@ -87,6 +87,36 @@ local SPELLS_BY_TYPE = {
     },
 }
 
+
+-- TODO: augment those tables with debuff history and save those spells in user's profile
+
+
+local allSpells = {}
+
+for k, s in pairs(SPELLS_BY_TYPE) do
+    for _, id in ipairs(s) do
+        allSpells[id] = k
+    end
+end
+
+
+local expectedCount = (
+        #SPELLS_BY_TYPE[DC.MAGIC]
+        + #SPELLS_BY_TYPE[DC.POISON]
+        + #SPELLS_BY_TYPE[DC.DISEASE]
+        + #SPELLS_BY_TYPE[DC.CURSE]
+        + #SPELLS_BY_TYPE[DC.BLEED]
+        )
+
+local actualCount = D:tCount(allSpells)
+
+assert(
+    actualCount == expectedCount,
+    ("Bad SPELLS_BY_TYPE table (non unique or duplicated ids): expected: %d, found: %d"):format(expectedCount, actualCount)
+)
+
+DC.KNOWN_SIDS__TYPES = allSpells
+
 local handles = {}
 
 local soundRegCache = setmetatable({}, {
@@ -103,13 +133,15 @@ local function buildDesiredRegistrations()
         return desired
     end
 
-    local cureOrder = D:GetCureOrderTable() -- key are types, values are positive number when type is enabled, false or negative number otherwise
+    local curingSpells = D.Status.CuringSpells
+    local cureOrder = D:GetCureOrderTable() -- key are types, values are positive number when type is enabled, false when not
     local soundFile = D.profile.SoundFile or DC.AfflictionSound
 
     for _, unit in ipairs(D.Status.Unit_Array) do
         for debuffType, spellIDs in pairs(SPELLS_BY_TYPE) do
-            local typePrio = cureOrder[debuffType]
-            if typePrio and typePrio > 0 then
+            local typePrioEnabledWithSpell = cureOrder[debuffType] and curingSpells[debuffType]
+
+            if typePrioEnabledWithSpell then
                 for _, spellID in ipairs(spellIDs) do
                     local key = unit .. ":" .. spellID .. ":" .. soundFile
                     if not soundRegCache[key] then
