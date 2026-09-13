@@ -98,7 +98,6 @@ local InCombatLockdown  = _G.InCombatLockdown;
 local GetItemInfo           = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
 local GetSpellInfo          = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
 local GetSpellName          = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
-local GetSpellDescription = _G.C_Spell and _G.C_Spell.GetSpellDescription or _G.GetSpellDescription;
 local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
 local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local _;
@@ -2651,7 +2650,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
         classes["header2"] = {
             type = "description",
             name = function ()
-                local spellDesc = GetSpellDescription(spellID);
+                local spellDesc = D.spell_desc_cache[spellID];
                 local desc;
 
                 --D:Debug("Dealing with spell description for ", spellID);
@@ -3612,47 +3611,6 @@ do
     local t_CheckBleedDebuffsActiveIDs = {};
     local noCasekeywordPatterns = "";
 
-    local tw_spell_desc_cache = setmetatable({}, {
-        __index = function(table, spellID)
-            --@alpha@
-            D:Debug("metatable __index called with ", spellID);
-            --@end-alpha@
-
-            local spellExists = C_Spell.DoesSpellExist(spellID)
-
-            local desc = ""
-
-            if spellExists then
-                desc = GetSpellDescription(spellID)
-            else
-                desc = L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID)
-            end
-
-            if desc and desc ~= "" then -- it used to return an empty string when the desc was not available yet, now it seems to return nil...
-                table[spellID] = desc;
-            elseif not C_Spell.IsSpellDataCached(spellID) then
-                C_Spell.RequestLoadSpellData(spellID);
-                desc =  L["OPT_SPELL_DESCRIPTION_LOADING"];
-
-                D:Debug("Delayed Bleed Effect option panel refresh scheduled because of spellID: ", spellID);
-                D:ScheduleDelayedCall("refreshBleedEffectList", function () LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name) end, 2);
-
-            else -- can happen, not sure why...
-                desc = L["OPT_SPELL_DESCRIPTION_UNAVAILABLE"];
-                table[spellID] = desc;
-            end
-            --D:Debug("metatable __index called with ", spellID, "desc:", desc);
-            return desc;
-        end;
-    });
-
-    local tw_spell_name_cache = setmetatable({}, {
-        __index = function(table, spellID)
-            local spellName = C_Spell.DoesSpellExist(spellID) and D.GetSpellOrItemInfo(spellID) or false;
-            table[spellID] = spellName;
-            return spellName;
-        end
-    });
     local order = 0;
 
     function D:hasDescBleedEffectkeyword(desc, test_pattern, testAll)
@@ -3690,8 +3648,8 @@ do
     end
 
     local function GetBleedEffectColoredName(spellID) -- {{{
-        local descHasID = D:hasDescBleedEffectkeyword(tw_spell_desc_cache[spellID]);
-        local name = tw_spell_name_cache[spellID];
+        local descHasID = D:hasDescBleedEffectkeyword(D.spell_desc_cache[spellID]);
+        local name = D.spell_name_cache[spellID];
         local color = 'FFFFFFFF';
 
         if name then
@@ -3723,7 +3681,7 @@ do
             desc = {
                 type = 'description',
                 name = function (info)
-                    return higlightkeywords(tw_spell_desc_cache[TN(info[#info - 1])])
+                    return higlightkeywords(D.spell_desc_cache[TN(info[#info - 1])])
                 end,
                 order = 10,
             },
