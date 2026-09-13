@@ -184,7 +184,7 @@ function D:GetDefaultsSettings()
                 "ctrl-%s3",
             },
             BleedAutoDetection = true,
-            t_BleedEffectsIDCheck = {
+            t_BleedEffectsIDCheck = DC.MN and {
                 [396007] = true, -- Vicious Peck
                 [396093] = true, -- Savage Leap
                 [193092] = true, -- Bloodletting Sweep
@@ -199,7 +199,7 @@ function D:GetDefaultsSettings()
                 [393444] = true, -- Gushing Wound
                 [413131] = true, -- Whirling Dagger
                 [413136] = true, -- Whirling Dagger
-            },
+            } or {},
             -- The time between each MUF update
             DebuffsFrameRefreshRate = 0.10,
 
@@ -3614,19 +3614,30 @@ do
 
     local tw_spell_desc_cache = setmetatable({}, {
         __index = function(table, spellID)
-            --D:Debug("metatable __index called with ", spellID);
-            local desc = C_Spell.DoesSpellExist(spellID) and GetSpellDescription(spellID) or L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID);
+            --@alpha@
+            D:Debug("metatable __index called with ", spellID);
+            --@end-alpha@
 
-            if desc ~= "" then
+            local spellExists = C_Spell.DoesSpellExist(spellID)
+
+            local desc = ""
+
+            if spellExists then
+                desc = GetSpellDescription(spellID)
+            else
+                desc = L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID)
+            end
+
+            if desc and desc ~= "" then -- it used to return an empty string when the desc was not available yet, now it seems to return nil...
                 table[spellID] = desc;
             elseif not C_Spell.IsSpellDataCached(spellID) then
                 C_Spell.RequestLoadSpellData(spellID);
                 desc =  L["OPT_SPELL_DESCRIPTION_LOADING"];
 
-                D:Debug("delayed Bleed Effect option panel refresh scheduled because of spellID: ", spellID);
+                D:Debug("Delayed Bleed Effect option panel refresh scheduled because of spellID: ", spellID);
                 D:ScheduleDelayedCall("refreshBleedEffectList", function () LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name) end, 2);
 
-            else
+            else -- can happen, not sure why...
                 desc = L["OPT_SPELL_DESCRIPTION_UNAVAILABLE"];
                 table[spellID] = desc;
             end
