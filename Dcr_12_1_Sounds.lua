@@ -115,7 +115,44 @@ assert(
     ("Bad SPELLS_BY_TYPE table (non unique or duplicated ids): expected: %d, found: %d"):format(expectedCount, actualCount)
 )
 
-DC.KNOWN_SIDS__TYPES = allSpells
+DC.KNOWN_SIDS_to_TYPES = allSpells
+DC.KNOWN_SIDS_by_TYPES = SPELLS_BY_TYPE
+
+function D:AddKnownSpellIDToSoundReg(spellID, spellType)
+
+    if spellType == DC.ENEMYMAGIC then
+        spellType = DC.MAGIC
+    end
+
+    if not SPELLS_BY_TYPE[spellType] then
+        D:Debug("AddKnownSpellIDToSoundReg bad usage: unknown type:", spellType)
+        return
+    end
+
+    if allSpells[spellID] then return end
+
+    allSpells[spellID] = spellType
+    SPELLS_BY_TYPE[spellType][#SPELLS_BY_TYPE[spellType] + 1] = spellID
+
+    D:Schedule_MN_SoundsRegistration()
+end
+
+function D:RemoveKnownSpellIDFromSoundReg(spellID)
+    if not allSpells[spellID] then return end
+
+    local spellType = allSpells[spellID]
+
+    allSpells[spellID] = nil
+
+    for i = #SPELLS_BY_TYPE[spellType], 1, -1 do
+        if SPELLS_BY_TYPE[spellType][i] == spellID then
+            table.remove(SPELLS_BY_TYPE[spellType], i)
+            break
+        end
+    end
+
+    D:Schedule_MN_SoundsRegistration()
+end
 
 local handles = {}
 

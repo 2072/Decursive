@@ -373,7 +373,7 @@ do
 
            -- This is a useless comment
            iterator = iterator + 1;
-       end
+           end
 
    end
 
@@ -501,6 +501,10 @@ do
             if D:hasDescBleedEffectkeyword(D.spell_desc_cache[SpellID]) then
                 D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = true;
                 D.db.global.t_BleedEffectsIDCheck[SpellID] = true;
+
+                if DC.MN then
+                    D:AddKnownSpellIDToSoundReg(SpellID, DC.BLEED)
+                end
             else
                 D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = false;
             end
@@ -579,7 +583,7 @@ do
                     TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
                     Type = DC.NameToTypes[TypeName]
                 elseif not isSpellIDScret and self.Status.CuringSpells[DC.BLEED] then
-                    checkSpellIDForBleed();
+                    checkSpellIDForBleed(); -- note that this is native in Midnight, the Bleed type actualy exists now...
                     if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
                         Type = DC.NameToTypes["Bleed"]
                         TypeName = DC.TypeNames[DC.BLEED];

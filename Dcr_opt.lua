@@ -1746,6 +1746,8 @@ local function GetStaticOptions ()
                                 set = function(info, v)
                                     D.db.global.t_BleedEffectsIDCheck[TN(v)] = true;
                                     D.Status.t_CheckBleedDebuffsActiveIDs[TN(v)] = true;
+
+                                    D:updateBleedEffectSoundRegistrations()
                                 end,
                                 validate = function(info, v)
                                     return TN(v) ~= nil and C_Spell.DoesSpellExist(TN(v)) and 0 or D:ColorPrint(1, 0, 0, L["OPT_BLEED_EFFECT_BAD_SPELLID"]);
@@ -3693,6 +3695,8 @@ do
                     t_BleedEffectsIDCheck[TN(info[#info - 1])] = v;
                     t_CheckBleedDebuffsActiveIDs[TN(info[#info - 1])] = v;
 
+                    D:updateBleedEffectSoundRegistrations()
+
                     return t_BleedEffectsIDCheck[TN(info[#info - 1])];
                 end,
                 get = function(info)
@@ -3710,8 +3714,10 @@ do
                 func = function (info)
                     local toRemove = TN(info[#info - 1]);
                     t_BleedEffectsIDCheck[toRemove] = t_DefaultBleedEffectsIDCheck[toRemove] and -1 or nil;
-                    D:Debug('XXXX',t_BleedEffectsIDCheck[toRemove]  );
+                    D:Debug('XXXX',t_BleedEffectsIDCheck[toRemove]);
                     t_CheckBleedDebuffsActiveIDs[toRemove] = nil;
+
+                    if DC.MN then D:RemoveKnownSpellIDFromSoundReg(toRemove) end
                 end,
                 order = 30,
             },
@@ -3766,6 +3772,8 @@ do
                 D.Status.t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
             end
         end
+
+        D:updateBleedEffectSoundRegistrations()
     end
 
     function D:GetDefaultBleedEffectsKeywords()
@@ -3798,6 +3806,22 @@ do
         for spellID, isBleed in pairs(defaults) do
             t_BleedEffectsIDCheck[spellID] = isBleed;
             t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
+        end
+
+        D:updateBleedEffectSoundRegistrations()
+    end
+
+    function D:updateBleedEffectSoundRegistrations()
+        if not DC.MN then return end
+
+        local t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
+
+        for spellID, isBleed in pairs(t_BleedEffectsIDCheck) do
+            if not isBleed or isBleed == -1 then
+                D:RemoveKnownSpellIDFromSoundReg(spellID)
+            else
+                D:AddKnownSpellIDToSoundReg(spellID, DC.BLEED)
+            end
         end
     end
 end

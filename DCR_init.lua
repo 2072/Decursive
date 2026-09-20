@@ -1148,6 +1148,10 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
     D.eventFrame = CreateFrame("Frame");
     D.eventFrame:Hide();
 
+
+    -- Register discovered and user added bleed effect sound
+    D:updateBleedEffectSoundRegistrations()
+
     T._CatchAllErrors = false;
 
 end -- // }}}
