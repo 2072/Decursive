@@ -407,7 +407,7 @@ do
     local D                 = D;
     local C_UnitAuras       = _G.C_UnitAuras
 
-    local filter = DC.MN and "RAID_PLAYER_DISPELLABLE" or nil
+    local filter = nil -- DC.MN and "RAID_PLAYER_DISPELLABLE" or nil -- try to renable it in midnight since auras are always fully restricted
 
     local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
 
@@ -417,7 +417,7 @@ do
             return nil
         end
 
-        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter); -- forbidden in 12.1...
+        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter);
 
         if not auraData then
 			return nil;

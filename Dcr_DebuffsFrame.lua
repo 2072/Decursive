@@ -1239,7 +1239,9 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
             c:AddAuraSlot(
                 slotKey,
-                "HARMFUL|RAID",
+                -- since we have one per type we do not need to rely on the RAID filter (dispellable by player), let Decursive's config take over.
+                -- There is also the DISPELLABLE filter which may be useful not sure: https://warcraft.wiki.gg/wiki/API:AuraContainer_AddAuraSlot
+                "HARMFUL",
                 {
                     sortMethod = 0,
                     sortDirection = 0,
