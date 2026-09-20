@@ -403,6 +403,24 @@ Active no case version:
             )
         end);
 
+
+        local SIDRegSuccess, SIDRegProfileData = pcall(function()
+            local D = T.Dcr;
+            local knownSIDCount = 0;
+            local result = ""
+
+            if not DC.MN then return "N/A (not MN)" end
+
+            if D.db and D.db.global and type(D.db.global.t_SpellIDsSoundReg) == "table" then
+                for _ in pairs(D.db.global.t_SpellIDsSoundReg) do
+                    knownSIDCount = knownSIDCount + 1;
+                end
+                return ("Extra Spell IDs registered for sound: %d"):format(knownSIDCount)
+            else
+                return "D.db.global.t_SpellIDsSoundReg not available or not a table"
+            end
+        end)
+
         local CSCsuccess, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
         local STPsuccess, spellTable = pcall(T._PrintSpellTable);
 
@@ -423,6 +441,7 @@ Active no case version:
         .. table.concat(T._DebugTextTable, "")
         .. SEP .. "Bleed Conf:\n" .. bleedConfiguration .. SEP
         .. "Action Conf:\n" .. actionsConfiguration .. SEP -- (Spells assignments:)
+        .. "Spell id sound registration:\n" .. SIDRegProfileData .. SEP
         .. "Custom Spell Conf:\n" .. customSpellConfiguration .. SEP
         .. "Decursive known spells:\n" .. spellTable .. SEP
         .. "Script ran too long errors:\n" .. SRTOLErrors .. SEP

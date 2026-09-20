@@ -199,6 +199,7 @@ function D:GetDefaultsSettings()
                 [413131] = true, -- Whirling Dagger
                 [413136] = true, -- Whirling Dagger
             } or {},
+            t_SpellIDsSoundReg = {},
             -- The time between each MUF update
             DebuffsFrameRefreshRate = 0.10,
 
@@ -3962,6 +3963,19 @@ function D:QuickAccess (CallingObject, button) -- {{{
 
 end -- }}}
 
+function D:registerHistoryDebuffForSound()
+    if not DC.MN then return end
+
+    local t_SpellIDsSoundReg = D.db.global.t_SpellIDsSoundReg
+
+    for spellID, regInfo in pairs(t_SpellIDsSoundReg) do
+        if regInfo.enabled then
+           D:AddKnownSpellIDToSoundReg(spellID, regInfo.spellType)
+        else
+            D:RemoveKnownSpellIDFromSoundReg(spellID)
+        end
+    end
+end
 
 T._LoadedFiles["Dcr_opt.lua"] = "@project-version@";
 

@@ -1152,6 +1152,9 @@ function D:OnInitialize() -- Called on ADDON_LOADED by AceAddon -- {{{
     -- Register discovered and user added bleed effect sound
     D:updateBleedEffectSoundRegistrations()
 
+    -- Register discovered other spell types while playing or the ones the user added
+    D:registerHistoryDebuffForSound()
+
     T._CatchAllErrors = false;
 
 end -- // }}}

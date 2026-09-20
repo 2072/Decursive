@@ -373,7 +373,13 @@ do
 
            -- This is a useless comment
            iterator = iterator + 1;
+
+           if DC.MN then
+               D:AddKnownSpellIDToSoundReg(spellID, DC.NameToTypes[DebuffType])
+
+               D.db.global.t_SpellIDsSoundReg[spellID] = {["spellType"] = DC.NameToTypes[DebuffType], ["from"] = "history", ["enabled"] = true}
            end
+       end
 
    end
 
