@@ -2,6 +2,12 @@ name: Check and build addon
 
 on:
   workflow_dispatch:
+    inputs:
+      forever_only:
+        description: Only build the WoW Forever package
+        required: true
+        default: true
+        type: boolean
   push:
     branches:
       - master
@@ -39,6 +45,7 @@ jobs:
 
       - name: Package retail
         if: >-
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#skipretail') &&
           !contains(github.event.head_commit.message, '#skipall')
@@ -46,6 +53,7 @@ jobs:
 
       - name: Package classic
         if: >-
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipclassic') &&
@@ -56,6 +64,7 @@ jobs:
 
       - name: Package mists
         if: >-
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipmop') &&
@@ -66,6 +75,7 @@ jobs:
 
       - name: Package bcc
         if: >-
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipbcc') &&
@@ -76,6 +86,7 @@ jobs:
 
       - name: Package wrath
         if: >-
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skiptitan') &&
@@ -100,7 +111,14 @@ jobs:
         run: |
           set -euo pipefail
 
-          mapfile -t archives < <(find .release -maxdepth 1 -type f -iname '*forever*.zip' ! -iname '*nolib*')
+          archives=()
+          while IFS= read -r candidate; do
+            candidate_toc="$(unzip -p "$candidate" 'Decursive/Decursive.toc' 2>/dev/null || true)"
+            if grep -q '^## Interface: 16001' <<<"$candidate_toc"; then
+              archives+=("$candidate")
+            fi
+          done < <(find .release -maxdepth 1 -type f -iname '*.zip' ! -iname '*nolib*')
+
           if [[ ${#archives[@]} -ne 1 ]]; then
             printf 'Expected one full Forever archive, found %d\n' "${#archives[@]}" >&2
             printf '%s\n' "${archives[@]}" >&2
