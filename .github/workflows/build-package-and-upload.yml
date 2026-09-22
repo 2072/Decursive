@@ -22,7 +22,7 @@ jobs:
         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
@@ -125,9 +125,10 @@ jobs:
           github.ref_type == 'branch' &&
           !contains(github.event.head_commit.message, '#skipforever') &&
           !contains(github.event.head_commit.message, '#skipall')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: Decursive-Forever-${{ github.sha }}
           path: .release/*.zip
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
