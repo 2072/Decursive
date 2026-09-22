@@ -1,3 +1,18 @@
+Decursive 2.9.0-Forever-RC1
+===========================
+
+Decursive 2.9.0-Forever-RC1 (2026-09-21)
+-----------------------------------------
+
+- Add initial WoW Forever (Camelot) support for interface 16001.
+- Combine Classic spell and rank behavior with the modern restricted-aura API.
+- Replace the removed CustomAuraButton `SetAuraBorder` compatibility alias with
+  the current dispel-texture API.
+- Require AceDB-3.0 revision 36 on Forever. This fixes Forever realm keys and
+  handles beta regions that do not yet expose a normal region identifier.
+- Add a pinned Forever package build and validation job.
+
+
 Decursive 2.9.0-RC2
 ===================
 

@@ -1187,7 +1187,10 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
             -- AuraButtons become inaccessible to addon code while auras are
             -- secret. Configure the display completely inside Blizzard's
             -- initializeFrame callback and update only the container later.
-           ab:SetAuraBorder(border, options)
+            -- SetAuraBorder was a 12.1 compatibility alias and is absent in
+            -- Forever. Use the current AuraContainer API on both clients.
+            ab:ClearDispelTypeTextures()
+            ab:AddDispelTypeTexture(border, options)
         end
 
         local setButton = function(ab, prio)

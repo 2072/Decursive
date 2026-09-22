@@ -1,6 +1,7 @@
 name: Check and build addon
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -12,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
         #WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
@@ -19,7 +22,7 @@ jobs:
         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -36,42 +39,95 @@ jobs:
 
       - name: Package retail
         if: >-
+          !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#skipretail') &&
           !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@v2.6.1
 
       - name: Package classic
         if: >-
+          !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipclassic') &&
           !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g classic
 
       - name: Package mists
         if: >-
+          !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipmop') &&
           !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g mists
 
       - name: Package bcc
         if: >-
+          !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skipbcc') &&
           !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g bcc
 
       - name: Package wrath
         if: >-
+          !contains(github.ref_name, '-Forever-') &&
           !contains(github.event.head_commit.message, '#retailOnly') &&
           !contains(github.event.head_commit.message, '#skiptitan') &&
           !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g titan
+
+      - name: Package Forever
+        if: >-
+          !contains(github.event.head_commit.message, '#skipforever') &&
+          !contains(github.event.head_commit.message, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
+        with:
+          args: -g forever
+
+      - name: Verify Forever package
+        if: >-
+          !contains(github.event.head_commit.message, '#skipforever') &&
+          !contains(github.event.head_commit.message, '#skipall')
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t archives < <(find .release -maxdepth 1 -type f -iname '*forever*.zip' ! -iname '*nolib*')
+          if [[ ${#archives[@]} -ne 1 ]]; then
+            printf 'Expected one full Forever archive, found %d\n' "${#archives[@]}" >&2
+            printf '%s\n' "${archives[@]}" >&2
+            exit 1
+          fi
+
+          archive="${archives[0]}"
+          toc="$(unzip -p "$archive" 'Decursive/Decursive.toc')"
+          grep -q '^## Interface: 16001' <<<"$toc"
+          ! grep -q '@project-' <<<"$toc"
+
+          ace_db="$(unzip -p "$archive" 'Decursive/Libs/AceDB-3.0/AceDB-3.0.lua')"
+          grep -q '"AceDB-3.0", 36' <<<"$ace_db"
+          grep -q 'version > 16000 and version < 20000' <<<"$ace_db"
+
+          debuffs_frame="$(unzip -p "$archive" 'Decursive/Dcr_DebuffsFrame.lua')"
+          grep -q 'AddDispelTypeTexture' <<<"$debuffs_frame"
+          ! grep -q ':SetAuraBorder(' <<<"$debuffs_frame"
+
+      - name: Upload Forever test package
+        if: >-
+          github.ref_type == 'branch' &&
+          !contains(github.event.head_commit.message, '#skipforever') &&
+          !contains(github.event.head_commit.message, '#skipall')
+        uses: actions/upload-artifact@v4
+        with:
+          name: Decursive-Forever-${{ github.sha }}
+          path: .release/*.zip
+          if-no-files-found: error
+          retention-days: 30

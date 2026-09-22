@@ -509,7 +509,16 @@ local function SetRuntimeConstants_Once () -- {{{
         -- }}}
     else -- WOW CLASSIC
         if not DC.CATACLYSM then
-            DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"], DS["Lesser Invisibility"]});
+            local classicStealthAuras = {"Prowl", "Stealth", "Shadowmeld", "Lesser Invisibility"}
+            DC.IS_STEALTH_BUFF = D:tReverse(D:tMap(classicStealthAuras, function(auraName) return DS[auraName] end));
+
+            -- The modern restricted-aura container accepts spell IDs instead
+            -- of names. Forever needs this list even though its spell behavior
+            -- otherwise follows the Classic branch.
+            if DC.FOREVER then
+                DC.MN_STEALTH_BUFFS = D:tReverse(D:tMap(classicStealthAuras, function(auraName) return DSI[auraName] end));
+            end
+
             DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["MUTATINGINJECTION"]}); --, "Test item"});
             DC.IS_DEADLY_DEBUFF   = D:tReverse({});
             DC.IS_OMNI_DEBUFF     = D:tReverse({});

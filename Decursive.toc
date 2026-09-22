@@ -1,6 +1,7 @@
 ## Interface: 120100
 ## Interface-Retail: 120100
 ## Interface-Classic: 11509
+## Interface-Forever: 16001
 ## Interface-bcc: 20506
 ## Interface-Titan: 38002
 ## Interface-Mists: 50504
