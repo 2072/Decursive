@@ -1,3 +1,15 @@
+Decursive 2.9.0-Forever-RC2
+===========================
+
+Decursive 2.9.0-Forever-RC2 (2026-09-21)
+-----------------------------------------
+
+- Always include Decursive's complete English locale table in release
+  archives. This prevents startup failure when the external localization
+  service returns an empty result during packaging.
+- Make CI reject Forever packages missing the English fallback strings.
+
+
 Decursive 2.9.0-Forever-RC1
 ===========================
 

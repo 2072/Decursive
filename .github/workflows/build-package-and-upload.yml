@@ -116,6 +116,15 @@ jobs:
           grep -q '"AceDB-3.0", 36' <<<"$ace_db"
           grep -q 'version > 16000 and version < 20000' <<<"$ace_db"
 
+          en_us="$(unzip -p "$archive" 'Decursive/Localization/enUS.lua')"
+          locale_entry_count="$(grep -c '^L\[' <<<"$en_us")"
+          if [[ $locale_entry_count -lt 350 ]]; then
+            printf 'Expected at least 350 English locale entries, found %d\n' "$locale_entry_count" >&2
+            exit 1
+          fi
+          grep -Fq 'L["DEBUG_REPORT_HEADER"]' <<<"$en_us"
+          grep -Fq 'L["OPT_OPTIONS_DISABLED_WHILE_IN_COMBAT"]' <<<"$en_us"
+
           debuffs_frame="$(unzip -p "$archive" 'Decursive/Dcr_DebuffsFrame.lua')"
           grep -q 'AddDispelTypeTexture' <<<"$debuffs_frame"
           ! grep -q ':SetAuraBorder(' <<<"$debuffs_frame"
