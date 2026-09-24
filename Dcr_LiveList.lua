@@ -319,7 +319,7 @@ function LiveList.prototype:SetDebuff(UnitID, Debuff, IsCharmed) -- {{{
         self.PrevDebuffApplicaton = Debuff.Applications
         local appDisplayString
         if Debuff.secretMode then
-            appDisplayString = Debuff.auraInstanceID and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or ""
+            appDisplayString = Debuff.auraInstanceID and (not D:AurasRestricted()) and C_UnitAuras.GetAuraApplicationDisplayCount(UnitID, Debuff.auraInstanceID, 1) or ""
         else
             appDisplayString = Debuff.Applications > 1 and Debuff.Applications or ""
         end

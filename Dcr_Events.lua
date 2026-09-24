@@ -435,7 +435,7 @@ do
     end
 
     function D:AurasRestricted()
-        return D:InEncounterOrCombat() or currentState[ChallengeMode] ~= 0 or currentState[PvPMatch] ~= 0
+        return DC.TWELVE_ONE and (D:InEncounterOrCombat() or currentState[ChallengeMode] ~= 0 or currentState[PvPMatch] ~= 0)
     end
 end
 
