@@ -1768,8 +1768,8 @@ do
                     -- Do not retain the secret value for a later comparison.
                     local icon = string.format("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:11:11|t ", index)
                     self.RaidIconTexture:SetText(icon);
-                    self.RaidTargetIcon = false
-                    self.PrevRaidTargetIndex = false
+                    self.RaidTargetIcon = -1
+                    self.PrevRaidTargetIndex = -1
                 end
 
 
