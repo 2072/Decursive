@@ -646,6 +646,11 @@ do
 
                 -- we can't use i, else we wouldn't have contiguous indexes in the table
                 StoredDebuffIndex = StoredDebuffIndex + 1;
+
+                -- on midnight, always add the debuff to the history (includes sound registration)
+                if DC.MN then
+                    D:Debuff_History_Add(Name, TypeName, SpellID);
+                end
             end
 
             i = i + 1;
