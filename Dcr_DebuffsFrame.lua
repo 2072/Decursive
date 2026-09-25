@@ -775,7 +775,7 @@ do
                     or
                     D:ColorTextNA(Debuff.Name, D.profile.TypeColors[Debuff.Type])
 
-                local appCount = s_color and Debuff.auraInstanceID and
+                local appCount = s_color and Debuff.auraInstanceID and (not D:AurasRestricted()) and
                     C_StringUtil.WrapString(C_UnitAuras.GetAuraApplicationDisplayCount(unit, Debuff.auraInstanceID, 1), " (x", ")")
                     or
                     (Debuff.Applications > 0 and (" (x%s)"):format(Debuff.Applications) or "")
@@ -835,10 +835,6 @@ do
                     if canaccessvalue(Debuff.Name) and DC.IS_HARMFULL_DEBUFF[Debuff.Name] then
                         D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                         D:SafePlaySoundFile(DC.DeadlyDebuffAlert);
-                    end
-
-                    if DC.MN then
-                        D:Debuff_History_Add(Debuff.Name, Debuff.TypeName, Debuff.SpellID);
                     end
                 end
             end
@@ -1743,7 +1739,7 @@ do
                         self.CenterText = debuff_1.Applications;
                         local appAccess = canaccessvalue(self.CenterText)
 
-                        local appCount = debuff_1.s_color and debuff_1.auraInstanceID and
+                        local appCount = debuff_1.s_color and debuff_1.auraInstanceID and (not D:AurasRestricted()) and
                             C_UnitAuras.GetAuraApplicationDisplayCount(Unit, debuff_1.auraInstanceID, 1)
                             or
                             (appAccess and self.CenterText > 0 and self.CenterText or "")
@@ -1771,8 +1767,8 @@ do
                     -- Do not retain the secret value for a later comparison.
                     local icon = string.format("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:11:11|t ", index)
                     self.RaidIconTexture:SetText(icon);
-                    self.RaidTargetIcon = false
-                    self.PrevRaidTargetIndex = false
+                    self.RaidTargetIcon = -1
+                    self.PrevRaidTargetIndex = -1
                 end
 
 

@@ -418,7 +418,7 @@ do
     local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
 
         -- this mechanism is completely disabled in 12.1 so do nothing for now...
-        if DC.TWELVE_ONE and D:AurasRestricted() then
+        if D:AurasRestricted() then
             --D:Debug("12.1: UnitDebuff was called while auras are restricted!", debugstack(2))
             return nil
         end
@@ -579,7 +579,7 @@ do
             end
             --@end-debug@
 
-            local s_color = DC.MN and auraInstanceID and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraInstanceID, D.Status.dsCurve)
+            local s_color = DC.MN and auraInstanceID and (not D:AurasRestricted()) and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraInstanceID, D.Status.dsCurve)
 
             -- test for a type
             if not secretMode then
@@ -646,6 +646,11 @@ do
 
                 -- we can't use i, else we wouldn't have contiguous indexes in the table
                 StoredDebuffIndex = StoredDebuffIndex + 1;
+
+                -- on midnight, always add the debuff to the history (includes sound registration)
+                if DC.MN then
+                    D:Debuff_History_Add(Name, TypeName, SpellID);
+                end
             end
 
             i = i + 1;
