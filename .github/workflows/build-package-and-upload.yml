@@ -75,3 +75,9 @@ jobs:
         uses: BigWigsMods/packager@master
         with:
           args: -g titan
+
+      - name: Mark release candidates as prereleases
+        if: github.ref_type == 'tag' && contains(github.ref_name, '-RC')
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --prerelease
