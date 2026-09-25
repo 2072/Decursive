@@ -1,3 +1,16 @@
+Decursive 2.9.0-Forever-RC3
+===========================
+
+Decursive 2.9.0-Forever-RC3 (2026-09-24)
+-----------------------------------------
+
+- Sync with upstream 12.1 fixes for restricted aura access and stale raid icons.
+- Register discovered debuffs for sound when their spell IDs are public, and
+  keep registration disabled while aura access is restricted.
+- Guard optional restriction and aura-sound APIs so older client flavors keep
+  using their existing code paths.
+- Run package checks on pull requests; build branches without uploading them.
+
 Decursive 2.9.0-Forever-RC2
 ===========================
 

@@ -423,14 +423,20 @@ do
         return currentState
     end;
 
-    local Combat        = Enum.AddOnRestrictionType.Combat
-    local Encounter     = Enum.AddOnRestrictionType.Encounter
-    local ChallengeMode = Enum.AddOnRestrictionType.ChallengeMode
-    local PvPMatch      = Enum.AddOnRestrictionType.PvPMatch
+    -- The restriction enums only exist on modern clients. Keep the Classic
+    -- code path loadable when those optional APIs are absent.
+    local restrictionTypes = Enum and Enum.AddOnRestrictionType
+    local Combat        = restrictionTypes and restrictionTypes.Combat
+    local Encounter     = restrictionTypes and restrictionTypes.Encounter
+    local ChallengeMode = restrictionTypes and restrictionTypes.ChallengeMode
+    local PvPMatch      = restrictionTypes and restrictionTypes.PvPMatch
 
-    assert(Combat and Encounter and ChallengeMode and PvPMatch)
+    assert(not DC.TWELVE_ONE or (Combat and Encounter and ChallengeMode and PvPMatch))
 
     function D:InEncounterOrCombat()
+        if not Combat or not Encounter then
+            return false
+        end
         return currentState[Combat] ~= 0 or currentState[Encounter] ~= 0
     end
 

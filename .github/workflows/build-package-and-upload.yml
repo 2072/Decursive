@@ -13,8 +13,9 @@ on:
       - master
     tags:
       - '*'
-    # paths-ignore:
-    #- '.github/**'
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -22,10 +23,13 @@ jobs:
     permissions:
       contents: write
     env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
+        # Branch and pull-request builds validate packages but never publish
+        # alpha files. Version tags are the only publishing trigger.
+        CF_API_KEY: ${{ github.ref_type == 'tag' && secrets.CF_API_KEY || '' }}
         #WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
         #WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
-        GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_OAUTH: ${{ github.ref_type == 'tag' && secrets.GITHUB_TOKEN || '' }}
+        RELEASE_COMMIT_MESSAGE: ${{ github.event.head_commit.message || '' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7.0.1
@@ -47,17 +51,17 @@ jobs:
         if: >-
           !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
-          !contains(github.event.head_commit.message, '#skipretail') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipretail') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         uses: BigWigsMods/packager@v2.6.1
 
       - name: Package classic
         if: >-
           !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skipclassic') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipclassic') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g classic
@@ -66,9 +70,9 @@ jobs:
         if: >-
           !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skipmop') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipmop') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g mists
@@ -77,9 +81,9 @@ jobs:
         if: >-
           !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skipbcc') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipbcc') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g bcc
@@ -88,25 +92,25 @@ jobs:
         if: >-
           !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
           !contains(github.ref_name, '-Forever-') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skiptitan') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skiptitan') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g titan
 
       - name: Package Forever
         if: >-
-          !contains(github.event.head_commit.message, '#skipforever') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipforever') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g forever
 
       - name: Verify Forever package
         if: >-
-          !contains(github.event.head_commit.message, '#skipforever') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipforever') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         shell: bash
         run: |
           set -euo pipefail
@@ -149,9 +153,9 @@ jobs:
 
       - name: Upload Forever test package
         if: >-
-          github.ref_type == 'branch' &&
-          !contains(github.event.head_commit.message, '#skipforever') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          (github.ref_type == 'branch' || github.event_name == 'pull_request') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipforever') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
         uses: actions/upload-artifact@v7.0.1
         with:
           name: Decursive-Forever-${{ github.sha }}

@@ -12,6 +12,14 @@ aura APIs introduced for Midnight. Decursive therefore enables a hybrid path:
 - Modern `AuraContainer`, secret-value, and addon-restriction handling.
 - Forever-aware AceDB realm and region keys.
 
+## RC3 changes
+
+RC3 includes the upstream 12.1 restricted-aura fixes, the raid-icon clearing
+fix, and debuff sound discovery during aura scanning. The sound registration
+path checks that both optional aura-sound APIs are available. Classic-era
+client flavors continue through the legacy scanner and do not call those APIs.
+The package workflow now validates pull requests and reserves uploads for tags.
+
 ## Dependency status
 
 The release archive embeds dependencies through `.pkgmeta`. Its CI build uses

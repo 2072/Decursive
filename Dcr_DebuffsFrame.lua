@@ -2101,13 +2101,6 @@ local MUF_Status = { -- unused
 }
 
 
-local MF_Textures = { -- unused
-    "Interface/AddOns/Decursive/Textures/BackDrop-red", -- red
-    "Interface/AddOns/Decursive/Textures/BackDrop-blue", -- blue
-    "Interface/AddOns/Decursive/Textures/BackDrop-orange", -- orange
-    ["grey"] = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-grey-medium",
-    ["black"] = "Interface/AddOns/Decursive/Textures/BackDrop",
-};
 
 
 -- }}}
