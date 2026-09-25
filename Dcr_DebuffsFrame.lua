@@ -1033,7 +1033,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
             end
         end
 
-        if not DC.RESTRICTED_AURAS then
+        if not DC.RESTRICTED_AURAS then -- wrong button clicks detection is no longer possible
             if RequestedPrio and NeededPrio ~= RequestedPrio then
                 D:errln(L["HLP_WRONGMBUTTON"]);
                 if NeededPrio and MF_colors[NeededPrio] then
@@ -1043,7 +1043,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                     D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                     --@end-debug@
                 end
-            elseif RequestedPrio and D.Status.HasSpell then -- useless block in Midnight as there is no CLEU anymore to detect cast failures.
+            elseif RequestedPrio and D.Status.HasSpell then
                 D.Status.ClickCastingWIP = true;
                 D:Debug("ClickCastingWIP")
                 D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured

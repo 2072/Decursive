@@ -348,10 +348,16 @@ do
    local iterator = 1;
    local DebuffHistHashTable = {};
 
-   function D:Debuff_History_Add( DebuffName, DebuffType, spellID)
-       if not canaccessvalue(DebuffName) then  -- do not store secret value
-          return;
+   function D:Debuff_History_Add(DebuffName, DebuffType, spellID)
+       if not (canaccessvalue(DebuffName) and canaccessvalue(DebuffType) and canaccessvalue(spellID)) then  -- do not store secret values
+          return
        end
+
+       if (not type(spellID) == "number") or spellID <= 0 or not (DebuffName and DebuffType and spellID) then
+           T._AddDebugText("Debuff_History_Add() bad usage, args:", DebuffName, DebuffType, spellID);
+           return
+       end
+
        if not DebuffHistHashTable[DebuffName] then
 
            -- reset iterator if out of boundaries
@@ -648,7 +654,7 @@ do
                 StoredDebuffIndex = StoredDebuffIndex + 1;
 
                 -- on midnight, always add the debuff to the history (includes sound registration)
-                if DC.RESTRICTED_AURAS then
+                if DC.RESTRICTED_AURAS and not secretMode then
                     D:Debuff_History_Add(Name, TypeName, SpellID);
                 end
             end

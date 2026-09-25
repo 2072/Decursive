@@ -197,8 +197,8 @@ local function buildDesiredRegistrations()
 end
 
 function D:Refresh12_1AuraSounds()
-    if D:InEncounterOrCombat() then
-        D:Debug("|cFFFF0000Sound registration not possible right now... rescheduling in 5s|r")
+    if D:AurasRestricted() then
+        D:Debug("|cFFFF0000Sound registration not possible while auras are restricted... rescheduling in 5s|r")
         D:Schedule_MN_SoundsRegistration(5)
         return false
     end

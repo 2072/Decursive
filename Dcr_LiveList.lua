@@ -369,6 +369,9 @@ end -- }}}
 
 
 function LiveList:GetDebuff(UnitID) -- {{{
+
+    if D:AurasRestricted() then return false end
+
     --  (note that this function is only called for the mouseover and target if the MUFs are active)
 
     if (UnitID == "target" or UnitID == "mouseover") and (not UnitIsFriend(UnitID, "player") or not UnitExists(UnitID)) then
