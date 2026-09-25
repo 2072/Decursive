@@ -107,6 +107,12 @@ jobs:
         with:
           args: -g forever
 
+      - name: Mark release candidates as prereleases
+        if: github.ref_type == 'tag' && contains(github.ref_name, '-RC')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --prerelease
+
       - name: Verify Forever package
         if: >-
           !contains(env.RELEASE_COMMIT_MESSAGE, '#skipforever') &&
