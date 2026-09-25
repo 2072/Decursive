@@ -353,10 +353,12 @@ do
           return
        end
 
-       if (not type(spellID) == "number") or spellID <= 0 or not (DebuffName and DebuffType and spellID) then
+       if not DebuffName or not DebuffType or type(spellID) ~= "number" or spellID <= 0 then
            T._AddDebugText("Debuff_History_Add() bad usage, args:", DebuffName, DebuffType, spellID);
            return
        end
+
+       local spellType = DC.NameToTypes[DebuffType]
 
        if not DebuffHistHashTable[DebuffName] then
 
@@ -371,7 +373,7 @@ do
            end
 
            -- Register the name in the HashTable using the debuff type
-           DebuffHistHashTable[DebuffName] = (DebuffType and DC.NameToTypes[DebuffType] or DC.NOTYPE);
+           DebuffHistHashTable[DebuffName] = spellType or DC.NOTYPE;
            --D:Debug(DebuffName, DebuffHistHashTable[DebuffName]);
 
            -- Put this debuff in our history
@@ -380,10 +382,10 @@ do
            -- This is a useless comment
            iterator = iterator + 1;
 
-           if DC.RESTRICTED_AURAS then
-               D:AddKnownSpellIDToSoundReg(spellID, DC.NameToTypes[DebuffType])
+           if DC.AURA_SOUND_REGISTRATION and spellType then
+               D:AddKnownSpellIDToSoundReg(spellID, spellType)
 
-               D.db.global.t_SpellIDsSoundReg[spellID] = {["spellType"] = DC.NameToTypes[DebuffType], ["from"] = "history", ["enabled"] = true}
+               D.db.global.t_SpellIDsSoundReg[spellID] = {["spellType"] = spellType, ["from"] = "history", ["enabled"] = true}
            end
        end
 

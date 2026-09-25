@@ -82,10 +82,13 @@ if not L then return end;
 
 --@localization(locale="enUS", format="lua_additive_table")@
 
---@do-not-package@
----[==[
+-- Keep the complete English table in release archives as a fallback. The
+-- packager normally inserts Curse localization data above, and AceLocale's
+-- default-locale proxy deliberately preserves those values when these fallback
+-- assignments run. If the localization service returns an empty result, these
+-- entries still provide a usable default locale.
 
--- Used for testing the addon without the packager
+-- Complete English fallback table
 L["ABOLISH_CHECK"] = "Check for \"Abolish\" before curing"
 L["ABOUT_AUTHOREMAIL"] = "AUTHOR E-MAIL"
 L["ABOUT_CREDITS"] = "CREDITS"
@@ -566,8 +569,6 @@ L["OPT_PERIODICRESCAN_REPORT_DESC"] = "Create a debug report if the periodic sca
 
 L["ToDebugString"] ="AceLocale table"
 L["GetDebugName"] ="AceLocale table"
---]==]
---@end-do-not-package@
 
 
 T._LoadedFiles["enUS.lua"] = "@project-version@";

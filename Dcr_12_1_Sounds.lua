@@ -41,16 +41,26 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_DebuffsFrame.xml"] or not T._Lo
     DecursiveInstallCorrupted = true;
     return;
 end
-T._LoadedFiles["Dcr_12_1_Sounds.lua"] = not DC.RESTRICTED_AURAS and "@project-version@";
+T._LoadedFiles["Dcr_12_1_Sounds.lua"] = "@project-version@";
+
+DC.AURA_SOUND_REGISTRATION = not not (
+    DC.RESTRICTED_AURAS
+    and C_UnitAuras
+    and type(C_UnitAuras.AddAuraSound) == "function"
+    and type(C_UnitAuras.RemoveAuraSound) == "function"
+)
 
 function D:Schedule_MN_SoundsRegistration(delay)
-    if DC.RESTRICTED_AURAS then
+    if DC.AURA_SOUND_REGISTRATION then
         D:ScheduleDelayedCall("12.1RegisterSounds", D.Refresh12_1AuraSounds, delay or 1, D)
     end
 end
 
 
-if not DC.RESTRICTED_AURAS or not C_UnitAuras or type(C_UnitAuras.AddAuraSound) ~= "function" then
+if not DC.AURA_SOUND_REGISTRATION then
+    -- Sound settings remain callable on clients without this optional API.
+    function D:AddKnownSpellIDToSoundReg() end
+    function D:RemoveKnownSpellIDFromSoundReg() end
     return
 end
 
