@@ -243,7 +243,7 @@ local function SetRuntimeConstants_Once () -- {{{
         local stealthAuras = {"Prowl", "Stealth", "Shadowmeld",  "Invisibility", "Lesser Invisibility", 'Greater Invisibility'}
 
         DC.IS_STEALTH_BUFF = D:tReverse(D:tMap(stealthAuras, function(auraName) return DS[auraName] end));
-        DC.MN_STEALTH_BUFFS = D:tReverse(D:tMap(stealthAuras, function(auraName) return DSI[auraName] end));
+        DC.RESTRICTED_AURAS_STEALTH_BUFFS = D:tReverse(D:tMap(stealthAuras, function(auraName) return DSI[auraName] end));
 
         DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["Unstable Affliction"], DC.DS["Vampiric Touch"], DC.DS["MUTATINGINJECTION"]}); --, , DC.DS["Fluidity"]}); --, "Test item"});
         DC.IS_DEADLY_DEBUFF   = D:tReverse({DC.DSI["Fluidity"]});
@@ -509,7 +509,11 @@ local function SetRuntimeConstants_Once () -- {{{
         -- }}}
     else -- WOW CLASSIC
         if not DC.CATACLYSM then
-            DC.IS_STEALTH_BUFF = D:tReverse({DS["Prowl"], DS["Stealth"], DS["Shadowmeld"], DS["Lesser Invisibility"]});
+            local stealthAuras = {"Prowl", "Stealth", "Shadowmeld", "Lesser Invisibility"}
+
+            DC.IS_STEALTH_BUFF = D:tReverse(D:tMap(stealthAuras, function(auraName) return DS[auraName] end));
+            DC.RESTRICTED_AURAS_STEALTH_BUFFS = D:tReverse(D:tMap(stealthAuras, function(auraName) return DSI[auraName] end));
+
             DC.IS_HARMFULL_DEBUFF = D:tReverse({DC.DS["MUTATINGINJECTION"]}); --, "Test item"});
             DC.IS_DEADLY_DEBUFF   = D:tReverse({});
             DC.IS_OMNI_DEBUFF     = D:tReverse({});
@@ -1237,7 +1241,7 @@ function D:OnEnable() -- called after PLAYER_LOGIN -- {{{
 
     D.eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT");
 
-    if not DC.MN then
+    if not DC.RESTRICTED_AURAS then
         D.eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
     else
         D.eventFrame:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED")
@@ -1540,7 +1544,7 @@ function D:Init() --{{{
     D:Debug( "Decursive Initialization started!");
 
      -- create our "curve" to map dispel type to a color.
-    if DC.MN then
+    if DC.RESTRICTED_AURAS then
         local dsCurve = C_CurveUtil.CreateColorCurve()
         dsCurve:SetType(Enum.LuaCurveType.Step)
         D.Status.dsCurve = dsCurve;

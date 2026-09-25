@@ -37,12 +37,14 @@ jobs:
       - name: Package retail
         if: >-
           !contains(github.event.head_commit.message, '#skipretail') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
 
       - name: Package classic
         if: >-
           !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
           !contains(github.event.head_commit.message, '#skipclassic') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
@@ -52,6 +54,7 @@ jobs:
       - name: Package mists
         if: >-
           !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
           !contains(github.event.head_commit.message, '#skipmop') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
@@ -61,6 +64,7 @@ jobs:
       - name: Package bcc
         if: >-
           !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
           !contains(github.event.head_commit.message, '#skipbcc') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
@@ -70,11 +74,20 @@ jobs:
       - name: Package wrath
         if: >-
           !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
           !contains(github.event.head_commit.message, '#skiptitan') &&
           !contains(github.event.head_commit.message, '#skipall')
         uses: BigWigsMods/packager@master
         with:
           args: -g titan
+
+      - name: Package Forever
+        if: >-
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipForever') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
+        with:
+          args: -g forever
 
       - name: Mark release candidates as prereleases
         if: github.ref_type == 'tag' && contains(github.ref_name, '-RC')

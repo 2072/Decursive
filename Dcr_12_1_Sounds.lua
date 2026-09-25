@@ -41,16 +41,16 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_DebuffsFrame.xml"] or not T._Lo
     DecursiveInstallCorrupted = true;
     return;
 end
-T._LoadedFiles["Dcr_12_1_Sounds.lua"] = not DC.MN and "@project-version@";
+T._LoadedFiles["Dcr_12_1_Sounds.lua"] = not DC.RESTRICTED_AURAS and "@project-version@";
 
 function D:Schedule_MN_SoundsRegistration(delay)
-    if DC.MN then
+    if DC.RESTRICTED_AURAS then
         D:ScheduleDelayedCall("12.1RegisterSounds", D.Refresh12_1AuraSounds, delay or 1, D)
     end
 end
 
 
-if not DC.TWELVE_ONE or not C_UnitAuras or type(C_UnitAuras.AddAuraSound) ~= "function" then
+if not DC.RESTRICTED_AURAS or not C_UnitAuras or type(C_UnitAuras.AddAuraSound) ~= "function" then
     return
 end
 
@@ -86,9 +86,6 @@ local SPELLS_BY_TYPE = {
         1303490, 372796, 1291399,
     },
 }
-
-
--- TODO: augment those tables with debuff history and save those spells in user's profile
 
 
 local allSpells = {}

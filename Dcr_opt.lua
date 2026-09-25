@@ -2299,7 +2299,7 @@ end
 
 function D:SetColorCurve()
 
-    if DC.MN then
+    if DC.RESTRICTED_AURAS then
         local mfc = D.profile.MF_colors
         local dsc = D.Status.dsCurve
         local dtToBT = DC.DTtoBT
@@ -2718,7 +2718,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
             },
             get = "get",
             set = "set",
-            hidden = DC.MN,
+            hidden = DC.RESTRICTED_AURAS,
             order = 100 + num
         };
 
@@ -2793,7 +2793,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     local AddFunc = function (spellID)
         local newDebuff = GetSpellName(spellID);
         if newDebuff then
-            if DC.MN and C_Secrets.GetSpellAuraSecrecy(spellID) ~= Enum.SecrecyLevel.NeverSecret then
+            if DC.RESTRICTED_AURAS and C_Secrets.GetSpellAuraSecrecy(spellID) ~= Enum.SecrecyLevel.NeverSecret then
                 error("Can't add debuff, not a 'Never secret' spellID:", spellID);
             else
                 DebuffsSkipList[newDebuff] = spellID;
@@ -3718,7 +3718,7 @@ do
                     D:Debug('XXXX',t_BleedEffectsIDCheck[toRemove]);
                     t_CheckBleedDebuffsActiveIDs[toRemove] = nil;
 
-                    if DC.MN then D:RemoveKnownSpellIDFromSoundReg(toRemove) end
+                    if DC.RESTRICTED_AURAS then D:RemoveKnownSpellIDFromSoundReg(toRemove) end
                 end,
                 order = 30,
             },
@@ -3813,7 +3813,7 @@ do
     end
 
     function D:updateBleedEffectSoundRegistrations()
-        if not DC.MN then return end
+        if not DC.RESTRICTED_AURAS then return end
 
         local t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
 
@@ -3964,7 +3964,7 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 function D:registerHistoryDebuffForSound()
-    if not DC.MN then return end
+    if not DC.RESTRICTED_AURAS then return end
 
     local t_SpellIDsSoundReg = D.db.global.t_SpellIDsSoundReg
 

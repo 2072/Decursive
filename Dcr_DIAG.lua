@@ -409,7 +409,7 @@ Active no case version:
             local knownSIDCount = 0;
             local result = ""
 
-            if not DC.MN then return "N/A (not MN)" end
+            if not DC.RESTRICTED_AURAS then return "N/A (not RESTRICTED_AURAS)" end
 
             if D.db and D.db.global and type(D.db.global.t_SpellIDsSoundReg) == "table" then
                 for _ in pairs(D.db.global.t_SpellIDsSoundReg) do
@@ -692,17 +692,27 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
-DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
+
+-- WOW Flavors variable
+-- Notes on proper usage: they should be used to differentiate between spell
+-- registration or specific game mechanics NOT API compatibilities to the
+-- extent where this is possible
+
+-- WoW Forever (Camelot) reports WOW_PROJECT_MAINLINE because it runs on the
+-- modern client with the same restrictions as the 12.1 retail, but its classes, spells and ranks follow Classic rules.
+DC.FOREVER = tocversion >= 16000 and tocversion < 20000
+DC.WOWC = DC.FOREVER or WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 -- Titan Reforged uses 38xxx TOCs but follows WotLK class and spell behavior.
 DC.TITAN = tocversion >= 38000 and tocversion < 40000
 DC.WOTLK = DC.TITAN or (WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC) -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
 DC.CATACLYSM = not DC.TITAN and WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
 DC.TWW = tocversion >= 110000
-DC.MN = tocversion >= 120000
+DC.MN = tocversion >= 120000 -- this is used to differentiate specificities
+-- Forever uses the same restricted aura system as Midnight despite its 16xxx
 DC.BCC = tocversion >= 20505 and tocversion < 30000
 DC.MOP = tocversion >= 50504 and tocversion < 60000
-DC.TWELVE_ONE = tocversion >= 120100
 
+DC.RESTRICTED_AURAS = DC.FOREVER or DC.MN
 
 
 function T._DecursiveErrorHandler(err, ...)
@@ -1020,7 +1030,7 @@ do
             ["AceAddon-3.0"] = 13,
             ["AceComm-3.0"] = 14,
             ["AceConsole-3.0"] = 7,
-            ["AceDB-3.0"] = 29,
+            ["AceDB-3.0"] = 36,
             ["AceDBOptions-3.0"] = 15,
             ["AceEvent-3.0"] = 4,
             ["AceHook-3.0"] = 9,

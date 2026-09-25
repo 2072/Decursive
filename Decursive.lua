@@ -374,7 +374,7 @@ do
            -- This is a useless comment
            iterator = iterator + 1;
 
-           if DC.MN then
+           if DC.RESTRICTED_AURAS then
                D:AddKnownSpellIDToSoundReg(spellID, DC.NameToTypes[DebuffType])
 
                D.db.global.t_SpellIDsSoundReg[spellID] = {["spellType"] = DC.NameToTypes[DebuffType], ["from"] = "history", ["enabled"] = true}
@@ -413,9 +413,9 @@ do
     local D                 = D;
     local C_UnitAuras       = _G.C_UnitAuras
 
-    local filter = nil -- DC.MN and "RAID_PLAYER_DISPELLABLE" or nil -- try to renable it in midnight since auras are always fully restricted
+    local filter = nil
 
-    local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
+    local UnitDebuff        = (not DC.RESTRICTED_AURAS and _G.UnitDebuff) or function (unitToken, i)
 
         -- this mechanism is completely disabled in 12.1 so do nothing for now...
         if D:AurasRestricted() then
@@ -439,7 +439,7 @@ do
 		nil,
 		nil,
 		auraData.spellId,
-        DC.MN and auraData.auraInstanceID or nil;
+        DC.RESTRICTED_AURAS and auraData.auraInstanceID or nil;
     end
 
     D.UnitDebuff = UnitDebuff -- it's reused in dcr_events
@@ -469,7 +469,7 @@ do
             end
         end
 
-        if DC.MN and D:AurasRestricted() then
+        if D:AurasRestricted() then
             return false
         end
 
@@ -508,7 +508,7 @@ do
                 D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = true;
                 D.db.global.t_BleedEffectsIDCheck[SpellID] = true;
 
-                if DC.MN then
+                if DC.RESTRICTED_AURAS then
                     D:AddKnownSpellIDToSoundReg(SpellID, DC.BLEED)
                 end
             else
@@ -579,7 +579,7 @@ do
             end
             --@end-debug@
 
-            local s_color = DC.MN and auraInstanceID and (not D:AurasRestricted()) and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraInstanceID, D.Status.dsCurve)
+            local s_color = auraInstanceID and (not D:AurasRestricted()) and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraInstanceID, D.Status.dsCurve)
 
             -- test for a type
             if not secretMode then
@@ -648,7 +648,7 @@ do
                 StoredDebuffIndex = StoredDebuffIndex + 1;
 
                 -- on midnight, always add the debuff to the history (includes sound registration)
-                if DC.MN then
+                if DC.RESTRICTED_AURAS then
                     D:Debuff_History_Add(Name, TypeName, SpellID);
                 end
             end
@@ -900,7 +900,7 @@ do
                         self.db.global.delayedUnDebuffOccurences = self.db.global.delayedUnDebuffOccurences + 1;
                     end
 
-                    if (not DC.MN) and (not self.Status.delayedDebuffReportDisabled) and self.db.global.MFScanEverybodyReport then
+                    if (not DC.RESTRICTED_AURAS) and (not self.Status.delayedDebuffReportDisabled) and self.db.global.MFScanEverybodyReport then
                         if IsDebuffed then
                             self:AddDebugText("delayed debuff found by scaneveryone (you can disable this error by unchecking the `Periodic scan debug reporting` option in the MUFs performance options - see Decursive 2.7.16 release notes)", Unit, Debuffs[1].Name);
                             --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
@@ -961,13 +961,9 @@ do
     local buffName;
     local GetCVarBool = _G.GetCVarBool
 
-    local function auraAccessRestricted()
-        return DC.MN and (InCombatLockdown() or GetCVarBool("secretAurasForced"))
-    end
-
     local function UnitBuff(unit, BuffNameToCheck)
 
-        local restricted = auraAccessRestricted()
+        local restricted = D:AurasRestricted()
             --@debug@
             --D:Debug("UnitBuff", unit, BuffNameToCheck)
             --@end-debug@
@@ -1001,7 +997,7 @@ do
     -- this function returns true if one of the debuff(s) passed to it is found on the specified unit
     function D:CheckUnitForBuffs(unit, BuffNamesToCheck) --{{{
 
-        if DC.TWELVE_ONE then
+        if DC.RESTRICTED_AURAS then
             D:Debug("12.1: CheckUnitForBuffs was called!", debugstack(2))
             return false
         end
@@ -1024,7 +1020,7 @@ end
 
 
 function D:CheckUnitStealth(unit)
-    if not DC.MN then -- this cannot work anymore in Midnight...
+    if not DC.RESTRICTED_AURAS then -- this cannot work anymore in Midnight...
         return self:CheckUnitForBuffs(unit, DC.IS_STEALTH_BUFF)
     else
         return false

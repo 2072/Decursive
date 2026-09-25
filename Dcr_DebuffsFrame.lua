@@ -993,7 +993,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
     RequestedPrio = D:tGiveValueIndex(D.db.global.MouseButtons, modifier and (modifier .. ButtonsString:sub(-3)) or ButtonsString);
 
     D:Debug("RequestedPrio:", RequestedPrio);
-    if DC.TWELVE_ONE and RequestedPrio and D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
+    if DC.RESTRICTED_AURAS and RequestedPrio and D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
         -- The active aura slot cannot be inspected in 12.1, but the click's
         -- configured cleansing priority is known. Remember it so every MUF can
         -- display that action's cooldown before the player clicks another unit.
@@ -1004,7 +1004,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
     -- while Blizzard's AuraButton still handles a valid dispel click. The
     -- addon cannot inspect that aura to distinguish a successful native cast
     -- from an empty click, so the old message would be a false positive.
-    if not DC.MN and frame.Object.UnitStatus == NORMAL and D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
+    if not DC.RESTRICTED_AURAS and frame.Object.UnitStatus == NORMAL and D:tcheckforval(D.Status.CuringSpellsPrio, RequestedPrio) then
 
         D:Println(L["HLP_NOTHINGTOCURE"]);
 
@@ -1033,7 +1033,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
             end
         end
 
-        if not DC.MN then -- can no lonber work in Midnight
+        if not DC.RESTRICTED_AURAS then
             if RequestedPrio and NeededPrio ~= RequestedPrio then
                 D:errln(L["HLP_WRONGMBUTTON"]);
                 if NeededPrio and MF_colors[NeededPrio] then
@@ -1111,9 +1111,9 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     -- create the frame
     self.Frame  = CreateFrame ("Button", nil, self.Parent, "DcrMicroUnitTemplateSecure");
     self.CooldownFrame = CreateFrame ("Cooldown", nil, self.Frame, "DcrMicroUnitCDTemplate");
-    self.CooldownFrame:SetHideCountdownNumbers(not DC.TWELVE_ONE)
+    self.CooldownFrame:SetHideCountdownNumbers(not DC.RESTRICTED_AURAS)
 
-    if DC.TWELVE_ONE then
+    if DC.RESTRICTED_AURAS then
         self.CooldownFrame:SetFrameLevel(self.Frame:GetFrameLevel() + 20)
         self.CooldownFrame:SetDrawEdge(false)
         self.CooldownFrame:SetSwipeColor(0, 0, 0, 0.75)
@@ -1121,7 +1121,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     end
 
 
-    if DC.TWELVE_ONE then
+    if DC.RESTRICTED_AURAS then
         self.auraContainer = CreateFrame("AuraContainer", nil, self.Frame, "CustomAuraContainerTemplate")
         self.auraContainer:SetAllPoints(self.Frame)
         self.auraSlotKeys = {}
@@ -1183,7 +1183,8 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
             -- AuraButtons become inaccessible to addon code while auras are
             -- secret. Configure the display completely inside Blizzard's
             -- initializeFrame callback and update only the container later.
-           ab:SetAuraBorder(border, options)
+            ab:ClearDispelTypeTextures()
+            ab:AddDispelTypeTexture(border, options)
         end
 
         local setButton = function(ab, prio)
@@ -1209,7 +1210,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
         {
             sortMethod = 0,
             sortDirection = 0,
-            candidateFilters = {includeSpellIDs = DC.MN_STEALTH_BUFFS},
+            candidateFilters = {includeSpellIDs = DC.RESTRICTED_AURAS_STEALTH_BUFFS},
             initializeFrame = function(ab)
                 setAuraButtonCommonSettings(ab, 1, {
                     showIcon = false,
@@ -1438,7 +1439,7 @@ do
             self.auraContainer:SetAuraSlotCandidateFilters(
             "DCR_STEALTH_INDICATOR",
             {
-                includeSpellIDs = D.profile.Show_Stealthed_Status and DC.MN_STEALTH_BUFFS or {}
+                includeSpellIDs = D.profile.Show_Stealthed_Status and DC.RESTRICTED_AURAS_STEALTH_BUFFS or {}
             }
 )
         end
@@ -1595,7 +1596,7 @@ do
         profile = D.profile;
         Status  = D.Status;
 
-        if DC.TWELVE_ONE then
+        if DC.RESTRICTED_AURAS then
             UpdateMidnightCooldown(self)
         end
 
@@ -1687,7 +1688,7 @@ do
 
                 if RangeStatus and self.UpdateCD < Status.UpdateCooldown then
                     if SpellID > 0 then
-                        if not DC.MN then
+                        if not DC.RESTRICTED_AURAS then
                             CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
                         else
                             self.CooldownFrame:SetCooldownFromDurationObject(C_Spell.GetSpellCooldownDuration(Status.CuringSpells[DebuffType]));
@@ -1869,7 +1870,7 @@ do
             -- Set the main texture
             self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
 
-            if DC.MN and debuff_1 and debuff_1.secretMode and debuff_1.s_color then
+            if DC.RESTRICTED_AURAS and debuff_1 and debuff_1.secretMode and debuff_1.s_color then
                 local color = debuff_1.s_color
                 self.Texture:SetColorTexture(color.r, color.g, color.b, Alpha);
             end
@@ -2083,31 +2084,6 @@ end -- }}}
 function MicroUnitF:OnAttributeChanged(self, name, value)
     D:Debug("Micro unit", name, "AttributeChanged to", value);
 end
-
-
-local MUF_Status = { -- unused
-    [1] = "normal";
-    [2] = "absent";
-    [3] = "far";
-    [4] = "stealthed";
-    [5] = "blacklist";
-    [6] = "afflicted";
-    [7] = "afflicted-far";
-    [8] = "afflicted-charmed";
-    [9] = "afflicted-charmed-far";
-}
-
-
-local MF_Textures = { -- unused
-    "Interface/AddOns/Decursive/Textures/BackDrop-red", -- red
-    "Interface/AddOns/Decursive/Textures/BackDrop-blue", -- blue
-    "Interface/AddOns/Decursive/Textures/BackDrop-orange", -- orange
-    ["grey"] = "Interface\\AddOns\\Decursive\\Textures\\BackDrop-grey-medium",
-    ["black"] = "Interface/AddOns/Decursive/Textures/BackDrop",
-};
-
-
--- }}}
 
 T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "@project-version@";
 

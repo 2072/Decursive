@@ -377,7 +377,7 @@ end--}}}
 
 do
     local currentState = {}
-    if DC.MN then
+    if DC.RESTRICTED_AURAS then
 
         -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
         -- The current state can be queried with GetAddOnRestrictionState which
@@ -435,7 +435,7 @@ do
     end
 
     function D:AurasRestricted()
-        return DC.TWELVE_ONE and (D:InEncounterOrCombat() or currentState[ChallengeMode] ~= 0 or currentState[PvPMatch] ~= 0)
+        return DC.RESTRICTED_AURAS and (D:InEncounterOrCombat() or currentState[ChallengeMode] ~= 0 or currentState[PvPMatch] ~= 0)
     end
 end
 
@@ -486,7 +486,7 @@ function D:PLAYER_TARGET_CHANGED()
     if UnitExists("target") and not UnitCanAttack("player", "target") then
         D.Status.TargetExists = true;
 
-        if not DC.TWELVE_ONE then -- Done using Blizzard's special aura container API
+        if not DC.RESTRICTED_AURAS then -- Done using Blizzard's special aura container API
             self.LiveList:DelayedGetDebuff("target");
             self.Stealthed_Units["target"] = self:CheckUnitStealth("target")
         end
@@ -612,7 +612,7 @@ do
         --@end-debug@
 
 
-        if DC.MN and not D:AurasRestricted() then -- classic versions still use CLEU and although they support UNIT_AURA as well CLEU provides more features
+        if not D:AurasRestricted() then -- classic versions still use CLEU and although they support UNIT_AURA as well CLEU provides more features
             if o_auraUpdateInfo.removedAuraInstanceIDs then
                 self:checkForDebuff(UnitID)
 
@@ -712,7 +712,7 @@ do
                 return;
             end
 
-            if not self.profile.HideLiveList and not DC.MN then
+            if not self.profile.HideLiveList then
                 self.LiveList:DelayedGetDebuff(UnitID, o_auraUpdateInfo);
             end
         end

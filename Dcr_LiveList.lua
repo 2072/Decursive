@@ -399,6 +399,9 @@ function LiveList:GetDebuff(UnitID) -- {{{
 end -- }}}
 
 function LiveList:DelayedGetDebuff(UnitID, o_auraUpdateInfo) -- {{{
+
+    if D:AurasRestricted() then return end
+
     if not D:DelayedCallExixts("Dcr_GetDebuff"..UnitID) then
         D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
         D:Debug("LiveList: GetDebuff scheduled for, ", UnitID);
