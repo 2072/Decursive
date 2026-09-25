@@ -349,9 +349,11 @@ do
    local DebuffHistHashTable = {};
 
    function D:Debuff_History_Add( DebuffName, DebuffType, spellID)
-       if not canaccessvalue(DebuffName) then  -- do not store secret value
+       if not canaccessvalue(DebuffName) or not DebuffName then  -- do not store secret value
           return;
        end
+       local spellType = canaccessvalue(DebuffType) and DebuffType and DC.NameToTypes[DebuffType]
+       local safeSpellID = canaccessvalue(spellID) and type(spellID) == "number" and spellID > 0 and spellID or nil
        if not DebuffHistHashTable[DebuffName] then
 
            -- reset iterator if out of boundaries
@@ -365,19 +367,19 @@ do
            end
 
            -- Register the name in the HashTable using the debuff type
-           DebuffHistHashTable[DebuffName] = (DebuffType and DC.NameToTypes[DebuffType] or DC.NOTYPE);
+           DebuffHistHashTable[DebuffName] = spellType or DC.NOTYPE;
            --D:Debug(DebuffName, DebuffHistHashTable[DebuffName]);
 
            -- Put this debuff in our history
-           D.DebuffHistory[iterator] = {DebuffName, spellID};
+           D.DebuffHistory[iterator] = {DebuffName, safeSpellID};
 
            -- This is a useless comment
            iterator = iterator + 1;
 
-           if DC.MN then
-               D:AddKnownSpellIDToSoundReg(spellID, DC.NameToTypes[DebuffType])
+           if DC.AURA_SOUND_REGISTRATION and safeSpellID and spellType then
+               D:AddKnownSpellIDToSoundReg(safeSpellID, spellType)
 
-               D.db.global.t_SpellIDsSoundReg[spellID] = {["spellType"] = DC.NameToTypes[DebuffType], ["from"] = "history", ["enabled"] = true}
+               D.db.global.t_SpellIDsSoundReg[safeSpellID] = {["spellType"] = spellType, ["from"] = "history", ["enabled"] = true}
            end
        end
 

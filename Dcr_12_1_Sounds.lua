@@ -43,14 +43,25 @@ if not T._LoadedFiles or not T._LoadedFiles["Dcr_DebuffsFrame.xml"] or not T._Lo
 end
 T._LoadedFiles["Dcr_12_1_Sounds.lua"] = not DC.MN and "@project-version@";
 
+DC.AURA_SOUND_REGISTRATION = not not (
+    DC.TWELVE_ONE
+    and C_UnitAuras
+    and type(C_UnitAuras.AddAuraSound) == "function"
+    and type(C_UnitAuras.RemoveAuraSound) == "function"
+)
+
 function D:Schedule_MN_SoundsRegistration(delay)
-    if DC.MN then
+    if DC.AURA_SOUND_REGISTRATION then
         D:ScheduleDelayedCall("12.1RegisterSounds", D.Refresh12_1AuraSounds, delay or 1, D)
     end
 end
 
 
-if not DC.TWELVE_ONE or not C_UnitAuras or type(C_UnitAuras.AddAuraSound) ~= "function" then
+if not DC.AURA_SOUND_REGISTRATION then
+    -- Other client paths still call these methods while handling saved sound
+    -- settings. Keep those paths safe when aura-sound registration is absent.
+    function D:AddKnownSpellIDToSoundReg() end
+    function D:RemoveKnownSpellIDFromSoundReg() end
     return
 end
 
@@ -200,8 +211,8 @@ local function buildDesiredRegistrations()
 end
 
 function D:Refresh12_1AuraSounds()
-    if D:InEncounterOrCombat() then
-        D:Debug("|cFFFF0000Sound registration not possible right now... rescheduling in 5s|r")
+    if D:AurasRestricted() then
+        D:Debug("|cFFFF0000Sound registration not possible while auras are restricted... rescheduling in 5s|r")
         D:Schedule_MN_SoundsRegistration(5)
         return false
     end

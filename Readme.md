@@ -1,6 +1,10 @@
 Decursive for World of Warcraft
 ===============================
 
+This fork adds release-candidate support for **World of Warcraft: Forever**
+(the Camelot client). See [FOREVER.md](FOREVER.md) for compatibility scope,
+testing status, and installation details.
+
 Download and documentation:
 
 http://www.2072productions.com/to/decursive.php

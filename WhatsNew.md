@@ -1,3 +1,43 @@
+Decursive 2.9.0-Forever-RC3
+===========================
+
+Decursive 2.9.0-Forever-RC3 (2026-09-24)
+-----------------------------------------
+
+- Sync with upstream 12.1 fixes for restricted aura access and stale raid icons.
+- Register discovered debuffs for sound when their spell IDs are public, and
+  keep registration disabled while aura access is restricted.
+- Guard optional restriction and aura-sound APIs so older client flavors keep
+  using their existing code paths.
+- Run package checks on pull requests; build branches without uploading them.
+
+Decursive 2.9.0-Forever-RC2
+===========================
+
+Decursive 2.9.0-Forever-RC2 (2026-09-21)
+-----------------------------------------
+
+- Always include Decursive's complete English locale table in release
+  archives. This prevents startup failure when the external localization
+  service returns an empty result during packaging.
+- Make CI reject Forever packages missing the English fallback strings.
+
+
+Decursive 2.9.0-Forever-RC1
+===========================
+
+Decursive 2.9.0-Forever-RC1 (2026-09-21)
+-----------------------------------------
+
+- Add initial WoW Forever (Camelot) support for interface 16001.
+- Combine Classic spell and rank behavior with the modern restricted-aura API.
+- Replace the removed CustomAuraButton `SetAuraBorder` compatibility alias with
+  the current dispel-texture API.
+- Require AceDB-3.0 revision 36 on Forever. This fixes Forever realm keys and
+  handles beta regions that do not yet expose a normal region identifier.
+- Add a pinned Forever package build and validation job.
+
+
 Decursive 2.9.0-RC2
 ===================
 

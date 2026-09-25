@@ -1,25 +1,38 @@
 name: Check and build addon
 
 on:
+  workflow_dispatch:
+    inputs:
+      forever_only:
+        description: Only build the WoW Forever package
+        required: true
+        default: true
+        type: boolean
   push:
     branches:
       - master
     tags:
       - '*'
-    # paths-ignore:
-    #- '.github/**'
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
+        # Branch and pull-request builds validate packages but never publish
+        # alpha files. Version tags are the only publishing trigger.
+        CF_API_KEY: ${{ github.ref_type == 'tag' && secrets.CF_API_KEY || '' }}
         #WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
         #WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
-        GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_OAUTH: ${{ github.ref_type == 'tag' && secrets.GITHUB_TOKEN || '' }}
+        RELEASE_COMMIT_MESSAGE: ${{ github.event.head_commit.message || '' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
@@ -36,42 +49,123 @@ jobs:
 
       - name: Package retail
         if: >-
-          !contains(github.event.head_commit.message, '#skipretail') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
+          !contains(github.ref_name, '-Forever-') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipretail') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
 
       - name: Package classic
         if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skipclassic') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
+          !contains(github.ref_name, '-Forever-') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipclassic') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g classic
 
       - name: Package mists
         if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skipmop') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
+          !contains(github.ref_name, '-Forever-') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipmop') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g mists
 
       - name: Package bcc
         if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skipbcc') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
+          !contains(github.ref_name, '-Forever-') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipbcc') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g bcc
 
       - name: Package wrath
         if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#skiptitan') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
+          !(github.event_name == 'workflow_dispatch' && inputs.forever_only) &&
+          !contains(github.ref_name, '-Forever-') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#retailOnly') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skiptitan') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g titan
+
+      - name: Package Forever
+        if: >-
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipforever') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: BigWigsMods/packager@v2.6.1
+        with:
+          args: -g forever
+
+      - name: Mark release candidates as prereleases
+        if: github.ref_type == 'tag' && contains(github.ref_name, '-RC')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --prerelease
+
+      - name: Verify Forever package
+        if: >-
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipforever') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          archives=()
+          while IFS= read -r candidate; do
+            candidate_toc="$(unzip -p "$candidate" 'Decursive/Decursive.toc' 2>/dev/null || true)"
+            if grep -q '^## Interface: 16001' <<<"$candidate_toc"; then
+              archives+=("$candidate")
+            fi
+          done < <(find .release -maxdepth 1 -type f -iname '*.zip' ! -iname '*nolib*')
+
+          if [[ ${#archives[@]} -ne 1 ]]; then
+            printf 'Expected one full Forever archive, found %d\n' "${#archives[@]}" >&2
+            printf '%s\n' "${archives[@]}" >&2
+            exit 1
+          fi
+
+          archive="${archives[0]}"
+          toc="$(unzip -p "$archive" 'Decursive/Decursive.toc')"
+          grep -q '^## Interface: 16001' <<<"$toc"
+          ! grep -q '@project-' <<<"$toc"
+
+          ace_db="$(unzip -p "$archive" 'Decursive/Libs/AceDB-3.0/AceDB-3.0.lua')"
+          grep -q '"AceDB-3.0", 36' <<<"$ace_db"
+          grep -q 'version > 16000 and version < 20000' <<<"$ace_db"
+
+          en_us="$(unzip -p "$archive" 'Decursive/Localization/enUS.lua')"
+          locale_entry_count="$(grep -c '^L\[' <<<"$en_us")"
+          if [[ $locale_entry_count -lt 350 ]]; then
+            printf 'Expected at least 350 English locale entries, found %d\n' "$locale_entry_count" >&2
+            exit 1
+          fi
+          grep -Fq 'L["DEBUG_REPORT_HEADER"]' <<<"$en_us"
+          grep -Fq 'L["OPT_OPTIONS_DISABLED_WHILE_IN_COMBAT"]' <<<"$en_us"
+
+          debuffs_frame="$(unzip -p "$archive" 'Decursive/Dcr_DebuffsFrame.lua')"
+          grep -q 'AddDispelTypeTexture' <<<"$debuffs_frame"
+          ! grep -q ':SetAuraBorder(' <<<"$debuffs_frame"
+
+      - name: Upload Forever test package
+        if: >-
+          (github.ref_type == 'branch' || github.event_name == 'pull_request') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipforever') &&
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: Decursive-Forever-${{ github.sha }}
+          path: .release/*.zip
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

@@ -692,16 +692,21 @@ local _, _, _, tocversion = GetBuildInfo();
 T._CatchAllErrors = false;
 T._tocversion = tocversion;
 
-DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
+-- WoW Forever (Camelot) reports WOW_PROJECT_MAINLINE because it runs on the
+-- modern client, but its classes, spells and ranks follow Classic rules.
+DC.FOREVER = tocversion >= 16000 and tocversion < 20000
+DC.WOWC = DC.FOREVER or WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 -- Titan Reforged uses 38xxx TOCs but follows WotLK class and spell behavior.
 DC.TITAN = tocversion >= 38000 and tocversion < 40000
 DC.WOTLK = DC.TITAN or (WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC) -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
 DC.CATACLYSM = not DC.TITAN and WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
 DC.TWW = tocversion >= 110000
-DC.MN = tocversion >= 120000
+-- Forever uses the same restricted aura system as Midnight despite its 16xxx
+-- interface number, so opt it into the modern aura paths explicitly.
+DC.MN = DC.FOREVER or tocversion >= 120000
 DC.BCC = tocversion >= 20505 and tocversion < 30000
 DC.MOP = tocversion >= 50504 and tocversion < 60000
-DC.TWELVE_ONE = tocversion >= 120100
+DC.TWELVE_ONE = DC.FOREVER or tocversion >= 120100
 
 
 
@@ -1020,7 +1025,9 @@ do
             ["AceAddon-3.0"] = 13,
             ["AceComm-3.0"] = 14,
             ["AceConsole-3.0"] = 7,
-            ["AceDB-3.0"] = 29,
+            -- AceDB 36 adds Forever realm-rule handling and a safe region
+            -- fallback. Older copies can fail before Decursive initializes.
+            ["AceDB-3.0"] = DC.FOREVER and 36 or 29,
             ["AceDBOptions-3.0"] = 15,
             ["AceEvent-3.0"] = 4,
             ["AceHook-3.0"] = 9,
