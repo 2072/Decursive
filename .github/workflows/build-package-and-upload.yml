@@ -6,16 +6,12 @@ on:
       - master
     tags:
       - '*'
-    # paths-ignore:
-    #- '.github/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
-        #WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-        #WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
         GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
@@ -36,58 +32,62 @@ jobs:
 
       - name: Package retail
         if: >-
-          !contains(github.event.head_commit.message, '#skipretail') &&
+          !contains(github.event.head_commit.message, '#skipRetail') &&
           !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipall')
+          !contains(github.event.head_commit.message, '#skipAll')
         uses: BigWigsMods/packager@master
-
-      - name: Package classic
-        if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipclassic') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g classic
-
-      - name: Package mists
-        if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipmop') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g mists
-
-      - name: Package bcc
-        if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipbcc') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g bcc
-
-      - name: Package wrath
-        if: >-
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skiptitan') &&
-          !contains(github.event.head_commit.message, '#skipall')
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g titan
 
       - name: Package Forever
         if: >-
           !contains(env.RELEASE_COMMIT_MESSAGE, '#skipForever') &&
-          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipall')
+          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipAll')
         uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g forever
+
+      - name: Package Classic
+        if: >-
+          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
+          !contains(github.event.head_commit.message, '#skipClassic') &&
+          !contains(github.event.head_commit.message, '#skipAll')
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g classic
+
+      - name: Package Mists
+        if: >-
+          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
+          !contains(github.event.head_commit.message, '#skipMop') &&
+          !contains(github.event.head_commit.message, '#skipAll')
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g mists
+
+      - name: Package BCC
+        if: >-
+          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
+          !contains(github.event.head_commit.message, '#skipBcc') &&
+          !contains(github.event.head_commit.message, '#skipAll')
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g bcc
+
+      - name: Package Titan
+        if: >-
+          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+          !contains(github.event.head_commit.message, '#retailOnly') &&
+          !contains(github.event.head_commit.message, '#foreverOnly') &&
+          !contains(github.event.head_commit.message, '#skipTitan') &&
+          !contains(github.event.head_commit.message, '#skipAll')
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g titan
 
       - name: Mark release candidates as prereleases
         if: github.ref_type == 'tag' && contains(github.ref_name, '-RC')
