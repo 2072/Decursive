@@ -353,7 +353,7 @@ do
           return
        end
 
-       if (not type(spellID) == "number") or spellID <= 0 or not (DebuffName and DebuffType and spellID) then
+       if type(spellID) ~= "number" or spellID <= 0 or not (DebuffName and DebuffType) then
            T._AddDebugText("Debuff_History_Add() bad usage, args:", DebuffName, DebuffType, spellID);
            return
        end
@@ -654,7 +654,7 @@ do
                 StoredDebuffIndex = StoredDebuffIndex + 1;
 
                 -- on midnight, always add the debuff to the history (includes sound registration)
-                if DC.RESTRICTED_AURAS and not secretMode then
+                if DC.RESTRICTED_AURAS and not secretMode and SpellID then -- SpellID is nil for charm effects detected while in combat (aura data unavailable)
                     D:Debuff_History_Add(Name, TypeName, SpellID);
                 end
             end
