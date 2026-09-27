@@ -1299,6 +1299,7 @@ local function GetStaticOptions ()
                                 set = function(info,v)
                                     D.SetHandler(info, 1 - v);
                                     D.profile.DebuffsFrameElemBorderAlpha = (1 - v) / 2;
+                                    D:SetColorCurve() -- necessary to update the stealth color curve
                                 end,
                                 disabled = function() return D.Status.Combat or not D.profile.DebuffsFrameElemTieTransparency end,
                                 min = 0,
@@ -2368,8 +2369,13 @@ function D:SetColorCurve()
 
         -- update the static stealth color curve
         local sdsc = D.Status.stealthCurve
+        local adjustedStealthColor = {}
+        D:tcopy(adjustedStealthColor, mfc[DC.STEALTHED])
+        -- apply the transparency plus a little more to compensate for the default status that cannot go away
+        adjustedStealthColor[4] = adjustedStealthColor[4] * D.profile.DebuffsFrameElemAlpha * .87
+        D:Debug("setting stealth cc, alpha:", adjustedStealthColor[4] )
         sdsc:ClearPoints()
-        sdsc:AddPoint(0, D:NumToColorMixin(mfc[DC.STEALTHED]))
+        sdsc:AddPoint(0, D:NumToColorMixin(adjustedStealthColor))
     end
 
 end
