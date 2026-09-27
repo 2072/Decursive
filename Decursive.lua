@@ -654,7 +654,8 @@ do
                 StoredDebuffIndex = StoredDebuffIndex + 1;
 
                 -- on midnight, always add the debuff to the history (includes sound registration)
-                if DC.RESTRICTED_AURAS and not secretMode and SpellID then -- SpellID is nil for charm effects detected while in combat (aura data unavailable)
+                -- SpellID is nil for charm effects detected while in combat (aura data unavailable) and == 0 when it's the "Test item" affliction
+                if DC.RESTRICTED_AURAS and not secretMode and SpellID and SpellID > 0 then
                     D:Debuff_History_Add(Name, TypeName, SpellID);
                 end
             end
