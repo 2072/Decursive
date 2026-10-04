@@ -1,18 +1,54 @@
-Decursive 2.9.0-RC2
+Decursive 2.9.0-RC3
 ===================
+
+Decursive 2.9.0-RC3 (2026-10-04)
+--------------------------------
+
+Midnight/Forever:
+- Initial compatibility with WoW Forever (many thanks to Alex Mammen for his contributions).
+
+- No longer depends on Blizzard's 'can cure' filter which restores Decursive's
+  ability to report any affliction type even if you cannot cure it (as long as
+  you have a spelled defined for it).
+
+- Decursive will now use it's normal alert system when outside of combat or
+  whenever auras are not restricted (will sound the alert a second time when
+  leaving combat if debuffs are remaining). This also restores the live-list in
+  those occasions.
+
+- Unknown debuffs' spell IDs are now also automatically sound-registered when
+  auras are not secrets.  (a dedicated UI to manage this will be added in a
+  future release).
+
+
+- Fix bugs and improve spell description loading for the bleed effects option
+  panel and elsewhere (preparations for the coming sound registration UI
+  mentioned above).
+
+- Fix raid icon not disappearing on MUFs.
+
+- Fix a few secret aura access issues.
+
+- Fix stealth status alpha.
+
+- Miscellaneous other small fixes and improvements.
+
+Classic versions of WoW:
+
+- No change besides compatibilities acrobatics. Releasing for Titan as well
+  because previous RC also was. Skipping other classic releases for now.
 
 Decursive 2.9.0-RC2 (2026-09-07)
 --------------------------------
 
-Midnight: improve debuff sound registration:
-- Don't register for types the user has explicitely disabled.
+Midnight: improve debuffs sound registration:
+- Don't register for types the user has explicitly disabled.
 - Only register for units which are shown in the MUFs.
 - Memory and CPU optimizations + code simplifications.
 
 
 Decursive 2.9.0-RC1 (2026-09-06)
 --------------------------------
-
 
 This is an early release that brings basic compatibility with WoW 12.1
 
@@ -26,7 +62,7 @@ This has a few implications, first the bad and then the good ones:
 The bad news:
 -------------
 - The alert sound only works consistently for the mind-controlled state and the
-  current season's known debuffs (thanks to [RejectKid][RejectKid] and [Randy  Lorfing][RandyLorfing]).
+  current season's known debuffs (thanks to [RejectKid][RejectKid] and [Randy Lorfing][RandyLorfing]).
   There might be a way to make Decursive learn and register debuffs the players dispell when outside of combat,
   it will be explored for a later release.
 
@@ -39,8 +75,6 @@ The bad news:
 - Debuff filtering is mostly gone as it only works for NeverSecret debuffs.
 
 - The LiveList only works for mind-controlled units and won't show any other debuffs.
-
-- The bleed effect detection system cannot work anymore.
 
 - Many still accessible options have no longer any effect in 12.1, they'll be hidden in future releases.
 
