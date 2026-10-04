@@ -1077,8 +1077,8 @@ do
             LibraryIssues = true;
         end
 
-        local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 11508); -- once GetAddOnMetadata() was bugged and returned nil...
-        local DcrMinMidTOC = tonumber(GetAddOnMetadata("Decursive", "X-Mid-Interface") or 50503);
+        local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 11509); -- once GetAddOnMetadata() was bugged and returned nil...
+        local DcrMinMidTOC = tonumber(GetAddOnMetadata("Decursive", "X-Mid-Interface") or 50504);
 
         -- test if Decursive is backward compatible with the client's version
         -- Allow supported WotLK-compatible clients in the mid-classic version gap.
