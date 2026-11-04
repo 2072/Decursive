@@ -613,7 +613,7 @@ do
 
 
         if not D:AurasRestricted() then -- classic versions still use CLEU and although they support UNIT_AURA as well CLEU provides more features
-            if o_auraUpdateInfo.removedAuraInstanceIDs then
+            if o_auraUpdateInfo.removedAuraInstanceIDs and canaccessvalue(o_auraUpdateInfo.removedAuraInstanceIDs) then
                 self:checkForDebuff(UnitID)
 
                 for _, id in pairs(o_auraUpdateInfo.removedAuraInstanceIDs) do
