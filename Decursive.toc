@@ -1,11 +1,11 @@
-## Interface: 120100
-## Interface-Retail: 120100
+## Interface: 120105
+## Interface-Retail: 120105
 ## Interface-Classic: 11509
 ## Interface-Forever: 16001
 ## Interface-bcc: 20506
 ## Interface-Titan: 38002
 ## Interface-Mists: 50504
-## X-Max-Interface: 120100
+## X-Max-Interface: 120105
 ## X-Min-Interface: 11509
 ## X-Mid-Interface: 50504
 
