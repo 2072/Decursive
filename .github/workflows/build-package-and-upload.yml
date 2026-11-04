@@ -8,89 +8,162 @@ on:
       - '*'
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
-    env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
-        GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Rename WhatsNew.md
         if: github.ref_type == 'branch'
         run: |
-           mv -vf WhatsNew.md WhatsNew_.md
-           echo "file moved"
+          mv -vf WhatsNew.md WhatsNew_.md
+          echo "file moved"
 
       - name: Run luacheck
         uses: BigWigsMods/actions/luacheck@master
         with:
           args: -qo 011
 
-      - name: Package retail
-        if: >-
-          !contains(github.event.head_commit.message, '#skipRetail') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipAll')
-        uses: BigWigsMods/packager@master
+  package-retail:
+    needs: check
+    if: >-
+      !contains(github.event.head_commit.message, '#skipRetail') &&
+      !contains(github.event.head_commit.message, '#foreverOnly') &&
+      !contains(github.event.head_commit.message, '#skipAll')
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rename WhatsNew.md
+        if: github.ref_type == 'branch'
+        run: mv -vf WhatsNew.md WhatsNew_.md
+      - uses: BigWigsMods/packager@master
 
-      - name: Package Forever
-        if: >-
-          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipForever') &&
-          !contains(env.RELEASE_COMMIT_MESSAGE, '#skipAll')
-        uses: BigWigsMods/packager@v2.6.1
+  package-forever:
+    needs: check
+    if: >-
+      !contains(github.event.head_commit.message, '#skipForever') &&
+      !contains(github.event.head_commit.message, '#skipAll')
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rename WhatsNew.md
+        if: github.ref_type == 'branch'
+        run: mv -vf WhatsNew.md WhatsNew_.md
+      - uses: BigWigsMods/packager@v2.6.1
         with:
           args: -g forever
 
-      - name: Package Classic
-        if: >-
-          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipClassic') &&
-          !contains(github.event.head_commit.message, '#skipAll')
-        uses: BigWigsMods/packager@master
+  package-classic:
+    needs: check
+    if: >-
+      !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+      !contains(github.event.head_commit.message, '#retailOnly') &&
+      !contains(github.event.head_commit.message, '#foreverOnly') &&
+      !contains(github.event.head_commit.message, '#skipClassic') &&
+      !contains(github.event.head_commit.message, '#skipAll')
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rename WhatsNew.md
+        if: github.ref_type == 'branch'
+        run: mv -vf WhatsNew.md WhatsNew_.md
+      - uses: BigWigsMods/packager@master
         with:
           args: -g classic
 
-      - name: Package Mists
-        if: >-
-          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipMop') &&
-          !contains(github.event.head_commit.message, '#skipAll')
-        uses: BigWigsMods/packager@master
+  package-mists:
+    needs: check
+    if: >-
+      !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+      !contains(github.event.head_commit.message, '#retailOnly') &&
+      !contains(github.event.head_commit.message, '#foreverOnly') &&
+      !contains(github.event.head_commit.message, '#skipMop') &&
+      !contains(github.event.head_commit.message, '#skipAll')
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rename WhatsNew.md
+        if: github.ref_type == 'branch'
+        run: mv -vf WhatsNew.md WhatsNew_.md
+      - uses: BigWigsMods/packager@master
         with:
           args: -g mists
 
-      - name: Package BCC
-        if: >-
-          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipBcc') &&
-          !contains(github.event.head_commit.message, '#skipAll')
-        uses: BigWigsMods/packager@master
+  package-bcc:
+    needs: check
+    if: >-
+      !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+      !contains(github.event.head_commit.message, '#retailOnly') &&
+      !contains(github.event.head_commit.message, '#foreverOnly') &&
+      !contains(github.event.head_commit.message, '#skipBcc') &&
+      !contains(github.event.head_commit.message, '#skipAll')
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rename WhatsNew.md
+        if: github.ref_type == 'branch'
+        run: mv -vf WhatsNew.md WhatsNew_.md
+      - uses: BigWigsMods/packager@master
         with:
           args: -g bcc
 
-      - name: Package Titan
-        if: >-
-          !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
-          !contains(github.event.head_commit.message, '#retailOnly') &&
-          !contains(github.event.head_commit.message, '#foreverOnly') &&
-          !contains(github.event.head_commit.message, '#skipTitan') &&
-          !contains(github.event.head_commit.message, '#skipAll')
-        uses: BigWigsMods/packager@master
+  package-titan:
+    needs: check
+    if: >-
+      !contains(github.event.head_commit.message, '#auraRestrictedOnly') &&
+      !contains(github.event.head_commit.message, '#retailOnly') &&
+      !contains(github.event.head_commit.message, '#foreverOnly') &&
+      !contains(github.event.head_commit.message, '#skipTitan') &&
+      !contains(github.event.head_commit.message, '#skipAll')
+    runs-on: ubuntu-latest
+    env:
+      CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rename WhatsNew.md
+        if: github.ref_type == 'branch'
+        run: mv -vf WhatsNew.md WhatsNew_.md
+      - uses: BigWigsMods/packager@master
         with:
           args: -g titan
 
+  mark-prerelease:
+    needs: [package-retail, package-forever, package-classic, package-mists, package-bcc, package-titan]
+    if: always() && github.ref_type == 'tag' && contains(github.ref_name, '-RC')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
       - name: Mark release candidates as prereleases
-        if: github.ref_type == 'tag' && contains(github.ref_name, '-RC')
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release edit "$GITHUB_REF_NAME" --prerelease
