@@ -162,8 +162,14 @@ jobs:
     needs: [package-retail, package-forever, package-classic, package-mists, package-bcc, package-titan]
     if: always() && github.ref_type == 'tag' && contains(github.ref_name, '-RC')
     runs-on: ubuntu-latest
+    permissions:
+      contents: write          # required to edit releases
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # no need for fetch-depth: 0 here
+
       - name: Mark release candidates as prereleases
         run: gh release edit "$GITHUB_REF_NAME" --prerelease
