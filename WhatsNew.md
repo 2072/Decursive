@@ -1,5 +1,16 @@
-Decursive 2.9.0-RC3
+Decursive 2.9.0-RC4
 ===================
+
+
+Decursive 2.9.0-RC4 (2026-11-04)
+--------------------------------
+
+- TOC update
+
+- Fix a very rare/impossible Lua error that was reported only once (probably temporary Blizzard glitch)
+
+- No other significant changes since RC3, build appears very stable, last RC if all goes well after WoW Forever launch 🤞.
+
 
 Decursive 2.9.0-RC3 (2026-10-04)
 --------------------------------
@@ -9,7 +20,7 @@ Midnight/Forever:
 
 - No longer depends on Blizzard's 'can cure' filter which restores Decursive's
   ability to report any affliction type even if you cannot cure it (as long as
-  you have a spelled defined for it).
+  you have a spell defined for it).
 
 - Decursive will now use it's normal alert system when outside of combat or
   whenever auras are not restricted (will sound the alert a second time when
