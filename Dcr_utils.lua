@@ -713,11 +713,7 @@ end
 
 
 function D:GetSpellUsefulInfoIfKnown(spellIdentifier) -- returns spellId, isPet
-    if _G.GetSpellBookItemInfo then
-        local spellType, spellID = GetSpellBookItemInfo(spellIdentifier);
-
-        return spellID, spellType == "PETACTION"
-    else
+    if C_SpellBook.GetSpellBookItemInfo then
         local spellBookItemSlotIndex, spellBookItemSpellBank = C_SpellBook.FindSpellBookSlotForSpell(spellIdentifier);
 
         if spellBookItemSlotIndex then
@@ -727,6 +723,10 @@ function D:GetSpellUsefulInfoIfKnown(spellIdentifier) -- returns spellId, isPet
         else
             return nil, nil;
         end
+    else
+        local spellType, spellID = GetSpellBookItemInfo(spellIdentifier);
+
+        return spellID, spellType == "PETACTION"
     end
 end
 
