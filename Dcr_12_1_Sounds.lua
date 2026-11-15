@@ -159,6 +159,17 @@ local soundRegCache = setmetatable({}, {
 
 local cacheMissCount = 0
 
+-- sound file id caching mechanism to shorten the registration keys
+local nextSoundId = 1
+local soundIds = setmetatable({}, {
+    __index = function(t, key)
+        local id = nextSoundId
+        nextSoundId = nextSoundId + 1
+        rawset(t, key, id)
+        return id
+    end
+})
+
 local function buildDesiredRegistrations()
     local desired = {}
     cacheMissCount = 0
@@ -171,13 +182,15 @@ local function buildDesiredRegistrations()
     local cureOrder = D:GetCureOrderTable() -- key are types, values are positive number when type is enabled, false when not
     local soundFile = D.profile.SoundFile or DC.AfflictionSound
 
+    local soundId = soundIds[soundFile]
+
     for _, unit in ipairs(D.Status.Unit_Array) do
         for debuffType, spellIDs in pairs(SPELLS_BY_TYPE) do
             local typePrioEnabledWithSpell = cureOrder[debuffType] and curingSpells[debuffType]
 
             if typePrioEnabledWithSpell then
                 for _, spellID in ipairs(spellIDs) do
-                    local key = unit .. ":" .. spellID .. ":" .. soundFile
+                    local key = unit .. ":" .. spellID .. ":" .. soundId
                     if not soundRegCache[key] then
                         soundRegCache[key] = {
                             unitToken = unit,
@@ -207,6 +220,7 @@ function D:Refresh12_1AuraSounds()
     local trigger = Enum.UnitAuraSoundTrigger and Enum.UnitAuraSoundTrigger.Added or 0
     local addedCount = 0
     local removedCount = 0
+    local errorCount = 0
 
     -- Add replacements first so a failed refresh never removes the last
     -- working registration.
@@ -216,6 +230,8 @@ function D:Refresh12_1AuraSounds()
             if ok and handle then
                 handles[key] = handle
                 addedCount = addedCount + 1
+            else
+                errorCount = errorCount + 1
             end
         end
     end
@@ -226,6 +242,8 @@ function D:Refresh12_1AuraSounds()
             if ok then
                 handles[key] = nil
                 removedCount = removedCount + 1
+            else
+                errorCount = errorCount + 1
             end
         end
     end
@@ -234,7 +252,7 @@ function D:Refresh12_1AuraSounds()
     for _ in pairs(handles) do
         handleCount = handleCount + 1
     end
-    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, ", Added:", addedCount, ", Removed:", removedCount, ", CacheMiss:", cacheMissCount)
+    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, ", Added:", addedCount, ", Removed:", removedCount, ", CacheMiss:", cacheMissCount, ", Errors:", errorCount)
     return true
 end
 
