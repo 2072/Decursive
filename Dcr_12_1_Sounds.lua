@@ -17,6 +17,7 @@ local addonName, T = ...
 local D = T.Dcr
 local DC = T._C
 
+
 -- big ugly scary fatal error message display function {{{
 if not T._FatalError then
     -- the beautiful error popup : {{{ -
@@ -54,37 +55,38 @@ if not DC.RESTRICTED_AURAS or not C_UnitAuras or type(C_UnitAuras.AddAuraSound) 
     return
 end
 
+local DoesSpellExist = C_Spell.DoesSpellExist
+
 -- AddAuraSound requires an exact public spell ID. These are the friendly,
 -- actionable dispels in the current 12.1 dungeon rotation and raid. Blizzard
--- owns detection and playback after registration; addon Lua never reads the
--- protected aura or its AuraButton state.
+-- handles the detection and playback after registration.
 local SPELLS_BY_TYPE = {
-    [DC.MAGIC] = {
+    [DC.MAGIC] = D:filterSeq({
         1294569, 1217633, 1228198, 1201554, 1235549, 1239860, 1259365,
         1238084, 1249238, 276031, 1294815, 372682, 373589, 1305234,
         381515, 392641, 392924, 268008, 268013, 1296052, 1286922,
         270920, 270499, 373693
-    },
-    [DC.POISON] = {
+    }, DoesSpellExist),
+    [DC.POISON] = D:filterSeq({
         1294845, 1305368, 1307571, 474515, 1216590, 1234846, 1250937,
         1226031, 1289258, 1263971, 267273, 271564, 1298104, 1306763,
         263957, 272699, 273563, 1308100, 1308148, 267027,
         1301800, 1306906,
         11918 -- poison from an Elwyn forest spider I use for my tests...
-    },
-    [DC.DISEASE] = {
+    }, DoesSpellExist),
+    [DC.DISEASE] = D:filterSeq({
         1296069, 1302867, 1245456, 267763, 269686,
-    },
-    [DC.CURSE] = {
+    }, DoesSpellExist),
+    [DC.CURSE] = D:filterSeq({
         1309980, 1310017, 1238255, 1217973, 1238801, 1252095, 269972,
         270492,
-    },
-    [DC.BLEED] = {
+    }, DoesSpellExist),
+    [DC.BLEED] = D:filterSeq({
         474740, 1216300, 1295035, 1295427, 1311136, 1238439, 1235865,
         1238076, 1241058, 1247746, 1242135, 1237267, 1267894, 1299133,
         1311778, 266191, 266231, 1297781, 1297918, 1301851, 1302945,
         1303490, 372796, 1291399,
-    },
+    }, DoesSpellExist),
 }
 
 
@@ -116,6 +118,9 @@ DC.KNOWN_SIDS_to_TYPES = allSpells
 DC.KNOWN_SIDS_by_TYPES = SPELLS_BY_TYPE
 
 function D:AddKnownSpellIDToSoundReg(spellID, spellType)
+    if not DoesSpellExist(spellID) then
+        return
+    end
 
     if spellType == DC.ENEMYMAGIC then
         spellType = DC.MAGIC

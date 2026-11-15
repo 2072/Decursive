@@ -490,6 +490,16 @@ function D:tCall(t, f)
     end
 end
 
+function D:filterSeq(tbl, predicate)
+    local result = {}
+    for _, v in ipairs(tbl) do
+        if predicate(v) then
+            result[#result + 1] = v
+        end
+    end
+    return result
+end
+
 function D:ThisSetText(frame, text) --{{{
     _G[frame:GetName().."Text"]:SetText(text);
 end --}}}
