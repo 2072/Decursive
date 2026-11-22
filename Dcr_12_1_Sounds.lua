@@ -250,6 +250,7 @@ local function buildDesiredRegistrations()
     return desired
 end
 
+
 function D:Refresh12_1AuraSounds()
     if D:AurasRestricted() then
         D:Debug("|cFFFF0000Sound registration not possible while auras are restricted... rescheduling in 5s|r")
@@ -260,6 +261,10 @@ function D:Refresh12_1AuraSounds()
     local desired = buildDesiredRegistrations()
     local trigger = Enum.UnitAuraSoundTrigger and Enum.UnitAuraSoundTrigger.Added or 0
     local addedCount = 0
+    local addedImportant = "not-tracked"
+    --@debug@
+    local addedImportant = 0
+    --@end-debug@
     local removedCount = 0
     local errorCount = 0
 
@@ -274,6 +279,11 @@ function D:Refresh12_1AuraSounds()
             if ok and handle then
                 handles[key] = handle
                 addedCount = addedCount + 1
+                --@debug@
+                if C_Spell.IsSpellImportant(soundInfo.spellID) then
+                    addedImportant = addedImportant + 1
+                end
+                --@end-debug@
             else
                 errorCount = errorCount + 1
             end
@@ -296,7 +306,7 @@ function D:Refresh12_1AuraSounds()
     for _ in pairs(handles) do
         handleCount = handleCount + 1
     end
-    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, ", Added:", addedCount, ", Removed:", removedCount, ", CacheMiss:", cacheMissCount, ", Errors:", errorCount)
+    D:Debug("|cFF00FF0012.1 aura sounds registered:|r", handleCount, ", Added:", addedCount, ", Important added:", addedImportant, ", Removed:", removedCount, ", CacheMiss:", cacheMissCount, ", Errors:", errorCount)
     return true
 end
 
