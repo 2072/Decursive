@@ -62,7 +62,7 @@ local DoesSpellExist = C_Spell.DoesSpellExist
 local SPELLS_BY_TYPE = {}
 
 if not DC.FOREVER then
-    -- These are the actionable dispels in the current (~2026-10-01) 12.1 dungeon rotation and raid. 
+    -- These are the actionable dispels in the current (~2026-10-01) 12.1 dungeon rotation and raid.
     SPELLS_BY_TYPE = {
         [DC.MAGIC] = D:filterSeq({
             1294569, 1217633, 1228198, 1201554, 1235549, 1239860, 1259365,
@@ -236,6 +236,7 @@ local function buildDesiredRegistrations()
                             spellID = spellID,
                             soundFileName = soundFile,
                             outputChannel = "Master",
+                            throttleSeconds = 3,
                         }
                         cacheMissCount = cacheMissCount + 1
                     end
