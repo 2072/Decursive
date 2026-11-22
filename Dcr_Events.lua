@@ -354,6 +354,8 @@ function D:PLAYER_REGEN_DISABLED() -- {{{
         self.MFContainerHandle.isMoving = false;
         self.MicroUnitF.DraggingHandle = false;
     end
+    -- always close the window as doing changes there while in combat could cause severe tainting issues...
+    LibStub("AceConfigDialog-3.0"):Close(D.name)
 end --}}}
 
 --function D:PLAYER_REGEN_ENABLED() --{{{
