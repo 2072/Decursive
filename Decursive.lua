@@ -421,10 +421,12 @@ do
 
     local filter = nil
 
+    local ShouldUnitAuraIndexBeSecret = _G.C_Secrets and C_Secrets.ShouldUnitAuraIndexBeSecret
+
     local UnitDebuff        = (not DC.RESTRICTED_AURAS and _G.UnitDebuff) or function (unitToken, i)
 
         -- this mechanism is completely disabled in 12.1 so do nothing for now...
-        if D:AurasRestricted() then
+        if D:AurasRestricted() or ShouldUnitAuraIndexBeSecret and ShouldUnitAuraIndexBeSecret(unitToken, i, filter) then
             --D:Debug("12.1: UnitDebuff was called while auras are restricted!", debugstack(2))
             return nil
         end

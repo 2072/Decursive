@@ -404,7 +404,7 @@ do
                 end
             end
 
-            return str
+            return str .. ("-sabs:%s"):format(tostring(D:AurasRestricted()))
         end
 
         function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
@@ -434,8 +434,10 @@ do
         return currentState[Combat] ~= 0 or currentState[Encounter] ~= 0
     end
 
+    local ShouldAurasBeSecret =  DC.RESTRICTED_AURAS and _G.C_Secrets and C_Secrets.ShouldAurasBeSecret
+
     function D:AurasRestricted()
-        return DC.RESTRICTED_AURAS and (D:InEncounterOrCombat() or currentState[ChallengeMode] ~= 0 or currentState[PvPMatch] ~= 0)
+        return ShouldAurasBeSecret and ShouldAurasBeSecret() -- DC.RESTRICTED_AURAS and (D:InEncounterOrCombat() or currentState[ChallengeMode] ~= 0 or currentState[PvPMatch] ~= 0)
     end
 end
 
