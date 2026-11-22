@@ -750,6 +750,13 @@ do
     local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "SharedTooltipTemplate")
     tip:SetClampedToScreen(true)
 
+
+    local tipRA = DC.RESTRICTED_AURAS and CreateFrame("GameTooltip", "DcrTopSecretTooltip", UIParent, "GameTooltipTemplate")
+
+    if tipRA then
+        tipRA:SetClampedToScreen(true)
+    end
+
     local function ShowMUFToolTip(unit, status, debuffs)
         tip:SetOwner(D.MFContainer, "ANCHOR_NONE")
 
@@ -791,10 +798,25 @@ do
         tip:Show()
         D.temp_tt_taint_debug = D.temp_tt_taint_debug + 1
 
+        local wasAdjusted = false
         -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
         if tip:GetTop() and floor(tip:GetTop() + 40) >= floor(UIParent:GetTop()) then -- if at top (the default game tooltip has a kind of padding...)
             tip:ClearAllPoints();
             tip:SetPoint(MicroUnitF:GetHelperAnchor(true, true));
+            wasAdjusted = true
+        end
+
+        if tipRA then
+            tipRA:SetOwner(D.MFContainer, "ANCHOR_NONE")
+            tipRA:ClearAllPoints()
+            tipRA:SetUnitDebuff(unit, 1, "HARMFUL|RAID_PLAYER_DISPELLABLE") -- show the first dispellable debuff as decided by Blizzard
+            tipRA:SetPoint(not wasAdjusted and "BOTTOMLEFT" or "TOPLEFT", tip, not wasAdjusted and "BOTTOMRIGHT" or "TOPRIGHT", 3, 0)
+            tipRA:Show()
+
+            if tipRA:GetRight() and floor(tipRA:GetRight() + 40) >= floor(UIParent:GetRight()) then
+                tipRA:ClearAllPoints();
+                tipRA:SetPoint(not wasAdjusted and "BOTTOMRIGHT" or "TOPRIGHT", tip, not wasAdjusted and "BOTTOMLEFT" or "TOPLEFT", 3, 0)
+            end
         end
     end
 
@@ -912,6 +934,11 @@ do
         end
 
         tip:Hide()
+
+        if tipRA then
+            tipRA:Hide()
+        end
+
         D.temp_tt_taint_debug = D.temp_tt_taint_debug - 1
         --@debug@
         D:Debug("ttt debug: ", D.temp_tt_taint_debug)
