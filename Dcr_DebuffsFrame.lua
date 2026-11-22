@@ -849,7 +849,9 @@ do
 
             -- set the status text, just translate the bitfield to readable text
             if Status == NORMAL then
-                StatusText = L["NORMAL"];
+                local restricted = D:AurasRestricted() and "?" or ""
+
+                StatusText = L["NORMAL"] .. restricted;
 
             elseif Status == ABSENT then
                 StatusText = L["ABSENT"]:format(Unit);
