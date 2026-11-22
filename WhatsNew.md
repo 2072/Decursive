@@ -1,5 +1,33 @@
-Decursive 2.9.0-RC4
+Decursive 2.9.0-RC5
 ===================
+
+
+Decursive 2.9.0-RC5 (2026-11-23)
+--------------------------------
+
+Forever and Midnight:
+
+- MUFs tooltips: show the first player dispellable debuff in an adjacent
+  tooltip to existing one.
+
+- Improve sound registration memory usage.
+
+- Use throttleSeconds parameter in alert sound registration to prevent the sound from
+  playing multiple times simultaneously.
+
+- Fix incompatibility with add-ons who resurrect `_G.GetSpellBookItemInfo`.
+
+- Fix rare GetDebuffDataByIndex forbidden access forbidden error.
+
+- Forever: Add all curse spell ids (thanks to Vinny the author of Luna Unit Frames Plus).
+  If this works well the spell ids for the other types will be added too...
+
+All:
+
+- Auto close the config window if the player enters combat. Attempt to
+  influence taint errors reported in Forever/Midgnight. Although it's very
+  likely that other add-ons are the cause of those taints because they use shared
+  libraries provided by Decursive who gets wrongly blamed as the source of the taint...
 
 
 Decursive 2.9.0-RC4 (2026-11-04)
@@ -9,7 +37,7 @@ Decursive 2.9.0-RC4 (2026-11-04)
 
 - Fix a very rare/impossible Lua error that was reported only once (probably temporary Blizzard glitch)
 
-- No other significant changes since RC3, build appears very stable, last RC if all goes well after WoW Forever launch 🤞.
+- No other significant changes since RC3, build appears very stable, last RC if all goes well after WoW Forever's launch 🤞.
 
 
 Decursive 2.9.0-RC3 (2026-10-04)
