@@ -1312,6 +1312,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 
     -- register events
     self.Frame:RegisterForClicks("AnyUp");
+    self.Frame:SetAttribute("useOnKeyDown", false);
     self.Frame:SetFrameStrata("MEDIUM");
 
     -- set the frame attributes
